@@ -5,6 +5,5 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryColor</item>
         <item name="colorAccent">@color/primaryColor</item>
-        <item name="background">@color/secondaryColor</item>
     </style>
 </resources>
