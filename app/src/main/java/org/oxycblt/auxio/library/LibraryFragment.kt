@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.player
+package org.oxycblt.auxio.library
 
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentPlayerBinding
+import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 
-class PlayerFragment : Fragment() {
+class LibraryFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -18,8 +18,8 @@ class PlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding = DataBindingUtil.inflate<FragmentPlayerBinding>(
-            inflater, R.layout.fragment_player, container, false
+        val binding = DataBindingUtil.inflate<FragmentLibraryBinding>(
+            inflater, R.layout.fragment_library, container, false
         )
 
         Log.d(this::class.simpleName, "Fragment created.")

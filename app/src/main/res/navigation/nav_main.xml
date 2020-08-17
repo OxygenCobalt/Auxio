@@ -7,6 +7,6 @@
 
     <fragment
         android:id="@+id/playerFragment"
-        android:name="org.oxycblt.auxio.player.PlayerFragment"
+        android:name="org.oxycblt.auxio.library.LibraryFragment"
         android:label="PlayerFragment" />
 </navigation>
