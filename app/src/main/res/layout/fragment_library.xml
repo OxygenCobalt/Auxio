@@ -13,7 +13,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="@dimen/elevation_normal"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/fragment_library_title"
             tools:titleTextColor="@color/primaryTextColor" />

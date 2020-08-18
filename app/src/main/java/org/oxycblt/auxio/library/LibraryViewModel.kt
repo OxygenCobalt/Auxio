@@ -8,7 +8,6 @@ class LibraryViewModel() : ViewModel() {
     // TODO: Implement music data in ViewModel
 
     init {
-
         Log.d(this::class.simpleName, "ViewModel created.")
     }
 }

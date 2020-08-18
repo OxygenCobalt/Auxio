@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.music.MusicRepository
 
 class LibraryFragment : Fragment() {
 
@@ -27,6 +28,8 @@ class LibraryFragment : Fragment() {
         val binding = DataBindingUtil.inflate<FragmentLibraryBinding>(
             inflater, R.layout.fragment_library, container, false
         )
+
+        MusicRepository.getInstance().init(requireActivity().application)
 
         Log.d(this::class.simpleName, "Fragment created.")
 
