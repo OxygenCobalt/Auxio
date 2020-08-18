@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
@@ -47,13 +46,15 @@ class MusicRepository {
                 app.contentResolver
             )
 
+            Log.i(this::class.simpleName, "Starting music search...")
+
             // Index music files from shared storage
             musicCursor?.use { cursor ->
 
                 val idIndex = cursor.getColumnIndexOrThrow(AudioColumns._ID)
                 val displayIndex = cursor.getColumnIndexOrThrow(AudioColumns.DISPLAY_NAME)
 
-                var retriever = MediaMetadataRetriever()
+                val retriever = MediaMetadataRetriever()
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
@@ -83,18 +84,23 @@ class MusicRepository {
                     val genre = retriever.extractMetadata(
                         MediaMetadataRetriever.METADATA_KEY_GENRE
                     )
-                    
-                    val year = (retriever.extractMetadata(
-                        MediaMetadataRetriever.METADATA_KEY_YEAR
-                    ) ?: "0").toInt()
+
+                    val year = (
+                        retriever.extractMetadata(
+                            MediaMetadataRetriever.METADATA_KEY_YEAR
+                        ) ?: "0"
+                        ).toInt()
 
                     // Track is formatted as X/0, so trim off the /0 part to parse
                     // the track number correctly.
-                    val track = (retriever.extractMetadata(
-                        MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER
-                    ) ?: "0/0").split("/")[0].toInt()
+                    val track = (
+                        retriever.extractMetadata(
+                            MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER
+                        ) ?: "0/0"
+                        ).split("/")[0].toInt()
 
-                    // Something has gone horribly wrong if a file has no duration.
+                    // Something has gone horribly wrong if a file has no duration,
+                    // so assert it as such.
                     val duration = retriever.extractMetadata(
                         MediaMetadataRetriever.METADATA_KEY_DURATION
                     )!!.toLong()
@@ -117,7 +123,7 @@ class MusicRepository {
                     )
                 }
 
-                // Close the retriever when done so that it gets garbage collected
+                // Close the retriever when done so that it gets garbage collected [I hope]
                 retriever.close()
             }
 
@@ -127,7 +133,6 @@ class MusicRepository {
             )
 
             return songList
-
         } catch (error: Exception) {
             // TODO: Add better error handling
 

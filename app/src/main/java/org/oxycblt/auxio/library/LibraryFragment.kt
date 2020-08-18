@@ -10,14 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.music.MusicRepository
 
 class LibraryFragment : Fragment() {
 
     // Lazily initiate the ViewModel when its first referenced.
     // Not because this does anything, it just looks nicer.
     private val libraryModel: LibraryViewModel by lazy {
-        ViewModelProvider(this).get(LibraryViewModel::class.java)
+        ViewModelProvider(
+            this,
+            LibraryViewModel.Factory(
+                requireActivity().application
+            )
+        ).get(LibraryViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -29,7 +33,7 @@ class LibraryFragment : Fragment() {
             inflater, R.layout.fragment_library, container, false
         )
 
-        MusicRepository.getInstance().init(requireActivity().application)
+        libraryModel
 
         Log.d(this::class.simpleName, "Fragment created.")
 
