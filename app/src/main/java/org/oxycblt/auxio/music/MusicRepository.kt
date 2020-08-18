@@ -2,7 +2,10 @@ package org.oxycblt.auxio.music
 
 import android.app.Application
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.Log
@@ -39,6 +42,7 @@ class MusicRepository {
         val songList = mutableListOf<Song>()
 
         try {
+
             val musicCursor = getCursor(
                 app.contentResolver
             )
@@ -46,27 +50,75 @@ class MusicRepository {
             // Index music files from shared storage
             musicCursor?.use { cursor ->
 
-                val nameIndex = cursor.getColumnIndexOrThrow(AudioColumns.TITLE)
-                val artistIndex = cursor.getColumnIndexOrThrow(AudioColumns.ARTIST)
-                val albumIndex = cursor.getColumnIndexOrThrow(AudioColumns.ALBUM)
-                val yearIndex = cursor.getColumnIndexOrThrow(AudioColumns.YEAR)
-                val trackIndex = cursor.getColumnIndexOrThrow(AudioColumns.TRACK)
-                val durationIndex = cursor.getColumnIndexOrThrow(AudioColumns.DURATION)
                 val idIndex = cursor.getColumnIndexOrThrow(AudioColumns._ID)
+                val displayIndex = cursor.getColumnIndexOrThrow(AudioColumns.DISPLAY_NAME)
+
+                var retriever = MediaMetadataRetriever()
 
                 while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idIndex)
+
+                    // Read the current file from the ID
+                    retriever.setDataSource(
+                        app.applicationContext,
+                        ContentUris.withAppendedId(
+                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                            id
+                        )
+                    )
+
+                    // Get the metadata attributes
+                    val title = retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_TITLE
+                    ) ?: cursor.getString(displayIndex)
+
+                    val artist = retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_ARTIST
+                    )
+
+                    val album = retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_ALBUM
+                    )
+
+                    val genre = retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_GENRE
+                    )
+                    
+                    val year = (retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_YEAR
+                    ) ?: "0").toInt()
+
+                    // Track is formatted as X/0, so trim off the /0 part to parse
+                    // the track number correctly.
+                    val track = (retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER
+                    ) ?: "0/0").split("/")[0].toInt()
+
+                    // Something has gone horribly wrong if a file has no duration.
+                    val duration = retriever.extractMetadata(
+                        MediaMetadataRetriever.METADATA_KEY_DURATION
+                    )!!.toLong()
+
+                    // TODO: Add int-based genre compatibility
                     songList.add(
                         Song(
-                            cursor.getString(nameIndex),
-                            cursor.getString(artistIndex),
-                            cursor.getString(albumIndex),
-                            cursor.getInt(yearIndex),
-                            cursor.getInt(trackIndex),
-                            cursor.getLong(durationIndex),
-                            cursor.getLong(idIndex)
+                            title,
+                            artist,
+                            album,
+                            genre,
+                            year,
+                            track,
+                            duration,
+
+                            retriever.embeddedPicture,
+                            id
+
                         )
                     )
                 }
+
+                // Close the retriever when done so that it gets garbage collected
+                retriever.close()
             }
 
             Log.d(
@@ -75,6 +127,7 @@ class MusicRepository {
             )
 
             return songList
+
         } catch (error: Exception) {
             // TODO: Add better error handling
 
@@ -91,20 +144,12 @@ class MusicRepository {
         return resolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
-                AudioColumns.TITLE,
-                AudioColumns.ARTIST,
-                AudioColumns.ALBUM,
-                AudioColumns.YEAR,
-                AudioColumns.TRACK,
-                AudioColumns.DURATION,
-                AudioColumns._ID
+                AudioColumns._ID,
+                AudioColumns.DISPLAY_NAME
             ),
             AudioColumns.IS_MUSIC + "=1", null,
             MediaStore.Audio.Media.DEFAULT_SORT_ORDER
         )
-
-        // TODO: Art Loading, since android cant do it on its own
-        // TODO: Genre Loading?
     }
 
     // Sort the list of Song objects into an abstracted lis
@@ -145,18 +190,18 @@ class MusicRepository {
             }
         }
 
-        Log.i(this::class.simpleName,
-            "Successfully sorted songs into "
-                    + artistList.size.toString()
-                    + " Artists and "
-                    + albumList.size.toString()
-                    + " Albums."
+        Log.i(
+            this::class.simpleName,
+            "Successfully sorted songs into " +
+                artistList.size.toString() +
+                " Artists and " +
+                albumList.size.toString() +
+                " Albums."
         )
 
         mArtists = artistList
         mAlbums = albumList
         mSongs = distinctSongs
-
     }
 
     companion object {

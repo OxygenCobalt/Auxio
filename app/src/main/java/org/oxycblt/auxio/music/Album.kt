@@ -1,46 +1,43 @@
 package org.oxycblt.auxio.music
 
+import android.graphics.Bitmap
+
 // Basic Abstraction for Song
-data class Album (
-    var mSongs: List<Song>
+data class Album(
+    var songs: List<Song>
 ) {
-    private var mTitle: String? = null
-    private var mArtist: String? = null
-    //private var mGenre: String? = null
-    private var mYear: Int = 0
-
-    // Immutable backings as the member variables are mutable
-    val title: String? get() = mTitle
-    val artist: String? get() = mArtist
-    //val genre: String? get() = genre
-    val year: Int get() = mYear
-
-    val songs: List<Song> get() = mSongs
+    var title: String? = null
+    var artist: String? = null
+    var genre: String? = null
+    var cover: Bitmap? = null
+    var year: Int = 0
 
     init {
         // Iterate through the child songs and inherit the first valid value
-        // for the Album name & year, otherwise it will revert to its defaults
-        for (song in mSongs) {
+        // for the Album Name, Artist, Genre, Year, and Cover
+        for (song in songs) {
             if (song.album != null) {
-                mTitle = song.album
+                title = song.album
             }
 
             if (song.artist != null) {
-                mArtist = song.artist
+                artist = song.artist
             }
 
-            /*
             if (song.genre != null) {
-                mGenre = song.genre
+                genre = song.genre
             }
-             */
+
+            if (song.cover != null) {
+                cover = song.cover
+            }
 
             if (song.year != 0) {
-                mYear = song.year
+                year = song.year
             }
         }
 
         // Also sort the songs by track
-        mSongs = songs.sortedBy { it.track }
+        songs = songs.sortedBy { it.track }
     }
 }

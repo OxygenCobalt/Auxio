@@ -2,33 +2,25 @@ package org.oxycblt.auxio.music
 
 // Abstraction for mAlbums
 data class Artist(
-    private var mAlbums: List<Album>
+    private var albums: List<Album>
 ) {
-    private var mName: String? = null
-    //private var mGenre: String? = null
-
-    // Immutable backings as the member variables are mutable
-    val name: String? get() = mName
-    //val genre: String? get() = mGenre
-
-    val albums: List<Album> get() = mAlbums
+    var name: String? = null
+    var genre: String? = null
 
     init {
-        // Like album, iterate through the child albums and pick out the first valid
+        // Like Album, iterate through the child albums and pick out the first valid
         // tag for Album/Genre
-        for (album in mAlbums) {
+        for (album in albums) {
             if (album.artist != null) {
-                mName = album.artist
+                name = album.artist
             }
 
-            /*
             if (album.genre != null) {
-                mGenre = album.genre
+                genre = album.genre
             }
-             */
         }
 
         // Also sort the mAlbums by year
-        mAlbums = mAlbums.sortedBy { it.year }
+        albums = albums.sortedBy { it.year }
     }
 }
