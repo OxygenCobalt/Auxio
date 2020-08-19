@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.music.MusicLoadResponse
+import org.oxycblt.auxio.music.MusicLoaderResponse
 import org.oxycblt.auxio.music.MusicRepository
 
 class LoadingViewModel(private val app: Application) : ViewModel() {
@@ -21,8 +21,8 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
         Dispatchers.IO
     )
 
-    private val mMusicRepoResponse = MutableLiveData<MusicLoadResponse>()
-    val musicRepoResponse: LiveData<MusicLoadResponse> get() = mMusicRepoResponse
+    private val mMusicRepoResponse = MutableLiveData<MusicLoaderResponse>()
+    val musicRepoResponse: LiveData<MusicLoaderResponse> get() = mMusicRepoResponse
 
     private val mDoRetry = MutableLiveData<Boolean>()
     val doRetry: LiveData<Boolean> get() = mDoRetry

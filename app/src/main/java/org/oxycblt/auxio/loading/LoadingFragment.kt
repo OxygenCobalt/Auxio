@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
-import org.oxycblt.auxio.music.MusicLoadResponse
+import org.oxycblt.auxio.music.MusicLoaderResponse
 
 class LoadingFragment : Fragment() {
 
@@ -58,12 +58,12 @@ class LoadingFragment : Fragment() {
         return binding.root
     }
 
-    private fun onMusicLoadResponse(repoResponse: MusicLoadResponse?) {
+    private fun onMusicLoadResponse(repoResponse: MusicLoaderResponse?) {
 
         // Don't run this if the value is null, Which is what the value changes to after
         // this is run.
         repoResponse?.let { response ->
-            if (response == MusicLoadResponse.DONE) {
+            if (response == MusicLoaderResponse.DONE) {
                 this.findNavController().navigate(
                     LoadingFragmentDirections.actionToLibrary()
                 )
@@ -75,7 +75,7 @@ class LoadingFragment : Fragment() {
                 binding.statusText.visibility = View.VISIBLE
                 binding.resetButton.visibility = View.VISIBLE
 
-                if (response == MusicLoadResponse.NO_MUSIC) {
+                if (response == MusicLoaderResponse.NO_MUSIC) {
                     binding.statusText.text = getString(R.string.error_no_music)
                 } else {
                     binding.statusText.text = getString(R.string.error_music_load_failed)
