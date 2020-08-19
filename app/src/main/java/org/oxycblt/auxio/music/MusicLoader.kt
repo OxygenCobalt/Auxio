@@ -2,9 +2,7 @@ package org.oxycblt.auxio.music
 
 import android.app.Application
 import android.content.ContentResolver
-import android.content.ContentUris
 import android.database.Cursor
-import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.Log
@@ -15,12 +13,11 @@ enum class MusicLoaderResponse {
 }
 
 // Class that loads music from the FileSystem.
-// This thing is probably full of memory leaks.
+// FIXME: This thing probably has some memory leaks *somewhere*
 class MusicLoader(private val app: Application) {
 
     var songs = mutableListOf<Song>()
 
-    private val retriever: MediaMetadataRetriever = MediaMetadataRetriever()
     private var musicCursor: Cursor? = null
 
     val response: MusicLoaderResponse
@@ -29,7 +26,7 @@ class MusicLoader(private val app: Application) {
         response = findMusic()
     }
 
-    private fun findMusic() : MusicLoaderResponse {
+    private fun findMusic(): MusicLoaderResponse {
         try {
             musicCursor = getCursor(
                 app.contentResolver
@@ -38,14 +35,11 @@ class MusicLoader(private val app: Application) {
             Log.i(this::class.simpleName, "Starting music search...")
 
             useCursor()
-
         } catch (error: Exception) {
-            // TODO: Add better error handling
-
             Log.e(this::class.simpleName, "Something went horribly wrong.")
             error.printStackTrace()
 
-            finalize()
+            musicCursor?.close()
 
             return MusicLoaderResponse.FAILURE
         }
@@ -72,11 +66,20 @@ class MusicLoader(private val app: Application) {
     private fun getCursor(resolver: ContentResolver): Cursor? {
         Log.i(this::class.simpleName, "Getting music cursor.")
 
+        // Get all the values that can be retrieved by the cursor.
+        // The rest are retrieved using MediaMetadataExtractor and
+        // stored into a database.
         return resolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
-                AudioColumns._ID,
-                AudioColumns.DISPLAY_NAME
+                AudioColumns._ID, // 0
+                AudioColumns.DISPLAY_NAME, // 1
+                AudioColumns.TITLE, // 2
+                AudioColumns.ARTIST, // 3
+                AudioColumns.ALBUM, // 4
+                AudioColumns.YEAR, // 5
+                AudioColumns.TRACK, // 6
+                AudioColumns.DURATION // 7
             ),
             AudioColumns.IS_MUSIC + "=1", null,
             MediaStore.Audio.Media.DEFAULT_SORT_ORDER
@@ -94,81 +97,35 @@ class MusicLoader(private val app: Application) {
 
             val idIndex = cursor.getColumnIndexOrThrow(AudioColumns._ID)
             val displayIndex = cursor.getColumnIndexOrThrow(AudioColumns.DISPLAY_NAME)
+            val titleIndex = cursor.getColumnIndexOrThrow(AudioColumns.TITLE)
+            val artistIndex = cursor.getColumnIndexOrThrow(AudioColumns.ARTIST)
+            val albumIndex = cursor.getColumnIndexOrThrow(AudioColumns.ALBUM)
+            val yearIndex = cursor.getColumnIndexOrThrow(AudioColumns.YEAR)
+            val trackIndex = cursor.getColumnIndexOrThrow(AudioColumns.TRACK)
+            val durationIndex = cursor.getColumnIndexOrThrow(AudioColumns.DURATION)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
 
-                // Read the current file from the ID
-                retriever.setDataSource(
-                    app.applicationContext,
-                    ContentUris.withAppendedId(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
-                )
+                // Get the basic metadata from the cursor
+                val title = cursor.getString(titleIndex) ?: cursor.getString(displayIndex)
+                val artist = cursor.getString(artistIndex)
+                val album = cursor.getString(albumIndex)
+                val year = cursor.getInt(yearIndex)
+                val track = cursor.getInt(trackIndex)
+                val duration = cursor.getLong(durationIndex)
 
-                // Get the metadata attributes
-                val title = retriever.extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_TITLE
-                ) ?: cursor.getString(displayIndex)
-
-                val artist = retriever.extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_ARTIST
-                )
-
-                val album = retriever.extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_ALBUM
-                )
-
-                val genre = retriever.extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_GENRE
-                )
-
-                val year = (
-                    retriever.extractMetadata(
-                        MediaMetadataRetriever.METADATA_KEY_YEAR
-                    ) ?: "0"
-                    ).toInt()
-
-                // Track is formatted as X/0, so trim off the /0 part to parse
-                // the track number correctly.
-                val track = (
-                    retriever.extractMetadata(
-                        MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER
-                    ) ?: "0/0"
-                    ).split("/")[0].toInt()
-
-                // Something has gone horribly wrong if a file has no duration,
-                // so assert it as such.
-                val duration = retriever.extractMetadata(
-                    MediaMetadataRetriever.METADATA_KEY_DURATION
-                )!!.toLong()
-
-                // TODO: Add int-based genre compatibility
+                // TODO: Add album art [But its loaded separately, as that will take a bit]
+                // TODO: Add genres whenever android hasn't borked it
                 songs.add(
                     Song(
-                        title,
-                        artist,
-                        album,
-                        genre,
-                        year,
-                        track,
-                        duration,
-
-                        retriever.embeddedPicture,
-                        id
-
+                        id, title, artist, album,
+                        year, track, duration
                     )
                 )
             }
-        }
-    }
 
-    // Free the metadata retriever & the musicCursor, and make the song list immutable.
-    private fun finalize() {
-        retriever.close()
-        musicCursor?.use{
-            it.close()
+            cursor.close()
         }
     }
 }

@@ -1,20 +1,16 @@
 package org.oxycblt.auxio.music.models
 
-import android.graphics.Bitmap
-
 // Abstraction for Song
 data class Album(
     var songs: List<Song>
 ) {
     var title: String? = null
     var artist: String? = null
-    var genre: String? = null
-    var cover: Bitmap? = null
     var year: Int = 0
 
     init {
         // Iterate through the child songs and inherit the first valid value
-        // for the Album Name, Artist, Genre, Year, and Cover
+        // for the Album Name, Artist, and Year
         for (song in songs) {
             if (song.album != null) {
                 title = song.album
@@ -22,14 +18,6 @@ data class Album(
 
             if (song.artist != null) {
                 artist = song.artist
-            }
-
-            if (song.genre != null) {
-                genre = song.genre
-            }
-
-            if (song.cover != null) {
-                cover = song.cover
             }
 
             if (song.year != 0) {

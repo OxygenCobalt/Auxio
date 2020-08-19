@@ -72,13 +72,13 @@ class LoadingFragment : Fragment() {
                 // depending on which error response was given, along with a retry button
 
                 binding.loadingBar.visibility = View.GONE
-                binding.statusText.visibility = View.VISIBLE
+                binding.errorText.visibility = View.VISIBLE
                 binding.resetButton.visibility = View.VISIBLE
 
                 if (response == MusicLoaderResponse.NO_MUSIC) {
-                    binding.statusText.text = getString(R.string.error_no_music)
+                    binding.errorText.text = getString(R.string.error_no_music)
                 } else {
-                    binding.statusText.text = getString(R.string.error_music_load_failed)
+                    binding.errorText.text = getString(R.string.error_music_load_failed)
                 }
             }
 
@@ -89,7 +89,7 @@ class LoadingFragment : Fragment() {
     private fun onRetry(retry: Boolean) {
         if (retry) {
             binding.loadingBar.visibility = View.VISIBLE
-            binding.statusText.visibility = View.GONE
+            binding.errorText.visibility = View.GONE
             binding.resetButton.visibility = View.GONE
 
             loadingModel.doneWithRetry()

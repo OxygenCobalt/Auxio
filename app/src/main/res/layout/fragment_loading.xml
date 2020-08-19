@@ -21,7 +21,7 @@
             android:indeterminateTint="?attr/colorAccent"
             android:indeterminateTintMode="src_in"
             android:paddingBottom="@dimen/padding_small"
-            app:layout_constraintBottom_toTopOf="@+id/status_text"
+            app:layout_constraintBottom_toTopOf="@+id/error_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,15 +29,15 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/status_text"
+            android:id="@+id/error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/status_loading_music"
             app:layout_constraintBottom_toTopOf="@+id/reset_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loading_bar" />
+            app:layout_constraintTop_toBottomOf="@+id/loading_bar"
+            tools:text="@string/error_music_load_failed" />
 
         <Button
             android:id="@+id/reset_button"
@@ -51,7 +51,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/status_text" />
+            app:layout_constraintTop_toBottomOf="@+id/error_text"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
