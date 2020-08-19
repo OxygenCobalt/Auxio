@@ -2,7 +2,12 @@
 <resources>
     <string name="app_name">Auxio</string>
 
-    <string name="label_loading_music">Scanning your music library for the first time...</string>
+    <string name="status_loading_music">Scanning your music library for the first time...</string>
+
+    <string name="error_no_music">No music found.</string>
+    <string name="error_music_load_failed">Music loading failed.</string>
+
+    <string name="label_retry">Retry</string>
 
     <string name="title_library_fragment">Library</string>
 </resources>

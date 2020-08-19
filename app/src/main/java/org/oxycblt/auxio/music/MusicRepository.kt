@@ -149,7 +149,6 @@ class MusicRepository {
             )
 
             return songList
-
         } catch (error: Exception) {
             // TODO: Add better error handling
 

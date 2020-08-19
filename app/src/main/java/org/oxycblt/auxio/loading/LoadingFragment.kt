@@ -17,8 +17,11 @@ import org.oxycblt.auxio.music.MusicLoadResponse
 class LoadingFragment : Fragment() {
 
     private val loadingModel: LoadingViewModel by lazy {
-        ViewModelProvider(this, LoadingViewModel.Factory(
-            requireActivity().application)
+        ViewModelProvider(
+            this,
+            LoadingViewModel.Factory(
+                requireActivity().application
+            )
         ).get(LoadingViewModel::class.java)
     }
 
@@ -34,21 +37,62 @@ class LoadingFragment : Fragment() {
         )
 
         binding.lifecycleOwner = this
+        binding.loadingModel = loadingModel
 
-        loadingModel.musicRepoResponse.observe(viewLifecycleOwner, Observer { response ->
-            onMusicLoadResponse(response)
-        })
+        loadingModel.musicRepoResponse.observe(
+            viewLifecycleOwner,
+            Observer { response ->
+                onMusicLoadResponse(response)
+            }
+        )
+
+        loadingModel.doRetry.observe(
+            viewLifecycleOwner,
+            Observer { retry ->
+                onRetry(retry)
+            }
+        )
 
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
     }
 
-    private fun onMusicLoadResponse(response: MusicLoadResponse) {
-        if (response == MusicLoadResponse.DONE) {
-            this.findNavController().navigate(
-                LoadingFragmentDirections.actionToLibrary()
-            )
+    private fun onMusicLoadResponse(repoResponse: MusicLoadResponse?) {
+
+        // Don't run this if the value is null, Which is what the value changes to after
+        // this is run.
+        repoResponse?.let { response ->
+            if (response == MusicLoadResponse.DONE) {
+                this.findNavController().navigate(
+                    LoadingFragmentDirections.actionToLibrary()
+                )
+            } else {
+                // If the response wasn't a success, then show the specific error message
+                // depending on which error response was given, along with a retry button
+
+                binding.loadingBar.visibility = View.GONE
+                binding.statusText.visibility = View.VISIBLE
+                binding.resetButton.visibility = View.VISIBLE
+
+                if (response == MusicLoadResponse.NO_MUSIC) {
+                    binding.statusText.text = getString(R.string.error_no_music)
+                } else {
+                    binding.statusText.text = getString(R.string.error_music_load_failed)
+                }
+            }
+
+            loadingModel.doneWithResponse()
+        }
+    }
+
+    private fun onRetry(retry: Boolean) {
+        if (retry) {
+            binding.loadingBar.visibility = View.VISIBLE
+            binding.statusText.visibility = View.GONE
+            binding.resetButton.visibility = View.GONE
+
+            loadingModel.doneWithRetry()
         }
     }
 }

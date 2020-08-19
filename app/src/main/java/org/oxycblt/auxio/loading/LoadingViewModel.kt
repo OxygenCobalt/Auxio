@@ -6,12 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.MusicLoadResponse
 import org.oxycblt.auxio.music.MusicRepository
 
 class LoadingViewModel(private val app: Application) : ViewModel() {
-    
+
     private val loadingJob = Job()
     private val ioScope = CoroutineScope(
         Dispatchers.IO
@@ -19,6 +23,9 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     private val mMusicRepoResponse = MutableLiveData<MusicLoadResponse>()
     val musicRepoResponse: LiveData<MusicLoadResponse> get() = mMusicRepoResponse
+
+    private val mDoRetry = MutableLiveData<Boolean>()
+    val doRetry: LiveData<Boolean> get() = mDoRetry
 
     init {
         startMusicRepo()
@@ -40,6 +47,20 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
         }
     }
 
+    fun doneWithResponse() {
+        mMusicRepoResponse.value = null
+    }
+
+    fun retry() {
+        mDoRetry.value = true
+
+        startMusicRepo()
+    }
+
+    fun doneWithRetry() {
+        mDoRetry.value = false
+    }
+
     override fun onCleared() {
         super.onCleared()
 
@@ -53,7 +74,8 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
             if (modelClass.isAssignableFrom(LoadingViewModel::class.java)) {
                 return LoadingViewModel(application) as T
             }
-            throw IllegalArgumentException("Unknown ViewModel class")
+
+            throw IllegalArgumentException("Unknown ViewModel class.")
         }
     }
 }

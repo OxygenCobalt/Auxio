@@ -9,7 +9,7 @@
         android:id="@+id/loadingFragment"
         android:name="org.oxycblt.auxio.loading.LoadingFragment"
         android:label="LoadingFragment"
-        tools:layout="@layout/fragment_loading" >
+        tools:layout="@layout/fragment_loading">
         <action
             android:id="@+id/action_to_library"
             app:destination="@id/libraryFragment" />
