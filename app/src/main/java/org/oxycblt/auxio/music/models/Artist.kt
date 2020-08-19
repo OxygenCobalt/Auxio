@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.models
 
 // Abstraction for mAlbums
 data class Artist(
@@ -6,6 +6,8 @@ data class Artist(
 ) {
     var name: String? = null
     var genre: String? = null
+
+    // TODO: Artist photos
 
     init {
         // Like Album, iterate through the child albums and pick out the first valid

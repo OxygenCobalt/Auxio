@@ -1,8 +1,8 @@
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.models
 
 import android.graphics.Bitmap
 
-// Basic Abstraction for Song
+// Abstraction for Song
 data class Album(
     var songs: List<Song>
 ) {

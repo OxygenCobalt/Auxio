@@ -2,5 +2,7 @@
 <resources>
     <string name="app_name">Auxio</string>
 
-    <string name="fragment_library_title">Library</string>
+    <string name="label_loading_music">Scanning your music library for the first time...</string>
+
+    <string name="title_library_fragment">Library</string>
 </resources>

@@ -8,6 +8,13 @@ import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.AudioColumns
 import android.util.Log
+import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Song
+
+enum class MusicLoadResponse {
+    DONE, FAILURE, NO_MUSIC
+}
 
 // Storage for music data. Design largely adapted from Music Player GO:
 // https://github.com/enricocid/Music-Player-GO
@@ -22,23 +29,27 @@ class MusicRepository {
     val albums: List<Album> get() = mAlbums
     val songs: List<Song> get() = mSongs
 
-    fun init(app: Application): Boolean {
+    fun init(app: Application): MusicLoadResponse {
+
         findMusic(app)?.let { ss ->
-            if (ss.size > 0) {
+            return if (ss.size > 0) {
                 processSongs(ss)
 
-                return true
+                MusicLoadResponse.DONE
+            } else {
+                MusicLoadResponse.NO_MUSIC
             }
         }
 
-        // Return false if the load as failed for any reason, either
-        // through there being no music or an Exception.
-        return false
+        // If the let function isn't run, then the loading has failed due to some Exception
+        // and FAILURE must be returned
+        return MusicLoadResponse.FAILURE
     }
 
     private fun findMusic(app: Application): MutableList<Song>? {
 
         val songList = mutableListOf<Song>()
+        val retriever = MediaMetadataRetriever()
 
         try {
 
@@ -51,10 +62,14 @@ class MusicRepository {
             // Index music files from shared storage
             musicCursor?.use { cursor ->
 
+                // Don't run the more expensive file loading operations if there is no music
+                // to index.
+                if (cursor.count == 0) {
+                    return songList
+                }
+
                 val idIndex = cursor.getColumnIndexOrThrow(AudioColumns._ID)
                 val displayIndex = cursor.getColumnIndexOrThrow(AudioColumns.DISPLAY_NAME)
-
-                val retriever = MediaMetadataRetriever()
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
@@ -123,21 +138,25 @@ class MusicRepository {
                     )
                 }
 
-                // Close the retriever when done so that it gets garbage collected [I hope]
+                // Close the retriever/cursor so that it gets garbage collected
                 retriever.close()
+                cursor.close()
             }
 
             Log.d(
                 this::class.simpleName,
-                "Music search finished with " + songList.size.toString() + " Songs found."
+                "Successfully found " + songList.size.toString() + " Songs."
             )
 
             return songList
+
         } catch (error: Exception) {
             // TODO: Add better error handling
 
             Log.e(this::class.simpleName, "Something went horribly wrong.")
             error.printStackTrace()
+
+            retriever.close()
 
             return null
         }
@@ -165,14 +184,12 @@ class MusicRepository {
             it.name to it.artist to it.album to it.year to it.track to it.duration
         }.toMutableList()
 
-        // Sort the music by artists/albums
+        // Add an album abstraction for each group of songs
         val songsByAlbum = distinctSongs.groupBy { it.album }
         val albumList = mutableListOf<Album>()
 
         songsByAlbum.keys.iterator().forEach { album ->
             val albumSongs = songsByAlbum[album]
-
-            // Add an album abstraction for each album item in the list of songs.
             albumSongs?.let {
                 albumList.add(
                     Album(albumSongs)
@@ -181,7 +198,6 @@ class MusicRepository {
         }
 
         // Then abstract the remaining albums into artist objects
-        // TODO: If enabled
         val albumsByArtist = albumList.groupBy { it.artist }
         val artistList = mutableListOf<Artist>()
 

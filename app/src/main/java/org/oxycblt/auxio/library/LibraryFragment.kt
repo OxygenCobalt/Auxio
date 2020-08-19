@@ -13,15 +13,8 @@ import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 
 class LibraryFragment : Fragment() {
 
-    // Lazily initiate the ViewModel when its first referenced.
-    // Not because this does anything, it just looks nicer.
     private val libraryModel: LibraryViewModel by lazy {
-        ViewModelProvider(
-            this,
-            LibraryViewModel.Factory(
-                requireActivity().application
-            )
-        ).get(LibraryViewModel::class.java)
+        ViewModelProvider(this).get(LibraryViewModel::class.java)
     }
 
     override fun onCreateView(

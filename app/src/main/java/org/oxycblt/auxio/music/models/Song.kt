@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.models
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
