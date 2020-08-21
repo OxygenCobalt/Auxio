@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.music.MusicRepository
 
 class LibraryFragment : Fragment() {
 
@@ -27,6 +28,10 @@ class LibraryFragment : Fragment() {
         )
 
         libraryModel
+
+        val albums = MusicRepository.getInstance().albums.value
+
+        binding.testAlbum.setImageBitmap(albums?.get((0..albums.size).random())?.cover)
 
         Log.d(this::class.simpleName, "Fragment created.")
 

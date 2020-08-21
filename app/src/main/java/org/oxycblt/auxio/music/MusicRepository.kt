@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.music.processing.MusicLoader
-import org.oxycblt.auxio.music.processing.MusicLoaderResponse
-import org.oxycblt.auxio.music.processing.MusicSorter
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.music.processing.MusicLoader
+import org.oxycblt.auxio.music.processing.MusicLoaderResponse
+import org.oxycblt.auxio.music.processing.MusicSorter
 
 // Storage for music data.
 class MusicRepository {

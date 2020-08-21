@@ -47,3 +47,10 @@ fun Long.toURI(): Uri {
         this
     )
 }
+
+fun Long.toAlbumArtURI(): Uri {
+    return ContentUris.withAppendedId(
+        Uri.parse("content://media/external/audio/albumart"),
+        this
+    )
+}

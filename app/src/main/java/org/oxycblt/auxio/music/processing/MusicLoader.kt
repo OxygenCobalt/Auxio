@@ -3,6 +3,10 @@ package org.oxycblt.auxio.music.processing
 import android.app.Application
 import android.content.ContentResolver
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
@@ -13,6 +17,7 @@ import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.music.toAlbumArtURI
 
 enum class MusicLoaderResponse {
     DONE, FAILURE, NO_MUSIC
@@ -188,10 +193,23 @@ class MusicLoader(private val app: Application) {
                 val year = cursor.getInt(yearIndex)
                 val numSongs = cursor.getInt(numIndex)
 
+                val artUri = id.toAlbumArtURI()
+                var cover: Bitmap? = null
+
+                // Get the album art through either ImageDecoder or MediaStore depending on the
+                // version.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    cover = ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(resolver, artUri)
+                    )
+                } else {
+                    cover = MediaStore.Images.Media.getBitmap(resolver, artUri)
+                }
+
                 albums.add(
                     Album(
                         id, name, artist,
-                        year, numSongs
+                        cover, year, numSongs
                     )
                 )
             }
