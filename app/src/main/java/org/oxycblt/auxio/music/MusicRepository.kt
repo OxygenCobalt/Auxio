@@ -22,15 +22,25 @@ class MusicRepository {
     val songs: LiveData<List<Song>> get() = mSongs
 
     suspend fun init(app: Application): MusicLoaderResponse {
+        Log.i(this::class.simpleName, "Starting initial music load")
+
         val loader = MusicLoader(app)
 
         if (loader.response == MusicLoaderResponse.DONE) {
             // If the loading succeeds, then process the songs into lists of
             // songs, albums, and artists on the main thread.
             withContext(Dispatchers.Main) {
-                mSongs.value = processSongs(loader.songs)
-                mAlbums.value = sortIntoAlbums(mSongs.value as MutableList<Song>)
-                mArtists.value = sortIntoArtists(mAlbums.value as MutableList<Album>)
+                val sorter = MusicSorter(
+                    loader.artists,
+                    loader.albums,
+                    loader.songs
+                )
+
+                mSongs.value = sorter.songs
+                mAlbums.value = sorter.albums
+                mArtists.value = sorter.artists
+
+                Log.i(this::class.simpleName, "Finished initial music load.")
             }
         }
 

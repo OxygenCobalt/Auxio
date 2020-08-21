@@ -3,10 +3,14 @@ package org.oxycblt.auxio.music
 import android.app.Application
 import android.content.ContentResolver
 import android.database.Cursor
-import android.provider.MediaStore
+import android.provider.MediaStore.Audio.Albums
+import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
-import android.provider.MediaStore.Audio.AudioColumns
+import android.provider.MediaStore.Audio.Media
 import android.util.Log
+import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
 
 enum class MusicLoaderResponse {
@@ -17,62 +21,44 @@ enum class MusicLoaderResponse {
 // FIXME: This thing probably has some memory leaks *somewhere*
 class MusicLoader(private val app: Application) {
 
+    var genres = mutableListOf<Genre>()
+    var artists = mutableListOf<Artist>()
+    var albums = mutableListOf<Album>()
     var songs = mutableListOf<Song>()
-    var genres = mutableListOf<Pair<Long, String>>()
 
-    private var musicCursor: Cursor? = null
     private var genreCursor: Cursor? = null
+    private var artistCursor: Cursor? = null
+    private var albumCursor: Cursor? = null
+    private var songCursor: Cursor? = null
 
     val response: MusicLoaderResponse
+    val resolver: ContentResolver = app.contentResolver
 
     init {
         response = findMusic()
     }
 
     private fun findMusic(): MusicLoaderResponse {
-        genreCursor = getGenreCursor(
-            app.contentResolver
-        )
-
-        useGenreCursor()
-
-        indexMusic()
-
         try {
+            loadGenres()
+            loadArtists()
+            loadAlbums()
+            loadSongs()
         } catch (error: Exception) {
             Log.e(this::class.simpleName, "Something went horribly wrong.")
             error.printStackTrace()
 
-            musicCursor?.close()
-
             return MusicLoaderResponse.FAILURE
         }
 
-        // If the main loading completed without a failure, return DONE or
-        // NO_MUSIC depending on if any music was found.
-        return if (songs.size > 0) {
-            Log.d(
-                this::class.simpleName,
-                "Successfully found " + songs.size.toString() + " Songs."
-            )
-
-            MusicLoaderResponse.DONE
-        } else {
-            Log.d(
-                this::class.simpleName,
-                "No music was found."
-            )
-
-            MusicLoaderResponse.NO_MUSIC
-        }
+        return MusicLoaderResponse.DONE
     }
 
-    private fun getGenreCursor(resolver: ContentResolver): Cursor? {
-        Log.i(this::class.simpleName, "Getting genre cursor.")
+    private fun loadGenres() {
+        Log.d(this::class.simpleName, "Starting genre search...")
 
-        // Get every Genre indexed by the android system, for some reason
-        // you cant directly get this from the plain music cursor.
-        return resolver.query(
+        // First, get a cursor for every genre in the android system
+        genreCursor = resolver.query(
             Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 Genres._ID, // 0
@@ -81,116 +67,212 @@ class MusicLoader(private val app: Application) {
             null, null,
             Genres.DEFAULT_SORT_ORDER
         )
-    }
 
-    private fun getMusicCursor(resolver: ContentResolver, genreId: Long): Cursor? {
-        Log.i(this::class.simpleName, "Getting music cursor.")
-
-        // Get all the values that can be retrieved by the cursor.
-        // The rest are retrieved using MediaMetadataExtractor and
-        // stored into a database.
-        return resolver.query(
-            Genres.Members.getContentUri("external", genreId),
-            arrayOf(
-                AudioColumns._ID, // 0
-                AudioColumns.DISPLAY_NAME, // 1
-                AudioColumns.TITLE, // 2
-                AudioColumns.ARTIST, // 3
-                AudioColumns.ALBUM, // 4
-                AudioColumns.YEAR, // 5
-                AudioColumns.TRACK, // 6
-                AudioColumns.DURATION // 7
-            ),
-            AudioColumns.IS_MUSIC + "=1", null,
-            MediaStore.Audio.Media.DEFAULT_SORT_ORDER
-        )
-    }
-
-    // Use the genre cursor to index all the genres the android system has indexed.
-    private fun useGenreCursor() {
-        // TODO: Move genre to its own model, even if its just two values
-
+        // And then process those into Genre objects
         genreCursor?.use { cursor ->
-
-            // Don't even bother running if there's nothing to process.
-            if (cursor.count == 0) {
-                return
-            }
-
             val idIndex = cursor.getColumnIndexOrThrow(Genres._ID)
             val nameIndex = cursor.getColumnIndexOrThrow(Genres.NAME)
 
             while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                var name = cursor.getString(nameIndex)
+
+                // If a genre is still in an old int-based format [Android formats it as "(INT)"],
+                // convert that to the corresponding ID3 genre.
+                if (name.contains("[0-9][()]")) {
+                    name = intToNamedGenre(name)
+                }
+
                 genres.add(
-                    Pair<Long, String>(
-                        cursor.getLong(idIndex),
-                        cursor.getString(nameIndex)
+                    Genre(
+                        id, name
                     )
                 )
-
-                Log.i(this::class.simpleName, cursor.getString(nameIndex))
             }
 
             cursor.close()
         }
 
-        Log.i(this::class.simpleName, "Retrieved " + genres.size.toString() + " Genres.")
+        // Remove dupes
+        genres = genres.distinctBy {
+            it.name
+        }.toMutableList()
+
+        Log.d(
+            this::class.simpleName,
+            "Genre search finished with " +
+                genres.size.toString() +
+                " genres found."
+        )
     }
 
-    // Use the cursor index music files from the shared storage.
-    private fun indexMusic() {
-        Log.i(this::class.simpleName, "Starting music search...")
+    private fun loadArtists() {
+        Log.d(this::class.simpleName, "Starting artist search...")
 
-        // So, android has a brain aneurysm if you try to get an audio genre through
-        // AudioColumns. As a result, I just index every genre's name & ID, create a cursor
-        // of music for that genres ID, and then load and iterate through them normally,
-        // creating using the genres name as that songs Genre.
-
-        // God why do I have to do this
+        // To associate artists with their genres, a new cursor is
+        // created with all the artists of that type.
         for (genre in genres) {
-            val musicCursor = getMusicCursor(app.contentResolver, genre.first)
+            artistCursor = resolver.query(
+                Genres.Members.getContentUri("external", genre.id),
+                arrayOf(
+                    Artists._ID,
+                    Artists.ARTIST
+                ),
+                null, null,
+                Artists.DEFAULT_SORT_ORDER
+            )
 
-            musicCursor?.use { cursor ->
-
-                // Don't run the more expensive file loading operations if there
-                // is no music to index.
-                if (cursor.count == 0) {
-                    return
-                }
-
-                val idIndex = cursor.getColumnIndexOrThrow(AudioColumns._ID)
-                val displayIndex = cursor.getColumnIndexOrThrow(AudioColumns.DISPLAY_NAME)
-                val titleIndex = cursor.getColumnIndexOrThrow(AudioColumns.TITLE)
-                val artistIndex = cursor.getColumnIndexOrThrow(AudioColumns.ARTIST)
-                val albumIndex = cursor.getColumnIndexOrThrow(AudioColumns.ALBUM)
-                val yearIndex = cursor.getColumnIndexOrThrow(AudioColumns.YEAR)
-                val trackIndex = cursor.getColumnIndexOrThrow(AudioColumns.TRACK)
-                val durationIndex = cursor.getColumnIndexOrThrow(AudioColumns.DURATION)
+            artistCursor?.use { cursor ->
+                val idIndex = cursor.getColumnIndexOrThrow(Artists._ID)
+                val nameIndex = cursor.getColumnIndexOrThrow(Artists.ARTIST)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    val display = cursor.getString(displayIndex)
+                    val name = cursor.getString(nameIndex)
 
-                    // Get the basic metadata from the cursor
-                    val title = cursor.getString(titleIndex) ?: display
-                    val artist = cursor.getString(artistIndex)
-                    val album = cursor.getString(albumIndex)
-                    val year = cursor.getInt(yearIndex)
-                    val track = cursor.getInt(trackIndex)
-                    val duration = cursor.getLong(durationIndex)
+                    // If an artist has already been added [Which is very likely due to how genres
+                    // are processed], add the genre to the existing artist instead of creating a
+                    // new one.
+                    val existingArtist = artists.find { it.name == name }
 
-                    // TODO: Add album art [But its loaded separately, as that will take a bit]
-                    // TODO: Add genres whenever android hasn't borked it
-                    songs.add(
-                        Song(
-                            id, title, artist, album,
-                            genre.second, year, track, duration
+                    if (existingArtist != null) {
+                        existingArtist.genres.add(genre.name)
+                    } else {
+                        artists.add(
+                            Artist(
+                                id, name,
+                                mutableListOf(genre.name)
+                            )
                         )
-                    )
+                    }
                 }
 
                 cursor.close()
             }
         }
+
+        // Remove dupes [Just in case]
+        artists = artists.distinctBy {
+            it.name to it.genres
+        }.toMutableList()
+
+        Log.d(
+            this::class.simpleName,
+            "Artist search finished with " +
+                artists.size.toString() +
+                " artists found."
+        )
+    }
+
+    private fun loadAlbums() {
+        Log.d(this::class.simpleName, "Starting album search...")
+
+        albumCursor = resolver.query(
+            Albums.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                Albums._ID,
+                Albums.ALBUM,
+                Albums.ARTIST,
+
+                // FIXME: May be an issue for albums whose songs released in multiple years
+                Albums.FIRST_YEAR,
+                Albums.NUMBER_OF_SONGS
+            ),
+            null, null,
+            Albums.DEFAULT_SORT_ORDER
+        )
+
+        albumCursor?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
+            val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
+            val artistIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
+            val yearIndex = cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR)
+            val numIndex = cursor.getColumnIndexOrThrow(Albums.NUMBER_OF_SONGS)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                val name = cursor.getString(nameIndex)
+                val artist = cursor.getString(artistIndex)
+                val year = cursor.getInt(yearIndex)
+                val numSongs = cursor.getInt(numIndex)
+
+                albums.add(
+                    Album(
+                        id, name, artist,
+                        year, numSongs
+                    )
+                )
+            }
+
+            cursor.close()
+        }
+
+        // Remove dupes
+        albums = albums.distinctBy {
+            it.title to it.artistName to it.year to it.numSongs
+        }.toMutableList()
+
+        Log.d(
+            this::class.simpleName,
+            "Album search finished with " +
+                albums.size.toString() +
+                " albums found."
+        )
+    }
+
+    private fun loadSongs() {
+        Log.d(this::class.simpleName, "Starting song search...")
+
+        songCursor = resolver.query(
+            Media.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                Media._ID, // 0
+                Media.DISPLAY_NAME, // 1
+                Media.TITLE, // 2
+                Media.ALBUM, // 4
+                Media.TRACK, // 6
+                Media.DURATION // 7
+            ),
+            Media.IS_MUSIC + "=1", null,
+            Media.DEFAULT_SORT_ORDER
+        )
+
+        songCursor?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(Media._ID)
+            val fileIndex = cursor.getColumnIndexOrThrow(Media.DISPLAY_NAME)
+            val titleIndex = cursor.getColumnIndexOrThrow(Media.TITLE)
+            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM)
+            val trackIndex = cursor.getColumnIndexOrThrow(Media.TRACK)
+            val durationIndex = cursor.getColumnIndexOrThrow(Media.DURATION)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                val title = cursor.getString(titleIndex) ?: cursor.getString(fileIndex)
+                val album = cursor.getString(albumIndex)
+                val track = cursor.getInt(trackIndex)
+                val duration = cursor.getLong(durationIndex)
+
+                songs.add(
+                    Song(
+                        id, title, album,
+                        track, duration
+                    )
+                )
+            }
+
+            cursor.close()
+        }
+
+        // Remove dupes
+        songs = songs.distinctBy {
+            it.title to it.albumName to it.track to it.duration
+        }.toMutableList()
+
+        Log.d(
+            this::class.simpleName,
+            "Song search finished with " +
+                songs.size.toString() +
+                " songs found."
+        )
     }
 }

@@ -2,30 +2,13 @@ package org.oxycblt.auxio.music.models
 
 // Abstraction for Song
 data class Album(
-    var songs: List<Song>
+    val id: Long = 0L,
+    val title: String? = null,
+    val artistName: String? = null,
+    val year: Int = 0,
+    var numSongs: Int = 0
 ) {
-    var title: String? = null
-    var artist: String? = null
-    var year: Int = 0
+    lateinit var artist: Artist
 
-    init {
-        // Iterate through the child songs and inherit the first valid value
-        // for the Album Name, Artist, and Year
-        for (song in songs) {
-            if (song.album != null) {
-                title = song.album
-            }
-
-            if (song.artist != null) {
-                artist = song.artist
-            }
-
-            if (song.year != 0) {
-                year = song.year
-            }
-        }
-
-        // Also sort the songs by track
-        songs = songs.sortedBy { it.track }
-    }
+    val songs = mutableListOf<Song>()
 }

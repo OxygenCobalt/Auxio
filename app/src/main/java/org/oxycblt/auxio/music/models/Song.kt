@@ -3,12 +3,10 @@ package org.oxycblt.auxio.music.models
 // Class containing all relevant values for a song.
 data class Song(
     val id: Long,
-    val name: String?,
-    val artist: String?,
-    val album: String?,
-    val genre: String?,
-    val year: Int,
+    val title: String,
+    val albumName: String,
     val track: Int,
-    val duration: Long,
-    val coverData: ByteArray? = null
-)
+    val duration: Long
+) {
+    lateinit var album: Album
+}
