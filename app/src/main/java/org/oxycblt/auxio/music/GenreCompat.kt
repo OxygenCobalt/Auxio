@@ -28,11 +28,11 @@ val ID3_GENRES = arrayOf<String>(
 
 const val PAREN_FILTER = "()"
 
-fun intToNamedGenre(genre: String): String? {
+fun intToNamedGenre(genre: String): String {
     // Strip the genres of any parentheses, and convert it to an int
     val intGenre = genre.filterNot {
         PAREN_FILTER.indexOf(it) > -1
     }.toInt()
 
-    return ID3_GENRES.getOrNull(intGenre)
+    return ID3_GENRES.getOrNull(intGenre) ?: ""
 }

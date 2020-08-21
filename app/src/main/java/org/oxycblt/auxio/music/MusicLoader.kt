@@ -75,11 +75,12 @@ class MusicLoader(private val app: Application) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                var name = cursor.getString(nameIndex)
+                var name = cursor.getString(nameIndex) ?: ""
 
                 // If a genre is still in an old int-based format [Android formats it as "(INT)"],
-                // convert that to the corresponding ID3 genre.
-                if (name.contains("[0-9][()]")) {
+                // convert that to the corresponding ID3 genre. Really hope anyone doesn't have
+                // a genre that contains parentheses.
+                if (name.contains(Regex("[()]"))) {
                     name = intToNamedGenre(name)
                 }
 
@@ -128,7 +129,7 @@ class MusicLoader(private val app: Application) {
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    val name = cursor.getString(nameIndex)
+                    val name = cursor.getString(nameIndex) ?: ""
 
                     // If an artist has already been added [Which is very likely due to how genres
                     // are processed], add the genre to the existing artist instead of creating a
@@ -191,8 +192,8 @@ class MusicLoader(private val app: Application) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                val name = cursor.getString(nameIndex)
-                val artist = cursor.getString(artistIndex)
+                val name = cursor.getString(nameIndex) ?: ""
+                val artist = cursor.getString(artistIndex) ?: ""
                 val year = cursor.getInt(yearIndex)
                 val numSongs = cursor.getInt(numIndex)
 
@@ -248,7 +249,7 @@ class MusicLoader(private val app: Application) {
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val title = cursor.getString(titleIndex) ?: cursor.getString(fileIndex)
-                val album = cursor.getString(albumIndex)
+                val album = cursor.getString(albumIndex) ?: ""
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 

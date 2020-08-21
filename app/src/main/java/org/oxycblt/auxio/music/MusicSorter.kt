@@ -33,8 +33,8 @@ class MusicSorter(
         // Any remaining songs will be added to an unknown album
         if (unknownSongs.size > 0) {
 
-            // Reuse an existing unknown albumif one is found
-            val unknownAlbum = albums.find { it.title == null } ?: Album()
+            // Reuse an existing unknown album if one is found
+            val unknownAlbum = albums.find { it.title == "" } ?: Album()
 
             unknownAlbum.songs.addAll(unknownSongs)
             unknownAlbum.numSongs = unknownAlbum.songs.size
@@ -72,7 +72,7 @@ class MusicSorter(
         if (unknownAlbums.size > 0) {
 
             // Reuse an existing unknown artist if one is found
-            val unknownArtist = artists.find { it.name == null } ?: Artist()
+            val unknownArtist = artists.find { it.name == "" } ?: Artist()
 
             unknownArtist.albums.addAll(unknownAlbums)
             unknownArtist.numAlbums = albums.size
@@ -85,7 +85,7 @@ class MusicSorter(
 
             Log.d(
                 this::class.simpleName,
-                "Placed " + unknownAlbums.size.toString() + " albums into an unknown album"
+                "Placed " + unknownAlbums.size.toString() + " albums into an unknown artist"
             )
         }
     }
