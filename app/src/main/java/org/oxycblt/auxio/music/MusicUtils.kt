@@ -1,7 +1,10 @@
 package org.oxycblt.auxio.music
 
-// Compatibility layer to convert old int-based genres to new genres
-val ID3_GENRES = arrayOf<String>(
+import android.content.ContentUris
+import android.net.Uri
+import android.provider.MediaStore
+
+private val ID3_GENRES = arrayOf<String>(
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
     "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno",
     "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno",
@@ -28,6 +31,7 @@ val ID3_GENRES = arrayOf<String>(
 
 const val PAREN_FILTER = "()"
 
+// Convert legacy ID3 genres to a named genre
 fun intToNamedGenre(genre: String): String {
     // Strip the genres of any parentheses, and convert it to an int
     val intGenre = genre.filterNot {
@@ -35,4 +39,11 @@ fun intToNamedGenre(genre: String): String {
     }.toInt()
 
     return ID3_GENRES.getOrNull(intGenre) ?: ""
+}
+
+fun Long.toURI(): Uri {
+    return ContentUris.withAppendedId(
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        this
+    )
 }

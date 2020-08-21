@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.music.processing.MusicLoader
+import org.oxycblt.auxio.music.processing.MusicLoaderResponse
+import org.oxycblt.auxio.music.processing.MusicSorter
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Song
@@ -22,13 +25,15 @@ class MusicRepository {
     val songs: LiveData<List<Song>> get() = mSongs
 
     suspend fun init(app: Application): MusicLoaderResponse {
-        Log.i(this::class.simpleName, "Starting initial music load")
+        Log.i(this::class.simpleName, "Starting initial music load...")
+
+        val start = System.currentTimeMillis()
 
         val loader = MusicLoader(app)
 
         if (loader.response == MusicLoaderResponse.DONE) {
-            // If the loading succeeds, then process the songs into lists of
-            // songs, albums, and artists on the main thread.
+            // If the loading succeeds, then process the songs and set them
+            // as the values on the main thread.
             withContext(Dispatchers.Main) {
                 val sorter = MusicSorter(
                     loader.artists,
@@ -40,7 +45,12 @@ class MusicRepository {
                 mAlbums.value = sorter.albums
                 mArtists.value = sorter.artists
 
-                Log.i(this::class.simpleName, "Finished initial music load.")
+                val elapsed = System.currentTimeMillis() - start
+
+                Log.i(
+                    this::class.simpleName,
+                    "Music load completed successfully in ${elapsed}ms."
+                )
             }
         }
 

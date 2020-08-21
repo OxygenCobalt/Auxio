@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.processing
 
 import android.util.Log
 import org.oxycblt.auxio.music.models.Album
@@ -24,7 +24,7 @@ class MusicSorter(
             // Find all songs that match the current album title
             val albumSongs = songs.filter { it.albumName == album.title }
 
-            // And then add them to the album
+            // Then add them to the album, along with refreshing the cover
             album.songs.addAll(albumSongs)
 
             unknownSongs.removeAll(albumSongs)
@@ -47,7 +47,7 @@ class MusicSorter(
 
             Log.d(
                 this::class.simpleName,
-                "Placed " + unknownSongs.size.toString() + " songs into an unknown album"
+                "${unknownSongs.size} songs were placed into an unknown album."
             )
         }
     }
@@ -85,7 +85,7 @@ class MusicSorter(
 
             Log.d(
                 this::class.simpleName,
-                "Placed " + unknownAlbums.size.toString() + " albums into an unknown artist"
+                "${unknownAlbums.size} albums were placed into an unknown artist."
             )
         }
     }

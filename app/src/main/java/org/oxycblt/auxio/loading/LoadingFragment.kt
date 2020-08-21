@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
-import org.oxycblt.auxio.music.MusicLoaderResponse
+import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment() {
 

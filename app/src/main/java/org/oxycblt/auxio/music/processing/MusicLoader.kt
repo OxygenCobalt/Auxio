@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.music.processing
 
 import android.app.Application
 import android.content.ContentResolver
@@ -8,6 +8,7 @@ import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import android.util.Log
+import org.oxycblt.auxio.music.intToNamedGenre
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Genre
@@ -94,16 +95,9 @@ class MusicLoader(private val app: Application) {
             cursor.close()
         }
 
-        // Remove dupes
-        genres = genres.distinctBy {
-            it.name
-        }.toMutableList()
-
         Log.d(
             this::class.simpleName,
-            "Genre search finished with " +
-                genres.size.toString() +
-                " genres found."
+            "Genre search finished with ${genres.size} genres found."
         )
     }
 
@@ -159,9 +153,7 @@ class MusicLoader(private val app: Application) {
 
         Log.d(
             this::class.simpleName,
-            "Artist search finished with " +
-                artists.size.toString() +
-                " artists found."
+            "Artist search finished with ${artists.size} artists found."
         )
     }
 
@@ -171,13 +163,12 @@ class MusicLoader(private val app: Application) {
         albumCursor = resolver.query(
             Albums.EXTERNAL_CONTENT_URI,
             arrayOf(
-                Albums._ID,
-                Albums.ALBUM,
-                Albums.ARTIST,
+                Albums._ID, // 0
+                Albums.ALBUM, // 1
+                Albums.ARTIST, // 2
 
-                // FIXME: May be an issue for albums whose songs released in multiple years
-                Albums.FIRST_YEAR,
-                Albums.NUMBER_OF_SONGS
+                Albums.FIRST_YEAR, // 3
+                Albums.NUMBER_OF_SONGS // 4
             ),
             null, null,
             Albums.DEFAULT_SORT_ORDER
@@ -215,9 +206,7 @@ class MusicLoader(private val app: Application) {
 
         Log.d(
             this::class.simpleName,
-            "Album search finished with " +
-                albums.size.toString() +
-                " albums found."
+            "Album search finished with ${albums.size} albums found"
         )
     }
 
@@ -271,9 +260,7 @@ class MusicLoader(private val app: Application) {
 
         Log.d(
             this::class.simpleName,
-            "Song search finished with " +
-                songs.size.toString() +
-                " songs found."
+            "Song search finished with ${songs.size} found"
         )
     }
 }
