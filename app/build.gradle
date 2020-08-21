@@ -52,12 +52,12 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
+    /*
     // Room Database
     def room_version = "2.2.5"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    */
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
