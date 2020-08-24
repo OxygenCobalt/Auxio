@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.recycler.AlbumDataAdapter
-import org.oxycblt.auxio.music.MusicRepository
 
 class LibraryFragment : Fragment() {
 
@@ -32,8 +31,7 @@ class LibraryFragment : Fragment() {
         val adapter = AlbumDataAdapter()
         binding.libraryRecycler.adapter = adapter
 
-        val repo = MusicRepository.getInstance()
-        repo.albums.observe(
+        libraryModel.albums.observe(
             viewLifecycleOwner,
             Observer {
                 adapter.data = it
