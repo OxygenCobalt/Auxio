@@ -7,7 +7,7 @@
 
     <string name="label_retry">Retry</string>
 
-    <string name="title_library_fragment">Library</string>
+    <string name="title_library_fragment"><b>Library</b></string>
 
     <string name="description_cover_art">Cover art for </string>
 </resources>

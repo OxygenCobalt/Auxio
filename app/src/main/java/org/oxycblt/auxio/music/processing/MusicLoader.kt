@@ -3,7 +3,6 @@ package org.oxycblt.auxio.music.processing
 import android.app.Application
 import android.content.ContentResolver
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
@@ -198,12 +197,11 @@ class MusicLoader(private val app: Application) {
                 // Album art loading during the initial load isn't really practical for a large amount of albums
                 // Use glide or something
                 val artUri = id.toAlbumArtURI()
-                var cover: Bitmap? = null
 
                 // Get the album art through either ImageDecoder or MediaStore depending on the
                 // version.
-                try {
-                    cover = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val cover = try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         ImageDecoder.decodeBitmap(
                             ImageDecoder.createSource(resolver, artUri)
                         )
@@ -211,7 +209,7 @@ class MusicLoader(private val app: Application) {
                         MediaStore.Images.Media.getBitmap(resolver, artUri)
                     }
                 } catch (noFound: FileNotFoundException) {
-                    cover = null
+                    null
                 }
 
                 albums.add(

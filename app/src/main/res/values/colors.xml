@@ -9,4 +9,7 @@
     <color name="black">#000000</color>
 
     <color name="white">#ffffff</color>
+
+    <!-- TODO: Placeholder accent color, need to remove -->
+    <color name="blue">#2979FF</color>
 </resources>

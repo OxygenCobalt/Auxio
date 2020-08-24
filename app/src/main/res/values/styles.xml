@@ -3,6 +3,11 @@
     <!-- Base theme -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- TODO: Make this accent settable -->
-        <item name="colorAccent">#295DE5</item>
+        <item name="colorAccent">@color/blue</item>
+    </style>
+
+    <style name="ToolbarText" parent="TextAppearance.AppCompat.Title">
+        <item name="android:fontFamily">@font/source_sans_pro_black</item>
+        <item name="android:textColor">@color/blue</item>
     </style>
 </resources>
