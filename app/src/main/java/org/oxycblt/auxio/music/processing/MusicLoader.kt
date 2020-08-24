@@ -12,12 +12,13 @@ import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import android.util.Log
-import org.oxycblt.auxio.music.intToNamedGenre
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
+import org.oxycblt.auxio.music.toNamedGenre
+import java.io.FileNotFoundException
 
 enum class MusicLoaderResponse {
     DONE, FAILURE, NO_MUSIC
@@ -87,7 +88,7 @@ class MusicLoader(private val app: Application) {
                 // convert that to the corresponding ID3 genre. Really hope anyone doesn't have
                 // a genre that contains parentheses.
                 if (name.contains(Regex("[()]"))) {
-                    name = intToNamedGenre(name)
+                    name = name.toNamedGenre()
                 }
 
                 genres.add(
@@ -193,17 +194,24 @@ class MusicLoader(private val app: Application) {
                 val year = cursor.getInt(yearIndex)
                 val numSongs = cursor.getInt(numIndex)
 
+                // TODO:
+                // Album art loading during the initial load isn't really practical for a large amount of albums
+                // Use glide or something
                 val artUri = id.toAlbumArtURI()
                 var cover: Bitmap? = null
 
                 // Get the album art through either ImageDecoder or MediaStore depending on the
                 // version.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    cover = ImageDecoder.decodeBitmap(
-                        ImageDecoder.createSource(resolver, artUri)
-                    )
-                } else {
-                    cover = MediaStore.Images.Media.getBitmap(resolver, artUri)
+                try {
+                    cover = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        ImageDecoder.decodeBitmap(
+                            ImageDecoder.createSource(resolver, artUri)
+                        )
+                    } else {
+                        MediaStore.Images.Media.getBitmap(resolver, artUri)
+                    }
+                } catch (noFound: FileNotFoundException) {
+                    cover = null
                 }
 
                 albums.add(

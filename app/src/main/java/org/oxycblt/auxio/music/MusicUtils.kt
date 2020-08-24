@@ -32,9 +32,9 @@ private val ID3_GENRES = arrayOf<String>(
 const val PAREN_FILTER = "()"
 
 // Convert legacy ID3 genres to a named genre
-fun intToNamedGenre(genre: String): String {
+fun String.toNamedGenre(): String {
     // Strip the genres of any parentheses, and convert it to an int
-    val intGenre = genre.filterNot {
+    val intGenre = this.filterNot {
         PAREN_FILTER.indexOf(it) > -1
     }.toInt()
 

@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.library.recycler.AlbumDataAdapter
 import org.oxycblt.auxio.music.MusicRepository
 
 class LibraryFragment : Fragment() {
@@ -27,11 +29,16 @@ class LibraryFragment : Fragment() {
             inflater, R.layout.fragment_library, container, false
         )
 
-        libraryModel
+        val adapter = AlbumDataAdapter()
+        binding.libraryRecycler.adapter = adapter
 
-        val albums = MusicRepository.getInstance().albums.value
-
-        binding.testAlbum.setImageBitmap(albums?.get((0..albums.size).random())?.cover)
+        val repo = MusicRepository.getInstance()
+        repo.albums.observe(
+            viewLifecycleOwner,
+            Observer {
+                adapter.data = it
+            }
+        )
 
         Log.d(this::class.simpleName, "Fragment created.")
 

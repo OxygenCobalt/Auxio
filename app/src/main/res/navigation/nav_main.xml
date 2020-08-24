@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_loading">
         <action
             android:id="@+id/action_to_library"
-            app:destination="@id/libraryFragment" />
+            app:destination="@id/libraryFragment"
+            app:popUpTo="@id/loadingFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"
