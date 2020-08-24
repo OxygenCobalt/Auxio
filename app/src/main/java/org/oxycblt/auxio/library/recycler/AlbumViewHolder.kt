@@ -11,6 +11,11 @@ class AlbumViewHolder(
     // Bind the view w/new data
     fun bind(album: Album) {
         binding.album = album
+
+        // Set an album cover [If possible]
+        album.cover?.let { cover ->
+            binding.cover.setImageBitmap(cover)
+        }
         binding.executePendingBindings()
     }
 }

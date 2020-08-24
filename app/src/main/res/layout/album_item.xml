@@ -12,15 +12,32 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_medium">
+
+        <ImageView
+            android:id="@+id/cover"
+            android:layout_width="@dimen/cover_size"
+            android:layout_height="@dimen/cover_size"
+            android:contentDescription="@{@string/description_cover_art + album.title}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <TextView
             android:id="@+id/albumNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{album.title}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:layout_marginStart="@dimen/margin_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toEndOf="@+id/cover"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Album Name" />
 

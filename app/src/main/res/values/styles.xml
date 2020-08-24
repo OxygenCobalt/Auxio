@@ -2,7 +2,7 @@
 <resources>
     <!-- Base theme -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Make this accent settable -->
+        <!-- TODO: Make this accent settable -->
         <item name="colorAccent">#295DE5</item>
     </style>
 </resources>
