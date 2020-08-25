@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/cover"
-            android:layout_width="42dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/cover_size"
+            android:layout_height="@dimen/cover_size"
             android:contentDescription="@{@string/description_cover_art + album.title}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,6 @@
             android:text="@{album.title}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
-            android:fontFamily="@font/inter"
             app:layout_constraintBottom_toTopOf="@+id/song_count"
             app:layout_constraintStart_toEndOf="@+id/cover"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,8 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_small"
-            android:fontFamily="@font/inter"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cover"

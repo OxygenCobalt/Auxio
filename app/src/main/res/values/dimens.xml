@@ -5,7 +5,8 @@
 
     <dimen name="margin_small">8dp</dimen>
 
-    <dimen name="cover_size">44dp</dimen>
+    <dimen name="cover_size">64dp</dimen>
+    <dimen name="cover_size_compact">42dp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

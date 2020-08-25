@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#151515</color>
+
+    <!--
+    Base color set derived from Music Player GO.
+    https://github.com/enricocid/Music-Player-GO
+    -->
+    <color name="red">#ef9a9a</color>
+    <color name="pink">#f48fb1</color>
+    <color name="purple">#ce93d8</color>
+    <color name="deep_purple">#b39ddb</color>
+    <color name="indigo">#9fa8da</color>
+    <color name="blue">#90caf9</color>
+    <color name="light_blue">#81d4fa</color>
+    <color name="cyan">#80deea</color>
+    <color name="teal">#80cbc4</color>
+    <color name="green">#a5d6a7</color>
+    <color name="light_green">#c5e1a5</color>
+    <color name="lime">#e6ee9c</color>
+    <color name="yellow">#fff59d</color>
+    <color name="amber">#ffe082</color>
+    <color name="orange">#ffcc80</color>
+    <color name="deep_orange">#ffab91</color>
+    <color name="brown">#bcaaa4</color>
+    <color name="grey">#eeeeee</color>
+    <color name="blue_grey">#b0bec5</color>
+</resources>

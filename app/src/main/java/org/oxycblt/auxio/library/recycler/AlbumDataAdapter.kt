@@ -1,12 +1,12 @@
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.library.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.AlbumItemBinding
 import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.recycler.AlbumViewHolder
 
 class AlbumDataAdapter : ListAdapter<Album, AlbumViewHolder>(DiffCallback) {
 
@@ -36,25 +36,5 @@ class AlbumDataAdapter : ListAdapter<Album, AlbumViewHolder>(DiffCallback) {
         override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
             return oldItem.id == newItem.id
         }
-    }
-}
-
-class AlbumViewHolder(
-    private var binding: AlbumItemBinding
-) : RecyclerView.ViewHolder(binding.root) {
-
-    // Bind the view w/new data
-    fun bind(album: Album) {
-        binding.album = album
-
-        if (album.cover == null) {
-            // If there is no cover, clear the ImageView so that the previous
-            // View's cover doesnt stick around.
-            binding.cover.setImageResource(android.R.color.transparent)
-        } else {
-            binding.cover.setImageBitmap(album.cover)
-        }
-
-        binding.executePendingBindings()
     }
 }

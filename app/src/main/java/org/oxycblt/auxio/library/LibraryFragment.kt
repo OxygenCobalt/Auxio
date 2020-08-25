@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.recycler.AlbumDataAdapter
+import org.oxycblt.auxio.library.recycler.AlbumDataAdapter
 
 class LibraryFragment : Fragment() {
 
