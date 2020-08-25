@@ -7,7 +7,7 @@
     </style>
 
     <style name="ToolbarText" parent="TextAppearance.AppCompat.Title">
-        <item name="android:fontFamily">@font/source_sans_pro_black</item>
         <item name="android:textColor">@color/blue</item>
+        <item name="android:fontFamily">@font/inter_black</item>
     </style>
 </resources>

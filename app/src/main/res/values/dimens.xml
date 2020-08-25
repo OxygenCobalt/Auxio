@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="padding_small">4dp</dimen>
-    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_tiny">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
 
-    <dimen name="margin_medium">8dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
 
-    <dimen name="cover_size">64dp</dimen>
+    <dimen name="cover_size">44dp</dimen>
 
-    <dimen name="elevation_normal">6dp</dimen>
+    <dimen name="elevation_normal">4dp</dimen>
 </resources>

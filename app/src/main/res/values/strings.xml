@@ -6,8 +6,13 @@
     <string name="error_music_load_failed">Music loading failed.</string>
 
     <string name="label_retry">Retry</string>
+    <string name="label_single_song">1 Song</string>
+
+    <string name="format_multi_song_count">%s Songs</string>
 
     <string name="title_library_fragment"><b>Library</b></string>
 
     <string name="description_cover_art">Cover art for </string>
+
+    <string name="tools_song_count">10 Songs</string>
 </resources>
