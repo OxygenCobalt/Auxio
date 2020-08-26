@@ -24,8 +24,11 @@ class MusicSorter(
             // Find all songs that match the current album title
             val albumSongs = songs.filter { it.albumName == album.title }
 
-            // Then add them to the album, along with refreshing the cover
-            album.songs.addAll(albumSongs)
+            // Then add them to the album
+            for (song in albumSongs) {
+                song.album = album
+                album.songs.add(song)
+            }
 
             unknownSongs.removeAll(albumSongs)
         }
@@ -36,12 +39,12 @@ class MusicSorter(
             // Reuse an existing unknown album if one is found
             val unknownAlbum = albums.find { it.title == "" } ?: Album()
 
-            unknownAlbum.songs.addAll(unknownSongs)
-            unknownAlbum.numSongs = unknownAlbum.songs.size
-
             for (song in unknownSongs) {
                 song.album = unknownAlbum
+                unknownAlbum.songs.add(song)
             }
+
+            unknownAlbum.numSongs = unknownAlbum.songs.size
 
             albums.add(unknownAlbum)
 
@@ -61,8 +64,12 @@ class MusicSorter(
             // Find all albums that match the current artist name
             val artistAlbums = albums.filter { it.artistName == artist.name }
 
-            // And then add them to the album, along with refreshing the amount of albums
-            artist.albums.addAll(artistAlbums)
+            // Then add them to the artist, along with refreshing the amount of albums
+            for (album in artistAlbums) {
+                album.artist = artist
+                artist.albums.add(album)
+            }
+
             artist.numAlbums = artist.albums.size
 
             unknownAlbums.removeAll(artistAlbums)
@@ -74,14 +81,12 @@ class MusicSorter(
             // Reuse an existing unknown artist if one is found
             val unknownArtist = artists.find { it.name == "" } ?: Artist()
 
-            unknownArtist.albums.addAll(unknownAlbums)
-            unknownArtist.numAlbums = albums.size
-
             for (album in unknownAlbums) {
                 album.artist = unknownArtist
+                unknownArtist.albums.add(album)
             }
 
-            artists.add(unknownArtist)
+            unknownArtist.numAlbums = albums.size
 
             Log.d(
                 this::class.simpleName,

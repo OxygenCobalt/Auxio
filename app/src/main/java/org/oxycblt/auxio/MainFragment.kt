@@ -1,6 +1,7 @@
 package org.oxycblt.auxio
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +11,21 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
-
-// TODO: Placeholder, page count will be dynamic
-private const val PAGES = 1
+import org.oxycblt.auxio.songs.SongsFragment
 
 class MainFragment : Fragment() {
+
+    private val shownFragments = listOf(
+        0, 1
+    )
+
+    private val libraryFragment: LibraryFragment by lazy {
+        LibraryFragment()
+    }
+
+    private val songsFragment: SongsFragment by lazy {
+        SongsFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +39,35 @@ class MainFragment : Fragment() {
         val adapter = FragmentAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
+        Log.d(this::class.simpleName, "Fragment Created.")
+
         return binding.root
     }
-}
 
-class FragmentAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-    override fun getItemCount(): Int = PAGES
+    private fun getFragment(pos: Int): Fragment {
+        if (shownFragments.contains(pos)) {
+            return when (pos) {
+                0 -> libraryFragment
+                1 -> songsFragment
 
-    override fun createFragment(position: Int): Fragment {
-        // TODO: Also placeholder, remove when there are other fragments than just library
-        return LibraryFragment()
+                else -> libraryFragment
+            }
+        }
+
+        // Not sure how this would happen but it might
+        Log.e(
+            this::class.simpleName,
+            "Something went terribly wrong while swapping fragments, Substituting with libraryFragment."
+        )
+
+        return libraryFragment
+    }
+
+    inner class FragmentAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = shownFragments.size
+
+        override fun createFragment(position: Int): Fragment {
+            return getFragment(position)
+        }
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
@@ -16,15 +16,15 @@
             android:elevation="@dimen/elevation_normal"
             app:titleTextAppearance="@style/ToolbarStyle"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/title_library_fragment" />
+            app:title="@string/title_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/library_recycler"
+            android:id="@+id/song_recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/album_item" />
+            tools:listitem="@layout/song_item" />
 
     </LinearLayout>
 </layout>

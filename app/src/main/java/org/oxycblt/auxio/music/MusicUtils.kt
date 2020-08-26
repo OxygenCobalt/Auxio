@@ -3,6 +3,11 @@ package org.oxycblt.auxio.music
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.music.models.Song
 
 private val ID3_GENRES = arrayOf<String>(
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
@@ -41,6 +46,7 @@ fun String.toNamedGenre(): String {
     return ID3_GENRES.getOrNull(intGenre) ?: ""
 }
 
+// Convert a song to its URI
 fun Long.toURI(): Uri {
     return ContentUris.withAppendedId(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -48,9 +54,30 @@ fun Long.toURI(): Uri {
     )
 }
 
+// Convert an albums ID into its album art URI
 fun Long.toAlbumArtURI(): Uri {
     return ContentUris.withAppendedId(
         Uri.parse("content://media/external/audio/albumart"),
         this
+    )
+}
+
+// Format the amount of songs in an album
+@BindingAdapter("songCount")
+fun TextView.getAlbumSongs(album: Album) {
+    text = if (album.numSongs < 2) {
+        context.getString(R.string.label_single_song)
+    } else {
+        context.getString(R.string.format_multi_song_count, album.numSongs.toString())
+    }
+}
+
+// Format the artist/album data for a song
+@BindingAdapter("songData")
+fun TextView.getSongData(song: Song) {
+    text = context.getString(
+        R.string.format_song_data,
+        song.album.artist.name,
+        song.album.title
     )
 }

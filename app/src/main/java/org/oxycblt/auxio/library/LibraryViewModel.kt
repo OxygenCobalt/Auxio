@@ -8,7 +8,7 @@ import org.oxycblt.auxio.music.MusicRepository
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 
-class LibraryViewModel() : ViewModel() {
+class LibraryViewModel : ViewModel() {
 
     private val mArtists = MutableLiveData<List<Artist>>()
     private var mAlbums = MutableLiveData<List<Album>>()
