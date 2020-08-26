@@ -2,8 +2,10 @@
 <resources>
     <dimen name="padding_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
 
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
 
     <dimen name="cover_size">64dp</dimen>
     <dimen name="cover_size_compact">42dp</dimen>

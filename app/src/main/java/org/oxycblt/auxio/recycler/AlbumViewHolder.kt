@@ -15,7 +15,7 @@ class AlbumViewHolder(
 
         if (album.cover == null) {
             // If there is no cover, clear the ImageView so that the previous
-            // View's cover doesnt stick around.
+            // View's cover doesn't stick around.
             binding.cover.setImageResource(android.R.color.transparent)
         } else {
             binding.cover.setImageBitmap(album.cover)
