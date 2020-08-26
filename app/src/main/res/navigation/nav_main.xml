@@ -11,14 +11,14 @@
         android:label="LoadingFragment"
         tools:layout="@layout/fragment_loading">
         <action
-            android:id="@+id/action_to_library"
-            app:destination="@id/libraryFragment"
+            android:id="@+id/action_to_main"
+            app:destination="@id/mainFragment"
             app:popUpTo="@id/loadingFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/libraryFragment"
-        android:name="org.oxycblt.auxio.library.LibraryFragment"
+        android:id="@+id/mainFragment"
+        android:name="org.oxycblt.auxio.MainFragment"
         android:label="LibraryFragment"
-        tools:layout="@layout/fragment_library" />
+        tools:layout="@layout/fragment_main" />
 </navigation>

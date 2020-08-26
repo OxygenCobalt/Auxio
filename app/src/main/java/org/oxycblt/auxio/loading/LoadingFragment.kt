@@ -32,7 +32,7 @@ class LoadingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate<FragmentLoadingBinding>(
+        binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_loading, container, false
         )
 
@@ -65,7 +65,7 @@ class LoadingFragment : Fragment() {
         repoResponse?.let { response ->
             if (response == MusicLoaderResponse.DONE) {
                 this.findNavController().navigate(
-                    LoadingFragmentDirections.actionToLibrary()
+                    LoadingFragmentDirections.actionToMain()
                 )
             } else {
                 // If the response wasn't a success, then show the specific error message

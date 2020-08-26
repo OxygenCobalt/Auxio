@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#151515</color>
+    <color name="divider_color">#6d6d6d</color>
 
     <!--
     Base color set derived from Music Player GO.

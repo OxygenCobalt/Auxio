@@ -29,21 +29,21 @@ fun RecyclerView.applyDivider() {
 
     div.setDrawable(
         ColorDrawable(
-            getDividerColor(this)
+            getDividerDrawable(this)
         )
     )
 
     addItemDecoration(div)
 }
 
-private fun getDividerColor(recycler: RecyclerView): Int {
+private fun getDividerDrawable(recycler: RecyclerView): Int {
     val isDark = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     // Depending on the theme use a different opacity for the divider
     val alpha = if (isDark) 45 else 85
 
     return ColorUtils.setAlphaComponent(
-        ContextCompat.getColor(recycler.context, R.color.blue),
+        ContextCompat.getColor(recycler.context, R.color.divider_color),
         alpha
     )
 }

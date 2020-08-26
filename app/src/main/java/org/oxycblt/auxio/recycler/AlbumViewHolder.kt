@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.recycler
 
-import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import org.oxycblt.auxio.databinding.AlbumItemBinding
