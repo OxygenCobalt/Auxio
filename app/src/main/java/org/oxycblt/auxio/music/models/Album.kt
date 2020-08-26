@@ -1,13 +1,13 @@
 package org.oxycblt.auxio.music.models
 
-import android.graphics.Bitmap
+import android.net.Uri
 
 // Abstraction for Song
 data class Album(
     val id: Long = 0L,
     val title: String = "",
     val artistName: String = "",
-    val cover: Bitmap? = null,
+    val coverUri: Uri = Uri.EMPTY,
     val year: Int = 0,
     var numSongs: Int = 0
 ) {

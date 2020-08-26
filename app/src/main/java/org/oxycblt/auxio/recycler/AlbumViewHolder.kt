@@ -1,6 +1,8 @@
 package org.oxycblt.auxio.recycler
 
+import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import org.oxycblt.auxio.databinding.AlbumItemBinding
 import org.oxycblt.auxio.music.models.Album
 
@@ -13,12 +15,11 @@ class AlbumViewHolder(
     fun bind(album: Album) {
         binding.album = album
 
-        if (album.cover == null) {
-            // If there is no cover, clear the ImageView so that the previous
-            // View's cover doesn't stick around.
-            binding.cover.setImageResource(android.R.color.transparent)
-        } else {
-            binding.cover.setImageBitmap(album.cover)
+        // Load the album cover
+        binding.cover.load(album.coverUri) {
+            crossfade(true)
+            placeholder(android.R.color.transparent)
+            error(android.R.color.transparent)
         }
 
         binding.executePendingBindings()
