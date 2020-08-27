@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.library.recycler.AlbumDataAdapter
+import org.oxycblt.auxio.recycler.adapters.AlbumDataAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class LibraryFragment : Fragment() {
@@ -29,17 +28,11 @@ class LibraryFragment : Fragment() {
             inflater, R.layout.fragment_library, container, false
         )
 
-        val adapter = AlbumDataAdapter()
+        val adapter = AlbumDataAdapter(libraryModel.albums.value!!)
+
         binding.libraryRecycler.adapter = adapter
         binding.libraryRecycler.applyDivider()
         binding.libraryRecycler.setHasFixedSize(true)
-
-        libraryModel.albums.observe(
-            viewLifecycleOwner,
-            Observer {
-                adapter.data = it
-            }
-        )
 
         Log.d(this::class.simpleName, "Fragment created.")
 

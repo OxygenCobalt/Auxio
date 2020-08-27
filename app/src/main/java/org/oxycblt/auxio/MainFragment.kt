@@ -36,7 +36,7 @@ class MainFragment : Fragment() {
             inflater, R.layout.fragment_main, container, false
         )
 
-        val adapter = FragmentAdapter(requireActivity())
+        val adapter = PagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
         Log.d(this::class.simpleName, "Fragment Created.")
@@ -47,8 +47,8 @@ class MainFragment : Fragment() {
     private fun getFragment(pos: Int): Fragment {
         if (shownFragments.contains(pos)) {
             return when (pos) {
-                0 -> libraryFragment
-                1 -> songsFragment
+                1 -> libraryFragment
+                0 -> songsFragment
 
                 else -> libraryFragment
             }
@@ -63,7 +63,7 @@ class MainFragment : Fragment() {
         return libraryFragment
     }
 
-    inner class FragmentAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+    private inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = shownFragments.size
 
         override fun createFragment(position: Int): Fragment {

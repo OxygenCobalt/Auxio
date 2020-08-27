@@ -1,21 +1,15 @@
-package org.oxycblt.auxio.songs
+package org.oxycblt.auxio.recycler.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.SongItemBinding
 import org.oxycblt.auxio.music.models.Song
-import org.oxycblt.auxio.recycler.SongViewHolder
+import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
-class SongDataAdapter : ListAdapter<Song, SongViewHolder>(DiffCallback) {
+class SongDataAdapter(val data: List<Song>) : RecyclerView.Adapter<SongViewHolder>() {
 
-    var data = listOf<Song>()
-        set(newData) {
-            field = newData
-            submitList(data)
-        }
+    override fun getItemCount(): Int = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val binding = SongItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -29,18 +23,8 @@ class SongDataAdapter : ListAdapter<Song, SongViewHolder>(DiffCallback) {
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val song = getItem(position)
+        val song = data[position]
 
         holder.bind(song)
-    }
-
-    companion object DiffCallback : DiffUtil.ItemCallback<Song>() {
-        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
-            return oldItem.id == newItem.id
-        }
     }
 }

@@ -1,21 +1,21 @@
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.recycler.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import org.oxycblt.auxio.databinding.SongItemBinding
-import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.databinding.AlbumItemBinding
+import org.oxycblt.auxio.music.models.Album
 
-// Generic ViewHolder for a song
-class SongViewHolder(
-    private var binding: SongItemBinding
+// Generic ViewHolder for an album
+class AlbumViewHolder(
+    private var binding: AlbumItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // Bind the view w/new data
-    fun bind(song: Song) {
-        binding.song = song
+    fun bind(album: Album) {
+        binding.album = album
 
         // Load the album cover
-        binding.cover.load(song.album.coverUri) {
+        binding.cover.load(album.coverUri) {
             crossfade(true)
             placeholder(android.R.color.transparent)
             error(android.R.color.transparent)
