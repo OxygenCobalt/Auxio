@@ -32,6 +32,7 @@ class LibraryFragment : Fragment() {
         val adapter = AlbumDataAdapter()
         binding.libraryRecycler.adapter = adapter
         binding.libraryRecycler.applyDivider()
+        binding.libraryRecycler.setHasFixedSize(true)
 
         libraryModel.albums.observe(
             viewLifecycleOwner,

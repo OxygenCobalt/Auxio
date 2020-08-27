@@ -8,7 +8,7 @@
     <dimen name="margin_medium">16dp</dimen>
 
     <dimen name="cover_size">64dp</dimen>
-    <dimen name="cover_size_compact">42dp</dimen>
+    <dimen name="cover_size_compact">44dp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

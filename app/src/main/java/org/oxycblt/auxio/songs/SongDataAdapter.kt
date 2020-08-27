@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.SongItemBinding
 import org.oxycblt.auxio.music.models.Song
 import org.oxycblt.auxio.recycler.SongViewHolder
@@ -17,15 +18,20 @@ class SongDataAdapter : ListAdapter<Song, SongViewHolder>(DiffCallback) {
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
-            SongItemBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = SongItemBinding.inflate(LayoutInflater.from(parent.context))
+
+        // Force the layout to be the width of the screen so that the cutoff can work properly.
+        binding.root.layoutParams = RecyclerView.LayoutParams(
+            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
         )
+
+        return SongViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val Song = getItem(position)
+        val song = getItem(position)
 
-        holder.bind(Song)
+        holder.bind(song)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Song>() {

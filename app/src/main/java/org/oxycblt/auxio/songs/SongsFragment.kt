@@ -30,6 +30,7 @@ class SongsFragment : Fragment() {
         val adapter = SongDataAdapter()
         binding.songRecycler.adapter = adapter
         binding.songRecycler.applyDivider()
+        binding.songRecycler.setHasFixedSize(true)
 
         songsModel.songs.observe(
             viewLifecycleOwner,
