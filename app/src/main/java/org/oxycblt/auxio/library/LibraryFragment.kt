@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.recycler.adapters.AlbumDataAdapter
+import org.oxycblt.auxio.recycler.adapters.AlbumAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class LibraryFragment : Fragment() {
@@ -28,7 +28,7 @@ class LibraryFragment : Fragment() {
             inflater, R.layout.fragment_library, container, false
         )
 
-        val adapter = AlbumDataAdapter(libraryModel.albums.value!!)
+        val adapter = AlbumAdapter(libraryModel.albums.value!!)
 
         binding.libraryRecycler.adapter = adapter
         binding.libraryRecycler.applyDivider()

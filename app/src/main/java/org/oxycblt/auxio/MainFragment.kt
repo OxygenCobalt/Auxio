@@ -47,8 +47,8 @@ class MainFragment : Fragment() {
     private fun getFragment(pos: Int): Fragment {
         if (shownFragments.contains(pos)) {
             return when (pos) {
-                1 -> libraryFragment
-                0 -> songsFragment
+                0 -> libraryFragment
+                1 -> songsFragment
 
                 else -> libraryFragment
             }
@@ -67,6 +67,7 @@ class MainFragment : Fragment() {
         override fun getItemCount(): Int = shownFragments.size
 
         override fun createFragment(position: Int): Fragment {
+            Log.d(this::class.simpleName, "Switching to fragment $position.")
             return getFragment(position)
         }
     }

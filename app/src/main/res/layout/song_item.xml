@@ -20,6 +20,7 @@
             android:layout_width="@dimen/cover_size_compact"
             android:layout_height="@dimen/cover_size_compact"
             android:contentDescription="@{@string/description_cover_art + song.album.title}"
+            app:coverArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,27 +30,24 @@
             android:id="@+id/song_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
             android:text="@{song.title}"
+            android:layout_marginStart="@dimen/margin_medium"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/song_data"
             app:layout_constraintStart_toEndOf="@+id/cover"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
             tools:text="Song Name" />
 
         <TextView
-            android:id="@+id/song_data"
+            android:id="@+id/song_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
+            android:text="@{@string/format_song_info(song.album.title, song.album.artist.name)}"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cover"
-            app:layout_constraintTop_toBottomOf="@+id/song_name"
-            app:songData="@{song}"
             tools:text="Artist / Album" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,8 +3,10 @@ package org.oxycblt.auxio.music
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import coil.load
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Song
@@ -62,6 +64,25 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
+// Get the cover art
+@BindingAdapter("coverArt")
+fun ImageView.getCoverArt(any: Any) {
+    val uri = when (any) {
+        is Song -> any.album.coverUri
+        is Album -> any.coverUri
+
+        // TODO: Artist images
+
+        else -> Uri.EMPTY
+    }
+
+    load(uri) {
+        crossfade(true)
+        placeholder(android.R.color.transparent)
+        error(android.R.color.transparent)
+    }
+}
+
 // Format the amount of songs in an album
 @BindingAdapter("songCount")
 fun TextView.getAlbumSongs(album: Album) {
@@ -70,14 +91,4 @@ fun TextView.getAlbumSongs(album: Album) {
     } else {
         context.getString(R.string.format_multi_song_count, album.numSongs.toString())
     }
-}
-
-// Format the artist/album data for a song
-@BindingAdapter("songData")
-fun TextView.getSongData(song: Song) {
-    text = context.getString(
-        R.string.format_song_data,
-        song.album.artist.name,
-        song.album.title
-    )
 }

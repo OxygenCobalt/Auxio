@@ -7,7 +7,7 @@ import org.oxycblt.auxio.databinding.SongItemBinding
 import org.oxycblt.auxio.music.models.Song
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
-class SongDataAdapter(val data: List<Song>) : RecyclerView.Adapter<SongViewHolder>() {
+class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 

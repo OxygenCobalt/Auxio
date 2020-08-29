@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
-import org.oxycblt.auxio.recycler.adapters.SongDataAdapter
+import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class SongsFragment : Fragment() {
@@ -28,8 +28,7 @@ class SongsFragment : Fragment() {
             inflater, R.layout.fragment_songs, container, false
         )
 
-        val adapter = SongDataAdapter(songsModel.songs.value!!)
-        binding.songRecycler.adapter = adapter
+        binding.songRecycler.adapter = SongAdapter(songsModel.songs.value!!)
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 

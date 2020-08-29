@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Auxio</string>
 
+    <string name="title_library_fragment">Library</string>
+    <string name="title_all_songs">All Songs</string>
+
     <string name="error_no_music">No music found.</string>
     <string name="error_music_load_failed">Music loading failed.</string>
 
@@ -9,10 +12,7 @@
     <string name="label_single_song">1 Song</string>
 
     <string name="format_multi_song_count">%s Songs</string>
-    <string name="format_song_data">%s / %s</string>
-
-    <string name="title_library_fragment">Library</string>
-    <string name="title_all_songs">All Songs</string>
+    <string name="format_song_info">%s / %s</string>
 
     <string name="description_cover_art">Cover art for </string>
 </resources>
