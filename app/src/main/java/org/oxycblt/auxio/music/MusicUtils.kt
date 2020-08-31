@@ -92,19 +92,3 @@ fun TextView.getAlbumSongs(album: Album) {
         context.getString(R.string.format_multi_song_count, album.numSongs.toString())
     }
 }
-
-@BindingAdapter("songInfo")
-fun TextView.getSongInfo(song: Song) {
-    var artist = song.album.artist.name
-    var album = song.album.title
-
-    if (artist == "") {
-        artist = context.getString(R.string.label_unknown_artist)
-    }
-
-    if (album == "") {
-        album = context.getString(R.string.label_unknown_album)
-    }
-
-    text = context.getString(R.string.format_song_info, artist, album)
-}

@@ -130,12 +130,12 @@ class MusicLoader(private val resolver: ContentResolver) {
                     val existingArtist = artists.find { it.name == name }
 
                     if (existingArtist != null) {
-                        existingArtist.genres.add(genre.name)
+                        existingArtist.genres.add(genre)
                     } else {
                         artists.add(
                             Artist(
                                 id, name,
-                                mutableListOf(genre.name)
+                                mutableListOf(genre)
                             )
                         )
                     }

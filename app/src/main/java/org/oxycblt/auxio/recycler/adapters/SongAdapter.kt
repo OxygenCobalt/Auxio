@@ -11,11 +11,6 @@ class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewH
 
     override fun getItemCount(): Int = data.size
 
-    /*
-    private var time = 0
-    private var inflationCount = 0
-     */
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val then = System.currentTimeMillis()
 
@@ -25,18 +20,6 @@ class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewH
         binding.root.layoutParams = RecyclerView.LayoutParams(
             RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
         )
-
-        /*
-        time += (System.currentTimeMillis() - then).toInt()
-        inflationCount++
-
-        if (inflationCount == 10) {
-            Log.d(
-                this::class.simpleName,
-                "Initial inflation took ${time}ms"
-            )
-        }
-         */
 
         return SongViewHolder(binding)
     }

@@ -5,8 +5,8 @@ import android.net.Uri
 // Abstraction for Song
 data class Album(
     val id: Long = 0L,
-    val title: String = "",
-    val artistName: String = "",
+    var title: String = "",
+    val artistName: String = "", // Only used for sorting. Use artist for everything else.
     val coverUri: Uri = Uri.EMPTY,
     val year: Int = 0,
     var numSongs: Int = 0

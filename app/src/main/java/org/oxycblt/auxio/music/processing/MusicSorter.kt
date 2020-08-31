@@ -3,16 +3,25 @@ package org.oxycblt.auxio.music.processing
 import android.util.Log
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
 
 class MusicSorter(
+    val genres: MutableList<Genre>,
     val artists: MutableList<Artist>,
     val albums: MutableList<Album>,
-    val songs: MutableList<Song>
+    val songs: MutableList<Song>,
+
+    private val genrePlaceholder: String,
+    private val artistPlaceholder: String,
+    private val albumPlaceholder: String,
 ) {
     init {
         sortSongsIntoAlbums()
         sortAlbumsIntoArtists()
+        sortArtistsIntoGenres()
+
+        addPlaceholders()
     }
 
     private fun sortSongsIntoAlbums() {
@@ -88,10 +97,57 @@ class MusicSorter(
 
             unknownArtist.numAlbums = albums.size
 
+            artists.add(unknownArtist)
+
             Log.d(
                 this::class.simpleName,
                 "${unknownAlbums.size} albums were placed into an unknown artist."
             )
         }
+    }
+
+    private fun sortArtistsIntoGenres() {
+        Log.d(this::class.simpleName, "Sorting artists into genres...")
+
+        val unknownArtists = artists.toMutableList()
+
+        for (genre in genres) {
+            // Find all artists that match the current genre
+            val genreArtists = artists.filter { artist ->
+                artist.genres.any {
+                    it.name == genre.name
+                }
+            }
+
+            // Then add them to the genre, along with refreshing the amount of artists
+            genre.artists.addAll(genreArtists)
+            genre.numArtists = artists.size
+
+            unknownArtists.removeAll(genreArtists)
+        }
+
+        if (unknownArtists.size > 0) {
+            // Reuse an existing unknown genre if one is found
+            val unknownGenre = genres.find { it.name == "" } ?: Genre()
+
+            for (artist in unknownArtists) {
+                artist.genres.add(unknownGenre)
+                unknownGenre.artists.add(artist)
+            }
+
+            unknownGenre.numArtists = artists.size
+
+            Log.d(
+                this::class.simpleName,
+                "${unknownArtists.size} albums were placed into an unknown genre."
+            )
+        }
+    }
+
+    // Correct any empty names [""] with the proper placeholders [Unknown Album]
+    private fun addPlaceholders() {
+        genres.forEach { if (it.name == "") it.name = genrePlaceholder }
+        artists.forEach { if (it.name == "") it.name = artistPlaceholder }
+        albums.forEach { if (it.title == "") it.title = albumPlaceholder }
     }
 }

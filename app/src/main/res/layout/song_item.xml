@@ -52,7 +52,7 @@
             android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
-            app:songInfo="@{song}"
+            android:text="@{@string/format_song_info(song.album.artist.name, song.album.title)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/duration"
             app:layout_constraintStart_toEndOf="@+id/cover"
