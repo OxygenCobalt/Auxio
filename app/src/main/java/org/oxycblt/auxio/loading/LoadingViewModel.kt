@@ -18,7 +18,7 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     private val loadingJob = Job()
     private val ioScope = CoroutineScope(
-        Dispatchers.IO
+        loadingJob + Dispatchers.IO
     )
 
     private val mMusicRepoResponse = MutableLiveData<MusicLoaderResponse>()
