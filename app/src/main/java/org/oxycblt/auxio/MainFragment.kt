@@ -15,17 +15,10 @@ import org.oxycblt.auxio.songs.SongsFragment
 
 class MainFragment : Fragment() {
 
-    private val shownFragments = listOf(
-        0, 1
-    )
+    private val shownFragments = listOf(0, 1)
 
-    private val libraryFragment: LibraryFragment by lazy {
-        LibraryFragment()
-    }
-
-    private val songsFragment: SongsFragment by lazy {
-        SongsFragment()
-    }
+    private val libraryFragment: LibraryFragment by lazy { LibraryFragment() }
+    private val songsFragment: SongsFragment by lazy { SongsFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,31 +37,28 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    private fun getFragment(pos: Int): Fragment {
-        if (shownFragments.contains(pos)) {
-            return when (pos) {
-                0 -> libraryFragment
-                1 -> songsFragment
-
-                else -> libraryFragment
-            }
-        }
-
-        // Not sure how this would happen but it might
-        Log.e(
-            this::class.simpleName,
-            "Something went terribly wrong while swapping fragments, Substituting with libraryFragment."
-        )
-
-        return libraryFragment
-    }
-
     private inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount(): Int = shownFragments.size
 
         override fun createFragment(position: Int): Fragment {
             Log.d(this::class.simpleName, "Switching to fragment $position.")
-            return getFragment(position)
+
+            if (shownFragments.contains(position)) {
+                return when (position) {
+                    0 -> libraryFragment
+                    1 -> songsFragment
+
+                    else -> libraryFragment
+                }
+            }
+
+            // Not sure how this would happen but it might
+            Log.e(
+                this::class.simpleName,
+                "Attempted to index a fragment that shouldn't be shown. Returning libraryFragment."
+            )
+
+            return libraryFragment
         }
     }
 }

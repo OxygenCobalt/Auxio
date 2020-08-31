@@ -11,7 +11,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Song
 
-private val ID3_GENRES = arrayOf<String>(
+private val ID3_GENRES = arrayOf(
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
     "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno",
     "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno",

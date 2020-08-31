@@ -17,25 +17,30 @@
 
         <ImageView
             android:id="@+id/cover"
-            android:layout_width="@dimen/cover_size_compact"
-            android:layout_height="@dimen/cover_size_compact"
+            android:layout_width="@dimen/cover_size_normal"
+            android:layout_height="@dimen/cover_size_normal"
             android:contentDescription="@{@string/description_cover_art + album.title}"
+            app:coverArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:coverArt="@{album}"
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <TextView
             android:id="@+id/album_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{album.title}"
             android:layout_marginStart="@dimen/margin_medium"
+            android:text="@{album.title}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@+id/song_count"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cover"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="Album Name" />
 
         <TextView
@@ -47,8 +52,8 @@
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cover"
+            app:layout_constraintTop_toBottomOf="@+id/album_name"
             app:songCount="@{album}"
             tools:text="10 Songs" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

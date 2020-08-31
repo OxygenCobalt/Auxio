@@ -13,6 +13,9 @@ class SongViewHolder(
     fun bind(song: Song) {
         binding.song = song
 
+        binding.songName.requestLayout()
+        binding.songInfo.requestLayout()
+
         binding.executePendingBindings()
     }
 }

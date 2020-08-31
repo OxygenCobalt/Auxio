@@ -21,7 +21,7 @@ enum class MusicLoaderResponse {
 
 // Class that loads music from the FileSystem.
 // FIXME: This thing probably has some memory leaks *somewhere*
-class MusicLoader(private val app: Application) {
+class MusicLoader(app: Application) {
 
     var genres = mutableListOf<Genre>()
     var artists = mutableListOf<Artist>()
@@ -34,7 +34,7 @@ class MusicLoader(private val app: Application) {
     private var songCursor: Cursor? = null
 
     val response: MusicLoaderResponse
-    val resolver: ContentResolver = app.contentResolver
+    private val resolver: ContentResolver = app.contentResolver
 
     init {
         response = findMusic()
@@ -82,7 +82,7 @@ class MusicLoader(private val app: Application) {
                 // If a genre is still in an old int-based format [Android formats it as "(INT)"],
                 // convert that to the corresponding ID3 genre. Really hope anyone doesn't have
                 // a genre that contains parentheses.
-                if (name.contains(Regex("[()]"))) {
+                if (name.contains(Regex("[0123456789)]"))) {
                     name = name.toNamedGenre()
                 }
 
