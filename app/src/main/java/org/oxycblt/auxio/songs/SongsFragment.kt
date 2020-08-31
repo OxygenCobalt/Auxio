@@ -8,20 +8,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class SongsFragment : Fragment() {
-
-    private val inflateJob = Job()
-    private val mainScope = CoroutineScope(
-        inflateJob + Dispatchers.Main
-    )
 
     private val songsModel: SongsViewModel by lazy {
         ViewModelProvider(this).get(SongsViewModel::class.java)

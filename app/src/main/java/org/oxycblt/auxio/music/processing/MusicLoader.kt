@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.music.processing
 
-import android.app.Application
 import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore.Audio.Albums
@@ -21,7 +20,7 @@ enum class MusicLoaderResponse {
 
 // Class that loads music from the FileSystem.
 // FIXME: This thing probably has some memory leaks *somewhere*
-class MusicLoader(app: Application) {
+class MusicLoader(private val resolver: ContentResolver) {
 
     var genres = mutableListOf<Genre>()
     var artists = mutableListOf<Artist>()
@@ -34,7 +33,6 @@ class MusicLoader(app: Application) {
     private var songCursor: Cursor? = null
 
     val response: MusicLoaderResponse
-    private val resolver: ContentResolver = app.contentResolver
 
     init {
         response = findMusic()

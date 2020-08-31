@@ -21,7 +21,7 @@ class MusicRepository {
 
         val start = System.currentTimeMillis()
 
-        val loader = MusicLoader(app)
+        val loader = MusicLoader(app.contentResolver)
 
         if (loader.response == MusicLoaderResponse.DONE) {
             // If the loading succeeds, then process the songs and set them.
