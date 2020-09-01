@@ -14,8 +14,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:titleTextAppearance="@style/ToolbarStyle"
-            app:layout_constraintTop_toTopOf="parent"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             app:title="@string/title_library_fragment" />
 
         <androidx.recyclerview.widget.RecyclerView

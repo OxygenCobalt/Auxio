@@ -8,7 +8,7 @@
         <shape android:shape="rectangle">
             <solid android:color="@android:color/white" />
             <corners android:radius="4dp" />
-            <size android:height="2dp" />
+            <size android:height="3dp" />
         </shape>
     </item>
 </layer-list>

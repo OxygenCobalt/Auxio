@@ -20,6 +20,7 @@
             android:layout_height="@dimen/tab_menu_size"
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
+            android:elevation="@dimen/elevation_normal"
             app:tabIndicatorColor="?android:attr/colorPrimary"
             app:tabGravity="fill"
             app:tabMode="fixed"

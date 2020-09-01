@@ -20,7 +20,7 @@
             android:id="@+id/loading_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/blue"
+            android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:paddingBottom="@dimen/padding_tiny"
             app:layout_constraintBottom_toTopOf="@+id/error_text"
@@ -28,7 +28,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:indeterminateTint="@color/blue" />
 
         <TextView
             android:id="@+id/error_text"
@@ -53,13 +54,14 @@
             android:text="@string/label_retry"
             android:visibility="gone"
             android:fontFamily="@font/inter_semibold"
-            android:textColor="@color/blue"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/error_text"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:textColor="@color/blue" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

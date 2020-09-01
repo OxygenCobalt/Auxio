@@ -14,7 +14,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:titleTextAppearance="@style/ToolbarStyle"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_all_songs" />
 

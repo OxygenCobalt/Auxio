@@ -15,8 +15,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.songs.SongsFragment
-import org.oxycblt.auxio.theme.getAccentTransparency
-import org.oxycblt.auxio.theme.getDeselectedTransparency
+import org.oxycblt.auxio.theme.accent
+import org.oxycblt.auxio.theme.getInactiveAlpha
+import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
@@ -27,12 +28,14 @@ class MainFragment : Fragment() {
     private val songsFragment: SongsFragment by lazy { SongsFragment() }
 
     private val colorSelected: Int by lazy {
-        R.color.blue.toColor(requireContext())
+        accent.first.toColor(requireContext())
     }
 
     private val colorDeselected: Int by lazy {
-        getAccentTransparency(
-            requireContext(), R.color.blue, getDeselectedTransparency(R.color.blue)
+        getTransparentAccent(
+            requireContext(),
+            accent.first,
+            getInactiveAlpha(accent.first)
         )
     }
 
@@ -81,10 +84,6 @@ class MainFragment : Fragment() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             }
-        )
-
-        binding.tabs.getTabAt(
-            binding.viewPager.offscreenPageLimit
         )
 
         Log.d(this::class.simpleName, "Fragment Created.")
