@@ -5,13 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.songs.SongsFragment
+import org.oxycblt.auxio.theme.getAccentTransparency
+import org.oxycblt.auxio.theme.getDeselectedTransparency
+import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
 
@@ -19,6 +25,21 @@ class MainFragment : Fragment() {
 
     private val libraryFragment: LibraryFragment by lazy { LibraryFragment() }
     private val songsFragment: SongsFragment by lazy { SongsFragment() }
+
+    private val colorSelected: Int by lazy {
+        R.color.blue.toColor(requireContext())
+    }
+
+    private val colorDeselected: Int by lazy {
+        getAccentTransparency(
+            requireContext(), R.color.blue, getDeselectedTransparency(R.color.blue)
+        )
+    }
+
+    private val tabIcons = listOf(
+        R.drawable.ic_library,
+        R.drawable.ic_music
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +53,52 @@ class MainFragment : Fragment() {
         val adapter = PagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
+        // Link the ViewPager & Tab View
+        TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
+            tab.icon = ContextCompat.getDrawable(requireContext(), tabIcons[position])
+
+            // Set the icon tint to deselected if its not the default tab
+            if (position > 0) {
+                tab.icon?.setTint(colorDeselected)
+            }
+
+            // Init the fragment
+            fragmentAt(position)
+        }.attach()
+
+        // Set up the selected/deselected colors
+        binding.tabs.addOnTabSelectedListener(
+            object : TabLayout.OnTabSelectedListener {
+
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    tab.icon?.setTint(colorSelected)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    tab.icon?.setTint(colorDeselected)
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            }
+        )
+
+        binding.tabs.getTabAt(
+            binding.viewPager.offscreenPageLimit
+        )
+
         Log.d(this::class.simpleName, "Fragment Created.")
 
         return binding.root
+    }
+
+    private fun fragmentAt(position: Int): Fragment {
+        return when (position) {
+            0 -> libraryFragment
+            1 -> songsFragment
+
+            else -> libraryFragment
+        }
     }
 
     private inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
@@ -44,12 +108,7 @@ class MainFragment : Fragment() {
             Log.d(this::class.simpleName, "Switching to fragment $position.")
 
             if (shownFragments.contains(position)) {
-                return when (position) {
-                    0 -> libraryFragment
-                    1 -> songsFragment
-
-                    else -> libraryFragment
-                }
+                return fragmentAt(position)
             }
 
             // Not sure how this would happen but it might

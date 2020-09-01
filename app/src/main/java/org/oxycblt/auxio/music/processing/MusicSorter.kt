@@ -137,6 +137,8 @@ class MusicSorter(
 
             unknownGenre.numArtists = artists.size
 
+            genres.add(unknownGenre)
+
             Log.d(
                 this::class.simpleName,
                 "${unknownArtists.size} albums were placed into an unknown genre."

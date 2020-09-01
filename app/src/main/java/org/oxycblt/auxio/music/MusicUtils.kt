@@ -79,7 +79,7 @@ fun ImageView.getCoverArt(any: Any) {
     load(uri) {
         crossfade(true)
         placeholder(android.R.color.transparent)
-        error(R.drawable.music_icon)
+        error(R.drawable.ic_music)
     }
 }
 
