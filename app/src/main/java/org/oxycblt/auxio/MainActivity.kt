@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import org.oxycblt.auxio.theme.accent
 
-const val PERM_READ_EXTERNAL_STORAGE = 2488
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {

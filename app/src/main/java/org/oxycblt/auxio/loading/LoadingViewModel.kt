@@ -26,10 +26,19 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
     private val mDoRetry = MutableLiveData<Boolean>()
     val doRetry: LiveData<Boolean> get() = mDoRetry
 
-    init {
-        startMusicRepo()
+    private val mDoGrant = MutableLiveData<Boolean>()
+    val doGrant: LiveData<Boolean> get() = mDoGrant
+
+    private var started = false
+
+    // Start the music loading. It has already been called, one needs to call retry() instead.
+    fun go() {
+        if (!started) {
+            startMusicRepo()
+        }
     }
 
+    // Start the music loading sequence.
     private fun startMusicRepo() {
         val repo = MusicRepository.getInstance()
 
@@ -40,9 +49,13 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
             // Then actually notify listeners of the response in the Main thread
             withContext(Dispatchers.Main) {
                 mMusicRepoResponse.value = response
+
+                started = true
             }
         }
     }
+
+    // Functions for communicating between LoadingFragment & LoadingViewModel
 
     fun doneWithResponse() {
         mMusicRepoResponse.value = null
@@ -56,6 +69,14 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     fun doneWithRetry() {
         mDoRetry.value = false
+    }
+
+    fun grant() {
+        mDoGrant.value = true
+    }
+
+    fun doneWithGrant() {
+        mDoGrant.value = false
     }
 
     override fun onCleared() {

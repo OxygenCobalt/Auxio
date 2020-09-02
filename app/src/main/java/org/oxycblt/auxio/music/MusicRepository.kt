@@ -1,7 +1,10 @@
 package org.oxycblt.auxio.music
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.content.ContextCompat
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
@@ -20,6 +23,12 @@ class MusicRepository {
     lateinit var songs: List<Song>
 
     fun init(app: Application): MusicLoaderResponse {
+        if (!checkPerms(app)) {
+            Log.i(this::class.simpleName, "No permissions, aborting...")
+
+            return MusicLoaderResponse.NO_PERMS
+        }
+
         Log.i(this::class.simpleName, "Starting initial music load...")
 
         val start = System.currentTimeMillis()
@@ -52,7 +61,13 @@ class MusicRepository {
             )
         }
 
-        return MusicLoaderResponse.NO_MUSIC
+        return loader.response
+    }
+
+    private fun checkPerms(app: Application): Boolean {
+        return ContextCompat.checkSelfPermission(
+            app.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object {

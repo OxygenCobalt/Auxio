@@ -7,9 +7,10 @@
 
     <string name="error_no_music">No music found.</string>
     <string name="error_music_load_failed">Music loading failed.</string>
-    <string name="error_no_perms">Auxio needs to be allowed to read your music library.</string>
+    <string name="error_no_perms">Auxio needs access to your music library.</string>
 
     <string name="label_retry">Retry</string>
+    <string name="label_grant">Grant</string>
     <string name="label_single_song">1 Song</string>
     <string name="label_unknown_genre">Unknown Genre</string>
     <string name="label_unknown_artist">Unknown Artist</string>
