@@ -52,7 +52,7 @@ class MusicRepository {
             )
         }
 
-        return loader.response
+        return MusicLoaderResponse.NO_MUSIC
     }
 
     companion object {

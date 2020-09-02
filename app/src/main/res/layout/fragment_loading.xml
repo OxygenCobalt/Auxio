@@ -23,7 +23,7 @@
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:paddingBottom="@dimen/padding_tiny"
-            app:layout_constraintBottom_toTopOf="@+id/error_text"
+            app:layout_constraintBottom_toTopOf="@+id/status_icon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,37 +31,54 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:indeterminateTint="@color/blue" />
 
+        <ImageView
+            android:id="@+id/status_icon"
+            android:layout_width="@dimen/status_icon_size"
+            android:layout_height="@dimen/status_icon_size"
+            android:indeterminateTint="?attr/colorPrimary"
+            android:indeterminateTintMode="src_in"
+            android:src="@drawable/ic_error"
+            android:contentDescription="@string/description_error_icon"
+            app:layout_constraintBottom_toTopOf="@+id/error_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/loading_bar"
+            app:srcCompat="@drawable/ic_error"
+            tools:tint="@color/blue" />
+
         <TextView
             android:id="@+id/error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/reset_button"
+            android:layout_marginTop="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@+id/retry_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loading_bar"
+            app:layout_constraintTop_toBottomOf="@+id/status_icon"
             tools:text="Some kind of error." />
 
         <Button
-            android:id="@+id/reset_button"
+            android:id="@+id/retry_button"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
             android:onClick="@{() -> loadingModel.retry()}"
             android:text="@string/label_retry"
-            android:visibility="gone"
-            android:fontFamily="@font/inter_semibold"
             android:textColor="?attr/colorPrimary"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/error_text"
-            tools:visibility="visible"
-            tools:textColor="@color/blue" />
+            app:layout_constraintVertical_bias="0.673"
+            tools:textColor="@color/blue"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

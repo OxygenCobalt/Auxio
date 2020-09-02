@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.loading
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,8 +28,6 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     init {
         startMusicRepo()
-
-        Log.d(this::class.simpleName, "ViewModel created.")
     }
 
     private fun startMusicRepo() {
@@ -52,9 +49,9 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
     }
 
     fun retry() {
-        mDoRetry.value = true
-
         startMusicRepo()
+
+        mDoRetry.value = true
     }
 
     fun doneWithRetry() {

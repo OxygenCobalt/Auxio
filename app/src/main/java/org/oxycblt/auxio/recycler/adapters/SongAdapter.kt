@@ -12,8 +12,6 @@ class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewH
     override fun getItemCount(): Int = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val then = System.currentTimeMillis()
-
         val binding = SongItemBinding.inflate(LayoutInflater.from(parent.context))
 
         // Force the item to *actually* be the screen width so ellipsizing can work.

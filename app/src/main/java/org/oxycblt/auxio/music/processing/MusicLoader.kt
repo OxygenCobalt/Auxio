@@ -51,6 +51,10 @@ class MusicLoader(private val resolver: ContentResolver) {
             return MusicLoaderResponse.FAILURE
         }
 
+        if (songs.size == 0) {
+            return MusicLoaderResponse.NO_MUSIC
+        }
+
         return MusicLoaderResponse.DONE
     }
 

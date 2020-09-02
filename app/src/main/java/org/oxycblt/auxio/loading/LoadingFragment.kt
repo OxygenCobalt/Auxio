@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
@@ -41,14 +40,14 @@ class LoadingFragment : Fragment() {
 
         loadingModel.musicRepoResponse.observe(
             viewLifecycleOwner,
-            Observer { response ->
+            { response ->
                 onMusicLoadResponse(response)
             }
         )
 
         loadingModel.doRetry.observe(
             viewLifecycleOwner,
-            Observer { retry ->
+            { retry ->
                 onRetry(retry)
             }
         )
@@ -59,7 +58,6 @@ class LoadingFragment : Fragment() {
     }
 
     private fun onMusicLoadResponse(repoResponse: MusicLoaderResponse?) {
-
         // Don't run this if the value is null, Which is what the value changes to after
         // this is run.
         repoResponse?.let { response ->
@@ -73,13 +71,14 @@ class LoadingFragment : Fragment() {
 
                 binding.loadingBar.visibility = View.GONE
                 binding.errorText.visibility = View.VISIBLE
-                binding.resetButton.visibility = View.VISIBLE
+                binding.statusIcon.visibility = View.VISIBLE
+                binding.retryButton.visibility = View.VISIBLE
 
-                if (response == MusicLoaderResponse.NO_MUSIC) {
-                    binding.errorText.text = getString(R.string.error_no_music)
-                } else {
-                    binding.errorText.text = getString(R.string.error_music_load_failed)
-                }
+                binding.errorText.text =
+                    if (response == MusicLoaderResponse.NO_MUSIC)
+                        getString(R.string.error_no_music)
+                    else
+                        getString(R.string.error_music_load_failed)
             }
 
             loadingModel.doneWithResponse()
@@ -90,7 +89,8 @@ class LoadingFragment : Fragment() {
         if (retry) {
             binding.loadingBar.visibility = View.VISIBLE
             binding.errorText.visibility = View.GONE
-            binding.resetButton.visibility = View.GONE
+            binding.statusIcon.visibility = View.GONE
+            binding.retryButton.visibility = View.GONE
 
             loadingModel.doneWithRetry()
         }
