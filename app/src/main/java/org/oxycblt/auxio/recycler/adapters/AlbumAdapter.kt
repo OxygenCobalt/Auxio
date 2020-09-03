@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.AlbumItemBinding
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
+import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
-class AlbumAdapter(private val data: List<Album>) : RecyclerView.Adapter<AlbumViewHolder>() {
+class AlbumAdapter(
+    private val data: List<Album>,
+    private val listener: ClickListener<Album>
+) : RecyclerView.Adapter<AlbumViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
@@ -24,6 +28,10 @@ class AlbumAdapter(private val data: List<Album>) : RecyclerView.Adapter<AlbumVi
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
         val album = data[position]
+
+        holder.itemView.setOnClickListener {
+            listener.onClick(album)
+        }
 
         holder.bind(album)
     }

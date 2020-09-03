@@ -12,6 +12,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.recycler.adapters.AlbumAdapter
 import org.oxycblt.auxio.recycler.applyDivider
+import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
 class LibraryFragment : Fragment() {
 
@@ -28,7 +29,12 @@ class LibraryFragment : Fragment() {
             inflater, R.layout.fragment_library, container, false
         )
 
-        binding.libraryRecycler.adapter = AlbumAdapter(libraryModel.albums.value!!)
+        binding.libraryRecycler.adapter = AlbumAdapter(
+            libraryModel.albums.value!!,
+            ClickListener { album ->
+                Log.d(this::class.simpleName, album.title)
+            }
+        )
         binding.libraryRecycler.applyDivider()
         binding.libraryRecycler.setHasFixedSize(true)
 

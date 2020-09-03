@@ -6,7 +6,7 @@ import org.oxycblt.auxio.music.models.Song
 
 // Generic ViewHolder for a song
 class SongViewHolder(
-    private var binding: SongItemBinding
+    private val binding: SongItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // Bind the view w/new data

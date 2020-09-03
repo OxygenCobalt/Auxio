@@ -5,9 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.SongItemBinding
 import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.recycler.viewholders.ClickListener
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
-class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewHolder>() {
+class SongAdapter(
+    private val data: List<Song>,
+    private val listener: ClickListener<Song>
+) : RecyclerView.Adapter<SongViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
@@ -24,6 +28,10 @@ class SongAdapter(private val data: List<Song>) : RecyclerView.Adapter<SongViewH
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = data[position]
+
+        holder.itemView.setOnClickListener {
+            listener.onClick(song)
+        }
 
         holder.bind(song)
     }

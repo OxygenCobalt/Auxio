@@ -64,8 +64,8 @@ class LoadingFragment : Fragment() {
         )
 
         // Set up the permission launcher, as its disallowed outside of onCreate.
-        permLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission())
-            { granted: Boolean ->
+        permLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted: Boolean ->
 
                 // If its actually granted, restart the loading process again.
                 if (granted) {
@@ -82,7 +82,6 @@ class LoadingFragment : Fragment() {
         // This never seems to return true but Im apparently supposed to use it so
         if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             onMusicLoadResponse(MusicLoaderResponse.NO_PERMS)
-
         } else {
             loadingModel.go()
         }
@@ -100,7 +99,6 @@ class LoadingFragment : Fragment() {
                 this.findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
                 )
-
             } else {
                 // If the response wasn't a success, then show the specific error message
                 // depending on which error response was given, along with a retry or grant button

@@ -12,6 +12,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
+import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
 class SongsFragment : Fragment() {
 
@@ -28,7 +29,12 @@ class SongsFragment : Fragment() {
             inflater, R.layout.fragment_songs, container, false
         )
 
-        binding.songRecycler.adapter = SongAdapter(songsModel.songs.value!!)
+        binding.songRecycler.adapter = SongAdapter(
+            songsModel.songs.value!!,
+            ClickListener { song ->
+                Log.d(this::class.simpleName, song.title)
+            }
+        )
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 
