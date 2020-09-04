@@ -8,4 +8,5 @@ data class Artist(
 ) {
     val albums = mutableListOf<Album>()
     var numAlbums = 0
+    var numSongs = 0
 }

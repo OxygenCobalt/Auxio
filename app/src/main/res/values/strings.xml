@@ -12,6 +12,7 @@
     <string name="label_retry">Retry</string>
     <string name="label_grant">Grant</string>
     <string name="label_single_song">1 Song</string>
+    <string name="label_single_album">1 Album</string>
 
     <string name="placeholder_unknown_genre">Unknown Genre</string>
     <string name="placeholder_unknown_artist">Unknown Artist</string>
@@ -19,7 +20,6 @@
 
     <string name="format_multi_song_count">%s Songs</string>
     <string name="format_song_info">%s / %s</string>
-
-    <string name="description_cover_art">Cover art for </string>
-    <string name="description_error_icon">Error Icon</string>
+    <string name="format_album_count">%s Albums</string>
+    <string name="format_combined_song_album">%s, %s</string>
 </resources>

@@ -80,6 +80,9 @@ class MusicSorter(
             }
 
             artist.numAlbums = artist.albums.size
+            artist.albums.forEach { album ->
+                artist.numSongs += album.numSongs
+            }
 
             unknownAlbums.removeAll(artistAlbums)
         }
@@ -95,7 +98,10 @@ class MusicSorter(
                 unknownArtist.albums.add(album)
             }
 
-            unknownArtist.numAlbums = albums.size
+            unknownArtist.numAlbums = unknownArtist.albums.size
+            unknownArtist.albums.forEach { album ->
+                unknownArtist.numSongs += album.numSongs
+            }
 
             artists.add(unknownArtist)
 

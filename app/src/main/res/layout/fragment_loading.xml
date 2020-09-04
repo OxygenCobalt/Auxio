@@ -39,14 +39,14 @@
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:src="@drawable/ic_error"
-            android:contentDescription="@string/description_error_icon"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/error_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loading_bar"
             app:srcCompat="@drawable/ic_error"
-            tools:tint="@color/blue" />
+            tools:tint="@color/blue"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/error_text"

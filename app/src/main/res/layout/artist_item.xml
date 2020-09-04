@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="album"
-            type="org.oxycblt.auxio.music.models.Album" />
+            name="artist"
+            type="org.oxycblt.auxio.music.models.Artist" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,10 +19,9 @@
         android:padding="@dimen/padding_medium">
 
         <ImageView
-            android:id="@+id/cover"
+            android:id="@+id/artist_image"
             android:layout_width="@dimen/cover_size_normal"
             android:layout_height="@dimen/cover_size_normal"
-            app:coverArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,33 +29,33 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/album_name"
+            android:id="@+id/artist_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
-            android:text="@{album.title}"
+            android:text="@{artist.name}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
             android:ellipsize="end"
             android:maxLines="1"
-            app:layout_constraintBottom_toTopOf="@+id/song_count"
+            app:layout_constraintBottom_toTopOf="@+id/album_song_count"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cover"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Album Name" />
+            tools:text="Artist Name" />
 
         <TextView
-            android:id="@+id/song_count"
+            android:id="@+id/album_song_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
+            app:albumSongCount="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cover"
-            app:layout_constraintTop_toBottomOf="@+id/album_name"
-            app:songCount="@{album}"
-            tools:text="10 Songs" />
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toBottomOf="@+id/artist_name"
+            tools:text="2 Albums, 20 Songs" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -21,6 +21,8 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
+    // TODO: Phase out LoadingFragment
+
     private val loadingModel: LoadingViewModel by lazy {
         ViewModelProvider(
             this,
@@ -108,6 +110,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         // Don't run this if the value is null, Which is what the value changes to after
         // this is run.
         repoResponse?.let { response ->
+            binding.loadingBar.visibility = View.GONE
 
             if (response == MusicLoaderResponse.DONE) {
                 val inflater = TransitionInflater.from(requireContext())
@@ -119,7 +122,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             } else {
                 // If the response wasn't a success, then show the specific error message
                 // depending on which error response was given, along with a retry button
-                binding.loadingBar.visibility = View.GONE
                 binding.errorText.visibility = View.VISIBLE
                 binding.statusIcon.visibility = View.VISIBLE
                 binding.retryButton.visibility = View.VISIBLE

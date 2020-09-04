@@ -29,10 +29,6 @@ class AlbumAdapter(
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
         val album = data[position]
 
-        holder.itemView.setOnClickListener {
-            listener.onClick(album)
-        }
-
         holder.bind(album)
     }
 }

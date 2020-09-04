@@ -9,6 +9,7 @@ import androidx.databinding.BindingAdapter
 import coil.load
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Song
 
 private val ID3_GENRES = arrayOf(
@@ -83,12 +84,32 @@ fun ImageView.getCoverArt(any: Any) {
     }
 }
 
+fun Int.toSongCount(): Int {
+    return if (this < 2) {
+        R.string.label_single_song
+    } else {
+        R.string.format_multi_song_count
+    }
+}
+
+fun Int.toAlbumCount(): Int {
+    return if (this < 2) {
+        R.string.label_single_album
+    } else {
+        R.string.format_album_count
+    }
+}
+
 // Format the amount of songs in an album
 @BindingAdapter("songCount")
 fun TextView.getAlbumSongs(album: Album) {
-    text = if (album.numSongs < 2) {
-        context.getString(R.string.label_single_song)
-    } else {
-        context.getString(R.string.format_multi_song_count, album.numSongs.toString())
-    }
+    text = context.getString(album.numSongs.toSongCount(), album.numSongs)
+}
+
+@BindingAdapter("albumSongCount")
+fun TextView.getSongAlbumCount(artist: Artist) {
+    val albums = context.getString(artist.numAlbums.toAlbumCount(), artist.numAlbums)
+    val songs = context.getString(artist.numSongs.toSongCount(), artist.numSongs)
+
+    text = context.getString(R.string.format_combined_song_album, albums, songs)
 }

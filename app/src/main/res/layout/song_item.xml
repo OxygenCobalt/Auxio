@@ -13,7 +13,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:background="@drawable/ripple"
         android:clickable="true"
         android:focusable="true"
@@ -23,12 +22,12 @@
             android:id="@+id/cover"
             android:layout_width="@dimen/cover_size_compact"
             android:layout_height="@dimen/cover_size_compact"
-            android:contentDescription="@{@string/description_cover_art + song.album.title}"
             app:coverArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/song_name"
