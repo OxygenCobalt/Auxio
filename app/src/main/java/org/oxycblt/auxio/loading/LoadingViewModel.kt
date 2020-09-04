@@ -34,6 +34,8 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
     // Start the music loading. It has already been called, one needs to call retry() instead.
     fun go() {
         if (!started) {
+            started = true
+
             startMusicRepo()
         }
     }
@@ -49,8 +51,6 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
             // Then actually notify listeners of the response in the Main thread
             withContext(Dispatchers.Main) {
                 mMusicRepoResponse.value = response
-
-                started = true
             }
         }
     }

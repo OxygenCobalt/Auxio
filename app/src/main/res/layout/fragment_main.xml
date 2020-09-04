@@ -27,7 +27,7 @@
             app:tabIconTint="?android:attr/colorPrimary"
             app:tabIconTintMode="src_in"
             app:tabIndicator="@drawable/indicator"
-            app:tabRippleColor="?android:attr/colorPrimary" />
+            app:tabRippleColor="@color/selection_color" />
 
     </LinearLayout>
 </layout>

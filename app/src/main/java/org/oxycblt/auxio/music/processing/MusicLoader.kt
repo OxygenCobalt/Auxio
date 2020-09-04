@@ -15,7 +15,7 @@ import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toNamedGenre
 
 enum class MusicLoaderResponse {
-    DONE, FAILURE, NO_MUSIC, NO_PERMS
+    DONE, FAILURE, NO_MUSIC
 }
 
 // Class that loads music from the FileSystem.

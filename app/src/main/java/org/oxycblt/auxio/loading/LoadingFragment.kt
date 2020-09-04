@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.loading
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +18,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
-class LoadingFragment : Fragment() {
+class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
     private val loadingModel: LoadingViewModel by lazy {
         ViewModelProvider(
@@ -26,6 +28,8 @@ class LoadingFragment : Fragment() {
             )
         ).get(LoadingViewModel::class.java)
     }
+
+    private var noPerms = false
 
     private lateinit var binding: FragmentLoadingBinding
     private lateinit var permLauncher: ActivityResultLauncher<String>
@@ -69,72 +73,81 @@ class LoadingFragment : Fragment() {
 
                 // If its actually granted, restart the loading process again.
                 if (granted) {
-                    binding.loadingBar.visibility = View.VISIBLE
-                    binding.errorText.visibility = View.GONE
-                    binding.statusIcon.visibility = View.GONE
-                    binding.retryButton.visibility = View.GONE
-                    binding.grantButton.visibility = View.GONE
+                    wipeViews()
+
+                    noPerms = false
 
                     loadingModel.retry()
                 }
             }
 
-        // This never seems to return true but Im apparently supposed to use it so
-        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            onMusicLoadResponse(MusicLoaderResponse.NO_PERMS)
+        // Force an error screen if the permissions are denied or the prompt needs to be shown.
+        // This should be in MusicRepository, but the response comes faster than the view creation
+        // itself and therefore causes the error screen to not appear.
+        if (checkPerms()) {
+            noPerms = true
+            onNoPerms()
         } else {
             loadingModel.go()
         }
-
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    // Check for permissions. God help us all.
+    private fun checkPerms(): Boolean {
+        return shouldShowRequestPermissionRationale(
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) || ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_DENIED || noPerms
     }
 
     private fun onMusicLoadResponse(repoResponse: MusicLoaderResponse?) {
         // Don't run this if the value is null, Which is what the value changes to after
         // this is run.
         repoResponse?.let { response ->
+
             if (response == MusicLoaderResponse.DONE) {
                 this.findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
                 )
             } else {
                 // If the response wasn't a success, then show the specific error message
-                // depending on which error response was given, along with a retry or grant button
+                // depending on which error response was given, along with a retry button
                 binding.loadingBar.visibility = View.GONE
                 binding.errorText.visibility = View.VISIBLE
                 binding.statusIcon.visibility = View.VISIBLE
+                binding.retryButton.visibility = View.VISIBLE
 
-                when (response) {
-                    MusicLoaderResponse.NO_PERMS -> {
-                        binding.grantButton.visibility = View.VISIBLE
-                        binding.errorText.text = getString(R.string.error_no_perms)
-                    }
-
-                    MusicLoaderResponse.NO_MUSIC -> {
-                        binding.retryButton.visibility = View.VISIBLE
-                        binding.errorText.text = getString(R.string.error_no_music)
-                    }
-
-                    else -> {
-                        binding.retryButton.visibility = View.VISIBLE
-                        binding.errorText.text = getString(R.string.error_music_load_failed)
-                    }
-                }
+                binding.errorText.text =
+                    if (response == MusicLoaderResponse.NO_MUSIC)
+                        getString(R.string.error_no_music)
+                    else
+                        getString(R.string.error_music_load_failed)
             }
 
             loadingModel.doneWithResponse()
         }
     }
 
+    private fun onNoPerms() {
+        // If there are no perms, switch out the view elements as if an error screen was being
+        // shown, but show the label that Auxio needs to read external storage to function,
+        // along with a GRANT button
+
+        binding.loadingBar.visibility = View.GONE
+        binding.errorText.visibility = View.VISIBLE
+        binding.statusIcon.visibility = View.VISIBLE
+        binding.grantButton.visibility = View.VISIBLE
+
+        binding.errorText.text = getString(R.string.error_no_perms)
+    }
+
     private fun onRetry(retry: Boolean) {
         if (retry) {
-            binding.loadingBar.visibility = View.VISIBLE
-            binding.errorText.visibility = View.GONE
-            binding.statusIcon.visibility = View.GONE
-            binding.retryButton.visibility = View.GONE
-            binding.grantButton.visibility = View.GONE
+            wipeViews()
 
             loadingModel.doneWithRetry()
         }
@@ -146,5 +159,14 @@ class LoadingFragment : Fragment() {
 
             loadingModel.doneWithGrant()
         }
+    }
+
+    // Wipe views and switch back to the plain LoadingBar
+    private fun wipeViews() {
+        binding.loadingBar.visibility = View.VISIBLE
+        binding.errorText.visibility = View.GONE
+        binding.statusIcon.visibility = View.GONE
+        binding.retryButton.visibility = View.GONE
+        binding.grantButton.visibility = View.GONE
     }
 }
