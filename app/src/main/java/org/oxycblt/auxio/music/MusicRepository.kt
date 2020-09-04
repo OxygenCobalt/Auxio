@@ -34,9 +34,9 @@ class MusicRepository {
                 loader.albums,
                 loader.songs,
 
-                app.applicationContext.getString(R.string.placeholder_unknown_genre),
-                app.applicationContext.getString(R.string.placeholder_unknown_artist),
-                app.applicationContext.getString(R.string.placeholder_unknown_album)
+                app.getString(R.string.placeholder_unknown_genre),
+                app.getString(R.string.placeholder_unknown_artist),
+                app.getString(R.string.placeholder_unknown_album)
             )
 
             songs = sorter.songs.toList()

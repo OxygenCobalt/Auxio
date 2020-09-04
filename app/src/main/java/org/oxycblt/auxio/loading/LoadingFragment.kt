@@ -3,6 +3,7 @@ package org.oxycblt.auxio.loading
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -67,8 +68,9 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
         // Set up the permission launcher, as its disallowed outside of onCreate.
         permLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted: Boolean ->
-
+            registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { granted: Boolean ->
                 // If its actually granted, restart the loading process again.
                 if (granted) {
                     wipeViews()
@@ -92,8 +94,8 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
     }
 
     // Check for two things:
-    // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE perm
-    // - If Auxio straight up doesnt have the permission
+    // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE permission.
+    // - If Auxio straight up doesn't have the READ_EXTERNAL_STORAGE permission.
     private fun checkPerms(): Boolean {
         return shouldShowRequestPermissionRationale(
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -108,6 +110,9 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         repoResponse?.let { response ->
 
             if (response == MusicLoaderResponse.DONE) {
+                val inflater = TransitionInflater.from(requireContext())
+                exitTransition = inflater.inflateTransition(R.transition.transition_to_main)
+
                 this.findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
                 )

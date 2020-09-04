@@ -66,6 +66,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // --- THIRD PARTY ---
+
     // Image loading
     implementation 'io.coil-kt:coil:0.12.0'
 
