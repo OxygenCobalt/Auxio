@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.theme
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import org.oxycblt.auxio.R
@@ -30,13 +29,6 @@ private val ACCENTS = listOf(
 )
 
 val accent = ACCENTS[5]
-
-fun getDayNightAlpha(): Int {
-    val isDark = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-
-    // Depending on the theme use a different opacity for the divider
-    return if (isDark) 45 else 85
-}
 
 fun getInactiveAlpha(color: Int): Int {
     return if (color == R.color.yellow) 100 else 150

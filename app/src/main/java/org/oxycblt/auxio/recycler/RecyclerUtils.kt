@@ -4,8 +4,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.theme.getDayNightAlpha
-import org.oxycblt.auxio.theme.getTransparentAccent
+import org.oxycblt.auxio.theme.toColor
 
 // Apply a custom vertical divider
 fun RecyclerView.applyDivider() {
@@ -16,9 +15,7 @@ fun RecyclerView.applyDivider() {
 
     div.setDrawable(
         ColorDrawable(
-            getTransparentAccent(
-                context, R.color.divider_color, getDayNightAlpha()
-            )
+            R.color.divider_color.toColor(context)
         )
     )
 
