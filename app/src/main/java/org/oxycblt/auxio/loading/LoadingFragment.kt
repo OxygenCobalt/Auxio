@@ -29,8 +29,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         ).get(LoadingViewModel::class.java)
     }
 
-    private var noPerms = false
-
     private lateinit var binding: FragmentLoadingBinding
     private lateinit var permLauncher: ActivityResultLauncher<String>
 
@@ -75,8 +73,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 if (granted) {
                     wipeViews()
 
-                    noPerms = false
-
                     loadingModel.retry()
                 }
             }
@@ -85,23 +81,25 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         // This should be in MusicRepository, but the response comes faster than the view creation
         // itself and therefore causes the error screen to not appear.
         if (checkPerms()) {
-            noPerms = true
             onNoPerms()
         } else {
             loadingModel.go()
         }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
     }
 
-    // Check for permissions. God help us all.
+    // Check for two things:
+    // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE perm
+    // - If Auxio straight up doesnt have the permission
     private fun checkPerms(): Boolean {
         return shouldShowRequestPermissionRationale(
             Manifest.permission.READ_EXTERNAL_STORAGE
         ) || ContextCompat.checkSelfPermission(
             requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_DENIED || noPerms
+        ) == PackageManager.PERMISSION_DENIED
     }
 
     private fun onMusicLoadResponse(repoResponse: MusicLoaderResponse?) {

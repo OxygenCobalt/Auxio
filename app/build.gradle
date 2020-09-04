@@ -24,7 +24,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -45,24 +45,25 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // --- SUPPORT ---
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
-    // Permissions
+    // General
+    implementation 'androidx.core:core-ktx:1.3.1'
     implementation 'androidx.activity:activity:1.2.0-alpha08'
     implementation 'androidx.fragment:fragment:1.3.0-alpha08'
 
-    // Navigation
-    def navigation_version = "2.3.0"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    // Layout
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     // Viewpager
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // Navigation
+    def navigation_version = "2.3.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // --- THIRD PARTY ---
     // Image loading
@@ -73,6 +74,9 @@ dependencies {
 
     // Lint
     ktlint "com.pinterest:ktlint:0.37.2"
+
+    // Memory Leak checking
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
