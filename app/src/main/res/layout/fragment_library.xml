@@ -17,7 +17,7 @@
             android:elevation="@dimen/elevation_normal"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             app:title="@string/title_library_fragment"
-            tools:titleTextColor="@color/blue"/>
+            tools:titleTextColor="@color/blue" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/library_recycler"

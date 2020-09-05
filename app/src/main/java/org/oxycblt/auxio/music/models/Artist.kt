@@ -9,4 +9,13 @@ data class Artist(
     val albums = mutableListOf<Album>()
     var numAlbums = 0
     var numSongs = 0
+
+    fun finalize() {
+        albums.sortByDescending { it.year }
+
+        numAlbums = albums.size
+        albums.forEach { album ->
+            numSongs += album.numSongs
+        }
+    }
 }

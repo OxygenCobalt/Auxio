@@ -54,6 +54,7 @@ class MusicSorter(
             }
 
             unknownAlbum.numSongs = unknownAlbum.songs.size
+            unknownAlbum.finalize()
 
             albums.add(unknownAlbum)
 
@@ -62,6 +63,8 @@ class MusicSorter(
                 "${unknownSongs.size} songs were placed into an unknown album."
             )
         }
+
+        albums.sortByDescending { it.title }
     }
 
     private fun sortAlbumsIntoArtists() {
@@ -79,10 +82,7 @@ class MusicSorter(
                 artist.albums.add(album)
             }
 
-            artist.numAlbums = artist.albums.size
-            artist.albums.forEach { album ->
-                artist.numSongs += album.numSongs
-            }
+            artist.finalize()
 
             unknownAlbums.removeAll(artistAlbums)
         }
@@ -98,10 +98,7 @@ class MusicSorter(
                 unknownArtist.albums.add(album)
             }
 
-            unknownArtist.numAlbums = unknownArtist.albums.size
-            unknownArtist.albums.forEach { album ->
-                unknownArtist.numSongs += album.numSongs
-            }
+            unknownArtist.finalize()
 
             artists.add(unknownArtist)
 
@@ -110,6 +107,8 @@ class MusicSorter(
                 "${unknownAlbums.size} albums were placed into an unknown artist."
             )
         }
+
+        artists.sortByDescending { it.name }
     }
 
     private fun sortArtistsIntoGenres() {
@@ -150,6 +149,8 @@ class MusicSorter(
                 "${unknownArtists.size} albums were placed into an unknown genre."
             )
         }
+
+        genres.sortByDescending { it.name }
     }
 
     // Correct any empty names [""] with the proper placeholders [Unknown Album]

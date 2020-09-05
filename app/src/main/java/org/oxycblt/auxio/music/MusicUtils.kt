@@ -65,25 +65,6 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
-// Get the cover art
-@BindingAdapter("coverArt")
-fun ImageView.getCoverArt(any: Any) {
-    val uri = when (any) {
-        is Song -> any.album.coverUri
-        is Album -> any.coverUri
-
-        // TODO: Artist images
-
-        else -> Uri.EMPTY
-    }
-
-    load(uri) {
-        crossfade(true)
-        placeholder(android.R.color.transparent)
-        error(R.drawable.ic_music)
-    }
-}
-
 fun Int.toSongCount(): Int {
     return if (this < 2) {
         R.string.label_single_song
@@ -112,4 +93,31 @@ fun TextView.getSongAlbumCount(artist: Artist) {
     val songs = context.getString(artist.numSongs.toSongCount(), artist.numSongs)
 
     text = context.getString(R.string.format_combined_song_album, albums, songs)
+}
+
+// Get the cover art
+@BindingAdapter("coverArt")
+fun ImageView.getCoverArt(any: Any) {
+    val uri = when (any) {
+        is Song -> any.album.coverUri
+        is Album -> any.coverUri
+
+        else -> Uri.EMPTY
+    }
+
+    load(uri) {
+        crossfade(true)
+        placeholder(android.R.color.transparent)
+        error(R.drawable.ic_music)
+    }
+}
+
+// Get the artist image.
+@BindingAdapter("artistImage")
+fun ImageView.getArtistImage(artist: Artist) {
+    load(artist.albums[0].coverUri) {
+        crossfade(true)
+        placeholder(android.R.color.transparent)
+        error(R.drawable.ic_music)
+    }
 }

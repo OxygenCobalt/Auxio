@@ -18,7 +18,7 @@
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_all_songs"
-            tools:titleTextColor="@color/blue"/>
+            tools:titleTextColor="@color/blue" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"

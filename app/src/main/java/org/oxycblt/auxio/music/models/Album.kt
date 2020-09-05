@@ -14,4 +14,8 @@ data class Album(
     lateinit var artist: Artist
 
     val songs = mutableListOf<Song>()
+
+    fun finalize() {
+        songs.sortBy { it.track }
+    }
 }
