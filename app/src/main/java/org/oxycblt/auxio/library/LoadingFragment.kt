@@ -1,9 +1,8 @@
-package org.oxycblt.auxio.loading
+package org.oxycblt.auxio.library
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,21 +12,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
-    private val loadingModel: LoadingViewModel by lazy {
-        ViewModelProvider(
-            this,
-            LoadingViewModel.Factory(
-                requireActivity().application
-            )
-        ).get(LoadingViewModel::class.java)
+    private val musicModel: MusicViewModel by activityViewModels {
+        MusicViewModel.Factory(requireActivity().application)
     }
 
     private lateinit var binding: FragmentLoadingBinding
@@ -43,23 +37,23 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         )
 
         binding.lifecycleOwner = this
-        binding.loadingModel = loadingModel
+        binding.musicModel = musicModel
 
-        loadingModel.musicRepoResponse.observe(
+        musicModel.response.observe(
             viewLifecycleOwner,
             { response ->
                 onMusicLoadResponse(response)
             }
         )
 
-        loadingModel.doRetry.observe(
+        musicModel.doReload.observe(
             viewLifecycleOwner,
             { retry ->
                 onRetry(retry)
             }
         )
 
-        loadingModel.doGrant.observe(
+        musicModel.doGrant.observe(
             viewLifecycleOwner,
             { grant ->
                 onGrant(grant)
@@ -75,7 +69,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 if (granted) {
                     wipeViews()
 
-                    loadingModel.retry()
+                    musicModel.reload()
                 }
             }
 
@@ -85,7 +79,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         if (checkPerms()) {
             onNoPerms()
         } else {
-            loadingModel.go()
+            musicModel.go()
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
@@ -110,28 +104,21 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         repoResponse?.let { response ->
             binding.loadingBar.visibility = View.GONE
 
-            if (response == MusicLoaderResponse.DONE) {
-                val inflater = TransitionInflater.from(requireContext())
-                exitTransition = inflater.inflateTransition(R.transition.transition_to_main)
-
-                this.findNavController().navigate(
-                    LoadingFragmentDirections.actionToMain()
-                )
-            } else {
-                // If the response wasn't a success, then show the specific error message
-                // depending on which error response was given, along with a retry button
-                binding.errorText.visibility = View.VISIBLE
-                binding.statusIcon.visibility = View.VISIBLE
-                binding.retryButton.visibility = View.VISIBLE
-
+            if (response != MusicLoaderResponse.DONE) {
                 binding.errorText.text =
                     if (response == MusicLoaderResponse.NO_MUSIC)
                         getString(R.string.error_no_music)
                     else
                         getString(R.string.error_music_load_failed)
+
+                // If the response wasn't a success, then show the specific error message
+                // depending on which error response was given, along with a retry button
+                binding.errorText.visibility = View.VISIBLE
+                binding.statusIcon.visibility = View.VISIBLE
+                binding.retryButton.visibility = View.VISIBLE
             }
 
-            loadingModel.doneWithResponse()
+            musicModel.doneWithResponse()
         }
     }
 
@@ -152,7 +139,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         if (retry) {
             wipeViews()
 
-            loadingModel.doneWithRetry()
+            musicModel.doneWithReload()
         }
     }
 
@@ -160,7 +147,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         if (grant) {
             permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-            loadingModel.doneWithGrant()
+            musicModel.doneWithGrant()
         }
     }
 

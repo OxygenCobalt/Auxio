@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.coil
 
+import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -15,13 +16,9 @@ private var artistImageFetcher: ArtistImageFetcher? = null
 // Get the cover art for a song or album
 @BindingAdapter("coverArt")
 fun ImageView.getCoverArt(song: Song) {
-    val request = ImageRequest.Builder(context)
+    val request = getDefaultRequest(context, this)
         .data(song.album.coverUri)
-        .crossfade(true)
-        .placeholder(android.R.color.transparent)
-        .error(R.drawable.ic_artist)
-        .crossfade(true)
-        .target(this)
+        .error(R.drawable.ic_song)
         .build()
 
     Coil.imageLoader(context).enqueue(request)
@@ -29,13 +26,9 @@ fun ImageView.getCoverArt(song: Song) {
 
 @BindingAdapter("coverArt")
 fun ImageView.getCoverArt(album: Album) {
-    val request = ImageRequest.Builder(context)
+    val request = getDefaultRequest(context, this)
         .data(album.coverUri)
-        .crossfade(true)
-        .placeholder(android.R.color.transparent)
-        .error(R.drawable.ic_artist)
-        .crossfade(true)
-        .target(this)
+        .error(R.drawable.ic_album)
         .build()
 
     Coil.imageLoader(context).enqueue(request)
@@ -56,26 +49,25 @@ fun ImageView.getArtistImage(artist: Artist) {
             artistImageFetcher = ArtistImageFetcher(context)
         }
 
-        // Manually create an image request, as that's the only way to add a fetcher that
-        // takes a list of uris AFAIK.
-        ImageRequest.Builder(context)
+        getDefaultRequest(context, this)
             .data(uris)
             .fetcher(artistImageFetcher!!)
-            .crossfade(true)
-            .placeholder(android.R.color.transparent)
             .error(R.drawable.ic_artist)
-            .target(this)
             .build()
     } else {
-        ImageRequest.Builder(context)
+        getDefaultRequest(context, this)
             .data(artist.albums[0].coverUri)
-            .crossfade(true)
-            .placeholder(android.R.color.transparent)
             .error(R.drawable.ic_artist)
-            .crossfade(true)
-            .target(this)
             .build()
     }
 
     Coil.imageLoader(context).enqueue(request)
+}
+
+// Get the base request used across the app.
+private fun getDefaultRequest(context: Context, imageView: ImageView): ImageRequest.Builder {
+    return ImageRequest.Builder(context)
+        .crossfade(true)
+        .placeholder(android.R.color.transparent)
+        .target(imageView)
 }

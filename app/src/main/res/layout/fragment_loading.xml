@@ -8,8 +8,8 @@
     <data>
 
         <variable
-            name="loadingModel"
-            type="org.oxycblt.auxio.loading.LoadingViewModel" />
+            name="musicModel"
+            type="org.oxycblt.auxio.music.MusicViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
-            android:onClick="@{() -> loadingModel.retry()}"
+            android:onClick="@{() -> musicModel.reload()}"
             android:text="@string/label_retry"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"
@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
-            android:onClick="@{() -> loadingModel.grant()}"
+            android:onClick="@{() -> musicModel.grant()}"
             android:text="@string/label_grant"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"

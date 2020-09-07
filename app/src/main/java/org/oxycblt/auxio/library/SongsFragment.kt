@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.songs
+package org.oxycblt.auxio.library
 
 import android.os.Bundle
 import android.util.Log
@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
 class SongsFragment : Fragment() {
 
-    private val songsModel: SongsViewModel by lazy {
-        ViewModelProvider(this).get(SongsViewModel::class.java)
+    private val musicModel: MusicViewModel by activityViewModels {
+        MusicViewModel.Factory(requireActivity().application)
     }
 
     override fun onCreateView(
@@ -30,7 +32,7 @@ class SongsFragment : Fragment() {
         )
 
         binding.songRecycler.adapter = SongAdapter(
-            songsModel.songs.value!!,
+            musicModel.songs.value!!,
             ClickListener { song ->
                 Log.d(this::class.simpleName, song.name)
             }

@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.adapters.ArtistAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
 class LibraryFragment : Fragment() {
 
-    private val libraryModel: LibraryViewModel by lazy {
-        ViewModelProvider(this).get(LibraryViewModel::class.java)
+    private val musicModel: MusicViewModel by activityViewModels {
+        MusicViewModel.Factory(requireActivity().application)
     }
 
     override fun onCreateView(
@@ -30,7 +32,7 @@ class LibraryFragment : Fragment() {
         )
 
         binding.libraryRecycler.adapter = ArtistAdapter(
-            libraryModel.artists.value!!,
+            musicModel.artists.value!!,
             ClickListener { artist ->
                 Log.d(this::class.simpleName, artist.name)
             }
