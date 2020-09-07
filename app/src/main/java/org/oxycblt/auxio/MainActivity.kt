@@ -18,9 +18,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
+import org.oxycblt.auxio.library.SongsFragment
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
-import org.oxycblt.auxio.library.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
 import org.oxycblt.auxio.theme.getTransparentAccent
@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(
+
+        binding = DataBindingUtil.setContentView(
             this, R.layout.activity_main
         )
 
@@ -105,15 +106,16 @@ class MainActivity : AppCompatActivity() {
         )
 
         musicModel.response.observe(
-            this, {
+            this,
+            {
+                // When the load is completed successfully, remove the loadingFragment view
+                // and replace it with the ViewPager, now that its loaded.
                 if (it == MusicLoaderResponse.DONE) {
-                    binding.loadingFragment.visibility = View.GONE
+                    // binding.loadingFragment.visibility = View.GONE
                     binding.viewPager.visibility = View.VISIBLE
                 }
             }
         )
-
-        musicModel.go()
 
         Log.d(this::class.simpleName, "Activity Created.")
     }

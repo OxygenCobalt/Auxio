@@ -11,8 +11,6 @@ import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Song
 
-private var artistImageFetcher: ArtistImageFetcher? = null
-
 // Get the cover art for a song or album
 @BindingAdapter("coverArt")
 fun ImageView.getCoverArt(song: Song) {
@@ -44,14 +42,11 @@ fun ImageView.getArtistImage(artist: Artist) {
             uris.add(artist.albums[i].coverUri)
         }
 
-        // Initialize the fetcher if it hasn't been already.
-        if (artistImageFetcher == null) {
-            artistImageFetcher = ArtistImageFetcher(context)
-        }
+        val fetcher = ArtistImageFetcher(context)
 
         getDefaultRequest(context, this)
             .data(uris)
-            .fetcher(artistImageFetcher!!)
+            .fetcher(fetcher)
             .error(R.drawable.ic_artist)
             .build()
     } else {
