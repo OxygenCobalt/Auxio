@@ -154,10 +154,18 @@ class MusicSorter(
         albums.forEach { if (it.name == "") it.name = albumPlaceholder }
     }
 
-    // Sort all music into
+    // Sort all music
     private fun finalizeMusic() {
-        genres.sortBy { it.name }
-        artists.sortBy { it.name }
-        albums.sortBy { it.name }
+        genres.sortWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
+        )
+
+        artists.sortWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
+        )
+
+        albums.sortWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
+        )
     }
 }

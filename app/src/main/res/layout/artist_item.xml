@@ -18,7 +18,16 @@
         android:focusable="true"
         android:padding="@dimen/padding_medium">
 
-        <!-- TODO: Artist images -->
+        <ImageView
+            android:id="@+id/artist_image"
+            android:layout_width="@dimen/cover_size_normal"
+            android:layout_height="@dimen/cover_size_normal"
+            app:artistImage="@{artist}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/artist_name"
@@ -27,11 +36,12 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@{artist.name}"
+            android:layout_marginStart="@dimen/margin_medium"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/album_song_count"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Artist Name" />
@@ -41,10 +51,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:layout_marginStart="@dimen/margin_medium"
             android:textColor="?android:attr/textColorSecondary"
             app:artistCounts="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
             app:layout_constraintTop_toBottomOf="@+id/artist_name"
             tools:text="2 Albums, 20 Songs" />
 

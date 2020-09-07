@@ -3,12 +3,14 @@ package org.oxycblt.auxio.music
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import coil.Coil
 import coil.load
+import coil.request.ImageRequest
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.coil.ArtistImageFetcher
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.music.models.Song
@@ -82,8 +84,6 @@ fun TextView.getArtistCounts(artist: Artist) {
         R.plurals.format_song_count, artist.numSongs, artist.numSongs
     )
 
-    Log.d("getArtistCounts", albums)
-
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
@@ -102,6 +102,34 @@ fun ImageView.getCoverArt(album: Album) {
     load(album.coverUri) {
         crossfade(true)
         placeholder(android.R.color.transparent)
-        error(R.drawable.ic_music)
+        error(R.drawable.ic_album)
+    }
+}
+
+@BindingAdapter("artistImage")
+fun ImageView.getArtistImage(artist: Artist) {
+    if (artist.numAlbums >= 4) {
+        val uris = mutableListOf<Uri>()
+
+        for (i in 0..3) {
+            uris.add(artist.albums[i].coverUri)
+        }
+
+        val request = ImageRequest.Builder(context)
+            .data(uris)
+            .fetcher(ArtistImageFetcher(context))
+            .crossfade(true)
+            .placeholder(android.R.color.transparent)
+            .error(R.drawable.ic_artist)
+            .target(this)
+            .build()
+
+        Coil.imageLoader(context).enqueue(request)
+    } else {
+        load(artist.albums[0].coverUri) {
+            crossfade(true)
+            placeholder(android.R.color.transparent)
+            error(R.drawable.ic_music)
+        }
     }
 }
