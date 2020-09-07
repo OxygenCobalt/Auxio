@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.coil
+package org.oxycblt.auxio.coil
 
 import android.content.Context
 import android.graphics.Bitmap

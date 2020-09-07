@@ -11,12 +11,14 @@ import org.oxycblt.auxio.theme.accent
 
 class MainActivity : AppCompatActivity() {
 
-    // TODO: Collapse LoadingFragment/MainFragment into MainActivity.
+    // Debug placeholder so I can test dark and light modes. Ignore.
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        // Debugging placeholder
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
         // Apply the theme
         setTheme(accent.second)
 

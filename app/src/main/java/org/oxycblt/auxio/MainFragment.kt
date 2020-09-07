@@ -27,21 +27,9 @@ class MainFragment : Fragment() {
     private val libraryFragment: LibraryFragment by lazy { LibraryFragment() }
     private val songsFragment: SongsFragment by lazy { SongsFragment() }
 
-    private val colorSelected: Int by lazy {
-        accent.first.toColor(requireContext())
-    }
-
-    private val colorDeselected: Int by lazy {
-        getTransparentAccent(
-            requireContext(),
-            accent.first,
-            getInactiveAlpha(accent.first)
-        )
-    }
-
     private val tabIcons = listOf(
         R.drawable.ic_library,
-        R.drawable.ic_music
+        R.drawable.ic_song
     )
 
     override fun onCreateView(
@@ -56,13 +44,20 @@ class MainFragment : Fragment() {
         val adapter = PagerAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
+        val colorActive = accent.first.toColor(requireContext())
+        val colorInactive = getTransparentAccent(
+            requireContext(),
+            accent.first,
+            getInactiveAlpha(accent.first)
+        )
+
         // Link the ViewPager & Tab View
         TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
             tab.icon = ContextCompat.getDrawable(requireContext(), tabIcons[position])
 
             // Set the icon tint to deselected if its not the default tab
             if (position > 0) {
-                tab.icon?.setTint(colorDeselected)
+                tab.icon?.setTint(colorInactive)
             }
 
             // Init the fragment
@@ -74,11 +69,11 @@ class MainFragment : Fragment() {
             object : TabLayout.OnTabSelectedListener {
 
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    tab.icon?.setTint(colorSelected)
+                    tab.icon?.setTint(colorActive)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
-                    tab.icon?.setTint(colorDeselected)
+                    tab.icon?.setTint(colorInactive)
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
