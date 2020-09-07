@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
-            android:text="@{album.title}"
+            android:text="@{album.name}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
             android:ellipsize="end"

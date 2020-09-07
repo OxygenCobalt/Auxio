@@ -3,6 +3,7 @@ package org.oxycblt.auxio.music
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -65,57 +66,40 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
-fun Int.toSongCount(): Int {
-    return if (this < 2) {
-        R.string.label_single_song
-    } else {
-        R.string.format_multi_song_count
-    }
-}
-
-fun Int.toAlbumCount(): Int {
-    return if (this < 2) {
-        R.string.label_single_album
-    } else {
-        R.string.format_album_count
-    }
-}
-
 // Format the amount of songs in an album
 @BindingAdapter("songCount")
 fun TextView.getAlbumSongs(album: Album) {
-    text = context.getString(album.numSongs.toSongCount(), album.numSongs)
+    text = context.resources.getQuantityString(R.plurals.format_song_count, album.numSongs)
 }
 
-@BindingAdapter("albumSongCount")
-fun TextView.getSongAlbumCount(artist: Artist) {
-    val albums = context.getString(artist.numAlbums.toAlbumCount(), artist.numAlbums)
-    val songs = context.getString(artist.numSongs.toSongCount(), artist.numSongs)
+@BindingAdapter("artistCounts")
+fun TextView.getArtistCounts(artist: Artist) {
+    // Get the quantity string for both albums & artists, and then stitch them together.
+    val albums = context.resources.getQuantityString(
+        R.plurals.format_albums, artist.numAlbums, artist.numAlbums
+    )
+    val songs = context.resources.getQuantityString(
+        R.plurals.format_song_count, artist.numSongs, artist.numSongs
+    )
 
-    text = context.getString(R.string.format_combined_song_album, albums, songs)
+    Log.d("getArtistCounts", albums)
+
+    text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
 // Get the cover art
 @BindingAdapter("coverArt")
-fun ImageView.getCoverArt(any: Any) {
-    val uri = when (any) {
-        is Song -> any.album.coverUri
-        is Album -> any.coverUri
-
-        else -> Uri.EMPTY
-    }
-
-    load(uri) {
+fun ImageView.getCoverArt(song: Song) {
+    load(song.album.coverUri) {
         crossfade(true)
         placeholder(android.R.color.transparent)
         error(R.drawable.ic_music)
     }
 }
 
-// Get the artist image.
-@BindingAdapter("artistImage")
-fun ImageView.getArtistImage(artist: Artist) {
-    load(artist.albums[0].coverUri) {
+@BindingAdapter("coverArt")
+fun ImageView.getCoverArt(album: Album) {
+    load(album.coverUri) {
         crossfade(true)
         placeholder(android.R.color.transparent)
         error(R.drawable.ic_music)

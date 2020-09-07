@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
-            app:albumSongCount="@{artist}"
+            app:artistCounts="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_name"

@@ -113,8 +113,8 @@ class MusicLoader(private val resolver: ContentResolver) {
             artistCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(
-                    Artists._ID,
-                    Artists.ARTIST
+                    Artists._ID, // 0
+                    Artists.ARTIST // 1
                 ),
                 null, null,
                 Artists.DEFAULT_SORT_ORDER
@@ -171,7 +171,6 @@ class MusicLoader(private val resolver: ContentResolver) {
                 Albums.ARTIST, // 2
 
                 Albums.FIRST_YEAR, // 3
-                Albums.NUMBER_OF_SONGS // 4
             ),
             null, null,
             Albums.DEFAULT_SORT_ORDER
@@ -182,21 +181,19 @@ class MusicLoader(private val resolver: ContentResolver) {
             val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
             val artistIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
             val yearIndex = cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR)
-            val numIndex = cursor.getColumnIndexOrThrow(Albums.NUMBER_OF_SONGS)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getString(nameIndex) ?: ""
                 val artist = cursor.getString(artistIndex) ?: ""
                 val year = cursor.getInt(yearIndex)
-                val numSongs = cursor.getInt(numIndex)
 
                 val coverUri = id.toAlbumArtURI()
 
                 albums.add(
                     Album(
                         id, name, artist,
-                        coverUri, year, numSongs
+                        coverUri, year
                     )
                 )
             }
@@ -206,7 +203,7 @@ class MusicLoader(private val resolver: ContentResolver) {
 
         // Remove dupes
         albums = albums.distinctBy {
-            it.title to it.artistName to it.year to it.numSongs
+            it.name to it.artistName to it.year to it.numSongs
         }.toMutableList()
 
         Log.d(
@@ -260,7 +257,7 @@ class MusicLoader(private val resolver: ContentResolver) {
 
         // Remove dupes
         songs = songs.distinctBy {
-            it.title to it.albumName to it.track to it.duration
+            it.name to it.albumName to it.track to it.duration
         }.toMutableList()
 
         Log.d(

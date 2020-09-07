@@ -21,8 +21,6 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
-    // TODO: Phase out LoadingFragment
-
     private val loadingModel: LoadingViewModel by lazy {
         ViewModelProvider(
             this,

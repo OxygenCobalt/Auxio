@@ -11,6 +11,8 @@ import org.oxycblt.auxio.theme.accent
 
 class MainActivity : AppCompatActivity() {
 
+    // TODO: Collapse LoadingFragment/MainFragment into MainActivity.
+
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         // Debugging placeholder
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

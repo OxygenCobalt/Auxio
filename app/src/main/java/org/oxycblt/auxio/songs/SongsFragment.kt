@@ -32,7 +32,7 @@ class SongsFragment : Fragment() {
         binding.songRecycler.adapter = SongAdapter(
             songsModel.songs.value!!,
             ClickListener { song ->
-                Log.d(this::class.simpleName, song.title)
+                Log.d(this::class.simpleName, song.name)
             }
         )
         binding.songRecycler.applyDivider()

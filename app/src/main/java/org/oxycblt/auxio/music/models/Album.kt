@@ -5,15 +5,15 @@ import android.net.Uri
 // Abstraction for Song
 data class Album(
     val id: Long = 0L,
-    var title: String = "",
-    val artistName: String = "", // Only used for sorting. Use artist for everything else.
+    var name: String = "",
+    val artistName: String = "", // only used for sorting. Use artist.name instead.
     val coverUri: Uri = Uri.EMPTY,
-    val year: Int = 0,
-    var numSongs: Int = 0
+    val year: Int = 0
 ) {
     lateinit var artist: Artist
 
     val songs = mutableListOf<Song>()
+    val numSongs: Int get() = songs.size
 
     fun finalize() {
         songs.sortBy { it.track }

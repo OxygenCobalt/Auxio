@@ -5,8 +5,8 @@ import android.text.format.DateUtils
 // Class containing all relevant values for a song.
 data class Song(
     val id: Long,
-    var title: String,
-    val albumName: String, // Only used for sorting. Use artist for everything else.
+    var name: String,
+    val albumName: String, // Only used for sorting. Use album.title for everything else.
     val track: Int,
     val duration: Long
 ) {
