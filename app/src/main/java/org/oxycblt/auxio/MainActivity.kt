@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -39,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     )
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var permLauncher: ActivityResultLauncher<String>
 
     private val musicModel: MusicViewModel by lazy {
         ViewModelProvider(
@@ -105,13 +103,13 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        Log.d(this::class.simpleName, musicModel.done.toString())
+
         musicModel.response.observe(
             this,
             {
-                // When the load is completed successfully, remove the loadingFragment view
-                // and replace it with the ViewPager, now that its loaded.
                 if (it == MusicLoaderResponse.DONE) {
-                    // binding.loadingFragment.visibility = View.GONE
+                    binding.loadingFragment.visibility = View.GONE
                     binding.viewPager.visibility = View.VISIBLE
                 }
             }

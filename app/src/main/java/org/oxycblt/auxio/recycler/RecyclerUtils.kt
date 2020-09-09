@@ -21,3 +21,6 @@ fun RecyclerView.applyDivider() {
 
     addItemDecoration(div)
 }
+
+// Generic ClickListener
+class ClickListener<T>(val onClick: (T) -> Unit)

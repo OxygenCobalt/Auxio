@@ -42,9 +42,6 @@ class MusicViewModel(private val app: Application) : ViewModel() {
     private val mSongs = MutableLiveData<List<Song>>()
     val songs: LiveData<List<Song>> get() = mSongs
 
-    private val mResponse = MutableLiveData<MusicLoaderResponse>()
-    val response: LiveData<MusicLoaderResponse> get() = mResponse
-
     // UI control
     private val mRedo = MutableLiveData<Boolean>()
     val doReload: LiveData<Boolean> get() = mRedo
@@ -52,6 +49,18 @@ class MusicViewModel(private val app: Application) : ViewModel() {
     private val mDoGrant = MutableLiveData<Boolean>()
     val doGrant: LiveData<Boolean> get() = mDoGrant
 
+    // Response Management
+
+    // The actual response from MusicLoader. This is set to null so that LoadingFragment doesn't
+    //
+    private val mResponse = MutableLiveData<MusicLoaderResponse>()
+    val response: LiveData<MusicLoaderResponse> get() = mResponse
+
+    // Whether MusicViewModel has finished the load [Used to hide LoadingFragment in MainActivity]
+    private var mDone = false
+    val done: Boolean get() = mDone
+
+    // Whether go() has ran. Used to prevent multiple loads from the recreation of LoadingFragment.
     private var started = false
 
     // Start the music loading sequence.
@@ -89,6 +98,8 @@ class MusicViewModel(private val app: Application) : ViewModel() {
                     mAlbums.value = sorter.albums.toList()
                     mArtists.value = sorter.artists.toList()
                     mGenres.value = sorter.genres.toList()
+
+                    mDone = true
                 }
 
                 mResponse.value = loader.response
@@ -103,13 +114,9 @@ class MusicViewModel(private val app: Application) : ViewModel() {
         }
     }
 
-    // UI communication functions
-    fun doneWithResponse() {
-        mResponse.value = null
-    }
-
     fun reload() {
         mRedo.value = true
+        mDone = false
 
         doLoad()
     }

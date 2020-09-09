@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.SongItemBinding
 import org.oxycblt.auxio.music.models.Song
-import org.oxycblt.auxio.recycler.viewholders.ClickListener
+import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SongAdapter(

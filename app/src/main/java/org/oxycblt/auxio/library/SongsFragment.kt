@@ -11,9 +11,9 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
-import org.oxycblt.auxio.recycler.viewholders.ClickListener
 
 class SongsFragment : Fragment() {
 

@@ -117,8 +117,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 binding.statusIcon.visibility = View.VISIBLE
                 binding.retryButton.visibility = View.VISIBLE
             }
-
-            musicModel.doneWithResponse()
         }
     }
 
