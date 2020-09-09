@@ -19,7 +19,6 @@ enum class MusicLoaderResponse {
 }
 
 // Class that loads music from the FileSystem.
-// FIXME: This thing probably has some memory leaks *somewhere*
 class MusicLoader(private val resolver: ContentResolver) {
 
     var genres = mutableListOf<Genre>()

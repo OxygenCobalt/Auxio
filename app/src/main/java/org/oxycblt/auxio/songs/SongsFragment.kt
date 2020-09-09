@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.library
+package org.oxycblt.auxio.songs
 
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +12,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.adapters.SongAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class SongsFragment : Fragment() {

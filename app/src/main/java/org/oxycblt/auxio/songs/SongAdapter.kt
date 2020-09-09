@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.recycler.adapters
+package org.oxycblt.auxio.songs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

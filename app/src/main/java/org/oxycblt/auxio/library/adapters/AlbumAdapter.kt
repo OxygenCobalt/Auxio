@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.recycler.adapters
+package org.oxycblt.auxio.library.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.library.adapters.ArtistAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.adapters.ArtistAdapter
 import org.oxycblt.auxio.recycler.applyDivider
 
 class LibraryFragment : Fragment() {

@@ -17,9 +17,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
-import org.oxycblt.auxio.library.SongsFragment
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
+import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
 import org.oxycblt.auxio.theme.getTransparentAccent
@@ -102,8 +102,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
-
-        Log.d(this::class.simpleName, musicModel.done.toString())
 
         musicModel.response.observe(
             this,
