@@ -46,6 +46,7 @@ class LibraryFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+
         callback.isEnabled = false
     }
 
