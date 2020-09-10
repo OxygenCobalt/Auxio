@@ -3,7 +3,7 @@ package org.oxycblt.auxio.songs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.SongItemBinding
+import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.models.Song
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
@@ -16,7 +16,7 @@ class SongAdapter(
     override fun getItemCount(): Int = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val binding = SongItemBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context))
 
         // Force the item to *actually* be the screen width so ellipsizing can work.
         binding.root.layoutParams = RecyclerView.LayoutParams(

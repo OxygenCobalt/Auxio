@@ -1,6 +1,6 @@
 package org.oxycblt.auxio.music.models
 
-// Abstraction for mAlbums
+// Abstraction for albums
 data class Artist(
     val id: Long = 0,
     var name: String = "",

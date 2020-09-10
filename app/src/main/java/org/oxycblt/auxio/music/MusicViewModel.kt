@@ -20,7 +20,7 @@ import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
 
-// Storage for music data.
+// ViewModel for music storage. May also be a god object.
 class MusicViewModel(private val app: Application) : ViewModel() {
 
     // Coroutine

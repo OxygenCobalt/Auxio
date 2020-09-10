@@ -1,12 +1,12 @@
 package org.oxycblt.auxio.recycler.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.AlbumItemBinding
+import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.music.models.Album
 
 // Generic ViewHolder for an album
 class AlbumViewHolder(
-    private val binding: AlbumItemBinding
+    private val binding: ItemAlbumBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     // Bind the view w/new data
