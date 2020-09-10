@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -dontobfuscate
+-keep class org.oxycblt.auxio.LoadingFragment

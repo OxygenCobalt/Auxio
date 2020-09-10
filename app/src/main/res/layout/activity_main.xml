@@ -27,7 +27,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/loading_fragment"
-            android:name="org.oxycblt.auxio.library.LoadingFragment"
+            android:name="org.oxycblt.auxio.LoadingFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/tabs"
