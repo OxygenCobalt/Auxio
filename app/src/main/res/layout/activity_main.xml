@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
@@ -26,7 +27,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/loading_fragment"
-            android:name="org.oxycblt.auxio.LoadingFragment"
+            android:name="org.oxycblt.auxio.loading.LoadingFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/tabs"
