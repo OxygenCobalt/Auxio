@@ -3,36 +3,52 @@ package org.oxycblt.auxio.library.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 
 class AlbumAdapter(
     private val data: List<Album>,
     private val listener: ClickListener<Album>
-) : RecyclerView.Adapter<AlbumViewHolder>() {
+) : RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
-        val binding = ItemAlbumBinding.inflate(LayoutInflater.from(parent.context))
-
-        // Force the item to *actually* be the screen width so ellipsizing can work.
-        binding.root.layoutParams = RecyclerView.LayoutParams(
-            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            ItemAlbumBinding.inflate(LayoutInflater.from(parent.context))
         )
-
-        return AlbumViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val album = data[position]
 
-        holder.itemView.setOnClickListener {
-            listener.onClick(album)
+        holder.bind(album)
+    }
+
+    // Generic ViewHolder for an album
+    inner class ViewHolder(
+        private val binding: ItemAlbumBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            // Force the viewholder to *actually* be the screen width so ellipsizing can work.
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
+            )
         }
 
-        holder.bind(album)
+        // Bind the view w/new data
+        fun bind(album: Album) {
+            binding.album = album
+
+            binding.root.setOnClickListener {
+                listener.onClick(album)
+            }
+
+            // Force-update the layout so ellipsizing works.
+            binding.albumName.requestLayout()
+            binding.executePendingBindings()
+        }
     }
 }

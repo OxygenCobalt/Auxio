@@ -1,8 +1,11 @@
 package org.oxycblt.auxio.theme
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 
 // Pairs of the base accent and its theme
@@ -48,4 +51,20 @@ fun Int.toColor(context: Context): Int {
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)
     }
+}
+
+// Apply a custom vertical divider
+fun RecyclerView.applyDivider() {
+    val div = DividerItemDecoration(
+        context,
+        DividerItemDecoration.VERTICAL
+    )
+
+    div.setDrawable(
+        ColorDrawable(
+            R.color.divider_color.toColor(context)
+        )
+    )
+
+    addItemDecoration(div)
 }

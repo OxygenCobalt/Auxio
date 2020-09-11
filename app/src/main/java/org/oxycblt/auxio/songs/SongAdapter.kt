@@ -3,19 +3,20 @@ package org.oxycblt.auxio.songs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.ClickListener
+import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
+import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Song
-import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SongAdapter(
     private val data: List<Song>,
     private val listener: ClickListener<Song>
-) : RecyclerView.Adapter<SongViewHolder>() {
+) : RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context))
 
         // Force the item to *actually* be the screen width so ellipsizing can work.
@@ -23,16 +24,38 @@ class SongAdapter(
             RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
         )
 
-        return SongViewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val song = data[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(data[position])
+    }
 
-        holder.itemView.setOnClickListener {
-            listener.onClick(song)
+    // Generic ViewHolder for an album
+    inner class ViewHolder(
+        private val binding: ItemSongBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            // Force the viewholder to *actually* be the screen width so ellipsizing can work.
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
+            )
         }
 
-        holder.bind(song)
+        // Bind the view w/new data
+        fun bind(song: Song) {
+            binding.song = song
+
+            binding.root.setOnClickListener {
+                listener.onClick(song)
+            }
+
+            // Force-update the layouts so ellipsizing works.
+            binding.songName.requestLayout()
+            binding.songInfo.requestLayout()
+
+            binding.executePendingBindings()
+        }
     }
 }

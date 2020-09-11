@@ -5,20 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import org.oxycblt.auxio.MainFragment
+import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.MainFragmentDirections
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.adapters.ArtistAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.applyDivider
+import org.oxycblt.auxio.theme.applyDivider
 
 class LibraryFragment : Fragment() {
 

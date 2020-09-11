@@ -3,6 +3,7 @@ package org.oxycblt.auxio.loading
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -88,10 +88,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     // Check for two things:
     // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE permission.
     // - If Auxio straight up doesn't have the READ_EXTERNAL_STORAGE permission.
@@ -107,11 +103,14 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         binding.loadingBar.visibility = View.GONE
 
         if (response == MusicLoaderResponse.DONE) {
+            exitTransition = TransitionInflater.from(requireContext()).inflateTransition(
+                R.transition.transition_to_main
+            )
+
             findNavController().navigate(
                 LoadingFragmentDirections.actionToMain()
             )
-        }
-        else {
+        } else {
             binding.let { binding ->
                 binding.errorText.text =
                     if (response == MusicLoaderResponse.NO_MUSIC)

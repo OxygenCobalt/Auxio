@@ -25,3 +25,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 }
+
+// I wish I knew somewhere else to put this
+class ClickListener<T>(val onClick: (T) -> Unit)

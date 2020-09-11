@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.applyDivider
+import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
 
