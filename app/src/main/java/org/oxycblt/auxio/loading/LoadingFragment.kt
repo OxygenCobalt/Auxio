@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.music.MusicViewModel
@@ -20,6 +21,8 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
+    // LoadingFragment is [hopefully] going to be the first one to have to create musicModel,
+    // so pass a factory instance so that the model has access to the application resources.
     private val musicModel: MusicViewModel by activityViewModels {
         MusicViewModel.Factory(requireActivity().application)
     }
@@ -32,9 +35,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_loading, container, false
-        )
+        binding = FragmentLoadingBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
         binding.musicModel = musicModel
@@ -87,6 +88,10 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
     // Check for two things:
     // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE permission.
     // - If Auxio straight up doesn't have the READ_EXTERNAL_STORAGE permission.
@@ -98,13 +103,16 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         ) == PackageManager.PERMISSION_DENIED
     }
 
-    private fun onMusicLoadResponse(repoResponse: MusicLoaderResponse?) {
-        // Don't run this if the value is null, Which is what the value changes to after
-        // this is run.
-        repoResponse?.let { response ->
-            binding.loadingBar.visibility = View.GONE
+    private fun onMusicLoadResponse(response: MusicLoaderResponse?) {
+        binding.loadingBar.visibility = View.GONE
 
-            if (response != MusicLoaderResponse.DONE) {
+        if (response == MusicLoaderResponse.DONE) {
+            findNavController().navigate(
+                LoadingFragmentDirections.actionToMain()
+            )
+        }
+        else {
+            binding.let { binding ->
                 binding.errorText.text =
                     if (response == MusicLoaderResponse.NO_MUSIC)
                         getString(R.string.error_no_music)
@@ -126,9 +134,9 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         // along with a GRANT button
 
         binding.loadingBar.visibility = View.GONE
-        binding.errorText.visibility = View.VISIBLE
         binding.statusIcon.visibility = View.VISIBLE
         binding.grantButton.visibility = View.VISIBLE
+        binding.errorText.visibility = View.VISIBLE
 
         binding.errorText.text = getString(R.string.error_no_perms)
     }

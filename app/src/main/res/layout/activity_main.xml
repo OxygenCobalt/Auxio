@@ -1,53 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.fragment.app.FragmentContainerView
+    android:id="@+id/nav_host"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:defaultNavHost="true"
+    app:navGraph="@navigation/nav_main"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <variable
-            name="musicModel"
-            type="org.oxycblt.auxio.music.MusicViewModel" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/tabs"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/loading_fragment"
-            android:name="org.oxycblt.auxio.loading.LoadingFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/tabs"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/tab_menu_size"
-            android:layout_gravity="bottom"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tabGravity="fill"
-            app:tabIconTint="?android:attr/colorPrimary"
-            app:tabIconTintMode="src_in"
-            app:tabIndicator="@drawable/indicator"
-            app:tabIndicatorColor="?android:attr/colorPrimary"
-            app:tabMode="fixed"
-            app:tabRippleColor="@color/selection_color" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    xmlns:android="http://schemas.android.com/apk/res/android" />

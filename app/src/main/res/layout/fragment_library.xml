@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="artist"
-            type="org.oxycblt.auxio.music.models.Artist" />
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,10 +19,12 @@
             app:title="@string/title_library_fragment"
             tools:titleTextColor="@color/blue" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{artist.name}" />
-        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/library_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_album" />
     </LinearLayout>
 </layout>

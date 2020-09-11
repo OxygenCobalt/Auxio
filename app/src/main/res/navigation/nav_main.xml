@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/loading_fragment">
+    <fragment
+        android:id="@+id/loading_fragment"
+        android:name="org.oxycblt.auxio.loading.LoadingFragment"
+        android:label="LoadingFragment"
+        tools:layout="@layout/fragment_loading">
+        <action
+            android:id="@+id/action_to_main"
+            app:destination="@id/main_fragment"
+            app:popUpTo="@id/loading_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="org.oxycblt.auxio.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_show_artist"
+            app:destination="@id/artist_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/artist_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"
+        android:label="ArtistDetailFragment"
+        tools:layout="@layout/fragment_artist_detail">
+        <argument
+            android:name="artistId"
+            app:argType="long" />
+    </fragment>
+</navigation>

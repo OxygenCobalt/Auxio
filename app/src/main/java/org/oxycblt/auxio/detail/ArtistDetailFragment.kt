@@ -19,9 +19,7 @@ class ArtistDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentArtistDetailBinding>(
-            inflater, R.layout.fragment_artist_detail, container, false
-        )
+        val binding = FragmentArtistDetailBinding.inflate(inflater)
 
         // I honestly don't want to turn of the any data classes into a parcelables due to how
         // many lists they store, so just pick up the artist id and find it from musicModel.
