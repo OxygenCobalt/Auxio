@@ -11,4 +11,10 @@
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textColor">?android:attr/colorPrimary</item>
     </style>
+
+    <style name="DetailHeader">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">?android:attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/inter_black</item>
+    </style>
 </resources>

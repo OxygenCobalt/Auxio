@@ -16,7 +16,7 @@
     <string name="placeholder_unknown_artist">Unknown Artist</string>
     <string name="placeholder_unknown_album">Unknown Album</string>
 
-    <string name="format_song_info">%1$s / %2$s</string>
+    <string name="format_info">%1$s / %2$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
 
     <plurals name="format_song_count">

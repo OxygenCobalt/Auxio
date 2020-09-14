@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.TextView
@@ -69,8 +70,7 @@ fun TextView.getAlbumSongs(album: Album) {
 }
 
 @BindingAdapter("artistCounts")
-fun TextView.getArtistCounts(artist: Artist) {
-    // Get the quantity string for both albums & artists, and then stitch them together.
+fun TextView.bindArtistCounts(artist: Artist) {
     val albums = context.resources.getQuantityString(
         R.plurals.format_albums, artist.numAlbums, artist.numAlbums
     )
@@ -79,4 +79,19 @@ fun TextView.getArtistCounts(artist: Artist) {
     )
 
     text = context.getString(R.string.format_double_counts, albums, songs)
+}
+
+@BindingAdapter("artistGenre")
+fun TextView.getArtistGenre(artist: Artist) {
+    // If the artist has more than one genre, pick the most used one.
+    // TODO: Add an option to display all genres.
+    val genre: String = if (artist.genres.size > 1) {
+        val genres = artist.genres.groupBy { it.name }
+
+        genres.keys.sortedByDescending { genres[it]?.size }[0]
+    } else {
+        artist.genres[0].name
+    }
+
+    text = genre
 }

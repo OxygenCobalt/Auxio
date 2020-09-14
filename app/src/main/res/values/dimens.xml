@@ -13,7 +13,11 @@
 
     <dimen name="cover_size_compact">44dp</dimen>
     <dimen name="cover_size_normal">56dp</dimen>
-    <dimen name="cover_size_huge">168dp</dimen>
+    <dimen name="cover_size_huge">230dp</dimen>
+
+    <dimen name="detail_header_size_max">26sp</dimen>
+    <dimen name="detail_header_size_min">10sp</dimen>'
+    <dimen name="detail_header_size_increment">2sp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

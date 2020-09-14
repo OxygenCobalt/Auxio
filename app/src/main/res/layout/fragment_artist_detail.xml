@@ -13,8 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -31,13 +31,61 @@
             android:id="@+id/artist_image"
             android:layout_width="@dimen/cover_size_huge"
             android:layout_height="@dimen/cover_size_huge"
-            android:layout_margin="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
             app:artistImage="@{artist}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            tools:ignore="ContentDescription"
             tools:src="@drawable/ic_artist"
             tools:tint="@color/blue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/artist_name"
+            style="@style/DetailHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:fontFamily="@font/inter_black"
+            android:text="@{artist.name}"
+            android:textSize="@dimen/detail_header_size_max"
+            app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
+            app:autoSizeMinTextSize="@dimen/detail_header_size_min"
+            app:autoSizeStepGranularity="@dimen/detail_header_size_increment"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_image"
+            tools:text="Artist Name"
+            tools:textColor="@color/blue" />
+
+        <TextView
+            android:id="@+id/artist_genre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{artist.genres.get(0).getName()}"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginStart="@dimen/margin_medium"
+            app:artistGenre="@{artist}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_name"
+            tools:text="Genre Name" />
+
+        <TextView
+            android:id="@+id/artist_counts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginStart="@dimen/margin_medium"
+            app:artistCounts="@{artist}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_genre"
+            tools:text="2 Albums, 20 Songs" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

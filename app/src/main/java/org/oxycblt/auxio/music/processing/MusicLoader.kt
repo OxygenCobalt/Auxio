@@ -81,8 +81,7 @@ class MusicLoader(private val resolver: ContentResolver) {
                 var name = cursor.getString(nameIndex) ?: ""
 
                 // If a genre is still in an old int-based format [Android formats it as "(INT)"],
-                // convert that to the corresponding ID3 genre. Really hope anyone doesn't have
-                // a genre that contains parentheses.
+                // convert that to the corresponding ID3 genre.
                 if (name.contains(Regex("[0123456789)]"))) {
                     name = name.toNamedGenre()
                 }
