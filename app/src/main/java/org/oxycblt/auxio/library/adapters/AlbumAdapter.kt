@@ -9,7 +9,8 @@ import org.oxycblt.auxio.music.models.Album
 
 class AlbumAdapter(
     private val data: List<Album>,
-    private val listener: ClickListener<Album>
+    private val listener: ClickListener<Album>,
+    private val isLarge: Boolean
 ) : RecyclerView.Adapter<AlbumAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = data.size

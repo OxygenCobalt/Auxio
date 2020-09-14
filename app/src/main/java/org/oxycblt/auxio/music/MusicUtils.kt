@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
-import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.TextView
@@ -66,7 +65,9 @@ fun Long.toAlbumArtURI(): Uri {
 // Format the amount of songs in an album
 @BindingAdapter("songCount")
 fun TextView.getAlbumSongs(album: Album) {
-    text = context.resources.getQuantityString(R.plurals.format_song_count, album.numSongs)
+    text = context.resources.getQuantityString(
+        R.plurals.format_song_count, album.numSongs, album.numSongs
+    )
 }
 
 @BindingAdapter("artistCounts")

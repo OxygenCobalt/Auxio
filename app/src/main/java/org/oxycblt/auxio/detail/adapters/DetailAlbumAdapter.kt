@@ -1,32 +1,34 @@
-package org.oxycblt.auxio.library.adapters
+package org.oxycblt.auxio.detail.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.ClickListener
-import org.oxycblt.auxio.databinding.ItemArtistBinding
-import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.databinding.ItemAlbumBigBinding
+import org.oxycblt.auxio.music.models.Album
 
-class ArtistAdapter(
-    private val data: List<Artist>,
-    private val listener: ClickListener<Artist>
-) : RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
+class DetailAlbumAdapter(
+    private val data: List<Album>,
+    private val listener: ClickListener<Album>
+) : RecyclerView.Adapter<DetailAlbumAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemArtistBinding.inflate(LayoutInflater.from(parent.context))
+            ItemAlbumBigBinding.inflate(LayoutInflater.from(parent.context))
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position])
+        val album = data[position]
+
+        holder.bind(album)
     }
 
-    // Generic ViewHolder for an artist
+    // Generic ViewHolder for an album
     inner class ViewHolder(
-        private val binding: ItemArtistBinding
+        private val binding: ItemAlbumBigBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -37,13 +39,15 @@ class ArtistAdapter(
         }
 
         // Bind the view w/new data
-        fun bind(artist: Artist) {
-            binding.artist = artist
+        fun bind(album: Album) {
+            binding.album = album
 
-            binding.root.setOnClickListener { listener.onClick(artist) }
+            binding.root.setOnClickListener {
+                listener.onClick(album)
+            }
 
             // Force-update the layout so ellipsizing works.
-            binding.artistName.requestLayout()
+            binding.albumName.requestLayout()
             binding.executePendingBindings()
         }
     }

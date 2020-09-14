@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
+import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.theme.applyDivider
 
 class ArtistDetailFragment : Fragment() {
 
@@ -24,7 +27,19 @@ class ArtistDetailFragment : Fragment() {
         val musicModel: MusicViewModel by activityViewModels()
         val artistId = ArtistDetailFragmentArgs.fromBundle(requireArguments()).artistId
 
-        binding.artist = musicModel.artists.value?.find { it.id == artistId }
+        val artist = musicModel.artists.value?.find { it.id == artistId }!!
+
+        binding.lifecycleOwner = this
+        binding.artist = artist
+
+        binding.albumRecycler.adapter = DetailAlbumAdapter(
+            artist.albums,
+            ClickListener {
+                Log.d(this::class.simpleName, it.name)
+            }
+        )
+        binding.albumRecycler.applyDivider()
+        binding.albumRecycler.setHasFixedSize(true)
 
         Log.d(this::class.simpleName, "Fragment created.")
 

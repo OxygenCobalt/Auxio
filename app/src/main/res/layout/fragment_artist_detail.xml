@@ -10,10 +10,9 @@
             type="org.oxycblt.auxio.music.models.Artist" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -27,65 +26,90 @@
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             tools:titleTextColor="@color/blue" />
 
-        <ImageView
-            android:id="@+id/artist_image"
-            android:layout_width="@dimen/cover_size_huge"
-            android:layout_height="@dimen/cover_size_huge"
-            android:layout_marginTop="@dimen/margin_medium"
-            app:artistImage="@{artist}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            tools:src="@drawable/ic_artist"
-            tools:tint="@color/blue" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/artist_name"
-            style="@style/DetailHeader"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:layout_marginStart="@dimen/margin_medium"
-            android:fontFamily="@font/inter_black"
-            android:text="@{artist.name}"
-            android:textSize="@dimen/detail_header_size_max"
-            app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
-            app:autoSizeMinTextSize="@dimen/detail_header_size_min"
-            app:autoSizeStepGranularity="@dimen/detail_header_size_increment"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/artist_image"
-            tools:text="Artist Name"
-            tools:textColor="@color/blue" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/artist_genre"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{artist.genres.get(0).getName()}"
-            android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="?android:attr/textColorSecondary"
-            android:layout_marginStart="@dimen/margin_medium"
-            app:artistGenre="@{artist}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/artist_name"
-            tools:text="Genre Name" />
+                <ImageView
+                    android:id="@+id/artist_image"
+                    android:layout_width="@dimen/cover_size_huge"
+                    android:layout_height="@dimen/cover_size_huge"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    app:artistImage="@{artist}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_artist"
+                    tools:tint="@color/blue" />
 
-        <TextView
-            android:id="@+id/artist_counts"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="?android:attr/textColorSecondary"
-            android:layout_marginStart="@dimen/margin_medium"
-            app:artistCounts="@{artist}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/artist_genre"
-            tools:text="2 Albums, 20 Songs" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/artist_name"
+                    style="@style/DetailHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:fontFamily="@font/inter_black"
+                    android:text="@{artist.name}"
+                    android:textSize="@dimen/detail_header_size_max"
+                    app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
+                    app:autoSizeMinTextSize="@dimen/detail_header_size_min"
+                    app:autoSizeStepGranularity="@dimen/detail_header_size_increment"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_image"
+                    tools:text="Artist Name"
+                    tools:textColor="@color/blue" />
 
+                <TextView
+                    android:id="@+id/artist_genre"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    app:artistGenre="@{artist}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_name"
+                    tools:text="Genre Name" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/artist_counts"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    app:artistCounts="@{artist}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_genre"
+                    tools:text="2 Albums, 20 Songs" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/album_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/margin_small"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:nestedScrollingEnabled="true"
+                    android:overScrollMode="never"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:listitem="@layout/item_album" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
 </layout>
