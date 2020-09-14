@@ -10,7 +10,7 @@
             type="org.oxycblt.auxio.music.models.Artist" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -22,14 +22,22 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_library_fragment"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
             tools:titleTextColor="@color/blue" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{artist.name}" />
+        <ImageView
+            android:id="@+id/artist_image"
+            android:layout_width="@dimen/cover_size_huge"
+            android:layout_height="@dimen/cover_size_huge"
+            android:layout_margin="@dimen/margin_medium"
+            app:artistImage="@{artist}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_artist"
+            tools:tint="@color/blue" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

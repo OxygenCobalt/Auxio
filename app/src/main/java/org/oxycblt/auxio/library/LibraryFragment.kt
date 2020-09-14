@@ -19,6 +19,7 @@ import org.oxycblt.auxio.theme.applyDivider
 class LibraryFragment : Fragment() {
 
     private val musicModel: MusicViewModel by activityViewModels()
+    private val libraryModel: LibraryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,8 +30,11 @@ class LibraryFragment : Fragment() {
 
         binding.libraryRecycler.adapter = ArtistAdapter(
             musicModel.artists.value!!,
-            ClickListener { navToArtist(it) }
+            ClickListener {
+                navToArtist(it)
+            }
         )
+
         binding.libraryRecycler.applyDivider()
         binding.libraryRecycler.setHasFixedSize(true)
 
@@ -39,11 +43,21 @@ class LibraryFragment : Fragment() {
         return binding.root
     }
 
-    private fun navToArtist(artist: Artist) {
-        // Don't navigate to a fragment multiple times if multiple items are accepted.
+    override fun onResume() {
+        super.onResume()
 
-        findNavController().navigate(
-            MainFragmentDirections.actionShowArtist(artist.id)
-        )
+        libraryModel.isAlreadyNavigating = false
+    }
+
+    private fun navToArtist(artist: Artist) {
+        if (!libraryModel.isAlreadyNavigating) {
+            libraryModel.isAlreadyNavigating = true
+
+            // When navigation, pass the artistImage of the item as a shared element to create
+            // the image popup.
+            findNavController().navigate(
+                MainFragmentDirections.actionShowArtist(artist.id)
+            )
+        }
     }
 }

@@ -33,10 +33,7 @@ private val ACCENTS = listOf(
 
 val accent = ACCENTS[5]
 
-fun getInactiveAlpha(color: Int): Int {
-    return if (color == R.color.yellow) 100 else 150
-}
-
+// Get the transparent variant of a color int
 fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
     return ColorUtils.setAlphaComponent(
         ContextCompat.getColor(context, color),
@@ -44,6 +41,12 @@ fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
     )
 }
 
+// Get the inactive transparency of an accent
+fun getInactiveAlpha(color: Int): Int {
+    return if (color == R.color.yellow) 100 else 150
+}
+
+// Convert an integer to a color
 fun Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)

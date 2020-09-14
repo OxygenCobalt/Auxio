@@ -5,11 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.ClickListener
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.theme.applyDivider
@@ -25,9 +23,7 @@ class SongsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentSongsBinding>(
-            inflater, R.layout.fragment_songs, container, false
-        )
+        val binding = FragmentSongsBinding.inflate(inflater)
 
         binding.songRecycler.adapter = SongAdapter(
             musicModel.songs.value!!,

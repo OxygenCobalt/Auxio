@@ -103,9 +103,8 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         binding.loadingBar.visibility = View.GONE
 
         if (response == MusicLoaderResponse.DONE) {
-            exitTransition = TransitionInflater.from(requireContext()).inflateTransition(
-                R.transition.transition_to_main
-            )
+            exitTransition = TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.transition_to_main)
 
             findNavController().navigate(
                 LoadingFragmentDirections.actionToMain()

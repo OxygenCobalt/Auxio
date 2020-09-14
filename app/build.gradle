@@ -76,7 +76,7 @@ dependencies {
     // Lint
     ktlint "com.pinterest:ktlint:0.37.2"
 
-    // Memory Leak checkin
+    // Memory Leak checking
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 }
 

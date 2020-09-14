@@ -22,7 +22,11 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_show_artist"
-            app:destination="@id/artist_detail_fragment" />
+            app:destination="@id/artist_detail_fragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/artist_detail_fragment"

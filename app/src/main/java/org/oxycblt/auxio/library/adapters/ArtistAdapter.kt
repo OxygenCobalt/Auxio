@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.ClickListener
-import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
-import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 
 class ArtistAdapter(
@@ -47,9 +45,7 @@ class ArtistAdapter(
         fun bind(artist: Artist) {
             binding.artist = artist
 
-            binding.root.setOnClickListener {
-                listener.onClick(artist)
-            }
+            binding.root.setOnClickListener { listener.onClick(artist) }
 
             // Force-update the layout so ellipsizing works.
             binding.artistName.requestLayout()
