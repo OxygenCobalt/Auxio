@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.ClickListener
-import org.oxycblt.auxio.databinding.ItemAlbumBigBinding
+import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.music.models.Album
 
 class DetailAlbumAdapter(
@@ -16,19 +16,17 @@ class DetailAlbumAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemAlbumBigBinding.inflate(LayoutInflater.from(parent.context))
+            ItemAlbumBinding.inflate(LayoutInflater.from(parent.context))
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val album = data[position]
-
-        holder.bind(album)
+        holder.bind(data[position])
     }
 
     // Generic ViewHolder for an album
     inner class ViewHolder(
-        private val binding: ItemAlbumBigBinding
+        private val binding: ItemAlbumBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {

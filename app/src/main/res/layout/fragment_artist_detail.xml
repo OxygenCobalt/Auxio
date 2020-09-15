@@ -21,14 +21,14 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/title_library_fragment"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:title="@string/title_library_fragment"
             tools:titleTextColor="@color/blue" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -94,18 +94,39 @@
                     app:layout_constraintTop_toBottomOf="@+id/artist_genre"
                     tools:text="2 Albums, 20 Songs" />
 
+
+                <TextView
+                    android:id="@+id/header_albums"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/label_albums"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/inter_bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/padding_medium"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:background="@drawable/header_dividers"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts"
+                    tools:layout_editor_absoluteX="60dp" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/album_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginTop="@dimen/margin_small"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="true"
                     android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artist_counts"
-                    tools:layout_editor_absoluteX="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/header_albums"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:itemCount="4"
+                    tools:layout_editor_absoluteX="0dp"
                     tools:listitem="@layout/item_album" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

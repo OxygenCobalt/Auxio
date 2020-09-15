@@ -15,14 +15,9 @@ class SongAdapter(
     override fun getItemCount(): Int = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context))
-
-        // Force the item to *actually* be the screen width so ellipsizing can work.
-        binding.root.layoutParams = RecyclerView.LayoutParams(
-            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
+        return ViewHolder(
+            ItemSongBinding.inflate(LayoutInflater.from(parent.context))
         )
-
-        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
