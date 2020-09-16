@@ -16,8 +16,7 @@
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
-            app:title="@string/title_all_songs"
-            tools:titleTextColor="@color/blue" />
+            app:title="@string/title_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"

@@ -3,7 +3,6 @@ package org.oxycblt.auxio.loading
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -100,12 +99,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
     }
 
     private fun onMusicLoadResponse(response: MusicLoaderResponse?) {
-        binding.loadingBar.visibility = View.GONE
-
         if (response == MusicLoaderResponse.DONE) {
-            exitTransition = TransitionInflater.from(requireContext())
-                .inflateTransition(R.transition.transition_to_main)
-
             findNavController().navigate(
                 LoadingFragmentDirections.actionToMain()
             )
@@ -119,6 +113,8 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
                 // If the response wasn't a success, then show the specific error message
                 // depending on which error response was given, along with a retry button
+                binding.loadingBar.visibility = View.GONE
+
                 binding.errorText.visibility = View.VISIBLE
                 binding.statusIcon.visibility = View.VISIBLE
                 binding.retryButton.visibility = View.VISIBLE

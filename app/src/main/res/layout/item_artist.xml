@@ -28,8 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:artistImage="@{artist}"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_artist"
-            tools:tint="@color/blue" />
+            tools:src="@drawable/ic_artist" />
 
         <TextView
             android:id="@+id/artist_name"

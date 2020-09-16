@@ -27,8 +27,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="ifContentScrolls">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -45,8 +44,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/ic_artist"
-                    tools:tint="@color/blue" />
+                    tools:src="@drawable/ic_artist" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/artist_name"
@@ -56,9 +54,7 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:fontFamily="@font/inter_black"
                     android:text="@{artist.name}"
-                    android:textSize="@dimen/detail_header_size_max"
                     app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
                     app:autoSizeMinTextSize="@dimen/detail_header_size_min"
                     app:autoSizeStepGranularity="@dimen/detail_header_size_increment"
@@ -67,8 +63,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_image"
-                    tools:text="Artist Name"
-                    tools:textColor="@color/blue" />
+                    tools:text="Artist Name" />
 
                 <TextView
                     android:id="@+id/artist_genre"
@@ -93,7 +88,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_genre"
                     tools:text="2 Albums, 20 Songs" />
-
 
                 <TextView
                     android:id="@+id/header_albums"

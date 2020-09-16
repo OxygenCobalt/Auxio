@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!--
+    All the base themes/accents.
+    -->
     <style name="Theme.Red" parent="Theme.Base">
         <item name="colorPrimary">@color/red</item>
         <item name="colorSecondary">@color/red</item>

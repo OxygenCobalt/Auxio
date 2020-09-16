@@ -12,6 +12,8 @@
         <action
             android:id="@+id/action_to_main"
             app:destination="@id/main_fragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_open_exit"
             app:popUpTo="@id/loading_fragment"
             app:popUpToInclusive="true" />
     </fragment>

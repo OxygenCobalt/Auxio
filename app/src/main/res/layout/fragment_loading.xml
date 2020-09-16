@@ -27,8 +27,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:indeterminateTint="@color/blue" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <ImageView
             android:id="@+id/status_icon"
@@ -43,7 +42,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loading_bar"
             app:srcCompat="@drawable/ic_error"
-            tools:tint="@color/blue"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -78,7 +76,6 @@
             app:layout_constraintTop_toBottomOf="@+id/error_text"
             app:layout_constraintBottom_toTopOf="@+id/grant_button"
             app:layout_constraintVertical_bias="0.673"
-            tools:textColor="@color/blue"
             tools:visibility="visible" />
 
         <Button
@@ -95,7 +92,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/retry_button"
-            tools:textColor="@color/blue"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
