@@ -38,5 +38,21 @@
         <argument
             android:name="artistId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_show_album"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            app:destination="@id/album_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/album_detail_fragment"
+        android:name="org.oxycblt.auxio.detail.AlbumDetailFragment"
+        android:label="AlbumDetailFragment"
+        tools:layout="@layout/fragment_album_detail">
+        <argument
+            android:name="albumId"
+            app:argType="long" />
     </fragment>
 </navigation>

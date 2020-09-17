@@ -50,11 +50,10 @@ class LibraryFragment : Fragment() {
     }
 
     private fun navToArtist(artist: Artist) {
+        // Don't navigate if an item already has been selected.
         if (!libraryModel.isAlreadyNavigating) {
             libraryModel.isAlreadyNavigating = true
 
-            // When navigation, pass the artistImage of the item as a shared element to create
-            // the image popup.
             findNavController().navigate(
                 MainFragmentDirections.actionShowArtist(artist.id)
             )

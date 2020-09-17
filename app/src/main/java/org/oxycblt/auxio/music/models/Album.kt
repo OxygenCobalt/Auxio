@@ -8,7 +8,7 @@ data class Album(
     var name: String = "",
     val artistName: String = "", // only used for sorting. Use artist.name instead.
     val coverUri: Uri = Uri.EMPTY,
-    val year: Int = 0
+    val year: String = ""
 ) {
     lateinit var artist: Artist
 

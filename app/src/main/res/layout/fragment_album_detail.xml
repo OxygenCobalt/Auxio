@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="album"
+            type="org.oxycblt.auxio.music.models.Album" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?android:attr/windowBackground"
+            android:elevation="@dimen/elevation_normal"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:title="@string/title_library_fragment"
+            tools:titleTextColor="@color/blue" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/cover"
+                    android:layout_width="@dimen/cover_size_huge"
+                    android:layout_height="@dimen/cover_size_huge"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    app:coverArt="@{album}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_album" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/artist_name"
+                    style="@style/DetailHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:text="@{album.name}"
+                    app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
+                    app:autoSizeMinTextSize="@dimen/detail_header_size_min"
+                    app:autoSizeStepGranularity="@dimen/detail_header_size_increment"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cover"
+                    tools:text="Album Name" />
+
+                <TextView
+                    android:id="@+id/album_year"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:text="@{album.year}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_name"
+                    tools:text="2020" />
+
+                <TextView
+                    android:id="@+id/artist_counts"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    app:songCount="@{album}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/album_year"
+                    tools:text="20 Songs" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+</layout>

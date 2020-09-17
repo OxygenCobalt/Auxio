@@ -82,17 +82,8 @@ fun TextView.bindArtistCounts(artist: Artist) {
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
+// TODO: Add option to just list all genres.
 @BindingAdapter("artistGenre")
 fun TextView.getArtistGenre(artist: Artist) {
-    // If the artist has more than one genre, pick the most used one.
-    // TODO: Add an option to display all genres.
-    val genre: String = if (artist.genres.size > 1) {
-        val genres = artist.genres.groupBy { it.name }
-
-        genres.keys.sortedByDescending { genres[it]?.size }[0]
-    } else {
-        artist.genres[0].name
-    }
-
-    text = genre
+    text = artist.genre
 }
