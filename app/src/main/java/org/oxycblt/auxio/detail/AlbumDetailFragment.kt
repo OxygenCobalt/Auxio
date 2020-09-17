@@ -8,8 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
+import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.theme.applyDivider
 
 class AlbumDetailFragment : Fragment() {
 
@@ -29,6 +32,15 @@ class AlbumDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.album = album
+
+        binding.songRecycler.adapter = DetailSongAdapter(
+            album.songs,
+            ClickListener {
+                Log.d(this::class.simpleName, it.name)
+            }
+        )
+        binding.songRecycler.applyDivider()
+        binding.songRecycler.setHasFixedSize(true)
 
         Log.d(this::class.simpleName, "Fragment created.")
 

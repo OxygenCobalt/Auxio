@@ -191,7 +191,7 @@ class MusicLoader(private val resolver: ContentResolver) {
                 albums.add(
                     Album(
                         id, name, artist,
-                        coverUri, year.toString()
+                        coverUri, year
                     )
                 )
             }

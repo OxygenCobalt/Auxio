@@ -40,6 +40,8 @@ class MusicSorter(
                 album.songs.add(song)
             }
 
+            album.finalize()
+
             unknownSongs.removeAll(albumSongs)
         }
 

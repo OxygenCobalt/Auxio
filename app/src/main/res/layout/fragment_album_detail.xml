@@ -47,7 +47,7 @@
                     tools:src="@drawable/ic_album" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/artist_name"
+                    android:id="@+id/album_name"
                     style="@style/DetailHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -66,31 +66,62 @@
                     tools:text="Album Name" />
 
                 <TextView
+                    android:id="@+id/artist_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:text="@{album.artist.name}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/album_name"
+                    tools:text="Artist Name" />
+
+                <TextView
                     android:id="@+id/album_year"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{album.year}"
+                    android:text="@{String.valueOf(album.year)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_name"
                     tools:text="2020" />
 
                 <TextView
-                    android:id="@+id/artist_counts"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:layout_marginStart="@dimen/margin_medium"
-                    app:songCount="@{album}"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/header_songs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/label_songs"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/inter_bold"
+                    android:layout_marginTop="@dimen/padding_medium"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:background="@drawable/header_dividers"
                     app:layout_constraintTop_toBottomOf="@+id/album_year"
-                    tools:text="20 Songs" />
+                    tools:layout_editor_absoluteX="60dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/song_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:nestedScrollingEnabled="true"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/header_songs"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:itemCount="4"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:listitem="@layout/item_album_song" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
-
 </layout>
