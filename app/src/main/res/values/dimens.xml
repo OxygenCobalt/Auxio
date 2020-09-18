@@ -17,6 +17,7 @@
     <dimen name="cover_size_huge">230dp</dimen>
 
     <dimen name="track_number_size">32dp</dimen>
+    <dimen name="track_number_text_size">20sp</dimen>
 
     <dimen name="detail_header_size_max">26sp</dimen>
     <dimen name="detail_header_size_min">10sp</dimen>'

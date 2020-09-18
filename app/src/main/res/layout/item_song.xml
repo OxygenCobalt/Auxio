@@ -22,6 +22,7 @@
             android:id="@+id/cover"
             android:layout_width="@dimen/cover_size_compact"
             android:layout_height="@dimen/cover_size_compact"
+            android:contentDescription="@{@string/description_album_cover(song.name)}"
             app:coverArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

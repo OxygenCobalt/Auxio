@@ -188,15 +188,11 @@ class MusicLoader(
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                var name = cursor.getString(nameIndex) ?: albumPlaceholder
-                val artist = cursor.getString(artistIndex)
+                val name = cursor.getString(nameIndex) ?: albumPlaceholder
+                val artist = cursor.getString(artistIndex) ?: artistPlaceholder
                 val year = cursor.getInt(yearIndex)
 
                 val coverUri = id.toAlbumArtURI()
-
-                // Sometimes the android system will return 0 for an album name, update
-                // it properly if that happens.
-                name = if (name == "0") albumPlaceholder else name
 
                 albums.add(
                     Album(

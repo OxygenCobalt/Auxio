@@ -22,12 +22,11 @@
             android:id="@+id/artist_image"
             android:layout_width="@dimen/cover_size_normal"
             android:layout_height="@dimen/cover_size_normal"
-            android:src="@drawable/ic_exit"
+            android:contentDescription="@{@string/description_artist_image(artist.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:artistImage="@{artist}"
-            tools:ignore="ContentDescription"
             tools:src="@drawable/ic_artist" />
 
         <TextView
