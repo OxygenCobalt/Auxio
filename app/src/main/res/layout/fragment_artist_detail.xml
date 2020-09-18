@@ -90,7 +90,7 @@
                     tools:text="2 Albums, 20 Songs" />
 
                 <TextView
-                    android:id="@+id/header_albums"
+                    android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/label_albums"
@@ -103,8 +103,7 @@
                     android:paddingTop="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"
                     android:background="@drawable/header_dividers"
-                    app:layout_constraintTop_toBottomOf="@+id/artist_counts"
-                    tools:layout_editor_absoluteX="60dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/album_recycler"
@@ -115,7 +114,7 @@
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header_albums"
+                    app:layout_constraintTop_toBottomOf="@+id/header"
                     tools:itemCount="4"
                     tools:listitem="@layout/item_album" />
 

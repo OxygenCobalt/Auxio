@@ -69,20 +69,32 @@ class MusicViewModel(private val app: Application) : ViewModel() {
         ioScope.launch {
             val start = System.currentTimeMillis()
 
-            val loader = MusicLoader(app.contentResolver)
+            // Get the placeholder strings, which are used by MusicLoader & MusicSorter for
+            // any music that doesn't have metadata.
+            val genrePlaceholder = app.getString(R.string.placeholder_genre)
+            val artistPlaceholder = app.getString(R.string.placeholder_artist)
+            val albumPlaceholder = app.getString(R.string.placeholder_album)
+
+            val loader = MusicLoader(
+                app.contentResolver,
+
+                genrePlaceholder,
+                artistPlaceholder,
+                albumPlaceholder
+            )
 
             withContext(Dispatchers.Main) {
                 if (loader.response == MusicLoaderResponse.DONE) {
-                    // If the loading succeeds, then process the songs and set them.
+                    // If the loading succeeds, then sort the songs and update the value
                     val sorter = MusicSorter(
                         loader.genres,
                         loader.artists,
                         loader.albums,
                         loader.songs,
 
-                        app.getString(R.string.placeholder_unknown_genre),
-                        app.getString(R.string.placeholder_unknown_artist),
-                        app.getString(R.string.placeholder_unknown_album)
+                        genrePlaceholder,
+                        artistPlaceholder,
+                        albumPlaceholder
                     )
 
                     mSongs.value = sorter.songs.toList()

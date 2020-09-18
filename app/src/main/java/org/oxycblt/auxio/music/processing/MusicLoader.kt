@@ -19,7 +19,13 @@ enum class MusicLoaderResponse {
 }
 
 // Class that loads music from the FileSystem.
-class MusicLoader(private val resolver: ContentResolver) {
+class MusicLoader(
+    private val resolver: ContentResolver,
+
+    private val genrePlaceholder: String,
+    private val artistPlaceholder: String,
+    private val albumPlaceholder: String,
+) {
 
     var genres = mutableListOf<Genre>()
     var artists = mutableListOf<Artist>()
@@ -78,12 +84,12 @@ class MusicLoader(private val resolver: ContentResolver) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                var name = cursor.getString(nameIndex) ?: ""
+                var name = cursor.getString(nameIndex) ?: genrePlaceholder
 
                 // If a genre is still in an old int-based format [Android formats it as "(INT)"],
                 // convert that to the corresponding ID3 genre.
                 if (name.contains(Regex("[0123456789)]"))) {
-                    name = name.toNamedGenre()
+                    name = name.toNamedGenre() ?: genrePlaceholder
                 }
 
                 genres.add(
@@ -124,7 +130,7 @@ class MusicLoader(private val resolver: ContentResolver) {
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    val name = cursor.getString(nameIndex) ?: ""
+                    val name = cursor.getString(nameIndex) ?: artistPlaceholder
 
                     // If an artist has already been added [Which is very likely due to how genres
                     // are processed], add the genre to the existing artist instead of creating a
@@ -182,11 +188,15 @@ class MusicLoader(private val resolver: ContentResolver) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                val name = cursor.getString(nameIndex) ?: ""
-                val artist = cursor.getString(artistIndex) ?: ""
+                var name = cursor.getString(nameIndex) ?: albumPlaceholder
+                val artist = cursor.getString(artistIndex)
                 val year = cursor.getInt(yearIndex)
 
                 val coverUri = id.toAlbumArtURI()
+
+                // Sometimes the android system will return 0 for an album name, update
+                // it properly if that happens.
+                name = if (name == "0") albumPlaceholder else name
 
                 albums.add(
                     Album(
@@ -219,9 +229,9 @@ class MusicLoader(private val resolver: ContentResolver) {
                 Media._ID, // 0
                 Media.DISPLAY_NAME, // 1
                 Media.TITLE, // 2
-                Media.ALBUM, // 4
-                Media.TRACK, // 6
-                Media.DURATION // 7
+                Media.ALBUM_ID, // 3
+                Media.TRACK, // 4
+                Media.DURATION // 5
             ),
             Media.IS_MUSIC + "=1", null,
             Media.DEFAULT_SORT_ORDER
@@ -231,20 +241,20 @@ class MusicLoader(private val resolver: ContentResolver) {
             val idIndex = cursor.getColumnIndexOrThrow(Media._ID)
             val fileIndex = cursor.getColumnIndexOrThrow(Media.DISPLAY_NAME)
             val titleIndex = cursor.getColumnIndexOrThrow(Media.TITLE)
-            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM)
+            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ID)
             val trackIndex = cursor.getColumnIndexOrThrow(Media.TRACK)
             val durationIndex = cursor.getColumnIndexOrThrow(Media.DURATION)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val title = cursor.getString(titleIndex) ?: cursor.getString(fileIndex)
-                val album = cursor.getString(albumIndex) ?: ""
+                val albumId = cursor.getLong(albumIndex)
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 
                 songs.add(
                     Song(
-                        id, title, album,
+                        id, title, albumId,
                         track, duration
                     )
                 )
@@ -255,7 +265,7 @@ class MusicLoader(private val resolver: ContentResolver) {
 
         // Remove dupes
         songs = songs.distinctBy {
-            it.name to it.albumName to it.track to it.duration
+            it.name to it.albumId to it.track to it.duration
         }.toMutableList()
 
         Log.d(

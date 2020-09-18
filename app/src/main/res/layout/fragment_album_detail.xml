@@ -90,7 +90,7 @@
                     tools:text="2020" />
 
                 <TextView
-                    android:id="@+id/header_songs"
+                    android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@string/label_songs"
@@ -115,10 +115,8 @@
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header_songs"
-                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintTop_toBottomOf="@+id/header"
                     tools:itemCount="4"
-                    tools:layout_editor_absoluteX="0dp"
                     tools:listitem="@layout/item_album_song" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

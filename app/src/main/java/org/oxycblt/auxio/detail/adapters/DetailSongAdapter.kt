@@ -24,7 +24,7 @@ class DetailSongAdapter(
         holder.bind(data[position])
     }
 
-    // Generic ViewHolder for an album
+    // Generic ViewHolder for a song
     inner class ViewHolder(
         private val binding: ItemAlbumSongBinding
     ) : RecyclerView.ViewHolder(binding.root) {

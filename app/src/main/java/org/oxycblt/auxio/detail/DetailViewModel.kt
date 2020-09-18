@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.library
+package org.oxycblt.auxio.detail
 
 import androidx.lifecycle.ViewModel
 

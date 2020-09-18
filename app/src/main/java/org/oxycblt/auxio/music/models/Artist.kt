@@ -2,9 +2,9 @@ package org.oxycblt.auxio.music.models
 
 // Abstraction for albums
 data class Artist(
-    val id: Long = 0,
-    var name: String = "",
-    val genres: MutableList<Genre> = mutableListOf(Genre())
+    val id: Long = -1,
+    var name: String,
+    val genres: MutableList<Genre> = mutableListOf()
 ) {
     val albums = mutableListOf<Album>()
     var genre = ""

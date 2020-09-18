@@ -6,12 +6,12 @@ import android.text.format.DateUtils
 data class Song(
     val id: Long,
     var name: String,
-    val albumName: String, // Only used for sorting. Use album.title for everything else.
+    val albumId: Long,
     val track: Int,
     val duration: Long
 ) {
     lateinit var album: Album
 
     val seconds = duration / 1000
-    val formattedDuration = DateUtils.formatElapsedTime(seconds)
+    val formattedDuration: String = DateUtils.formatElapsedTime(seconds)
 }

@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
-import org.oxycblt.auxio.library.DetailViewModel
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.theme.applyDivider

@@ -21,7 +21,6 @@ class MusicSorter(
         sortAlbumsIntoArtists()
         sortArtistsIntoGenres()
 
-        addPlaceholders()
         finalizeMusic()
     }
 
@@ -31,16 +30,15 @@ class MusicSorter(
         val unknownSongs = songs.toMutableList()
 
         for (album in albums) {
-            // Find all songs that match the current album title
-            val albumSongs = songs.filter { it.albumName == album.name }
+            // Find all songs that match the current album ID to prevent any bugs w/comparing names.
+            // This cant be done with artists/genres sadly.
+            val albumSongs = songs.filter { it.albumId == album.id }
 
             // Then add them to the album
             for (song in albumSongs) {
                 song.album = album
                 album.songs.add(song)
             }
-
-            album.finalize()
 
             unknownSongs.removeAll(albumSongs)
         }
@@ -49,14 +47,15 @@ class MusicSorter(
         if (unknownSongs.size > 0) {
 
             // Reuse an existing unknown album if one is found
-            val unknownAlbum = albums.find { it.name == "" } ?: Album()
+            val unknownAlbum = Album(
+                name = albumPlaceholder,
+                artistName = artistPlaceholder
+            )
 
             for (song in unknownSongs) {
                 song.album = unknownAlbum
                 unknownAlbum.songs.add(song)
             }
-
-            unknownAlbum.finalize()
 
             albums.add(unknownAlbum)
 
@@ -76,13 +75,13 @@ class MusicSorter(
             // Find all albums that match the current artist name
             val artistAlbums = albums.filter { it.artistName == artist.name }
 
+            Log.d(this::class.simpleName, artist.id.toString())
+
             // Then add them to the artist, along with refreshing the amount of albums
             for (album in artistAlbums) {
                 album.artist = artist
                 artist.albums.add(album)
             }
-
-            artist.finalize()
 
             unknownAlbums.removeAll(artistAlbums)
         }
@@ -91,14 +90,14 @@ class MusicSorter(
         if (unknownAlbums.size > 0) {
 
             // Reuse an existing unknown artist if one is found
-            val unknownArtist = artists.find { it.name == "" } ?: Artist()
+            val unknownArtist = Artist(
+                name = artistPlaceholder
+            )
 
             for (album in unknownAlbums) {
                 album.artist = unknownArtist
                 unknownArtist.albums.add(album)
             }
-
-            unknownArtist.finalize()
 
             artists.add(unknownArtist)
 
@@ -124,40 +123,39 @@ class MusicSorter(
 
             // Then add them to the genre, along with refreshing the amount of artists
             genre.artists.addAll(genreArtists)
-            genre.finalize()
 
             unknownArtists.removeAll(genreArtists)
         }
 
         if (unknownArtists.size > 0) {
             // Reuse an existing unknown genre if one is found
-            val unknownGenre = genres.find { it.name == "" } ?: Genre()
+            val unknownGenre = Genre(
+                name = genrePlaceholder
+            )
 
             for (artist in unknownArtists) {
                 artist.genres.add(unknownGenre)
                 unknownGenre.artists.add(artist)
             }
-
-            unknownGenre.finalize()
-
             genres.add(unknownGenre)
 
             Log.d(
                 this::class.simpleName,
-                "${unknownArtists.size} albums were placed into an unknown genre."
+                "${unknownArtists.size} artists were placed into an unknown genre."
             )
         }
     }
 
-    // Correct any empty names [""] with the proper placeholders [Unknown Album]
-    private fun addPlaceholders() {
-        genres.forEach { if (it.name == "") it.name = genrePlaceholder }
-        artists.forEach { if (it.name == "") it.name = artistPlaceholder }
-        albums.forEach { if (it.name == "") it.name = albumPlaceholder }
-    }
-
-    // Sort all music
+    // Finalize music
     private fun finalizeMusic() {
+        // Correct any empty names [""] with the proper placeholders [Unknown Album]
+        genres.forEach { it.finalize() }
+
+        artists.forEach { it.finalize() }
+
+        albums.forEach { it.finalize() }
+
+        // Then finally sort the music
         genres.sortWith(
             compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
         )

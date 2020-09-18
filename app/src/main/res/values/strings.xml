@@ -14,9 +14,9 @@
     <string name="label_albums">Albums</string>
     <string name="label_songs">Songs</string>
 
-    <string name="placeholder_unknown_genre">Unknown Genre</string>
-    <string name="placeholder_unknown_artist">Unknown Artist</string>
-    <string name="placeholder_unknown_album">Unknown Album</string>
+    <string name="placeholder_genre">Unknown Genre</string>
+    <string name="placeholder_artist">Unknown Artist</string>
+    <string name="placeholder_album">Unknown Album</string>
 
     <string name="format_info">%1$s / %2$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>

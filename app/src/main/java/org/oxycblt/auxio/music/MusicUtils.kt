@@ -37,13 +37,13 @@ private val ID3_GENRES = arrayOf(
 const val PAREN_FILTER = "()"
 
 // Convert legacy ID3 genres to a named genre
-fun String.toNamedGenre(): String {
+fun String.toNamedGenre(): String? {
     // Strip the genres of any parentheses, and convert it to an int
     val intGenre = this.filterNot {
         PAREN_FILTER.indexOf(it) > -1
     }.toInt()
 
-    return ID3_GENRES.getOrNull(intGenre) ?: ""
+    return ID3_GENRES.getOrNull(intGenre)
 }
 
 // Convert a song to its URI
