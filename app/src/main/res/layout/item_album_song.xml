@@ -18,17 +18,22 @@
         android:focusable="true"
         android:padding="@dimen/padding_medium">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/track_number"
-            android:layout_width="@dimen/track_number_size"
+            android:layout_width="@dimen/track_number_width"
             android:layout_height="wrap_content"
             android:text="@{String.valueOf(song.track)}"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorTertiary"
-            android:textSize="@dimen/track_number_text_size"
+            android:textSize="@dimen/track_number_text_size_max"
             android:maxLines="1"
             android:contentDescription="@{@string/description_track_number(song.track)}"
+            app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
+            app:autoSizeMinTextSize="@dimen/generic_size_min"
+            app:autoSizeStepGranularity="@dimen/generic_size_increment"
+            android:gravity="center"
+            app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

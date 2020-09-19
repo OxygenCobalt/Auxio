@@ -55,9 +55,6 @@ class MainFragment : Fragment() {
             if (position > 0) {
                 tab.icon?.setTint(colorInactive)
             }
-
-            // Init the fragment
-            fragmentAt(position)
         }.attach()
 
         // Set up the selected/deselected colors

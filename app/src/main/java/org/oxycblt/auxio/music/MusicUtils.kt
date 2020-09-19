@@ -82,7 +82,8 @@ fun TextView.bindArtistCounts(artist: Artist) {
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
-// TODO: Add option to just list all genres.
+// Get the artist genre.
+// TODO: Stub, add option to list all genres instead of just the most prominent
 @BindingAdapter("artistGenre")
 fun TextView.getArtistGenre(artist: Artist) {
     text = artist.genre

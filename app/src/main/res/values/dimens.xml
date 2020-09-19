@@ -16,12 +16,13 @@
     <dimen name="cover_size_large">80dp</dimen>
     <dimen name="cover_size_huge">230dp</dimen>
 
-    <dimen name="track_number_size">32dp</dimen>
-    <dimen name="track_number_text_size">20sp</dimen>
+    <dimen name="track_number_width">32dp</dimen>
+    <dimen name="track_number_text_size_max">20sp</dimen>
 
     <dimen name="detail_header_size_max">26sp</dimen>
-    <dimen name="detail_header_size_min">10sp</dimen>'
-    <dimen name="detail_header_size_increment">2sp</dimen>
+
+    <dimen name="generic_size_min">10sp</dimen>'
+    <dimen name="generic_size_increment">2sp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>
