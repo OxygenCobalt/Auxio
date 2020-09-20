@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.ClickListener
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
@@ -45,14 +46,23 @@ class AlbumDetailFragment : Fragment() {
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 
-        detailModel.navToParentArtist.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(
-                    AlbumDetailFragmentDirections.actionShowParentArtist(album.artist.id)
-                )
+        // If the album was shown directly from LibraryFragment, then enable the ability
+        // to navigate to the artist from the album. Don't do this if the album was shown
+        // from ArtistDetailFragment, as you can just navigate up to see the parent artist.
+        if (args.isFromLibrary) {
+            detailModel.doneWithNavToParent()
 
-                detailModel.doneWithNavToParent()
+            detailModel.navToParentArtist.observe(viewLifecycleOwner) {
+                if (it) {
+                    findNavController().navigate(
+                        AlbumDetailFragmentDirections.actionShowParentArtist(album.artist.id)
+                    )
+
+                    detailModel.doneWithNavToParent()
+                }
             }
+
+            binding.artistName.setBackgroundResource(R.drawable.ripple)
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

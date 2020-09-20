@@ -62,7 +62,7 @@ class ArtistDetailFragment : Fragment() {
             detailModel.isAlreadyNavigating = true
 
             findNavController().navigate(
-                ArtistDetailFragmentDirections.actionShowAlbum(album.id)
+                ArtistDetailFragmentDirections.actionShowAlbum(album.id, false)
             )
         }
     }

@@ -25,5 +25,4 @@ class MainActivity : AppCompatActivity() {
 }
 
 // RecyclerView click listener
-// Dont ask why its here
 class ClickListener<T>(val onClick: (T) -> Unit)

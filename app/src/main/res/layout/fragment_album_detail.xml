@@ -73,7 +73,6 @@
 
                 <TextView
                     android:id="@+id/artist_name"
-                    android:background="@drawable/ripple"
                     android:clickable="true"
                     android:focusable="true"
                     android:layout_width="0dp"
