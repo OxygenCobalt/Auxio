@@ -9,6 +9,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 
+// List of ID3 genres + Winamp extensions, each index corresponds to their int value.
+// There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
 private val ID3_GENRES = arrayOf(
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
     "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno",

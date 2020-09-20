@@ -35,7 +35,10 @@ fun ImageView.getCoverArt(album: Album) {
 // Get the artist image
 @BindingAdapter("artistImage")
 fun ImageView.getArtistImage(artist: Artist) {
-    val request = if (artist.numAlbums >= 4) {
+    // If there are more than one albums, then create a mosaic of them.
+    val request: ImageRequest
+
+    if (artist.numAlbums >= 4) {
         val uris = mutableListOf<Uri>()
 
         for (i in 0..3) {
@@ -44,16 +47,24 @@ fun ImageView.getArtistImage(artist: Artist) {
 
         val fetcher = ArtistImageFetcher(context)
 
-        getDefaultRequest(context, this)
+        request = getDefaultRequest(context, this)
             .data(uris)
             .fetcher(fetcher)
             .error(R.drawable.ic_artist)
             .build()
     } else {
-        getDefaultRequest(context, this)
-            .data(artist.albums[0].coverUri)
-            .error(R.drawable.ic_artist)
-            .build()
+        // Otherwise, just get the first cover and use that
+        // If the artist doesn't have any albums [Which happens], then don't even bother with that.
+        if (artist.albums.isNotEmpty()) {
+            request = getDefaultRequest(context, this)
+                .data(artist.albums[0].coverUri)
+                .error(R.drawable.ic_artist)
+                .build()
+        } else {
+            setImageResource(R.drawable.ic_artist)
+
+            return
+        }
     }
 
     Coil.imageLoader(context).enqueue(request)

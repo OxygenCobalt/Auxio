@@ -75,8 +75,6 @@ class MusicSorter(
             // Find all albums that match the current artist name
             val artistAlbums = albums.filter { it.artistName == artist.name }
 
-            Log.d(this::class.simpleName, artist.id.toString())
-
             // Then add them to the artist, along with refreshing the amount of albums
             for (album in artistAlbums) {
                 album.artist = artist
