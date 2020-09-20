@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.ClickListener
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.theme.applyDivider
 class AlbumDetailFragment : Fragment() {
 
     private val args: AlbumDetailFragmentArgs by navArgs()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +33,7 @@ class AlbumDetailFragment : Fragment() {
         val album = musicModel.albums.value?.find { it.id == args.albumId }!!
 
         binding.lifecycleOwner = this
+        binding.detailModel = detailModel
         binding.album = album
 
         binding.songRecycler.adapter = DetailSongAdapter(
@@ -41,6 +44,16 @@ class AlbumDetailFragment : Fragment() {
         )
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
+
+        detailModel.navToParentArtist.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(
+                    AlbumDetailFragmentDirections.actionShowParentArtist(album.artist.id)
+                )
+
+                detailModel.doneWithNavToParent()
+            }
+        }
 
         Log.d(this::class.simpleName, "Fragment created.")
 

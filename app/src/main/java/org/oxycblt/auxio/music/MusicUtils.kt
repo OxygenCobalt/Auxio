@@ -45,6 +45,8 @@ fun String.toNamedGenre(): String? {
         PAREN_FILTER.indexOf(it) > -1
     }.toInt()
 
+    // If the conversion fails [Due to the genre using an extension that isn't from winamp],
+    // then return null.
     return ID3_GENRES.getOrNull(intGenre)
 }
 

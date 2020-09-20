@@ -24,5 +24,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// I wish I knew somewhere else to put this
+// RecyclerView click listener
+// Dont ask why its here
 class ClickListener<T>(val onClick: (T) -> Unit)

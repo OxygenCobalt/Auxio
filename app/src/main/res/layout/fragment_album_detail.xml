@@ -8,6 +8,10 @@
         <variable
             name="album"
             type="org.oxycblt.auxio.music.models.Album" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
     </data>
 
     <LinearLayout
@@ -69,10 +73,14 @@
 
                 <TextView
                     android:id="@+id/artist_name"
+                    android:background="@drawable/ripple"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
+                    android:onClick="@{() -> detailModel.navToParent()}"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:text="@{album.artist.name}"
                     app:layout_constraintStart_toStartOf="parent"
