@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 Divider used by recyclerview header items
 https://stackoverflow.com/a/61157571/14143986
 -->
@@ -11,5 +12,12 @@ https://stackoverflow.com/a/61157571/14143986
                 android:width="0.5dp"
                 android:color="@color/divider_color" />
         </shape>
+    </item>
+
+    <item>
+        <ripple
+            android:color="@color/selection_color"
+            android:radius="@dimen/divider_ripple_size">
+        </ripple>
     </item>
 </layer-list>

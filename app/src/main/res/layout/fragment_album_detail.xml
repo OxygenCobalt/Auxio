@@ -26,8 +26,7 @@
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
-            app:title="@string/title_library_fragment"
-            tools:titleTextColor="@color/blue" />
+            app:title="@string/title_library_fragment" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -36,8 +35,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:animateLayoutChanges="true">
 
                 <ImageView
                     android:id="@+id/cover"
@@ -56,11 +54,11 @@
                     style="@style/DetailHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
-                    android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{album.name}"
                     android:maxLines="1"
+                    android:text="@{album.name}"
                     app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
                     app:autoSizeMinTextSize="@dimen/generic_size_min"
                     app:autoSizeStepGranularity="@dimen/generic_size_increment"
@@ -73,15 +71,15 @@
 
                 <TextView
                     android:id="@+id/artist_name"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{() -> detailModel.navToParent()}"
+                    android:text="@{album.artist.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
-                    android:onClick="@{() -> detailModel.navToParent()}"
-                    android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{album.artist.name}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/album_name"
                     tools:text="Artist Name" />
@@ -90,30 +88,29 @@
                     android:id="@+id/album_year"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:text="@{album.year != 0 ? String.valueOf(album.year) : @string/placeholder_no_date}"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_name"
                     tools:text="2020" />
 
                 <TextView
-                    android:id="@+id/header"
+                    android:id="@+id/header_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/padding_medium"
+                    android:background="@drawable/header_dividers"
+                    android:fontFamily="@font/inter_bold"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingBottom="@dimen/padding_small"
                     android:text="@string/label_songs"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
-                    android:fontFamily="@font/inter_bold"
-                    android:layout_marginTop="@dimen/padding_medium"
-                    android:paddingStart="@dimen/padding_medium"
-                    android:paddingEnd="@dimen/padding_small"
-                    android:paddingTop="@dimen/padding_small"
-                    android:paddingBottom="@dimen/padding_small"
-                    android:background="@drawable/header_dividers"
-                    app:layout_constraintTop_toBottomOf="@+id/album_year"
-                    tools:layout_editor_absoluteX="60dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/album_year" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/song_recycler"
@@ -124,7 +121,7 @@
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header"
+                    app:layout_constraintTop_toBottomOf="@+id/header_title"
                     tools:itemCount="4"
                     tools:listitem="@layout/item_album_song" />
 

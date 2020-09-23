@@ -58,9 +58,6 @@
         <argument
             android:name="albumId"
             app:argType="long" />
-        <argument
-            android:name="isFromLibrary"
-            app:argType="boolean" />
         <action
             android:id="@+id/action_show_parent_artist"
             app:enterAnim="@anim/fragment_fade_enter"

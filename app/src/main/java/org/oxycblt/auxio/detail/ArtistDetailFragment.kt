@@ -28,20 +28,26 @@ class ArtistDetailFragment : Fragment() {
     ): View? {
         val binding = FragmentArtistDetailBinding.inflate(inflater)
 
-        // I honestly don't want to turn of the any data classes into parcelables due to how
-        // many lists they store, so just pick up the artist id and find it from musicModel.
-        val musicModel: MusicViewModel by activityViewModels()
-        val artist = musicModel.artists.value?.find { it.id == args.artistId }!!
+        // If DetailViewModel isn't already storing the artist, get it from MusicViewModel
+        // using the ID given by the navigation arguments
+        if (detailModel.currentArtist == null) {
+            val musicModel: MusicViewModel by activityViewModels()
+            detailModel.currentArtist = musicModel.artists.value!!.find {
+                it.id == args.artistId
+            }!!
+        }
 
-        binding.lifecycleOwner = this
-        binding.artist = artist
-
-        binding.albumRecycler.adapter = DetailAlbumAdapter(
-            artist.albums,
+        val artistAdapter = DetailAlbumAdapter(
+            detailModel.currentArtist!!.albums,
             ClickListener {
                 navToAlbum(it)
             }
         )
+
+        binding.lifecycleOwner = this
+        binding.artist = detailModel.currentArtist!!
+
+        binding.albumRecycler.adapter = artistAdapter
         binding.albumRecycler.applyDivider()
         binding.albumRecycler.setHasFixedSize(true)
 
@@ -56,13 +62,21 @@ class ArtistDetailFragment : Fragment() {
         detailModel.isAlreadyNavigating = false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Reset the stored artist so that the next instance of ArtistDetailFragment
+        // will not read it.
+        detailModel.currentArtist = null
+    }
+
     private fun navToAlbum(album: Album) {
         // Don't navigate if an item already has been selected.
         if (!detailModel.isAlreadyNavigating) {
             detailModel.isAlreadyNavigating = true
 
             findNavController().navigate(
-                ArtistDetailFragmentDirections.actionShowAlbum(album.id, false)
+                ArtistDetailFragmentDirections.actionShowAlbum(album.id)
             )
         }
     }

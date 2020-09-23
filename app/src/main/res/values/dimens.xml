@@ -24,5 +24,7 @@
     <dimen name="generic_size_min">10sp</dimen>'
     <dimen name="generic_size_increment">2sp</dimen>
 
+    <dimen name="divider_ripple_size">18dp</dimen>
+
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

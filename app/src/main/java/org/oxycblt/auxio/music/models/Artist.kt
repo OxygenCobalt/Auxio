@@ -19,8 +19,7 @@ data class Artist(
     }
 
     fun finalizeGenre() {
-        // If the artist has more than one genre, pick the most "prominent" one.
-        // [Really just eliminate duplicates created from my hacky way of getting genres loaded but shhhh]
+        // If the artist has more than one genre, pick the most "Prominent" one.
         genre = if (genres.size > 1) {
             val groupGenres = genres.groupBy { it.name }
 

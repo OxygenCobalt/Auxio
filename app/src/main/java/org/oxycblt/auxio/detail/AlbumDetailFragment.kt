@@ -28,17 +28,22 @@ class AlbumDetailFragment : Fragment() {
     ): View? {
         val binding = FragmentAlbumDetailBinding.inflate(inflater)
 
-        // I honestly don't want to turn of the any data classes into parcelables due to how
-        // many lists they store, so just pick up the artist id and find it from musicModel.
-        val musicModel: MusicViewModel by activityViewModels()
-        val album = musicModel.albums.value?.find { it.id == args.albumId }!!
+        // If DetailViewModel isn't already storing the album, get it from MusicViewModel
+        // using the ID given by the navigation arguments.
+        if (detailModel.currentAlbum == null) {
+            val musicModel: MusicViewModel by activityViewModels()
+
+            detailModel.currentAlbum = musicModel.albums.value!!.find {
+                it.id == args.albumId
+            }!!
+        }
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
-        binding.album = album
+        binding.album = detailModel.currentAlbum
 
         binding.songRecycler.adapter = DetailSongAdapter(
-            album.songs,
+            detailModel.currentAlbum!!.songs,
             ClickListener {
                 Log.d(this::class.simpleName, it.name)
             }
@@ -46,16 +51,17 @@ class AlbumDetailFragment : Fragment() {
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 
-        // If the album was shown directly from LibraryFragment, then enable the ability
-        // to navigate to the artist from the album. Don't do this if the album was shown
-        // from ArtistDetailFragment, as you can just navigate up to see the parent artist.
-        if (args.isFromLibrary) {
+        // If the album was shown directly from LibraryFragment [No parent artist stored],
+        // then enable the ability to navigate upwards to the album's parent artist.
+        if (detailModel.currentArtist == null) {
             detailModel.doneWithNavToParent()
 
             detailModel.navToParentArtist.observe(viewLifecycleOwner) {
                 if (it) {
                     findNavController().navigate(
-                        AlbumDetailFragmentDirections.actionShowParentArtist(album.artist.id)
+                        AlbumDetailFragmentDirections.actionShowParentArtist(
+                            detailModel.currentAlbum!!.artist.id
+                        )
                     )
 
                     detailModel.doneWithNavToParent()
