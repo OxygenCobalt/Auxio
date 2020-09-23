@@ -146,12 +146,8 @@ class MusicSorter(
 
     // Finalize music
     private fun finalizeMusic() {
-        // Correct any empty names [""] with the proper placeholders [Unknown Album]
-        genres.forEach { it.finalize() }
-
-        artists.forEach { it.finalize() }
-
-        albums.forEach { it.finalize() }
+        // Finalize the genre for each artist
+        artists.forEach { it.finalizeGenre() }
 
         // Then finally sort the music
         genres.sortWith(

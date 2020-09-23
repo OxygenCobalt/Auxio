@@ -14,8 +14,4 @@ data class Album(
 
     val songs = mutableListOf<Song>()
     val numSongs: Int get() = songs.size
-
-    fun finalize() {
-        songs.sortBy { it.track }
-    }
 }

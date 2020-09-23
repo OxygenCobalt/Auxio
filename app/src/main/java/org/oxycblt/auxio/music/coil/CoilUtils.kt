@@ -35,9 +35,9 @@ fun ImageView.getCoverArt(album: Album) {
 // Get the artist image
 @BindingAdapter("artistImage")
 fun ImageView.getArtistImage(artist: Artist) {
-    // If there are more than one albums, then create a mosaic of them.
     val request: ImageRequest
 
+    // If there are more than one albums, then create a mosaic of them.
     if (artist.numAlbums >= 4) {
         val uris = mutableListOf<Uri>()
 

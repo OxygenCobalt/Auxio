@@ -10,16 +10,17 @@ data class Artist(
     var genre = ""
 
     val numAlbums: Int get() = albums.size
-    var numSongs = 0
-
-    fun finalize() {
-        albums.sortByDescending { it.year }
-
-        albums.forEach { album ->
-            numSongs += album.numSongs
+    val numSongs: Int get() {
+        var num = 0
+        albums.forEach {
+            num += it.numSongs
         }
+        return num
+    }
 
-        // If the artist has more than one genre, pick the most used one.
+    fun finalizeGenre() {
+        // If the artist has more than one genre, pick the most "prominent" one.
+        // [Really just eliminate duplicates created from my hacky way of getting genres loaded but shhhh]
         genre = if (genres.size > 1) {
             val groupGenres = genres.groupBy { it.name }
 

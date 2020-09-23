@@ -5,8 +5,4 @@ data class Genre(
     var name: String,
 ) {
     val artists = mutableListOf<Artist>()
-
-    fun finalize() {
-        artists.sortByDescending { it.name }
-    }
 }
