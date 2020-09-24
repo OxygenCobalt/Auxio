@@ -14,6 +14,7 @@ import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
 
 class ArtistDetailFragment : Fragment() {
@@ -38,18 +39,35 @@ class ArtistDetailFragment : Fragment() {
         }
 
         val albumAdapter = DetailAlbumAdapter(
-            detailModel.currentArtist!!.albums,
             ClickListener {
                 navToAlbum(it)
             }
         )
 
         binding.lifecycleOwner = this
+        binding.detailModel = detailModel
         binding.artist = detailModel.currentArtist!!
 
         binding.albumRecycler.adapter = albumAdapter
         binding.albumRecycler.applyDivider()
         binding.albumRecycler.setHasFixedSize(true)
+
+        detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
+            // Update the current sort icon
+            binding.sortButton.setImageResource(mode.iconRes)
+
+            // Then update the sort mode of the album adapter.
+            albumAdapter.submitList(
+                detailModel.currentArtist!!.albums.sortedWith(
+                    SortMode.albumSortComparators.getOrDefault(
+                        mode,
+
+                        // If any invalid value is given, just default to the normal sort order.
+                        compareByDescending { it.year }
+                    )
+                )
+            )
+        }
 
         Log.d(this::class.simpleName, "Fragment created.")
 

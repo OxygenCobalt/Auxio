@@ -21,8 +21,8 @@ import org.oxycblt.auxio.theme.toColor
 class MainFragment : Fragment() {
     private val shownFragments = listOf(0, 1)
 
-    private lateinit var libraryFragment: LibraryFragment
-    private lateinit var songsFragment: SongsFragment
+    private val libraryFragment: LibraryFragment by lazy { LibraryFragment() }
+    private val songsFragment: SongsFragment by lazy { SongsFragment() }
 
     private val tabIcons = listOf(
         R.drawable.ic_library,
@@ -81,21 +81,10 @@ class MainFragment : Fragment() {
 
     private fun fragmentAt(position: Int): Fragment {
         return when (position) {
-            0 -> {
-                if (!::libraryFragment.isInitialized) {
-                    libraryFragment = LibraryFragment()
-                }
+            0 -> libraryFragment
+            1 -> songsFragment
 
-                libraryFragment
-            }
-
-            else -> {
-                if (!::songsFragment.isInitialized) {
-                    songsFragment = SongsFragment()
-                }
-
-                songsFragment
-            }
+            else -> libraryFragment
         }
     }
 

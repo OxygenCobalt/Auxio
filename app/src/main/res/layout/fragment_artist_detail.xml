@@ -8,6 +8,10 @@
         <variable
             name="artist"
             type="org.oxycblt.auxio.music.models.Artist" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
     </data>
 
     <LinearLayout
@@ -104,6 +108,23 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
+
+                <ImageButton
+                    android:id="@+id/sort_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:background="@drawable/header_dividers"
+                    android:contentDescription="@string/description_sort_button"
+                    android:paddingStart="@dimen/padding_medium"
+                    android:paddingTop="@dimen/padding_small"
+                    android:paddingEnd="@dimen/margin_medium"
+                    android:paddingBottom="@dimen/padding_small"
+                    android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
+                    tools:src="@drawable/ic_sort_numeric_down"
+                    app:layout_constraintBottom_toTopOf="@+id/album_recycler"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -8,24 +8,24 @@ import org.oxycblt.auxio.music.models.Song
 // RecyclerView click listener
 class ClickListener<T>(val onClick: (T) -> Unit)
 
-// Diff callback for albums
-class AlbumDiffCallback : DiffUtil.ItemCallback<Album>() {
-    override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
-        return oldItem == newItem
-    }
-}
-
-// Diff callback for songs
+// Song Diff callback
 class SongDiffCallback : DiffUtil.ItemCallback<Song>() {
     override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem == newItem
+    }
+}
+
+// Album Diff callback
+class AlbumDiffCallback : DiffUtil.ItemCallback<Album>() {
+    override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
         return oldItem == newItem
     }
 }
@@ -40,8 +40,12 @@ enum class SortMode(val iconRes: Int) {
     NUMERIC_DOWN(R.drawable.ic_sort_numeric_down);
 
     companion object {
-        // Sort comparators are different for each music model, so they are
-        // static maps instead.
+        // Sort comparators are different for each music model, so they are static maps instead.
+        val songSortComparators = mapOf<SortMode, Comparator<Song>>(
+            NUMERIC_DOWN to compareBy { it.track },
+            NUMERIC_UP to compareByDescending { it.track }
+        )
+
         val albumSortComparators = mapOf<SortMode, Comparator<Album>>(
             NUMERIC_DOWN to compareByDescending { it.year },
             NUMERIC_UP to compareBy { it.year },
@@ -53,11 +57,6 @@ enum class SortMode(val iconRes: Int) {
             ALPHA_UP to compareBy(
                 String.CASE_INSENSITIVE_ORDER
             ) { it.name },
-        )
-
-        val songSortComparators = mapOf<SortMode, Comparator<Song>>(
-            NUMERIC_DOWN to compareBy { it.track },
-            NUMERIC_UP to compareByDescending { it.track }
         )
     }
 }
