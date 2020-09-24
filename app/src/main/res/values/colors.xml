@@ -3,6 +3,7 @@
     <color name="background">#fafafa</color>
     <color name="divider_color">#cbcbcb</color>
     <color name="selection_color">#cbcbcb</color>
+    <color name="inactive_color">#c4c4c4</color>
 
     <!--
     Base color set derived from Music Player GO.

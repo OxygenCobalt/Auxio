@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.detail
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
+import org.oxycblt.auxio.theme.toColor
 
 class AlbumDetailFragment : Fragment() {
 
@@ -73,6 +75,7 @@ class AlbumDetailFragment : Fragment() {
             binding.artistName.setBackgroundResource(R.drawable.ripple)
         }
 
+        // Set up sort modes
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
             // Update the current sort icon
             binding.sortButton.setImageResource(mode.iconRes)
@@ -88,6 +91,15 @@ class AlbumDetailFragment : Fragment() {
                     )
                 )
             )
+        }
+
+        // Dont enable the sort button if theres only one song [or less]
+        if (detailModel.currentAlbum!!.numSongs < 2) {
+            binding.sortButton.imageTintList = ColorStateList.valueOf(
+                R.color.inactive_color.toColor(requireContext())
+            )
+
+            binding.sortButton.isEnabled = false
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
