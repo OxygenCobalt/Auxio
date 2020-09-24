@@ -3,9 +3,9 @@ package org.oxycblt.auxio.library.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.reycler.ClickListener
 import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.recycler.ClickListener
 
 class ArtistAdapter(
     private val data: List<Artist>,

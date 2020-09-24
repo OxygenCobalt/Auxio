@@ -10,13 +10,14 @@ data class Artist(
     var genre = ""
 
     val numAlbums: Int get() = albums.size
-    val numSongs: Int get() {
-        var num = 0
-        albums.forEach {
-            num += it.numSongs
+    val numSongs: Int
+        get() {
+            var num = 0
+            albums.forEach {
+                num += it.numSongs
+            }
+            return num
         }
-        return num
-    }
 
     fun finalizeGenre() {
         // If the artist has more than one genre, pick the most "Prominent" one.

@@ -1,12 +1,11 @@
 package org.oxycblt.auxio.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.reycler.SortMode
+import org.oxycblt.auxio.recycler.SortMode
 
 class DetailViewModel : ViewModel() {
     var isAlreadyNavigating = false

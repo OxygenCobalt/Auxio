@@ -9,14 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.reycler.ClickListener
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.reycler.SortMode
+import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
-import java.util.Comparator
 
 class ArtistDetailFragment : Fragment() {
 

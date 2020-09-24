@@ -1,9 +1,8 @@
-package org.oxycblt.auxio.reycler
+package org.oxycblt.auxio.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
 
 // RecyclerView click listener
 class ClickListener<T>(val onClick: (T) -> Unit)
@@ -32,8 +31,8 @@ enum class SortMode(val iconRes: Int) {
         // Sort comparators are different for each music model, so they are
         // static maps instead.
         val albumSortComparators = mapOf<SortMode, Comparator<Album>>(
-            NUMERIC_DOWN to compareBy { it.year },
-            NUMERIC_UP to compareByDescending { it.year },
+            NUMERIC_DOWN to compareByDescending { it.year },
+            NUMERIC_UP to compareBy { it.year },
 
             // Alphabetic sorting needs to be case-insensitive
             ALPHA_DOWN to compareByDescending(
