@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="artist"
             type="org.oxycblt.auxio.music.models.Artist" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
     </data>
 
     <LinearLayout
@@ -92,7 +95,7 @@
                 <TextView
                     android:id="@+id/header_title"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:background="@drawable/header_dividers"
                     android:fontFamily="@font/inter_bold"
@@ -106,7 +109,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
-                <!--
                 <ImageButton
                     android:id="@+id/sort_button"
                     android:layout_width="wrap_content"
@@ -118,10 +120,11 @@
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
+                    android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
+                    tools:src="@drawable/ic_sort_numeric_down"
                     app:layout_constraintBottom_toTopOf="@+id/album_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
-                    -->
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/album_recycler"

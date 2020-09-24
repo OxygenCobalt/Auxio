@@ -26,7 +26,6 @@ class MusicLoader(
     private val artistPlaceholder: String,
     private val albumPlaceholder: String,
 ) {
-
     var genres = mutableListOf<Genre>()
     var artists = mutableListOf<Artist>()
     var albums = mutableListOf<Album>()
@@ -111,14 +110,15 @@ class MusicLoader(
     private fun loadArtists() {
         Log.d(this::class.simpleName, "Starting artist search...")
 
-        // To associate artists with their genres, a new cursor is
-        // created with all the artists of that type.
+        // Iterate through the artists for each loaded genre, and then add the genre
+        // with the artist.
+        // This is only done because using GENRE_NAME for songs is broken and has been for years.
         for (genre in genres) {
             artistCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(
                     Artists._ID, // 0
-                    Artists.ARTIST // 1
+                    Artists.ARTIST, // 1
                 ),
                 null, null,
                 Artists.DEFAULT_SORT_ORDER
@@ -227,7 +227,7 @@ class MusicLoader(
                 Media.TITLE, // 2
                 Media.ALBUM_ID, // 3
                 Media.TRACK, // 4
-                Media.DURATION // 5
+                Media.DURATION, // 5
             ),
             Media.IS_MUSIC + "=1", null,
             Media.DEFAULT_SORT_ORDER

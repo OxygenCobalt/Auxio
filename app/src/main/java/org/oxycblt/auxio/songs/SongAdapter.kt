@@ -3,7 +3,7 @@ package org.oxycblt.auxio.songs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.ClickListener
+import org.oxycblt.auxio.reycler.ClickListener
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.models.Song
 

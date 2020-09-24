@@ -61,6 +61,8 @@ class ArtistImageFetcher(private val context: Context) : Fetcher<List<Uri>> {
         var y = 0
         val increment = MOSAIC_BITMAP_SIZE / 2
 
+        // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
+        // and place it on a corner of the canvas.
         for (stream in streams) {
             val bitmap = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeStream(stream),

@@ -9,12 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.ClickListener
+import org.oxycblt.auxio.reycler.ClickListener
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.reycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
+import java.util.Comparator
 
 class ArtistDetailFragment : Fragment() {
 
@@ -37,19 +39,36 @@ class ArtistDetailFragment : Fragment() {
             }!!
         }
 
-        val artistAdapter = DetailAlbumAdapter(
-            detailModel.currentArtist!!.albums,
+        val albumAdapter = DetailAlbumAdapter(
             ClickListener {
                 navToAlbum(it)
             }
         )
 
         binding.lifecycleOwner = this
+        binding.detailModel = detailModel
         binding.artist = detailModel.currentArtist!!
 
-        binding.albumRecycler.adapter = artistAdapter
+        binding.albumRecycler.adapter = albumAdapter
         binding.albumRecycler.applyDivider()
         binding.albumRecycler.setHasFixedSize(true)
+
+        detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
+            // Update the current sort icon
+            binding.sortButton.setImageResource(mode.iconRes)
+
+            // Then update the sort mode of the album adapter.
+            albumAdapter.submitList(
+                detailModel.currentArtist!!.albums.sortedWith(
+                    SortMode.albumSortComparators.getOrDefault(
+                        mode,
+
+                        // If any invalid value is given, just default to the normal sort order.
+                        compareByDescending { it.year }
+                    )
+                )
+            )
+        }
 
         Log.d(this::class.simpleName, "Fragment created.")
 
