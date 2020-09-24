@@ -38,16 +38,18 @@ class AlbumDetailFragment : Fragment() {
             }!!
         }
 
-        binding.lifecycleOwner = this
-        binding.detailModel = detailModel
-        binding.album = detailModel.currentAlbum
-
-        binding.songRecycler.adapter = DetailSongAdapter(
+        val songAdapter = DetailSongAdapter(
             detailModel.currentAlbum!!.songs,
             ClickListener {
                 Log.d(this::class.simpleName, it.name)
             }
         )
+
+        binding.lifecycleOwner = this
+        binding.detailModel = detailModel
+        binding.album = detailModel.currentAlbum
+
+        binding.songRecycler.adapter = songAdapter
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 

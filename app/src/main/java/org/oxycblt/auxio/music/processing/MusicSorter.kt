@@ -31,8 +31,10 @@ class MusicSorter(
 
         for (album in albums) {
             // Find all songs that match the current album ID to prevent any bugs w/comparing names.
-            // This cant be done with artists/genres sadly.
-            val albumSongs = songs.filter { it.albumId == album.id }
+            // Also sort them by their track number.
+            val albumSongs = songs.filter {
+                it.albumId == album.id
+            }.sortedBy { it.track }
 
             // Then add them to the album
             for (song in albumSongs) {
@@ -72,8 +74,10 @@ class MusicSorter(
         val unknownAlbums = albums.toMutableList()
 
         for (artist in artists) {
-            // Find all albums that match the current artist name
-            val artistAlbums = albums.filter { it.artistName == artist.name }
+            // Find all albums that match the current artist name, and then sort them by year
+            val artistAlbums = albums.filter {
+                it.artistName == artist.name
+            }.sortedByDescending { it.year }
 
             // Then add them to the artist, along with refreshing the amount of albums
             for (album in artistAlbums) {

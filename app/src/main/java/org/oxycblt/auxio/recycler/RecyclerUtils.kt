@@ -3,17 +3,29 @@ package org.oxycblt.auxio.recycler
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
+import org.oxycblt.auxio.music.models.Song
 
 // RecyclerView click listener
 class ClickListener<T>(val onClick: (T) -> Unit)
 
-// Diff callback
-class DiffCallback : DiffUtil.ItemCallback<Album>() {
+// Diff callback for albums
+class AlbumDiffCallback : DiffUtil.ItemCallback<Album>() {
     override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
+        return oldItem == newItem
+    }
+}
+
+// Diff callback for songs
+class SongDiffCallback : DiffUtil.ItemCallback<Song>() {
+    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
         return oldItem == newItem
     }
 }
@@ -41,6 +53,11 @@ enum class SortMode(val iconRes: Int) {
             ALPHA_UP to compareBy(
                 String.CASE_INSENSITIVE_ORDER
             ) { it.name },
+        )
+
+        val songSortComparators = mapOf<SortMode, Comparator<Song>>(
+            NUMERIC_DOWN to compareBy { it.track },
+            NUMERIC_UP to compareByDescending { it.track }
         )
     }
 }
