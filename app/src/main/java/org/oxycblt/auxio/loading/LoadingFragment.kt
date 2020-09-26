@@ -74,8 +74,6 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             }
 
         // Force an error screen if the permissions are denied or the prompt needs to be shown.
-        // This should be in MusicRepository, but the response comes faster than the view creation
-        // itself and therefore causes the error screen to not appear.
         if (checkPerms()) {
             onNoPerms()
         } else {

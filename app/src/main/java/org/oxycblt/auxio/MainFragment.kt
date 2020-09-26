@@ -21,9 +21,6 @@ import org.oxycblt.auxio.theme.toColor
 class MainFragment : Fragment() {
     private val shownFragments = listOf(0, 1)
 
-    private val libraryFragment: LibraryFragment by lazy { LibraryFragment() }
-    private val songsFragment: SongsFragment by lazy { SongsFragment() }
-
     private val tabIcons = listOf(
         R.drawable.ic_library,
         R.drawable.ic_song
@@ -81,10 +78,10 @@ class MainFragment : Fragment() {
 
     private fun fragmentAt(position: Int): Fragment {
         return when (position) {
-            0 -> libraryFragment
-            1 -> songsFragment
+            0 -> LibraryFragment()
+            1 -> SongsFragment()
 
-            else -> libraryFragment
+            else -> SongsFragment()
         }
     }
 
@@ -99,13 +96,14 @@ class MainFragment : Fragment() {
                 return fragmentAt(position)
             }
 
-            // Not sure how this would happen but it might
+            // If a fragment that shouldn't be shown is somehow shown anyway, just return
+            // its intended fragment.
             Log.e(
                 this::class.simpleName,
-                "Attempted to index a fragment that shouldn't be shown. Returning libraryFragment."
+                "Attempted to index a fragment that shouldn't be shown."
             )
 
-            return libraryFragment
+            return fragmentAt(position)
         }
     }
 }
