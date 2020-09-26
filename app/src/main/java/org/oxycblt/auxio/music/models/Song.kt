@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music.models
 
-import android.text.format.DateUtils
-import org.oxycblt.auxio.music.removeDurationZeroes
+import org.oxycblt.auxio.music.toDuration
 
 // Class containing all relevant values for a song.
 data class Song(
@@ -14,5 +13,5 @@ data class Song(
     lateinit var album: Album
 
     val seconds = duration / 1000
-    val formattedDuration: String = DateUtils.formatElapsedTime(seconds).removeDurationZeroes()
+    val formattedDuration: String = seconds.toDuration()
 }

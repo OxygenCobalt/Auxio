@@ -13,7 +13,7 @@
 
     <dimen name="cover_size_compact">44dp</dimen>
     <dimen name="cover_size_normal">56dp</dimen>
-    <dimen name="cover_size_large">80dp</dimen>
+    <dimen name="cover_size_large">68dp</dimen>
     <dimen name="cover_size_huge">230dp</dimen>
 
     <dimen name="track_number_width">32dp</dimen>

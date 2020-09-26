@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.music.models
 
 import android.net.Uri
+import org.oxycblt.auxio.music.toDuration
 
 // Abstraction for Song
 data class Album(
@@ -14,4 +15,11 @@ data class Album(
 
     val songs = mutableListOf<Song>()
     val numSongs: Int get() = songs.size
+    val totalDuration: String get() {
+        var seconds: Long = 0
+        songs.forEach {
+            seconds += it.seconds
+        }
+        return seconds.toDuration()
+    }
 }

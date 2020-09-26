@@ -57,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cover"
             app:layout_constraintTop_toBottomOf="@+id/album_name"
-            app:songCount="@{album}"
-            tools:text="10 Songs" />
+            android:text="@{String.valueOf(album.year)}"
+            tools:text="2020" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

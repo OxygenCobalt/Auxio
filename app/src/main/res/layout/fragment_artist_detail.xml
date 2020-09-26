@@ -139,7 +139,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/header_title"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_album" />
+                    tools:listitem="@layout/item_artist_album" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

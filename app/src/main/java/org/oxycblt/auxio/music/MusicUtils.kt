@@ -1,8 +1,10 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
@@ -68,15 +70,17 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
-// Cut off excess zeros from a duration string
-fun String.removeDurationZeroes(): String {
-    val split = this.chunked(1).toMutableList()
+// Convert a string into its duration
+fun Long.toDuration(): String {
+    val durationString = DateUtils.formatElapsedTime(this)
+
+    val durationSplit = durationString.chunked(1).toMutableList()
 
     // Iterate through the string and remove the first zero found
     // If anything else is found, exit the loop.
-    for (i in 0 until length) {
-        if (this[i] == '0') {
-            split.removeAt(i)
+    for (i in 0 until durationSplit.size) {
+        if (durationSplit[i] == "0") {
+            durationSplit.removeAt(i)
 
             break
         } else {
@@ -84,17 +88,21 @@ fun String.removeDurationZeroes(): String {
         }
     }
 
-    return split.joinToString("")
+    return durationSplit.joinToString("")
 }
 
 // --- BINDING ADAPTERS ---
 
-// Format the amount of songs in an album
-@BindingAdapter("songCount")
-fun TextView.getAlbumSongs(album: Album) {
-    text = context.resources.getQuantityString(
+fun getAlbumSongCount(album: Album, context: Context): String {
+    return context.resources.getQuantityString(
         R.plurals.format_song_count, album.numSongs, album.numSongs
     )
+}
+
+// Format the amount of songs in an album
+@BindingAdapter("songCount")
+fun TextView.bindAlbumSongs(album: Album) {
+    text = getAlbumSongCount(album, context)
 }
 
 @BindingAdapter("artistCounts")
@@ -112,7 +120,7 @@ fun TextView.bindArtistCounts(artist: Artist) {
 // Get the artist genre.
 // TODO: Add option to list all genres
 @BindingAdapter("artistGenre")
-fun TextView.getArtistGenre(artist: Artist) {
+fun TextView.bindArtistGenre(artist: Artist) {
     // If there are multiple genres, then pick the most "Prominent" one,
     // Otherwise just pick the first one
     if (artist.genres.keys.size > 1) {
@@ -122,4 +130,15 @@ fun TextView.getArtistGenre(artist: Artist) {
     } else {
         text = artist.genres.keys.first()
     }
+}
+
+// Get a bunch of miscellaneous album information [Year, Songs, Duration] and combine them
+@BindingAdapter("albumDetails")
+fun TextView.bindAlbumDetails(album: Album) {
+    text = context.getString(
+        R.string.format_double_info,
+        album.year.toString(),
+        getAlbumSongCount(album, context),
+        album.totalDuration
+    )
 }

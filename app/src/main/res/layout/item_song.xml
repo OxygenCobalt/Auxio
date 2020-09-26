@@ -67,11 +67,11 @@
 
         <TextView
             android:id="@+id/duration"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="end"
             android:text="@{song.formattedDuration}"
-            android:textAlignment="center"
+            android:textAlignment="viewEnd"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorTertiary"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -26,6 +26,7 @@
     <string name="placeholder_no_date">No Date</string>
 
     <string name="format_info">%1$s / %2$s</string>
+    <string name="format_double_info">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
 
     <plurals name="format_song_count">
