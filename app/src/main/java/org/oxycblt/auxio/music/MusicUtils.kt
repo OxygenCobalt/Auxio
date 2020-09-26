@@ -38,6 +38,8 @@ private val ID3_GENRES = arrayOf(
 
 const val PAREN_FILTER = "()"
 
+// --- EXTENSION FUNCTIONS ---
+
 // Convert legacy ID3 genres to a named genre
 fun String.toNamedGenre(): String? {
     // Strip the genres of any parentheses, and convert it to an int
@@ -45,7 +47,7 @@ fun String.toNamedGenre(): String? {
         PAREN_FILTER.indexOf(it) > -1
     }.toInt()
 
-    // If the conversion fails [Due to the genre using an extension that isn't from winamp],
+    // If the conversion fails [Due to the genre using an extension that Auxio doesn't have],
     // then return null.
     return ID3_GENRES.getOrNull(intGenre)
 }
@@ -65,6 +67,27 @@ fun Long.toAlbumArtURI(): Uri {
         this
     )
 }
+
+// Cut off excess zeros from a duration string
+fun String.removeDurationZeroes(): String {
+    val split = this.chunked(1).toMutableList()
+
+    // Iterate through the string and remove the first zero found
+    // If anything else is found, exit the loop.
+    for (i in 0 until length) {
+        if (this[i] == '0') {
+            split.removeAt(i)
+
+            break
+        } else {
+            break
+        }
+    }
+
+    return split.joinToString("")
+}
+
+// --- BINDING ADAPTERS ---
 
 // Format the amount of songs in an album
 @BindingAdapter("songCount")
@@ -87,8 +110,16 @@ fun TextView.bindArtistCounts(artist: Artist) {
 }
 
 // Get the artist genre.
-// TODO: Stub, add option to list all genres instead of just the most prominent
+// TODO: Add option to list all genres
 @BindingAdapter("artistGenre")
 fun TextView.getArtistGenre(artist: Artist) {
-    text = artist.genre
+    // If there are multiple genres, then pick the most "Prominent" one,
+    // Otherwise just pick the first one
+    if (artist.genres.keys.size > 1) {
+        text = artist.genres.keys.sortedByDescending {
+            artist.genres[it]?.size
+        }[0]
+    } else {
+        text = artist.genres.keys.first()
+    }
 }

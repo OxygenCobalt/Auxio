@@ -114,7 +114,7 @@ class MusicSorter(
         for (genre in genres) {
             // Find all artists that match the current genre
             val genreArtists = artists.filter { artist ->
-                artist.genres.any {
+                artist.givenGenres.any {
                     it.name == genre.name
                 }
             }
@@ -132,7 +132,7 @@ class MusicSorter(
             )
 
             for (artist in unknownArtists) {
-                artist.genres.add(unknownGenre)
+                artist.givenGenres.add(unknownGenre)
                 unknownGenre.artists.add(artist)
             }
             genres.add(unknownGenre)
@@ -147,7 +147,7 @@ class MusicSorter(
     // Finalize music
     private fun finalizeMusic() {
         // Finalize the genre for each artist
-        artists.forEach { it.finalizeGenre() }
+        artists.forEach { it.finalizeGenres() }
 
         // Then finally sort the music
         genres.sortWith(

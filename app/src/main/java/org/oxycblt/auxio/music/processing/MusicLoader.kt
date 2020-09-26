@@ -138,7 +138,7 @@ class MusicLoader(
                     val existingArtist = artists.find { it.name == name }
 
                     if (existingArtist != null) {
-                        existingArtist.genres.add(genre)
+                        existingArtist.givenGenres.add(genre)
                     } else {
                         artists.add(
                             Artist(
@@ -155,7 +155,7 @@ class MusicLoader(
 
         // Remove dupes [Just in case]
         artists = artists.distinctBy {
-            it.name to it.genres
+            it.name to it.givenGenres
         }.toMutableList()
 
         Log.d(
