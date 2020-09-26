@@ -26,6 +26,7 @@
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:navigationIcon="@drawable/ic_back"
             app:title="@string/title_library_fragment" />
 
         <androidx.core.widget.NestedScrollView

@@ -2,6 +2,7 @@ package org.oxycblt.auxio.theme
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -34,6 +35,7 @@ private val ACCENTS = listOf(
 val accent = ACCENTS[5]
 
 // Get the transparent variant of a color int
+@ColorInt
 fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
     return ColorUtils.setAlphaComponent(
         ContextCompat.getColor(context, color),
@@ -42,11 +44,13 @@ fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
 }
 
 // Get the inactive transparency of an accent
+@ColorInt
 fun getInactiveAlpha(color: Int): Int {
     return if (color == R.color.yellow) 100 else 150
 }
 
 // Convert an integer to a color
+@ColorInt
 fun Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)

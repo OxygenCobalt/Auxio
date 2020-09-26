@@ -21,8 +21,6 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
 
 // ViewModel for music storage. May also be a god object.
-// TODO: Move the lists from the music models to a map, would
-//  make some systems a lot less hacky and maybe decrease memory usage.
 class MusicViewModel(private val app: Application) : ViewModel() {
 
     // Coroutine

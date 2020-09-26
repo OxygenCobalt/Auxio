@@ -55,6 +55,10 @@ class ArtistDetailFragment : Fragment() {
         binding.albumRecycler.applyDivider()
         binding.albumRecycler.setHasFixedSize(true)
 
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             // Update the current sort icon
             binding.sortButton.setImageResource(mode.iconRes)
@@ -72,7 +76,7 @@ class ArtistDetailFragment : Fragment() {
             )
         }
 
-        // Dont enable the sort button if there is only one album [Or less]
+        // Don't enable the sort button if there is only one album [Or less]
         if (detailModel.currentArtist!!.numAlbums < 2) {
             binding.sortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())

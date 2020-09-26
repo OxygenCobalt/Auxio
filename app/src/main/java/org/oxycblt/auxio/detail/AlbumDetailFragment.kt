@@ -55,6 +55,10 @@ class AlbumDetailFragment : Fragment() {
         binding.songRecycler.applyDivider()
         binding.songRecycler.setHasFixedSize(true)
 
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         // If the album was shown directly from LibraryFragment [No parent artist stored],
         // then enable the ability to navigate upwards to the album's parent artist.
         if (detailModel.currentArtist == null) {
@@ -75,7 +79,6 @@ class AlbumDetailFragment : Fragment() {
             binding.artistName.setBackgroundResource(R.drawable.ripple)
         }
 
-        // Set up sort modes
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
             // Update the current sort icon
             binding.sortButton.setImageResource(mode.iconRes)
@@ -93,7 +96,7 @@ class AlbumDetailFragment : Fragment() {
             )
         }
 
-        // Dont enable the sort button if theres only one song [or less]
+        // Don't enable the sort button if there's only one song [or less]
         if (detailModel.currentAlbum!!.numSongs < 2) {
             binding.sortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())

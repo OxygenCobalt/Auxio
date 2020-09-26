@@ -118,7 +118,7 @@ class MusicLoader(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(
                     Artists._ID, // 0
-                    Artists.ARTIST, // 1
+                    Artists.ARTIST // 1
                 ),
                 null, null,
                 Artists.DEFAULT_SORT_ORDER
