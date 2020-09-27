@@ -63,6 +63,8 @@ class GenreDetailFragment : Fragment() {
         }
 
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
+            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+
             // Update the current sort icon
             binding.genreSortButton.setImageResource(mode.iconRes)
 

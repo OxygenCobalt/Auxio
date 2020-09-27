@@ -77,7 +77,7 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> detailModel.updateArtist(album.artist)}"
+                    android:onClick="@{() -> detailModel.doNavToParent()}"
                     android:text="@{album.artist.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
@@ -86,11 +86,10 @@
                     tools:text="Artist Name" />
 
                 <TextView
-                    android:id="@+id/album_song_count"
+                    android:id="@+id/album_details"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{album.year != 0 ? String.valueOf(album.year) : @string/placeholder_no_date}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     app:albumDetails="@{album}"
@@ -112,7 +111,7 @@
                     android:text="@string/label_songs"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@+id/album_song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/album_details" />
 
                 <ImageButton
                     android:id="@+id/album_sort_button"
@@ -127,9 +126,9 @@
                     android:paddingBottom="@dimen/padding_small"
                     android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
                     tools:src="@drawable/ic_sort_numeric_down"
-                    app:layout_constraintBottom_toTopOf="@+id/album_recycler"
+                    app:layout_constraintBottom_toTopOf="@+id/album_song_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/album_song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/album_details" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/album_song_recycler"

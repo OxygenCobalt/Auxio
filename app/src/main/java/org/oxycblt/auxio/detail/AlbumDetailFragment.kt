@@ -63,16 +63,18 @@ class AlbumDetailFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        // If the album was shown directly from LibraryFragment [No parent artist stored]
-        // Then enable the ability to navigate upwards to the parent artist
-        if (detailModel.currentArtist.value!!.id != detailModel.currentAlbum.value!!.artist.id) {
-            detailModel.currentArtist.observe(viewLifecycleOwner) {
-                if (it.id == detailModel.currentAlbum.value!!.artist.id) {
+        // If the album was shown directly from LibraryFragment, Then enable the ability to
+        // navigate upwards to the parent artist
+        if (args.fromLibrary) {
+            detailModel.navToParent.observe(viewLifecycleOwner) {
+                if (it) {
                     findNavController().navigate(
                         AlbumDetailFragmentDirections.actionShowParentArtist(
                             detailModel.currentAlbum.value!!.artist.id
                         )
                     )
+
+                    detailModel.doneWithNavToParent()
                 }
             }
 
@@ -80,6 +82,8 @@ class AlbumDetailFragment : Fragment() {
         }
 
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
+            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+
             // Update the current sort icon
             binding.albumSortButton.setImageResource(mode.iconRes)
 

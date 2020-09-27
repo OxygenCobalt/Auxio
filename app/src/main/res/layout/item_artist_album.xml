@@ -54,10 +54,10 @@
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textColor="?android:attr/textColorSecondary"
             android:maxLines="1"
-            android:text="@{String.valueOf(album.year)}"
+            app:albumYear="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/album_name"
-            tools:text="10 Songs" />
+            tools:text="2020" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

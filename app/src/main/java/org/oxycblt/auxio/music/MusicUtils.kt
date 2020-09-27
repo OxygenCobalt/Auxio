@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
@@ -79,6 +80,14 @@ fun Long.toDuration(): String {
     return durationString
 }
 
+// Convert an integer to its formatted year
+fun Int.toYear(context: Context): String {
+    return if (this > 0) {
+        this.toString()
+    } else {
+        context.getString(R.string.placeholder_no_date)
+    }
+}
 // --- BINDING ADAPTERS ---
 
 @BindingAdapter("genreCounts")
@@ -87,7 +96,7 @@ fun TextView.bindGenreCounts(genre: Genre) {
         R.plurals.format_artist_count, genre.numArtists, genre.numArtists
     )
     val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, genre.numAlbums, genre.numAlbums
+        R.plurals.format_song_count, genre.numAlbums, genre.numAlbums
     )
 
     text = context.getString(R.string.format_double_counts, artists, albums)
@@ -122,7 +131,7 @@ fun TextView.bindArtistCounts(artist: Artist) {
 fun TextView.bindAlbumDetails(album: Album) {
     text = context.getString(
         R.string.format_double_info,
-        album.year.toString(),
+        album.year.toYear(context),
         context.resources.getQuantityString(
             R.plurals.format_song_count,
             album.numSongs, album.numSongs
@@ -131,7 +140,12 @@ fun TextView.bindAlbumDetails(album: Album) {
     )
 }
 
-@BindingAdapter("albumSongs")
+@BindingAdapter("albumYear")
+fun TextView.bindAlbumDate(album: Album) {
+    text = album.year.toYear(context)
+}
+
+@BindingAdapter("albumSongCount")
 // Format the amount of songs in an album
 fun TextView.bindAlbumSongs(album: Album) {
     text = context.resources.getQuantityString(

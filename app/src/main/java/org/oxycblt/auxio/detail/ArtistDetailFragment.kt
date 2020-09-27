@@ -65,6 +65,8 @@ class ArtistDetailFragment : Fragment() {
         }
 
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
+            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+
             // Update the current sort icon
             binding.artistSortButton.setImageResource(mode.iconRes)
 
@@ -107,7 +109,7 @@ class ArtistDetailFragment : Fragment() {
             detailModel.isAlreadyNavigating = true
 
             findNavController().navigate(
-                ArtistDetailFragmentDirections.actionShowAlbum(album.id)
+                ArtistDetailFragmentDirections.actionShowAlbum(album.id, false)
             )
         }
     }

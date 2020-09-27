@@ -96,7 +96,7 @@ class LibraryFragment : Fragment() {
 
             findNavController().navigate(
                 MainFragmentDirections.actionShowAlbum(
-                    album.id
+                    album.id, true
                 )
             )
         }

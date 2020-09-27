@@ -11,7 +11,7 @@ sealed class BaseModel {
 
 // Song
 data class Song(
-    override val id: Long,
+    override val id: Long = -1,
     override var name: String,
     val albumId: Long,
     val track: Int,
@@ -25,7 +25,7 @@ data class Song(
 
 // Album
 data class Album(
-    override val id: Long = Long.MIN_VALUE,
+    override val id: Long = -1,
     override val name: String,
     val artistName: String,
     val coverUri: Uri = Uri.EMPTY,
@@ -47,7 +47,7 @@ data class Album(
 
 // Artist
 data class Artist(
-    override val id: Long = Long.MIN_VALUE,
+    override val id: Long = -1,
     override var name: String,
     val givenGenres: MutableList<Genre> = mutableListOf()
 ) : BaseModel() {
@@ -67,7 +67,7 @@ data class Artist(
 
 // Genre
 data class Genre(
-    override val id: Long = Long.MIN_VALUE,
+    override val id: Long = -1,
     override var name: String,
 ) : BaseModel() {
     val artists = mutableListOf<Artist>()

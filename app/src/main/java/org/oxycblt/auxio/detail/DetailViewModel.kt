@@ -21,16 +21,24 @@ class DetailViewModel : ViewModel() {
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
 
     // Current music models being shown
-    // These have placeholder values in them so that they don't
-    // have to be checked if they're null.
-    private val mCurrentGenre = MutableLiveData(Genre(name = ""))
+    // These have placeholder values initially so that they don't have to be checked if they're null
+    private val mCurrentGenre = MutableLiveData(
+        Genre(id = Long.MIN_VALUE, name = "")
+    )
     val currentGenre: LiveData<Genre> get() = mCurrentGenre
 
-    private val mCurrentArtist = MutableLiveData(Artist(name = ""))
+    private val mCurrentArtist = MutableLiveData(
+        Artist(id = Long.MIN_VALUE, name = "")
+    )
     val currentArtist: LiveData<Artist> get() = mCurrentArtist
 
-    private val mCurrentAlbum = MutableLiveData(Album(name = "", artistName = ""))
+    private val mCurrentAlbum = MutableLiveData(
+        Album(id = Long.MIN_VALUE, name = "", artistName = "")
+    )
     val currentAlbum: LiveData<Album> get() = mCurrentAlbum
+
+    private val mNavToParent = MutableLiveData<Boolean>()
+    val navToParent: LiveData<Boolean> get() = mNavToParent
 
     fun updateGenre(genre: Genre) {
         mCurrentGenre.value = genre
@@ -42,6 +50,14 @@ class DetailViewModel : ViewModel() {
 
     fun updateAlbum(album: Album) {
         mCurrentAlbum.value = album
+    }
+
+    fun doNavToParent() {
+        mNavToParent.value = true
+    }
+
+    fun doneWithNavToParent() {
+        mNavToParent.value = false
     }
 
     fun incrementGenreSortMode() {
