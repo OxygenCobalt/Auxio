@@ -5,4 +5,13 @@ data class Genre(
     var name: String,
 ) {
     val artists = mutableListOf<Artist>()
+
+    val numArtists: Int get() = artists.size
+    val numAlbums: Int get() {
+        var num = 0
+        artists.forEach {
+            num += it.numAlbums
+        }
+        return num
+    }
 }

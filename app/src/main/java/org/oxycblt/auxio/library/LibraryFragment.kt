@@ -12,17 +12,20 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.adapters.AlbumAdapter
 import org.oxycblt.auxio.library.adapters.ArtistAdapter
+import org.oxycblt.auxio.library.adapters.GenreAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.theme.SHOW_ALBUMS
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
+import org.oxycblt.auxio.theme.SHOW_GENRES
 import org.oxycblt.auxio.theme.applyDivider
 
 class LibraryFragment : Fragment() {
 
     // FIXME: Temp value, remove when there are actual preferences
-    private val libraryMode = SHOW_ARTISTS
+    private val libraryMode = SHOW_GENRES
 
     private val musicModel: MusicViewModel by activityViewModels()
     private val libraryModel: LibraryViewModel by activityViewModels()
@@ -42,12 +45,21 @@ class LibraryFragment : Fragment() {
                 }
             )
 
-            else -> AlbumAdapter(
+            SHOW_ALBUMS -> AlbumAdapter(
                 musicModel.albums.value!!,
                 ClickListener {
                     navToAlbum(it)
                 }
             )
+
+            SHOW_GENRES -> GenreAdapter(
+                musicModel.genres.value!!,
+                ClickListener {
+                    Log.d(this::class.simpleName, it.name)
+                }
+            )
+
+            else -> null
         }
 
         binding.libraryRecycler.applyDivider()

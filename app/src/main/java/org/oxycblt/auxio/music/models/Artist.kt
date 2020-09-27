@@ -7,7 +7,7 @@ data class Artist(
     val givenGenres: MutableList<Genre> = mutableListOf()
 ) {
     val albums = mutableListOf<Album>()
-    lateinit var genres: Map<String, List<Genre>>
+    val genres = mutableListOf<Genre>()
 
     val numAlbums: Int get() = albums.size
     val numSongs: Int
@@ -18,8 +18,4 @@ data class Artist(
             }
             return num
         }
-
-    fun finalizeGenres() {
-        genres = givenGenres.groupBy { it.name }
-    }
 }

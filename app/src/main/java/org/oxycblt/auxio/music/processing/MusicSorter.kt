@@ -7,7 +7,7 @@ import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
 
 class MusicSorter(
-    val genres: MutableList<Genre>,
+    var genres: MutableList<Genre>,
     val artists: MutableList<Artist>,
     val albums: MutableList<Album>,
     val songs: MutableList<Song>,
@@ -81,6 +81,18 @@ class MusicSorter(
                 artist.albums.add(album)
             }
 
+            // Then group the artist's genres and sort them by "Prominence"
+            // A.K.A Who has the most map entries
+            val groupedGenres = artist.givenGenres.groupBy { it.name }
+
+            groupedGenres.keys.sortedByDescending { key ->
+                groupedGenres[key]?.size
+            }.forEach { key ->
+                groupedGenres[key]?.get(0)?.let {
+                    artist.genres.add(it)
+                }
+            }
+
             unknownAlbums.removeAll(artistAlbums)
         }
 
@@ -127,7 +139,7 @@ class MusicSorter(
 
         if (unknownArtists.size > 0) {
             // Reuse an existing unknown genre if one is found
-            val unknownGenre = Genre(
+            val unknownGenre = genres.find { it.name == genrePlaceholder } ?: Genre(
                 name = genrePlaceholder
             )
 
@@ -146,8 +158,11 @@ class MusicSorter(
 
     // Finalize music
     private fun finalizeMusic() {
-        // Finalize the genre for each artist
-        artists.forEach { it.finalizeGenres() }
+        // Remove genre duplicates now, as there's a risk duplicates could be added during the
+        // sorting process.
+        genres = genres.distinctBy {
+            it.name
+        }.toMutableList()
 
         // Then finally sort the music
         genres.sortWith(

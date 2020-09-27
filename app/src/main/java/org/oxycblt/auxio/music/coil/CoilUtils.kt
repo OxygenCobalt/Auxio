@@ -9,6 +9,7 @@ import coil.request.ImageRequest
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.music.models.Song
 
 // Get the cover art for a song or album
@@ -45,7 +46,7 @@ fun ImageView.getArtistImage(artist: Artist) {
             uris.add(artist.albums[i].coverUri)
         }
 
-        val fetcher = ArtistImageFetcher(context)
+        val fetcher = MosaicFetcher(context)
 
         request = getDefaultRequest(context, this)
             .data(uris)
@@ -62,6 +63,40 @@ fun ImageView.getArtistImage(artist: Artist) {
                 .build()
         } else {
             setImageResource(R.drawable.ic_artist)
+
+            return
+        }
+    }
+
+    Coil.imageLoader(context).enqueue(request)
+}
+
+@BindingAdapter("genreImage")
+fun ImageView.getGenreImage(genre: Genre) {
+    val request: ImageRequest
+
+    if (genre.numArtists >= 4) {
+        val uris = mutableListOf<Uri>()
+
+        for (i in 0..3) {
+            uris.add(genre.artists[i].albums[0].coverUri)
+        }
+
+        val fetcher = MosaicFetcher(context)
+
+        request = getDefaultRequest(context, this)
+            .data(uris)
+            .fetcher(fetcher)
+            .error(R.drawable.ic_genre)
+            .build()
+    } else {
+        if (genre.artists.isNotEmpty()) {
+            request = getDefaultRequest(context, this)
+                .data(genre.artists[0].albums[0].coverUri)
+                .error(R.drawable.ic_genre)
+                .build()
+        } else {
+            setImageResource(R.drawable.ic_genre)
 
             return
         }

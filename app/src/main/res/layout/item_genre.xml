@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="genre"
+            type="org.oxycblt.auxio.music.models.Genre" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/padding_medium">
+
+        <ImageView
+            android:id="@+id/artist_image"
+            android:layout_width="@dimen/cover_size_normal"
+            android:layout_height="@dimen/cover_size_normal"
+            app:genreImage="@{genre}"
+            android:contentDescription="@{@string/description_genre_image(genre.name)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_genre" />
+
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{genre.name}"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/album_song_count"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Genre Name" />
+
+        <TextView
+            android:id="@+id/album_song_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textColor="?android:attr/textColorSecondary"
+            app:genreCounts="@{genre}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toBottomOf="@+id/artist_name"
+            tools:text="2 Artists, 4 Albums" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

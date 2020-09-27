@@ -1,0 +1,40 @@
+TODO:
+
+? - Could do with some more research.
+! - Tried to do, but is completely broken.
+
+/detail/
+
+- Add genre detail
+- ? Implement Toolbar update functionality ?
+- ! Implement shared element transitions !
+
+/music/
+
+- Add option to show all genres
+- ! Move genres to songs !
+- ! Remove lists from music models !
+- ! Dont determine track/album/artist counts on the fly !
+
+/songs/
+
+- ? Sorting ?
+- ? Search ?
+- ? Fast Scrolling ?
+
+/library/
+
+- Add genres
+- ? Move into ViewPager ?
+- Sorting
+- Search
+    - ? Show Artists, Albums, and Songs in search ?
+- Exit functionality
+
+/other/
+
+- Remove binding adapters
+
+To be added:
+/prefs/
+/playback/

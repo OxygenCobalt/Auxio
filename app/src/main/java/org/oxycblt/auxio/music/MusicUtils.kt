@@ -10,6 +10,7 @@ import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 
 // List of ID3 genres + Winamp extensions, each index corresponds to their int value.
 // There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
@@ -70,7 +71,7 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
-// Convert a string into its duration
+// Convert seconds into its string duration
 fun Long.toDuration(): String {
     val durationString = DateUtils.formatElapsedTime(this)
 
@@ -99,37 +100,36 @@ fun getAlbumSongCount(album: Album, context: Context): String {
     )
 }
 
-// Format the amount of songs in an album
-@BindingAdapter("songCount")
-fun TextView.bindAlbumSongs(album: Album) {
-    text = getAlbumSongCount(album, context)
-}
+@BindingAdapter("genreCounts")
+fun TextView.bindGenreCounts(genre: Genre) {
+    val artists = context.resources.getQuantityString(
+        R.plurals.format_artist_count, genre.numArtists, genre.numArtists
+    )
 
-@BindingAdapter("artistCounts")
-fun TextView.bindArtistCounts(artist: Artist) {
     val albums = context.resources.getQuantityString(
-        R.plurals.format_albums, artist.numAlbums, artist.numAlbums
-    )
-    val songs = context.resources.getQuantityString(
-        R.plurals.format_song_count, artist.numSongs, artist.numSongs
+        R.plurals.format_album_count, genre.numAlbums, genre.numAlbums
     )
 
-    text = context.getString(R.string.format_double_counts, albums, songs)
+    text = context.getString(R.string.format_double_counts, artists, albums)
 }
 
 // Get the artist genre.
 // TODO: Add option to list all genres
 @BindingAdapter("artistGenre")
 fun TextView.bindArtistGenre(artist: Artist) {
-    // If there are multiple genres, then pick the most "Prominent" one,
-    // Otherwise just pick the first one
-    if (artist.genres.keys.size > 1) {
-        text = artist.genres.keys.sortedByDescending {
-            artist.genres[it]?.size
-        }[0]
-    } else {
-        text = artist.genres.keys.first()
-    }
+    text = artist.genres[0].name
+}
+
+@BindingAdapter("artistCounts")
+fun TextView.bindArtistCounts(artist: Artist) {
+    val albums = context.resources.getQuantityString(
+        R.plurals.format_album_count, artist.numAlbums, artist.numAlbums
+    )
+    val songs = context.resources.getQuantityString(
+        R.plurals.format_song_count, artist.numSongs, artist.numSongs
+    )
+
+    text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
 // Get a bunch of miscellaneous album information [Year, Songs, Duration] and combine them
@@ -141,4 +141,10 @@ fun TextView.bindAlbumDetails(album: Album) {
         getAlbumSongCount(album, context),
         album.totalDuration
     )
+}
+
+// Format the amount of songs in an album
+@BindingAdapter("songCount")
+fun TextView.bindAlbumSongs(album: Album) {
+    text = getAlbumSongCount(album, context)
 }

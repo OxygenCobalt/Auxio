@@ -20,7 +20,7 @@ import java.io.InputStream
 
 const val MOSAIC_BITMAP_SIZE = 512
 
-class ArtistImageFetcher(private val context: Context) : Fetcher<List<Uri>> {
+class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
         pool: BitmapPool,
         data: List<Uri>,

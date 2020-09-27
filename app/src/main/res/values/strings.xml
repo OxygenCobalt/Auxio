@@ -15,7 +15,8 @@
     <string name="label_songs">Songs</string>
 
     <string name="description_album_cover">Album Cover for %s</string>
-    <string name="description_artist_image">Artist Cover for %s</string>
+    <string name="description_artist_image">Artist Image for %s</string>
+    <string name="description_genre_image">Genre Image for %s</string>
     <string name="description_track_number">Track %s</string>
     <string name="description_error">Error</string>
     <string name="description_sort_button">Change Sorting Mode</string>
@@ -34,8 +35,13 @@
         <item quantity="other">%s Songs</item>
     </plurals>
 
-    <plurals name="format_albums">
+    <plurals name="format_album_count">
         <item quantity="one">%s Album</item>
         <item quantity="other">%s Albums</item>
+    </plurals>
+
+    <plurals name="format_artist_count">
+        <item quantity="one">%s Artist</item>
+        <item quantity="other">%s Artists</item>
     </plurals>
 </resources>
