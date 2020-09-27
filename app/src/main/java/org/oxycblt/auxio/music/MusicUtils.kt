@@ -8,9 +8,6 @@ import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.music.models.Genre
 
 // List of ID3 genres + Winamp extensions, each index corresponds to their int value.
 // There are a lot more int-genre extensions as far as Im aware, but this works for most cases.

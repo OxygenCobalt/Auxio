@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.net.Uri
-import android.util.Log
 import androidx.core.graphics.drawable.toDrawable
 import coil.bitmap.BitmapPool
 import coil.decode.DataSource
@@ -18,8 +17,6 @@ import coil.size.Size
 import okio.buffer
 import okio.source
 import java.io.InputStream
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 const val MOSAIC_BITMAP_SIZE = 512
 const val MOSAIC_BITMAP_INCREMENT = 256

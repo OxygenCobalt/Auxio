@@ -7,7 +7,7 @@
 
         <variable
             name="album"
-            type="org.oxycblt.auxio.music.models.Album" />
+            type="org.oxycblt.auxio.music.Album" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/cover"
-            android:layout_width="@dimen/cover_size_large"
-            android:layout_height="@dimen/cover_size_large"
+            android:layout_width="@dimen/cover_size_normal"
+            android:layout_height="@dimen/cover_size_normal"
             android:contentDescription="@{@string/description_album_cover(album.name)}"
             app:coverArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemGenreBinding
-import org.oxycblt.auxio.music.models.Genre
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.ClickListener
 
 class GenreAdapter(

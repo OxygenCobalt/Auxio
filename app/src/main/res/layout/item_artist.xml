@@ -7,7 +7,7 @@
 
         <variable
             name="artist"
-            type="org.oxycblt.auxio.music.models.Artist" />
+            type="org.oxycblt.auxio.music.Artist" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -7,10 +7,10 @@ import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import android.util.Log
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.music.models.Genre
-import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toNamedGenre
 

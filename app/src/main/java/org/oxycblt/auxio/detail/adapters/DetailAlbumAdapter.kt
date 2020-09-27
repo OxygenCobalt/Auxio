@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.recycler.AlbumDiffCallback
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.DiffCallback
 
 class DetailAlbumAdapter(
     private val listener: ClickListener<Album>
-) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(AlbumDiffCallback()) {
+) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

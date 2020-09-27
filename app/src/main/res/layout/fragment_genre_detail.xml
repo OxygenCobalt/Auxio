@@ -6,7 +6,7 @@
     <data>
         <variable
             name="genre"
-            type="org.oxycblt.auxio.music.models.Genre" />
+            type="org.oxycblt.auxio.music.Genre" />
 
         <variable
             name="detailModel"

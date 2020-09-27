@@ -2,41 +2,21 @@ package org.oxycblt.auxio.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.music.models.Song
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Song
 
 // RecyclerView click listener
 class ClickListener<T>(val onClick: (T) -> Unit)
 
 // Song Diff callback
-class SongDiffCallback : DiffUtil.ItemCallback<Song>() {
-    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
-        return oldItem == newItem
-    }
-}
-
-// Album Diff callback
-class AlbumDiffCallback : DiffUtil.ItemCallback<Album>() {
-    override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean {
-        return oldItem == newItem
-    }
-}
-
-class ArtistDiffCallback : DiffUtil.ItemCallback<Artist>() {
-    override fun areContentsTheSame(oldItem: Artist, newItem: Artist): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areItemsTheSame(oldItem: Artist, newItem: Artist): Boolean {
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
         return oldItem == newItem
     }
 }

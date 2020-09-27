@@ -13,10 +13,10 @@ import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.adapters.AlbumAdapter
 import org.oxycblt.auxio.library.adapters.ArtistAdapter
 import org.oxycblt.auxio.library.adapters.GenreAdapter
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.SHOW_ALBUMS
 import org.oxycblt.auxio.theme.SHOW_ARTISTS

@@ -12,15 +12,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.music.models.Genre
-import org.oxycblt.auxio.music.models.Song
 import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
 
-// ViewModel for music storage. May also be a god object.
+// ViewModel for music storage.
 // FIXME: This class can be improved in multiple ways
 //  - Remove lists/parents from models so that they can be parcelable
 //  - Move genre usage to songs [If there's a way to find songs without a genre]

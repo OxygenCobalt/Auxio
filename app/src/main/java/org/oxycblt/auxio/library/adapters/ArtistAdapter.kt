@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemArtistBinding
-import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.recycler.ClickListener
 
 class ArtistAdapter(

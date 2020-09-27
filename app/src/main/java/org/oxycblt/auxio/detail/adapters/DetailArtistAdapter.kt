@@ -4,17 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemGenreArtistBinding
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
-import org.oxycblt.auxio.recycler.AlbumDiffCallback
-import org.oxycblt.auxio.recycler.ArtistDiffCallback
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.DiffCallback
 
 class DetailArtistAdapter(
     private val listener: ClickListener<Artist>
-) : ListAdapter<Artist, DetailArtistAdapter.ViewHolder>(ArtistDiffCallback()) {
+) : ListAdapter<Artist, DetailArtistAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

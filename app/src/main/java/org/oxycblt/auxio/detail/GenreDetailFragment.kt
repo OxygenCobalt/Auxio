@@ -11,13 +11,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
-import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.music.models.Album
-import org.oxycblt.auxio.music.models.Artist
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
