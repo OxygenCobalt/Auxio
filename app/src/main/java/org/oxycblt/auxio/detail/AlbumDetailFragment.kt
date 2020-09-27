@@ -33,12 +33,14 @@ class AlbumDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the album, get it from MusicViewModel
         // using the ID given by the navigation arguments.
-        if (detailModel.currentAlbum == null) {
+        if (detailModel.currentAlbum.value!!.id != args.albumId) {
             val musicModel: MusicViewModel by activityViewModels()
 
-            detailModel.currentAlbum = musicModel.albums.value!!.find {
-                it.id == args.albumId
-            }!!
+            detailModel.updateAlbum(
+                musicModel.albums.value!!.find {
+                    it.id == args.albumId
+                }!!
+            )
         }
 
         val songAdapter = DetailSongAdapter(
@@ -49,7 +51,7 @@ class AlbumDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
-        binding.album = detailModel.currentAlbum
+        binding.album = detailModel.currentAlbum.value!!
 
         binding.albumSongRecycler.apply {
             adapter = songAdapter
@@ -61,20 +63,16 @@ class AlbumDetailFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        // If the album was shown directly from LibraryFragment [No parent artist stored],
-        // then enable the ability to navigate upwards to the album's parent artist.
-        if (detailModel.currentArtist == null) {
-            detailModel.doneWithNavToParent()
-
-            detailModel.navToParentArtist.observe(viewLifecycleOwner) {
-                if (it) {
+        // If the album was shown directly from LibraryFragment [No parent artist stored]
+        // Then enable the ability to navigate upwards to the parent artist
+        if (detailModel.currentArtist.value!!.id != detailModel.currentAlbum.value!!.artist.id) {
+            detailModel.currentArtist.observe(viewLifecycleOwner) {
+                if (it.id == detailModel.currentAlbum.value!!.artist.id) {
                     findNavController().navigate(
                         AlbumDetailFragmentDirections.actionShowParentArtist(
-                            detailModel.currentAlbum!!.artist.id
+                            detailModel.currentAlbum.value!!.artist.id
                         )
                     )
-
-                    detailModel.doneWithNavToParent()
                 }
             }
 
@@ -87,7 +85,7 @@ class AlbumDetailFragment : Fragment() {
 
             // Then update the sort mode of the album adapter.
             songAdapter.submitList(
-                detailModel.currentAlbum!!.songs.sortedWith(
+                detailModel.currentAlbum.value!!.songs.sortedWith(
                     SortMode.songSortComparators.getOrDefault(
                         mode,
 
@@ -99,7 +97,7 @@ class AlbumDetailFragment : Fragment() {
         }
 
         // Don't enable the sort button if there's only one song [or less]
-        if (detailModel.currentAlbum!!.numSongs < 2) {
+        if (detailModel.currentAlbum.value!!.numSongs < 2) {
             binding.albumSortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())
             )
@@ -110,11 +108,5 @@ class AlbumDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        detailModel.currentAlbum = null
     }
 }

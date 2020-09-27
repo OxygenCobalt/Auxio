@@ -24,18 +24,11 @@ TODO:
 
 /library/
 
-- Add genres
 - ? Move into ViewPager ?
 - Sorting
 - Search
     - ? Show Artists, Albums, and Songs in search ?
 - Exit functionality
-
-/other/
-
-- ? Condense detail fragments into a single fragment ?
-- Condense artist/album recyclerview items into single item
-- Remove binding adapters
 
 To be added:
 /prefs/

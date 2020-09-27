@@ -34,11 +34,14 @@ class ArtistDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the artist, get it from MusicViewModel
         // using the ID given by the navigation arguments
-        if (detailModel.currentArtist == null) {
+        if (detailModel.currentArtist.value!!.id != args.artistId) {
             val musicModel: MusicViewModel by activityViewModels()
-            detailModel.currentArtist = musicModel.artists.value!!.find {
-                it.id == args.artistId
-            }!!
+
+            detailModel.updateArtist(
+                musicModel.artists.value!!.find {
+                    it.id == args.artistId
+                }!!
+            )
         }
 
         val albumAdapter = DetailAlbumAdapter(
@@ -49,7 +52,7 @@ class ArtistDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
-        binding.artist = detailModel.currentArtist!!
+        binding.artist = detailModel.currentArtist.value!!
 
         binding.artistAlbumRecycler.apply {
             adapter = albumAdapter
@@ -67,7 +70,7 @@ class ArtistDetailFragment : Fragment() {
 
             // Then update the sort mode of the album adapter.
             albumAdapter.submitList(
-                detailModel.currentArtist!!.albums.sortedWith(
+                detailModel.currentArtist.value!!.albums.sortedWith(
                     SortMode.albumSortComparators.getOrDefault(
                         mode,
 
@@ -79,7 +82,7 @@ class ArtistDetailFragment : Fragment() {
         }
 
         // Don't enable the sort button if there is only one album [Or less]
-        if (detailModel.currentArtist!!.numAlbums < 2) {
+        if (detailModel.currentArtist.value!!.numAlbums < 2) {
             binding.artistSortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())
             )
@@ -96,14 +99,6 @@ class ArtistDetailFragment : Fragment() {
         super.onResume()
 
         detailModel.isAlreadyNavigating = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        // Reset the stored artist so that the next instance of ArtistDetailFragment
-        // will not read it.
-        detailModel.currentArtist = null
     }
 
     private fun navToAlbum(album: Album) {

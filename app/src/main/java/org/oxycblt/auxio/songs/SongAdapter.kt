@@ -31,6 +31,7 @@ class SongAdapter(
 
         override fun onBind(model: Song) {
             binding.song = model
+
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()
         }

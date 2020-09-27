@@ -77,7 +77,7 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> detailModel.navToParent()}"
+                    android:onClick="@{() -> detailModel.updateArtist(album.artist)}"
                     android:text="@{album.artist.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"

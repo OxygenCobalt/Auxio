@@ -3,10 +3,8 @@ package org.oxycblt.auxio.detail.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreArtistBinding
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.bindArtistCounts
 import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.DiffCallback

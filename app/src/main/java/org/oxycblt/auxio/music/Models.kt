@@ -25,7 +25,7 @@ data class Song(
 
 // Album
 data class Album(
-    override val id: Long = -1,
+    override val id: Long = Long.MIN_VALUE,
     override val name: String,
     val artistName: String,
     val coverUri: Uri = Uri.EMPTY,
@@ -47,7 +47,7 @@ data class Album(
 
 // Artist
 data class Artist(
-    override val id: Long = -1,
+    override val id: Long = Long.MIN_VALUE,
     override var name: String,
     val givenGenres: MutableList<Genre> = mutableListOf()
 ) : BaseModel() {
@@ -67,7 +67,7 @@ data class Artist(
 
 // Genre
 data class Genre(
-    override val id: Long = -1,
+    override val id: Long = Long.MIN_VALUE,
     override var name: String,
 ) : BaseModel() {
     val artists = mutableListOf<Artist>()

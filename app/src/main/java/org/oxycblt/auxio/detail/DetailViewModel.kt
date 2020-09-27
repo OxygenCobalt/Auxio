@@ -11,9 +11,6 @@ import org.oxycblt.auxio.recycler.SortMode
 class DetailViewModel : ViewModel() {
     var isAlreadyNavigating = false
 
-    private val mNavToParentArtist = MutableLiveData<Boolean>()
-    val navToParentArtist: LiveData<Boolean> get() = mNavToParentArtist
-
     private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
 
@@ -23,16 +20,28 @@ class DetailViewModel : ViewModel() {
     private val mAlbumSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
 
-    var currentGenre: Genre? = null
-    var currentArtist: Artist? = null
-    var currentAlbum: Album? = null
+    // Current music models being shown
+    // These have placeholder values in them so that they don't
+    // have to be checked if they're null.
+    private val mCurrentGenre = MutableLiveData(Genre(name = ""))
+    val currentGenre: LiveData<Genre> get() = mCurrentGenre
 
-    fun navToParent() {
-        mNavToParentArtist.value = true
+    private val mCurrentArtist = MutableLiveData(Artist(name = ""))
+    val currentArtist: LiveData<Artist> get() = mCurrentArtist
+
+    private val mCurrentAlbum = MutableLiveData(Album(name = "", artistName = ""))
+    val currentAlbum: LiveData<Album> get() = mCurrentAlbum
+
+    fun updateGenre(genre: Genre) {
+        mCurrentGenre.value = genre
     }
 
-    fun doneWithNavToParent() {
-        mNavToParentArtist.value = false
+    fun updateArtist(artist: Artist) {
+        mCurrentArtist.value = artist
+    }
+
+    fun updateAlbum(album: Album) {
+        mCurrentAlbum.value = album
     }
 
     fun incrementGenreSortMode() {

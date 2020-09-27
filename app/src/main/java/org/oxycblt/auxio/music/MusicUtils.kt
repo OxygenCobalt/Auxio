@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
-import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
@@ -98,7 +97,11 @@ fun TextView.bindGenreCounts(genre: Genre) {
 // TODO: Add option to list all genres
 @BindingAdapter("artistGenre")
 fun TextView.bindArtistGenre(artist: Artist) {
-    text = artist.genres[0].name
+    text = if (artist.genres.isNotEmpty()) {
+        artist.genres[0].name
+    } else {
+        context.getString(R.string.placeholder_genre)
+    }
 }
 
 // Get the artist counts

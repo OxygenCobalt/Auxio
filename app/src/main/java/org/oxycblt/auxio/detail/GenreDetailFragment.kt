@@ -34,11 +34,14 @@ class GenreDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the genre, get it from MusicViewModel
         // using the ID given by the navigation arguments
-        if (detailModel.currentGenre == null) {
+        if (detailModel.currentGenre.value!!.id != args.genreId) {
             val musicModel: MusicViewModel by activityViewModels()
-            detailModel.currentGenre = musicModel.genres.value!!.find {
-                it.id == args.genreId
-            }!!
+
+            detailModel.updateGenre(
+                musicModel.genres.value!!.find {
+                    it.id == args.genreId
+                }!!
+            )
         }
 
         val albumAdapter = DetailArtistAdapter(
@@ -49,7 +52,7 @@ class GenreDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
-        binding.genre = detailModel.currentGenre!!
+        binding.genre = detailModel.currentGenre.value
 
         binding.genreArtistRecycler.adapter = albumAdapter
         binding.genreArtistRecycler.applyDivider()
@@ -63,9 +66,9 @@ class GenreDetailFragment : Fragment() {
             // Update the current sort icon
             binding.genreSortButton.setImageResource(mode.iconRes)
 
-            // Then update the sort mode of the album adapter.
+            // Then update the sort mode of the artist adapter.
             albumAdapter.submitList(
-                detailModel.currentGenre!!.artists.sortedWith(
+                detailModel.currentGenre.value!!.artists.sortedWith(
                     SortMode.artistSortComparators.getOrDefault(
                         mode,
 
@@ -77,7 +80,7 @@ class GenreDetailFragment : Fragment() {
         }
 
         // Don't enable the sort button if there is only one artist [Or less]
-        if (detailModel.currentGenre!!.numArtists < 2) {
+        if (detailModel.currentGenre.value!!.numArtists < 2) {
             binding.genreSortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())
             )
@@ -94,14 +97,6 @@ class GenreDetailFragment : Fragment() {
         super.onResume()
 
         detailModel.isAlreadyNavigating = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        // Reset the stored artist so that the next instance of GenreDetailFragment
-        // will not read it.
-        detailModel.currentGenre = null
     }
 
     private fun navToArtist(artist: Artist) {
