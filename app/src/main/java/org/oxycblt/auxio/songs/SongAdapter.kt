@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 
 class SongAdapter(
@@ -24,31 +25,14 @@ class SongAdapter(
         holder.bind(data[position])
     }
 
-    // Generic ViewHolder for an album
     inner class ViewHolder(
         private val binding: ItemSongBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : BaseViewHolder<Song>(binding, listener) {
 
-        init {
-            // Force the viewholder to *actually* be the screen width so ellipsizing can work.
-            binding.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        // Bind the view w/new data
-        fun bind(song: Song) {
-            binding.song = song
-
-            binding.root.setOnClickListener {
-                listener.onClick(song)
-            }
-
-            // Force-update the layouts so ellipsizing works.
+        override fun onBind(model: Song) {
+            binding.song = model
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()
-
-            binding.executePendingBindings()
         }
     }
 }

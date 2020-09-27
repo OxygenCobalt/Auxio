@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemGenreBinding
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 
 class GenreAdapter(
@@ -24,27 +25,13 @@ class GenreAdapter(
         holder.bind(data[position])
     }
 
-    // Generic ViewHolder for an artist
     inner class ViewHolder(
         private val binding: ItemGenreBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    ) : BaseViewHolder<Genre>(binding, listener) {
 
-        init {
-            // Force the viewholder to *actually* be the screen width so ellipsizing can work.
-            binding.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        // Bind the view w/new data
-        fun bind(genre: Genre) {
-            binding.genre = genre
-
-            binding.root.setOnClickListener { listener.onClick(genre) }
-
-            // Force-update the layout so ellipsizing works.
+        override fun onBind(model: Genre) {
+            binding.genre = model
             binding.artistName.requestLayout()
-            binding.executePendingBindings()
         }
     }
 }

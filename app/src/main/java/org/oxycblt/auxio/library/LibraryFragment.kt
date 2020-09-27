@@ -26,7 +26,7 @@ import org.oxycblt.auxio.theme.applyDivider
 class LibraryFragment : Fragment() {
 
     // FIXME: Temp value, remove when there are actual preferences
-    private val libraryMode = SHOW_GENRES
+    private val libraryMode = SHOW_ARTISTS
 
     private val musicModel: MusicViewModel by activityViewModels()
     private val libraryModel: LibraryViewModel by activityViewModels()
