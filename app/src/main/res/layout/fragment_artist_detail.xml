@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/artist_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
@@ -71,7 +71,7 @@
                     tools:text="Artist Name" />
 
                 <TextView
-                    android:id="@+id/genre_counts"
+                    android:id="@+id/artist_genre"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
@@ -83,7 +83,7 @@
                     tools:text="Genre Name" />
 
                 <TextView
-                    android:id="@+id/song_count"
+                    android:id="@+id/artist_counts"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
@@ -91,11 +91,11 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     app:artistCounts="@{artist}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_counts"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_genre"
                     tools:text="2 Albums, 20 Songs" />
 
                 <TextView
-                    android:id="@+id/header_title"
+                    android:id="@+id/artist_album_header"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_medium"
@@ -109,10 +109,10 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
                 <ImageButton
-                    android:id="@+id/sort_button"
+                    android:id="@+id/artist_sort_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_medium"
@@ -124,12 +124,12 @@
                     android:paddingBottom="@dimen/padding_small"
                     android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
                     tools:src="@drawable/ic_sort_numeric_down"
-                    app:layout_constraintBottom_toTopOf="@+id/album_recycler"
+                    app:layout_constraintBottom_toTopOf="@+id/artist_album_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/album_recycler"
+                    android:id="@+id/artist_album_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -137,9 +137,9 @@
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header_title"
+                    app:layout_constraintTop_toBottomOf="@+id/artist_album_header"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_artist_album" />
+                    tools:listitem="@layout/item_album" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

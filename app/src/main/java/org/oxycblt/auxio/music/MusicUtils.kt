@@ -70,39 +70,23 @@ fun Long.toAlbumArtURI(): Uri {
 
 // Convert seconds into its string duration
 fun Long.toDuration(): String {
-    val durationString = DateUtils.formatElapsedTime(this)
+    var durationString = DateUtils.formatElapsedTime(this)
 
-    val durationSplit = durationString.chunked(1).toMutableList()
-
-    // Iterate through the string and remove the first zero found
-    // If anything else is found, exit the loop.
-    for (i in 0 until durationSplit.size) {
-        if (durationSplit[i] == "0") {
-            durationSplit.removeAt(i)
-
-            break
-        } else {
-            break
-        }
+    // If the duration begins with a excess zero [e.g 01:42], then cut it off.
+    if (durationString[0] == '0') {
+        durationString = durationString.slice(1 until durationString.length)
     }
 
-    return durationSplit.joinToString("")
+    return durationString
 }
 
 // --- BINDING ADAPTERS ---
-
-fun getAlbumSongCount(album: Album, context: Context): String {
-    return context.resources.getQuantityString(
-        R.plurals.format_song_count, album.numSongs, album.numSongs
-    )
-}
 
 @BindingAdapter("genreCounts")
 fun TextView.bindGenreCounts(genre: Genre) {
     val artists = context.resources.getQuantityString(
         R.plurals.format_artist_count, genre.numArtists, genre.numArtists
     )
-
     val albums = context.resources.getQuantityString(
         R.plurals.format_album_count, genre.numAlbums, genre.numAlbums
     )
@@ -117,6 +101,7 @@ fun TextView.bindArtistGenre(artist: Artist) {
     text = artist.genres[0].name
 }
 
+// Get the artist counts
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
     val albums = context.resources.getQuantityString(
@@ -135,13 +120,18 @@ fun TextView.bindAlbumDetails(album: Album) {
     text = context.getString(
         R.string.format_double_info,
         album.year.toString(),
-        getAlbumSongCount(album, context),
+        context.resources.getQuantityString(
+            R.plurals.format_song_count,
+            album.numSongs, album.numSongs
+        ),
         album.totalDuration
     )
 }
 
+@BindingAdapter("albumSongs")
 // Format the amount of songs in an album
-@BindingAdapter("songCount")
 fun TextView.bindAlbumSongs(album: Album) {
-    text = getAlbumSongCount(album, context)
+    text = context.resources.getQuantityString(
+        R.plurals.format_song_count, album.numSongs, album.numSongs
+    )
 }

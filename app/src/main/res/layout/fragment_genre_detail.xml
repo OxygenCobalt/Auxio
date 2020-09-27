@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="genre"
             type="org.oxycblt.auxio.music.Genre" />
@@ -19,7 +20,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/genre_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
@@ -39,7 +40,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/artist_image"
+                    android:id="@+id/genre_image"
                     android:layout_width="@dimen/cover_size_huge"
                     android:layout_height="@dimen/cover_size_huge"
                     android:layout_marginTop="@dimen/margin_medium"
@@ -51,7 +52,7 @@
                     tools:src="@drawable/ic_genre" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/artist_name"
+                    android:id="@+id/genre_name"
                     style="@style/DetailHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artist_image"
+                    app:layout_constraintTop_toBottomOf="@+id/genre_image"
                     tools:text="Genre Name" />
 
                 <TextView
@@ -78,11 +79,11 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     app:genreCounts="@{genre}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artist_name"
-                    tools:text="2 Artists, 4 Ablums" />
+                    app:layout_constraintTop_toBottomOf="@+id/genre_name"
+                    tools:text="2 Artists, 4 Albums" />
 
                 <TextView
-                    android:id="@+id/song_count"
+                    android:id="@+id/genre_song_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceListItem"
@@ -94,7 +95,7 @@
                     tools:text="80 Songs" />
 
                 <TextView
-                    android:id="@+id/header_title"
+                    android:id="@+id/genre_artist_header"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_medium"
@@ -108,10 +109,10 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
 
                 <ImageButton
-                    android:id="@+id/sort_button"
+                    android:id="@+id/genre_sort_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_medium"
@@ -122,13 +123,13 @@
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
                     android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-                    tools:src="@drawable/ic_sort_numeric_down"
-                    app:layout_constraintBottom_toTopOf="@+id/album_recycler"
+                    tools:src="@drawable/ic_sort_alpha_down"
+                    app:layout_constraintBottom_toTopOf="@+id/genre_artist_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/album_recycler"
+                    android:id="@+id/genre_artist_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -136,9 +137,9 @@
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/header_title"
+                    app:layout_constraintTop_toBottomOf="@+id/genre_artist_header"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_genre_artist" />
+                    tools:listitem="@layout/item_artist" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

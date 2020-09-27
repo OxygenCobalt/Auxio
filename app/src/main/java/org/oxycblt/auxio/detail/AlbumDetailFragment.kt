@@ -51,11 +51,13 @@ class AlbumDetailFragment : Fragment() {
         binding.detailModel = detailModel
         binding.album = detailModel.currentAlbum
 
-        binding.songRecycler.adapter = songAdapter
-        binding.songRecycler.applyDivider()
-        binding.songRecycler.setHasFixedSize(true)
+        binding.albumSongRecycler.apply {
+            adapter = songAdapter
+            applyDivider()
+            setHasFixedSize(true)
+        }
 
-        binding.toolbar.setNavigationOnClickListener {
+        binding.albumToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
 
@@ -76,12 +78,12 @@ class AlbumDetailFragment : Fragment() {
                 }
             }
 
-            binding.artistName.setBackgroundResource(R.drawable.ripple)
+            binding.albumArtist.setBackgroundResource(R.drawable.ripple)
         }
 
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
             // Update the current sort icon
-            binding.sortButton.setImageResource(mode.iconRes)
+            binding.albumSortButton.setImageResource(mode.iconRes)
 
             // Then update the sort mode of the album adapter.
             songAdapter.submitList(
@@ -98,11 +100,11 @@ class AlbumDetailFragment : Fragment() {
 
         // Don't enable the sort button if there's only one song [or less]
         if (detailModel.currentAlbum!!.numSongs < 2) {
-            binding.sortButton.imageTintList = ColorStateList.valueOf(
+            binding.albumSortButton.imageTintList = ColorStateList.valueOf(
                 R.color.inactive_color.toColor(requireContext())
             )
 
-            binding.sortButton.isEnabled = false
+            binding.albumSortButton.isEnabled = false
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

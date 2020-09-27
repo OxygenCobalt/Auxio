@@ -103,7 +103,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             )
         } else {
             binding.let { binding ->
-                binding.errorText.text =
+                binding.loadingErrorText.text =
                     if (response == MusicLoaderResponse.NO_MUSIC)
                         getString(R.string.error_no_music)
                     else
@@ -113,9 +113,9 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 // depending on which error response was given, along with a retry button
                 binding.loadingBar.visibility = View.GONE
 
-                binding.errorText.visibility = View.VISIBLE
-                binding.statusIcon.visibility = View.VISIBLE
-                binding.retryButton.visibility = View.VISIBLE
+                binding.loadingErrorText.visibility = View.VISIBLE
+                binding.loadingErrorIcon.visibility = View.VISIBLE
+                binding.loadingRetryButton.visibility = View.VISIBLE
             }
         }
     }
@@ -126,11 +126,11 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         // along with a GRANT button
 
         binding.loadingBar.visibility = View.GONE
-        binding.statusIcon.visibility = View.VISIBLE
-        binding.grantButton.visibility = View.VISIBLE
-        binding.errorText.visibility = View.VISIBLE
+        binding.loadingErrorIcon.visibility = View.VISIBLE
+        binding.loadingGrantButton.visibility = View.VISIBLE
+        binding.loadingErrorText.visibility = View.VISIBLE
 
-        binding.errorText.text = getString(R.string.error_no_perms)
+        binding.loadingErrorText.text = getString(R.string.error_no_perms)
     }
 
     private fun onRetry(retry: Boolean) {
@@ -149,12 +149,12 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         }
     }
 
-    // Wipe views and switch back to the plain LoadingBar
+    // Wipe views and switch back to the plain ProgressBar
     private fun wipeViews() {
         binding.loadingBar.visibility = View.VISIBLE
-        binding.errorText.visibility = View.GONE
-        binding.statusIcon.visibility = View.GONE
-        binding.retryButton.visibility = View.GONE
-        binding.grantButton.visibility = View.GONE
+        binding.loadingErrorText.visibility = View.GONE
+        binding.loadingErrorIcon.visibility = View.GONE
+        binding.loadingRetryButton.visibility = View.GONE
+        binding.loadingGrantButton.visibility = View.GONE
     }
 }

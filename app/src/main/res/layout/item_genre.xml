@@ -19,7 +19,7 @@
         android:padding="@dimen/padding_medium">
 
         <ImageView
-            android:id="@+id/artist_image"
+            android:id="@+id/genre_image"
             android:layout_width="@dimen/cover_size_normal"
             android:layout_height="@dimen/cover_size_normal"
             app:genreImage="@{genre}"
@@ -30,7 +30,7 @@
             tools:src="@drawable/ic_genre" />
 
         <TextView
-            android:id="@+id/artist_name"
+            android:id="@+id/genre_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -39,15 +39,15 @@
             android:layout_marginStart="@dimen/margin_medium"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/album_song_count"
+            app:layout_constraintBottom_toTopOf="@+id/genre_count"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintStart_toEndOf="@+id/genre_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Genre Name" />
 
         <TextView
-            android:id="@+id/album_song_count"
+            android:id="@+id/genre_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
@@ -55,8 +55,8 @@
             android:textColor="?android:attr/textColorSecondary"
             app:genreCounts="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/artist_image"
-            app:layout_constraintTop_toBottomOf="@+id/artist_name"
+            app:layout_constraintStart_toEndOf="@+id/genre_image"
+            app:layout_constraintTop_toBottomOf="@+id/genre_name"
             tools:text="2 Artists, 4 Albums" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -144,7 +144,7 @@ class MusicSorter(
             )
 
             for (artist in unknownArtists) {
-                artist.givenGenres.add(unknownGenre)
+                artist.genres.add(unknownGenre)
                 unknownGenre.artists.add(artist)
             }
             genres.add(unknownGenre)

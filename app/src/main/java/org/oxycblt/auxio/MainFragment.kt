@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.viewPager.adapter = PagerAdapter()
+        binding.mainViewPager.adapter = PagerAdapter()
 
         val colorActive = accent.first.toColor(requireContext())
         val colorInactive = getTransparentAccent(
@@ -45,7 +45,7 @@ class MainFragment : Fragment() {
         )
 
         // Link the ViewPager & Tab View
-        TabLayoutMediator(binding.tabs, binding.viewPager) { tab, position ->
+        TabLayoutMediator(binding.mainTabs, binding.mainViewPager) { tab, position ->
             tab.icon = ContextCompat.getDrawable(requireContext(), tabIcons[position])
 
             // Set the icon tint to deselected if its not the default tab
@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
         }.attach()
 
         // Set up the selected/deselected colors
-        binding.tabs.addOnTabSelectedListener(
+        binding.mainTabs.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
 
                 override fun onTabSelected(tab: TabLayout.Tab) {

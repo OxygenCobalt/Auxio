@@ -31,7 +31,7 @@ class GenreAdapter(
 
         override fun onBind(model: Genre) {
             binding.genre = model
-            binding.artistName.requestLayout()
+            binding.genreName.requestLayout()
         }
     }
 }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.bindAlbumSongs
 import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 

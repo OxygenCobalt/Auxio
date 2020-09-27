@@ -83,7 +83,8 @@
     <fragment
         android:id="@+id/genreDetailFragment"
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
-        android:label="GenreDetailFragment" >
+        android:label="GenreDetailFragment"
+        tools:layout="@layout/fragment_genre_detail">
         <action
             android:id="@+id/action_show_artist"
             app:enterAnim="@anim/fragment_fade_enter"

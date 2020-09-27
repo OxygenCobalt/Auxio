@@ -14,7 +14,7 @@ import org.oxycblt.auxio.music.Song
 
 // Get the cover art for a song or album
 @BindingAdapter("coverArt")
-fun ImageView.getCoverArt(song: Song) {
+fun ImageView.bindCoverArt(song: Song) {
     val request = getDefaultRequest(context, this)
         .data(song.album.coverUri)
         .error(R.drawable.ic_song)
@@ -24,7 +24,7 @@ fun ImageView.getCoverArt(song: Song) {
 }
 
 @BindingAdapter("coverArt")
-fun ImageView.getCoverArt(album: Album) {
+fun ImageView.bindCoverArt(album: Album) {
     val request = getDefaultRequest(context, this)
         .data(album.coverUri)
         .error(R.drawable.ic_album)
@@ -35,7 +35,7 @@ fun ImageView.getCoverArt(album: Album) {
 
 // Get the artist image
 @BindingAdapter("artistImage")
-fun ImageView.getArtistImage(artist: Artist) {
+fun ImageView.bindArtistImage(artist: Artist) {
     val request: ImageRequest
 
     // If there are more than one albums, then create a mosaic of them.
@@ -72,7 +72,7 @@ fun ImageView.getArtistImage(artist: Artist) {
 }
 
 @BindingAdapter("genreImage")
-fun ImageView.getGenreImage(genre: Genre) {
+fun ImageView.bindGenreImage(genre: Genre) {
     val request: ImageRequest
 
     if (genre.numArtists >= 4) {

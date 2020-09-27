@@ -15,7 +15,7 @@ data class Song(
     override var name: String,
     val albumId: Long,
     val track: Int,
-    val duration: Long
+    val duration: Long,
 ) : BaseModel() {
     lateinit var album: Album
 
@@ -35,13 +35,14 @@ data class Album(
 
     val songs = mutableListOf<Song>()
     val numSongs: Int get() = songs.size
-    val totalDuration: String get() {
-        var seconds: Long = 0
-        songs.forEach {
-            seconds += it.seconds
+    val totalDuration: String
+        get() {
+            var seconds: Long = 0
+            songs.forEach {
+                seconds += it.seconds
+            }
+            return seconds.toDuration()
         }
-        return seconds.toDuration()
-    }
 }
 
 // Artist
@@ -72,18 +73,20 @@ data class Genre(
     val artists = mutableListOf<Artist>()
 
     val numArtists: Int get() = artists.size
-    val numAlbums: Int get() {
-        var num = 0
-        artists.forEach {
-            num += it.numAlbums
+    val numAlbums: Int
+        get() {
+            var num = 0
+            artists.forEach {
+                num += it.numAlbums
+            }
+            return num
         }
-        return num
-    }
-    val numSongs: Int get() {
-        var num = 0
-        artists.forEach {
-            num += it.numSongs
+    val numSongs: Int
+        get() {
+            var num = 0
+            artists.forEach {
+                num += it.numSongs
+            }
+            return num
         }
-        return num
-    }
 }
