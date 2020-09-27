@@ -33,6 +33,10 @@ TODO:
 
 /other/
 
+- Create inherited adapter/viewholder so I dont have to repeat as much code
+- ? Condense detail fragments into a single fragment ?
+- Make data items inherit a single class
+- Condense artist/album recyclerview items into single item
 - Remove binding adapters
 
 To be added:

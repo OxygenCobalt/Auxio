@@ -14,4 +14,11 @@ data class Genre(
         }
         return num
     }
+    val numSongs: Int get() {
+        var num = 0
+        artists.forEach {
+            num += it.numSongs
+        }
+        return num
+    }
 }

@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
-            name="artist"
-            type="org.oxycblt.auxio.music.models.Artist" />
+            name="genre"
+            type="org.oxycblt.auxio.music.models.Genre" />
 
         <variable
             name="detailModel"
@@ -44,12 +43,12 @@
                     android:layout_width="@dimen/cover_size_huge"
                     android:layout_height="@dimen/cover_size_huge"
                     android:layout_marginTop="@dimen/margin_medium"
-                    android:contentDescription="@{@string/description_artist_image(artist.name)}"
-                    app:artistImage="@{artist}"
+                    android:contentDescription="@{@string/description_genre_image(genre.name)}"
+                    app:genreImage="@{genre}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/ic_artist" />
+                    tools:src="@drawable/ic_genre" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/artist_name"
@@ -59,7 +58,7 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{artist.name}"
+                    android:text="@{genre.name}"
                     app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
                     app:autoSizeMinTextSize="@dimen/generic_size_min"
                     app:autoSizeStepGranularity="@dimen/generic_size_increment"
@@ -68,7 +67,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_image"
-                    tools:text="Artist Name" />
+                    tools:text="Genre Name" />
 
                 <TextView
                     android:id="@+id/genre_counts"
@@ -77,10 +76,10 @@
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="@dimen/margin_medium"
-                    app:artistGenre="@{artist}"
+                    app:genreCounts="@{genre}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_name"
-                    tools:text="Genre Name" />
+                    tools:text="2 Artists, 4 Ablums" />
 
                 <TextView
                     android:id="@+id/song_count"
@@ -89,10 +88,10 @@
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="@dimen/margin_medium"
-                    app:artistCounts="@{artist}"
+                    android:text="@{@plurals/format_song_count(genre.numSongs, genre.numSongs)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/genre_counts"
-                    tools:text="2 Albums, 20 Songs" />
+                    tools:text="80 Songs" />
 
                 <TextView
                     android:id="@+id/header_title"
@@ -105,7 +104,7 @@
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"
-                    android:text="@string/label_albums"
+                    android:text="@string/label_artists"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +121,7 @@
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
-                    android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
+                    android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
                     tools:src="@drawable/ic_sort_numeric_down"
                     app:layout_constraintBottom_toTopOf="@+id/album_recycler"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -139,7 +138,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/header_title"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_artist_album" />
+                    tools:listitem="@layout/item_genre_artist" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

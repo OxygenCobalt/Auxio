@@ -11,6 +11,7 @@
 
     <string name="label_retry">Retry</string>
     <string name="label_grant">Grant</string>
+    <string name="label_artists">Artists</string>
     <string name="label_albums">Albums</string>
     <string name="label_songs">Songs</string>
 

@@ -158,8 +158,7 @@ class MusicSorter(
 
     // Finalize music
     private fun finalizeMusic() {
-        // Remove genre duplicates now, as there's a risk duplicates could be added during the
-        // sorting process.
+        // Remove genre duplicates now, as duplicate genres can be added during the sorting process.
         genres = genres.distinctBy {
             it.name
         }.toMutableList()

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.net.Uri
+import android.util.Log
 import androidx.core.graphics.drawable.toDrawable
 import coil.bitmap.BitmapPool
 import coil.decode.DataSource
@@ -17,8 +18,11 @@ import coil.size.Size
 import okio.buffer
 import okio.source
 import java.io.InputStream
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 const val MOSAIC_BITMAP_SIZE = 512
+const val MOSAIC_BITMAP_INCREMENT = 256
 
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
@@ -59,25 +63,24 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
 
         var x = 0
         var y = 0
-        val increment = MOSAIC_BITMAP_SIZE / 2
 
         // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
         // and place it on a corner of the canvas.
         for (stream in streams) {
             val bitmap = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeStream(stream),
-                increment,
-                increment,
+                MOSAIC_BITMAP_INCREMENT,
+                MOSAIC_BITMAP_INCREMENT,
                 true
             )
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
-            x += increment
+            x += MOSAIC_BITMAP_INCREMENT
 
             if (x == MOSAIC_BITMAP_SIZE) {
                 x = 0
-                y += increment
+                y += MOSAIC_BITMAP_INCREMENT
 
                 if (y == MOSAIC_BITMAP_SIZE) {
                     break

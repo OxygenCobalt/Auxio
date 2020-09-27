@@ -78,8 +78,17 @@ fun ImageView.getGenreImage(genre: Genre) {
     if (genre.numArtists >= 4) {
         val uris = mutableListOf<Uri>()
 
+        // For each artist, get the nth album from them [if possible].
         for (i in 0..3) {
-            uris.add(genre.artists[i].albums[0].coverUri)
+            val artist = genre.artists[i]
+
+            uris.add(
+                if (artist.albums.size > i) {
+                    artist.albums[i].coverUri
+                } else {
+                    artist.albums[0].coverUri
+                }
+            )
         }
 
         val fetcher = MosaicFetcher(context)

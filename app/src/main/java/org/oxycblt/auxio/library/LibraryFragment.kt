@@ -16,6 +16,7 @@ import org.oxycblt.auxio.library.adapters.GenreAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.SHOW_ALBUMS
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
@@ -55,7 +56,7 @@ class LibraryFragment : Fragment() {
             SHOW_GENRES -> GenreAdapter(
                 musicModel.genres.value!!,
                 ClickListener {
-                    Log.d(this::class.simpleName, it.name)
+                    navToGenre(it)
                 }
             )
 
@@ -96,6 +97,18 @@ class LibraryFragment : Fragment() {
             findNavController().navigate(
                 MainFragmentDirections.actionShowAlbum(
                     album.id
+                )
+            )
+        }
+    }
+
+    private fun navToGenre(genre: Genre) {
+        if (!libraryModel.isAlreadyNavigating) {
+            libraryModel.isAlreadyNavigating = true
+
+            findNavController().navigate(
+                MainFragmentDirections.actionShowGenre(
+                    genre.id
                 )
             )
         }

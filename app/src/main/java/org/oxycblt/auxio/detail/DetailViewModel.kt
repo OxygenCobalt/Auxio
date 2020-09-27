@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.models.Album
 import org.oxycblt.auxio.music.models.Artist
+import org.oxycblt.auxio.music.models.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
 class DetailViewModel : ViewModel() {
@@ -13,12 +14,16 @@ class DetailViewModel : ViewModel() {
     private val mNavToParentArtist = MutableLiveData<Boolean>()
     val navToParentArtist: LiveData<Boolean> get() = mNavToParentArtist
 
+    private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
+    val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
+
     private val mArtistSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
     val artistSortMode: LiveData<SortMode> get() = mArtistSortMode
 
     private val mAlbumSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
 
+    var currentGenre: Genre? = null
     var currentArtist: Artist? = null
     var currentAlbum: Album? = null
 
@@ -28,6 +33,15 @@ class DetailViewModel : ViewModel() {
 
     fun doneWithNavToParent() {
         mNavToParentArtist.value = false
+    }
+
+    fun incrementGenreSortMode() {
+        mGenreSortMode.value = when (mGenreSortMode.value) {
+            SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
+            SortMode.ALPHA_UP -> SortMode.ALPHA_DOWN
+
+            else -> SortMode.ALPHA_DOWN
+        }
     }
 
     fun incrementArtistSortMode() {
