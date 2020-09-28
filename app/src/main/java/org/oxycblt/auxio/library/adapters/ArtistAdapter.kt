@@ -9,9 +9,10 @@ import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 
 class ArtistAdapter(
-    private val data: List<Artist>,
     private val listener: ClickListener<Artist>
 ) : RecyclerView.Adapter<ArtistAdapter.ViewHolder>() {
+
+    private var data = listOf<Artist>()
 
     override fun getItemCount(): Int = data.size
 
@@ -23,6 +24,12 @@ class ArtistAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(data[position])
+    }
+
+    fun updateData(newData: List<Artist>) {
+        data = newData
+
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(

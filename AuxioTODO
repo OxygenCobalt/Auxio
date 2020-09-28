@@ -5,7 +5,6 @@ TODO:
 
 /detail/
 
-- Add genre detail
 - ? Implement Toolbar update functionality ?
 - ! Implement shared element transitions !
 
@@ -24,11 +23,14 @@ TODO:
 
 /library/
 
-- ? Move into ViewPager ?
-- Sorting
+- Re-add albums/genres into a single adapter
+- Add highlighting to the current sortmode
 - Search
-    - ? Show Artists, Albums, and Songs in search ?
 - Exit functionality
+- ? Show Artists, Albums, and Songs in search ?
+- ? Move into ViewPager ?
+- ! Move Adapter functionality to ListAdapter!
+
 
 To be added:
 /prefs/

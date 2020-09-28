@@ -2,35 +2,48 @@
 <resources>
     <string name="app_name">Auxio</string>
 
+    <!-- Title Namespace | Toolbar titles -->
     <string name="title_library_fragment">Library</string>
     <string name="title_all_songs">All Songs</string>
 
+    <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found.</string>
     <string name="error_music_load_failed">Music loading failed.</string>
     <string name="error_no_perms">Permissions to read storage are needed.</string>
 
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
     <string name="label_grant">Grant</string>
     <string name="label_artists">Artists</string>
     <string name="label_albums">Albums</string>
     <string name="label_songs">Songs</string>
+    <string name="label_sort_none">Default</string>
+    <string name="label_sort_alpha_down">A-Z</string>
+    <string name="label_sort_alpha_up">Z-A</string>
 
+    <!-- Description Namespace | Accessibility Strings -->
     <string name="description_album_cover">Album Cover for %s</string>
     <string name="description_artist_image">Artist Image for %s</string>
     <string name="description_genre_image">Genre Image for %s</string>
     <string name="description_track_number">Track %s</string>
     <string name="description_error">Error</string>
     <string name="description_sort_button">Change Sorting Mode</string>
+    <string name="description_sort_none">Default Sort Order</string>
+    <string name="description_sort_alpha_down">Sort from A to Z</string>
+    <string name="description_sort_alpha_up">Sort from Z to A</string>
 
+    <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>
     <string name="placeholder_artist">Unknown Artist</string>
     <string name="placeholder_album">Unknown Album</string>
     <string name="placeholder_no_date">No Date</string>
 
+    <!-- Format Namespace | Value formatting -->
     <string name="format_info">%1$s / %2$s</string>
     <string name="format_double_info">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
 
+    <!-- Format Namespace | Value formatting with plurals -->
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>
         <item quantity="other">%s Songs</item>

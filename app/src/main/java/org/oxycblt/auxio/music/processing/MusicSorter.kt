@@ -21,7 +21,11 @@ class MusicSorter(
         sortAlbumsIntoArtists()
         sortArtistsIntoGenres()
 
-        finalizeMusic()
+        // Remove genre duplicates at the end, as duplicate genres can be added during
+        // the sorting process as well.
+        genres = genres.distinctBy {
+            it.name
+        }.toMutableList()
     }
 
     private fun sortSongsIntoAlbums() {
@@ -154,26 +158,5 @@ class MusicSorter(
                 "${unknownArtists.size} artists were placed into an unknown genre."
             )
         }
-    }
-
-    // Finalize music
-    private fun finalizeMusic() {
-        // Remove genre duplicates now, as duplicate genres can be added during the sorting process.
-        genres = genres.distinctBy {
-            it.name
-        }.toMutableList()
-
-        // Then finally sort the music
-        genres.sortWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
-        )
-
-        artists.sortWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
-        )
-
-        albums.sortWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER, { it.name })
-        )
     }
 }

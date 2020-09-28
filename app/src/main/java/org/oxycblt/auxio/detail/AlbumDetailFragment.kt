@@ -15,7 +15,6 @@ import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.toColor
 
@@ -65,7 +64,7 @@ class AlbumDetailFragment : Fragment() {
 
         // If the album was shown directly from LibraryFragment, Then enable the ability to
         // navigate upwards to the parent artist
-        if (args.fromLibrary) {
+        if (args.enableParentNav) {
             detailModel.navToParent.observe(viewLifecycleOwner) {
                 if (it) {
                     findNavController().navigate(
@@ -89,14 +88,7 @@ class AlbumDetailFragment : Fragment() {
 
             // Then update the sort mode of the album adapter.
             songAdapter.submitList(
-                detailModel.currentAlbum.value!!.songs.sortedWith(
-                    SortMode.songSortComparators.getOrDefault(
-                        mode,
-
-                        // If any invalid value is given, just default to the normal sort order.
-                        compareByDescending { it.track }
-                    )
-                )
+                mode.getSortedSongList(detailModel.currentAlbum.value!!.songs)
             )
         }
 

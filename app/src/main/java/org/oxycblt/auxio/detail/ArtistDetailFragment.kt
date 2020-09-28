@@ -16,7 +16,6 @@ import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.toColor
 
@@ -72,14 +71,7 @@ class ArtistDetailFragment : Fragment() {
 
             // Then update the sort mode of the album adapter.
             albumAdapter.submitList(
-                detailModel.currentArtist.value!!.albums.sortedWith(
-                    SortMode.albumSortComparators.getOrDefault(
-                        mode,
-
-                        // If any invalid value is given, just default to the normal sort order.
-                        compareByDescending { it.year }
-                    )
-                )
+                mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums)
             )
         }
 
