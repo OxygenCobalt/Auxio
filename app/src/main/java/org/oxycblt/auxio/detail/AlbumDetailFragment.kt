@@ -32,7 +32,9 @@ class AlbumDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the album, get it from MusicViewModel
         // using the ID given by the navigation arguments.
-        if (detailModel.currentAlbum.value!!.id != args.albumId) {
+        if (detailModel.currentAlbum.value == null ||
+            detailModel.currentAlbum.value?.id != args.albumId
+        ) {
             val musicModel: MusicViewModel by activityViewModels()
 
             detailModel.updateAlbum(

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -19,7 +20,9 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
+import org.oxycblt.auxio.theme.resolveAttr
 
 class LibraryFragment : Fragment() {
 
@@ -42,15 +45,28 @@ class LibraryFragment : Fragment() {
         binding.libraryRecycler.setHasFixedSize(true)
 
         libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
-            binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
-                requireContext(), mode.iconRes
-            )
+            Log.d(this::class.simpleName, "Updating sort mode to $mode")
 
+            // Update the adapter with the new data
             artistAdapter.updateData(
                 mode.getSortedArtistList(
                     musicModel.artists.value!!
                 )
             )
+
+            // Then update the shown icon & the currently highlighted sort icon to reflect
+            // the new sorting mode.
+            binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
+                requireContext(), mode.iconRes
+            )
+
+            binding.libraryToolbar.menu.forEach {
+                if (it.itemId == libraryModel.sortMode.value!!.toMenuId()) {
+                    it.applyColor(resolveAttr(requireContext(), R.attr.colorPrimary))
+                } else {
+                    it.applyColor(resolveAttr(requireContext(), android.R.attr.textColorPrimary))
+                }
+            }
         }
 
         binding.libraryToolbar.setOnMenuItemClickListener {

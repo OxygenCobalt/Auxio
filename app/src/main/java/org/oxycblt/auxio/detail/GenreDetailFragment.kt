@@ -33,7 +33,9 @@ class GenreDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the genre, get it from MusicViewModel
         // using the ID given by the navigation arguments
-        if (detailModel.currentGenre.value!!.id != args.genreId) {
+        if (detailModel.currentGenre.value == null ||
+            detailModel.currentGenre.value?.id != args.genreId
+        ) {
             val musicModel: MusicViewModel by activityViewModels()
 
             detailModel.updateGenre(

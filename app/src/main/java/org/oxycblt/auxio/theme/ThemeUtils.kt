@@ -2,6 +2,11 @@ package org.oxycblt.auxio.theme
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
+import android.view.MenuItem
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -57,6 +62,30 @@ fun Int.toColor(context: Context): Int {
     } catch (e: Exception) {
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)
+    }
+}
+
+@ColorInt
+fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
+    // Convert the attribute into its color
+    val resolvedAttr = TypedValue().apply {
+        context.theme.resolveAttribute(attr, this, true)
+    }
+
+    // Then convert it to a proper color
+    val color = if (resolvedAttr.resourceId != 0) {
+        resolvedAttr.resourceId
+    } else {
+        resolvedAttr.data
+    }
+
+    return color.toColor(context)
+}
+
+fun MenuItem.applyColor(color: Int) {
+    SpannableString(title).apply {
+        setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        title = this
     }
 }
 

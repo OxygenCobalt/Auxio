@@ -33,7 +33,9 @@ class ArtistDetailFragment : Fragment() {
 
         // If DetailViewModel isn't already storing the artist, get it from MusicViewModel
         // using the ID given by the navigation arguments
-        if (detailModel.currentArtist.value!!.id != args.artistId) {
+        if (detailModel.currentArtist.value == null ||
+            detailModel.currentArtist.value?.id != args.artistId
+        ) {
             val musicModel: MusicViewModel by activityViewModels()
 
             detailModel.updateArtist(
