@@ -11,11 +11,11 @@ import org.oxycblt.auxio.theme.SHOW_ARTISTS
 class LibraryViewModel : ViewModel() {
     var isAlreadyNavigating = false
 
-    // TODO: Move these to pref values when they're added
+    // TODO: Move these to prefs when they're added
     private val mShowMode = MutableLiveData(SHOW_ARTISTS)
     val showMode: LiveData<Int> get() = mShowMode
 
-    private val mSortMode = MutableLiveData(SortMode.ALPHA_UP)
+    private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val sortMode: LiveData<SortMode> get() = mSortMode
 
     fun updateSortMode(item: MenuItem) {

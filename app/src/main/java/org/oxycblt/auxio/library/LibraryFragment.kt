@@ -13,13 +13,15 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.library.adapters.ArtistAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.theme.SHOW_ALBUMS
+import org.oxycblt.auxio.theme.SHOW_ARTISTS
+import org.oxycblt.auxio.theme.SHOW_GENRES
 import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr
@@ -36,7 +38,8 @@ class LibraryFragment : Fragment() {
     ): View? {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val artistAdapter = ArtistAdapter(
+        val artistAdapter = LibraryAdapter(
+            libraryModel.showMode.value!!,
             ClickListener { navToItem(it) }
         )
 
@@ -49,9 +52,13 @@ class LibraryFragment : Fragment() {
 
             // Update the adapter with the new data
             artistAdapter.updateData(
-                mode.getSortedArtistList(
-                    musicModel.artists.value!!
-                )
+                when (libraryModel.showMode.value) {
+                    SHOW_GENRES -> mode.getSortedGenreList(musicModel.genres.value!!)
+                    SHOW_ARTISTS -> mode.getSortedArtistList(musicModel.artists.value!!)
+                    SHOW_ALBUMS -> mode.getSortedAlbumList(musicModel.albums.value!!)
+
+                    else -> mode.getSortedArtistList(musicModel.artists.value!!)
+                }
             )
 
             // Then update the shown icon & the currently highlighted sort icon to reflect
@@ -75,8 +82,6 @@ class LibraryFragment : Fragment() {
             true
         }
 
-        binding.libraryToolbar.inflateMenu(R.menu.menu_library)
-
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
@@ -92,6 +97,8 @@ class LibraryFragment : Fragment() {
         // Don't navigate if an item has already been selected
         if (!libraryModel.isAlreadyNavigating) {
             libraryModel.isAlreadyNavigating = true
+
+            Log.d(this::class.simpleName, "Navigating to the detail fragment for $baseModel.name")
 
             findNavController().navigate(
                 when (baseModel) {
