@@ -9,8 +9,6 @@ import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
 
 class LibraryViewModel : ViewModel() {
-    var isAlreadyNavigating = false
-
     // TODO: Move these to prefs when they're added
     private val mShowMode = MutableLiveData(SHOW_ARTISTS)
     val showMode: LiveData<Int> get() = mShowMode

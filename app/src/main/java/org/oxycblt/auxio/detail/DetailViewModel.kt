@@ -9,8 +9,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
 class DetailViewModel : ViewModel() {
-    var isAlreadyNavigating = false
-
     private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
 

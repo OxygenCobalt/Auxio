@@ -47,7 +47,9 @@ class ArtistDetailFragment : Fragment() {
 
         val albumAdapter = DetailAlbumAdapter(
             ClickListener {
-                navToAlbum(it)
+                findNavController().navigate(
+                    ArtistDetailFragmentDirections.actionShowAlbum(it.id, false)
+                )
             }
         )
 
@@ -89,22 +91,5 @@ class ArtistDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        detailModel.isAlreadyNavigating = false
-    }
-
-    private fun navToAlbum(album: Album) {
-        // Don't navigate if an item already has been selected.
-        if (!detailModel.isAlreadyNavigating) {
-            detailModel.isAlreadyNavigating = true
-
-            findNavController().navigate(
-                ArtistDetailFragmentDirections.actionShowAlbum(album.id, false)
-            )
-        }
     }
 }

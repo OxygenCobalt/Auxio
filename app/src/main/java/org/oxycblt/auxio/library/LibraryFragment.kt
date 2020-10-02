@@ -87,28 +87,17 @@ class LibraryFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        libraryModel.isAlreadyNavigating = false
-    }
-
     private fun navToItem(baseModel: BaseModel) {
-        // Don't navigate if an item has already been selected
-        if (!libraryModel.isAlreadyNavigating) {
-            libraryModel.isAlreadyNavigating = true
+        Log.d(this::class.simpleName, "Navigating to the detail fragment for ${baseModel.name}")
 
-            Log.d(this::class.simpleName, "Navigating to the detail fragment for $baseModel.name")
+        findNavController().navigate(
+            when (baseModel) {
+                is Genre -> MainFragmentDirections.actionShowGenre(baseModel.id)
+                is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
+                is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
 
-            findNavController().navigate(
-                when (baseModel) {
-                    is Genre -> MainFragmentDirections.actionShowGenre(baseModel.id)
-                    is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
-
-                    else -> return
-                }
-            )
-        }
+                else -> return
+            }
+        )
     }
 }
