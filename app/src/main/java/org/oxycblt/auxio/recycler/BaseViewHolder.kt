@@ -16,7 +16,9 @@ abstract class BaseViewHolder<T : BaseModel>(
     }
 
     fun bind(model: T) {
-        baseBinding.root.setOnClickListener { listener.onClick(model) }
+        baseBinding.root.setOnClickListener {
+            listener.onClick(model)
+        }
 
         onBind(model)
 

@@ -9,6 +9,9 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
 class DetailViewModel : ViewModel() {
+    private var mIsNavigating = false
+    val isNavigating: Boolean get() = mIsNavigating
+
     private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
 
@@ -78,5 +81,9 @@ class DetailViewModel : ViewModel() {
 
             else -> SortMode.NUMERIC_DOWN
         }
+    }
+
+    fun updateNavigationStatus(value: Boolean) {
+        mIsNavigating = value
     }
 }

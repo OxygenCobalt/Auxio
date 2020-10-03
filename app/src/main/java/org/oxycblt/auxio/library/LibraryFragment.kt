@@ -34,6 +34,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     private val musicModel: MusicViewModel by activityViewModels()
     private val libraryModel: LibraryViewModel by activityViewModels()
 
+    private lateinit var libraryAdapter: LibraryAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +82,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             true
         }
 
-        val libraryAdapter = LibraryAdapter(
+        libraryAdapter = LibraryAdapter(
             libraryModel.showMode.value!!,
             ClickListener { navToItem(it) }
         )
@@ -132,6 +134,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        libraryModel.updateNavigationStatus(false)
+    }
+
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
@@ -143,14 +151,18 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun navToItem(baseModel: BaseModel) {
         Log.d(this::class.simpleName, "Navigating to the detail fragment for ${baseModel.name}")
 
-        findNavController().navigate(
-            when (baseModel) {
-                is Genre -> MainFragmentDirections.actionShowGenre(baseModel.id)
-                is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
-                is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
+        if (!libraryModel.isNavigating) {
+            libraryModel.updateNavigationStatus(true)
 
-                else -> return
-            }
-        )
+            findNavController().navigate(
+                when (baseModel) {
+                    is Genre -> MainFragmentDirections.actionShowGenre(baseModel.id)
+                    is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
+                    is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
+
+                    else -> return
+                }
+            )
+        }
     }
 }

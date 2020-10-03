@@ -19,7 +19,7 @@ import org.oxycblt.auxio.theme.SHOW_GENRES
 // A Great Value androidx ListAdapter that can display three types of ViewHolders.
 class LibraryAdapter(
     private val showMode: Int,
-    private val listener: ClickListener<BaseModel>
+    val listener: ClickListener<BaseModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var data: List<BaseModel>

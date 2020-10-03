@@ -31,6 +31,9 @@ TODOs surrounded with !s are things I tried to do, but failed for reasons includ
 - ? Move into ViewPager ?
 - ! Move Adapter functionality to ListAdapter [RecyclerView scrolls to middle/bottom when data is re-sorted] !
 
+/bugs/
+- Fix issue where fast navigations will cause the app to not display anything
+
 To be added:
 /prefs/
 /playback/

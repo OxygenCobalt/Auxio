@@ -46,9 +46,13 @@ class ArtistDetailFragment : Fragment() {
 
         val albumAdapter = DetailAlbumAdapter(
             ClickListener {
-                findNavController().navigate(
-                    ArtistDetailFragmentDirections.actionShowAlbum(it.id, false)
-                )
+                if (!detailModel.isNavigating) {
+                    detailModel.updateNavigationStatus(true)
+
+                    findNavController().navigate(
+                        ArtistDetailFragmentDirections.actionShowAlbum(it.id, false)
+                    )
+                }
             }
         )
 
@@ -90,5 +94,11 @@ class ArtistDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        detailModel.updateNavigationStatus(false)
     }
 }

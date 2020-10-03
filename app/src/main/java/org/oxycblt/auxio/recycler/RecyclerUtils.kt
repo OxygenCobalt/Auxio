@@ -5,17 +5,7 @@ import org.oxycblt.auxio.music.BaseModel
 
 // A RecyclerView click listener that can only be called once.
 // Primarily used for navigation to prevent bugs when multiple items are selected.
-class ClickListener<T>(private val clickAction: (T) -> Unit) {
-    private var hasClicked = false
-
-    fun onClick(item: T) {
-        if (!hasClicked) {
-            hasClicked = true
-
-            clickAction(item)
-        }
-    }
-}
+class ClickListener<T>(val onClick: (T) -> Unit)
 
 // Base Diff callback
 class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {

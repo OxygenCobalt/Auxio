@@ -44,11 +44,15 @@ class GenreDetailFragment : Fragment() {
             )
         }
 
-        val albumAdapter = DetailArtistAdapter(
+        val artistAdapter = DetailArtistAdapter(
             ClickListener {
-                findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowArtist(it.id)
-                )
+                if (!detailModel.isNavigating) {
+                    detailModel.updateNavigationStatus(true)
+
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowArtist(it.id)
+                    )
+                }
             }
         )
 
@@ -56,7 +60,7 @@ class GenreDetailFragment : Fragment() {
         binding.detailModel = detailModel
         binding.genre = detailModel.currentGenre.value
 
-        binding.genreArtistRecycler.adapter = albumAdapter
+        binding.genreArtistRecycler.adapter = artistAdapter
         binding.genreArtistRecycler.applyDivider()
         binding.genreArtistRecycler.setHasFixedSize(true)
 
@@ -71,7 +75,7 @@ class GenreDetailFragment : Fragment() {
             binding.genreSortButton.setImageResource(mode.iconRes)
 
             // Then update the sort mode of the artist adapter.
-            albumAdapter.submitList(
+            artistAdapter.submitList(
                 mode.getSortedArtistList(detailModel.currentGenre.value!!.artists)
             )
         }
@@ -88,5 +92,11 @@ class GenreDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        detailModel.updateNavigationStatus(false)
     }
 }

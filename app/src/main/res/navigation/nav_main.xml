@@ -31,8 +31,7 @@
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
-            app:destination="@id/artist_detail_fragment"
-            app:launchSingleTop="true" />
+            app:destination="@id/artist_detail_fragment" />
         <action
             android:id="@+id/action_show_album"
             app:enterAnim="@anim/fragment_fade_enter"

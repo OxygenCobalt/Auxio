@@ -8,7 +8,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
 
-class LibraryViewModel() : ViewModel() {
+class LibraryViewModel : ViewModel() {
+    private var mIsNavigating = false
+    val isNavigating: Boolean get() = mIsNavigating
+
     // TODO: Move these to prefs when they're added
     private val mShowMode = MutableLiveData(SHOW_ARTISTS)
     val showMode: LiveData<Int> get() = mShowMode
@@ -35,5 +38,9 @@ class LibraryViewModel() : ViewModel() {
 
     fun updateSearchQuery(query: String) {
         mSearchQuery.value = query
+    }
+
+    fun updateNavigationStatus(value: Boolean) {
+        mIsNavigating = value
     }
 }
