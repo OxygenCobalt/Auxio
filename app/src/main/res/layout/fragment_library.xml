@@ -7,8 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:animateLayoutChanges="true"
-        android:descendantFocusability="blocksDescendants">
+        android:animateLayoutChanges="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/library_toolbar"
@@ -16,10 +15,11 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            android:theme="@style/Toolbar.Style"
             app:popupTheme="@style/AppThemeOverlay.Popup"
             app:menu="@menu/menu_library"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
-            app:title="@string/title_library_fragment" />
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
+            app:title="@string/title_library_fragment"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/library_recycler"

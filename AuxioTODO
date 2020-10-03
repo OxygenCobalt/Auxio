@@ -1,19 +1,19 @@
 TODO:
 
-? - Could do with some more research.
-! - Tried to do, but is completely broken.
+TODOs surrounded with ?s are things I want to do, but need to do more research on and may be a nightmare to implement.
+TODOs surrounded with !s are things I tried to do, but failed for reasons included in the TODO. I still want to add these, but theres no way for me to do them at the moment.
 
 /detail/
 
 - ? Implement Toolbar update functionality ?
-- ! Implement shared element transitions !
+- ! Implement shared element transitions [Return transitions are broken] !
 
 /music/
 
 - Add option to show all genres
-- ! Move genres to songs !
-- ! Remove lists from music models !
-- ! Dont determine track/album/artist counts on the fly !
+- ! Move genres to songs [Wont find songs w/o genres]!
+- ! Remove lists from music models [Current genre loading system makes it impossible] !
+- ! Dont determine track/album/artist counts on the fly [Audio columns for those values are broken] !
 
 /songs/
 
@@ -23,12 +23,13 @@ TODO:
 
 /library/
 
-- Search
 - Exit functionality
+- ? Remove gap from where I removed the overflow menu ?
+- ? Add icons to overflow menu items ?
 - ? Show Artists, Albums, and Songs in search ?
+- ? Implement filtering for above ^^^ [Will resolve gap issue] ?
 - ? Move into ViewPager ?
-- ! Move Adapter functionality to ListAdapter!
-
+- ! Move Adapter functionality to ListAdapter [RecyclerView scrolls to middle/bottom when data is re-sorted] !
 
 To be added:
 /prefs/

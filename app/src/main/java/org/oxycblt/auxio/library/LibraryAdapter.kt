@@ -22,7 +22,7 @@ class LibraryAdapter(
     private val listener: ClickListener<BaseModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var data: List<BaseModel>
+    var data: List<BaseModel>
 
     init {
         // Assign the data on startup depending on the type

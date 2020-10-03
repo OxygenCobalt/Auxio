@@ -25,7 +25,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:navigationIcon="@drawable/ic_back"
             app:title="@string/title_library_fragment" />
 

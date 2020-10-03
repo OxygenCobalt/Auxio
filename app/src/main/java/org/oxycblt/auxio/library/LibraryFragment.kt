@@ -5,11 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
@@ -26,7 +29,7 @@ import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr
 
-class LibraryFragment : Fragment() {
+class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val musicModel: MusicViewModel by activityViewModels()
     private val libraryModel: LibraryViewModel by activityViewModels()
@@ -38,12 +41,52 @@ class LibraryFragment : Fragment() {
     ): View? {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val artistAdapter = LibraryAdapter(
+        // Toolbar setup
+        binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_sort_none
+        )
+
+        binding.libraryToolbar.menu.apply {
+            val item = findItem(R.id.action_search)
+            val searchView = item.actionView as SearchView
+
+            searchView.queryHint = getString(R.string.hint_search_library)
+            searchView.setOnQueryTextListener(this@LibraryFragment)
+            searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                this.setGroupVisible(R.id.group_sorting, !hasFocus)
+
+                // Make sure the search item will still be visible, and then do an animation
+                item.isVisible = !hasFocus
+                TransitionManager.beginDelayedTransition(
+                    binding.libraryToolbar, Fade()
+                )
+                item.collapseActionView()
+            }
+        }
+
+        binding.libraryToolbar.setOnMenuItemClickListener {
+            if (it.itemId != R.id.action_search) {
+                libraryModel.updateSortMode(it)
+            } else {
+                // Do whatever this is in order to make the SearchView focusable.
+                (it.actionView as SearchView).isIconified = false
+
+                // Then also do a basic animation
+                TransitionManager.beginDelayedTransition(
+                    binding.libraryToolbar, Fade()
+                )
+                it.expandActionView()
+            }
+            true
+        }
+
+        val libraryAdapter = LibraryAdapter(
             libraryModel.showMode.value!!,
             ClickListener { navToItem(it) }
         )
 
-        binding.libraryRecycler.adapter = artistAdapter
+        // RecyclerView setup
+        binding.libraryRecycler.adapter = libraryAdapter
         binding.libraryRecycler.applyDivider()
         binding.libraryRecycler.setHasFixedSize(true)
 
@@ -51,7 +94,7 @@ class LibraryFragment : Fragment() {
             Log.d(this::class.simpleName, "Updating sort mode to $mode")
 
             // Update the adapter with the new data
-            artistAdapter.updateData(
+            libraryAdapter.updateData(
                 when (libraryModel.showMode.value) {
                     SHOW_GENRES -> mode.getSortedGenreList(musicModel.genres.value!!)
                     SHOW_ARTISTS -> mode.getSortedArtistList(musicModel.artists.value!!)
@@ -61,12 +104,7 @@ class LibraryFragment : Fragment() {
                 }
             )
 
-            // Then update the shown icon & the currently highlighted sort icon to reflect
-            // the new sorting mode.
-            binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
-                requireContext(), mode.iconRes
-            )
-
+            // Then update the menu item in the toolbar to reflect the new mode
             binding.libraryToolbar.menu.forEach {
                 if (it.itemId == libraryModel.sortMode.value!!.toMenuId()) {
                     it.applyColor(resolveAttr(requireContext(), R.attr.colorPrimary))
@@ -76,15 +114,30 @@ class LibraryFragment : Fragment() {
             }
         }
 
-        binding.libraryToolbar.setOnMenuItemClickListener {
-            libraryModel.updateSortMode(it)
+        libraryModel.searchQuery.observe(viewLifecycleOwner) { query ->
+            // Update the adapter with the new data
+            libraryAdapter.updateData(
+                when (libraryModel.showMode.value) {
+                    SHOW_GENRES -> musicModel.genres.value!!
+                    SHOW_ARTISTS -> musicModel.artists.value!!
+                    SHOW_ALBUMS -> musicModel.albums.value!!
 
-            true
+                    else -> musicModel.artists.value!!
+                }.filter { it.name.contains(query, true) }
+            )
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    override fun onQueryTextSubmit(query: String): Boolean = false
+
+    override fun onQueryTextChange(query: String): Boolean {
+        libraryModel.updateSearchQuery(query)
+
+        return false
     }
 
     private fun navToItem(baseModel: BaseModel) {

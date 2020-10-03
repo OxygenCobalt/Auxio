@@ -3,6 +3,7 @@ package org.oxycblt.auxio.recycler
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
@@ -77,13 +78,30 @@ enum class SortMode(val iconRes: Int) {
         }
     }
 
+    fun getSortedBaseModelList(list: List<BaseModel>): List<BaseModel> {
+        return when (this) {
+            ALPHA_UP -> list.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            ALPHA_DOWN -> list.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            NUMERIC_UP -> list.sortedWith(compareByDescending { it.id })
+            NUMERIC_DOWN -> list.sortedWith(compareBy { it.id })
+
+            else -> list
+        }
+    }
+
     fun toMenuId(): Int {
         return when (this) {
-            NONE -> R.id.sort_none
-            ALPHA_UP -> R.id.sort_alpha_up
-            ALPHA_DOWN -> R.id.sort_alpha_down
+            NONE -> R.id.option_sort_none
+            ALPHA_UP -> R.id.option_sort_alpha_up
+            ALPHA_DOWN -> R.id.option_sort_alpha_down
 
-            else -> R.id.sort_none
+            else -> R.id.option_sort_none
         }
     }
 }

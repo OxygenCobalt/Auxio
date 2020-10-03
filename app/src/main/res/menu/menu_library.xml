@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:id="@+id/sort_none"
-        android:icon="@drawable/ic_sort_none"
-        android:title="@string/label_sort_none"
-        android:contentDescription="@string/description_sort_none" />
-    <item
-        android:id="@+id/sort_alpha_down"
-        android:icon="@drawable/ic_sort_alpha_down"
-        android:title="@string/label_sort_alpha_down"
-        android:contentDescription="@string/description_sort_alpha_down" />
-    <item
-        android:id="@+id/sort_alpha_up"
-        android:icon="@drawable/ic_sort_alpha_up"
-        android:title="@string/label_sort_alpha_up"
-        android:contentDescription="@string/description_sort_alpha_up" />
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/label_search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|always" />
+
+    <group android:id="@+id/group_sorting">
+        <item
+            android:id="@+id/option_sort_none"
+            android:icon="@drawable/ic_sort_none"
+            android:title="@string/label_sort_none"
+            android:contentDescription="@string/description_sort_none" />
+        <item
+            android:id="@+id/option_sort_alpha_down"
+            android:icon="@drawable/ic_sort_alpha_down"
+            android:title="@string/label_sort_alpha_down"
+            android:contentDescription="@string/description_sort_alpha_down" />
+        <item
+            android:id="@+id/option_sort_alpha_up"
+            android:icon="@drawable/ic_sort_alpha_up"
+            android:title="@string/label_sort_alpha_up"
+            android:contentDescription="@string/description_sort_alpha_up" />
+    </group>
 </menu>

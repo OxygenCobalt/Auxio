@@ -15,7 +15,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Bold"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:title="@string/title_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
