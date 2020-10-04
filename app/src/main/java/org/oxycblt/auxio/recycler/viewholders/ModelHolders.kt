@@ -9,7 +9,6 @@ import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
@@ -19,19 +18,19 @@ import org.oxycblt.auxio.recycler.ClickListener
 // FIXME: Mode these type signaturs to something sensible.
 
 class GenreViewHolder private constructor(
-    listener: ClickListener<BaseModel>,
+    listener: ClickListener<Genre>,
     private val binding: ItemGenreBinding
-) : BaseViewHolder<BaseModel>(binding, listener) {
+) : BaseViewHolder<Genre>(binding, listener) {
 
-    override fun onBind(model: BaseModel) {
-        binding.genre = model as Genre
+    override fun onBind(model: Genre) {
+        binding.genre = model
         binding.genreName.requestLayout()
     }
 
     companion object {
         const val ITEM_TYPE = 10
 
-        fun from(context: Context, listener: ClickListener<BaseModel>): GenreViewHolder {
+        fun from(context: Context, listener: ClickListener<Genre>): GenreViewHolder {
             return GenreViewHolder(
                 ClickListener { listener.onClick(it) },
                 ItemGenreBinding.inflate(LayoutInflater.from(context))
@@ -41,19 +40,19 @@ class GenreViewHolder private constructor(
 }
 
 class ArtistViewHolder private constructor(
-    listener: ClickListener<BaseModel>,
+    listener: ClickListener<Artist>,
     private val binding: ItemArtistBinding
-) : BaseViewHolder<BaseModel>(binding, listener) {
+) : BaseViewHolder<Artist>(binding, listener) {
 
-    override fun onBind(model: BaseModel) {
-        binding.artist = model as Artist
+    override fun onBind(model: Artist) {
+        binding.artist = model
         binding.artistName.requestLayout()
     }
 
     companion object {
         const val ITEM_TYPE = 11
 
-        fun from(context: Context, listener: ClickListener<BaseModel>): ArtistViewHolder {
+        fun from(context: Context, listener: ClickListener<Artist>): ArtistViewHolder {
             return ArtistViewHolder(
                 ClickListener { listener.onClick(it) },
                 ItemArtistBinding.inflate(LayoutInflater.from(context))
@@ -63,19 +62,19 @@ class ArtistViewHolder private constructor(
 }
 
 class AlbumViewHolder private constructor(
-    listener: ClickListener<BaseModel>,
+    listener: ClickListener<Album>,
     private val binding: ItemAlbumBinding
-) : BaseViewHolder<BaseModel>(binding, listener) {
+) : BaseViewHolder<Album>(binding, listener) {
 
-    override fun onBind(model: BaseModel) {
-        binding.album = model as Album
+    override fun onBind(model: Album) {
+        binding.album = model
         binding.albumName.requestLayout()
     }
 
     companion object {
         const val ITEM_TYPE = 12
 
-        fun from(context: Context, listener: ClickListener<BaseModel>): AlbumViewHolder {
+        fun from(context: Context, listener: ClickListener<Album>): AlbumViewHolder {
             return AlbumViewHolder(
                 listener,
                 ItemAlbumBinding.inflate(LayoutInflater.from(context))
@@ -85,12 +84,12 @@ class AlbumViewHolder private constructor(
 }
 
 class SongViewHolder private constructor(
-    listener: ClickListener<BaseModel>,
+    listener: ClickListener<Song>,
     private val binding: ItemSongBinding
-) : BaseViewHolder<BaseModel>(binding, listener) {
+) : BaseViewHolder<Song>(binding, listener) {
 
-    override fun onBind(model: BaseModel) {
-        binding.song = model as Song
+    override fun onBind(model: Song) {
+        binding.song = model
 
         binding.songName.requestLayout()
         binding.songInfo.requestLayout()
@@ -99,7 +98,7 @@ class SongViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 13
 
-        fun from(context: Context, listener: ClickListener<BaseModel>): SongViewHolder {
+        fun from(context: Context, listener: ClickListener<Song>): SongViewHolder {
             return SongViewHolder(
                 listener,
                 ItemSongBinding.inflate(LayoutInflater.from(context))
@@ -110,9 +109,9 @@ class SongViewHolder private constructor(
 
 class HeaderViewHolder(
     private val binding: ItemHeaderBinding
-) : BaseViewHolder<BaseModel>(binding, null) {
-    override fun onBind(model: BaseModel) {
-        binding.header = model as Header
+) : BaseViewHolder<Header>(binding, null) {
+    override fun onBind(model: Header) {
+        binding.header = model
     }
 
     companion object {

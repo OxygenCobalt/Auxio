@@ -18,8 +18,17 @@ import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SearchAdapter(
-    private val listener: ClickListener<BaseModel>
+    private val doOnClick: (BaseModel) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
+
+    // Create separate listeners for each type, as a BaseModel ClickListener cant be
+    // casted to a ClickListener of a class that inherits BaseModel.
+    // FIXME: Maybe theres a way for this to be improved?
+    private val genreListener = ClickListener<Genre> { doOnClick(it) }
+    private val artistListener = ClickListener<Artist> { doOnClick(it) }
+    private val albumListener = ClickListener<Album> { doOnClick(it) }
+    private val songListener = ClickListener<Song> { doOnClick(it) }
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Genre -> GenreViewHolder.ITEM_TYPE
@@ -32,10 +41,10 @@ class SearchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(parent.context, listener)
-            ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(parent.context, listener)
-            AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(parent.context, listener)
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(parent.context, listener)
+            GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(parent.context, genreListener)
+            ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(parent.context, artistListener)
+            AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(parent.context, albumListener)
+            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(parent.context, songListener)
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
             else -> HeaderViewHolder.from(parent.context)
@@ -44,13 +53,13 @@ class SearchAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is GenreViewHolder -> holder
-            is ArtistViewHolder -> holder
-            is AlbumViewHolder -> holder
-            is SongViewHolder -> holder
-            is HeaderViewHolder -> holder
+            is GenreViewHolder -> holder.bind(getItem(position) as Genre)
+            is ArtistViewHolder -> holder.bind(getItem(position) as Artist)
+            is AlbumViewHolder -> holder.bind(getItem(position) as Album)
+            is SongViewHolder -> holder.bind(getItem(position) as Song)
+            is HeaderViewHolder -> holder.bind(getItem(position) as Header)
 
             else -> return
-        }.bind(getItem(position))
+        }
     }
 }

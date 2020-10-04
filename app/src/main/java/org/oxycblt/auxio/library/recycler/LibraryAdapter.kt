@@ -18,8 +18,14 @@ import org.oxycblt.auxio.theme.SHOW_GENRES
 // the showmode given. It cannot display multiple types of viewholders *at once*.
 class LibraryAdapter(
     private val showMode: Int,
-    val listener: ClickListener<BaseModel>
+    private val doOnClick: (BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    // Create separate listeners for each type, as ClickListeners can be converted
+    // to a type-specific form.
+    private val genreListener = ClickListener<Genre> { doOnClick(it) }
+    private val artistListener = ClickListener<Artist> { doOnClick(it) }
+    private val albumListener = ClickListener<Album> { doOnClick(it) }
 
     private var data: List<BaseModel>
 
@@ -39,10 +45,10 @@ class LibraryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         // Return a different View Holder depending on the show type
         return when (showMode) {
-            SHOW_GENRES -> GenreViewHolder.from(parent.context, listener)
-            SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, listener)
-            SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, listener)
-            else -> ArtistViewHolder.from(parent.context, listener)
+            SHOW_GENRES -> GenreViewHolder.from(parent.context, genreListener)
+            SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, artistListener)
+            SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, albumListener)
+            else -> ArtistViewHolder.from(parent.context, artistListener)
         }
     }
 

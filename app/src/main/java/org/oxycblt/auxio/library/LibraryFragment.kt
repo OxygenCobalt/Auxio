@@ -24,7 +24,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.SHOW_ALBUMS
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
 import org.oxycblt.auxio.theme.SHOW_GENRES
@@ -44,14 +43,13 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     ): View? {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(
-            libraryModel.showMode.value!!,
-            ClickListener { navToItem(it) }
-        )
+        val libraryAdapter = LibraryAdapter(libraryModel.showMode.value!!) {
+            navToItem(it)
+        }
 
-        val searchAdapter = SearchAdapter(
-            ClickListener { navToItem(it) }
-        )
+        val searchAdapter = SearchAdapter {
+            navToItem(it)
+        }
 
         // Toolbar setup
         binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
