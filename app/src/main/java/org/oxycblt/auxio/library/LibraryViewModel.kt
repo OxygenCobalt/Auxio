@@ -45,6 +45,7 @@ class LibraryViewModel : ViewModel() {
     }
 
     fun updateSearchQuery(query: String, musicModel: MusicViewModel) {
+        // Don't bother if the query is blank.
         if (query == "") {
             resetQuery()
 
@@ -52,18 +53,32 @@ class LibraryViewModel : ViewModel() {
         }
 
         // Search MusicViewModel for all the items [Artists, Albums, Songs] that contain
-        // the query, and update the LiveData with those items. This is done on a seperate
-        // thread as it can be a very intensive operation for large music libraries.
+        // the query, and update the LiveData with those items. This is done on a separate
+        // thread as it can be a very long operation for large music libraries.
         viewModelScope.launch {
             val combined = mutableListOf<BaseModel>()
+            val children = showMode.value!!.getChildren()
 
-            val artists = musicModel.artists.value!!.filter { it.name.contains(query, true) }
+            // If the Library ShowMode supports it, include artists / genres in the search.
+            if (children.contains(ShowMode.SHOW_GENRES)) {
+                val genres = musicModel.genres.value!!.filter { it.name.contains(query, true) }
 
-            if (artists.isNotEmpty()) {
-                combined.add(Header(id = ShowMode.SHOW_ARTISTS.constant))
-                combined.addAll(artists)
+                if (genres.isNotEmpty()) {
+                    combined.add(Header(id = ShowMode.SHOW_GENRES.constant))
+                    combined.addAll(genres)
+                }
             }
 
+            if (children.contains(ShowMode.SHOW_ARTISTS)) {
+                val artists = musicModel.artists.value!!.filter { it.name.contains(query, true) }
+
+                if (artists.isNotEmpty()) {
+                    combined.add(Header(id = ShowMode.SHOW_ARTISTS.constant))
+                    combined.addAll(artists)
+                }
+            }
+
+            // Albums & Songs are always included.
             val albums = musicModel.albums.value!!.filter { it.name.contains(query, true) }
 
             if (albums.isNotEmpty()) {

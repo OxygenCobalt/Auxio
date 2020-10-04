@@ -97,7 +97,7 @@ fun TextView.bindGenreCounts(genre: Genre) {
         R.plurals.format_artist_count, genre.numArtists, genre.numArtists
     )
     val albums = context.resources.getQuantityString(
-        R.plurals.format_song_count, genre.numAlbums, genre.numAlbums
+        R.plurals.format_album_count, genre.numAlbums, genre.numAlbums
     )
 
     text = context.getString(R.string.format_double_counts, artists, albums)

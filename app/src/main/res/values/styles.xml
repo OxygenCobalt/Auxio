@@ -18,10 +18,7 @@
         <item name="android:textColor">?android:attr/colorPrimary</item>
     </style>
 
-    <style name="Toolbar.SearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="android:searchIcon">@drawable/ic_search</item>
-        <item name="android:closeIcon">@drawable/ic_back</item>
-    </style>
+    <style name="Toolbar.SearchViewStyle" parent="Widget.AppCompat.SearchView"/>
 
     <style name="DetailHeader">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

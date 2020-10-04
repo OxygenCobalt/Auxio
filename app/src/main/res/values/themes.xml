@@ -38,24 +38,20 @@
         <item name="colorSecondary">@color/light_blue</item>
     </style>
 
-
     <style name="Theme.Cyan" parent="Theme.Base">
         <item name="colorPrimary">@color/cyan</item>
         <item name="colorSecondary">@color/cyan</item>
     </style>
-
 
     <style name="Theme.Teal" parent="Theme.Base">
         <item name="colorPrimary">@color/teal</item>
         <item name="colorSecondary">@color/teal</item>
     </style>
 
-
     <style name="Theme.Green" parent="Theme.Base">
         <item name="colorPrimary">@color/green</item>
         <item name="colorSecondary">@color/green</item>
     </style>
-
 
     <style name="Theme.LightGreen" parent="Theme.Base">
         <item name="colorPrimary">@color/light_green</item>

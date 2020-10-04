@@ -14,8 +14,8 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.ClickListener
 
-// Basic ViewHolders for each music model.
-
+// Shared ViewHolders for each ViewModel, providing basic information
+// All new instances should be created with from(context, listener) instead of direct instantiation.
 class GenreViewHolder private constructor(
     listener: ClickListener<Genre>,
     private val binding: ItemGenreBinding

@@ -43,12 +43,11 @@
     <string name="placeholder_album">Unknown Album</string>
     <string name="placeholder_no_date">No Date</string>
 
-    <!-- Format Namespace | Value formatting -->
+    <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_info">%1$s / %2$s</string>
     <string name="format_double_info">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
 
-    <!-- Format Namespace | Value formatting with plurals -->
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>
         <item quantity="other">%s Songs</item>

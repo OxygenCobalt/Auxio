@@ -4,6 +4,7 @@
     <color name="divider_color">#323232</color>
     <color name="selection_color">#484848</color>
     <color name="inactive_color">#404040</color>
+    <color name="control_color">#ffffff</color>
 
     <!--
     Base color set derived from Music Player GO.

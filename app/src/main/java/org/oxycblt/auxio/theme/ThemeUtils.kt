@@ -65,6 +65,7 @@ fun Int.toColor(context: Context): Int {
     }
 }
 
+// Resolve an attribute into a color
 @ColorInt
 fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     // Convert the attribute into its color
@@ -82,6 +83,7 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     return color.toColor(context)
 }
 
+// Apply a color to a Menu Item
 fun MenuItem.applyColor(color: Int) {
     SpannableString(title).apply {
         setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)

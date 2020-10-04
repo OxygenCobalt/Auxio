@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -58,8 +59,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             val item = findItem(R.id.action_search)
             val searchView = item.actionView as SearchView
 
-            // Set up the SearchView itself
-            searchView.queryHint = getString(R.string.hint_search_library)
+            searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_go_btn)
+                .setImageResource(R.drawable.ic_back)
+
             searchView.setOnQueryTextListener(this@LibraryFragment)
             searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                 libraryModel.updateSearchFocusStatus(hasFocus)
@@ -139,7 +141,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         libraryModel.searchResults.observe(viewLifecycleOwner) {
             if (libraryModel.searchHasFocus) {
-                searchAdapter.submitList(it)
+                searchAdapter.submitList(it) {
+                    binding.libraryRecycler.scrollToPosition(0)
+                }
             }
         }
 

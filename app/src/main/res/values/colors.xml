@@ -4,6 +4,7 @@
     <color name="divider_color">#cbcbcb</color>
     <color name="selection_color">#cbcbcb</color>
     <color name="inactive_color">#c4c4c4</color>
+    <color name="control_color">#202020</color>
 
     <!--
     Base color set derived from Music Player GO.
