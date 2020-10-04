@@ -7,17 +7,15 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
-import org.oxycblt.auxio.theme.SHOW_ALBUMS
-import org.oxycblt.auxio.theme.SHOW_ARTISTS
-import org.oxycblt.auxio.theme.SHOW_GENRES
 
 // A ListAdapter that can contain three different types of ViewHolders depending
 // the showmode given. It cannot display multiple types of viewholders *at once*.
 class LibraryAdapter(
-    private val showMode: Int,
+    private val showMode: ShowMode,
     private val doOnClick: (BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -32,9 +30,9 @@ class LibraryAdapter(
     init {
         // Assign the data on startup depending on the type
         data = when (showMode) {
-            SHOW_GENRES -> listOf<Genre>()
-            SHOW_ALBUMS -> listOf<Album>()
-            SHOW_ARTISTS -> listOf<Artist>()
+            ShowMode.SHOW_GENRES -> listOf<Genre>()
+            ShowMode.SHOW_ARTISTS -> listOf<Artist>()
+            ShowMode.SHOW_ALBUMS -> listOf<Album>()
 
             else -> listOf<Artist>()
         }
@@ -45,18 +43,18 @@ class LibraryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         // Return a different View Holder depending on the show type
         return when (showMode) {
-            SHOW_GENRES -> GenreViewHolder.from(parent.context, genreListener)
-            SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, artistListener)
-            SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, albumListener)
+            ShowMode.SHOW_GENRES -> GenreViewHolder.from(parent.context, genreListener)
+            ShowMode.SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, artistListener)
+            ShowMode.SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, albumListener)
             else -> ArtistViewHolder.from(parent.context, artistListener)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (showMode) {
-            SHOW_GENRES -> (holder as GenreViewHolder).bind(data[position] as Genre)
-            SHOW_ARTISTS -> (holder as ArtistViewHolder).bind(data[position] as Artist)
-            SHOW_ALBUMS -> (holder as AlbumViewHolder).bind(data[position] as Album)
+            ShowMode.SHOW_GENRES -> (holder as GenreViewHolder).bind(data[position] as Genre)
+            ShowMode.SHOW_ARTISTS -> (holder as ArtistViewHolder).bind(data[position] as Artist)
+            ShowMode.SHOW_ALBUMS -> (holder as AlbumViewHolder).bind(data[position] as Album)
 
             else -> return
         }

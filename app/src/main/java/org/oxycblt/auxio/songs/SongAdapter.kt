@@ -1,12 +1,9 @@
 package org.oxycblt.auxio.songs
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.ClickListener
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SongAdapter(

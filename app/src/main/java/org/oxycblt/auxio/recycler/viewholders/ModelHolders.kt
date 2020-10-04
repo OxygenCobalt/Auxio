@@ -15,7 +15,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.ClickListener
 
 // Basic ViewHolders for each music model.
-// FIXME: Mode these type signaturs to something sensible.
 
 class GenreViewHolder private constructor(
     listener: ClickListener<Genre>,

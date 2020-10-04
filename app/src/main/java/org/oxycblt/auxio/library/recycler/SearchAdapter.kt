@@ -23,7 +23,7 @@ class SearchAdapter(
 
     // Create separate listeners for each type, as a BaseModel ClickListener cant be
     // casted to a ClickListener of a class that inherits BaseModel.
-    // FIXME: Maybe theres a way for this to be improved?
+    // FIXME: Maybe there's a way for this to be improved?
     private val genreListener = ClickListener<Genre> { doOnClick(it) }
     private val artistListener = ClickListener<Artist> { doOnClick(it) }
     private val albumListener = ClickListener<Album> { doOnClick(it) }

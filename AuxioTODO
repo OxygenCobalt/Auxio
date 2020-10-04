@@ -33,6 +33,9 @@ TODOs surrounded with !s are things I tried to do, but failed for reasons includ
 /bugs/
 - Fix issue where fast navigations will cause the app to not display anything
 
+/other/
+- Collapse show constants into ShowMode enum
+
 To be added:
 /prefs/
 /playback/

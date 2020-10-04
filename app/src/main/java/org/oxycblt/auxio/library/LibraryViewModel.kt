@@ -10,10 +10,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.SortMode
-import org.oxycblt.auxio.theme.SHOW_ALBUMS
-import org.oxycblt.auxio.theme.SHOW_ARTISTS
-import org.oxycblt.auxio.theme.SHOW_SONGS
 
 class LibraryViewModel : ViewModel() {
     private var mIsNavigating = false
@@ -23,8 +21,8 @@ class LibraryViewModel : ViewModel() {
     val searchHasFocus: Boolean get() = mSearchHasFocus
 
     // TODO: Move these to prefs when they're added
-    private val mShowMode = MutableLiveData(SHOW_ARTISTS)
-    val showMode: LiveData<Int> get() = mShowMode
+    private val mShowMode = MutableLiveData(ShowMode.SHOW_ARTISTS)
+    val showMode: LiveData<ShowMode> get() = mShowMode
 
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val sortMode: LiveData<SortMode> get() = mSortMode
@@ -62,21 +60,21 @@ class LibraryViewModel : ViewModel() {
             val artists = musicModel.artists.value!!.filter { it.name.contains(query, true) }
 
             if (artists.isNotEmpty()) {
-                combined.add(Header(id = SHOW_ARTISTS.toLong()))
+                combined.add(Header(id = ShowMode.SHOW_ARTISTS.constant))
                 combined.addAll(artists)
             }
 
             val albums = musicModel.albums.value!!.filter { it.name.contains(query, true) }
 
             if (albums.isNotEmpty()) {
-                combined.add(Header(id = SHOW_ALBUMS.toLong()))
+                combined.add(Header(id = ShowMode.SHOW_ALBUMS.constant))
                 combined.addAll(albums)
             }
 
             val songs = musicModel.songs.value!!.filter { it.name.contains(query, true) }
 
             if (songs.isNotEmpty()) {
-                combined.add(Header(id = SHOW_SONGS.toLong()))
+                combined.add(Header(id = ShowMode.SHOW_SONGS.constant))
                 combined.addAll(songs)
             }
 

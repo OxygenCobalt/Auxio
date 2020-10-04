@@ -24,9 +24,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.theme.SHOW_ALBUMS
-import org.oxycblt.auxio.theme.SHOW_ARTISTS
-import org.oxycblt.auxio.theme.SHOW_GENRES
+import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr
@@ -70,8 +68,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
             item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    // When opened, update the adapter to the SearchAdapter
-                    // And remove the sorting group
+                    // When opened, update the adapter to the SearchAdapter, and make the sorting
+                    // group invisible. The query is also reset, as if the Auxio process is
+                    // killed in the background while still on the search adapter, then the
+                    // search query will stick around if its opened again
+                    // TODO: Couldn't you just try to restore the search state on restart?
                     binding.libraryRecycler.adapter = searchAdapter
                     setGroupVisible(R.id.group_sorting, false)
                     libraryModel.resetQuery()
@@ -80,11 +81,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    // When closed, switch back to LibraryAdapter, make the sorting
-                    // visible again, and reset the query so that the old results wont show
-                    // up if the search is opened again.
+                    // When closed, make the sorting icon visible again, change back to
+                    // LibraryAdapter, and reset the query.
                     binding.libraryRecycler.adapter = libraryAdapter
                     setGroupVisible(R.id.group_sorting, true)
+                    libraryModel.resetQuery()
 
                     return true
                 }
@@ -118,9 +119,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             // Update the adapter with the new data
             libraryAdapter.updateData(
                 when (libraryModel.showMode.value) {
-                    SHOW_GENRES -> mode.getSortedGenreList(musicModel.genres.value!!)
-                    SHOW_ARTISTS -> mode.getSortedArtistList(musicModel.artists.value!!)
-                    SHOW_ALBUMS -> mode.getSortedAlbumList(musicModel.albums.value!!)
+                    ShowMode.SHOW_GENRES -> mode.getSortedGenreList(musicModel.genres.value!!)
+                    ShowMode.SHOW_ARTISTS -> mode.getSortedArtistList(musicModel.artists.value!!)
+                    ShowMode.SHOW_ALBUMS -> mode.getSortedAlbumList(musicModel.albums.value!!)
 
                     else -> mode.getSortedArtistList(musicModel.artists.value!!)
                 }
@@ -162,10 +163,10 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun navToItem(baseModel: BaseModel) {
-        Log.d(this::class.simpleName, "Navigating to the detail fragment for ${baseModel.name}")
-
         if (!libraryModel.isNavigating) {
             libraryModel.updateNavigationStatus(true)
+
+            Log.d(this::class.simpleName, "Navigating to the detail fragment for ${baseModel.name}")
 
             findNavController().navigate(
                 when (baseModel) {
@@ -173,7 +174,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
                     is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
 
-                    else -> return
+                    // If given model wasn't valid, then reset the navigation status
+                    // and abort the navigation.
+                    else -> {
+                        libraryModel.updateNavigationStatus(false)
+                        return
+                    }
                 }
             )
         }
