@@ -25,14 +25,18 @@ class SongsFragment : Fragment() {
     ): View? {
         val binding = FragmentSongsBinding.inflate(inflater)
 
-        binding.songRecycler.adapter = SongAdapter(
-            musicModel.songs.value!!,
-            ClickListener { song ->
-                Log.d(this::class.simpleName, song.name)
-            }
-        )
-        binding.songRecycler.applyDivider()
-        binding.songRecycler.setHasFixedSize(true)
+        // --- UI SETUP ---
+
+        binding.songRecycler.apply {
+            adapter = SongAdapter(
+                musicModel.songs.value!!,
+                ClickListener { song ->
+                    Log.d(this::class.simpleName, song.name)
+                }
+            )
+            applyDivider()
+            setHasFixedSize(true)
+        }
 
         Log.d(this::class.simpleName, "Fragment created.")
 

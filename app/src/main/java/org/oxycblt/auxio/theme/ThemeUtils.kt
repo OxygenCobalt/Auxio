@@ -1,11 +1,13 @@
 package org.oxycblt.auxio.theme
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
 import android.view.MenuItem
+import android.widget.ImageButton
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
@@ -89,6 +91,14 @@ fun MenuItem.applyColor(color: Int) {
         setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         title = this
     }
+}
+
+fun ImageButton.disable(context: Context) {
+    imageTintList = ColorStateList.valueOf(
+        R.color.inactive_color.toColor(context)
+    )
+
+    isEnabled = false
 }
 
 // Apply a custom vertical divider

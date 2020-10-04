@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -50,70 +49,74 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             navToItem(it)
         }
 
-        // Toolbar setup
-        binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_sort_none
-        )
+        // --- UI SETUP ---
 
-        binding.libraryToolbar.menu.apply {
-            val item = findItem(R.id.action_search)
-            val searchView = item.actionView as SearchView
+        binding.libraryToolbar.apply {
+            overflowIcon = ContextCompat.getDrawable(
+                requireContext(), R.drawable.ic_sort_none
+            )
 
-            searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_go_btn)
-                .setImageResource(R.drawable.ic_back)
+            setOnMenuItemClickListener {
+                if (it.itemId != R.id.action_search) {
+                    libraryModel.updateSortMode(it)
+                } else {
+                    // Do whatever this is in order to make the SearchView focusable.
+                    (it.actionView as SearchView).isIconified = false
 
-            searchView.setOnQueryTextListener(this@LibraryFragment)
-            searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                libraryModel.updateSearchFocusStatus(hasFocus)
-                item.isVisible = !hasFocus
+                    // Then also do a basic animation
+                    TransitionManager.beginDelayedTransition(
+                        binding.libraryToolbar, Fade()
+                    )
+                    it.expandActionView()
+                }
+                true
             }
 
-            item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                    // When opened, update the adapter to the SearchAdapter, and make the sorting
-                    // group invisible. The query is also reset, as if the Auxio process is
-                    // killed in the background while still on the search adapter, then the
-                    // search query will stick around if its opened again
-                    // TODO: Couldn't you just try to restore the search state on restart?
-                    binding.libraryRecycler.adapter = searchAdapter
-                    setGroupVisible(R.id.group_sorting, false)
-                    libraryModel.resetQuery()
+            menu.apply {
+                val item = findItem(R.id.action_search)
+                val searchView = item.actionView as SearchView
 
-                    return true
+                searchView.setOnQueryTextListener(this@LibraryFragment)
+                searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                    libraryModel.updateSearchFocusStatus(hasFocus)
+                    item.isVisible = !hasFocus
                 }
 
-                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    // When closed, make the sorting icon visible again, change back to
-                    // LibraryAdapter, and reset the query.
-                    binding.libraryRecycler.adapter = libraryAdapter
-                    setGroupVisible(R.id.group_sorting, true)
-                    libraryModel.resetQuery()
+                item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                        // When opened, update the adapter to the SearchAdapter, and make the
+                        // sorting group invisible. The query is also reset, as if the Auxio process
+                        // is killed in the background while still on the search adapter, then the
+                        // search query will stick around if its opened again
+                        // TODO: Couldn't you just try to restore the search state on restart?
+                        binding.libraryRecycler.adapter = searchAdapter
+                        setGroupVisible(R.id.group_sorting, false)
+                        libraryModel.resetQuery()
 
-                    return true
-                }
-            })
-        }
+                        return true
+                    }
 
-        binding.libraryToolbar.setOnMenuItemClickListener {
-            if (it.itemId != R.id.action_search) {
-                libraryModel.updateSortMode(it)
-            } else {
-                // Do whatever this is in order to make the SearchView focusable.
-                (it.actionView as SearchView).isIconified = false
+                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                        // When closed, make the sorting icon visible again, change back to
+                        // LibraryAdapter, and reset the query.
+                        binding.libraryRecycler.adapter = libraryAdapter
+                        setGroupVisible(R.id.group_sorting, true)
+                        libraryModel.resetQuery()
 
-                // Then also do a basic animation
-                TransitionManager.beginDelayedTransition(
-                    binding.libraryToolbar, Fade()
-                )
-                it.expandActionView()
+                        return true
+                    }
+                })
             }
-            true
         }
 
-        // RecyclerView setup
-        binding.libraryRecycler.adapter = libraryAdapter
-        binding.libraryRecycler.applyDivider()
-        binding.libraryRecycler.setHasFixedSize(true)
+        binding.libraryRecycler.apply {
+            adapter = libraryAdapter
+
+            applyDivider()
+            setHasFixedSize(true)
+        }
+
+        // --- VIEWMODEL SETUP ---
 
         libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
             Log.d(this::class.simpleName, "Updating sort mode to $mode")

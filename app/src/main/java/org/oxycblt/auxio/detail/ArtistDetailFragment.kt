@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,13 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.toColor
+import org.oxycblt.auxio.theme.disable
 
 class ArtistDetailFragment : Fragment() {
 
@@ -56,9 +54,20 @@ class ArtistDetailFragment : Fragment() {
             }
         )
 
+        // --- UI SETUP ---
+
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
         binding.artist = detailModel.currentArtist.value!!
+
+        binding.artistToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        // Disable the sort button if there is only one album [Or less]
+        if (detailModel.currentArtist.value!!.numAlbums < 2) {
+            binding.artistSortButton.disable(requireContext())
+        }
 
         binding.artistAlbumRecycler.apply {
             adapter = albumAdapter
@@ -66,9 +75,7 @@ class ArtistDetailFragment : Fragment() {
             setHasFixedSize(true)
         }
 
-        binding.artistToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+        // --- VIEWMODEL SETUP ---
 
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             Log.d(this::class.simpleName, "Updating sort mode to $mode")
@@ -80,15 +87,6 @@ class ArtistDetailFragment : Fragment() {
             albumAdapter.submitList(
                 mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums)
             )
-        }
-
-        // Don't enable the sort button if there is only one album [Or less]
-        if (detailModel.currentArtist.value!!.numAlbums < 2) {
-            binding.artistSortButton.imageTintList = ColorStateList.valueOf(
-                R.color.inactive_color.toColor(requireContext())
-            )
-
-            binding.artistSortButton.isEnabled = false
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

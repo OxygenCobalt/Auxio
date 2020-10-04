@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.toColor
+import org.oxycblt.auxio.theme.disable
 
 class AlbumDetailFragment : Fragment() {
 
@@ -50,6 +49,8 @@ class AlbumDetailFragment : Fragment() {
             }
         )
 
+        // --- UI SETUP ---
+
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
         binding.album = detailModel.currentAlbum.value!!
@@ -62,6 +63,25 @@ class AlbumDetailFragment : Fragment() {
 
         binding.albumToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        // Don't enable the sort button if there's only one song [or less]
+        if (detailModel.currentAlbum.value!!.numSongs < 2) {
+            binding.albumSortButton.disable(requireContext())
+        }
+
+        // -- VIEWMODEL SETUP ---
+
+        detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
+            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+
+            // Update the current sort icon
+            binding.albumSortButton.setImageResource(mode.iconRes)
+
+            // Then update the sort mode of the album adapter.
+            songAdapter.submitList(
+                mode.getSortedSongList(detailModel.currentAlbum.value!!.songs)
+            )
         }
 
         // If the album was shown directly from LibraryFragment, Then enable the ability to
@@ -82,27 +102,6 @@ class AlbumDetailFragment : Fragment() {
             }
 
             binding.albumArtist.setBackgroundResource(R.drawable.ripple)
-        }
-
-        detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
-            Log.d(this::class.simpleName, "Updating sort mode to $mode")
-
-            // Update the current sort icon
-            binding.albumSortButton.setImageResource(mode.iconRes)
-
-            // Then update the sort mode of the album adapter.
-            songAdapter.submitList(
-                mode.getSortedSongList(detailModel.currentAlbum.value!!.songs)
-            )
-        }
-
-        // Don't enable the sort button if there's only one song [or less]
-        if (detailModel.currentAlbum.value!!.numSongs < 2) {
-            binding.albumSortButton.imageTintList = ColorStateList.valueOf(
-                R.color.inactive_color.toColor(requireContext())
-            )
-
-            binding.albumSortButton.isEnabled = false
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

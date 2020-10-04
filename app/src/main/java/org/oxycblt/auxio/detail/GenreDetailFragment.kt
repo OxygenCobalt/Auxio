@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,13 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.toColor
+import org.oxycblt.auxio.theme.disable
 
 class GenreDetailFragment : Fragment() {
 
@@ -56,17 +54,28 @@ class GenreDetailFragment : Fragment() {
             }
         )
 
+        // --- UI SETUP ---
+
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
         binding.genre = detailModel.currentGenre.value
 
-        binding.genreArtistRecycler.adapter = artistAdapter
-        binding.genreArtistRecycler.applyDivider()
-        binding.genreArtistRecycler.setHasFixedSize(true)
-
         binding.genreToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+        // Disable the sort button if there is only one artist [Or less]
+        if (detailModel.currentGenre.value!!.numArtists < 2) {
+            binding.genreSortButton.disable(requireContext())
+        }
+
+        binding.genreArtistRecycler.apply {
+            adapter = artistAdapter
+            applyDivider()
+            setHasFixedSize(true)
+        }
+
+        // --- VIEWMODEL SETUP ---
 
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
             Log.d(this::class.simpleName, "Updating sort mode to $mode")
@@ -78,15 +87,6 @@ class GenreDetailFragment : Fragment() {
             artistAdapter.submitList(
                 mode.getSortedArtistList(detailModel.currentGenre.value!!.artists)
             )
-        }
-
-        // Don't enable the sort button if there is only one artist [Or less]
-        if (detailModel.currentGenre.value!!.numArtists < 2) {
-            binding.genreSortButton.imageTintList = ColorStateList.valueOf(
-                R.color.inactive_color.toColor(requireContext())
-            )
-
-            binding.genreSortButton.isEnabled = false
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

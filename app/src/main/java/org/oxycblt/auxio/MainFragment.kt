@@ -33,16 +33,17 @@ class MainFragment : Fragment() {
     ): View? {
         val binding = FragmentMainBinding.inflate(inflater)
 
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.mainViewPager.adapter = PagerAdapter()
-
         val colorActive = accent.first.toColor(requireContext())
         val colorInactive = getTransparentAccent(
             requireContext(),
             accent.first,
             getInactiveAlpha(accent.first)
         )
+
+        // --- UI SETUP ---
+
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.mainViewPager.adapter = PagerAdapter()
 
         // Link the ViewPager & Tab View
         TabLayoutMediator(binding.mainTabs, binding.mainViewPager) { tab, position ->
