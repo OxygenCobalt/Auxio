@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.DiffCallback
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
 class DetailAlbumAdapter(
     private val listener: ClickListener<Album>
@@ -23,7 +23,7 @@ class DetailAlbumAdapter(
         holder.bind(getItem(position))
     }
 
-    // Generic ViewHolder for an album
+    // Generic ViewHolder for a detail album
     inner class ViewHolder(
         private val binding: ItemArtistAlbumBinding
     ) : BaseViewHolder<Album>(binding, listener) {

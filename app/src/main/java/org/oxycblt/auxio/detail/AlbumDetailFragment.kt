@@ -67,6 +67,8 @@ class AlbumDetailFragment : Fragment() {
         // If the album was shown directly from LibraryFragment, Then enable the ability to
         // navigate upwards to the parent artist
         if (args.enableParentNav) {
+            detailModel.doneWithNavToParent()
+
             detailModel.navToParent.observe(viewLifecycleOwner) {
                 if (it) {
                     findNavController().navigate(

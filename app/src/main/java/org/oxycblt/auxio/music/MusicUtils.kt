@@ -131,7 +131,7 @@ fun TextView.bindArtistCounts(artist: Artist) {
 
 // Get a bunch of miscellaneous album information [Year, Songs, Duration] and combine them
 @BindingAdapter("albumDetails")
-fun TextView.bindAlbumDetails(album: Album) {
+fun TextView.bindAllAlbumDetails(album: Album) {
     text = context.getString(
         R.string.format_double_info,
         album.year.toYear(context),
@@ -140,6 +140,18 @@ fun TextView.bindAlbumDetails(album: Album) {
             album.numSongs, album.numSongs
         ),
         album.totalDuration
+    )
+}
+
+@BindingAdapter("albumInfo")
+fun TextView.bindAlbumInfo(album: Album) {
+    text = context.getString(
+        R.string.format_info,
+        album.artist.name,
+        context.resources.getQuantityString(
+            R.plurals.format_song_count,
+            album.numSongs, album.numSongs
+        )
     )
 }
 

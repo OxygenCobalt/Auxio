@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.DiffCallback
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
 class DetailSongAdapter(
     private val listener: ClickListener<Song>

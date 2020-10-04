@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.music.BaseModel
 
 // RecyclerView click listener
-class ClickListener<T>(val onClick: (T) -> Unit)
+class ClickListener<T : BaseModel>(val onClick: (T) -> Unit)
 
 // Base Diff callback
 class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {

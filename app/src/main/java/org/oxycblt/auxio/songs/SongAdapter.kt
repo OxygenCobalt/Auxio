@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
 class SongAdapter(
     private val data: List<Song>,
