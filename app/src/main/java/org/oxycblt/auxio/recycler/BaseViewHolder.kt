@@ -7,7 +7,7 @@ import org.oxycblt.auxio.music.BaseModel
 // ViewHolder abstraction that automates some of the things that are common for all ViewHolders.
 abstract class BaseViewHolder<T : BaseModel>(
     private val baseBinding: ViewDataBinding,
-    protected val listener: ClickListener<T>
+    protected val listener: ClickListener<T>?
 ) : RecyclerView.ViewHolder(baseBinding.root) {
     init {
         baseBinding.root.layoutParams = RecyclerView.LayoutParams(
@@ -16,8 +16,10 @@ abstract class BaseViewHolder<T : BaseModel>(
     }
 
     fun bind(model: T) {
-        baseBinding.root.setOnClickListener {
-            listener.onClick(model)
+        if (listener != null) {
+            baseBinding.root.setOnClickListener {
+                listener.onClick(model)
+            }
         }
 
         onBind(model)

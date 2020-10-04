@@ -3,6 +3,7 @@ package org.oxycblt.auxio.library
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
@@ -16,6 +17,8 @@ import androidx.transition.TransitionManager
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.library.recycler.LibraryAdapter
+import org.oxycblt.auxio.library.recycler.SearchAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -34,14 +37,21 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     private val musicModel: MusicViewModel by activityViewModels()
     private val libraryModel: LibraryViewModel by activityViewModels()
 
-    private lateinit var libraryAdapter: LibraryAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentLibraryBinding.inflate(inflater)
+
+        val libraryAdapter = LibraryAdapter(
+            libraryModel.showMode.value!!,
+            ClickListener { navToItem(it) }
+        )
+
+        val searchAdapter = SearchAdapter(
+            ClickListener { navToItem(it) }
+        )
 
         // Toolbar setup
         binding.libraryToolbar.overflowIcon = ContextCompat.getDrawable(
@@ -52,18 +62,35 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             val item = findItem(R.id.action_search)
             val searchView = item.actionView as SearchView
 
+            // Set up the SearchView itself
             searchView.queryHint = getString(R.string.hint_search_library)
             searchView.setOnQueryTextListener(this@LibraryFragment)
             searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                this.setGroupVisible(R.id.group_sorting, !hasFocus)
-
-                // Make sure the search item will still be visible, and then do an animation
+                libraryModel.updateSearchFocusStatus(hasFocus)
                 item.isVisible = !hasFocus
-                TransitionManager.beginDelayedTransition(
-                    binding.libraryToolbar, Fade()
-                )
-                item.collapseActionView()
             }
+
+            item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    // When opened, update the adapter to the SearchAdapter
+                    // And remove the sorting group
+                    binding.libraryRecycler.adapter = searchAdapter
+                    setGroupVisible(R.id.group_sorting, false)
+                    libraryModel.resetQuery()
+
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    // When closed, switch back to LibraryAdapter, make the sorting
+                    // visible again, and reset the query so that the old results wont show
+                    // up if the search is opened again.
+                    binding.libraryRecycler.adapter = libraryAdapter
+                    setGroupVisible(R.id.group_sorting, true)
+
+                    return true
+                }
+            })
         }
 
         binding.libraryToolbar.setOnMenuItemClickListener {
@@ -81,11 +108,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
             true
         }
-
-        libraryAdapter = LibraryAdapter(
-            libraryModel.showMode.value!!,
-            ClickListener { navToItem(it) }
-        )
 
         // RecyclerView setup
         binding.libraryRecycler.adapter = libraryAdapter
@@ -116,17 +138,10 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        libraryModel.searchQuery.observe(viewLifecycleOwner) { query ->
-            // Update the adapter with the new data
-            libraryAdapter.updateData(
-                when (libraryModel.showMode.value) {
-                    SHOW_GENRES -> musicModel.genres.value!!
-                    SHOW_ARTISTS -> musicModel.artists.value!!
-                    SHOW_ALBUMS -> musicModel.albums.value!!
-
-                    else -> musicModel.artists.value!!
-                }.filter { it.name.contains(query, true) }
-            )
+        libraryModel.searchResults.observe(viewLifecycleOwner) {
+            if (libraryModel.searchHasFocus) {
+                searchAdapter.submitList(it)
+            }
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
@@ -143,7 +158,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
-        libraryModel.updateSearchQuery(query)
+        libraryModel.updateSearchQuery(query, musicModel)
 
         return false
     }

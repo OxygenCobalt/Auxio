@@ -90,3 +90,9 @@ data class Genre(
             return num
         }
 }
+
+// Header [Used for search, nothing else]
+data class Header(
+    override val id: Long = -1,
+    override var name: String = ""
+) : BaseModel()

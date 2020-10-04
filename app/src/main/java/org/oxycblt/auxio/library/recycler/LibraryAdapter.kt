@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.library
+package org.oxycblt.auxio.library.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.SHOW_ALBUMS
 import org.oxycblt.auxio.theme.SHOW_ARTISTS
@@ -22,7 +21,7 @@ class LibraryAdapter(
     val listener: ClickListener<BaseModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var data: List<BaseModel>
+    private var data: List<BaseModel>
 
     init {
         // Assign the data on startup depending on the type
@@ -41,18 +40,22 @@ class LibraryAdapter(
         // Return a different View Holder depending on the show type
         return when (showMode) {
             SHOW_GENRES -> GenreViewHolder(
+                listener,
                 ItemGenreBinding.inflate(LayoutInflater.from(parent.context))
             )
 
             SHOW_ARTISTS -> ArtistViewHolder(
+                listener,
                 ItemArtistBinding.inflate(LayoutInflater.from(parent.context))
             )
 
             SHOW_ALBUMS -> AlbumViewHolder(
+                listener,
                 ItemAlbumBinding.inflate(LayoutInflater.from(parent.context))
             )
 
             else -> ArtistViewHolder(
+                listener,
                 ItemArtistBinding.inflate(LayoutInflater.from(parent.context))
             )
         }
@@ -69,42 +72,9 @@ class LibraryAdapter(
     }
 
     // Update the data, as its an internal value.
-    // TODO: Call this from a coroutine.
     fun updateData(newData: List<BaseModel>) {
         data = newData
 
         notifyDataSetChanged()
-    }
-
-    // --- VIEWHOLDERS ---
-
-    inner class GenreViewHolder(
-        private val binding: ItemGenreBinding
-    ) : BaseViewHolder<BaseModel>(binding, listener) {
-
-        override fun onBind(model: BaseModel) {
-            binding.genre = model as Genre
-            binding.genreName.requestLayout()
-        }
-    }
-
-    inner class ArtistViewHolder(
-        private val binding: ItemArtistBinding
-    ) : BaseViewHolder<BaseModel>(binding, listener) {
-
-        override fun onBind(model: BaseModel) {
-            binding.artist = model as Artist
-            binding.artistName.requestLayout()
-        }
-    }
-
-    inner class AlbumViewHolder(
-        private val binding: ItemAlbumBinding
-    ) : BaseViewHolder<BaseModel>(binding, listener) {
-
-        override fun onBind(model: BaseModel) {
-            binding.album = model as Album
-            binding.albumName.requestLayout()
-        }
     }
 }

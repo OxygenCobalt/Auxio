@@ -17,7 +17,7 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
 
 // ViewModel for music storage.
-// FIXME: This class can be improved in multiple ways
+// FIXME: This system can be improved in multiple ways
 //  - Remove lists/parents from models so that they can be parcelable
 //  - Move genre usage to songs [If there's a way to find songs without a genre]
 class MusicViewModel(private val app: Application) : ViewModel() {
