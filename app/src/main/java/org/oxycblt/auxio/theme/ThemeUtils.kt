@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -43,7 +44,7 @@ val accent = ACCENTS[5]
 
 // Get the transparent variant of a color int
 @ColorInt
-fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
+fun getTransparentAccent(context: Context, @ColorRes color: Int, alpha: Int): Int {
     return ColorUtils.setAlphaComponent(
         ContextCompat.getColor(context, color),
         alpha
@@ -52,7 +53,7 @@ fun getTransparentAccent(context: Context, color: Int, alpha: Int): Int {
 
 // Get the inactive transparency of an accent
 @ColorInt
-fun getInactiveAlpha(color: Int): Int {
+fun getInactiveAlpha(@ColorRes color: Int): Int {
     return if (color == R.color.yellow) 100 else 150
 }
 
@@ -86,13 +87,14 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
 }
 
 // Apply a color to a Menu Item
-fun MenuItem.applyColor(color: Int) {
+fun MenuItem.applyColor(@ColorRes color: Int) {
     SpannableString(title).apply {
         setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         title = this
     }
 }
 
+// Disable an ImageButton
 fun ImageButton.disable(context: Context) {
     imageTintList = ColorStateList.valueOf(
         R.color.inactive_color.toColor(context)

@@ -46,6 +46,11 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             app:destination="@id/genreDetailFragment" />
+        <action
+            android:id="@+id/action_return_to_loading"
+            app:destination="@id/loading_fragment"
+            app:popUpTo="@id/main_fragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/artist_detail_fragment"

@@ -24,17 +24,12 @@ TODOs surrounded with !s are things I tried to do, but failed for reasons includ
 /library/
 
 - Exit functionality
-- ? Remove gap from where I removed the overflow menu ?
 - ? Add icons to overflow menu items ?
-- ? Implement filtering for search [Will resolve gap issue] ?
-- ? Move into ViewPager ?
+- ? Add Nested Nav to Library ViewPager fragment [Hold fire on this until everything else is added, there could be sneaky bugs later on if you add it now] ?
 - ! Move Adapter functionality to ListAdapter [RecyclerView scrolls to middle/bottom when data is re-sorted] !
 
 /bugs/
 - Fix issue where fast navigations will cause the app to not display anything
-
-/other/
-- Standardize fragment init
 
 To be added:
 /prefs/

@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
@@ -19,6 +22,10 @@ import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
+    private val musicModel: MusicViewModel by activityViewModels {
+        MusicViewModel.Factory(requireActivity().application)
+    }
+
     private val shownFragments = listOf(0, 1)
 
     private val tabIcons = listOf(
@@ -32,6 +39,14 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentMainBinding.inflate(inflater)
+
+        // If musicModel was cleared while the app was closed [Likely due to Auxio being suspended
+        // in the background], then navigate back to loading to reload the music.
+        if (musicModel.response.value == null) {
+            findNavController().navigate(MainFragmentDirections.actionReturnToLoading())
+
+            return null
+        }
 
         val colorActive = accent.first.toColor(requireContext())
         val colorInactive = getTransparentAccent(

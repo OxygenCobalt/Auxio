@@ -31,7 +31,10 @@ import org.oxycblt.auxio.theme.resolveAttr
 
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
-    private val musicModel: MusicViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels {
+        MusicViewModel.Factory(requireActivity().application)
+    }
+
     private val libraryModel: LibraryViewModel by activityViewModels()
 
     override fun onCreateView(
