@@ -9,14 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
-
     private val musicModel: MusicViewModel by activityViewModels {
         MusicViewModel.Factory(requireActivity().application)
     }
+
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +33,7 @@ class SongsFragment : Fragment() {
             adapter = SongAdapter(
                 musicModel.songs.value!!,
                 ClickListener { song ->
-                    Log.d(this::class.simpleName, song.name)
+                    playbackModel.updateSong(song)
                 }
             )
             applyDivider()

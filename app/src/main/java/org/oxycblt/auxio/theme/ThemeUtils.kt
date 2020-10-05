@@ -87,7 +87,7 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
 }
 
 // Apply a color to a Menu Item
-fun MenuItem.applyColor(@ColorRes color: Int) {
+fun MenuItem.applyColor(@ColorInt color: Int) {
     SpannableString(title).apply {
         setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         title = this

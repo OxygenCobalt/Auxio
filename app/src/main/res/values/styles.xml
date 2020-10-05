@@ -27,6 +27,10 @@
         <item name="android:textSize">@dimen/detail_header_size_max</item>
     </style>
 
+    <style name="TextAppearance.SmallHeader" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
     <style name="AppThemeOverlay.Popup" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">@color/background</item>
         <item name="colorControlHighlight">@color/selection_color</item>

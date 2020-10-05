@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.library.recycler
+package org.oxycblt.auxio.library.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter

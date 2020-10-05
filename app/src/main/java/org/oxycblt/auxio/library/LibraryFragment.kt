@@ -17,13 +17,15 @@ import androidx.transition.TransitionManager
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
-import org.oxycblt.auxio.library.recycler.LibraryAdapter
-import org.oxycblt.auxio.library.recycler.SearchAdapter
+import org.oxycblt.auxio.library.adapters.LibraryAdapter
+import org.oxycblt.auxio.library.adapters.SearchAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
@@ -36,6 +38,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private val libraryModel: LibraryViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -173,6 +176,13 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun navToItem(baseModel: BaseModel) {
+        // If the item is a song [That was selected through search], then update the playback
+        // to that song instead of doing any naviagation
+        if (baseModel is Song) {
+            playbackModel.updateSong(baseModel)
+            return
+        }
+
         if (!libraryModel.isNavigating) {
             libraryModel.updateNavigationStatus(true)
 

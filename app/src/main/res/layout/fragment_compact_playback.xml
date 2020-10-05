@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".playback.CompactPlaybackFragment">
+
+    <data>
+
+        <variable
+            name="song"
+            type="org.oxycblt.auxio.music.Song" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/song_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/playback_progress_size"
+            android:clickable="false"
+            android:progressBackgroundTint="?android:attr/colorControlNormal"
+            android:progressTint="?android:attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="70" />
+
+        <ImageView
+            android:id="@+id/album_cover"
+            android:layout_width="@dimen/cover_size_compact"
+            android:layout_height="@dimen/cover_size_compact"
+            android:contentDescription="@{@string/description_album_cover(song.name)}"
+            android:layout_margin="@dimen/margin_smallish"
+            app:coverArt="@{song}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/song_progress"
+            tools:src="@drawable/ic_song" />
+
+        <TextView
+            android:id="@+id/song_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@{song.name}"
+            android:layout_marginStart="@dimen/margin_smallish"
+            android:textAppearance="@style/TextAppearance.SmallHeader"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            app:layout_constraintBottom_toTopOf="@+id/song_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Song Name" />
+
+        <TextView
+            android:id="@+id/song_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_smallish"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:text="@{@string/format_info(song.album.name, song.album.artist.name)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/song_name"
+            tools:text="Artist / Album" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

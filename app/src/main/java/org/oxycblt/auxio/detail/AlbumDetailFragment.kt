@@ -13,6 +13,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
@@ -21,6 +22,7 @@ class AlbumDetailFragment : Fragment() {
 
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +47,7 @@ class AlbumDetailFragment : Fragment() {
 
         val songAdapter = DetailSongAdapter(
             ClickListener {
-                Log.d(this::class.simpleName, it.name)
+                playbackModel.updateSong(it)
             }
         )
 

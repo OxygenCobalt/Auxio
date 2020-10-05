@@ -15,6 +15,13 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/playback_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
+            android:elevation="@dimen/elevation_normal" />
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/main_tabs"
             android:layout_width="match_parent"
@@ -29,7 +36,8 @@
             app:tabIndicator="@drawable/indicator"
             app:tabIndicatorColor="?android:attr/colorPrimary"
             app:tabMode="fixed"
-            app:tabRippleColor="@color/selection_color" />
+            app:tabRippleColor="@color/selection_color"
+            tools:background="@color/control_color" />
 
     </LinearLayout>
 </layout>

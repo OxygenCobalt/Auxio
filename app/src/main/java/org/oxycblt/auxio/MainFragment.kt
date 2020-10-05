@@ -41,7 +41,7 @@ class MainFragment : Fragment() {
         val binding = FragmentMainBinding.inflate(inflater)
 
         // If musicModel was cleared while the app was closed [Likely due to Auxio being suspended
-        // in the background], then navigate back to loading to reload the music.
+        // in the background], then navigate back to LoadingFragment to reload the music.
         if (musicModel.response.value == null) {
             findNavController().navigate(MainFragmentDirections.actionReturnToLoading())
 
@@ -57,7 +57,7 @@ class MainFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = this
         binding.mainViewPager.adapter = PagerAdapter()
 
         // Link the ViewPager & Tab View

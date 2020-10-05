@@ -17,8 +17,8 @@ TODOs surrounded with !s are things I tried to do, but failed for reasons includ
 
 /songs/
 
+- Search when LibraryFragment isnt enabled
 - ? Sorting ?
-- ? Search ?
 - ? Fast Scrolling ?
 
 /library/
@@ -28,9 +28,14 @@ TODOs surrounded with !s are things I tried to do, but failed for reasons includ
 - ? Add Nested Nav to Library ViewPager fragment [Hold fire on this until everything else is added, there could be sneaky bugs later on if you add it now] ?
 - ! Move Adapter functionality to ListAdapter [RecyclerView scrolls to middle/bottom when data is re-sorted] !
 
+/playback/
+- 
+
+/other/
+- Highlight recycler items when they are being played
+
 /bugs/
 - Fix issue where fast navigations will cause the app to not display anything
 
 To be added:
 /prefs/
-/playback/

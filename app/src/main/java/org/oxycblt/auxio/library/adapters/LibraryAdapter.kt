@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.library.recycler
+package org.oxycblt.auxio.library.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +13,8 @@ import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
 
 // A ListAdapter that can contain three different types of ViewHolders depending
-// the showmode given. It cannot display multiple types of viewholders *at once*.
+// the ShowMode given.
+// It cannot display multiple ViewHolders *at once* however. That's what SearchAdapter is for.
 class LibraryAdapter(
     private val showMode: ShowMode,
     private val doOnClick: (BaseModel) -> Unit

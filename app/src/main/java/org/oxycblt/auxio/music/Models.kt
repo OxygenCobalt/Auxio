@@ -13,9 +13,9 @@ sealed class BaseModel {
 data class Song(
     override val id: Long = -1,
     override var name: String,
-    val albumId: Long,
-    val track: Int,
-    val duration: Long,
+    val albumId: Long = -1,
+    val track: Int = -1,
+    val duration: Long = 0,
 ) : BaseModel() {
     lateinit var album: Album
 

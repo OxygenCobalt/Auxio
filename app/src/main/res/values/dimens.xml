@@ -5,12 +5,14 @@
     <dimen name="padding_medium">16dp</dimen>
 
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_smallish">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
 
     <dimen name="status_icon_size">48dp</dimen>
 
     <dimen name="tab_menu_size">40dp</dimen>
 
+    <dimen name="cover_size_small">36dp</dimen>
     <dimen name="cover_size_compact">44dp</dimen>
     <dimen name="cover_size_normal">56dp</dimen>
     <dimen name="cover_size_large">68dp</dimen>
@@ -25,6 +27,8 @@
     <dimen name="generic_size_increment">2sp</dimen>
 
     <dimen name="divider_ripple_size">18dp</dimen>
+
+    <dimen name="playback_progress_size">2dp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>
