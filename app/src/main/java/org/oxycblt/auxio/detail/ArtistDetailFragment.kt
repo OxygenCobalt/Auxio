@@ -16,6 +16,9 @@ import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
+// TODO: Add media controls to DetailFragments [Play, Shuffle]
+// TODO: Implement a system where if the main info [Name, Parent, Counts] scrolls off of
+//  the screen, then update the toolbar to show that info w/the media controls
 class ArtistDetailFragment : Fragment() {
 
     private val args: ArtistDetailFragmentArgs by navArgs()

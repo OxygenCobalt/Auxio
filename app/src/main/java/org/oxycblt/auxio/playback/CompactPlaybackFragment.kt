@@ -24,6 +24,8 @@ class CompactPlaybackFragment : Fragment() {
     ): View? {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
+        // --- UI SETUP ---
+
         binding.lifecycleOwner = this
 
         // Put a placeholder song in the binding & hide the playback fragment initially,
@@ -31,6 +33,9 @@ class CompactPlaybackFragment : Fragment() {
         binding.song = musicModel.songs.value!![0]
         binding.root.visibility = View.GONE
 
+        // --- VIEWMODEL SETUP ---
+
+        // TODO: Add some kind of animation to when this view becomes visible/invisible.
         playbackModel.currentSong.observe(viewLifecycleOwner) {
             if (it == null) {
                 Log.d(this::class.simpleName, "Hiding playback bar due to no song being played.")

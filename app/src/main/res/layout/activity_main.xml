@@ -5,5 +5,7 @@
     android:name="androidx.navigation.fragment.NavHostFragment"
     app:defaultNavHost="true"
     app:navGraph="@navigation/nav_main"
+    tools:context=".MainActivity"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

@@ -21,6 +21,8 @@ import java.io.InputStream
 const val MOSAIC_BITMAP_SIZE = 512
 const val MOSAIC_BITMAP_INCREMENT = 256
 
+// A Fetcher that takes multiple cover uris and turns them into a 2x2 mosaic image.
+// TODO: Add 4x4 mosaics?
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
         pool: BitmapPool,
@@ -30,8 +32,9 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     ): FetchResult {
         val streams = mutableListOf<InputStream>()
 
-        for (uri in data) {
-            val stream: InputStream? = context.contentResolver.openInputStream(uri)
+        // Load the streams.
+        data.forEach {
+            val stream: InputStream? = context.contentResolver.openInputStream(it)
 
             if (stream != null) {
                 streams.add(stream)
@@ -39,7 +42,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         }
 
         // If so many streams failed that there's not enough images to make a mosaic, then
-        // just return the first album.
+        // just return the first cover image.
         if (streams.size < 4) {
             streams.forEach { it.close() }
 

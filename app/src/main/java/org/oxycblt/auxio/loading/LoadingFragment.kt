@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,7 +37,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             ) { granted: Boolean ->
                 // If its actually granted, restart the loading process again.
                 if (granted) {
-                    wipeViews(binding)
+                    returnToLoading(binding)
 
                     musicModel.reload()
                 }
@@ -51,13 +50,45 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
         // --- VIEWMODEL SETUP ---
 
-        musicModel.response.observe(viewLifecycleOwner) { onMusicLoadResponse(it, binding) }
-        musicModel.doReload.observe(viewLifecycleOwner) { onRetry(it, binding) }
-        musicModel.doGrant.observe(viewLifecycleOwner) { onGrant(it, permLauncher) }
+        musicModel.response.observe(viewLifecycleOwner) {
+            if (it == MusicLoaderResponse.DONE) {
+                findNavController().navigate(
+                    LoadingFragmentDirections.actionToMain()
+                )
+            } else {
+                binding.loadingErrorText.text =
+                    if (it == MusicLoaderResponse.NO_MUSIC)
+                        getString(R.string.error_no_music)
+                    else
+                        getString(R.string.error_music_load_failed)
+
+                // If the response wasn't a success, then show the specific error message
+                // depending on which error response was given, along with a retry button
+                showError(binding)
+                binding.loadingRetryButton.visibility = View.VISIBLE
+            }
+        }
+
+        musicModel.doReload.observe(viewLifecycleOwner) {
+            if (it) {
+                returnToLoading(binding)
+                musicModel.doneWithReload()
+            }
+        }
+
+        musicModel.doGrant.observe(viewLifecycleOwner) {
+            if (it) {
+                permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                musicModel.doneWithGrant()
+            }
+        }
 
         // Force an error screen if the permissions are denied or the prompt needs to be shown.
         if (checkPerms()) {
-            onNoPerms(binding)
+            showError(binding)
+
+            binding.loadingGrantButton.visibility = View.VISIBLE
+            binding.loadingErrorText.text = getString(R.string.error_no_perms)
         } else {
             musicModel.go()
         }
@@ -78,61 +109,15 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         ) == PackageManager.PERMISSION_DENIED
     }
 
-    private fun onMusicLoadResponse(
-        response: MusicLoaderResponse?,
-        binding: FragmentLoadingBinding
-    ) {
-        if (response == MusicLoaderResponse.DONE) {
-            findNavController().navigate(
-                LoadingFragmentDirections.actionToMain()
-            )
-        } else {
-            binding.loadingErrorText.text =
-                if (response == MusicLoaderResponse.NO_MUSIC)
-                    getString(R.string.error_no_music)
-                else
-                    getString(R.string.error_music_load_failed)
-
-            // If the response wasn't a success, then show the specific error message
-            // depending on which error response was given, along with a retry button
-            binding.loadingBar.visibility = View.GONE
-            binding.loadingErrorText.visibility = View.VISIBLE
-            binding.loadingErrorIcon.visibility = View.VISIBLE
-            binding.loadingRetryButton.visibility = View.VISIBLE
-        }
-    }
-
-    private fun onNoPerms(binding: FragmentLoadingBinding) {
-        // If there are no perms, switch out the view elements as if an error screen was being
-        // shown, but show the label that Auxio needs to read external storage to function,
-        // along with a GRANT button
-
+    // Remove the loading indicator and show the error groups
+    private fun showError(binding: FragmentLoadingBinding) {
         binding.loadingBar.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE
-        binding.loadingGrantButton.visibility = View.VISIBLE
         binding.loadingErrorText.visibility = View.VISIBLE
-
-        binding.loadingErrorText.text = getString(R.string.error_no_perms)
-    }
-
-    private fun onRetry(retry: Boolean, binding: FragmentLoadingBinding) {
-        if (retry) {
-            wipeViews(binding)
-
-            musicModel.doneWithReload()
-        }
-    }
-
-    private fun onGrant(grant: Boolean, permLauncher: ActivityResultLauncher<String>) {
-        if (grant) {
-            permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-
-            musicModel.doneWithGrant()
-        }
     }
 
     // Wipe views and switch back to the plain ProgressBar
-    private fun wipeViews(binding: FragmentLoadingBinding) {
+    private fun returnToLoading(binding: FragmentLoadingBinding) {
         binding.loadingBar.visibility = View.VISIBLE
         binding.loadingErrorText.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.GONE

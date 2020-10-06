@@ -8,6 +8,11 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
+// ViewModel for the Detail Fragments.
+// TODO:
+//  - Implement a system where the Toolbar will update with the info [And Media Controls] when
+//    the main info of the detail fragment is removed.
+//  - Implement shared element transitions [If that is even possible]
 class DetailViewModel : ViewModel() {
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating

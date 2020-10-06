@@ -7,6 +7,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import org.oxycblt.auxio.theme.accent
 
+// FIXME: Fix bug where fast navigation will break the fade animation and
+//  lead to nothing being displayed [Possibly Un-fixable]
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {

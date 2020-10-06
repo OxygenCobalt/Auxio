@@ -19,6 +19,7 @@ enum class MusicLoaderResponse {
 }
 
 // Class that loads music from the FileSystem.
+// TODO: Add custom artist images from the filesystem
 class MusicLoader(
     private val resolver: ContentResolver,
 

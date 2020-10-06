@@ -31,6 +31,7 @@ import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr
 
+// A Fragment to show all the music in the Library.
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val musicModel: MusicViewModel by activityViewModels {
@@ -57,6 +58,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         // --- UI SETUP ---
 
+        // TODO: Add exit functionality
         binding.libraryToolbar.apply {
             overflowIcon = ContextCompat.getDrawable(
                 requireContext(), R.drawable.ic_sort_none
@@ -78,6 +80,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 true
             }
 
+            // TODO: Add icons to overflow menu items
             menu.apply {
                 val item = findItem(R.id.action_search)
                 val searchView = item.actionView as SearchView
@@ -115,6 +118,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
+        // TODO: Change LibraryAdapter to a ListAdapter
+        //  [If there's a way to preserve scroll position properly]
         binding.libraryRecycler.apply {
             adapter = libraryAdapter
 
@@ -176,8 +181,10 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun navToItem(baseModel: BaseModel) {
+        // TODO: Implement shared element transitions to the DetailFragments [If possible]
+
         // If the item is a song [That was selected through search], then update the playback
-        // to that song instead of doing any naviagation
+        // to that song instead of doing any navigation
         if (baseModel is Song) {
             playbackModel.updateSong(baseModel)
             return

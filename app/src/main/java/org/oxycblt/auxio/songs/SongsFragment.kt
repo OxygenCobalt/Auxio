@@ -12,7 +12,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
-
 class SongsFragment : Fragment() {
     private val musicModel: MusicViewModel by activityViewModels {
         MusicViewModel.Factory(requireActivity().application)
@@ -26,6 +25,9 @@ class SongsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentSongsBinding.inflate(inflater)
+
+        // TODO: Add option to search songs if LibraryFragment isn't enabled
+        // TODO: Maybe add fast scrolling or sorting
 
         // --- UI SETUP ---
 

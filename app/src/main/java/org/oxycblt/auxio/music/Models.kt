@@ -2,6 +2,10 @@ package org.oxycblt.auxio.music
 
 import android.net.Uri
 
+// --- MUSIC MODELS ---
+// TODO: Remove parent/child references so that they can be parcelable [Would require genre rework]
+// TODO: Dont determine artist/album/song counts on the fly [If possible]
+
 // The base model for all music
 // This is used in a lot of general functions in order to cut down on code
 sealed class BaseModel {

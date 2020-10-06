@@ -57,6 +57,8 @@ class MainFragment : Fragment() {
 
         // --- UI SETUP ---
 
+        // TODO: Add nested viewpager navigation [If practical]
+
         binding.lifecycleOwner = this
         binding.mainViewPager.adapter = PagerAdapter()
 
@@ -69,6 +71,8 @@ class MainFragment : Fragment() {
                 tab.icon?.setTint(colorInactive)
             }
         }.attach()
+
+        binding.compactPlayback.visibility = View.GONE
 
         // Set up the selected/deselected colors
         binding.mainTabs.addOnTabSelectedListener(

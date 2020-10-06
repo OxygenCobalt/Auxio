@@ -67,12 +67,12 @@
             android:singleLine="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:text="@{@string/format_info(song.album.name, song.album.artist.name)}"
+            android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_name"
-            tools:text="Artist / Album" />
+            tools:text="Artist Name / Album Name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
