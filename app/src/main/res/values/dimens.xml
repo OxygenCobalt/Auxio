@@ -17,6 +17,7 @@
     <dimen name="cover_size_normal">56dp</dimen>
     <dimen name="cover_size_large">68dp</dimen>
     <dimen name="cover_size_huge">250dp</dimen>
+    <dimen name="cover_size_playback">110dp</dimen>
 
     <dimen name="track_number_width">32dp</dimen>
     <dimen name="track_number_text_size_max">20sp</dimen>

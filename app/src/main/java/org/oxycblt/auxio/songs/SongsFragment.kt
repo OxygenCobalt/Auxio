@@ -12,6 +12,7 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
+
 class SongsFragment : Fragment() {
     private val musicModel: MusicViewModel by activityViewModels {
         MusicViewModel.Factory(requireActivity().application)

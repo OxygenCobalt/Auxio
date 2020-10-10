@@ -16,7 +16,6 @@ import org.oxycblt.auxio.recycler.ClickListener
 
 // Shared ViewHolders for each ViewModel, providing basic information
 // All new instances should be created with from() instead of direct instantiation.
-// TODO: Add indicators to song recycler items when they're being played.
 
 class GenreViewHolder private constructor(
     listener: ClickListener<Genre>,

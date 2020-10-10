@@ -85,6 +85,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 val item = findItem(R.id.action_search)
                 val searchView = item.actionView as SearchView
 
+                searchView.queryHint = getString(R.string.hint_search_library)
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                     libraryModel.updateSearchFocusStatus(hasFocus)

@@ -33,6 +33,10 @@ class CompactPlaybackFragment : Fragment() {
         binding.song = musicModel.songs.value!![0]
         binding.root.visibility = View.GONE
 
+        binding.root.setOnClickListener {
+            playbackModel.openPlayback()
+        }
+
         // --- VIEWMODEL SETUP ---
 
         // TODO: Add some kind of animation to when this view becomes visible/invisible.

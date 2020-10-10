@@ -15,6 +15,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.playback.PlaybackFragment
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
@@ -26,8 +28,9 @@ class MainFragment : Fragment() {
         MusicViewModel.Factory(requireActivity().application)
     }
 
-    private val shownFragments = listOf(0, 1)
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
+    private val shownFragments = listOf(0, 1)
     private val tabIcons = listOf(
         R.drawable.ic_library,
         R.drawable.ic_song
@@ -72,8 +75,6 @@ class MainFragment : Fragment() {
             }
         }.attach()
 
-        binding.compactPlayback.visibility = View.GONE
-
         // Set up the selected/deselected colors
         binding.mainTabs.addOnTabSelectedListener(
             object : TabLayout.OnTabSelectedListener {
@@ -90,6 +91,16 @@ class MainFragment : Fragment() {
                 }
             }
         )
+
+        // --- VIEWMODEL SETUP ---
+
+        playbackModel.shouldOpenPlayback.observe(viewLifecycleOwner) {
+            if (it) {
+                PlaybackFragment().show(requireActivity().supportFragmentManager, "TAG_PLAYBACK")
+
+                playbackModel.doneWithOpenPlayback()
+            }
+        }
 
         Log.d(this::class.simpleName, "Fragment Created.")
 

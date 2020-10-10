@@ -45,7 +45,7 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:destination="@id/genreDetailFragment" />
+            app:destination="@id/genre_detail_fragment" />
         <action
             android:id="@+id/action_return_to_loading"
             app:destination="@id/loading_fragment"
@@ -88,7 +88,7 @@
             app:destination="@id/artist_detail_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/genreDetailFragment"
+        android:id="@+id/genre_detail_fragment"
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
         android:label="GenreDetailFragment"
         tools:layout="@layout/fragment_genre_detail">
