@@ -36,5 +36,7 @@
         <item name="colorControlHighlight">@color/selection_color</item>
     </style>
 
-    <style name="Theme.BottomSheet" parent="Theme.Design.BottomSheetDialog" />
+    <style name="Theme.BottomSheet" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:colorPrimary">?android:attr/colorPrimary</item>
+    </style>
 </resources>

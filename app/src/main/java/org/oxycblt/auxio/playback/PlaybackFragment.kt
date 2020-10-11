@@ -28,11 +28,12 @@ class PlaybackFragment : BottomSheetDialogFragment() {
         val binding = FragmentPlaybackBinding.inflate(inflater)
 
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
-        val white = ColorStateList.valueOf(android.R.color.white.toColor(requireContext()))
+        val inactiveColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
 
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable
+
         val iconPlayToPause = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_play_to_pause
         ) as AnimatedVectorDrawable
@@ -59,6 +60,8 @@ class PlaybackFragment : BottomSheetDialogFragment() {
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
+                // Animate the playing status and switch the button to the accent color
+                // if its playing, and back to a inactive gray if not.
                 binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
                 iconPauseToPlay.start()
 
@@ -67,7 +70,7 @@ class PlaybackFragment : BottomSheetDialogFragment() {
                 binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
                 iconPlayToPause.start()
 
-                binding.playbackPlayPause.backgroundTintList = white
+                binding.playbackPlayPause.backgroundTintList = inactiveColor
             }
         }
 

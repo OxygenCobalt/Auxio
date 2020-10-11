@@ -30,6 +30,7 @@ class CompactPlaybackFragment : Fragment() {
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable
+
         val iconPlayToPause = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_play_to_pause
         ) as AnimatedVectorDrawable
@@ -65,9 +66,9 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        // TODO: Animate this icon
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
+                // Animate the icon transition when the playing status switches
                 binding.playbackControls.setImageDrawable(iconPauseToPlay)
                 iconPauseToPlay.start()
             } else {

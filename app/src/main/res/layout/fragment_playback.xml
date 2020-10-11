@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background"
-        android:theme="@style/ThemeOverlay.AppCompat.DayNight"
+        android:theme="@style/Theme.Base"
         android:padding="@dimen/padding_medium">
 
         <ImageView

@@ -46,7 +46,7 @@ val accent = ACCENTS[5]
 @ColorInt
 fun getTransparentAccent(context: Context, @ColorRes color: Int, alpha: Int): Int {
     return ColorUtils.setAlphaComponent(
-        ContextCompat.getColor(context, color),
+        color.toColor(context),
         alpha
     )
 }
