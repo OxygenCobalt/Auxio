@@ -19,7 +19,7 @@
             android:id="@+id/header_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/header_dividers"
+            android:background="@drawable/ui_header_dividers"
             android:fontFamily="@font/inter_bold"
             android:paddingStart="@dimen/padding_medium"
             android:paddingTop="@dimen/padding_small"

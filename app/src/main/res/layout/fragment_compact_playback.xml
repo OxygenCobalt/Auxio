@@ -9,18 +9,22 @@
         <variable
             name="song"
             type="org.oxycblt.auxio.music.Song" />
+
+        <variable
+            name="playbackModel"
+            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:animateLayoutChanges="true"
-        android:background="@drawable/ripple"
+        android:background="@drawable/ui_ripple"
         android:clickable="true"
         android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ProgressBar
-            android:id="@+id/song_progress"
+            android:id="@+id/playback_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/playback_progress_size"
@@ -32,7 +36,7 @@
             tools:progress="70" />
 
         <ImageView
-            android:id="@+id/album_cover"
+            android:id="@+id/playback_cover"
             android:layout_width="@dimen/cover_size_compact"
             android:layout_height="@dimen/cover_size_compact"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
@@ -40,42 +44,58 @@
             app:coverArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/song_progress"
+            app:layout_constraintTop_toBottomOf="@+id/playback_progress"
             tools:src="@drawable/ic_song" />
 
         <TextView
-            android:id="@+id/song_name"
+            android:id="@+id/playback_song"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_semibold"
-            android:text="@{song.name}"
             android:layout_marginStart="@dimen/margin_smallish"
-            android:textAppearance="@style/TextAppearance.SmallHeader"
-            android:singleLine="true"
+            android:layout_marginEnd="@dimen/margin_smallish"
             android:ellipsize="marquee"
+            android:fontFamily="@font/inter_semibold"
             android:marqueeRepeatLimit="marquee_forever"
-            app:layout_constraintBottom_toTopOf="@+id/song_info"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            android:singleLine="true"
+            android:text="@{song.name}"
+            android:textAppearance="@style/TextAppearance.SmallHeader"
+            app:layout_constraintBottom_toTopOf="@+id/playback_info"
+            app:layout_constraintEnd_toStartOf="@+id/playback_controls"
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Song Name" />
 
         <TextView
-            android:id="@+id/song_info"
+            android:id="@+id/playback_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_smallish"
+            android:layout_marginEnd="@dimen/margin_smallish"
             android:ellipsize="marquee"
-            android:singleLine="true"
             android:marqueeRepeatLimit="marquee_forever"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:singleLine="true"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playback_controls"
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintTop_toBottomOf="@+id/playback_song"
+            tools:text="Artist Name / Album Name" />
+
+        <ImageButton
+            android:id="@+id/playback_controls"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_marginEnd="@dimen/margin_smallish"
+            android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"
+            android:layout_width="@dimen/controls_size_compact"
+            android:layout_height="@dimen/controls_size_compact"
+            android:background="@drawable/ui_unbounded_ripple"
+            android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/album_cover"
-            app:layout_constraintTop_toBottomOf="@+id/song_name"
-            tools:text="Artist Name / Album Name" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_play" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

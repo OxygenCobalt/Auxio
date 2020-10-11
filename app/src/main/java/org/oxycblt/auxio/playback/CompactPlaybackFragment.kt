@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicViewModel
 
@@ -31,6 +32,7 @@ class CompactPlaybackFragment : Fragment() {
         // Put a placeholder song in the binding & hide the playback fragment initially,
         // as for some reason the attach event doesn't register anymore w/LiveData
         binding.song = musicModel.songs.value!![0]
+        binding.playbackModel = playbackModel
         binding.root.visibility = View.GONE
 
         binding.root.setOnClickListener {
@@ -51,6 +53,15 @@ class CompactPlaybackFragment : Fragment() {
                 binding.song = it
 
                 binding.root.visibility = View.VISIBLE
+            }
+        }
+
+        // TODO: Animate this icon
+        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.songControls.setImageResource(R.drawable.ic_pause)
+            } else {
+                binding.songControls.setImageResource(R.drawable.ic_play)
             }
         }
 

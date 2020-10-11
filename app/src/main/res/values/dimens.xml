@@ -7,6 +7,7 @@
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_smallish">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
 
     <dimen name="status_icon_size">48dp</dimen>
 
@@ -30,6 +31,9 @@
     <dimen name="divider_ripple_size">18dp</dimen>
 
     <dimen name="playback_progress_size">2dp</dimen>
+
+    <dimen name="controls_size">70dp</dimen>
+    <dimen name="controls_size_compact">36dp</dimen>
 
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

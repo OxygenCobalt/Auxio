@@ -36,6 +36,8 @@
     <string name="description_sort_none">Default Sort Order</string>
     <string name="description_sort_alpha_down">Sort from A to Z</string>
     <string name="description_sort_alpha_up">Sort from Z to A</string>
+    <string name="description_play">Play</string>
+    <string name="description_pause">Pause</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

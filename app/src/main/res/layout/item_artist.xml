@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple"
+        android:background="@drawable/ui_ripple"
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/padding_medium">

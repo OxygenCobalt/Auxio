@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-Custom cursor shape that reflects the current accent color.
+Custom ui_cursor shape that reflects the current accent color.
 https://stackoverflow.com/a/28311351/14143986
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"

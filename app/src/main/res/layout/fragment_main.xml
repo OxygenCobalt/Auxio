@@ -34,7 +34,7 @@
             app:tabGravity="fill"
             app:tabIconTint="?android:attr/colorPrimary"
             app:tabIconTintMode="src_in"
-            app:tabIndicator="@drawable/indicator"
+            app:tabIndicator="@drawable/ui_indicator"
             app:tabIndicatorColor="?android:attr/colorPrimary"
             app:tabMode="fixed"
             app:tabRippleColor="@color/selection_color"

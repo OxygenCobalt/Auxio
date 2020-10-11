@@ -109,7 +109,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         ) == PackageManager.PERMISSION_DENIED
     }
 
-    // Remove the loading indicator and show the error groups
+    // Remove the loading ui_indicator and show the error groups
     private fun showError(binding: FragmentLoadingBinding) {
         binding.loadingBar.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE

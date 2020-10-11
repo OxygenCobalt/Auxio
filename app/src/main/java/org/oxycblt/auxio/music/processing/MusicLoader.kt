@@ -66,7 +66,7 @@ class MusicLoader(
     private fun loadGenres() {
         Log.d(this::class.simpleName, "Starting genre search...")
 
-        // First, get a cursor for every genre in the android system
+        // First, get a ui_cursor for every genre in the android system
         genreCursor = resolver.query(
             Genres.EXTERNAL_CONTENT_URI,
             arrayOf(

@@ -103,7 +103,7 @@ class AlbumDetailFragment : Fragment() {
                 }
             }
 
-            binding.albumArtist.setBackgroundResource(R.drawable.ripple)
+            binding.albumArtist.setBackgroundResource(R.drawable.ui_ripple)
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
