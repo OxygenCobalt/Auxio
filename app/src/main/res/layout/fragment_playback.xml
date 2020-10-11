@@ -119,7 +119,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             android:backgroundTint="?android:attr/colorPrimary"
-            tools:src="@drawable/ic_play" />
+            tools:src="@drawable/ic_play_to_pause" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

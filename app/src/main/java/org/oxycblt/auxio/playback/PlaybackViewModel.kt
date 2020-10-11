@@ -21,7 +21,10 @@ class PlaybackViewModel : ViewModel() {
 
     fun updateSong(song: Song) {
         mCurrentSong.value = song
-        mIsPlaying.value = true
+
+        if (!mIsPlaying.value!!) {
+            mIsPlaying.value = true
+        }
     }
 
     fun openPlayback() {

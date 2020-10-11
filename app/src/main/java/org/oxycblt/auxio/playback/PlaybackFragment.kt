@@ -1,10 +1,12 @@
 package org.oxycblt.auxio.playback
 
 import android.content.res.ColorStateList
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.R
@@ -28,6 +30,13 @@ class PlaybackFragment : BottomSheetDialogFragment() {
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
         val white = ColorStateList.valueOf(android.R.color.white.toColor(requireContext()))
 
+        val iconPauseToPlay = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_pause_to_play
+        ) as AnimatedVectorDrawable
+        val iconPlayToPause = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_play_to_pause
+        ) as AnimatedVectorDrawable
+
         // --- UI SETUP ---
 
         binding.playbackModel = playbackModel
@@ -50,10 +59,14 @@ class PlaybackFragment : BottomSheetDialogFragment() {
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
-                binding.playbackPlayPause.setImageResource(R.drawable.ic_pause)
+                binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
+                iconPauseToPlay.start()
+
                 binding.playbackPlayPause.backgroundTintList = accentColor
             } else {
-                binding.playbackPlayPause.setImageResource(R.drawable.ic_play)
+                binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
+                iconPlayToPause.start()
+
                 binding.playbackPlayPause.backgroundTintList = white
             }
         }

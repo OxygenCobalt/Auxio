@@ -1,10 +1,12 @@
 package org.oxycblt.auxio.playback
 
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
@@ -24,6 +26,13 @@ class CompactPlaybackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
+
+        val iconPauseToPlay = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_pause_to_play
+        ) as AnimatedVectorDrawable
+        val iconPlayToPause = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_play_to_pause
+        ) as AnimatedVectorDrawable
 
         // --- UI SETUP ---
 
@@ -59,9 +68,11 @@ class CompactPlaybackFragment : Fragment() {
         // TODO: Animate this icon
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
-                binding.songControls.setImageResource(R.drawable.ic_pause)
+                binding.playbackControls.setImageDrawable(iconPauseToPlay)
+                iconPauseToPlay.start()
             } else {
-                binding.songControls.setImageResource(R.drawable.ic_play)
+                binding.playbackControls.setImageDrawable(iconPlayToPause)
+                iconPlayToPause.start()
             }
         }
 

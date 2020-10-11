@@ -95,7 +95,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_play" />
+            tools:src="@drawable/ic_play_to_pause"
+            tools:tint="@color/control_color" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

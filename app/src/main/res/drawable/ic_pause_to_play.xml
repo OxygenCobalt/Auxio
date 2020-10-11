@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+Animated control icons derived from Noice
+https://github.com/ashutoshgngwr/noice
+-->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="32dp"
+            android:height="32dp"
+            android:alpha="1"
+            android:viewportWidth="24.0"
+            android:viewportHeight="24.0">
+
+            <group
+                android:name="play"
+                android:pivotX="12"
+                android:pivotY="12">
+
+                <path
+                    android:name="play_upper"
+                    android:fillColor="@android:color/white"
+                    android:pathData="M8.25,6L8.25,12L18.75,12L18.75,12Z" />
+
+                <path
+                    android:name="play_lower"
+                    android:fillColor="@android:color/white"
+                    android:pathData="M8.25,18L8.25,12L18.75,12L18.75,12Z" />
+
+            </group>
+
+        </vector>
+    </aapt:attr>
+
+    <target android:name="play_upper">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="pathData"
+                    android:valueFrom="M8.25,6L8.25,12L18.75,12L18.75,12Z"
+                    android:valueTo="M6,7.5L6,10.5L18,10.5L18,7.5Z"
+                    android:valueType="pathType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="play_lower">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="pathData"
+                    android:valueFrom="M8.25,18L8.25,12L18.75,12L18.75,12Z"
+                    android:valueTo="M6,16.5L6,13.5L18,13.5L18,16.5Z"
+                    android:valueType="pathType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="play">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:duration="200"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"
+                    android:propertyName="rotation"
+                    android:valueFrom="0"
+                    android:valueTo="90"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>
