@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/loading_error_icon"
-            android:layout_width="@dimen/status_icon_size"
-            android:layout_height="@dimen/status_icon_size"
+            android:layout_width="@dimen/size_error_icon"
+            android:layout_height="@dimen/size_error_icon"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:src="@drawable/ic_error"

@@ -41,8 +41,8 @@
 
                 <ImageView
                     android:id="@+id/album_cover"
-                    android:layout_width="@dimen/cover_size_huge"
-                    android:layout_height="@dimen/cover_size_huge"
+                    android:layout_width="@dimen/size_cover_huge"
+                    android:layout_height="@dimen/size_cover_huge"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:contentDescription="@{@string/description_album_cover(album.name)}"
                     app:coverArt="@{album}"
@@ -61,9 +61,9 @@
                     android:layout_marginEnd="@dimen/margin_medium"
                     android:maxLines="1"
                     android:text="@{album.name}"
-                    app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
-                    app:autoSizeMinTextSize="@dimen/generic_size_min"
-                    app:autoSizeStepGranularity="@dimen/generic_size_increment"
+                    app:autoSizeMaxTextSize="@dimen/text_size_header_max"
+                    app:autoSizeMinTextSize="@dimen/text_size_min"
+                    app:autoSizeStepGranularity="@dimen/text_size_increment"
                     app:autoSizeTextType="uniform"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"

@@ -26,7 +26,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/main_tabs"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/tab_menu_size"
+            android:layout_height="@dimen/height_tab_menu"
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"

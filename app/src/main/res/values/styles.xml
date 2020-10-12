@@ -25,7 +25,7 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?android:attr/colorPrimary</item>
         <item name="android:fontFamily">@font/inter_black</item>
-        <item name="android:textSize">@dimen/detail_header_size_max</item>
+        <item name="android:textSize">@dimen/text_size_header_max</item>
     </style>
 
     <style name="TextAppearance.SmallHeader" parent="TextAppearance.MaterialComponents.Body2">

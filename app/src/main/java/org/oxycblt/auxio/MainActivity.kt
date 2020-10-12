@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import org.oxycblt.auxio.theme.accent
 
-// FIXME: Fix bug where fast navigation will break the fade animation and
+// FIXME: Fix bug where fast navigation will break the animations and
 //  lead to nothing being displayed [Possibly Un-fixable]
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 

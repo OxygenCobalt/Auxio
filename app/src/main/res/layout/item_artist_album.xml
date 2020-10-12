@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/album_cover"
-            android:layout_width="@dimen/cover_size_large"
-            android:layout_height="@dimen/cover_size_large"
+            android:layout_width="@dimen/size_cover_large"
+            android:layout_height="@dimen/size_cover_large"
             android:contentDescription="@{@string/description_album_cover(album.name)}"
             app:coverArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"

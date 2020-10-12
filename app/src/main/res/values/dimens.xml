@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- TODO: Do dimens refactoring -->
+    <!-- Padding Namespace | Dimens for padding attributes -->
     <dimen name="padding_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_mid_large">24dp</dimen>
+    <dimen name="padding_large">32dp</dimen>
+    <dimen name="padding_huge">64dp</dimen>
 
+    <!-- Margin namespace | Dimens for margin attributes -->
     <dimen name="margin_small">8dp</dimen>
-    <dimen name="margin_smallish">10dp</dimen>
+    <dimen name="margin_mid_small">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
-    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_mid_large">24dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_huge">64dp</dimen>
 
-    <dimen name="status_icon_size">48dp</dimen>
+    <!-- Height Namespace | Height for UI elements -->
+    <dimen name="height_tab_menu">40dp</dimen>
+    <dimen name="height_compact_progress">2dp</dimen>
 
-    <dimen name="tab_menu_size">40dp</dimen>
+    <!-- Width Namespace | Width for UI elements -->
+    <dimen name="width_track_number">32dp</dimen>
 
-    <dimen name="cover_size_small">36dp</dimen>
-    <dimen name="cover_size_compact">44dp</dimen>
-    <dimen name="cover_size_normal">56dp</dimen>
-    <dimen name="cover_size_large">68dp</dimen>
-    <dimen name="cover_size_huge">250dp</dimen>
-    <dimen name="cover_size_playback">110dp</dimen>
+    <!-- Size Namespace | Width & Heights for UI elements -->
+    <dimen name="size_error_icon">48dp</dimen>
+    <dimen name="size_divider_ripple">18dp</dimen>
+    <dimen name="size_cover_compact">44dp</dimen>
+    <dimen name="size_cover_normal">56dp</dimen>
+    <dimen name="size_cover_large">68dp</dimen>
+    <dimen name="size_cover_huge">250dp</dimen>
+    <dimen name="size_play_pause">70dp</dimen>
+    <dimen name="size_play_pause_compact">36dp</dimen>
 
-    <dimen name="track_number_width">32dp</dimen>
-    <dimen name="track_number_text_size_max">20sp</dimen>
+    <!-- Text Size Namespace | Text Sizes -->
+    <dimen name="text_size_min">10sp</dimen>
+    <dimen name="text_size_increment">2sp</dimen>
+    <dimen name="text_size_track_max">20sp</dimen>
+    <dimen name="text_size_header_max">26sp</dimen>
 
-    <dimen name="detail_header_size_max">26sp</dimen>
-
-    <dimen name="generic_size_min">10sp</dimen>'
-    <dimen name="generic_size_increment">2sp</dimen>
-
-    <dimen name="divider_ripple_size">18dp</dimen>
-
-    <dimen name="playback_progress_size">2dp</dimen>
-
-    <dimen name="controls_size">70dp</dimen>
-    <dimen name="controls_size_compact">36dp</dimen>
-
+    <!-- Misc -->
     <dimen name="elevation_normal">4dp</dimen>
 </resources>

@@ -50,8 +50,6 @@ class PlaybackFragment : Fragment() {
 
         // Make marquee scroll work
         binding.playbackSong.isSelected = true
-        binding.playbackAlbum.isSelected = true
-        binding.playbackArtist.isSelected = true
 
         // --- VIEWMODEL SETUP --
 

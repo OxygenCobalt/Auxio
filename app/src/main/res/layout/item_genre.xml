@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/genre_image"
-            android:layout_width="@dimen/cover_size_normal"
-            android:layout_height="@dimen/cover_size_normal"
+            android:layout_width="@dimen/size_cover_normal"
+            android:layout_height="@dimen/size_cover_normal"
             app:genreImage="@{genre}"
             android:contentDescription="@{@string/description_genre_image(genre.name)}"
             app:layout_constraintBottom_toBottomOf="parent"

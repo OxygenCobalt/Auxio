@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+Stationary animation used so that PlaybackFragment can slide w/o MainFragment sliding as well.
+https://stackoverflow.com/a/64314693/14143986
+-->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
         android:duration="@android:integer/config_mediumAnimTime"

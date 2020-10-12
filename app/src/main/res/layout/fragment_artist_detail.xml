@@ -37,13 +37,12 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:animateLayoutChanges="true">
 
                 <ImageView
                     android:id="@+id/artist_image"
-                    android:layout_width="@dimen/cover_size_huge"
-                    android:layout_height="@dimen/cover_size_huge"
+                    android:layout_width="@dimen/size_cover_huge"
+                    android:layout_height="@dimen/size_cover_huge"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:contentDescription="@{@string/description_artist_image(artist.name)}"
                     app:artistImage="@{artist}"
@@ -61,9 +60,9 @@
                     android:layout_marginEnd="@dimen/margin_medium"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:text="@{artist.name}"
-                    app:autoSizeMaxTextSize="@dimen/detail_header_size_max"
-                    app:autoSizeMinTextSize="@dimen/generic_size_min"
-                    app:autoSizeStepGranularity="@dimen/generic_size_increment"
+                    app:autoSizeMaxTextSize="@dimen/text_size_header_max"
+                    app:autoSizeMinTextSize="@dimen/text_size_min"
+                    app:autoSizeStepGranularity="@dimen/text_size_increment"
                     app:autoSizeTextType="uniform"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"

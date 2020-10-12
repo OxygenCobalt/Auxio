@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/artist_image"
-            android:layout_width="@dimen/cover_size_large"
-            android:layout_height="@dimen/cover_size_large"
+            android:layout_width="@dimen/size_cover_large"
+            android:layout_height="@dimen/size_cover_large"
             android:contentDescription="@{@string/description_artist_image(artist.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
