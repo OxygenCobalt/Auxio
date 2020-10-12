@@ -16,6 +16,6 @@ https://stackoverflow.com/a/61157571/14143986
     <item>
         <ripple
             android:color="@color/selection_color"
-            android:radius="@dimen/size_divider_ripple"></ripple>
+            android:radius="@dimen/size_divider_ripple" />
     </item>
 </layer-list>
