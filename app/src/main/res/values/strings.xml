@@ -5,6 +5,7 @@
     <!-- Title Namespace | Toolbar titles -->
     <string name="title_library_fragment">Library</string>
     <string name="title_all_songs">All Songs</string>
+    <string name="title_playback">Now Playing</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found.</string>

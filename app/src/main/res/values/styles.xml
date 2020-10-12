@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- TODO: Try to make some of these styles better -->
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/background</item>

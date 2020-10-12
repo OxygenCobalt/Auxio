@@ -51,6 +51,13 @@
             app:destination="@id/loading_fragment"
             app:popUpTo="@id/main_fragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_go_to_playback"
+            app:destination="@id/playback_fragment"
+            app:enterAnim="@anim/anim_nav_slide_up"
+            app:exitAnim="@anim/anim_nav_slide_down"
+            app:popEnterAnim="@anim/anim_nav_slide_up"
+            app:popExitAnim="@anim/anim_nav_slide_down" />
     </fragment>
     <fragment
         android:id="@+id/artist_detail_fragment"
@@ -103,4 +110,9 @@
             android:name="genreId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/playback_fragment"
+        android:name="org.oxycblt.auxio.playback.PlaybackFragment"
+        android:label="PlaybackFragment"
+        tools:layout="@layout/fragment_playback" />
 </navigation>

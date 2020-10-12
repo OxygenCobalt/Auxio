@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicViewModel
@@ -46,7 +48,9 @@ class CompactPlaybackFragment : Fragment() {
         binding.root.visibility = View.GONE
 
         binding.root.setOnClickListener {
-            playbackModel.openPlayback()
+            findNavController().navigate(
+                MainFragmentDirections.actionGoToPlayback()
+            )
         }
 
         // --- VIEWMODEL SETUP ---

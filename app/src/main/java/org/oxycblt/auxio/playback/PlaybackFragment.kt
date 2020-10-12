@@ -7,14 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.toColor
 
-class PlaybackFragment : BottomSheetDialogFragment() {
+class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     // TODO: Implement nav to artists/albums
@@ -27,6 +28,7 @@ class PlaybackFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentPlaybackBinding.inflate(inflater)
 
+        // Create accents & icons to use
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
         val inactiveColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
 
@@ -42,15 +44,14 @@ class PlaybackFragment : BottomSheetDialogFragment() {
 
         binding.playbackModel = playbackModel
 
+        binding.playbackToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         // Make marquee scroll work
         binding.playbackSong.isSelected = true
         binding.playbackAlbum.isSelected = true
         binding.playbackArtist.isSelected = true
-
-        // Override the accents manually because the BottomSheetFragment is too dumb to do it themselves.
-        binding.playbackSeekBar.thumbTintList = accentColor
-        binding.playbackSeekBar.progressTintList = accentColor
-        binding.playbackSeekBar.progressBackgroundTintList = accentColor
 
         // --- VIEWMODEL SETUP --
 

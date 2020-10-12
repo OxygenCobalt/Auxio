@@ -15,7 +15,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.playback.PlaybackFragment
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
@@ -93,14 +92,6 @@ class MainFragment : Fragment() {
         )
 
         // --- VIEWMODEL SETUP ---
-
-        playbackModel.shouldOpenPlayback.observe(viewLifecycleOwner) {
-            if (it) {
-                PlaybackFragment().show(requireActivity().supportFragmentManager, "TAG_PLAYBACK")
-
-                playbackModel.doneWithOpenPlayback()
-            }
-        }
 
         Log.d(this::class.simpleName, "Fragment Created.")
 
