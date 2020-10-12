@@ -55,8 +55,8 @@
             android:id="@+id/action_go_to_playback"
             app:destination="@id/playback_fragment"
             app:enterAnim="@anim/anim_nav_slide_up"
-            app:exitAnim="@anim/anim_nav_slide_down"
-            app:popEnterAnim="@anim/anim_nav_slide_up"
+            app:exitAnim="@anim/anim_stationary"
+            app:popEnterAnim="@anim/anim_stationary"
             app:popExitAnim="@anim/anim_nav_slide_down" />
     </fragment>
     <fragment
@@ -73,7 +73,8 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:destination="@id/album_detail_fragment" />
+            app:destination="@id/album_detail_fragment"
+            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/album_detail_fragment"
