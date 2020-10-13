@@ -14,7 +14,6 @@ sealed class BaseModel {
 }
 
 // Song
-// TODO: Maybe move durations to a solely-millis system
 data class Song(
     override val id: Long = -1,
     override var name: String,

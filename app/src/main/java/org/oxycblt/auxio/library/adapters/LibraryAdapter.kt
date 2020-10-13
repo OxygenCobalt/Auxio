@@ -6,7 +6,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
@@ -19,12 +18,6 @@ class LibraryAdapter(
     private val showMode: ShowMode,
     private val doOnClick: (BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    // Create separate listeners for each type, as ClickListeners can be converted
-    // to a type-specific form.
-    private val genreListener = ClickListener<Genre> { doOnClick(it) }
-    private val artistListener = ClickListener<Artist> { doOnClick(it) }
-    private val albumListener = ClickListener<Album> { doOnClick(it) }
 
     private var data: List<BaseModel>
 
@@ -44,10 +37,10 @@ class LibraryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         // Return a different View Holder depending on the show type
         return when (showMode) {
-            ShowMode.SHOW_GENRES -> GenreViewHolder.from(parent.context, genreListener)
-            ShowMode.SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, artistListener)
-            ShowMode.SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, albumListener)
-            else -> ArtistViewHolder.from(parent.context, artistListener)
+            ShowMode.SHOW_GENRES -> GenreViewHolder.from(parent.context, doOnClick)
+            ShowMode.SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, doOnClick)
+            ShowMode.SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, doOnClick)
+            else -> ArtistViewHolder.from(parent.context, doOnClick)
         }
     }
 

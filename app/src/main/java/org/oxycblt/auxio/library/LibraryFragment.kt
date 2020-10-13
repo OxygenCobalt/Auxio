@@ -86,6 +86,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 val searchView = item.actionView as SearchView
 
                 searchView.queryHint = getString(R.string.hint_search_library)
+                searchView.maxWidth = Int.MAX_VALUE
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                     libraryModel.updateSearchFocusStatus(hasFocus)

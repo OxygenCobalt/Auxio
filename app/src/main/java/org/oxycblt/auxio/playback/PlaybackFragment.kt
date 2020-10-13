@@ -21,6 +21,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     // TODO: Implement media controls
+    // TODO: Make exit icon bigger
     // TODO: Implement nav to artists/albums
     // TODO: Possibly implement a trackbar with a spectrum shown as well.
     override fun onCreateView(
@@ -53,6 +54,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee scroll work
         binding.playbackSong.isSelected = true
+
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
@@ -103,7 +105,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     // Seeking callbacks
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        playbackModel.updateCurrentDurationWithProgress(progress)
+        if (fromUser) {
+            playbackModel.updateCurrentDurationWithProgress(progress)
+        }
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {

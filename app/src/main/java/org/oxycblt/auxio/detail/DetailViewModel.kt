@@ -12,7 +12,6 @@ import org.oxycblt.auxio.recycler.SortMode
 // TODO:
 //  - Implement a system where the Toolbar will update with the info [And Media Controls] when
 //    the main info of the detail fragment is removed.
-//  - Implement shared element transitions [If that is even possible]
 class DetailViewModel : ViewModel() {
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
@@ -39,24 +38,8 @@ class DetailViewModel : ViewModel() {
     private val mNavToParent = MutableLiveData<Boolean>()
     val navToParent: LiveData<Boolean> get() = mNavToParent
 
-    fun updateGenre(genre: Genre) {
-        mCurrentGenre.value = genre
-    }
-
-    fun updateArtist(artist: Artist) {
-        mCurrentArtist.value = artist
-    }
-
-    fun updateAlbum(album: Album) {
-        mCurrentAlbum.value = album
-    }
-
-    fun doNavToParent() {
-        mNavToParent.value = true
-    }
-
-    fun doneWithNavToParent() {
-        mNavToParent.value = false
+    fun updateNavigationStatus(value: Boolean) {
+        mIsNavigating = value
     }
 
     fun incrementGenreSortMode() {
@@ -88,7 +71,23 @@ class DetailViewModel : ViewModel() {
         }
     }
 
-    fun updateNavigationStatus(value: Boolean) {
-        mIsNavigating = value
+    fun updateGenre(genre: Genre) {
+        mCurrentGenre.value = genre
+    }
+
+    fun updateArtist(artist: Artist) {
+        mCurrentArtist.value = artist
+    }
+
+    fun updateAlbum(album: Album) {
+        mCurrentAlbum.value = album
+    }
+
+    fun doNavToParent() {
+        mNavToParent.value = true
+    }
+
+    fun doneWithNavToParent() {
+        mNavToParent.value = false
     }
 }

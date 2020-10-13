@@ -12,15 +12,14 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.ClickListener
 
 // Shared ViewHolders for each ViewModel, providing basic information
 // All new instances should be created with from() instead of direct instantiation.
 
 class GenreViewHolder private constructor(
-    listener: ClickListener<Genre>,
+    doOnClick: (Genre) -> Unit,
     private val binding: ItemGenreBinding
-) : BaseViewHolder<Genre>(binding, listener) {
+) : BaseViewHolder<Genre>(binding, doOnClick) {
 
     override fun onBind(model: Genre) {
         binding.genre = model
@@ -30,9 +29,9 @@ class GenreViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 10
 
-        fun from(context: Context, listener: ClickListener<Genre>): GenreViewHolder {
+        fun from(context: Context, doOnClick: (Genre) -> Unit): GenreViewHolder {
             return GenreViewHolder(
-                ClickListener { listener.onClick(it) },
+                doOnClick,
                 ItemGenreBinding.inflate(LayoutInflater.from(context))
             )
         }
@@ -40,9 +39,9 @@ class GenreViewHolder private constructor(
 }
 
 class ArtistViewHolder private constructor(
-    listener: ClickListener<Artist>,
+    doOnClick: (Artist) -> Unit,
     private val binding: ItemArtistBinding
-) : BaseViewHolder<Artist>(binding, listener) {
+) : BaseViewHolder<Artist>(binding, doOnClick) {
 
     override fun onBind(model: Artist) {
         binding.artist = model
@@ -52,9 +51,9 @@ class ArtistViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 11
 
-        fun from(context: Context, listener: ClickListener<Artist>): ArtistViewHolder {
+        fun from(context: Context, doOnClick: (Artist) -> Unit): ArtistViewHolder {
             return ArtistViewHolder(
-                ClickListener { listener.onClick(it) },
+                doOnClick,
                 ItemArtistBinding.inflate(LayoutInflater.from(context))
             )
         }
@@ -62,9 +61,9 @@ class ArtistViewHolder private constructor(
 }
 
 class AlbumViewHolder private constructor(
-    listener: ClickListener<Album>,
+    doOnClick: (Album) -> Unit,
     private val binding: ItemAlbumBinding
-) : BaseViewHolder<Album>(binding, listener) {
+) : BaseViewHolder<Album>(binding, doOnClick) {
 
     override fun onBind(model: Album) {
         binding.album = model
@@ -74,9 +73,9 @@ class AlbumViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 12
 
-        fun from(context: Context, listener: ClickListener<Album>): AlbumViewHolder {
+        fun from(context: Context, doOnClick: (Album) -> Unit): AlbumViewHolder {
             return AlbumViewHolder(
-                listener,
+                doOnClick,
                 ItemAlbumBinding.inflate(LayoutInflater.from(context))
             )
         }
@@ -86,9 +85,9 @@ class AlbumViewHolder private constructor(
 // TODO: Add indicators to song recycler items when they're being played.
 
 class SongViewHolder private constructor(
-    listener: ClickListener<Song>,
+    doOnClick: (Song) -> Unit,
     private val binding: ItemSongBinding
-) : BaseViewHolder<Song>(binding, listener) {
+) : BaseViewHolder<Song>(binding, doOnClick) {
 
     override fun onBind(model: Song) {
         binding.song = model
@@ -100,9 +99,9 @@ class SongViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 13
 
-        fun from(context: Context, listener: ClickListener<Song>): SongViewHolder {
+        fun from(context: Context, doOnClick: (Song) -> Unit): SongViewHolder {
             return SongViewHolder(
-                listener,
+                doOnClick,
                 ItemSongBinding.inflate(LayoutInflater.from(context))
             )
         }

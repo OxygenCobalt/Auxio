@@ -35,7 +35,7 @@ class MusicSorter(
 
         for (album in albums) {
             // Find all songs that match the current album ID to prevent any bugs w/comparing names.
-            // This cant be done with artists/genres sadly.
+            // This cant be done anywhere else sadly. Blame the genre system.
             val albumSongs = songs.filter { it.albumId == album.id }
 
             // Then add them to the album
@@ -50,7 +50,6 @@ class MusicSorter(
         // Any remaining songs will be added to an unknown album
         if (unknownSongs.size > 0) {
 
-            // Reuse an existing unknown album if one is found
             val unknownAlbum = Album(
                 name = albumPlaceholder,
                 artistName = artistPlaceholder

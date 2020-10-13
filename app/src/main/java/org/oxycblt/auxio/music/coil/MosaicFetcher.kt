@@ -46,6 +46,8 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         if (streams.size < 4) {
             streams.forEach { it.close() }
 
+            // FIXME: What if all the streams fail?
+
             return SourceResult(
                 source = streams[0].source().buffer(),
                 mimeType = context.contentResolver.getType(data[0]),

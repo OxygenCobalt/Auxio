@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
@@ -33,12 +32,9 @@ class SongsFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.songRecycler.apply {
-            adapter = SongAdapter(
-                musicModel.songs.value!!,
-                ClickListener { song ->
-                    playbackModel.updateSong(song)
-                }
-            )
+            adapter = SongAdapter(musicModel.songs.value!!) {
+                playbackModel.updateSong(it)
+            }
             applyDivider()
             setHasFixedSize(true)
         }

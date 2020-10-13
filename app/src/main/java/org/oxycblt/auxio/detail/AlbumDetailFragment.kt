@@ -14,7 +14,6 @@ import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -45,11 +44,9 @@ class AlbumDetailFragment : Fragment() {
             )
         }
 
-        val songAdapter = DetailSongAdapter(
-            ClickListener {
-                playbackModel.updateSong(it)
-            }
-        )
+        val songAdapter = DetailSongAdapter {
+            playbackModel.updateSong(it)
+        }
 
         // --- UI SETUP ---
 

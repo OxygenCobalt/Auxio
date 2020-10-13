@@ -15,7 +15,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
@@ -26,8 +25,6 @@ class MainFragment : Fragment() {
     private val musicModel: MusicViewModel by activityViewModels {
         MusicViewModel.Factory(requireActivity().application)
     }
-
-    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     private val shownFragments = listOf(0, 1)
     private val tabIcons = listOf(
@@ -90,8 +87,6 @@ class MainFragment : Fragment() {
                 }
             }
         )
-
-        // --- VIEWMODEL SETUP ---
 
         Log.d(this::class.simpleName, "Fragment Created.")
 

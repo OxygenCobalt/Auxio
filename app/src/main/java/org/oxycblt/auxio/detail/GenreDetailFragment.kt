@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.recycler.ClickListener
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -42,17 +41,15 @@ class GenreDetailFragment : Fragment() {
             )
         }
 
-        val artistAdapter = DetailArtistAdapter(
-            ClickListener {
-                if (!detailModel.isNavigating) {
-                    detailModel.updateNavigationStatus(true)
+        val artistAdapter = DetailArtistAdapter {
+            if (!detailModel.isNavigating) {
+                detailModel.updateNavigationStatus(true)
 
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowArtist(it.id)
-                    )
-                }
+                findNavController().navigate(
+                    GenreDetailFragmentDirections.actionShowArtist(it.id)
+                )
             }
-        )
+        }
 
         // --- UI SETUP ---
 
