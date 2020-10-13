@@ -8,15 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
-    private val musicModel: MusicViewModel by activityViewModels {
-        MusicViewModel.Factory(requireActivity().application)
-    }
-
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -26,14 +22,16 @@ class SongsFragment : Fragment() {
     ): View? {
         val binding = FragmentSongsBinding.inflate(inflater)
 
+        val musicStore = MusicStore.getInstance()
+
         // TODO: Add option to search songs if LibraryFragment isn't enabled
         // TODO: Maybe add fast scrolling or sorting
 
         // --- UI SETUP ---
 
         binding.songRecycler.apply {
-            adapter = SongAdapter(musicModel.songs.value!!) {
-                playbackModel.update(it, musicModel.songs.value!!)
+            adapter = SongAdapter(musicStore.songs) {
+                playbackModel.update(it)
             }
             applyDivider()
             setHasFixedSize(true)

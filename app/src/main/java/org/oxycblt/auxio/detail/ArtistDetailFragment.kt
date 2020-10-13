@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -30,15 +30,13 @@ class ArtistDetailFragment : Fragment() {
     ): View? {
         val binding = FragmentArtistDetailBinding.inflate(inflater)
 
-        // If DetailViewModel isn't already storing the artist, get it from MusicViewModel
+        // If DetailViewModel isn't already storing the artist, get it from MusicStore
         // using the ID given by the navigation arguments
         if (detailModel.currentArtist.value == null ||
             detailModel.currentArtist.value?.id != args.artistId
         ) {
-            val musicModel: MusicViewModel by activityViewModels()
-
             detailModel.updateArtist(
-                musicModel.artists.value!!.find {
+                MusicStore.getInstance().artists.find {
                     it.id == args.artistId
                 }!!
             )

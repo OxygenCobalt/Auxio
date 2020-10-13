@@ -23,20 +23,15 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr
 
 // A Fragment to show all the music in the Library.
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
-
-    private val musicModel: MusicViewModel by activityViewModels {
-        MusicViewModel.Factory(requireActivity().application)
-    }
 
     private val libraryModel: LibraryViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -47,6 +42,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentLibraryBinding.inflate(inflater)
+
+        val musicStore = MusicStore.getInstance()
 
         val libraryAdapter = LibraryAdapter(libraryModel.showMode.value!!) {
             navToItem(it)
@@ -137,13 +134,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             // Update the adapter with the new data
             libraryAdapter.updateData(
                 mode.getSortedBaseModelList(
-                    when (libraryModel.showMode.value) {
-                        ShowMode.SHOW_GENRES -> musicModel.genres.value!!
-                        ShowMode.SHOW_ARTISTS -> musicModel.artists.value!!
-                        ShowMode.SHOW_ALBUMS -> musicModel.albums.value!!
-
-                        else -> musicModel.artists.value!!
-                    }
+                    musicStore.getListForShowMode(libraryModel.showMode.value!!)
                 )
             )
 
@@ -179,7 +170,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
-        libraryModel.updateSearchQuery(query, musicModel)
+        libraryModel.updateSearchQuery(query)
 
         return false
     }
@@ -190,7 +181,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         // If the item is a song [That was selected through search], then update the playback
         // to that song instead of doing any navigation
         if (baseModel is Song) {
-            playbackModel.update(baseModel, musicModel.songs.value!!)
+            playbackModel.update(baseModel)
             return
         }
 

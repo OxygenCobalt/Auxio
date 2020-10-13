@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 
@@ -40,11 +41,13 @@ class PlaybackViewModel : ViewModel() {
     }
 
     // Update the current song while changing the queue to All Songs.
-    fun update(song: Song, allSongs: List<Song>) {
+    fun update(song: Song) {
+        val musicStore = MusicStore.getInstance()
+
         updatePlayback(song)
 
-        mQueue.value = allSongs.toMutableList()
-        mCurrentIndex.value = allSongs.indexOf(song)
+        mQueue.value = musicStore.songs.toMutableList()
+        mCurrentIndex.value = musicStore.songs.indexOf(song)
     }
 
     private fun updatePlayback(song: Song) {

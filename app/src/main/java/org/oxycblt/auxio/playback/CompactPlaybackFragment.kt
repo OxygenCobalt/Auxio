@@ -13,14 +13,9 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
-import org.oxycblt.auxio.music.MusicViewModel
-import kotlin.time.seconds
+import org.oxycblt.auxio.music.MusicStore
 
 class CompactPlaybackFragment : Fragment() {
-    private val musicModel: MusicViewModel by activityViewModels {
-        MusicViewModel.Factory(requireActivity().application)
-    }
-
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -44,7 +39,7 @@ class CompactPlaybackFragment : Fragment() {
 
         // Put a placeholder song in the binding & hide the playback fragment initially,
         // as for some reason the attach event doesn't register anymore w/LiveData
-        binding.song = musicModel.songs.value!![0]
+        binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
         binding.root.visibility = View.GONE
 

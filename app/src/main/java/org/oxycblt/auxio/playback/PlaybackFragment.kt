@@ -78,12 +78,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 binding.playbackSkipPrev.disable(requireContext())
             }
 
-            Log.d(this::class.simpleName, it.toString())
-
             if (it < playbackModel.queue.value!!.lastIndex) {
                 binding.playbackSkipNext.enable(requireContext())
             } else {
-                Log.d(this::class.simpleName, "Fucking stupid retard.")
                 binding.playbackSkipNext.disable(requireContext())
             }
         }

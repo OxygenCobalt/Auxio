@@ -14,13 +14,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
-    private val musicModel: MusicViewModel by activityViewModels {
-        MusicViewModel.Factory(requireActivity().application)
+    private val loadingModel: LoadingViewModel by activityViewModels {
+        LoadingViewModel.Factory(requireActivity().application)
     }
 
     override fun onCreateView(
@@ -39,18 +38,18 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 if (granted) {
                     returnToLoading(binding)
 
-                    musicModel.reload()
+                    loadingModel.reload()
                 }
             }
 
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
-        binding.musicModel = musicModel
+        binding.loadingModel = loadingModel
 
         // --- VIEWMODEL SETUP ---
 
-        musicModel.response.observe(viewLifecycleOwner) {
+        loadingModel.response.observe(viewLifecycleOwner) {
             if (it == MusicLoaderResponse.DONE) {
                 findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
@@ -69,17 +68,17 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             }
         }
 
-        musicModel.doReload.observe(viewLifecycleOwner) {
+        loadingModel.doReload.observe(viewLifecycleOwner) {
             if (it) {
                 returnToLoading(binding)
-                musicModel.doneWithReload()
+                loadingModel.doneWithReload()
             }
         }
 
-        musicModel.doGrant.observe(viewLifecycleOwner) {
+        loadingModel.doGrant.observe(viewLifecycleOwner) {
             if (it) {
                 permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                musicModel.doneWithGrant()
+                loadingModel.doneWithGrant()
             }
         }
 
@@ -90,7 +89,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             binding.loadingGrantButton.visibility = View.VISIBLE
             binding.loadingErrorText.text = getString(R.string.error_no_perms)
         } else {
-            musicModel.go()
+            loadingModel.go()
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
@@ -109,7 +108,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         ) == PackageManager.PERMISSION_DENIED
     }
 
-    // Remove the loading ui_indicator and show the error groups
+    // Remove the loading indicator and show the error groups
     private fun showError(binding: FragmentLoadingBinding) {
         binding.loadingBar.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE

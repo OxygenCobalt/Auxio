@@ -12,7 +12,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
@@ -22,7 +22,6 @@ class AlbumDetailFragment : Fragment() {
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,22 +30,21 @@ class AlbumDetailFragment : Fragment() {
     ): View? {
         val binding = FragmentAlbumDetailBinding.inflate(inflater)
 
-        // If DetailViewModel isn't already storing the album, get it from MusicViewModel
+        // If DetailViewModel isn't already storing the album, get it from MusicStore
         // using the ID given by the navigation arguments.
         if (detailModel.currentAlbum.value == null ||
             detailModel.currentAlbum.value?.id != args.albumId
         ) {
-            val musicModel: MusicViewModel by activityViewModels()
 
             detailModel.updateAlbum(
-                musicModel.albums.value!!.find {
+                MusicStore.getInstance().albums.find {
                     it.id == args.albumId
                 }!!
             )
         }
 
         val songAdapter = DetailSongAdapter {
-            playbackModel.update(it, musicModel.songs.value!!)
+            playbackModel.update(it)
         }
 
         // --- UI SETUP ---

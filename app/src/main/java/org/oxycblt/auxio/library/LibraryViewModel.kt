@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.SortMode
 
@@ -44,7 +44,7 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
-    fun updateSearchQuery(query: String, musicModel: MusicViewModel) {
+    fun updateSearchQuery(query: String) {
         // Don't bother if the query is blank.
         if (query == "") {
             resetQuery()
@@ -52,16 +52,17 @@ class LibraryViewModel : ViewModel() {
             return
         }
 
-        // Search MusicViewModel for all the items [Artists, Albums, Songs] that contain
+        // Search MusicStore for all the items [Artists, Albums, Songs] that contain
         // the query, and update the LiveData with those items. This is done on a separate
         // thread as it can be a very long operation for large music libraries.
         viewModelScope.launch {
+            val musicStore = MusicStore.getInstance()
             val combined = mutableListOf<BaseModel>()
             val children = showMode.value!!.getChildren()
 
             // If the Library ShowMode supports it, include artists / genres in the search.
             if (children.contains(ShowMode.SHOW_GENRES)) {
-                val genres = musicModel.genres.value!!.filter { it.name.contains(query, true) }
+                val genres = musicStore.genres.filter { it.name.contains(query, true) }
 
                 if (genres.isNotEmpty()) {
                     combined.add(Header(id = ShowMode.SHOW_GENRES.constant))
@@ -70,7 +71,7 @@ class LibraryViewModel : ViewModel() {
             }
 
             if (children.contains(ShowMode.SHOW_ARTISTS)) {
-                val artists = musicModel.artists.value!!.filter { it.name.contains(query, true) }
+                val artists = musicStore.artists.filter { it.name.contains(query, true) }
 
                 if (artists.isNotEmpty()) {
                     combined.add(Header(id = ShowMode.SHOW_ARTISTS.constant))
@@ -79,14 +80,14 @@ class LibraryViewModel : ViewModel() {
             }
 
             // Albums & Songs are always included.
-            val albums = musicModel.albums.value!!.filter { it.name.contains(query, true) }
+            val albums = musicStore.albums.filter { it.name.contains(query, true) }
 
             if (albums.isNotEmpty()) {
                 combined.add(Header(id = ShowMode.SHOW_ALBUMS.constant))
                 combined.addAll(albums)
             }
 
-            val songs = musicModel.songs.value!!.filter { it.name.contains(query, true) }
+            val songs = musicStore.songs.filter { it.name.contains(query, true) }
 
             if (songs.isNotEmpty()) {
                 combined.add(Header(id = ShowMode.SHOW_SONGS.constant))

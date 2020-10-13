@@ -14,7 +14,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
-import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.loading.LoadingViewModel
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.getInactiveAlpha
@@ -22,8 +23,8 @@ import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
-    private val musicModel: MusicViewModel by activityViewModels {
-        MusicViewModel.Factory(requireActivity().application)
+    private val loadingModel: LoadingViewModel by activityViewModels {
+        LoadingViewModel.Factory(requireActivity().application)
     }
 
     private val shownFragments = listOf(0, 1)
@@ -39,9 +40,9 @@ class MainFragment : Fragment() {
     ): View? {
         val binding = FragmentMainBinding.inflate(inflater)
 
-        // If musicModel was cleared while the app was closed [Likely due to Auxio being suspended
+        // If the music was cleared while the app was closed [Likely due to Auxio being suspended
         // in the background], then navigate back to LoadingFragment to reload the music.
-        if (musicModel.response.value == null) {
+        if (MusicStore.getInstance().songs.isEmpty()) {
             findNavController().navigate(MainFragmentDirections.actionReturnToLoading())
 
             return null
