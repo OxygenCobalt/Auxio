@@ -4,7 +4,7 @@ import android.net.Uri
 
 // --- MUSIC MODELS ---
 // TODO: Remove parent/child references so that they can be parcelable [Would require genre rework]
-// TODO: Dont determine artist/album/song counts on the fly [If possible]
+// TODO: Don't determine artist/album/song counts on the fly [If possible]
 
 // The base model for all music
 // This is used in a lot of general functions in order to cut down on code
@@ -99,5 +99,5 @@ data class Genre(
 // Header [Used for search, nothing else]
 data class Header(
     override val id: Long = -1,
-    override var name: String = ""
+    override var name: String = "",
 ) : BaseModel()

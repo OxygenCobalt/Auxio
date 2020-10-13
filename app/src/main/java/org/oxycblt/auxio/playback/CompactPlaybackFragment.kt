@@ -14,6 +14,7 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicViewModel
+import kotlin.time.seconds
 
 class CompactPlaybackFragment : Fragment() {
     private val musicModel: MusicViewModel by activityViewModels {
@@ -65,7 +66,7 @@ class CompactPlaybackFragment : Fragment() {
                 Log.d(this::class.simpleName, "Updating song display to ${it.name}")
 
                 binding.song = it
-
+                binding.playbackProgress.max = it.seconds.toInt()
                 binding.root.visibility = View.VISIBLE
             }
         }
@@ -79,6 +80,10 @@ class CompactPlaybackFragment : Fragment() {
                 binding.playbackControls.setImageDrawable(iconPlayToPause)
                 iconPlayToPause.start()
             }
+        }
+
+        playbackModel.formattedSeekBarProgress.observe(viewLifecycleOwner) {
+            binding.playbackProgress.progress = it
         }
 
         Log.d(this::class.simpleName, "Fragment Created")

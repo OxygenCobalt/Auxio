@@ -135,13 +135,15 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
             // Update the adapter with the new data
             libraryAdapter.updateData(
-                when (libraryModel.showMode.value) {
-                    ShowMode.SHOW_GENRES -> mode.getSortedGenreList(musicModel.genres.value!!)
-                    ShowMode.SHOW_ARTISTS -> mode.getSortedArtistList(musicModel.artists.value!!)
-                    ShowMode.SHOW_ALBUMS -> mode.getSortedAlbumList(musicModel.albums.value!!)
+                mode.getSortedBaseModelList(
+                    when (libraryModel.showMode.value) {
+                        ShowMode.SHOW_GENRES -> musicModel.genres.value!!
+                        ShowMode.SHOW_ARTISTS -> musicModel.artists.value!!
+                        ShowMode.SHOW_ALBUMS -> musicModel.albums.value!!
 
-                    else -> mode.getSortedArtistList(musicModel.artists.value!!)
-                }
+                        else -> musicModel.artists.value!!
+                    }
+                )
             )
 
             // Then update the menu item in the toolbar to reflect the new mode

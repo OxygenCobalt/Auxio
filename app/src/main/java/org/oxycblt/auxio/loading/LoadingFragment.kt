@@ -56,14 +56,14 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                     LoadingFragmentDirections.actionToMain()
                 )
             } else {
+                // If the response wasn't a success, then show the specific error message
+                // depending on which error response was given, along with a retry button
                 binding.loadingErrorText.text =
                     if (it == MusicLoaderResponse.NO_MUSIC)
                         getString(R.string.error_no_music)
                     else
                         getString(R.string.error_music_load_failed)
 
-                // If the response wasn't a success, then show the specific error message
-                // depending on which error response was given, along with a retry button
                 showError(binding)
                 binding.loadingRetryButton.visibility = View.VISIBLE
             }

@@ -4,7 +4,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 // Sorting modes
@@ -15,20 +14,6 @@ enum class SortMode(val iconRes: Int) {
     ALPHA_DOWN(R.drawable.ic_sort_alpha_down),
     NUMERIC_UP(R.drawable.ic_sort_numeric_up),
     NUMERIC_DOWN(R.drawable.ic_sort_numeric_down);
-
-    fun getSortedGenreList(list: List<Genre>): List<Genre> {
-        return when (this) {
-            ALPHA_UP -> list.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
-            )
-
-            ALPHA_DOWN -> list.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-            )
-
-            else -> list
-        }
-    }
 
     fun getSortedArtistList(list: List<Artist>): List<Artist> {
         return when (this) {

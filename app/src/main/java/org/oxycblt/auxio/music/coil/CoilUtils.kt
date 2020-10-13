@@ -12,7 +12,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
-// Get the cover art for a song or album
+// Get the cover art for a song
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(song: Song) {
     val request = getDefaultRequest(context, this)
@@ -23,6 +23,7 @@ fun ImageView.bindCoverArt(song: Song) {
     Coil.imageLoader(context).enqueue(request)
 }
 
+// Get the cover art for an album
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(album: Album) {
     val request = getDefaultRequest(context, this)
@@ -38,7 +39,7 @@ fun ImageView.bindCoverArt(album: Album) {
 fun ImageView.bindArtistImage(artist: Artist) {
     val request: ImageRequest
 
-    // If there are more than one albums, then create a mosaic of them.
+    // If there is more than one album, then create a mosaic of them.
     if (artist.numAlbums >= 4) {
         val uris = mutableListOf<Uri>()
 
@@ -114,7 +115,7 @@ fun ImageView.bindGenreImage(genre: Genre) {
     Coil.imageLoader(context).enqueue(request)
 }
 
-// Get the base request used across the app.
+// Get the base request used across the other functions.
 private fun getDefaultRequest(context: Context, imageView: ImageView): ImageRequest.Builder {
     return ImageRequest.Builder(context)
         .crossfade(true)

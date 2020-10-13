@@ -59,6 +59,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         playbackModel.currentSong.observe(viewLifecycleOwner) {
             binding.song = it
+            binding.playbackSeekBar.max = it.seconds.toInt()
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {

@@ -24,16 +24,18 @@ class PlaybackViewModel : ViewModel() {
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
 
+    // Formatted variants of the duration
     val formattedCurrentDuration = Transformations.map(currentDuration) {
         it.toDuration()
     }
 
     val formattedSeekBarProgress = Transformations.map(currentDuration) {
-        ((it.toDouble() / mCurrentSong.value!!.seconds) * 100).toInt()
+        if (mCurrentSong.value != null) it.toInt() else 0
     }
 
     fun updateSong(song: Song) {
         mCurrentSong.value = song
+        mCurrentDuration.value = 0
 
         if (!mIsPlaying.value!!) {
             mIsPlaying.value = true
@@ -45,12 +47,13 @@ class PlaybackViewModel : ViewModel() {
         mIsPlaying.value = !mIsPlaying.value!!
     }
 
+    // Set the seeking status
     fun setSeekingStatus(status: Boolean) {
         mIsSeeking.value = status
     }
 
+    // Update the current duration using a SeekBar progress
     fun updateCurrentDurationWithProgress(progress: Int) {
-        mCurrentDuration.value =
-            ((progress.toDouble() / 100) * mCurrentSong.value!!.seconds).toLong()
+        mCurrentDuration.value = progress.toLong()
     }
 }
