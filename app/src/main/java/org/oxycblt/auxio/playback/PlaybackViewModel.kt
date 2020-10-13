@@ -15,6 +15,12 @@ class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()
     val currentSong: LiveData<Song> get() = mCurrentSong
 
+    private val mCurrentIndex = MutableLiveData(0)
+    val currentIndex: LiveData<Int> get() = mCurrentIndex
+
+    private val mQueue = MutableLiveData(mutableListOf<Song>())
+    val queue: LiveData<MutableList<Song>> get() = mQueue
+
     private val mCurrentDuration = MutableLiveData(0L)
     val currentDuration: LiveData<Long> get() = mCurrentDuration
 
@@ -33,7 +39,15 @@ class PlaybackViewModel : ViewModel() {
         if (mCurrentSong.value != null) it.toInt() else 0
     }
 
-    fun updateSong(song: Song) {
+    // Update the current song while changing the queue to All Songs.
+    fun update(song: Song, allSongs: List<Song>) {
+        updatePlayback(song)
+
+        mQueue.value = allSongs.toMutableList()
+        mCurrentIndex.value = allSongs.indexOf(song)
+    }
+
+    private fun updatePlayback(song: Song) {
         mCurrentSong.value = song
         mCurrentDuration.value = 0
 
@@ -55,5 +69,21 @@ class PlaybackViewModel : ViewModel() {
     // Update the current duration using a SeekBar progress
     fun updateCurrentDurationWithProgress(progress: Int) {
         mCurrentDuration.value = progress.toLong()
+    }
+
+    fun skipNext() {
+        if (mCurrentIndex.value!! < mQueue.value!!.size) {
+            mCurrentIndex.value = mCurrentIndex.value!!.inc()
+        }
+
+        updatePlayback(mQueue.value!![mCurrentIndex.value!!])
+    }
+
+    fun skipPrev() {
+        if (mCurrentIndex.value!! > 0) {
+            mCurrentIndex.value = mCurrentIndex.value!!.dec()
+        }
+
+        updatePlayback(mQueue.value!![mCurrentIndex.value!!])
     }
 }

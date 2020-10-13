@@ -190,7 +190,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         // If the item is a song [That was selected through search], then update the playback
         // to that song instead of doing any navigation
         if (baseModel is Song) {
-            playbackModel.updateSong(baseModel)
+            playbackModel.update(baseModel, musicModel.songs.value!!)
             return
         }
 

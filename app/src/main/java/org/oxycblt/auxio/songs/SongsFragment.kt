@@ -33,7 +33,7 @@ class SongsFragment : Fragment() {
 
         binding.songRecycler.apply {
             adapter = SongAdapter(musicModel.songs.value!!) {
-                playbackModel.updateSong(it)
+                playbackModel.update(it, musicModel.songs.value!!)
             }
             applyDivider()
             setHasFixedSize(true)

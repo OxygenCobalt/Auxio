@@ -15,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.theme.accent
+import org.oxycblt.auxio.theme.disable
+import org.oxycblt.auxio.theme.enable
 import org.oxycblt.auxio.theme.toColor
 
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
@@ -33,8 +35,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Create accents & icons to use
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
-        val inactiveColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
+        val controlColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
+        val disabledColor = ColorStateList.valueOf(
+            R.color.inactive_color.toColor(requireContext())
+        )
 
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
@@ -60,8 +65,27 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         // --- VIEWMODEL SETUP --
 
         playbackModel.currentSong.observe(viewLifecycleOwner) {
+            Log.d(this::class.simpleName, "Updating song display to ${it.name}.")
+
             binding.song = it
             binding.playbackSeekBar.max = it.seconds.toInt()
+        }
+
+        playbackModel.currentIndex.observe(viewLifecycleOwner) {
+            if (it > 0) {
+                binding.playbackSkipPrev.enable(requireContext())
+            } else {
+                binding.playbackSkipPrev.disable(requireContext())
+            }
+
+            Log.d(this::class.simpleName, it.toString())
+
+            if (it < playbackModel.queue.value!!.lastIndex) {
+                binding.playbackSkipNext.enable(requireContext())
+            } else {
+                Log.d(this::class.simpleName, "Fucking stupid retard.")
+                binding.playbackSkipNext.disable(requireContext())
+            }
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
@@ -76,7 +100,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
                 iconPlayToPause.start()
 
-                binding.playbackPlayPause.backgroundTintList = inactiveColor
+                binding.playbackPlayPause.backgroundTintList = controlColor
             }
         }
 

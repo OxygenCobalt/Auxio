@@ -22,6 +22,7 @@ class AlbumDetailFragment : Fragment() {
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +46,7 @@ class AlbumDetailFragment : Fragment() {
         }
 
         val songAdapter = DetailSongAdapter {
-            playbackModel.updateSong(it)
+            playbackModel.update(it, musicModel.songs.value!!)
         }
 
         // --- UI SETUP ---

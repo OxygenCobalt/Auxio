@@ -39,6 +39,8 @@
     <string name="description_sort_alpha_up">Sort from Z to A</string>
     <string name="description_play">Play</string>
     <string name="description_pause">Pause</string>
+    <string name="description_skip_next">Skip to next song</string>
+    <string name="description_skip_prev">Skip to last song</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

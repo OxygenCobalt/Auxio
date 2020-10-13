@@ -67,6 +67,22 @@ data class Artist(
             }
             return num
         }
+    val songs: MutableList<Song>
+        get() {
+            val songs = mutableListOf<Song>()
+            albums.forEach {
+                songs.addAll(it.songs)
+            }
+            return songs
+        }
+    val genreSongs: MutableList<Song>
+        get() {
+            val songs = mutableListOf<Song>()
+            genres.forEach {
+                songs.addAll(it.songs)
+            }
+            return songs
+        }
 }
 
 // Genre
@@ -92,6 +108,14 @@ data class Genre(
                 num += it.numSongs
             }
             return num
+        }
+    val songs: MutableList<Song>
+        get() {
+            val songs = mutableListOf<Song>()
+            artists.forEach {
+                songs.addAll(it.songs)
+            }
+            return songs
         }
 }
 

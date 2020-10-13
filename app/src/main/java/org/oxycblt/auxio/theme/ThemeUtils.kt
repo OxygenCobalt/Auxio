@@ -103,6 +103,16 @@ fun ImageButton.disable(context: Context) {
     isEnabled = false
 }
 
+fun ImageButton.enable(context: Context) {
+    if (!isEnabled) {
+        imageTintList = ColorStateList.valueOf(
+            R.color.control_color.toColor(context)
+        )
+
+        isEnabled = true
+    }
+}
+
 // Apply a custom vertical divider
 fun RecyclerView.applyDivider() {
     val div = DividerItemDecoration(
