@@ -5,20 +5,7 @@
     android:viewportWidth="24"
     android:viewportHeight="24"
     android:tint="@color/background">
-    <group
-        android:pivotX="12"
-        android:pivotY="12"
-        android:rotation="-90">
-
-        <path
-            android:name="pause_upper"
-            android:fillColor="@android:color/white"
-            android:pathData="M6,7.5L6,10.5L18,10.5L18,7.5Z" />
-
-        <path
-            android:name="pause_lower"
-            android:fillColor="@android:color/white"
-            android:pathData="M6,16.5L6,13.5L18,13.5L18,16.5Z" />
-
-    </group>
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="m 7.5,6 h 3 v 12 h -3 z m 9,0 h -3 v 12 h 3 z" />
 </vector>

@@ -25,6 +25,7 @@ class CompactPlaybackFragment : Fragment() {
     ): View? {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
+        // FIXME: Stop these icons from self-animating on creation.
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable
@@ -41,7 +42,6 @@ class CompactPlaybackFragment : Fragment() {
         // as for some reason the attach event doesn't register anymore w/LiveData
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
-        binding.root.visibility = View.GONE
 
         binding.root.setOnClickListener {
             findNavController().navigate(
@@ -51,18 +51,12 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        // TODO: Add some kind of animation to when this view becomes visible/invisible.
         playbackModel.currentSong.observe(viewLifecycleOwner) {
-            if (it == null) {
-                Log.d(this::class.simpleName, "Hiding playback bar due to no song being played.")
-
-                binding.root.visibility = View.GONE
-            } else {
+            if (it != null) {
                 Log.d(this::class.simpleName, "Updating song display to ${it.name}")
 
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
-                binding.root.visibility = View.VISIBLE
             }
         }
 

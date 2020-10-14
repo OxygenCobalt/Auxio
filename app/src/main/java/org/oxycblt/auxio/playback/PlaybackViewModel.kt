@@ -21,6 +21,9 @@ class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()
     val currentSong: LiveData<Song> get() = mCurrentSong
 
+    private val mCurrentGenre = MutableLiveData<Genre>()
+    val currentGenre: LiveData<Genre> get() = mCurrentGenre
+
     private val mQueue = MutableLiveData(mutableListOf<Song>())
     val queue: LiveData<MutableList<Song>> get() = mQueue
 
@@ -67,7 +70,7 @@ class PlaybackViewModel : ViewModel() {
                 Log.d(
                     this::class.simpleName,
                     "update() was called with IN_GENRES, using " +
-                            "most prominent genre instead of the song's genre."
+                        "most prominent genre instead of the song's genre."
                 )
 
                 song.album.artist.genres[0].songs
@@ -109,6 +112,7 @@ class PlaybackViewModel : ViewModel() {
 
         updatePlayback(songs[0])
 
+        mCurrentGenre.value = genre
         mQueue.value = songs
         mCurrentIndex.value = 0
         mCurrentMode.value = PlaybackMode.IN_GENRE
@@ -141,7 +145,7 @@ class PlaybackViewModel : ViewModel() {
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
         val final = mutableListOf<Song>()
 
-        genre.artists.sortedBy { it.name }.forEach { artist ->
+        genre.artists.sortedByDescending { it.name }.forEach { artist ->
             artist.albums.sortedByDescending { it.year }.forEach { album ->
                 final.addAll(album.songs.sortedBy { it.track })
             }

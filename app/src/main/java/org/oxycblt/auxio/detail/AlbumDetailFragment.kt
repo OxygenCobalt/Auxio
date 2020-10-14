@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -48,9 +47,6 @@ class AlbumDetailFragment : Fragment() {
         val songAdapter = DetailSongAdapter {
             playbackModel.update(it, PlaybackMode.IN_ALBUM)
         }
-
-        val playIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
-        val pauseIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_pause)
 
         // --- UI SETUP ---
 
@@ -125,9 +121,9 @@ class AlbumDetailFragment : Fragment() {
     }
 
     // Update the play button depending on the current playback status
-    // If the shown album is currently playing, set the button to the current isPlaying status and
-    // its behavior to modify the current playing status
-    // If the shown album isn't currently playing, set the button to "Play" and its behavior
+    // If the shown album is currently playing, set the button icon to the current isPlaying
+    // status, and then set its behavior to modify isPlaying.
+    // If the shown album isn't currently playing, set the button to Play and its behavior
     // to start the playback of the album.
     private fun updatePlayButton(mode: PlaybackMode, binding: FragmentAlbumDetailBinding) {
         playbackModel.currentSong.value?.let { song ->

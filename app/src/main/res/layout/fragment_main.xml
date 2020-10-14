@@ -5,6 +5,7 @@
     tools:context=".MainFragment">
 
     <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -20,6 +21,7 @@
             android:id="@+id/compact_playback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
             android:elevation="@dimen/elevation_normal" />
 

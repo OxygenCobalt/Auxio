@@ -37,9 +37,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
         val controlColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
-        val disabledColor = ColorStateList.valueOf(
-            R.color.inactive_color.toColor(requireContext())
-        )
 
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play

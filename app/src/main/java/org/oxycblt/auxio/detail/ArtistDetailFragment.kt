@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackMode
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -22,6 +25,7 @@ class ArtistDetailFragment : Fragment() {
 
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +60,7 @@ class ArtistDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
+        binding.playbackModel = playbackModel
         binding.artist = detailModel.currentArtist.value!!
 
         binding.artistToolbar.setNavigationOnClickListener {
@@ -87,9 +92,46 @@ class ArtistDetailFragment : Fragment() {
             )
         }
 
+        playbackModel.currentMode.observe(viewLifecycleOwner) {
+            updatePlayButton(it, binding)
+        }
+
+        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+            updatePlayButton(playbackModel.currentMode.value!!, binding)
+        }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    // Update the play button depending on the current playback status
+    // If the shown artist is currently playing, set the button icon to the current isPlaying
+    // status, and then set its behavior to modify isPlaying.
+    // If the shown artist isn't currently playing, set the button to Play and its behavior
+    // to start the playback of the artist.
+    private fun updatePlayButton(mode: PlaybackMode, binding: FragmentArtistDetailBinding) {
+        playbackModel.currentSong.value?.let { song ->
+            if (mode == PlaybackMode.IN_ARTIST &&
+                song.album.artist == detailModel.currentArtist.value
+            ) {
+                if (playbackModel.isPlaying.value!!) {
+                    binding.artistPlay.setImageResource(R.drawable.ic_pause)
+                } else {
+                    binding.artistPlay.setImageResource(R.drawable.ic_play)
+                }
+
+                binding.artistPlay.setOnClickListener {
+                    playbackModel.invertPlayingStatus()
+                }
+            } else {
+                binding.artistPlay.setImageResource(R.drawable.ic_play)
+
+                binding.artistPlay.setOnClickListener {
+                    playbackModel.play(detailModel.currentArtist.value!!, false)
+                }
+            }
+        }
     }
 
     override fun onResume() {
