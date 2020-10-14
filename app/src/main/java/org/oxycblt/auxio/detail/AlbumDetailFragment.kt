@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -48,10 +49,14 @@ class AlbumDetailFragment : Fragment() {
             playbackModel.update(it, PlaybackMode.IN_ALBUM)
         }
 
+        val playIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_play)
+        val pauseIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_pause)
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
+        binding.playbackModel = playbackModel
         binding.album = detailModel.currentAlbum.value!!
 
         binding.albumSongRecycler.apply {
@@ -83,6 +88,17 @@ class AlbumDetailFragment : Fragment() {
             )
         }
 
+        // Observe playback model to update the play button
+        // TODO: Make these icons animated
+        // TODO: Shuffle button/option, unsure of which one
+        playbackModel.currentMode.observe(viewLifecycleOwner) {
+            updatePlayButton(it, binding)
+        }
+
+        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+            updatePlayButton(playbackModel.currentMode.value!!, binding)
+        }
+
         // If the album was shown directly from LibraryFragment, Then enable the ability to
         // navigate upwards to the parent artist
         if (args.enableParentNav) {
@@ -106,5 +122,32 @@ class AlbumDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    // Update the play button depending on the current playback status
+    // If the shown album is currently playing, set the button to the current isPlaying status and
+    // its behavior to modify the current playing status
+    // If the shown album isn't currently playing, set the button to "Play" and its behavior
+    // to start the playback of the album.
+    private fun updatePlayButton(mode: PlaybackMode, binding: FragmentAlbumDetailBinding) {
+        playbackModel.currentSong.value?.let { song ->
+            if (mode == PlaybackMode.IN_ALBUM && song.album == detailModel.currentAlbum.value) {
+                if (playbackModel.isPlaying.value!!) {
+                    binding.albumPlay.setImageResource(R.drawable.ic_pause)
+                } else {
+                    binding.albumPlay.setImageResource(R.drawable.ic_play)
+                }
+
+                binding.albumPlay.setOnClickListener {
+                    playbackModel.invertPlayingStatus()
+                }
+            } else {
+                binding.albumPlay.setImageResource(R.drawable.ic_play)
+
+                binding.albumPlay.setOnClickListener {
+                    playbackModel.play(detailModel.currentAlbum.value!!, false)
+                }
+            }
+        }
     }
 }

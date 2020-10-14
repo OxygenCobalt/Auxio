@@ -9,6 +9,7 @@
     <dimen name="padding_huge">64dp</dimen>
 
     <!-- Margin namespace | Dimens for margin attributes -->
+    <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_mid_small">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>

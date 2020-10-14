@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
@@ -25,6 +28,7 @@ class PlaybackViewModel : ViewModel() {
     val currentIndex: LiveData<Int> get() = mCurrentIndex
 
     private val mCurrentMode = MutableLiveData(PlaybackMode.ALL_SONGS)
+    val currentMode: LiveData<PlaybackMode> get() = mCurrentMode
 
     private val mCurrentDuration = MutableLiveData(0L)
 
@@ -63,7 +67,7 @@ class PlaybackViewModel : ViewModel() {
                 Log.d(
                     this::class.simpleName,
                     "update() was called with IN_GENRES, using " +
-                        "most prominent genre instead of the song's genre."
+                            "most prominent genre instead of the song's genre."
                 )
 
                 song.album.artist.genres[0].songs
@@ -74,6 +78,42 @@ class PlaybackViewModel : ViewModel() {
         mCurrentIndex.value = mQueue.value!!.indexOf(song)
     }
 
+    fun play(album: Album, isShuffled: Boolean) {
+        Log.d(this::class.simpleName, "Playing album ${album.name}")
+
+        val songs = orderSongsInAlbum(album)
+
+        updatePlayback(songs[0])
+
+        mQueue.value = songs
+        mCurrentIndex.value = 0
+        mCurrentMode.value = PlaybackMode.IN_ALBUM
+    }
+
+    fun play(artist: Artist, isShuffled: Boolean) {
+        Log.d(this::class.simpleName, "Playing artist ${artist.name}")
+
+        val songs = orderSongsInArtist(artist)
+
+        updatePlayback(songs[0])
+
+        mQueue.value = songs
+        mCurrentIndex.value = 0
+        mCurrentMode.value = PlaybackMode.IN_ARTIST
+    }
+
+    fun play(genre: Genre, isShuffled: Boolean) {
+        Log.d(this::class.simpleName, "Playing genre ${genre.name}")
+
+        val songs = orderSongsInGenre(genre)
+
+        updatePlayback(songs[0])
+
+        mQueue.value = songs
+        mCurrentIndex.value = 0
+        mCurrentMode.value = PlaybackMode.IN_GENRE
+    }
+
     private fun updatePlayback(song: Song) {
         mCurrentSong.value = song
         mCurrentDuration.value = 0
@@ -81,6 +121,33 @@ class PlaybackViewModel : ViewModel() {
         if (!mIsPlaying.value!!) {
             mIsPlaying.value = true
         }
+    }
+
+    // Basic sorting functions when things are played in order
+    private fun orderSongsInAlbum(album: Album): MutableList<Song> {
+        return album.songs.sortedBy { it.track }.toMutableList()
+    }
+
+    private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
+        val final = mutableListOf<Song>()
+
+        artist.albums.sortedByDescending { it.year }.forEach {
+            final.addAll(it.songs.sortedBy { it.track })
+        }
+
+        return final
+    }
+
+    private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
+        val final = mutableListOf<Song>()
+
+        genre.artists.sortedBy { it.name }.forEach { artist ->
+            artist.albums.sortedByDescending { it.year }.forEach { album ->
+                final.addAll(album.songs.sortedBy { it.track })
+            }
+        }
+
+        return final
     }
 
     // Invert, not directly set the playing status

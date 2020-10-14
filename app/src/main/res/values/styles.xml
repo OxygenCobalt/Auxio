@@ -11,15 +11,13 @@
     </style>
 
     <style name="Toolbar.Style" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="android:searchViewStyle">@style/Toolbar.SearchViewStyle</item>
+        <item name="android:searchViewStyle">@style/Widget.AppCompat.SearchView</item>
     </style>
 
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textColor">?android:attr/colorPrimary</item>
     </style>
-
-    <style name="Toolbar.SearchViewStyle" parent="Widget.AppCompat.SearchView" />
 
     <style name="DetailHeader">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
