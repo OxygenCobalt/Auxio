@@ -13,6 +13,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
@@ -44,7 +45,7 @@ class AlbumDetailFragment : Fragment() {
         }
 
         val songAdapter = DetailSongAdapter {
-            playbackModel.update(it)
+            playbackModel.update(it, PlaybackMode.IN_ALBUM)
         }
 
         // --- UI SETUP ---

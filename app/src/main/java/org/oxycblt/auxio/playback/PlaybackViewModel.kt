@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.playback
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -9,6 +10,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 
 // TODO: Implement media controls
+// TODO: Implement persistence
 // TODO: Add the playback service itself
 // TODO: Possibly add some swipe-to-next-track function, could require a ViewPager.
 // A ViewModel that acts as an intermediary between PlaybackService and the Playback Fragments.
@@ -16,14 +18,15 @@ class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()
     val currentSong: LiveData<Song> get() = mCurrentSong
 
-    private val mCurrentIndex = MutableLiveData(0)
-    val currentIndex: LiveData<Int> get() = mCurrentIndex
-
     private val mQueue = MutableLiveData(mutableListOf<Song>())
     val queue: LiveData<MutableList<Song>> get() = mQueue
 
+    private val mCurrentIndex = MutableLiveData(0)
+    val currentIndex: LiveData<Int> get() = mCurrentIndex
+
+    private val mCurrentMode = MutableLiveData(PlaybackMode.ALL_SONGS)
+
     private val mCurrentDuration = MutableLiveData(0L)
-    val currentDuration: LiveData<Long> get() = mCurrentDuration
 
     private val mIsPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
@@ -32,22 +35,43 @@ class PlaybackViewModel : ViewModel() {
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
 
     // Formatted variants of the duration
-    val formattedCurrentDuration = Transformations.map(currentDuration) {
+    val formattedCurrentDuration = Transformations.map(mCurrentDuration) {
         it.toDuration()
     }
 
-    val formattedSeekBarProgress = Transformations.map(currentDuration) {
+    val formattedSeekBarProgress = Transformations.map(mCurrentDuration) {
         if (mCurrentSong.value != null) it.toInt() else 0
     }
 
-    // Update the current song while changing the queue to All Songs.
-    fun update(song: Song) {
+    // Update the current song while changing the queue mode.
+    fun update(song: Song, mode: PlaybackMode) {
+        Log.d(this::class.simpleName, "Updating song to ${song.name} and mode to $mode")
+
         val musicStore = MusicStore.getInstance()
 
         updatePlayback(song)
 
-        mQueue.value = musicStore.songs.toMutableList()
-        mCurrentIndex.value = musicStore.songs.indexOf(song)
+        mQueue.value = when (mode) {
+            PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
+            PlaybackMode.IN_ARTIST -> song.album.artist.songs
+            PlaybackMode.IN_ALBUM -> song.album.songs
+
+            // Warning: Calling update() with a mode of IN_GENRE Will cause Auxio to play
+            // from the artist's most prominent genre instead of the song's genre.
+            // FIXME: This could be fixed by moving genre loading to songs
+            PlaybackMode.IN_GENRE -> {
+                Log.d(
+                    this::class.simpleName,
+                    "update() was called with IN_GENRES, using " +
+                        "most prominent genre instead of the song's genre."
+                )
+
+                song.album.artist.genres[0].songs
+            }
+        }
+
+        mCurrentMode.value = mode
+        mCurrentIndex.value = mQueue.value!!.indexOf(song)
     }
 
     private fun updatePlayback(song: Song) {

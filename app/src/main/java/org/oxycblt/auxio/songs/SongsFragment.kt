@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 
@@ -31,7 +32,7 @@ class SongsFragment : Fragment() {
 
         binding.songRecycler.apply {
             adapter = SongAdapter(musicStore.songs) {
-                playbackModel.update(it)
+                playbackModel.update(it, PlaybackMode.ALL_SONGS)
             }
             applyDivider()
             setHasFixedSize(true)

@@ -96,13 +96,16 @@ fun MenuItem.applyColor(@ColorInt color: Int) {
 
 // Disable an ImageButton
 fun ImageButton.disable(context: Context) {
-    imageTintList = ColorStateList.valueOf(
-        R.color.inactive_color.toColor(context)
-    )
+    if (isEnabled) {
+        imageTintList = ColorStateList.valueOf(
+            R.color.inactive_color.toColor(context)
+        )
 
-    isEnabled = false
+        isEnabled = false
+    }
 }
 
+// Enable an ImageButton
 fun ImageButton.enable(context: Context) {
     if (!isEnabled) {
         imageTintList = ColorStateList.valueOf(

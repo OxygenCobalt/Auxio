@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
-import org.oxycblt.auxio.loading.LoadingViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
@@ -23,10 +21,6 @@ import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
-    private val loadingModel: LoadingViewModel by activityViewModels {
-        LoadingViewModel.Factory(requireActivity().application)
-    }
-
     private val shownFragments = listOf(0, 1)
     private val tabIcons = listOf(
         R.drawable.ic_library,
