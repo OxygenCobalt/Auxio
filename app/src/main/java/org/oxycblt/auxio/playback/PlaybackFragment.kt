@@ -23,9 +23,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     // TODO: Implement media controls
-    // TODO: Make exit icon bigger
     // TODO: Implement nav to artists/albums
-    // TODO: Possibly implement a trackbar with a spectrum shown as well.
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -95,6 +93,15 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 iconPlayToPause.start()
 
                 binding.playbackPlayPause.backgroundTintList = controlColor
+            }
+        }
+
+        playbackModel.isShuffling.observe(viewLifecycleOwner) {
+            // Highlight the shuffle button if Playback is shuffled, and revert it if not.
+            if (it) {
+                binding.playbackShuffle.imageTintList = accentColor
+            } else {
+                binding.playbackShuffle.imageTintList = controlColor
             }
         }
 

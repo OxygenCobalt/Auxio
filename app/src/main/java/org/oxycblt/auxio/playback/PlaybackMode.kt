@@ -7,12 +7,4 @@ package org.oxycblt.auxio.playback
 // IN_ALBUM -> Play from the songs of the album
 enum class PlaybackMode {
     IN_ARTIST, IN_ALBUM, ALL_SONGS;
-
-    // Make a slice of all the values that this ShowMode covers.
-    // ex. SHOW_ARTISTS would return SHOW_ARTISTS, SHOW_ALBUMS, and SHOW_SONGS
-    fun getChildren(): List<PlaybackMode> {
-        val vals = values()
-
-        return vals.slice(vals.indexOf(this) until vals.size)
-    }
 }

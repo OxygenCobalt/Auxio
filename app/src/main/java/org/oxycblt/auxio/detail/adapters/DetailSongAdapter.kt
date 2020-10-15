@@ -11,7 +11,6 @@ import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 class DetailSongAdapter(
     private val doOnClick: (Song) -> Unit
 ) : ListAdapter<Song, DetailSongAdapter.ViewHolder>(DiffCallback()) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemAlbumSongBinding.inflate(LayoutInflater.from(parent.context))

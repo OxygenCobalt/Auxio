@@ -23,6 +23,7 @@
     <string name="label_sort_none">Default</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_shuffle">Shuffle</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search Library…</string>
@@ -41,6 +42,8 @@
     <string name="description_pause">Pause</string>
     <string name="description_skip_next">Skip to next song</string>
     <string name="description_skip_prev">Skip to last song</string>
+    <string name="description_shuffle_on">Turn shuffle on</string>
+    <string name="description_shuffle_off">Turn shuffle off</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

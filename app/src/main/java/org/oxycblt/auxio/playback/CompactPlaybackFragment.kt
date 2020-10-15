@@ -25,7 +25,6 @@ class CompactPlaybackFragment : Fragment() {
     ): View? {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
-        // FIXME: Stop these icons from self-animating on creation.
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable

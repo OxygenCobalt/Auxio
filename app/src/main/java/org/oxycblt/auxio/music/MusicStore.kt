@@ -22,7 +22,9 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    suspend fun load(app: Application): MusicLoaderResponse {
+    // Load/Sort the entire library.
+    // ONLY CALL THIS FROM AN IO THREAD.
+    fun load(app: Application): MusicLoaderResponse {
         Log.i(this::class.simpleName, "Starting initial music load...")
 
         val start = System.currentTimeMillis()

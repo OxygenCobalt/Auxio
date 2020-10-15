@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackMode
@@ -29,6 +30,13 @@ class SongsFragment : Fragment() {
         // TODO: Maybe add fast scrolling or sorting
 
         // --- UI SETUP ---
+
+        binding.songToolbar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.action_shuffle) {
+                playbackModel.shuffleAll()
+            }
+            true
+        }
 
         binding.songRecycler.apply {
             adapter = SongAdapter(musicStore.songs) {
