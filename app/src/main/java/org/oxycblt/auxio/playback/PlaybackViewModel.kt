@@ -79,7 +79,7 @@ class PlaybackViewModel : ViewModel() {
             PlaybackMode.IN_ALBUM -> song.album
         }
 
-        if (isShuffling.value!!) {
+        if (mIsShuffling.value!!) {
             genShuffle(true)
         } else {
             resetShuffle()
@@ -100,6 +100,12 @@ class PlaybackViewModel : ViewModel() {
         mCurrentParent.value = album
         mIsShuffling.value = isShuffled
         mCurrentMode.value = PlaybackMode.IN_ALBUM
+
+        if (mIsShuffling.value!!) {
+            genShuffle(false)
+        } else {
+            resetShuffle()
+        }
     }
 
     fun play(artist: Artist, isShuffled: Boolean) {
@@ -114,6 +120,12 @@ class PlaybackViewModel : ViewModel() {
         mCurrentParent.value = artist
         mIsShuffling.value = isShuffled
         mCurrentMode.value = PlaybackMode.IN_ARTIST
+
+        if (mIsShuffling.value!!) {
+            genShuffle(false)
+        } else {
+            resetShuffle()
+        }
     }
 
     // Update the current duration using a SeekBar progress

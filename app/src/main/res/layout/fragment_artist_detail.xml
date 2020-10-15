@@ -104,12 +104,30 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_tiny"
-                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_tiny"
                     android:background="@drawable/ui_circular_button"
                     android:backgroundTint="?android:attr/colorPrimary"
                     android:contentDescription="@string/description_play"
                     android:src="@drawable/ic_play"
                     android:onClick="@{() -> playbackModel.play(artist, false)}"
+                    app:layout_constraintBottom_toBottomOf="@+id/artist_counts"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/album_shuffle"
+                    app:layout_constraintTop_toTopOf="@+id/artist_genre" />
+
+                <ImageButton
+                    android:id="@+id/album_shuffle"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_tiny"
+                    android:background="@drawable/ui_circular_button"
+                    android:backgroundTint="?android:attr/colorPrimary"
+                    android:contentDescription="@string/description_play"
+                    android:onClick="@{() -> playbackModel.play(artist, true)}"
+                    android:src="@drawable/ic_shuffle_small"
+                    android:tint="@color/background"
                     app:layout_constraintBottom_toBottomOf="@+id/artist_counts"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -166,5 +184,4 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
-
 </layout>
