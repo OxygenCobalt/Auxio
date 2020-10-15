@@ -121,13 +121,13 @@ class AlbumDetailFragment : Fragment() {
     }
 
     // Update the play button depending on the current playback status
-    // If the shown album is currently playing, set the button icon to the current isPlaying
-    // status, and then set its behavior to modify isPlaying.
-    // If the shown album isn't currently playing, set the button to Play and its behavior
-    // to start the playback of the album.
+    // If playing this album -> Make button show media controls
+    // If not playing this album -> Make button update playback to the artist
     private fun updatePlayButton(mode: PlaybackMode, binding: FragmentAlbumDetailBinding) {
-        playbackModel.currentSong.value?.let { song ->
-            if (mode == PlaybackMode.IN_ALBUM && song.album == detailModel.currentAlbum.value) {
+        playbackModel.currentParent.value?.let { parent ->
+            if (mode == PlaybackMode.IN_ALBUM &&
+                parent.id == detailModel.currentAlbum.value!!.id
+            ) {
                 if (playbackModel.isPlaying.value!!) {
                     binding.albumPlay.setImageResource(R.drawable.ic_pause)
                 } else {

@@ -9,12 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.PlaybackMode
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -22,7 +19,6 @@ class GenreDetailFragment : Fragment() {
 
     private val args: GenreDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +53,6 @@ class GenreDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.detailModel = detailModel
-        binding.playbackModel = playbackModel
         binding.genre = detailModel.currentGenre.value
 
         binding.genreToolbar.setNavigationOnClickListener {
@@ -89,14 +84,6 @@ class GenreDetailFragment : Fragment() {
             )
         }
 
-        playbackModel.currentMode.observe(viewLifecycleOwner) {
-            updatePlayButton(it, binding)
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            updatePlayButton(playbackModel.currentMode.value!!, binding)
-        }
-
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
@@ -106,28 +93,5 @@ class GenreDetailFragment : Fragment() {
         super.onResume()
 
         detailModel.updateNavigationStatus(false)
-    }
-
-    private fun updatePlayButton(mode: PlaybackMode, binding: FragmentGenreDetailBinding) {
-        if (mode == PlaybackMode.IN_GENRE &&
-            detailModel.currentGenre.value == playbackModel.currentGenre.value
-        ) {
-            Log.d(this::class.simpleName, "Retard")
-            if (playbackModel.isPlaying.value!!) {
-                binding.genrePlay.setImageResource(R.drawable.ic_pause)
-            } else {
-                binding.genrePlay.setImageResource(R.drawable.ic_play)
-            }
-
-            binding.genrePlay.setOnClickListener {
-                playbackModel.invertPlayingStatus()
-            }
-        } else {
-            binding.genrePlay.setImageResource(R.drawable.ic_play)
-
-            binding.genrePlay.setOnClickListener {
-                playbackModel.play(detailModel.currentGenre.value!!, false)
-            }
-        }
     }
 }

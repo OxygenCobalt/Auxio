@@ -51,8 +51,7 @@ class MusicSorter(
         if (unknownSongs.size > 0) {
 
             val unknownAlbum = Album(
-                name = albumPlaceholder,
-                artistName = artistPlaceholder
+                name = albumPlaceholder
             )
 
             for (song in unknownSongs) {
@@ -76,7 +75,7 @@ class MusicSorter(
 
         for (artist in artists) {
             // Find all albums that match the current artist name
-            val artistAlbums = albums.filter { it.artistName == artist.name }
+            val artistAlbums = albums.filter { it.artistId == artist.id }
 
             // Then add them to the artist, along with refreshing the amount of albums
             for (album in artistAlbums) {
@@ -85,8 +84,9 @@ class MusicSorter(
             }
 
             // Then group the artist's genres and sort them by "Prominence"
-            // A.K.A Who has the most map entries
-            val groupedGenres = artist.givenGenres.groupBy { it.name }
+            // A.K.A Who has the most bugged duplicate genres
+            val groupedGenres = artist.genres.groupBy { it.name }
+            artist.genres.clear()
 
             groupedGenres.keys.sortedByDescending { key ->
                 groupedGenres[key]?.size
@@ -129,7 +129,7 @@ class MusicSorter(
         for (genre in genres) {
             // Find all artists that match the current genre
             val genreArtists = artists.filter { artist ->
-                artist.givenGenres.any {
+                artist.genres.any {
                     it.name == genre.name
                 }
             }

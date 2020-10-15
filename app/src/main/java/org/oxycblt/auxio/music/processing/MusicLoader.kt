@@ -1,7 +1,7 @@
 package org.oxycblt.auxio.music.processing
 
 import android.content.ContentResolver
-import android.database.Cursor
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
@@ -31,11 +31,6 @@ class MusicLoader(
     var artists = mutableListOf<Artist>()
     var albums = mutableListOf<Album>()
     var songs = mutableListOf<Song>()
-
-    private var genreCursor: Cursor? = null
-    private var artistCursor: Cursor? = null
-    private var albumCursor: Cursor? = null
-    private var songCursor: Cursor? = null
 
     val response: MusicLoaderResponse
 
@@ -67,7 +62,7 @@ class MusicLoader(
         Log.d(this::class.simpleName, "Starting genre search...")
 
         // First, get a cursor for every genre in the android system
-        genreCursor = resolver.query(
+        val genreCursor = resolver.query(
             Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 Genres._ID, // 0
@@ -86,7 +81,7 @@ class MusicLoader(
                 val id = cursor.getLong(idIndex)
                 var name = cursor.getString(nameIndex) ?: genrePlaceholder
 
-                // If a genre is still in an old int-based format [Android formats it as "(INT)"],
+                // If a genre is still in an old int-based format [Android formats it as "(INT)"],mu
                 // convert that to the corresponding ID3 genre.
                 if (name.contains(Regex("[0123456789)]"))) {
                     name = name.toNamedGenre() ?: genrePlaceholder
@@ -111,42 +106,59 @@ class MusicLoader(
     private fun loadArtists() {
         Log.d(this::class.simpleName, "Starting artist search...")
 
-        // Iterate through the artists for each loaded genre, and then add the genre
-        // with the artist.
-        // This is only done because using GENRE_NAME for songs is broken and has been for years.
+        // Load all the artists
+        val artistCursor = resolver.query(
+            Artists.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                Artists._ID, // 0
+                Artists.ARTIST // 1
+            ),
+            null, null,
+            Artists.DEFAULT_SORT_ORDER
+        )
+
+        artistCursor?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(Artists._ID)
+            val nameIndex = cursor.getColumnIndexOrThrow(Artists.ARTIST)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                var name = cursor.getString(nameIndex)
+
+                if (name == null || name == MediaStore.UNKNOWN_STRING) {
+                    name = artistPlaceholder
+                }
+
+                Log.d(this::class.simpleName, id.toString())
+
+                artists.add(
+                    Artist(
+                        id, name
+                    )
+                )
+            }
+
+            cursor.close()
+        }
+
+        // Then try to associate any genres with their respective artists.
         for (genre in genres) {
-            artistCursor = resolver.query(
+            val artistGenreCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(
-                    Artists._ID, // 0
-                    Artists.ARTIST // 1
+                    Genres.Members.ARTIST_ID
                 ),
-                null, null,
-                Artists.DEFAULT_SORT_ORDER
+                null, null, null
             )
 
-            artistCursor?.use { cursor ->
-                val idIndex = cursor.getColumnIndexOrThrow(Artists._ID)
-                val nameIndex = cursor.getColumnIndexOrThrow(Artists.ARTIST)
+            artistGenreCursor?.let { cursor ->
+                val idIndex = cursor.getColumnIndexOrThrow(Genres.Members.ARTIST_ID)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    val name = cursor.getString(nameIndex) ?: artistPlaceholder
 
-                    // If an artist has already been added [Which is very likely due to how genres
-                    // are processed], add the genre to the existing artist instead of creating a
-                    // new one.
-                    val existingArtist = artists.find { it.name == name }
-
-                    if (existingArtist != null) {
-                        existingArtist.givenGenres.add(genre)
-                    } else {
-                        artists.add(
-                            Artist(
-                                id, name,
-                                mutableListOf(genre)
-                            )
-                        )
+                    artists.filter { it.id == id }.forEach {
+                        it.genres.add(genre)
                     }
                 }
 
@@ -154,9 +166,8 @@ class MusicLoader(
             }
         }
 
-        // Remove dupes [Just in case]
         artists = artists.distinctBy {
-            it.name to it.givenGenres
+            it.name to it.genres
         }.toMutableList()
 
         Log.d(
@@ -168,12 +179,12 @@ class MusicLoader(
     private fun loadAlbums() {
         Log.d(this::class.simpleName, "Starting album search...")
 
-        albumCursor = resolver.query(
+        val albumCursor = resolver.query(
             Albums.EXTERNAL_CONTENT_URI,
             arrayOf(
                 Albums._ID, // 0
                 Albums.ALBUM, // 1
-                Albums.ARTIST, // 2
+                Albums.ARTIST_ID, // 2
 
                 Albums.FIRST_YEAR, // 3
             ),
@@ -184,20 +195,20 @@ class MusicLoader(
         albumCursor?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
             val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
-            val artistIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
+            val artistIdIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST_ID)
             val yearIndex = cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getString(nameIndex) ?: albumPlaceholder
-                val artist = cursor.getString(artistIndex) ?: artistPlaceholder
+                val artistId = cursor.getLong(artistIdIndex)
                 val year = cursor.getInt(yearIndex)
 
                 val coverUri = id.toAlbumArtURI()
 
                 albums.add(
                     Album(
-                        id, name, artist,
+                        id, name, artistId,
                         coverUri, year
                     )
                 )
@@ -206,9 +217,8 @@ class MusicLoader(
             cursor.close()
         }
 
-        // Remove dupes
         albums = albums.distinctBy {
-            it.name to it.artistName to it.year to it.numSongs
+            it.name to it.artistId to it.year to it.numSongs
         }.toMutableList()
 
         Log.d(
@@ -220,7 +230,7 @@ class MusicLoader(
     private fun loadSongs() {
         Log.d(this::class.simpleName, "Starting song search...")
 
-        songCursor = resolver.query(
+        val songCursor = resolver.query(
             Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 Media._ID, // 0
@@ -260,7 +270,6 @@ class MusicLoader(
             cursor.close()
         }
 
-        // Remove dupes
         songs = songs.distinctBy {
             it.name to it.albumId to it.track to it.duration
         }.toMutableList()

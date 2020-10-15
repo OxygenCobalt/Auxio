@@ -6,7 +6,7 @@ package org.oxycblt.auxio.playback
 // IN_ARTIST -> Play from the songs of the artist
 // IN_ALBUM -> Play from the songs of the album
 enum class PlaybackMode {
-    IN_GENRE, IN_ARTIST, IN_ALBUM, ALL_SONGS;
+    IN_ARTIST, IN_ALBUM, ALL_SONGS;
 
     // Make a slice of all the values that this ShowMode covers.
     // ex. SHOW_ARTISTS would return SHOW_ARTISTS, SHOW_ALBUMS, and SHOW_SONGS

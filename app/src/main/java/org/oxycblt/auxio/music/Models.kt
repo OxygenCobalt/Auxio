@@ -31,7 +31,7 @@ data class Song(
 data class Album(
     override val id: Long = -1,
     override val name: String,
-    val artistName: String,
+    val artistId: Long = -1,
     val coverUri: Uri = Uri.EMPTY,
     val year: Int = 0
 ) : BaseModel() {
@@ -52,8 +52,7 @@ data class Album(
 // Artist
 data class Artist(
     override val id: Long = -1,
-    override var name: String,
-    val givenGenres: MutableList<Genre> = mutableListOf()
+    override var name: String
 ) : BaseModel() {
     val albums = mutableListOf<Album>()
     val genres = mutableListOf<Genre>()
@@ -71,14 +70,6 @@ data class Artist(
         get() {
             val songs = mutableListOf<Song>()
             albums.forEach {
-                songs.addAll(it.songs)
-            }
-            return songs
-        }
-    val genreSongs: MutableList<Song>
-        get() {
-            val songs = mutableListOf<Song>()
-            genres.forEach {
                 songs.addAll(it.songs)
             }
             return songs
@@ -108,14 +99,6 @@ data class Genre(
                 num += it.numSongs
             }
             return num
-        }
-    val songs: MutableList<Song>
-        get() {
-            val songs = mutableListOf<Song>()
-            artists.forEach {
-                songs.addAll(it.songs)
-            }
-            return songs
         }
 }
 

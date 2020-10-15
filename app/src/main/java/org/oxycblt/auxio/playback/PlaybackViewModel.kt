@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
@@ -21,8 +22,8 @@ class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()
     val currentSong: LiveData<Song> get() = mCurrentSong
 
-    private val mCurrentGenre = MutableLiveData<Genre>()
-    val currentGenre: LiveData<Genre> get() = mCurrentGenre
+    private val mCurrentParent = MutableLiveData<BaseModel>()
+    val currentParent: LiveData<BaseModel> get() = mCurrentParent
 
     private val mQueue = MutableLiveData(mutableListOf<Song>())
     val queue: LiveData<MutableList<Song>> get() = mQueue
@@ -62,19 +63,6 @@ class PlaybackViewModel : ViewModel() {
             PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
             PlaybackMode.IN_ARTIST -> song.album.artist.songs
             PlaybackMode.IN_ALBUM -> song.album.songs
-
-            // Warning: Calling update() with a mode of IN_GENRE Will cause Auxio to play
-            // from the artist's most prominent genre instead of the song's genre.
-            // FIXME: This could be fixed by moving genre loading to songs
-            PlaybackMode.IN_GENRE -> {
-                Log.d(
-                    this::class.simpleName,
-                    "update() was called with IN_GENRES, using " +
-                        "most prominent genre instead of the song's genre."
-                )
-
-                song.album.artist.genres[0].songs
-            }
         }
 
         mCurrentMode.value = mode
@@ -90,6 +78,7 @@ class PlaybackViewModel : ViewModel() {
 
         mQueue.value = songs
         mCurrentIndex.value = 0
+        mCurrentParent.value = album
         mCurrentMode.value = PlaybackMode.IN_ALBUM
     }
 
@@ -102,6 +91,7 @@ class PlaybackViewModel : ViewModel() {
 
         mQueue.value = songs
         mCurrentIndex.value = 0
+        mCurrentParent.value = artist
         mCurrentMode.value = PlaybackMode.IN_ARTIST
     }
 
@@ -112,10 +102,8 @@ class PlaybackViewModel : ViewModel() {
 
         updatePlayback(songs[0])
 
-        mCurrentGenre.value = genre
         mQueue.value = songs
         mCurrentIndex.value = 0
-        mCurrentMode.value = PlaybackMode.IN_GENRE
     }
 
     private fun updatePlayback(song: Song) {
