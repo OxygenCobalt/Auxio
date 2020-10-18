@@ -56,7 +56,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         // --- UI SETUP ---
 
-        // TODO: Add exit functionality
         binding.libraryToolbar.apply {
             overflowIcon = ContextCompat.getDrawable(
                 requireContext(), R.drawable.ic_sort_none
@@ -78,7 +77,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 true
             }
 
-            // TODO: Add icons to overflow menu items
+            // TODO: Add icons to overflow menu items?
             menu.apply {
                 val item = findItem(R.id.action_search)
                 val searchView = item.actionView as SearchView
@@ -118,7 +117,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        // TODO: Change LibraryAdapter to a ListAdapter
+        // FIXME: Change LibraryAdapter to a ListAdapter
         //  [If there's a way to preserve scroll position properly]
         binding.libraryRecycler.apply {
             adapter = libraryAdapter

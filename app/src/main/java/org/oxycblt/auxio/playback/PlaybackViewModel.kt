@@ -14,10 +14,10 @@ import org.oxycblt.auxio.music.toDuration
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextLong
 
-// TODO: Implement media controls
-// TODO: Implement persistence
+// TODO: Queue
 // TODO: Add the playback service itself
-// TODO: Possibly add some swipe-to-next-track function, could require a ViewPager.
+// TODO: Add loop control [From playback]
+// TODO: Implement persistence through Bundles and sanity checks [I want to keep my shuffles, okay?]
 // A ViewModel that acts as an intermediary between PlaybackService and the Playback Fragments.
 class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()

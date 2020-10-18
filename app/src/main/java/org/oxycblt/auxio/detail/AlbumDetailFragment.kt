@@ -86,7 +86,6 @@ class AlbumDetailFragment : Fragment() {
 
         // Observe playback model to update the play button
         // TODO: Make these icons animated
-        // TODO: Shuffle button/option, unsure of which one
         playbackModel.currentMode.observe(viewLifecycleOwner) {
             updatePlayButton(it, binding)
         }

@@ -24,7 +24,6 @@ private val ID3_GENRES = arrayOf(
     "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal",
     "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock",
 
-    // Winamp extensions
     "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival",
     "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock",
     "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour",
@@ -154,8 +153,9 @@ fun TextView.bindAlbumInfo(album: Album) {
     )
 }
 
+// Bind the album year
 @BindingAdapter("albumYear")
-fun TextView.bindAlbumDate(album: Album) {
+fun TextView.bindAlbumYear(album: Album) {
     text = album.year.toYear(context)
 }
 

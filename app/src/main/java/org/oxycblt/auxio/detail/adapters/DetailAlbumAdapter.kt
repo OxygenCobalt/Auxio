@@ -8,7 +8,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
-// TODO: Add ability to highlight currently playing songs
 class DetailAlbumAdapter(
     private val doOnClick: (Album) -> Unit
 ) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(DiffCallback()) {
@@ -25,7 +24,7 @@ class DetailAlbumAdapter(
 
     // Generic ViewHolder for a detail album
     inner class ViewHolder(
-        private val binding: ItemArtistAlbumBinding
+        private val binding: ItemArtistAlbumBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick) {
 
         override fun onBind(model: Album) {

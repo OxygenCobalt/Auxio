@@ -4,10 +4,9 @@ import android.net.Uri
 
 // --- MUSIC MODELS ---
 // TODO: Remove parent/child references so that they can be parcelable [Would require genre rework]
-// TODO: Don't determine artist/album/song counts on the fly [If possible]
 
 // The base model for all music
-// This is used in a lot of general functions in order to cut down on code
+// This is used in a lot of general functions in order to have generic utilities
 sealed class BaseModel {
     abstract val id: Long
     abstract val name: String
@@ -39,14 +38,13 @@ data class Album(
 
     val songs = mutableListOf<Song>()
     val numSongs: Int get() = songs.size
-    val totalDuration: String
-        get() {
-            var seconds: Long = 0
-            songs.forEach {
-                seconds += it.seconds
-            }
-            return seconds.toDuration()
+    val totalDuration: String by lazy {
+        var seconds: Long = 0
+        songs.forEach {
+            seconds += it.seconds
         }
+        seconds.toDuration()
+    }
 }
 
 // Artist
@@ -58,22 +56,20 @@ data class Artist(
     val genres = mutableListOf<Genre>()
 
     val numAlbums: Int get() = albums.size
-    val numSongs: Int
-        get() {
-            var num = 0
-            albums.forEach {
-                num += it.numSongs
-            }
-            return num
+    val numSongs: Int by lazy {
+        var num = 0
+        albums.forEach {
+            num += it.numSongs
         }
-    val songs: MutableList<Song>
-        get() {
-            val songs = mutableListOf<Song>()
-            albums.forEach {
-                songs.addAll(it.songs)
-            }
-            return songs
+        num
+    }
+    val songs: MutableList<Song> by lazy {
+        val songs = mutableListOf<Song>()
+        albums.forEach {
+            songs.addAll(it.songs)
         }
+        songs
+    }
 }
 
 // Genre
@@ -84,22 +80,20 @@ data class Genre(
     val artists = mutableListOf<Artist>()
 
     val numArtists: Int get() = artists.size
-    val numAlbums: Int
-        get() {
-            var num = 0
-            artists.forEach {
-                num += it.numAlbums
-            }
-            return num
+    val numAlbums: Int by lazy {
+        var num = 0
+        artists.forEach {
+            num += it.numAlbums
         }
-    val numSongs: Int
-        get() {
-            var num = 0
-            artists.forEach {
-                num += it.numSongs
-            }
-            return num
+        num
+    }
+    val numSongs: Int by lazy {
+        var num = 0
+        artists.forEach {
+            num += it.numSongs
         }
+        num
+    }
 }
 
 // Header [Used for search, nothing else]

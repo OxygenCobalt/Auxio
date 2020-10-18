@@ -17,12 +17,12 @@ import coil.size.Size
 import okio.buffer
 import okio.source
 import java.io.InputStream
+import org.oxycblt.auxio.R
 
 const val MOSAIC_BITMAP_SIZE = 512
 const val MOSAIC_BITMAP_INCREMENT = 256
 
 // A Fetcher that takes multiple cover uris and turns them into a 2x2 mosaic image.
-// TODO: Add 4x4 mosaics?
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
         pool: BitmapPool,
@@ -46,13 +46,20 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         if (streams.size < 4) {
             streams.forEach { it.close() }
 
-            // FIXME: What if all the streams fail?
-
-            return SourceResult(
-                source = streams[0].source().buffer(),
-                mimeType = context.contentResolver.getType(data[0]),
-                dataSource = DataSource.DISK
-            )
+            return if (streams.isNotEmpty()) {
+                SourceResult(
+                    source = streams[0].source().buffer(),
+                    mimeType = context.contentResolver.getType(data[0]),
+                    dataSource = DataSource.DISK
+                )
+            } else {
+                // If ALL the streams failed, then don't even bother with that.
+                DrawableResult(
+                    drawable = R.drawable.ic_song.toDrawable(),
+                    isSampled = false,
+                    dataSource = DataSource.DISK
+                )
+            }
         }
 
         // Create the mosaic, code adapted from Phonograph.

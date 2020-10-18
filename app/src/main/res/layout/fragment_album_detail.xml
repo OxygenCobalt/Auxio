@@ -131,7 +131,7 @@
                     android:backgroundTint="?android:attr/colorPrimary"
                     android:contentDescription="@string/description_play"
                     android:onClick="@{() -> playbackModel.play(album, true)}"
-                    android:src="@drawable/ic_shuffle_small"
+                    android:src="@drawable/ic_shuffle"
                     android:tint="@color/background"
                     app:layout_constraintBottom_toBottomOf="@+id/album_details"
                     app:layout_constraintDimensionRatio="1:1"

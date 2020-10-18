@@ -19,10 +19,10 @@ import org.oxycblt.auxio.theme.disable
 import org.oxycblt.auxio.theme.enable
 import org.oxycblt.auxio.theme.toColor
 
+// TODO: Possibly add some swipe-to-next-track function, could require a ViewPager.
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
-    // TODO: Implement media controls
     // TODO: Implement nav to artists/albums
     override fun onCreateView(
         inflater: LayoutInflater,

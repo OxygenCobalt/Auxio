@@ -35,7 +35,7 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         // Put a placeholder song in the binding & hide the playback fragment initially,
         // as for some reason the attach event doesn't register anymore w/LiveData
@@ -59,6 +59,7 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
+        // TODO: Fix the thing where the icons will animate on startup
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
                 // Animate the icon transition when the playing status switches
@@ -77,5 +78,11 @@ class CompactPlaybackFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created")
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        playbackModel.updateStaticIconStatus(true)
     }
 }

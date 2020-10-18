@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_shuffle"
-        android:icon="@drawable/ic_shuffle_small"
+        android:icon="@drawable/ic_shuffle"
         android:title="@string/label_shuffle"
         app:showAsAction="always" />
 </menu>

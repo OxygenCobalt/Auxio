@@ -89,7 +89,6 @@ class MainFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        // TODO: Add a slide animation to this
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
         playbackModel.currentSong.observe(viewLifecycleOwner) {
             if (it == null) {

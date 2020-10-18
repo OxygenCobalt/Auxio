@@ -191,7 +191,7 @@
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
             android:layout_marginEnd="@dimen/margin_mid_large"
-            android:src="@drawable/ic_shuffle"
+            android:src="@drawable/ic_shuffle_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"

@@ -27,7 +27,7 @@ class SongsFragment : Fragment() {
         val musicStore = MusicStore.getInstance()
 
         // TODO: Add option to search songs if LibraryFragment isn't enabled
-        // TODO: Maybe add fast scrolling or sorting
+        // TODO: Fast scrolling?
 
         // --- UI SETUP ---
 

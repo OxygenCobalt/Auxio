@@ -98,6 +98,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/artist_genre"
                     tools:text="2 Albums, 20 Songs" />
 
+                <!-- TODO: Improve these two buttons so that they don't look as cluttered -->
                 <ImageButton
                     android:id="@+id/artist_play"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -112,11 +113,11 @@
                     android:onClick="@{() -> playbackModel.play(artist, false)}"
                     app:layout_constraintBottom_toBottomOf="@+id/artist_counts"
                     app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toStartOf="@+id/album_shuffle"
+                    app:layout_constraintEnd_toStartOf="@+id/artist_shuffle"
                     app:layout_constraintTop_toTopOf="@+id/artist_genre" />
 
                 <ImageButton
-                    android:id="@+id/album_shuffle"
+                    android:id="@+id/artist_shuffle"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -126,7 +127,7 @@
                     android:backgroundTint="?android:attr/colorPrimary"
                     android:contentDescription="@string/description_play"
                     android:onClick="@{() -> playbackModel.play(artist, true)}"
-                    android:src="@drawable/ic_shuffle_small"
+                    android:src="@drawable/ic_shuffle"
                     android:tint="@color/background"
                     app:layout_constraintBottom_toBottomOf="@+id/artist_counts"
                     app:layout_constraintDimensionRatio="1:1"
