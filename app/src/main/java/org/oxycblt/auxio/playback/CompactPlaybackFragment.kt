@@ -38,7 +38,7 @@ class CompactPlaybackFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         // Put a placeholder song in the binding & hide the playback fragment initially,
-        // as for some reason the attach event doesn't register anymore w/LiveData
+        // just in case.
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
 
@@ -59,7 +59,6 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        // TODO: Fix the thing where the icons will animate on startup
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (playbackModel.canAnimate) {
                 if (it) {

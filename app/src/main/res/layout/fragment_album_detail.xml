@@ -30,6 +30,8 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            app:menu="@menu/menu_detail"
+            app:popupTheme="@style/AppThemeOverlay.Popup"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:navigationIcon="@drawable/ic_back"
             app:title="@string/title_library_fragment" />
@@ -102,42 +104,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/album_artist"
                     tools:text="2020 / 10 Songs / 16:16" />
-
-                <ImageButton
-                    android:id="@+id/album_play"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_tiny"
-                    android:layout_marginEnd="@dimen/margin_tiny"
-                    android:tint="@color/background"
-                    android:background="@drawable/ui_circular_button"
-                    android:backgroundTint="?android:attr/colorPrimary"
-                    android:contentDescription="@string/description_play"
-                    android:src="@drawable/ic_play"
-                    android:onClick="@{() -> playbackModel.play(album, false)}"
-                    app:layout_constraintBottom_toBottomOf="@+id/album_details"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toStartOf="@+id/album_shuffle"
-                    app:layout_constraintTop_toTopOf="@+id/album_artist" />
-
-                <ImageButton
-                    android:id="@+id/album_shuffle"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="@dimen/margin_medium"
-                    android:layout_marginTop="@dimen/margin_tiny"
-                    android:background="@drawable/ui_circular_button"
-                    android:backgroundTint="?android:attr/colorPrimary"
-                    android:contentDescription="@string/description_play"
-                    android:onClick="@{() -> playbackModel.play(album, true)}"
-                    android:src="@drawable/ic_shuffle"
-                    android:tint="@color/background"
-                    app:layout_constraintBottom_toBottomOf="@+id/album_details"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/album_artist" />
 
                 <TextView
                     android:id="@+id/album_song_header"

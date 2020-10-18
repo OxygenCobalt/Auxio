@@ -13,13 +13,11 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
 class ArtistDetailFragment : Fragment() {
-
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -60,8 +58,22 @@ class ArtistDetailFragment : Fragment() {
         binding.playbackModel = playbackModel
         binding.artist = detailModel.currentArtist.value!!
 
-        binding.artistToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        binding.artistToolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_shuffle -> playbackModel.play(
+                        detailModel.currentArtist.value!!,
+                        true
+                    )
+                    R.id.action_play -> playbackModel.play(detailModel.currentArtist.value!!, false)
+                }
+
+                true
+            }
         }
 
         // Disable the sort button if there is only one album [Or less]
@@ -89,47 +101,9 @@ class ArtistDetailFragment : Fragment() {
             )
         }
 
-        playbackModel.currentMode.observe(viewLifecycleOwner) {
-            updatePlayButton(it, binding)
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            updatePlayButton(playbackModel.currentMode.value!!, binding)
-        }
-
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    // Update the play button depending on the current playback status
-    // If playing this artist -> Make button show media controls
-    // If not playing this artist -> Make button update playback to the artist
-    private fun updatePlayButton(
-        mode: PlaybackMode,
-        binding: FragmentArtistDetailBinding
-    ) {
-        playbackModel.currentParent.value?.let { parent ->
-            if (mode == PlaybackMode.IN_ARTIST &&
-                parent.id == detailModel.currentArtist.value!!.id
-            ) {
-                if (playbackModel.isPlaying.value!!) {
-                    binding.artistPlay.setImageResource(R.drawable.ic_pause)
-                } else {
-                    binding.artistPlay.setImageResource(R.drawable.ic_play)
-                }
-
-                binding.artistPlay.setOnClickListener {
-                    playbackModel.invertPlayingStatus()
-                }
-            } else {
-                binding.artistPlay.setImageResource(R.drawable.ic_play)
-
-                binding.artistPlay.setOnClickListener {
-                    playbackModel.play(detailModel.currentAlbum.value!!, false)
-                }
-            }
-        }
     }
 
     override fun onResume() {

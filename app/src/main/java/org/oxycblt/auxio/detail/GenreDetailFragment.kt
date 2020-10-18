@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
 
@@ -19,6 +21,7 @@ class GenreDetailFragment : Fragment() {
 
     private val args: GenreDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,8 +58,22 @@ class GenreDetailFragment : Fragment() {
         binding.detailModel = detailModel
         binding.genre = detailModel.currentGenre.value
 
-        binding.genreToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        binding.genreToolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_shuffle -> playbackModel.play(
+                        detailModel.currentGenre.value!!,
+                        true
+                    )
+                    R.id.action_play -> playbackModel.play(detailModel.currentGenre.value!!, false)
+                }
+
+                true
+            }
         }
 
         // Disable the sort button if there is only one artist [Or less]

@@ -46,7 +46,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // --- UI SETUP ---
 
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.playbackModel = playbackModel
+        binding.song = playbackModel.currentSong.value!!
 
         binding.playbackToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -54,7 +56,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee scroll work
         binding.playbackSong.isSelected = true
-
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
@@ -63,6 +64,15 @@ class PlaybackViewModel : ViewModel() {
 
     // Update the current song while changing the queue mode.
     fun update(song: Song, mode: PlaybackMode) {
+
+        // Auxio doesn't support playing songs while swapping the mode to GENRE, as genres
+        // are bound to artists, not songs.
+        if (mode == PlaybackMode.IN_GENRE) {
+            Log.e(this::class.simpleName, "Auxio cant play songs with the mode of IN_GENRE.")
+
+            return
+        }
+
         Log.d(this::class.simpleName, "Updating song to ${song.name} and mode to $mode")
 
         val musicStore = MusicStore.getInstance()
@@ -75,12 +85,14 @@ class PlaybackViewModel : ViewModel() {
             PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
             PlaybackMode.IN_ARTIST -> song.album.artist.songs
             PlaybackMode.IN_ALBUM -> song.album.songs
+            PlaybackMode.IN_GENRE -> error("what")
         }
 
         mCurrentParent.value = when (mode) {
             PlaybackMode.ALL_SONGS -> null
             PlaybackMode.IN_ARTIST -> song.album.artist
             PlaybackMode.IN_ALBUM -> song.album
+            PlaybackMode.IN_GENRE -> error("what")
         }
 
         if (mIsShuffling.value!!) {
@@ -92,6 +104,7 @@ class PlaybackViewModel : ViewModel() {
         mCurrentIndex.value = mQueue.value!!.indexOf(song)
     }
 
+    // Play some parent music model, whether that being albums/artists/genres.
     fun play(album: Album, isShuffled: Boolean) {
         Log.d(this::class.simpleName, "Playing album ${album.name}")
 
@@ -124,6 +137,26 @@ class PlaybackViewModel : ViewModel() {
         mCurrentParent.value = artist
         mIsShuffling.value = isShuffled
         mCurrentMode.value = PlaybackMode.IN_ARTIST
+
+        if (mIsShuffling.value!!) {
+            genShuffle(false)
+        } else {
+            resetShuffle()
+        }
+    }
+
+    fun play(genre: Genre, isShuffled: Boolean) {
+        Log.d(this::class.simpleName, "Playing genre ${genre.name}")
+
+        val songs = orderSongsInGenre(genre)
+
+        updatePlayback(songs[0])
+
+        mQueue.value = songs
+        mCurrentIndex.value = 0
+        mCurrentParent.value = genre
+        mIsShuffling.value = isShuffled
+        mCurrentMode.value = PlaybackMode.IN_GENRE
 
         if (mIsShuffling.value!!) {
             genShuffle(false)
@@ -232,6 +265,7 @@ class PlaybackViewModel : ViewModel() {
         mQueue.value = when (mCurrentMode.value!!) {
             PlaybackMode.IN_ARTIST -> orderSongsInArtist(mCurrentParent.value as Artist)
             PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mCurrentParent.value as Album)
+            PlaybackMode.IN_GENRE -> orderSongsInGenre(mCurrentParent.value as Genre)
             PlaybackMode.ALL_SONGS -> MusicStore.getInstance().songs.toMutableList()
         }
 
@@ -246,8 +280,22 @@ class PlaybackViewModel : ViewModel() {
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
         val final = mutableListOf<Song>()
 
-        artist.albums.sortedByDescending { it.year }.forEach {
-            final.addAll(it.songs.sortedBy { it.track })
+        artist.albums.sortedByDescending { it.year }.forEach { album ->
+            final.addAll(album.songs.sortedBy { it.track })
+        }
+
+        return final
+    }
+
+    private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
+        val final = mutableListOf<Song>()
+
+        genre.artists.sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+        ).forEach { artist ->
+            artist.albums.sortedByDescending { it.year }.forEach { album ->
+                final.addAll(album.songs.sortedBy { it.track })
+            }
         }
 
         return final

@@ -9,7 +9,6 @@ https://github.com/ashutoshgngwr/noice
         <vector
             android:width="32dp"
             android:height="32dp"
-            android:alpha="1"
             android:viewportWidth="24.0"
             android:viewportHeight="24.0">
 
@@ -19,21 +18,20 @@ https://github.com/ashutoshgngwr/noice
                 android:pivotY="12">
 
                 <path
-                    android:name="play_upper"
+                    android:name="pause_right"
                     android:fillColor="@android:color/white"
-                    android:pathData="M8.25,6L8.25,12L18.75,12L18.75,12Z" />
+                    android:pathData="M 22.677734 18.898438 L 22.677734 71.810547 L 37.794922 71.810547 L 37.794922 18.898438 L 22.677734 18.898438 z" />
 
                 <path
-                    android:name="play_lower"
+                    android:name="pause_left"
                     android:fillColor="@android:color/white"
-                    android:pathData="M8.25,18L8.25,12L18.75,12L18.75,12Z" />
+                    android:pathData="M 52.914062 18.898438 L 52.914062 71.810547 L 68.03125 71.810547 L 68.03125 18.898438 L 52.914062 18.898438 z " />
 
             </group>
-
         </vector>
     </aapt:attr>
 
-    <target android:name="play_upper">
+    <target android:name="pause_right">
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
@@ -47,7 +45,7 @@ https://github.com/ashutoshgngwr/noice
         </aapt:attr>
     </target>
 
-    <target android:name="play_lower">
+    <target android:name="pause_left">
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator

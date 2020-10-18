@@ -55,14 +55,28 @@ class AlbumDetailFragment : Fragment() {
         binding.playbackModel = playbackModel
         binding.album = detailModel.currentAlbum.value!!
 
+        binding.albumToolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_shuffle -> playbackModel.play(
+                        detailModel.currentAlbum.value!!,
+                        true
+                    )
+                    R.id.action_play -> playbackModel.play(detailModel.currentAlbum.value!!, false)
+                }
+
+                true
+            }
+        }
+
         binding.albumSongRecycler.apply {
             adapter = songAdapter
             applyDivider()
             setHasFixedSize(true)
-        }
-
-        binding.albumToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
         }
 
         // Don't enable the sort button if there's only one song [or less]
@@ -82,16 +96,6 @@ class AlbumDetailFragment : Fragment() {
             songAdapter.submitList(
                 mode.getSortedSongList(detailModel.currentAlbum.value!!.songs)
             )
-        }
-
-        // Observe playback model to update the play button
-        // TODO: Make these icons animated
-        playbackModel.currentMode.observe(viewLifecycleOwner) {
-            updatePlayButton(it, binding)
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            updatePlayButton(playbackModel.currentMode.value!!, binding)
         }
 
         // If the album was shown directly from LibraryFragment, Then enable the ability to
@@ -117,35 +121,5 @@ class AlbumDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    // Update the play button depending on the current playback status
-    // If playing this album -> Make button show media controls
-    // If not playing this album -> Make button update playback to the artist
-    private fun updatePlayButton(
-        mode: PlaybackMode,
-        binding: FragmentAlbumDetailBinding
-    ) {
-        playbackModel.currentParent.value?.let { parent ->
-            if (mode == PlaybackMode.IN_ALBUM &&
-                parent.id == detailModel.currentAlbum.value!!.id
-            ) {
-                if (playbackModel.isPlaying.value!!) {
-                    binding.albumPlay.setImageResource(R.drawable.ic_pause)
-                } else {
-                    binding.albumPlay.setImageResource(R.drawable.ic_play)
-                }
-
-                binding.albumPlay.setOnClickListener {
-                    playbackModel.invertPlayingStatus()
-                }
-            } else {
-                binding.albumPlay.setImageResource(R.drawable.ic_play)
-
-                binding.albumPlay.setOnClickListener {
-                    playbackModel.play(detailModel.currentAlbum.value!!, false)
-                }
-            }
-        }
     }
 }
