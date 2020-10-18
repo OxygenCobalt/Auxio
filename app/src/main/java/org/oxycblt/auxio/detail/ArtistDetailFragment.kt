@@ -105,7 +105,10 @@ class ArtistDetailFragment : Fragment() {
     // Update the play button depending on the current playback status
     // If playing this artist -> Make button show media controls
     // If not playing this artist -> Make button update playback to the artist
-    private fun updatePlayButton(mode: PlaybackMode, binding: FragmentArtistDetailBinding) {
+    private fun updatePlayButton(
+        mode: PlaybackMode,
+        binding: FragmentArtistDetailBinding
+    ) {
         playbackModel.currentParent.value?.let { parent ->
             if (mode == PlaybackMode.IN_ARTIST &&
                 parent.id == detailModel.currentArtist.value!!.id
@@ -123,7 +126,7 @@ class ArtistDetailFragment : Fragment() {
                 binding.artistPlay.setImageResource(R.drawable.ic_play)
 
                 binding.artistPlay.setOnClickListener {
-                    playbackModel.play(detailModel.currentArtist.value!!, false)
+                    playbackModel.play(detailModel.currentAlbum.value!!, false)
                 }
             }
         }

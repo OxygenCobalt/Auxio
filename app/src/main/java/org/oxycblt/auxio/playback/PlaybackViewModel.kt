@@ -44,9 +44,13 @@ class PlaybackViewModel : ViewModel() {
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
 
     private val mShuffleSeed = MutableLiveData(-1L)
+    val shuffleSeed: LiveData<Long> get() = mShuffleSeed
 
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
+
+    private var mCanAnimate = false
+    val canAnimate: Boolean get() = mCanAnimate
 
     // Formatted variants of the duration
     val formattedCurrentDuration = Transformations.map(mCurrentDuration) {
@@ -136,6 +140,8 @@ class PlaybackViewModel : ViewModel() {
     // Invert, not directly set the playing/shuffling status
     // Used by the toggle buttons in playback fragment.
     fun invertPlayingStatus() {
+        mCanAnimate = true
+
         mIsPlaying.value = !mIsPlaying.value!!
     }
 
@@ -181,6 +187,10 @@ class PlaybackViewModel : ViewModel() {
         }
 
         updatePlayback(mQueue.value!![mCurrentIndex.value!!])
+    }
+
+    fun resetAnimStatus() {
+        mCanAnimate = false
     }
 
     private fun updatePlayback(song: Song) {

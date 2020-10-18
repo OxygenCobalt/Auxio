@@ -16,8 +16,8 @@ import coil.fetch.SourceResult
 import coil.size.Size
 import okio.buffer
 import okio.source
-import java.io.InputStream
 import org.oxycblt.auxio.R
+import java.io.InputStream
 
 const val MOSAIC_BITMAP_SIZE = 512
 const val MOSAIC_BITMAP_INCREMENT = 256

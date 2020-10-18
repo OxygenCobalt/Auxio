@@ -91,12 +91,12 @@
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
             android:background="@drawable/ui_unbounded_ripple"
+            android:tint="@color/control_color"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_play_to_pause"
-            android:tint="@color/control_color" />
+            tools:src="@drawable/ic_play_to_pause" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

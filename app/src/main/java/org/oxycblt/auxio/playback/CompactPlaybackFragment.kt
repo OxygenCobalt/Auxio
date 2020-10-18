@@ -61,13 +61,21 @@ class CompactPlaybackFragment : Fragment() {
 
         // TODO: Fix the thing where the icons will animate on startup
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (it) {
-                // Animate the icon transition when the playing status switches
-                binding.playbackControls.setImageDrawable(iconPauseToPlay)
-                iconPauseToPlay.start()
+            if (playbackModel.canAnimate) {
+                if (it) {
+                    // Animate the icon transition when the playing status switches
+                    binding.playbackControls.setImageDrawable(iconPauseToPlay)
+                    iconPauseToPlay.start()
+                } else {
+                    binding.playbackControls.setImageDrawable(iconPlayToPause)
+                    iconPlayToPause.start()
+                }
             } else {
-                binding.playbackControls.setImageDrawable(iconPlayToPause)
-                iconPlayToPause.start()
+                if (it) {
+                    binding.playbackControls.setImageResource(R.drawable.ic_pause)
+                } else {
+                    binding.playbackControls.setImageResource(R.drawable.ic_play)
+                }
             }
         }
 
@@ -80,9 +88,9 @@ class CompactPlaybackFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
 
-        playbackModel.updateStaticIconStatus(true)
+        playbackModel.resetAnimStatus()
     }
 }

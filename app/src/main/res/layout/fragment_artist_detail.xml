@@ -98,7 +98,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/artist_genre"
                     tools:text="2 Albums, 20 Songs" />
 
-                <!-- TODO: Improve these two buttons so that they don't look as cluttered -->
+                <!-- TODO: Improve these two buttons so that they dont look as cluttered -->
                 <ImageButton
                     android:id="@+id/artist_play"
                     style="@style/Widget.AppCompat.Button.Borderless"
@@ -106,6 +106,7 @@
                     android:layout_height="0dp"
                     android:layout_marginTop="@dimen/margin_tiny"
                     android:layout_marginEnd="@dimen/margin_tiny"
+                    android:tint="@color/background"
                     android:background="@drawable/ui_circular_button"
                     android:backgroundTint="?android:attr/colorPrimary"
                     android:contentDescription="@string/description_play"

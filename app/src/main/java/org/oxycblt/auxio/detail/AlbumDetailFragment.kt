@@ -122,7 +122,10 @@ class AlbumDetailFragment : Fragment() {
     // Update the play button depending on the current playback status
     // If playing this album -> Make button show media controls
     // If not playing this album -> Make button update playback to the artist
-    private fun updatePlayButton(mode: PlaybackMode, binding: FragmentAlbumDetailBinding) {
+    private fun updatePlayButton(
+        mode: PlaybackMode,
+        binding: FragmentAlbumDetailBinding
+    ) {
         playbackModel.currentParent.value?.let { parent ->
             if (mode == PlaybackMode.IN_ALBUM &&
                 parent.id == detailModel.currentAlbum.value!!.id
