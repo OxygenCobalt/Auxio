@@ -129,8 +129,6 @@ class MusicLoader(
                     name = artistPlaceholder
                 }
 
-                Log.d(this::class.simpleName, id.toString())
-
                 artists.add(
                     Artist(
                         id, name
@@ -140,6 +138,10 @@ class MusicLoader(
 
             cursor.close()
         }
+
+        artists = artists.distinctBy {
+            it.name to it.genres
+        }.toMutableList()
 
         // Then try to associate any genres with their respective artists.
         for (genre in genres) {
@@ -165,10 +167,6 @@ class MusicLoader(
                 cursor.close()
             }
         }
-
-        artists = artists.distinctBy {
-            it.name to it.genres
-        }.toMutableList()
 
         Log.d(
             this::class.simpleName,

@@ -3,7 +3,7 @@ package org.oxycblt.auxio.music
 import android.net.Uri
 
 // --- MUSIC MODELS ---
-// TODO: Remove parent/child references so that they can be parcelable [Would require genre rework]
+// FIXME: Remove parent/child references so that they can be parcelable?
 
 // The base model for all music
 // This is used in a lot of general functions in order to have generic utilities
@@ -93,6 +93,13 @@ data class Genre(
             num += it.numSongs
         }
         num
+    }
+    val songs: MutableList<Song> by lazy {
+        val songs = mutableListOf<Song>()
+        artists.forEach {
+            songs.addAll(it.songs)
+        }
+        songs
     }
 }
 

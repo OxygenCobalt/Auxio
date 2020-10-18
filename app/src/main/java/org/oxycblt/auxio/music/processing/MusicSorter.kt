@@ -26,6 +26,9 @@ class MusicSorter(
         genres = genres.distinctBy {
             it.name
         }.toMutableList()
+
+        // Also elimate any genres that dont have artists, which also happens sometimes.
+        genres.removeAll { it.artists.isEmpty() }
     }
 
     private fun sortSongsIntoAlbums() {

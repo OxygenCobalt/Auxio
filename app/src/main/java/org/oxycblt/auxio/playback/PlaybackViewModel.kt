@@ -18,7 +18,7 @@ import kotlin.random.Random.Default.nextLong
 // TODO: Queue
 // TODO: Add the playback service itself
 // TODO: Add loop control [From playback]
-// TODO: Implement persistence through Bundles and sanity checks [I want to keep my shuffles, okay?]
+// TODO: Implement persistence through Bundles [I want to keep my shuffles, okay?]
 // A ViewModel that acts as an intermediary between PlaybackService and the Playback Fragments.
 class PlaybackViewModel : ViewModel() {
     private val mCurrentSong = MutableLiveData<Song>()
@@ -108,6 +108,12 @@ class PlaybackViewModel : ViewModel() {
     fun play(album: Album, isShuffled: Boolean) {
         Log.d(this::class.simpleName, "Playing album ${album.name}")
 
+        if (album.songs.isEmpty()) {
+            Log.e(this::class.simpleName, "Album is empty, not playing.")
+
+            return
+        }
+
         val songs = orderSongsInAlbum(album)
 
         updatePlayback(songs[0])
@@ -128,6 +134,12 @@ class PlaybackViewModel : ViewModel() {
     fun play(artist: Artist, isShuffled: Boolean) {
         Log.d(this::class.simpleName, "Playing artist ${artist.name}")
 
+        if (artist.songs.isEmpty()) {
+            Log.e(this::class.simpleName, "Artist is empty, not playing.")
+
+            return
+        }
+
         val songs = orderSongsInArtist(artist)
 
         updatePlayback(songs[0])
@@ -147,6 +159,12 @@ class PlaybackViewModel : ViewModel() {
 
     fun play(genre: Genre, isShuffled: Boolean) {
         Log.d(this::class.simpleName, "Playing genre ${genre.name}")
+
+        if (genre.songs.isEmpty()) {
+            Log.e(this::class.simpleName, "Genre is empty, not playing.")
+
+            return
+        }
 
         val songs = orderSongsInGenre(genre)
 
