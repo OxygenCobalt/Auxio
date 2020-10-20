@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
+import org.oxycblt.auxio.playback.queue.QueueFragment
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.disable
 import org.oxycblt.auxio.theme.enable
@@ -50,8 +51,18 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.playbackModel = playbackModel
         binding.song = playbackModel.currentSong.value!!
 
-        binding.playbackToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        binding.playbackToolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnMenuItemClickListener {
+                if (it.itemId == R.id.action_queue) {
+                    QueueFragment().show(parentFragmentManager, "TAG_QUEUE")
+                }
+
+                true
+            }
         }
 
         // Make marquee scroll work

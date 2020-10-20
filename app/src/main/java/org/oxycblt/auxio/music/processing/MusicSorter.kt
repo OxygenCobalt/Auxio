@@ -20,15 +20,7 @@ class MusicSorter(
         sortSongsIntoAlbums()
         sortAlbumsIntoArtists()
         sortArtistsIntoGenres()
-
-        // Remove genre duplicates at the end, as duplicate genres can be added during
-        // the sorting process as well.
-        genres = genres.distinctBy {
-            it.name
-        }.toMutableList()
-
-        // Also elimate any genres that dont have artists, which also happens sometimes.
-        genres.removeAll { it.artists.isEmpty() }
+        fixBuggyGenres()
     }
 
     private fun sortSongsIntoAlbums() {
@@ -160,5 +152,17 @@ class MusicSorter(
                 "${unknownArtists.size} artists were placed into an unknown genre."
             )
         }
+    }
+
+    // Band-aid any buggy genres created by the broken Music Loading system.
+    private fun fixBuggyGenres() {
+        // Remove genre duplicates at the end, as duplicate genres can be added during
+        // the sorting process as well.
+        genres = genres.distinctBy {
+            it.name
+        }.toMutableList()
+
+        // Also eliminate any genres that don't have artists, which also happens sometimes.
+        genres.removeAll { it.artists.isEmpty() }
     }
 }

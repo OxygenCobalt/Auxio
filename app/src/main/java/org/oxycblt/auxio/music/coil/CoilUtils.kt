@@ -2,6 +2,7 @@ package org.oxycblt.auxio.music.coil
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import coil.Coil
@@ -79,17 +80,30 @@ fun ImageView.bindGenreImage(genre: Genre) {
     if (genre.numArtists >= 4) {
         val uris = mutableListOf<Uri>()
 
-        // For each artist, get the nth album from them [if possible].
-        for (i in 0..3) {
-            val artist = genre.artists[i]
+        Log.d(this::class.simpleName, genre.numAlbums.toString())
 
-            uris.add(
-                if (artist.albums.size > i) {
-                    artist.albums[i].coverUri
-                } else {
-                    artist.albums[0].coverUri
+        // Try to create a 4x4 mosaic if possible, if not, just create a 2x2 mosaic.
+        if (genre.numAlbums >= 16) {
+            while (uris.size < 16) {
+                genre.artists.forEach { artist ->
+                    artist.albums.forEach {
+                        uris.add(it.coverUri)
+                    }
                 }
-            )
+            }
+        } else {
+            // Get the Nth cover from each artist, if possible.
+            for (i in 0..3) {
+                val artist = genre.artists[i]
+
+                uris.add(
+                    if (artist.albums.size > i) {
+                        artist.albums[i].coverUri
+                    } else {
+                        artist.albums[0].coverUri
+                    }
+                )
+            }
         }
 
         val fetcher = MosaicFetcher(context)

@@ -7,6 +7,7 @@
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:colorControlNormal">@color/control_color</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <!-- Toolbar Themes -->
@@ -35,5 +36,15 @@
     <style name="AppThemeOverlay.Popup" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">@color/background</item>
         <item name="colorControlHighlight">@color/selection_color</item>
+    </style>
+
+    <!--
+    Hack to get QueueFragment to not overlap the Status Bar or Navigation Bar
+    https://stackoverflow.com/a/57790787/14143986
+    -->
+    <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

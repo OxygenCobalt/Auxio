@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
+        android:fitsSystemWindows="true"
         android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
@@ -34,6 +35,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_playback"
+            app:menu="@menu/menu_playback"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
 
         <ImageView

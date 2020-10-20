@@ -25,6 +25,7 @@
     <string name="label_sort_alpha_up">Z-A</string>
     <string name="label_shuffle">Shuffle</string>
     <string name="label_play">Play</string>
+    <string name="label_queue">Queue</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search Library…</string>

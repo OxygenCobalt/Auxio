@@ -62,11 +62,16 @@ class PlaybackViewModel : ViewModel() {
         if (mCurrentSong.value != null) it.toInt() else 0
     }
 
+    // Formatted queue that shows all the songs after the current playing song.
+    val formattedQueue = Transformations.map(mQueue) {
+        it.slice((mCurrentIndex.value!! + 1) until it.size)
+    }
+
     // Update the current song while changing the queue mode.
     fun update(song: Song, mode: PlaybackMode) {
 
-        // Auxio doesn't support playing songs while swapping the mode to GENRE, as genres
-        // are bound to artists, not songs.
+        // Auxio doesn't support playing songs while swapping the mode to GENRE, as its impossible
+        // to determine what genre a song has.
         if (mode == PlaybackMode.IN_GENRE) {
             Log.e(this::class.simpleName, "Auxio cant play songs with the mode of IN_GENRE.")
 
@@ -224,26 +229,36 @@ class PlaybackViewModel : ViewModel() {
         mIsSeeking.value = status
     }
 
+    // Skip to next song
     fun skipNext() {
         if (mCurrentIndex.value!! < mQueue.value!!.size) {
             mCurrentIndex.value = mCurrentIndex.value!!.inc()
         }
 
         updatePlayback(mQueue.value!![mCurrentIndex.value!!])
+
+        // Force the observers to actually update.
+        mQueue.value = mQueue.value
     }
 
+    // Skip to last song
     fun skipPrev() {
         if (mCurrentIndex.value!! > 0) {
             mCurrentIndex.value = mCurrentIndex.value!!.dec()
         }
 
         updatePlayback(mQueue.value!![mCurrentIndex.value!!])
+
+        // Force the observers to actually update.
+        mQueue.value = mQueue.value
     }
 
     fun resetAnimStatus() {
         mCanAnimate = false
     }
 
+    // Generic function for updating the playback with a new song.
+    // Use this instead of manually updating the values each time.
     private fun updatePlayback(song: Song) {
         mCurrentSong.value = song
         mCurrentDuration.value = 0
@@ -275,8 +290,12 @@ class PlaybackViewModel : ViewModel() {
             // Otherwise, just start from the zeroth position in the queue.
             mCurrentSong.value = mQueue.value!![0]
         }
+
+        // Force the observers to actually update.
+        mQueue.value = mQueue.value
     }
 
+    // Stop the queue and attempt to restore to the previous state
     private fun resetShuffle() {
         mShuffleSeed.value = -1
 
