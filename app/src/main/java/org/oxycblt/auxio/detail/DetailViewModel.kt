@@ -10,7 +10,7 @@ import org.oxycblt.auxio.recycler.SortMode
 
 // ViewModel for the Detail Fragments.
 // TODO:
-//  - Implement a system where the Toolbar will update with some infowhen
+//  - Implement a system where the Toolbar will update with some info when
 //    the main detail header is obscured.
 class DetailViewModel : ViewModel() {
     private var mIsNavigating = false

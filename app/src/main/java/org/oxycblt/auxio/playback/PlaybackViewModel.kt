@@ -15,7 +15,7 @@ import org.oxycblt.auxio.music.toDuration
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextLong
 
-// TODO: Queue
+// TODO: Editing/Adding to Queue
 // TODO: Add the playback service itself
 // TODO: Add loop control [From playback]
 // TODO: Implement persistence through Bundles [I want to keep my shuffles, okay?]
@@ -237,8 +237,7 @@ class PlaybackViewModel : ViewModel() {
 
         updatePlayback(mQueue.value!![mCurrentIndex.value!!])
 
-        // Force the observers to actually update.
-        mQueue.value = mQueue.value
+        forceQueueUpdate()
     }
 
     // Skip to last song
@@ -249,12 +248,59 @@ class PlaybackViewModel : ViewModel() {
 
         updatePlayback(mQueue.value!![mCurrentIndex.value!!])
 
-        // Force the observers to actually update.
-        mQueue.value = mQueue.value
+        forceQueueUpdate()
     }
 
     fun resetAnimStatus() {
         mCanAnimate = false
+    }
+
+    // Move two queue items. Called by QueueDragCallback.
+    fun moveQueueItems(adapterFrom: Int, adapterTo: Int) {
+        // Translate the adapter indices into the correct queue indices
+        val delta = mQueue.value!!.size - formattedQueue.value!!.size
+
+        val from = adapterFrom + delta
+        val to = adapterTo + delta
+
+        try {
+            val currentItem = mQueue.value!![from]
+            val targetItem = mQueue.value!![to]
+
+            // Then swap the items manually since kotlin does have a swap function.
+            mQueue.value!![to] = currentItem
+            mQueue.value!![from] = targetItem
+        } catch (exception: IndexOutOfBoundsException) {
+            Log.e(this::class.simpleName, "Indices were out of bounds, did not swap queue items")
+
+            return
+        }
+
+        forceQueueUpdate()
+    }
+
+    // Remove a queue item. Called by QueueDragCallback.
+    fun removeQueueItem(adapterIndex: Int) {
+        // Translate the adapter index into the correct queue index
+        val delta = mQueue.value!!.size - formattedQueue.value!!.size
+        val properIndex = adapterIndex + delta
+
+        Log.d(this::class.simpleName, "Removing item ${mQueue.value!![properIndex].name}.")
+
+        if (properIndex > mQueue.value!!.size || properIndex < 0) {
+            Log.e(this::class.simpleName, "Index is out of bounds, did not remove queue item.")
+
+            return
+        }
+
+        mQueue.value!!.removeAt(properIndex)
+
+        forceQueueUpdate()
+    }
+
+    // Force the observers of the queue to actually update after making changes.
+    private fun forceQueueUpdate() {
+        mQueue.value = mQueue.value
     }
 
     // Generic function for updating the playback with a new song.

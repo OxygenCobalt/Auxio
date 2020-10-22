@@ -20,7 +20,7 @@ import org.oxycblt.auxio.theme.disable
 import org.oxycblt.auxio.theme.enable
 import org.oxycblt.auxio.theme.toColor
 
-// TODO: Possibly add some swipe-to-next-track function, could require a ViewPager.
+// TODO: Add a swipe-to-next-track function using a ViewPager
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 

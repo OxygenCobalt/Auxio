@@ -10,17 +10,18 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <!-- Toolbar Themes -->
+    <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->
     <style name="Toolbar.Style" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:searchViewStyle">@style/Widget.AppCompat.SearchView</item>
     </style>
 
+    <!-- Toolbar Title Theme -->
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textColor">?android:attr/colorPrimary</item>
     </style>
 
-    <!-- Header Themes -->
+    <!-- Title theme for Detail Fragments -->
     <style name="DetailHeader">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?android:attr/colorPrimary</item>
@@ -28,6 +29,7 @@
         <item name="android:textSize">@dimen/text_size_header_max</item>
     </style>
 
+    <!-- Smaller Title theme that is used for headers -->
     <style name="TextAppearance.SmallHeader" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:fontFamily">@font/inter_semibold</item>
     </style>

@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
@@ -25,7 +27,9 @@ class QueueFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val queueAdapter = QueueAdapter {}
+        val helper = ItemTouchHelper(QueueDragCallback(playbackModel))
+
+        val queueAdapter = QueueAdapter(helper)
 
         // --- UI SETUP ---
 
@@ -34,12 +38,15 @@ class QueueFragment : BottomSheetDialogFragment() {
             adapter = queueAdapter
             applyDivider()
             setHasFixedSize(true)
+            itemAnimator = DefaultItemAnimator()
+
+            helper.attachToRecyclerView(this)
         }
 
         // --- VIEWMODEL SETUP ---
 
         playbackModel.formattedQueue.observe(viewLifecycleOwner) {
-            queueAdapter.submitList(it)
+            queueAdapter.submitList(it.toMutableList())
         }
 
         return binding.root
