@@ -255,7 +255,8 @@ class PlaybackViewModel : ViewModel() {
         mCanAnimate = false
     }
 
-    // Move two queue items. Called by QueueDragCallback.
+    // Move two queue items. Note that this function does not force-update the queue,
+    // as calling updateData with a drag would cause bugs.
     fun moveQueueItems(adapterFrom: Int, adapterTo: Int) {
         // Translate the adapter indices into the correct queue indices
         val delta = mQueue.value!!.size - formattedQueue.value!!.size
@@ -265,13 +266,11 @@ class PlaybackViewModel : ViewModel() {
 
         try {
             val currentItem = mQueue.value!![from]
-            val targetItem = mQueue.value!![to]
 
-            // Then swap the items manually since kotlin does have a swap function.
-            mQueue.value!![to] = currentItem
-            mQueue.value!![from] = targetItem
+            mQueue.value!!.removeAt(from)
+            mQueue.value!!.add(to, currentItem)
         } catch (exception: IndexOutOfBoundsException) {
-            Log.e(this::class.simpleName, "Indices were out of bounds, did not swap queue items")
+            Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
 
             return
         }
@@ -279,7 +278,8 @@ class PlaybackViewModel : ViewModel() {
         forceQueueUpdate()
     }
 
-    // Remove a queue item. Called by QueueDragCallback.
+    // Remove a queue item. Note that this function does not force-update the queue,
+    // as calling updateData with a drag would cause bugs.
     fun removeQueueItem(adapterIndex: Int) {
         // Translate the adapter index into the correct queue index
         val delta = mQueue.value!!.size - formattedQueue.value!!.size

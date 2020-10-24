@@ -27,8 +27,9 @@ class QueueFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val helper = ItemTouchHelper(QueueDragCallback(playbackModel))
-
+        val helper = ItemTouchHelper(
+            QueueDragCallback(playbackModel)
+        )
         val queueAdapter = QueueAdapter(helper)
 
         // --- UI SETUP ---
@@ -36,9 +37,9 @@ class QueueFragment : BottomSheetDialogFragment() {
         binding.queueHeader.setTextColor(accent.first.toColor(requireContext()))
         binding.queueRecycler.apply {
             adapter = queueAdapter
+            itemAnimator = DefaultItemAnimator()
             applyDivider()
             setHasFixedSize(true)
-            itemAnimator = DefaultItemAnimator()
 
             helper.attachToRecyclerView(this)
         }
@@ -46,7 +47,15 @@ class QueueFragment : BottomSheetDialogFragment() {
         // --- VIEWMODEL SETUP ---
 
         playbackModel.formattedQueue.observe(viewLifecycleOwner) {
-            queueAdapter.submitList(it.toMutableList())
+            // If the first item is being moved, then scroll to the top position on completion
+            // to prevent ListAdapter from scrolling uncontrollably.
+            if (queueAdapter.currentList.isNotEmpty() && it[0].id != queueAdapter.currentList[0].id) {
+                queueAdapter.submitList(it.toMutableList()) {
+                    binding.queueRecycler.scrollToPosition(0)
+                }
+            } else {
+                queueAdapter.submitList(it.toMutableList())
+            }
         }
 
         return binding.root

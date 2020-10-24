@@ -10,6 +10,7 @@ abstract class BaseViewHolder<T : BaseModel>(
     private val doOnClick: ((T) -> Unit)?
 ) : RecyclerView.ViewHolder(baseBinding.root) {
     init {
+        // Force the layout to *actually* be the screen width
         baseBinding.root.layoutParams = RecyclerView.LayoutParams(
             RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
         )

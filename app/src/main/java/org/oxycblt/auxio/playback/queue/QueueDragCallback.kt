@@ -4,14 +4,17 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
-class QueueDragCallback(private val playbackModel: PlaybackViewModel) :
-    ItemTouchHelper.SimpleCallback(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-        ItemTouchHelper.START
-    ) {
+// The drag callback used for the Queue RecyclerView.
+class QueueDragCallback(
+    private val playbackModel: PlaybackViewModel
+) : ItemTouchHelper.SimpleCallback(
+    ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+    ItemTouchHelper.START
+) {
     override fun interpolateOutOfBoundsScroll(
         recyclerView: RecyclerView,
         viewSize: Int,
@@ -19,11 +22,14 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) :
         totalSize: Int,
         msSinceStartScroll: Long
     ): Int {
+        // Fix to make QueueFragment scroll when an item is scrolled out of bounds.
+        // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
+
         val standardSpeed = super.interpolateOutOfBoundsScroll(
             recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll
         )
 
-        val clampedAbsVelocity = Math.max(
+        val clampedAbsVelocity = max(
             MINIMUM_INITIAL_DRAG_VELOCITY,
             min(
                 abs(standardSpeed),

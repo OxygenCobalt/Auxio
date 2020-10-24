@@ -11,10 +11,9 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
-// FIXME: Build a Diff function so that QueueAdapter doesn't scroll wildly when things are moved
-class QueueAdapter(private val dragCallback: ItemTouchHelper) :
-    ListAdapter<Song, QueueAdapter.ViewHolder>(DiffCallback<Song>()) {
-
+class QueueAdapter(
+    val touchHelper: ItemTouchHelper
+) : ListAdapter<Song, QueueAdapter.ViewHolder>(DiffCallback<Song>()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context)))
     }
@@ -23,7 +22,7 @@ class QueueAdapter(private val dragCallback: ItemTouchHelper) :
         holder.bind(getItem(position))
     }
 
-    // Generic ViewHolder for a detail album
+    // Generic ViewHolder for a queue item
     inner class ViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding, null) {
@@ -35,7 +34,7 @@ class QueueAdapter(private val dragCallback: ItemTouchHelper) :
                 binding.songDragHandle.performClick()
 
                 if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                    dragCallback.startDrag(this)
+                    touchHelper.startDrag(this)
                     return@setOnTouchListener true
                 }
 
