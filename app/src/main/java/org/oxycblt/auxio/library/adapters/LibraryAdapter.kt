@@ -16,7 +16,7 @@ import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
 // It cannot display multiple ViewHolders *at once* however. That's what SearchAdapter is for.
 class LibraryAdapter(
     private val showMode: ShowMode,
-    private val doOnClick: (BaseModel) -> Unit
+    private val doOnClick: (data: BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data: List<BaseModel>

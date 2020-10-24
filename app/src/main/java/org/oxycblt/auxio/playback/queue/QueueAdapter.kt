@@ -28,8 +28,12 @@ class QueueAdapter(
     ) : BaseViewHolder<Song>(binding, null) {
 
         @SuppressLint("ClickableViewAccessibility")
-        override fun onBind(model: Song) {
-            binding.song = model
+        override fun onBind(data: Song) {
+            binding.song = data
+
+            binding.songName.requestLayout()
+            binding.songInfo.requestLayout()
+
             binding.songDragHandle.setOnTouchListener { _, motionEvent ->
                 binding.songDragHandle.performClick()
 
@@ -40,9 +44,6 @@ class QueueAdapter(
 
                 false
             }
-
-            binding.songName.requestLayout()
-            binding.songInfo.requestLayout()
         }
     }
 }

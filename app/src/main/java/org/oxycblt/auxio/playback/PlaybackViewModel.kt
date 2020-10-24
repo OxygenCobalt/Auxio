@@ -15,7 +15,7 @@ import org.oxycblt.auxio.music.toDuration
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextLong
 
-// TODO: Editing/Adding to Queue
+// TODO: Adding to Queue
 // TODO: Add the playback service itself
 // TODO: Add loop control [From playback]
 // TODO: Implement persistence through Bundles [I want to keep my shuffles, okay?]

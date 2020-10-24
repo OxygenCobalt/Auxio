@@ -7,7 +7,7 @@ import org.oxycblt.auxio.music.BaseModel
 // ViewHolder abstraction that automates some of the things that are common for all ViewHolders.
 abstract class BaseViewHolder<T : BaseModel>(
     private val baseBinding: ViewDataBinding,
-    private val doOnClick: ((T) -> Unit)?
+    private val doOnClick: ((data: T) -> Unit)?
 ) : RecyclerView.ViewHolder(baseBinding.root) {
     init {
         // Force the layout to *actually* be the screen width
@@ -16,15 +16,17 @@ abstract class BaseViewHolder<T : BaseModel>(
         )
     }
 
-    fun bind(model: T) {
-        doOnClick?.let {
-            baseBinding.root.setOnClickListener { it(model) }
+    fun bind(data: T) {
+        doOnClick?.let { onClick ->
+            baseBinding.root.setOnClickListener {
+                onClick(data)
+            }
         }
 
-        onBind(model)
+        onBind(data)
 
         baseBinding.executePendingBindings()
     }
 
-    abstract fun onBind(model: T)
+    protected abstract fun onBind(data: T)
 }

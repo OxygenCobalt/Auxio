@@ -9,7 +9,7 @@ import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
 class DetailAlbumAdapter(
-    private val doOnClick: (Album) -> Unit
+    private val doOnClick: (data: Album) -> Unit
 ) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,8 +27,8 @@ class DetailAlbumAdapter(
         private val binding: ItemArtistAlbumBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick) {
 
-        override fun onBind(model: Album) {
-            binding.album = model
+        override fun onBind(data: Album) {
+            binding.album = data
 
             binding.albumName.requestLayout()
         }

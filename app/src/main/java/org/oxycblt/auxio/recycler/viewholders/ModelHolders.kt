@@ -17,12 +17,12 @@ import org.oxycblt.auxio.music.Song
 // All new instances should be created with from() instead of direct instantiation.
 
 class GenreViewHolder private constructor(
-    doOnClick: (Genre) -> Unit,
-    private val binding: ItemGenreBinding
+    private val binding: ItemGenreBinding,
+    doOnClick: (Genre) -> Unit
 ) : BaseViewHolder<Genre>(binding, doOnClick) {
 
-    override fun onBind(model: Genre) {
-        binding.genre = model
+    override fun onBind(data: Genre) {
+        binding.genre = data
         binding.genreName.requestLayout()
     }
 
@@ -31,20 +31,20 @@ class GenreViewHolder private constructor(
 
         fun from(context: Context, doOnClick: (Genre) -> Unit): GenreViewHolder {
             return GenreViewHolder(
-                doOnClick,
-                ItemGenreBinding.inflate(LayoutInflater.from(context))
+                ItemGenreBinding.inflate(LayoutInflater.from(context)),
+                doOnClick
             )
         }
     }
 }
 
 class ArtistViewHolder private constructor(
+    private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
-    private val binding: ItemArtistBinding
 ) : BaseViewHolder<Artist>(binding, doOnClick) {
 
-    override fun onBind(model: Artist) {
-        binding.artist = model
+    override fun onBind(data: Artist) {
+        binding.artist = data
         binding.artistName.requestLayout()
     }
 
@@ -53,30 +53,30 @@ class ArtistViewHolder private constructor(
 
         fun from(context: Context, doOnClick: (Artist) -> Unit): ArtistViewHolder {
             return ArtistViewHolder(
-                doOnClick,
-                ItemArtistBinding.inflate(LayoutInflater.from(context))
+                ItemArtistBinding.inflate(LayoutInflater.from(context)),
+                doOnClick
             )
         }
     }
 }
 
 class AlbumViewHolder private constructor(
-    doOnClick: (Album) -> Unit,
-    private val binding: ItemAlbumBinding
+    private val binding: ItemAlbumBinding,
+    doOnClick: (data: Album) -> Unit
 ) : BaseViewHolder<Album>(binding, doOnClick) {
 
-    override fun onBind(model: Album) {
-        binding.album = model
+    override fun onBind(data: Album) {
+        binding.album = data
         binding.albumName.requestLayout()
     }
 
     companion object {
         const val ITEM_TYPE = 12
 
-        fun from(context: Context, doOnClick: (Album) -> Unit): AlbumViewHolder {
+        fun from(context: Context, doOnClick: (data: Album) -> Unit): AlbumViewHolder {
             return AlbumViewHolder(
+                ItemAlbumBinding.inflate(LayoutInflater.from(context)),
                 doOnClick,
-                ItemAlbumBinding.inflate(LayoutInflater.from(context))
             )
         }
     }
@@ -85,12 +85,12 @@ class AlbumViewHolder private constructor(
 // TODO: Add indicators to song recycler items when they're being played?
 
 class SongViewHolder private constructor(
-    doOnClick: (Song) -> Unit,
-    private val binding: ItemSongBinding
+    private val binding: ItemSongBinding,
+    doOnClick: (data: Song) -> Unit,
 ) : BaseViewHolder<Song>(binding, doOnClick) {
 
-    override fun onBind(model: Song) {
-        binding.song = model
+    override fun onBind(data: Song) {
+        binding.song = data
 
         binding.songName.requestLayout()
         binding.songInfo.requestLayout()
@@ -99,10 +99,13 @@ class SongViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 13
 
-        fun from(context: Context, doOnClick: (Song) -> Unit): SongViewHolder {
+        fun from(
+            context: Context,
+            doOnClick: (data: Song) -> Unit,
+        ): SongViewHolder {
             return SongViewHolder(
-                doOnClick,
-                ItemSongBinding.inflate(LayoutInflater.from(context))
+                ItemSongBinding.inflate(LayoutInflater.from(context)),
+                doOnClick
             )
         }
     }
@@ -111,8 +114,9 @@ class SongViewHolder private constructor(
 class HeaderViewHolder(
     private val binding: ItemHeaderBinding
 ) : BaseViewHolder<Header>(binding, null) {
-    override fun onBind(model: Header) {
-        binding.header = model
+
+    override fun onBind(data: Header) {
+        binding.header = data
     }
 
     companion object {
