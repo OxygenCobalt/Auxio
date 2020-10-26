@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.playback.state
 
 // Enum for instruction how the queue should function.
 // ALL SONGS -> Play from all songs

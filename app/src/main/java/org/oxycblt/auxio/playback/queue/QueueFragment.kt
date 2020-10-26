@@ -16,7 +16,9 @@ import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.toColor
 
 class QueueFragment : BottomSheetDialogFragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels {
+        PlaybackViewModel.Factory(requireActivity().application)
+    }
 
     override fun getTheme(): Int = R.style.Theme_BottomSheetFix
 
@@ -46,7 +48,7 @@ class QueueFragment : BottomSheetDialogFragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        playbackModel.formattedQueue.observe(viewLifecycleOwner) {
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
             // If the first item is being moved, then scroll to the top position on completion
             // to prevent ListAdapter from scrolling uncontrollably.
             if (queueAdapter.currentList.isNotEmpty() && it[0].id != queueAdapter.currentList[0].id) {

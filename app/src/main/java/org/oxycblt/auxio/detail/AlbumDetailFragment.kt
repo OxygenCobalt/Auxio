@@ -13,7 +13,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.PlaybackMode
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.disable
@@ -47,7 +47,7 @@ class AlbumDetailFragment : Fragment() {
         }
 
         val songAdapter = DetailSongAdapter {
-            playbackModel.update(it, PlaybackMode.IN_ALBUM)
+            playbackModel.playSong(it, PlaybackMode.IN_ALBUM)
         }
 
         // --- UI SETUP ---
@@ -64,11 +64,13 @@ class AlbumDetailFragment : Fragment() {
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_shuffle -> playbackModel.play(
+                    R.id.action_shuffle -> playbackModel.playAlbum(
                         detailModel.currentAlbum.value!!,
                         true
                     )
-                    R.id.action_play -> playbackModel.play(detailModel.currentAlbum.value!!, false)
+                    R.id.action_play -> playbackModel.playAlbum(
+                        detailModel.currentAlbum.value!!, false
+                    )
                 }
 
                 true

@@ -16,7 +16,9 @@ import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicStore
 
 class CompactPlaybackFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels {
+        PlaybackViewModel.Factory(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +52,7 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        playbackModel.currentSong.observe(viewLifecycleOwner) {
+        playbackModel.song.observe(viewLifecycleOwner) {
             if (it != null) {
                 Log.d(this::class.simpleName, "Updating song display to ${it.name}")
 
@@ -78,7 +80,7 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        playbackModel.formattedSeekBarProgress.observe(viewLifecycleOwner) {
+        playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
             binding.playbackProgress.progress = it
         }
 

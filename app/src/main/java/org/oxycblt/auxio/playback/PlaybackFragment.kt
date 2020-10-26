@@ -51,7 +51,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.playbackModel = playbackModel
-        binding.song = playbackModel.currentSong.value!!
+        binding.song = playbackModel.song.value!!
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener {
@@ -73,14 +73,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // --- VIEWMODEL SETUP --
 
-        playbackModel.currentSong.observe(viewLifecycleOwner) {
+        playbackModel.song.observe(viewLifecycleOwner) {
             Log.d(this::class.simpleName, "Updating song display to ${it.name}.")
 
             binding.song = it
             binding.playbackSeekBar.max = it.seconds.toInt()
         }
 
-        playbackModel.currentIndex.observe(viewLifecycleOwner) {
+        playbackModel.index.observe(viewLifecycleOwner) {
             if (it > 0) {
                 binding.playbackSkipPrev.enable(requireContext())
             } else {
@@ -129,11 +129,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         // Updates for the current duration TextView/Seekbar
-        playbackModel.formattedCurrentDuration.observe(viewLifecycleOwner) {
+        playbackModel.formattedPosition.observe(viewLifecycleOwner) {
             binding.playbackDurationCurrent.text = it
         }
 
-        playbackModel.formattedSeekBarProgress.observe(viewLifecycleOwner) {
+        playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
             binding.playbackSeekBar.progress = it
         }
 
@@ -145,7 +145,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     // Seeking callbacks
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser) {
-            playbackModel.updateCurrentDurationWithProgress(progress)
+            playbackModel.updatePositionWithProgress(progress)
         }
     }
 

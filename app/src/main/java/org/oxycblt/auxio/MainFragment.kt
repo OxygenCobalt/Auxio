@@ -92,7 +92,7 @@ class MainFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
-        playbackModel.currentSong.observe(viewLifecycleOwner) {
+        playbackModel.song.observe(viewLifecycleOwner) {
             if (it == null) {
                 Log.d(
                     this::class.simpleName,
