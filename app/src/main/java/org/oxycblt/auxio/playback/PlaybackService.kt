@@ -22,6 +22,8 @@ import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
+// A Service that manages the single ExoPlayer instance and [attempts] to keep
+// persistence if the app closes.
 class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private val player: SimpleExoPlayer by lazy {
         val p = SimpleExoPlayer.Builder(applicationContext).build()
@@ -54,8 +56,16 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         super.onDestroy()
 
         player.release()
-        playbackManager.removeCallback(this)
         serviceJob.cancel()
+        playbackManager.removeCallback(this)
+    }
+
+    override fun onPlaybackStateChanged(state: Int) {
+        if (state == Player.STATE_ENDED) {
+            playbackManager.next()
+        } else if (state == Player.STATE_READY) {
+            startPollingPosition()
+        }
     }
 
     override fun onSongUpdate(song: Song?) {
@@ -97,14 +107,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             pollCurrentPosition().takeWhile { true }.collect {
                 playbackManager.setPosition(it / 1000)
             }
-        }
-    }
-
-    override fun onPlaybackStateChanged(state: Int) {
-        if (state == Player.STATE_ENDED) {
-            playbackManager.skipNext()
-        } else if (state == Player.STATE_READY) {
-            startPollingPosition()
         }
     }
 

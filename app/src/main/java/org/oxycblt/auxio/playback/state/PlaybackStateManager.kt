@@ -166,7 +166,7 @@ class PlaybackStateManager {
 
     // --- QUEUE FUNCTIONS ---
 
-    fun skipNext() {
+    fun next() {
         if (mIndex < mQueue.size) {
             mIndex = mIndex.inc()
         }
@@ -176,7 +176,7 @@ class PlaybackStateManager {
         forceQueueUpdate()
     }
 
-    fun skipPrev() {
+    fun prev() {
         if (mIndex > 0) {
             mIndex = mIndex.dec()
         }
@@ -215,6 +215,7 @@ class PlaybackStateManager {
         forceQueueUpdate()
     }
 
+    // Force any callbacks to update when the queue is changed.
     private fun forceQueueUpdate() {
         mQueue = mQueue
     }

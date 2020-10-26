@@ -20,7 +20,10 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
-// The UI frontend for PlaybackStateManager.
+// A ViewModel that acts as an intermediary between the UI and PlaybackStateManager
+// TODO: Implement Looping Modes
+// TODO: Implement User Queue
+// TODO: Implement Persistence through Bundles/Databases/Idk
 class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackStateCallback {
     // Playback
     private val mSong = MutableLiveData<Song>()
@@ -88,14 +91,17 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     // --- PLAYING FUNCTIONS ---
 
+    // Play a song
     fun playSong(song: Song, mode: PlaybackMode) {
         playbackManager.playSong(song, mode)
     }
 
+    // Play all songs
     fun shuffleAll() {
         playbackManager.shuffleAll()
     }
 
+    // Play an album
     fun playAlbum(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
             Log.e(this::class.simpleName, "Album is empty, Not playing.")
@@ -106,6 +112,7 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
         playbackManager.playParentModel(album, shuffled)
     }
 
+    // Play an artist
     fun playArtist(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
             Log.e(this::class.simpleName, "Artist is empty, Not playing.")
@@ -116,6 +123,7 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
         playbackManager.playParentModel(artist, shuffled)
     }
 
+    // Play a genre
     fun playGenre(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
             Log.e(this::class.simpleName, "Genre is empty, Not playing.")
@@ -128,7 +136,15 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     // --- POSITION FUNCTIONS ---
 
-    fun updatePositionWithProgress(progress: Int) {
+    // Update the position without pushing the change to playbackManager.
+    // This is used during seek events to give the user an idea of where they're seeking to.
+    fun updatePositionDisplay(progress: Int) {
+        mPosition.value = progress.toLong()
+    }
+
+    // Update the position and push the change the playbackManager.
+    // This is done when the seek is confirmed to make playbackService seek to the position.
+    fun updatePosition(progress: Int) {
         playbackManager.setPosition(progress.toLong())
 
         playbackService.doSeek(progress.toLong())
@@ -136,14 +152,17 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     // --- QUEUE FUNCTIONS ---
 
+    // Skip to next song.
     fun skipNext() {
-        playbackManager.skipNext()
+        playbackManager.next()
     }
 
+    // Skip to last song.
     fun skipPrev() {
-        playbackManager.skipPrev()
+        playbackManager.prev()
     }
 
+    // Remove a queue item, given a QueueAdapter index.
     fun removeQueueItem(adapterIndex: Int) {
         // Translate the adapter indices into the correct queue indices
         val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
@@ -153,6 +172,7 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
         playbackManager.removeQueueItem(index)
     }
 
+    // Move queue items, given QueueAdapter indices.
     fun moveQueueItems(adapterFrom: Int, adapterTo: Int) {
         // Translate the adapter indices into the correct queue indices
         val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
@@ -165,12 +185,14 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     // --- STATUS FUNCTIONS ---
 
+    // Flip the playing status.
     fun invertPlayingStatus() {
         mCanAnimate = true
 
         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
 
+    // Flip the shuffle status.
     fun invertShuffleStatus() {
         playbackManager.setShuffleStatus(!playbackManager.isShuffling)
     }
@@ -198,7 +220,9 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
     }
 
     override fun onPositionUpdate(position: Long) {
-        mPosition.value = position
+        if (!mIsSeeking.value!!) {
+            mPosition.value = position
+        }
     }
 
     override fun onQueueUpdate(queue: MutableList<Song>) {

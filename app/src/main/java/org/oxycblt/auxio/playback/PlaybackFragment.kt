@@ -134,7 +134,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
-            binding.playbackSeekBar.progress = it
+            if (!playbackModel.isSeeking.value!!) {
+                binding.playbackSeekBar.progress = it
+            }
         }
 
         Log.d(this::class.simpleName, "Fragment Created.")
@@ -145,7 +147,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     // Seeking callbacks
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser) {
-            playbackModel.updatePositionWithProgress(progress)
+            playbackModel.updatePositionDisplay(progress)
         }
     }
 
@@ -155,5 +157,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onStopTrackingTouch(seekBar: SeekBar) {
         playbackModel.setSeekingStatus(false)
+
+        playbackModel.updatePosition(seekBar.progress)
     }
 }
