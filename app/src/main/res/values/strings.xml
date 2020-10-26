@@ -48,6 +48,8 @@
     <string name="description_shuffle_on">Turn shuffle on</string>
     <string name="description_shuffle_off">Turn shuffle off</string>
     <string name="description_service_playback">The music playback service for Auxio</string>
+    <string name="description_notif_playback">Music Playback</string>
+    <string name="description_playback">Auxio is playing music</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

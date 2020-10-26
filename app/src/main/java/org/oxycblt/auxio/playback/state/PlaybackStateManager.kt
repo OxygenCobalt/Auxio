@@ -52,6 +52,10 @@ class PlaybackStateManager {
         }
     private var mShuffleSeed = -1L
 
+    val song: Song? get() = mSong
+    val position: Long get() = mPosition
+    val queue: MutableList<Song> get() = mQueue
+    val index: Int get() = mIndex
     val isPlaying: Boolean get() = mIsPlaying
     val isShuffling: Boolean get() = mIsShuffling
 
@@ -162,6 +166,12 @@ class PlaybackStateManager {
 
     fun setPosition(position: Long) {
         mPosition = position
+    }
+
+    fun seekTo(position: Long) {
+        mPosition = position
+
+        callbacks.forEach { it.onSeekConfirm(position) }
     }
 
     // --- QUEUE FUNCTIONS ---

@@ -1,10 +1,15 @@
 package org.oxycblt.auxio.playback
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
-import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -17,10 +22,14 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+
+private const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
+private const val NOTIF_ID = 0xA0A0
 
 // A Service that manages the single ExoPlayer instance and [attempts] to keep
 // persistence if the app closes.
@@ -34,7 +43,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         p
     }
 
-    private val mBinder = LocalBinder()
     private val playbackManager = PlaybackStateManager.getInstance()
 
     private val serviceJob = Job()
@@ -42,12 +50,24 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         serviceJob + Dispatchers.Main
     )
 
-    override fun onBind(intent: Intent): IBinder {
-        return mBinder
+    private var isForeground = false
+
+    private lateinit var notification: Notification
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(this::class.simpleName, "Service is active.")
+
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return null
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        notification = createNotification()
 
         playbackManager.addCallback(this)
     }
@@ -58,6 +78,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         player.release()
         serviceJob.cancel()
         playbackManager.removeCallback(this)
+
+        stopForeground(true)
     }
 
     override fun onPlaybackStateChanged(state: Int) {
@@ -69,8 +91,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onSongUpdate(song: Song?) {
-        song?.let { song ->
-            val item = MediaItem.fromUri(song.id.toURI())
+        song?.let {
+            if (!isForeground) {
+                startForeground(NOTIF_ID, notification)
+
+                isForeground = true
+            }
+
+            val item = MediaItem.fromUri(it.id.toURI())
             player.setMediaItem(item)
             player.prepare()
             player.play()
@@ -87,13 +115,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
-    fun doSeek(position: Long) {
+    override fun onSeekConfirm(position: Long) {
         player.seekTo(position * 1000)
     }
 
     // Awful Hack to get position polling to work, as exoplayer does not provide any
     // onPositionChanged callback for some inane reason.
-    // FIXME: Consider using exoplayer UI elements here, don't be surprised if this causes problems.
+    // FIXME: Don't be surprised if this causes problems.
 
     private fun pollCurrentPosition() = flow {
         while (player.currentPosition <= player.duration) {
@@ -110,7 +138,29 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
-    inner class LocalBinder : Binder() {
-        fun getService() = this@PlaybackService
+    private fun createNotification(): Notification {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                getString(R.string.description_playback),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+        // TODO: Placeholder, implement proper media controls :)
+        val notif = NotificationCompat.Builder(
+            applicationContext,
+            CHANNEL_ID
+        )
+            .setSmallIcon(R.drawable.ic_song)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(getString(R.string.description_playback))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setChannelId(CHANNEL_ID)
+            .build()
+
+        return notif
     }
 }

@@ -9,4 +9,5 @@ interface PlaybackStateCallback {
     fun onPlayingUpdate(isPlaying: Boolean) {}
     fun onShuffleUpdate(isShuffling: Boolean) {}
     fun onIndexUpdate(index: Int) {}
+    fun onSeekConfirm(position: Long) {}
 }

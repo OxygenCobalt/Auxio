@@ -26,7 +26,6 @@
         <service android:name=".playback.PlaybackService"
             android:icon="@drawable/ic_launcher_foreground"
             android:description="@string/description_service_playback"
-            android:stopWithTask="false"/>
+            android:stopWithTask="false" />
     </application>
-
 </manifest>

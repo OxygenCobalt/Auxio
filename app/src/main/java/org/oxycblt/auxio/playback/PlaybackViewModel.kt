@@ -1,10 +1,7 @@
 package org.oxycblt.auxio.playback
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
-import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -68,25 +65,22 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
     // Service setup
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    private lateinit var playbackService: PlaybackService
-    private var playbackIntent: Intent
-
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, binder: IBinder) {
-            playbackService = (binder as PlaybackService.LocalBinder).getService()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            Log.d(this::class.simpleName, "Service disconnected.")
-        }
-    }
-
     init {
-        playbackIntent = Intent(context, PlaybackService::class.java).also {
-            context.bindService(it, connection, Context.BIND_AUTO_CREATE)
+        // Start the service from the ViewModel.
+        // Yes, I know ViewModels aren't supposed to deal with this stuff but for some
+        // reason it only works here.
+        Intent(context, PlaybackService::class.java).also {
+            context.startService(it)
         }
 
         playbackManager.addCallback(this)
+
+        // If the PlaybackViewModel was cleared [signified by the PlaybackStateManager having a
+        // song and the fact that were are in the init function], then try to restore the playback
+        // state.
+        if (playbackManager.song != null) {
+            restorePlaybackState()
+        }
     }
 
     // --- PLAYING FUNCTIONS ---
@@ -143,11 +137,8 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
     }
 
     // Update the position and push the change the playbackManager.
-    // This is done when the seek is confirmed to make playbackService seek to the position.
     fun updatePosition(progress: Int) {
-        playbackManager.setPosition(progress.toLong())
-
-        playbackService.doSeek(progress.toLong())
+        playbackManager.seekTo(progress.toLong())
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -239,6 +230,15 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
         mIsShuffling.value = isShuffling
+    }
+
+    private fun restorePlaybackState() {
+        mSong.value = playbackManager.song
+        mPosition.value = playbackManager.position
+        mQueue.value = playbackManager.queue
+        mIndex.value = playbackManager.index
+        mIsPlaying.value = playbackManager.isPlaying
+        mIsShuffling.value = playbackManager.isShuffling
     }
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
