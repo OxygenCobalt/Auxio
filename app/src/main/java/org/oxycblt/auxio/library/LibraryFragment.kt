@@ -25,8 +25,8 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.theme.applyColor
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.resolveAttr

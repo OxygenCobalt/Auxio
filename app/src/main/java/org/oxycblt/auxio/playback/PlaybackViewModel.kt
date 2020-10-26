@@ -82,9 +82,7 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
         playbackIntent = Intent(context, PlaybackService::class.java).also {
             context.bindService(it, connection, Context.BIND_AUTO_CREATE)
         }
-    }
 
-    init {
         playbackManager.addCallback(this)
     }
 
@@ -132,6 +130,8 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
 
     fun updatePositionWithProgress(progress: Int) {
         playbackManager.setPosition(progress.toLong())
+
+        playbackService.doSeek(progress.toLong())
     }
 
     // --- QUEUE FUNCTIONS ---

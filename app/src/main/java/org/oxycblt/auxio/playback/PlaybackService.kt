@@ -8,6 +8,15 @@ import android.os.IBinder
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
@@ -26,6 +35,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private val mBinder = LocalBinder()
     private val playbackManager = PlaybackStateManager.getInstance()
 
+    private val serviceJob = Job()
+    private val serviceScope = CoroutineScope(
+        serviceJob + Dispatchers.Main
+    )
+
     override fun onBind(intent: Intent): IBinder {
         return mBinder
     }
@@ -41,14 +55,56 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         player.release()
         playbackManager.removeCallback(this)
+        serviceJob.cancel()
     }
 
     override fun onSongUpdate(song: Song?) {
-        song?.let {
-            val item = MediaItem.fromUri(it.id.toURI())
+        song?.let { song ->
+            val item = MediaItem.fromUri(song.id.toURI())
             player.setMediaItem(item)
             player.prepare()
             player.play()
+        }
+    }
+
+    override fun onPlayingUpdate(isPlaying: Boolean) {
+        if (isPlaying) {
+            player.play()
+
+            startPollingPosition()
+        } else {
+            player.pause()
+        }
+    }
+
+    fun doSeek(position: Long) {
+        player.seekTo(position * 1000)
+    }
+
+    // Awful Hack to get position polling to work, as exoplayer does not provide any
+    // onPositionChanged callback for some inane reason.
+    // FIXME: Consider using exoplayer UI elements here, don't be surprised if this causes problems.
+
+    private fun pollCurrentPosition() = flow {
+        while (player.currentPosition <= player.duration) {
+            emit(player.currentPosition)
+            delay(500)
+        }
+    }.conflate()
+
+    private fun startPollingPosition() {
+        serviceScope.launch {
+            pollCurrentPosition().takeWhile { true }.collect {
+                playbackManager.setPosition(it / 1000)
+            }
+        }
+    }
+
+    override fun onPlaybackStateChanged(state: Int) {
+        if (state == Player.STATE_ENDED) {
+            playbackManager.skipNext()
+        } else if (state == Player.STATE_READY) {
+            startPollingPosition()
         }
     }
 

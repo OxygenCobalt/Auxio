@@ -10,8 +10,8 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
