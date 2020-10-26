@@ -32,6 +32,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 configurations {
@@ -75,6 +79,9 @@ dependencies {
 
     // Lint
     ktlint "com.pinterest:ktlint:0.37.2"
+
+    // ExoPlayer
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
 
     // Memory Leak checking
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'

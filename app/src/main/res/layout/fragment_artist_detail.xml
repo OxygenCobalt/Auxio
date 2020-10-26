@@ -30,7 +30,6 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:popupTheme="@style/AppThemeOverlay.Popup"
             app:menu="@menu/menu_detail"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:navigationIcon="@drawable/ic_back"

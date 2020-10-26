@@ -21,7 +21,9 @@ class GenreDetailFragment : Fragment() {
 
     private val args: GenreDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels {
+        PlaybackViewModel.Factory(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

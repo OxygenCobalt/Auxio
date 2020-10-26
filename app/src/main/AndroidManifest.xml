@@ -3,6 +3,8 @@
     package="org.oxycblt.auxio">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -21,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".playback.PlaybackService"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:description="@string/description_service_playback"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>

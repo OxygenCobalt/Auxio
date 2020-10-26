@@ -23,7 +23,9 @@ import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels {
+        PlaybackViewModel.Factory(requireContext())
+    }
 
     private val shownFragments = listOf(0, 1)
     private val tabIcons = listOf(

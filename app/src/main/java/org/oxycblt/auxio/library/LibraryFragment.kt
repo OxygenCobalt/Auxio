@@ -35,7 +35,9 @@ import org.oxycblt.auxio.theme.resolveAttr
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val libraryModel: LibraryViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by activityViewModels {
+        PlaybackViewModel.Factory(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

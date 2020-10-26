@@ -1,10 +1,17 @@
 package org.oxycblt.auxio.playback
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -15,12 +22,12 @@ import org.oxycblt.auxio.music.toDuration
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextLong
 
-// TODO: Adding to Queue
+// TODO: User managed queue
 // TODO: Add the playback service itself
 // TODO: Add loop control [From playback]
 // TODO: Implement persistence through Bundles [I want to keep my shuffles, okay?]
 // A ViewModel that acts as an intermediary between PlaybackService and the Playback Fragments.
-class PlaybackViewModel : ViewModel() {
+class PlaybackViewModel(private val context: Context) : ViewModel(), Player.EventListener {
     private val mCurrentSong = MutableLiveData<Song>()
     val currentSong: LiveData<Song> get() = mCurrentSong
 
@@ -53,6 +60,25 @@ class PlaybackViewModel : ViewModel() {
     private var mCanAnimate = false
     val canAnimate: Boolean get() = mCanAnimate
 
+    private lateinit var playbackService: PlaybackService
+    private var playbackIntent: Intent
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, binder: IBinder) {
+            playbackService = (binder as PlaybackService.LocalBinder).getService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName) {
+            Log.d(this::class.simpleName, "Service disconnected.")
+        }
+    }
+
+    init {
+        playbackIntent = Intent(context, PlaybackService::class.java).also {
+            context.bindService(it, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
     // Formatted variants of the duration
     val formattedCurrentDuration = Transformations.map(mCurrentDuration) {
         it.toDuration()
@@ -69,7 +95,6 @@ class PlaybackViewModel : ViewModel() {
 
     // Update the current song while changing the queue mode.
     fun update(song: Song, mode: PlaybackMode) {
-
         // Auxio doesn't support playing songs while swapping the mode to GENRE, as its impossible
         // to determine what genre a song has.
         if (mode == PlaybackMode.IN_GENRE) {
@@ -312,6 +337,8 @@ class PlaybackViewModel : ViewModel() {
         if (!mIsPlaying.value!!) {
             mIsPlaying.value = true
         }
+
+        playbackService.playSong(song)
     }
 
     // Generate a new shuffled queue.
@@ -382,5 +409,22 @@ class PlaybackViewModel : ViewModel() {
         }
 
         return final
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        context.unbindService(connection)
+    }
+
+    class Factory(private val context: Context) : ViewModelProvider.Factory {
+        @Suppress("unchecked_cast")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(PlaybackViewModel::class.java)) {
+                return PlaybackViewModel(context) as T
+            }
+
+            throw IllegalArgumentException("Unknown ViewModel class.")
+        }
     }
 }
