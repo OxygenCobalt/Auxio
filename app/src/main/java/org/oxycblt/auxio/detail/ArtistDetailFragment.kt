@@ -20,9 +20,7 @@ import org.oxycblt.auxio.theme.disable
 class ArtistDetailFragment : Fragment() {
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels {
-        PlaybackViewModel.Factory(requireContext())
-    }
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

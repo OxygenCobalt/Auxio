@@ -1,13 +1,10 @@
 package org.oxycblt.auxio.playback
 
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -21,7 +18,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 // TODO: Implement Looping Modes
 // TODO: Implement User Queue
 // TODO: Implement Persistence through Bundles/Databases/Idk
-class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackStateCallback {
+class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
     // Playback
     private val mSong = MutableLiveData<Song>()
     val song: LiveData<Song> get() = mSong
@@ -66,13 +63,6 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
     private val playbackManager = PlaybackStateManager.getInstance()
 
     init {
-        // Start the service from the ViewModel.
-        // Yes, I know ViewModels aren't supposed to deal with this stuff but for some
-        // reason it only works here.
-        Intent(context, PlaybackService::class.java).also {
-            context.startService(it)
-        }
-
         playbackManager.addCallback(this)
 
         // If the PlaybackViewModel was cleared [signified by the PlaybackStateManager having a
@@ -233,22 +223,13 @@ class PlaybackViewModel(private val context: Context) : ViewModel(), PlaybackSta
     }
 
     private fun restorePlaybackState() {
+        Log.d(this::class.simpleName, "Attempting to restore playback state.")
+
         mSong.value = playbackManager.song
         mPosition.value = playbackManager.position
         mQueue.value = playbackManager.queue
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying
         mIsShuffling.value = playbackManager.isShuffling
-    }
-
-    class Factory(private val context: Context) : ViewModelProvider.Factory {
-        @Suppress("unchecked_cast")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(PlaybackViewModel::class.java)) {
-                return PlaybackViewModel(context) as T
-            }
-
-            throw IllegalArgumentException("Unknown ViewModel class.")
-        }
     }
 }

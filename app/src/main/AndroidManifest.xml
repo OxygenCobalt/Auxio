@@ -23,9 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".playback.PlaybackService"
+        <service
+            android:name=".playback.PlaybackService"
             android:icon="@drawable/ic_launcher_foreground"
-            android:description="@string/description_service_playback"
+            android:description="@string/label_service_playback"
             android:stopWithTask="false" />
     </application>
 </manifest>

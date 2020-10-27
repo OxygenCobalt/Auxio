@@ -1,5 +1,6 @@
 package org.oxycblt.auxio
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
@@ -23,9 +25,7 @@ import org.oxycblt.auxio.theme.getTransparentAccent
 import org.oxycblt.auxio.theme.toColor
 
 class MainFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels {
-        PlaybackViewModel.Factory(requireContext())
-    }
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     private val shownFragments = listOf(0, 1)
     private val tabIcons = listOf(
@@ -103,6 +103,11 @@ class MainFragment : Fragment() {
             } else {
                 binding.compactPlayback.visibility = View.VISIBLE
             }
+        }
+
+        // Start the playback service.
+        Intent(requireContext(), PlaybackService::class.java).also {
+            requireContext().startService(it)
         }
 
         Log.d(this::class.simpleName, "Fragment Created.")

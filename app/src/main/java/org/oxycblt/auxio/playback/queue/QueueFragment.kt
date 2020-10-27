@@ -16,9 +16,7 @@ import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.toColor
 
 class QueueFragment : BottomSheetDialogFragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels {
-        PlaybackViewModel.Factory(requireActivity().application)
-    }
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun getTheme(): Int = R.style.Theme_BottomSheetFix
 

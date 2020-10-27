@@ -15,9 +15,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.theme.applyDivider
 
 class SongsFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels {
-        PlaybackViewModel.Factory(requireContext())
-    }
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

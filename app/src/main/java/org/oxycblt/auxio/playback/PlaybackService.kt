@@ -139,12 +139,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     private fun createNotification(): Notification {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                getString(R.string.description_playback),
+                getString(R.string.label_notif_playback),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
@@ -156,7 +157,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         )
             .setSmallIcon(R.drawable.ic_song)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.description_playback))
+            .setContentText(getString(R.string.label_is_playing))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setChannelId(CHANNEL_ID)
             .build()

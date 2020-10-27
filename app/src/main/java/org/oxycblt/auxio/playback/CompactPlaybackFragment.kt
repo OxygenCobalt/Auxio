@@ -16,9 +16,7 @@ import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicStore
 
 class CompactPlaybackFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels {
-        PlaybackViewModel.Factory(requireContext())
-    }
+    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
