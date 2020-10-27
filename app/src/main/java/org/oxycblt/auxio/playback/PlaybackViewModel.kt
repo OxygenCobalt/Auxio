@@ -56,9 +56,6 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
         it.slice((mIndex.value!! + 1) until it.size)
     }
 
-    private var mCanAnimate = false
-    val canAnimate: Boolean get() = mCanAnimate
-
     // Service setup
     private val playbackManager = PlaybackStateManager.getInstance()
 
@@ -168,8 +165,6 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
 
     // Flip the playing status.
     fun invertPlayingStatus() {
-        mCanAnimate = true
-
         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
 
@@ -179,10 +174,6 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
     }
 
     // --- OTHER FUNCTIONS ---
-
-    fun resetAnimStatus() {
-        mCanAnimate = false
-    }
 
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value

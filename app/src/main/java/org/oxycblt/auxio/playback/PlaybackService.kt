@@ -8,14 +8,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.os.Parcelable
+import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
+import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
@@ -44,6 +49,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     private val playbackManager = PlaybackStateManager.getInstance()
+    private lateinit var mediaSession: MediaSessionCompat
+    private val buttonMediaCallback = object : MediaSessionCompat.Callback() {
+        override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
+            Log.d(this::class.simpleName, "Hello?")
+
+            return true
+        }
+    }
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -67,6 +80,39 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onCreate() {
         super.onCreate()
 
+        mediaSession = MediaSessionCompat(this, packageName).apply {
+            isActive = true
+        }
+
+        val connector = MediaSessionConnector(mediaSession)
+        connector.setPlayer(player)
+        connector.setMediaButtonEventHandler { _, _, mediaButtonEvent ->
+            val item = mediaButtonEvent
+                .getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
+
+            if (item.action == KeyEvent.ACTION_DOWN) {
+                when (item.keyCode) {
+                    KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
+                    KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
+                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                    }
+
+                    KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                        playbackManager.next()
+                    }
+
+                    KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                        playbackManager.prev()
+                    }
+
+                    // TODO: Implement the other callbacks for
+                    //  CLOSE/STOP & REWIND
+                }
+            }
+
+            true
+        }
+
         notification = createNotification()
 
         playbackManager.addCallback(this)
@@ -76,6 +122,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         super.onDestroy()
 
         player.release()
+        mediaSession.release()
         serviceJob.cancel()
         playbackManager.removeCallback(this)
 

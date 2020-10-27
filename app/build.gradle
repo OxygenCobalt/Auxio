@@ -69,6 +69,9 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
+    // Media
+    implementation 'androidx.media:media:1.2.0'
+
     // --- THIRD PARTY ---
 
     // Image loading
@@ -81,7 +84,9 @@ dependencies {
     ktlint "com.pinterest:ktlint:0.37.2"
 
     // ExoPlayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
+    def exoplayer_version = "2.12.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 
     // Memory Leak checking
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
