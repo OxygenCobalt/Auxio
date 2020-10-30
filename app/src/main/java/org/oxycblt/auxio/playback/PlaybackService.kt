@@ -39,6 +39,7 @@ private const val NOTIF_ID = 0xA0A0
 // A Service that manages the single ExoPlayer instance and [attempts] to keep
 // persistence if the app closes.
 class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
+    // TODO: Use the ExoPlayer queue functionality [To an extent]? Could make things faster.
     private val player: SimpleExoPlayer by lazy {
         val p = SimpleExoPlayer.Builder(applicationContext).build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -50,13 +51,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
-    private val buttonMediaCallback = object : MediaSessionCompat.Callback() {
-        override fun onMediaButtonEvent(mediaButtonEvent: Intent): Boolean {
-            Log.d(this::class.simpleName, "Hello?")
-
-            return true
-        }
-    }
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -67,19 +61,20 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     private lateinit var notification: Notification
 
+    // --- SERVICE OVERRIDES ---
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(this::class.simpleName, "Service is active.")
 
         return START_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
 
+        // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply {
             isActive = true
         }
@@ -87,30 +82,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         val connector = MediaSessionConnector(mediaSession)
         connector.setPlayer(player)
         connector.setMediaButtonEventHandler { _, _, mediaButtonEvent ->
-            val item = mediaButtonEvent
-                .getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
-
-            if (item.action == KeyEvent.ACTION_DOWN) {
-                when (item.keyCode) {
-                    KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
-                    KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
-                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
-                    }
-
-                    KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                        playbackManager.next()
-                    }
-
-                    KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                        playbackManager.prev()
-                    }
-
-                    // TODO: Implement the other callbacks for
-                    //  CLOSE/STOP & REWIND
-                }
-            }
-
-            true
+            handleMediaButtonEvent(mediaButtonEvent)
         }
 
         notification = createNotification()
@@ -121,13 +93,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onDestroy() {
         super.onDestroy()
 
+        stopForeground(true)
+
+        // Release everything that could cause a memory leak if left around
         player.release()
         mediaSession.release()
         serviceJob.cancel()
         playbackManager.removeCallback(this)
 
-        stopForeground(true)
+        Log.d(this::class.simpleName, "Service destroyed.")
     }
+
+    // --- PLAYER EVENT LISTENER OVERRIDES ---
 
     override fun onPlaybackStateChanged(state: Int) {
         if (state == Player.STATE_ENDED) {
@@ -137,28 +114,31 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
+    // --- PLAYBACK STATE CALLBACK OVERRIDES ---
+
     override fun onSongUpdate(song: Song?) {
         song?.let {
-            if (!isForeground) {
-                startForeground(NOTIF_ID, notification)
-
-                isForeground = true
-            }
-
             val item = MediaItem.fromUri(it.id.toURI())
             player.setMediaItem(item)
             player.prepare()
             player.play()
+
+            return
         }
+
+        player.stop()
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
-        if (isPlaying) {
+        if (isPlaying && !player.isPlaying) {
             player.play()
 
+            startForeground(NOTIF_ID, notification)
             startPollingPosition()
         } else {
             player.pause()
+
+            stopForeground(false)
         }
     }
 
@@ -166,25 +146,63 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         player.seekTo(position * 1000)
     }
 
+    // --- OTHER FUNCTIONS ---
+
     // Awful Hack to get position polling to work, as exoplayer does not provide any
     // onPositionChanged callback for some inane reason.
-    // FIXME: Don't be surprised if this causes problems.
-
+    // FIXME: There has to be a better way of polling positions.
     private fun pollCurrentPosition() = flow {
-        while (player.currentPosition <= player.duration) {
+        while (player.isPlaying) {
             emit(player.currentPosition)
-            delay(500)
+            delay(250)
         }
     }.conflate()
 
     private fun startPollingPosition() {
         serviceScope.launch {
-            pollCurrentPosition().takeWhile { true }.collect {
+            pollCurrentPosition().takeWhile { player.isPlaying }.collect {
                 playbackManager.setPosition(it / 1000)
             }
         }
     }
 
+    // Handle a media button event.
+    private fun handleMediaButtonEvent(event: Intent): Boolean {
+        val item = event
+            .getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
+
+        if (item.action == KeyEvent.ACTION_DOWN) {
+            return when (item.keyCode) {
+                KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
+                KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
+                    playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+
+                    true
+                }
+
+                KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                    playbackManager.next()
+
+                    true
+                }
+
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                    playbackManager.prev()
+
+                    true
+                }
+
+                // TODO: Implement the other callbacks for
+                //  CLOSE/STOP & REWIND
+                else -> false
+            }
+        }
+
+        return false
+    }
+
+    // Create a notification
+    // TODO: Spin this off into its own object!
     private fun createNotification(): Notification {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -197,7 +215,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             )
             notificationManager.createNotificationChannel(channel)
         }
-        // TODO: Placeholder, implement proper media controls :)
+        // TODO: Placeholder, implement proper media controls.
         val notif = NotificationCompat.Builder(
             applicationContext,
             CHANNEL_ID

@@ -18,10 +18,10 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 // TODO: Implement Looping Modes
 // TODO: Implement User Queue
 // TODO: Implement Persistence through Bundles/Databases/Idk
-class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
+class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
     // Playback
-    private val mSong = MutableLiveData<Song>()
-    val song: LiveData<Song> get() = mSong
+    private val mSong = MutableLiveData<Song?>()
+    val song: LiveData<Song?> get() = mSong
 
     private val mPosition = MutableLiveData(0L)
     val position: LiveData<Long> get() = mPosition
@@ -43,6 +43,9 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
     // Other
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
+
+    private var mServiceStarted = false
+    val serviceStarted: Boolean get() = mServiceStarted
 
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
@@ -179,6 +182,10 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
         mIsSeeking.value = value
     }
 
+    fun setServiceStatus(value: Boolean) {
+        mServiceStarted = value
+    }
+
     // --- OVERRIDES ---
 
     override fun onCleared() {
@@ -186,9 +193,7 @@ class PlaybackViewModel() : ViewModel(), PlaybackStateCallback {
     }
 
     override fun onSongUpdate(song: Song?) {
-        song?.let {
-            mSong.value = it
-        }
+        mSong.value = song
     }
 
     override fun onPositionUpdate(position: Long) {

@@ -105,9 +105,13 @@ class MainFragment : Fragment() {
             }
         }
 
-        // Start the playback service.
-        Intent(requireContext(), PlaybackService::class.java).also {
-            requireContext().startService(it)
+        // Start the playback service [If not already]
+        if (!playbackModel.serviceStarted) {
+            Intent(requireContext(), PlaybackService::class.java).also {
+                requireContext().startService(it)
+            }
+
+            playbackModel.setServiceStatus(true)
         }
 
         Log.d(this::class.simpleName, "Fragment Created.")

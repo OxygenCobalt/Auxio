@@ -72,10 +72,16 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         // --- VIEWMODEL SETUP --
 
         playbackModel.song.observe(viewLifecycleOwner) {
-            Log.d(this::class.simpleName, "Updating song display to ${it.name}.")
+            if (it != null) {
+                Log.d(this::class.simpleName, "Updating song display to ${it.name}.")
 
-            binding.song = it
-            binding.playbackSeekBar.max = it.seconds.toInt()
+                binding.song = it
+                binding.playbackSeekBar.max = it.seconds.toInt()
+            } else {
+                Log.d(this::class.simpleName, "No song played anymore, leaving.")
+
+                findNavController().navigateUp()
+            }
         }
 
         playbackModel.index.observe(viewLifecycleOwner) {

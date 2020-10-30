@@ -165,7 +165,13 @@ class PlaybackStateManager {
     }
 
     fun setPosition(position: Long) {
-        mPosition = position
+        // Due to the hacky way I poll ExoPlayer positions, don't accept any bugged positions
+        // that are over the duration of the song.
+        mSong?.let {
+            if (position <= it.seconds) {
+                mPosition = position
+            }
+        }
     }
 
     fun seekTo(position: Long) {
@@ -177,8 +183,14 @@ class PlaybackStateManager {
     // --- QUEUE FUNCTIONS ---
 
     fun next() {
-        if (mIndex < mQueue.size) {
+        if (mIndex < mQueue.lastIndex) {
             mIndex = mIndex.inc()
+        } else {
+            // TODO: Implement option so that the playlist loops instead of stops
+            mQueue = mutableListOf()
+            mSong = null
+
+            return
         }
 
         updatePlayback(mQueue[mIndex])
