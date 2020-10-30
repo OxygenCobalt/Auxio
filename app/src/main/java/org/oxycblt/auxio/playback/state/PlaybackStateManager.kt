@@ -389,9 +389,5 @@ class PlaybackStateManager {
                 return newInstance
             }
         }
-
-        const val LOOP_NONE = 0
-        const val LOOP_ONCE = 1
-        const val LOOP_ENDLESS = 2
     }
 }

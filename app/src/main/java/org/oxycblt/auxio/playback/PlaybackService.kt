@@ -17,14 +17,15 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
@@ -59,6 +60,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
+    private var changeIsFromSystem = false
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -90,6 +92,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         connector.setMediaButtonEventHandler { _, _, mediaButtonEvent ->
             handleMediaButtonEvent(mediaButtonEvent)
         }
+
+        // Set up AudioFocus/AudioAttributes
+        player.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.CONTENT_TYPE_MUSIC)
+                .build(),
+            true
+        )
 
         notification = createNotification()
 
@@ -132,6 +143,16 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        // If the change to playing occurred from the system instead of PlaybackStateManager, then
+        // sync the playing value to PlaybackStateManager to keep it up ton date.
+        if (isPlaying != playbackManager.isPlaying && changeIsFromSystem) {
+            playbackManager.setPlayingStatus(isPlaying)
+        }
+
+        changeIsFromSystem = true
+    }
+
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         // If the song loops while in the LOOP_ONCE mode, then stop looping after that.
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
@@ -144,6 +165,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
+        changeIsFromSystem = false
+
         song?.let {
             val item = MediaItem.fromUri(it.id.toURI())
             player.setMediaItem(item)
@@ -157,6 +180,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
+        changeIsFromSystem = false
+
         if (isPlaying && !player.isPlaying) {
             player.play()
 
@@ -171,6 +196,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
+        changeIsFromSystem = false
+
         when (mode) {
             LoopMode.NONE -> {
                 player.repeatMode = Player.REPEAT_MODE_OFF
@@ -182,6 +209,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onSeekConfirm(position: Long) {
+        changeIsFromSystem = false
+
         player.seekTo(position * 1000)
     }
 
