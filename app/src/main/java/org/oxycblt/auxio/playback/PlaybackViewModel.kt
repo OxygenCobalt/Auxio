@@ -10,6 +10,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
+import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -39,6 +40,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
 
     private val mIsShuffling = MutableLiveData(false)
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
+
+    private val mLoopMode = MutableLiveData(LoopMode.NONE)
+    val loopMode: LiveData<LoopMode> get() = mLoopMode
 
     // Other
     private val mIsSeeking = MutableLiveData(false)
@@ -176,6 +180,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
         playbackManager.setShuffleStatus(!playbackManager.isShuffling)
     }
 
+    fun incrementLoopStatus() {
+        playbackManager.setLoopMode(playbackManager.loopMode.increment())
+    }
+
     // --- OTHER FUNCTIONS ---
 
     fun setSeekingStatus(value: Boolean) {
@@ -218,6 +226,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
         mIsShuffling.value = isShuffling
     }
 
+    override fun onLoopUpdate(mode: LoopMode) {
+        mLoopMode.value = mode
+    }
+
     private fun restorePlaybackState() {
         Log.d(this::class.simpleName, "Attempting to restore playback state.")
 
@@ -227,5 +239,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying
         mIsShuffling.value = playbackManager.isShuffling
+        mLoopMode.value = playbackManager.loopMode
     }
 }

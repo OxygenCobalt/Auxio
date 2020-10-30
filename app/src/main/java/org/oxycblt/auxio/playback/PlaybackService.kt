@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
+import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
@@ -131,6 +132,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        // If the song loops while in the LOOP_ONCE mode, then stop looping after that.
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+            playbackManager.loopMode == LoopMode.ONCE
+        ) {
+            playbackManager.setLoopMode(LoopMode.NONE)
+        }
+    }
+
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
@@ -157,6 +167,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
             // Be a polite service and stop being foreground if nothing is playing.
             stopForeground(false)
+        }
+    }
+
+    override fun onLoopUpdate(mode: LoopMode) {
+        when (mode) {
+            LoopMode.NONE -> {
+                player.repeatMode = Player.REPEAT_MODE_OFF
+            }
+            else -> {
+                player.repeatMode = Player.REPEAT_MODE_ONE
+            }
         }
     }
 
@@ -253,8 +274,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         return notif
     }
 
-    // Broadcast Receiver for receiving system events [E.G Headphones connecte/disconnected
-    inner class SystemEventReceiver : BroadcastReceiver() {
+    // BroadcastReceiver for receiving system events [E.G Headphones connected/disconnected]
+    private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
 

@@ -53,6 +53,11 @@ class PlaybackStateManager {
             callbacks.forEach { it.onShuffleUpdate(value) }
         }
     private var mShuffleSeed = -1L
+    private var mLoopMode = LoopMode.NONE
+        set(value) {
+            field = value
+            callbacks.forEach { it.onLoopUpdate(value) }
+        }
 
     val song: Song? get() = mSong
     val position: Long get() = mPosition
@@ -60,6 +65,7 @@ class PlaybackStateManager {
     val index: Int get() = mIndex
     val isPlaying: Boolean get() = mIsPlaying
     val isShuffling: Boolean get() = mIsShuffling
+    val loopMode: LoopMode get() = mLoopMode
 
     // --- CALLBACKS ---
 
@@ -90,6 +96,7 @@ class PlaybackStateManager {
 
         mMode = mode
 
+        resetLoopMode()
         updatePlayback(song)
 
         mQueue = when (mode) {
@@ -144,6 +151,8 @@ class PlaybackStateManager {
             else -> error("what")
         }
 
+        resetLoopMode()
+
         updatePlayback(mQueue[0])
 
         mIndex = 0
@@ -185,10 +194,12 @@ class PlaybackStateManager {
     // --- QUEUE FUNCTIONS ---
 
     fun next() {
+        resetLoopMode()
+
         if (mIndex < mQueue.lastIndex) {
             mIndex = mIndex.inc()
         } else {
-            // TODO: Implement option so that the playlist loops instead of stops
+            // TODO: Implement option to make the playlist loop instead of stop
             mQueue = mutableListOf()
             mSong = null
 
@@ -204,6 +215,8 @@ class PlaybackStateManager {
         if (mIndex > 0) {
             mIndex = mIndex.dec()
         }
+
+        resetLoopMode()
 
         updatePlayback(mQueue[mIndex])
 
@@ -318,6 +331,17 @@ class PlaybackStateManager {
         }
     }
 
+    fun setLoopMode(mode: LoopMode) {
+        mLoopMode = mode
+    }
+
+    private fun resetLoopMode() {
+        // Reset the loop mode froM ONCE if needed.
+        if (mLoopMode == LoopMode.ONCE) {
+            mLoopMode = LoopMode.NONE
+        }
+    }
+
     // --- ORDERING FUNCTIONS ---
 
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
@@ -365,5 +389,9 @@ class PlaybackStateManager {
                 return newInstance
             }
         }
+
+        const val LOOP_NONE = 0
+        const val LOOP_ONCE = 1
+        const val LOOP_ENDLESS = 2
     }
 }

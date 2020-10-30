@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.playback.queue.QueueFragment
+import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.disable
 import org.oxycblt.auxio.theme.enable
@@ -120,6 +121,23 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 binding.playbackShuffle.imageTintList = accentColor
             } else {
                 binding.playbackShuffle.imageTintList = controlColor
+            }
+        }
+
+        playbackModel.loopMode.observe(viewLifecycleOwner) {
+            when (it) {
+                LoopMode.NONE -> {
+                    binding.playbackLoop.imageTintList = controlColor
+                    binding.playbackLoop.setImageResource(R.drawable.ic_loop)
+                }
+                LoopMode.ONCE -> {
+                    binding.playbackLoop.imageTintList = accentColor
+                    binding.playbackLoop.setImageResource(R.drawable.ic_loop_one)
+                }
+                LoopMode.INFINITE -> {
+                    binding.playbackLoop.imageTintList = accentColor
+                    binding.playbackLoop.setImageResource(R.drawable.ic_loop)
+                }
             }
         }
 

@@ -50,6 +50,7 @@
     <string name="description_skip_prev">Skip to last song</string>
     <string name="description_shuffle_on">Turn shuffle on</string>
     <string name="description_shuffle_off">Turn shuffle off</string>
+    <string name="description_loop">Change Loop Mode</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>
