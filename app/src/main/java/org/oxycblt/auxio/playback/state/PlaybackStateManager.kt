@@ -12,6 +12,8 @@ import kotlin.random.Random
 
 // The manager of the current playback state [Current Song, Queue, Shuffling]
 // Never use this for ANYTHING UI related, that's what PlaybackViewModel is for.
+// Yes, I know MediaSessionCompat and friends exist, but I like having full control over the
+// playback state instead of dealing with android's likely buggy code.
 class PlaybackStateManager {
     // Playback
     private var mSong: Song? = null
@@ -259,7 +261,7 @@ class PlaybackStateManager {
     // Generate a new shuffled queue.
     private fun genShuffle(keepSong: Boolean) {
         // Take a random seed and then shuffle the current queue based off of that.
-        // This seed will be saved in a bundle if the app closes, so that the shuffle mode
+        // This seed will be saved in a database, so that the shuffle mode
         // can be restored when its started again.
         val newSeed = Random.Default.nextLong()
 

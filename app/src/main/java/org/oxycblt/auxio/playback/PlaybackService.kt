@@ -4,8 +4,12 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
@@ -35,9 +39,11 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 private const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
 private const val NOTIF_ID = 0xA0A0
+private const val CONNECTED = 1
+private const val DISCONNECTED = 0
 
-// A Service that manages the single ExoPlayer instance and [attempts] to keep
-// persistence if the app closes.
+// A Service that manages the single ExoPlayer instance and manages the system-side
+// aspects of playback.
 class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     // TODO: Use the ExoPlayer queue functionality [To an extent]? Could make things faster.
     private val player: SimpleExoPlayer by lazy {
@@ -51,13 +57,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var systemReceiver: SystemEventReceiver
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
         serviceJob + Dispatchers.Main
     )
-
-    private var isForeground = false
 
     private lateinit var notification: Notification
 
@@ -87,6 +92,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         notification = createNotification()
 
+        // Set up callback for system events
+        systemReceiver = SystemEventReceiver()
+        IntentFilter().apply {
+            addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
+            addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
+            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            addAction(Intent.ACTION_HEADSET_PLUG)
+
+            registerReceiver(systemReceiver, this)
+        }
+
         playbackManager.addCallback(this)
     }
 
@@ -94,6 +110,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         super.onDestroy()
 
         stopForeground(true)
+        unregisterReceiver(systemReceiver)
 
         // Release everything that could cause a memory leak if left around
         player.release()
@@ -138,6 +155,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         } else {
             player.pause()
 
+            // Be a polite service and stop being foreground if nothing is playing.
             stopForeground(false)
         }
     }
@@ -176,24 +194,29 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
                     playbackManager.setPlayingStatus(!playbackManager.isPlaying)
-
                     true
                 }
 
                 KeyEvent.KEYCODE_MEDIA_NEXT -> {
                     playbackManager.next()
-
                     true
                 }
 
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
                     playbackManager.prev()
-
                     true
                 }
 
-                // TODO: Implement the other callbacks for
-                //  CLOSE/STOP & REWIND
+                KeyEvent.KEYCODE_MEDIA_REWIND -> {
+                    player.seekTo(0)
+                    true
+                }
+
+                KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> {
+                    stopSelf()
+                    true
+                }
+
                 else -> false
             }
         }
@@ -228,5 +251,51 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             .build()
 
         return notif
+    }
+
+    // Broadcast Receiver for receiving system events [E.G Headphones connecte/disconnected
+    inner class SystemEventReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+
+            action?.let {
+                when (it) {
+                    BluetoothDevice.ACTION_ACL_CONNECTED -> resume()
+                    BluetoothDevice.ACTION_ACL_DISCONNECTED -> pause()
+
+                    AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
+                        when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
+                            AudioManager.SCO_AUDIO_STATE_CONNECTED -> resume()
+                            AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pause()
+                        }
+                    }
+
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pause()
+
+                    Intent.ACTION_HEADSET_PLUG -> {
+                        when (intent.getIntExtra("state", -1)) {
+                            CONNECTED -> resume()
+                            DISCONNECTED -> pause()
+                        }
+                    }
+                }
+            }
+        }
+
+        private fun resume() {
+            if (playbackManager.song != null) {
+                Log.d(this::class.simpleName, "Device connected, resuming...")
+
+                playbackManager.setPlayingStatus(true)
+            }
+        }
+
+        private fun pause() {
+            if (playbackManager.song != null) {
+                Log.d(this::class.simpleName, "Device disconnected, pausing...")
+
+                playbackManager.setPlayingStatus(false)
+            }
+        }
     }
 }

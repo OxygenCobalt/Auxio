@@ -22,7 +22,7 @@ import java.io.InputStream
 const val MOSAIC_BITMAP_SIZE = 512
 const val MOSAIC_BITMAP_INCREMENT = 256
 
-// A Fetcher that takes multiple cover uris and turns them into a NxN mosaic image.
+// A Fetcher that takes multiple cover uris and turns them into a 2x2 mosaic image.
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
         pool: BitmapPool,
