@@ -1,6 +1,5 @@
 package org.oxycblt.auxio
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.theme.accent
@@ -103,15 +101,6 @@ class MainFragment : Fragment() {
             } else {
                 binding.compactPlayback.visibility = View.VISIBLE
             }
-        }
-
-        // Start the playback service [If not already]
-        if (!playbackModel.serviceStarted) {
-            Intent(requireContext(), PlaybackService::class.java).also {
-                requireContext().startService(it)
-            }
-
-            playbackModel.setServiceStatus(true)
         }
 
         Log.d(this::class.simpleName, "Fragment Created.")

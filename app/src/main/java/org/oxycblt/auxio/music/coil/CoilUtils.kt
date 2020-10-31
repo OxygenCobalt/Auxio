@@ -1,9 +1,11 @@
 package org.oxycblt.auxio.music.coil
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.widget.ImageView
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.Coil
 import coil.request.ImageRequest
@@ -127,6 +129,17 @@ fun ImageView.bindGenreImage(genre: Genre) {
     }
 
     Coil.imageLoader(context).enqueue(request)
+}
+
+// Get a bitmap for a song, onDone will be called when the bitmap is loaded.
+fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
+    Coil.enqueue(
+        ImageRequest.Builder(context)
+            .data(song.album.coverUri)
+            .error(R.drawable.ic_song)
+            .target { onDone(it.toBitmap()) }
+            .build()
+    )
 }
 
 // Get the base request used across the other functions.

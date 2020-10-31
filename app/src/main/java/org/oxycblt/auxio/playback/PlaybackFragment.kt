@@ -138,6 +138,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     binding.playbackLoop.imageTintList = accentColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
                 }
+
+                else -> return@observe
             }
         }
 

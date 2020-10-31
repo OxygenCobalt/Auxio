@@ -11,17 +11,19 @@ import org.oxycblt.auxio.music.Song
 import kotlin.random.Random
 
 // The manager of the current playback state [Current Song, Queue, Shuffling]
-// Never use this for ANYTHING UI related, that's what PlaybackViewModel is for.
-// Yes, I know MediaSessionCompat and friends exist, but I like having full control over the
-// playback state instead of dealing with android's likely buggy code.
-class PlaybackStateManager {
+// This class is for sole use by the classes in /playback/.
+// If you want to add system-side things, add to PlaybackService.
+// If you want to add ui-side things, add to PlaybackViewModel.
+// [Yes, I know MediaSessionCompat exists, but I like having full control over the
+// playback state instead of dealing with android's likely buggy code.]
+internal class PlaybackStateManager {
     // Playback
     private var mSong: Song? = null
         set(value) {
             field = value
             callbacks.forEach { it.onSongUpdate(value) }
         }
-    private var mPosition: Long = 0
+    private var mPosition: Long = 0 // TODO: Consider using millis instead of seconds?
         set(value) {
             field = value
             callbacks.forEach { it.onPositionUpdate(value) }

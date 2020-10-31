@@ -1,8 +1,5 @@
 package org.oxycblt.auxio.playback
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -13,11 +10,12 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.view.KeyEvent
-import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -32,49 +30,38 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
-private const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
-private const val NOTIF_ID = 0xA0A0
-private const val CONNECTED = 1
-private const val DISCONNECTED = 0
-
 // A Service that manages the single ExoPlayer instance and manages the system-side
 // aspects of playback.
 class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
-    // TODO: Use the ExoPlayer queue functionality [To an extent]? Could make things faster.
     private val player: SimpleExoPlayer by lazy {
-        val p = SimpleExoPlayer.Builder(applicationContext).build()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            p.experimentalSetOffloadSchedulingEnabled(true)
-        }
-        p.addListener(this)
-        p
+        SimpleExoPlayer.Builder(applicationContext).build()
     }
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
-    private var changeIsFromSystem = false
+    private val notificationHolder = PlaybackNotificationHolder()
+
+    private var changeIsFromAudioFocus = true
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
         serviceJob + Dispatchers.Main
     )
 
-    private lateinit var notification: Notification
-
     // --- SERVICE OVERRIDES ---
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(this::class.simpleName, "Service is active.")
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? = null
@@ -82,16 +69,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onCreate() {
         super.onCreate()
 
-        // Set up the media button callbacks
-        mediaSession = MediaSessionCompat(this, packageName).apply {
-            isActive = true
-        }
-
-        val connector = MediaSessionConnector(mediaSession)
-        connector.setPlayer(player)
-        connector.setMediaButtonEventHandler { _, _, mediaButtonEvent ->
-            handleMediaButtonEvent(mediaButtonEvent)
-        }
+        // --- PLAYER SETUP ---
+        player.addListener(this)
 
         // Set up AudioFocus/AudioAttributes
         player.setAudioAttributes(
@@ -102,7 +81,31 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             true
         )
 
-        notification = createNotification()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            player.experimentalSetOffloadSchedulingEnabled(true)
+        }
+
+        // --- PLAYBACKSTATEMANAGER SETUP ---
+
+        playbackManager.addCallback(this)
+
+        if (playbackManager.song != null) {
+            restorePlayer()
+        }
+
+        // --- SYSTEM RECEIVER SETUP ---
+
+        // Set up the media button callbacks
+        mediaSession = MediaSessionCompat(this, packageName).apply {
+            isActive = true
+
+            MediaSessionConnector(this).apply {
+                setPlayer(player)
+                setMediaButtonEventHandler { _, _, mediaButtonEvent ->
+                    handleMediaButtonEvent(mediaButtonEvent)
+                }
+            }
+        }
 
         // Set up callback for system events
         systemReceiver = SystemEventReceiver()
@@ -115,7 +118,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             registerReceiver(systemReceiver, this)
         }
 
-        playbackManager.addCallback(this)
+        // --- NOTIFICATION SETUP ---
+
+        notificationHolder.init(applicationContext, mediaSession)
     }
 
     override fun onDestroy() {
@@ -136,6 +141,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     // --- PLAYER EVENT LISTENER OVERRIDES ---
 
     override fun onPlaybackStateChanged(state: Int) {
+        changeIsFromAudioFocus = false
+
         if (state == Player.STATE_ENDED) {
             playbackManager.next()
         } else if (state == Player.STATE_READY) {
@@ -144,13 +151,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        // If the change to playing occurred from the system instead of PlaybackStateManager, then
-        // sync the playing value to PlaybackStateManager to keep it up ton date.
-        if (isPlaying != playbackManager.isPlaying && changeIsFromSystem) {
+        // Only sync the playing status with PlaybackStateManager if the change occurred
+        // from an Audio Focus change. Nowhere else.
+        if (isPlaying != playbackManager.isPlaying && changeIsFromAudioFocus) {
             playbackManager.setPlayingStatus(isPlaying)
         }
-
-        changeIsFromSystem = true
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -162,30 +167,46 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         }
     }
 
+    override fun onPlayerError(error: ExoPlaybackException) {
+        // If there's any issue, just go to the next song.
+        playbackManager.next()
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            playbackManager.setPosition(player.currentPosition / 1000)
+        }
+    }
+
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
-        changeIsFromSystem = false
+        changeIsFromAudioFocus = false
 
         song?.let {
             val item = MediaItem.fromUri(it.id.toURI())
+
             player.setMediaItem(item)
             player.prepare()
             player.play()
 
+            uploadMetadataToSession(it)
+            notificationHolder.setMetadata(playbackManager.song!!, this)
+
             return
         }
 
+        // Stop playing/the notification if there's nothing to play.
         player.stop()
+        stopForeground(true)
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
-        changeIsFromSystem = false
+        changeIsFromAudioFocus = false
 
         if (isPlaying && !player.isPlaying) {
             player.play()
 
-            startForeground(NOTIF_ID, notification)
             startPollingPosition()
         } else {
             player.pause()
@@ -196,7 +217,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
-        changeIsFromSystem = false
+        changeIsFromAudioFocus = false
 
         when (mode) {
             LoopMode.NONE -> {
@@ -209,16 +230,44 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     }
 
     override fun onSeekConfirm(position: Long) {
-        changeIsFromSystem = false
+        changeIsFromAudioFocus = false
 
         player.seekTo(position * 1000)
     }
 
     // --- OTHER FUNCTIONS ---
 
+    private fun restorePlayer() {
+        playbackManager.song?.let {
+            val item = MediaItem.fromUri(it.id.toURI())
+            player.setMediaItem(item)
+            player.prepare()
+            player.play()
+
+            notificationHolder.setMetadata(it, this)
+        }
+    }
+
+    private fun uploadMetadataToSession(song: Song) {
+        val builder = MediaMetadataCompat.Builder()
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.album.artist.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, song.album.artist.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, song.album.artist.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.album.artist.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
+
+        getBitmap(song, this) {
+            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it)
+            mediaSession.setMetadata(builder.build())
+        }
+    }
+
     // Awful Hack to get position polling to work, as exoplayer does not provide any
     // onPositionChanged callback for some inane reason.
-    // FIXME: There has to be a better way of polling positions.
+    // TODO: MediaSession might have a callback for positions. Idk.
     private fun pollCurrentPosition() = flow {
         while (player.isPlaying) {
             emit(player.currentPosition)
@@ -274,35 +323,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         return false
     }
 
-    // Create a notification
-    // TODO: Spin this off into its own object!
-    private fun createNotification(): Notification {
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.label_notif_playback),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-        // TODO: Placeholder, implement proper media controls.
-        val notif = NotificationCompat.Builder(
-            applicationContext,
-            CHANNEL_ID
-        )
-            .setSmallIcon(R.drawable.ic_song)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.label_is_playing))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setChannelId(CHANNEL_ID)
-            .build()
-
-        return notif
-    }
-
     // BroadcastReceiver for receiving system events [E.G Headphones connected/disconnected]
     private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -347,5 +367,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                 playbackManager.setPlayingStatus(false)
             }
         }
+    }
+
+    companion object {
+        private const val DISCONNECTED = 0
+        private const val CONNECTED = 1
     }
 }

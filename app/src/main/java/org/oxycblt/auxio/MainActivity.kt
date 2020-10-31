@@ -1,9 +1,11 @@
 package org.oxycblt.auxio
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.theme.accent
 
 // FIXME: Fix bug where fast navigation will break the animations and
@@ -15,5 +17,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setTheme(accent.second)
 
         return super.onCreateView(name, context, attrs)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        Intent(this, PlaybackService::class.java).also {
+            this.startService(it)
+        }
     }
 }

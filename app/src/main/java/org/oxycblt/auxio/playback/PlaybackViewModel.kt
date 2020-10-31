@@ -48,9 +48,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
 
-    private var mServiceStarted = false
-    val serviceStarted: Boolean get() = mServiceStarted
-
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
     }
@@ -188,10 +185,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
 
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value
-    }
-
-    fun setServiceStatus(value: Boolean) {
-        mServiceStarted = value
     }
 
     // --- OVERRIDES ---
