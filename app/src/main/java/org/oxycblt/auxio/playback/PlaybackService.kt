@@ -47,7 +47,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
-    private val notificationHolder = PlaybackNotificationHolder()
+    private lateinit var notificationHolder: PlaybackNotificationHolder
 
     private var changeIsFromAudioFocus = true
 
@@ -70,6 +70,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         super.onCreate()
 
         // --- PLAYER SETUP ---
+
         player.addListener(this)
 
         // Set up AudioFocus/AudioAttributes
@@ -83,14 +84,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             player.experimentalSetOffloadSchedulingEnabled(true)
-        }
-
-        // --- PLAYBACKSTATEMANAGER SETUP ---
-
-        playbackManager.addCallback(this)
-
-        if (playbackManager.song != null) {
-            restorePlayer()
         }
 
         // --- SYSTEM RECEIVER SETUP ---
@@ -120,7 +113,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         // --- NOTIFICATION SETUP ---
 
+        notificationHolder = PlaybackNotificationHolder()
+
         notificationHolder.init(applicationContext, mediaSession)
+
+        // --- PLAYBACKSTATEMANAGER SETUP ---
+
+        playbackManager.addCallback(this)
+
+        if (playbackManager.song != null) {
+            restorePlayer()
+        }
     }
 
     override fun onDestroy() {
@@ -156,6 +159,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         if (isPlaying != playbackManager.isPlaying && changeIsFromAudioFocus) {
             playbackManager.setPlayingStatus(isPlaying)
         }
+
+        changeIsFromAudioFocus = true
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -174,14 +179,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     override fun onPositionDiscontinuity(reason: Int) {
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.setPosition(player.currentPosition / 1000)
+            playbackManager.setPosition(player.currentPosition)
         }
     }
 
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
-        changeIsFromAudioFocus = false
 
         song?.let {
             val item = MediaItem.fromUri(it.id.toURI())
@@ -232,7 +236,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onSeekConfirm(position: Long) {
         changeIsFromAudioFocus = false
 
-        player.seekTo(position * 1000)
+        player.seekTo(position)
     }
 
     // --- OTHER FUNCTIONS ---
@@ -242,7 +246,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             val item = MediaItem.fromUri(it.id.toURI())
             player.setMediaItem(item)
             player.prepare()
-            player.play()
+            player.seekTo(playbackManager.position)
 
             notificationHolder.setMetadata(it, this)
         }
@@ -278,7 +282,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private fun startPollingPosition() {
         serviceScope.launch {
             pollCurrentPosition().takeWhile { player.isPlaying }.collect {
-                playbackManager.setPosition(it / 1000)
+                playbackManager.setPosition(it)
             }
         }
     }

@@ -129,7 +129,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
 
     // Update the position and push the change the playbackManager.
     fun updatePosition(progress: Int) {
-        playbackManager.seekTo(progress.toLong())
+        playbackManager.seekTo((progress * 1000).toLong())
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -199,7 +199,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
 
     override fun onPositionUpdate(position: Long) {
         if (!mIsSeeking.value!!) {
-            mPosition.value = position
+            mPosition.value = position / 1000
         }
     }
 
@@ -227,7 +227,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
         Log.d(this::class.simpleName, "Attempting to restore playback state.")
 
         mSong.value = playbackManager.song
-        mPosition.value = playbackManager.position
+        mPosition.value = playbackManager.position / 1000
         mQueue.value = playbackManager.queue
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying

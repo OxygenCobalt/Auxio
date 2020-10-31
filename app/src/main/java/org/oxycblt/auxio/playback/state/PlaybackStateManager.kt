@@ -181,7 +181,7 @@ internal class PlaybackStateManager {
         // Due to the hacky way I poll ExoPlayer positions, don't accept any bugged positions
         // that are over the duration of the song.
         mSong?.let {
-            if (position <= it.seconds) {
+            if (position <= it.duration) {
                 mPosition = position
             }
         }
