@@ -16,9 +16,8 @@ import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 // A ViewModel that acts as an intermediary between the UI and PlaybackStateManager
-// TODO: Implement Looping Modes
 // TODO: Implement User Queue
-// TODO: Implement Persistence through Bundles/Databases/Idk
+// TODO: Implement Persistence through a Database
 class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
     // Playback
     private val mSong = MutableLiveData<Song?>()

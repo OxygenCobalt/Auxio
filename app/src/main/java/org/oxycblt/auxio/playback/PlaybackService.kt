@@ -103,6 +103,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         // Set up callback for system events
         systemReceiver = SystemEventReceiver()
         IntentFilter().apply {
+            addAction(PlaybackNotificationHolder.ACTION_LOOP)
+            addAction(PlaybackNotificationHolder.ACTION_SKIP_PREV)
+            addAction(PlaybackNotificationHolder.ACTION_PLAY_PAUSE)
+            addAction(PlaybackNotificationHolder.ACTION_SKIP_NEXT)
+            addAction(PlaybackNotificationHolder.ACTION_SHUFFLE)
             addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
@@ -115,7 +120,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         notificationHolder = PlaybackNotificationHolder()
 
-        notificationHolder.init(applicationContext, mediaSession)
+        notificationHolder.init(applicationContext, mediaSession, this)
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
@@ -186,7 +191,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
-
         song?.let {
             val item = MediaItem.fromUri(it.id.toURI())
 
@@ -210,11 +214,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         if (isPlaying && !player.isPlaying) {
             player.play()
-
+            notificationHolder.updatePlaying(this)
             startPollingPosition()
         } else {
             player.pause()
+            notificationHolder.updatePlaying(this)
         }
+    }
+
+    override fun onShuffleUpdate(isShuffling: Boolean) {
+        changeIsFromAudioFocus = false
+
+        notificationHolder.updateShuffle(this)
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
@@ -228,6 +239,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                 player.repeatMode = Player.REPEAT_MODE_ONE
             }
         }
+
+        notificationHolder.updateLoop(this)
     }
 
     override fun onSeekConfirm(position: Long) {
@@ -331,6 +344,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
             action?.let {
                 when (it) {
+                    PlaybackNotificationHolder.ACTION_LOOP ->
+                        playbackManager.setLoopMode(playbackManager.loopMode.increment())
+                    PlaybackNotificationHolder.ACTION_SKIP_PREV -> playbackManager.prev()
+                    PlaybackNotificationHolder.ACTION_PLAY_PAUSE ->
+                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                    PlaybackNotificationHolder.ACTION_SKIP_NEXT -> playbackManager.next()
+                    PlaybackNotificationHolder.ACTION_SHUFFLE ->
+                        playbackManager.setShuffleStatus(!playbackManager.isShuffling)
+
                     BluetoothDevice.ACTION_ACL_CONNECTED -> resume()
                     BluetoothDevice.ACTION_ACL_DISCONNECTED -> pause()
 

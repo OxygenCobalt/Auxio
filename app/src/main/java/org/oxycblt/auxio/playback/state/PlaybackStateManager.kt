@@ -16,7 +16,7 @@ import kotlin.random.Random
 // If you want to add ui-side things, add to PlaybackViewModel.
 // [Yes, I know MediaSessionCompat exists, but I like having full control over the
 // playback state instead of dealing with android's likely buggy code.]
-internal class PlaybackStateManager {
+class PlaybackStateManager private constructor() {
     // Playback
     private var mSong: Song? = null
         set(value) {

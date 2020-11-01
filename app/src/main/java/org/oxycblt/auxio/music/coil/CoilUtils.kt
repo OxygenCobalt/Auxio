@@ -15,6 +15,20 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
+// Get a bitmap for a song, onDone will be called when the bitmap is loaded.
+// Don't use this on UI elements, thats what the BindingAdapters are for.
+fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
+    Coil.enqueue(
+        ImageRequest.Builder(context)
+            .data(song.album.coverUri)
+            .error(R.drawable.ic_song)
+            .target { onDone(it.toBitmap()) }
+            .build()
+    )
+}
+
+// --- BINDING ADAPTERS ---
+
 // Get the cover art for a song
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(song: Song) {
@@ -129,17 +143,6 @@ fun ImageView.bindGenreImage(genre: Genre) {
     }
 
     Coil.imageLoader(context).enqueue(request)
-}
-
-// Get a bitmap for a song, onDone will be called when the bitmap is loaded.
-fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
-    Coil.enqueue(
-        ImageRequest.Builder(context)
-            .data(song.album.coverUri)
-            .error(R.drawable.ic_song)
-            .target { onDone(it.toBitmap()) }
-            .build()
-    )
 }
 
 // Get the base request used across the other functions.

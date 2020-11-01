@@ -25,8 +25,6 @@ class CompactPlaybackFragment : Fragment() {
     ): View? {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
-        // FIXME: Prevent the play/pause icon from animating on startup
-        //  [requires new callback from PlaybackStateManager]
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable
@@ -62,21 +60,13 @@ class CompactPlaybackFragment : Fragment() {
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (true) {
-                if (it) {
-                    // Animate the icon transition when the playing status switches
-                    binding.playbackControls.setImageDrawable(iconPauseToPlay)
-                    iconPauseToPlay.start()
-                } else {
-                    binding.playbackControls.setImageDrawable(iconPlayToPause)
-                    iconPlayToPause.start()
-                }
+            if (it) {
+                // Animate the icon transition when the playing status switches
+                binding.playbackControls.setImageDrawable(iconPauseToPlay)
+                iconPauseToPlay.start()
             } else {
-                if (it) {
-                    binding.playbackControls.setImageResource(R.drawable.ic_pause)
-                } else {
-                    binding.playbackControls.setImageResource(R.drawable.ic_play)
-                }
+                binding.playbackControls.setImageDrawable(iconPlayToPause)
+                iconPlayToPause.start()
             }
         }
 
@@ -87,11 +77,5 @@ class CompactPlaybackFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created")
 
         return binding.root
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        // playbackModel.resetAnimStatus()
     }
 }
