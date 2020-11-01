@@ -27,9 +27,8 @@
     <string name="label_play">Play</string>
     <string name="label_queue">Queue</string>
     <string name="label_queue_add">Add to queue</string>
-    <string name="label_notif_playback">Music Playback</string>
+    <string name="label_notification_playback">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
-    <string name="label_is_playing">Auxio is playing music</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search Library…</string>
@@ -50,7 +49,7 @@
     <string name="description_skip_prev">Skip to last song</string>
     <string name="description_shuffle_on">Turn shuffle on</string>
     <string name="description_shuffle_off">Turn shuffle off</string>
-    <string name="description_loop">Change Loop Mode</string>
+    <string name="description_loop">Loop</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

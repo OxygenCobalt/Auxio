@@ -23,7 +23,7 @@ internal class PlaybackStateManager {
             field = value
             callbacks.forEach { it.onSongUpdate(value) }
         }
-    private var mPosition: Long = 0 // TODO: Consider using millis instead of seconds?
+    private var mPosition: Long = 0
         set(value) {
             field = value
             callbacks.forEach { it.onPositionUpdate(value) }

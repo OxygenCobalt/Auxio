@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onStart()
 
         Intent(this, PlaybackService::class.java).also {
-            this.startService(it)
+            startService(it)
         }
     }
 }

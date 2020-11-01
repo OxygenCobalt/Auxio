@@ -27,6 +27,9 @@
         <service
             android:name=".playback.PlaybackService"
             android:icon="@drawable/ic_launcher_foreground"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false"
+            android:enabled="true"
             android:description="@string/label_service_playback"
             android:stopWithTask="false" />
     </application>

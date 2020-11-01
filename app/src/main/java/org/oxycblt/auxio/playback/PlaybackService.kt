@@ -129,7 +129,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onDestroy() {
         super.onDestroy()
 
-        stopForeground(true)
+        notificationHolder.stop(this)
         unregisterReceiver(systemReceiver)
 
         // Release everything that could cause a memory leak if left around
@@ -202,7 +202,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         // Stop playing/the notification if there's nothing to play.
         player.stop()
-        stopForeground(true)
+        notificationHolder.stop(this)
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
@@ -214,9 +214,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             startPollingPosition()
         } else {
             player.pause()
-
-            // Be a polite service and stop being foreground if nothing is playing.
-            stopForeground(false)
         }
     }
 
