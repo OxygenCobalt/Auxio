@@ -29,8 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_compact_progress"
             android:clickable="false"
-            android:progressBackgroundTint="?android:attr/colorControlNormal"
-            android:progressTint="?android:attr/colorPrimary"
+            android:progressBackgroundTint="?attr/colorControlNormal"
+            android:progressTint="?attr/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:progress="70" />

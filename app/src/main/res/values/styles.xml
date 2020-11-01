@@ -6,8 +6,9 @@
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
-        <item name="android:colorControlNormal">@color/control_color</item>
         <item name="android:fitsSystemWindows">true</item>
+
+        <item name="colorControlNormal">@color/control_color</item>
     </style>
 
     <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->
@@ -18,13 +19,13 @@
     <!-- Toolbar Title Theme -->
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_black</item>
-        <item name="android:textColor">?android:attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <!-- Title theme for Detail Fragments -->
     <style name="DetailHeader">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textColor">?android:attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textSize">@dimen/text_size_header_max</item>
     </style>

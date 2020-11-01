@@ -34,10 +34,10 @@
             android:elevation="@dimen/elevation_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:tabGravity="fill"
-            app:tabIconTint="?android:attr/colorPrimary"
+            app:tabIconTint="?attr/colorPrimary"
             app:tabIconTintMode="src_in"
             app:tabIndicator="@drawable/ui_indicator"
-            app:tabIndicatorColor="?android:attr/colorPrimary"
+            app:tabIndicatorColor="?attr/colorPrimary"
             app:tabMode="fixed"
             app:tabRippleColor="@color/selection_color"
             tools:background="@color/control_color" />
