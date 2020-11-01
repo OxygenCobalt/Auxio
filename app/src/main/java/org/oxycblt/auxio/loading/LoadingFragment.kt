@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
@@ -27,6 +28,13 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // If the music was already loaded, then don't do it again.
+        if (MusicStore.getInstance().loaded) {
+            findNavController().navigate(
+                LoadingFragmentDirections.actionToMain()
+            )
+        }
+
         val binding = FragmentLoadingBinding.inflate(inflater)
 
         // Set up the permission launcher, as its disallowed outside of onCreate.

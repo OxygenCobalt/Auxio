@@ -22,6 +22,9 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
+    var loaded = false
+        private set
+
     // Load/Sort the entire library.
     // ONLY CALL THIS FROM AN IO THREAD.
     fun load(app: Application): MusicLoaderResponse {
@@ -67,6 +70,10 @@ class MusicStore private constructor() {
                 this::class.simpleName,
                 "Music load completed successfully in ${elapsed}ms."
             )
+        }
+
+        if (loader.response == MusicLoaderResponse.DONE) {
+            loaded = true
         }
 
         return loader.response

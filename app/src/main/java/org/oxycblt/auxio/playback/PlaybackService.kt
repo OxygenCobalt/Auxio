@@ -1,11 +1,13 @@
 package org.oxycblt.auxio.playback
 
+import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
@@ -14,6 +16,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.view.KeyEvent
+import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -47,9 +50,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
-    private lateinit var notificationHolder: PlaybackNotificationHolder
+
+    private lateinit var notificationManager: NotificationManager
+    private lateinit var notification: NotificationCompat.Builder
 
     private var changeIsFromAudioFocus = true
+    private var isForeground = false
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -103,11 +109,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         // Set up callback for system events
         systemReceiver = SystemEventReceiver()
         IntentFilter().apply {
-            addAction(PlaybackNotificationHolder.ACTION_LOOP)
-            addAction(PlaybackNotificationHolder.ACTION_SKIP_PREV)
-            addAction(PlaybackNotificationHolder.ACTION_PLAY_PAUSE)
-            addAction(PlaybackNotificationHolder.ACTION_SKIP_NEXT)
-            addAction(PlaybackNotificationHolder.ACTION_SHUFFLE)
+            addAction(NotificationUtils.ACTION_LOOP)
+            addAction(NotificationUtils.ACTION_SKIP_PREV)
+            addAction(NotificationUtils.ACTION_PLAY_PAUSE)
+            addAction(NotificationUtils.ACTION_SKIP_NEXT)
+            addAction(NotificationUtils.ACTION_SHUFFLE)
+
             addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
@@ -118,9 +125,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         // --- NOTIFICATION SETUP ---
 
-        notificationHolder = PlaybackNotificationHolder()
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationHolder.init(applicationContext, mediaSession, this)
+        notification = notificationManager.createMediaNotification(this, mediaSession)
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
@@ -134,7 +141,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
     override fun onDestroy() {
         super.onDestroy()
 
-        notificationHolder.stop(this)
+        stopForegroundAndNotification()
         unregisterReceiver(systemReceiver)
 
         // Release everything that could cause a memory leak if left around
@@ -199,14 +206,16 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             player.play()
 
             uploadMetadataToSession(it)
-            notificationHolder.setMetadata(playbackManager.song!!, this)
+            notification.setMetadata(playbackManager.song!!, this) {
+                startForegroundOrNotify()
+            }
 
             return
         }
 
         // Stop playing/the notification if there's nothing to play.
         player.stop()
-        notificationHolder.stop(this)
+        stopForegroundAndNotification()
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
@@ -214,18 +223,23 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
         if (isPlaying && !player.isPlaying) {
             player.play()
-            notificationHolder.updatePlaying(this)
+            notification.updatePlaying(this)
+            startForegroundOrNotify()
+
             startPollingPosition()
         } else {
             player.pause()
-            notificationHolder.updatePlaying(this)
+
+            notification.updatePlaying(this)
+            startForegroundOrNotify()
         }
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
         changeIsFromAudioFocus = false
 
-        notificationHolder.updateShuffle(this)
+        notification.updateShuffle(this)
+        startForegroundOrNotify()
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
@@ -240,7 +254,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             }
         }
 
-        notificationHolder.updateLoop(this)
+        notification.updateLoop(this)
+        startForegroundOrNotify()
     }
 
     override fun onSeekConfirm(position: Long) {
@@ -258,7 +273,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             player.prepare()
             player.seekTo(playbackManager.position)
 
-            notificationHolder.setMetadata(it, this)
+            notification.setMetadata(it, this) {
+                startForegroundOrNotify()
+            }
         }
     }
 
@@ -295,6 +312,29 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                 playbackManager.setPosition(it)
             }
         }
+    }
+
+    private fun startForegroundOrNotify() {
+        // Start the service in the foreground if haven't already.
+        if (!isForeground) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                    NotificationUtils.NOTIFICATION_ID, notification.build(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                )
+            } else {
+                startForeground(NotificationUtils.NOTIFICATION_ID, notification.build())
+            }
+        } else {
+            notificationManager.notify(NotificationUtils.NOTIFICATION_ID, notification.build())
+        }
+    }
+
+    private fun stopForegroundAndNotification() {
+        stopForeground(true)
+        notificationManager.cancel(NotificationUtils.NOTIFICATION_ID)
+
+        isForeground = false
     }
 
     // Handle a media button event.
@@ -344,13 +384,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
             action?.let {
                 when (it) {
-                    PlaybackNotificationHolder.ACTION_LOOP ->
+                    NotificationUtils.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
-                    PlaybackNotificationHolder.ACTION_SKIP_PREV -> playbackManager.prev()
-                    PlaybackNotificationHolder.ACTION_PLAY_PAUSE ->
+                    NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
+                    NotificationUtils.ACTION_PLAY_PAUSE ->
                         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
-                    PlaybackNotificationHolder.ACTION_SKIP_NEXT -> playbackManager.next()
-                    PlaybackNotificationHolder.ACTION_SHUFFLE ->
+                    NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
+                    NotificationUtils.ACTION_SHUFFLE ->
                         playbackManager.setShuffleStatus(!playbackManager.isShuffling)
 
                     BluetoothDevice.ACTION_ACL_CONNECTED -> resume()

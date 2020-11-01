@@ -16,6 +16,7 @@
         <activity
             android:name=".MainActivity"
             android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter>
@@ -26,7 +27,8 @@
         </activity>
         <service
             android:name=".playback.PlaybackService"
-            android:icon="@drawable/ic_launcher_foreground"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false"
             android:enabled="true"
