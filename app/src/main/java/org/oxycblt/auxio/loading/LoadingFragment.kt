@@ -33,6 +33,8 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
             findNavController().navigate(
                 LoadingFragmentDirections.actionToMain()
             )
+
+            return null
         }
 
         val binding = FragmentLoadingBinding.inflate(inflater)

@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.MainActivity
@@ -26,7 +27,7 @@ object NotificationUtils {
     const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV"
     const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE"
     const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT"
-    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE"
+    const val ACTION_EXIT = "ACTION_AUXIO_EXIT"
 }
 
 fun NotificationManager.createMediaNotification(
@@ -51,7 +52,9 @@ fun NotificationManager.createMediaNotification(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    // TODO: It would be cool if the notification intent took you to the now playing screen.
+    // TODO: Things that probably aren't possible but would be nice
+    //  - Swipe to close instead of a button to press
+    //  - Playing intent takes you to now playing screen instead of elsewhere
     return NotificationCompat.Builder(context, NotificationUtils.CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_song)
         .setStyle(
@@ -67,7 +70,7 @@ fun NotificationManager.createMediaNotification(
         .addAction(newAction(NotificationUtils.ACTION_SKIP_PREV, context))
         .addAction(newAction(NotificationUtils.ACTION_PLAY_PAUSE, context))
         .addAction(newAction(NotificationUtils.ACTION_SKIP_NEXT, context))
-        .addAction(newAction(NotificationUtils.ACTION_SHUFFLE, context))
+        .addAction(newAction(NotificationUtils.ACTION_EXIT, context))
         .setSubText(context.getString(R.string.title_playback))
         .setContentIntent(mainIntent)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -87,18 +90,15 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
 }
 
 @SuppressLint("RestrictedApi")
-fun NotificationCompat.Builder.updateLoop(context: Context) {
-    mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
-}
-
-@SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updatePlaying(context: Context) {
     mActions[2] = newAction(NotificationUtils.ACTION_PLAY_PAUSE, context)
+
+    setOngoing(PlaybackStateManager.getInstance().isPlaying)
 }
 
 @SuppressLint("RestrictedApi")
-fun NotificationCompat.Builder.updateShuffle(context: Context) {
-    mActions[4] = newAction(NotificationUtils.ACTION_SHUFFLE, context)
+fun NotificationCompat.Builder.updateLoop(context: Context) {
+    mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
 }
 
 private fun newAction(action: String, context: Context): NotificationCompat.Action {
@@ -113,9 +113,7 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
             }
         }
 
-        NotificationUtils.ACTION_SKIP_PREV -> {
-            R.drawable.ic_skip_prev
-        }
+        NotificationUtils.ACTION_SKIP_PREV -> R.drawable.ic_skip_prev
 
         NotificationUtils.ACTION_PLAY_PAUSE -> {
             if (playbackManager.isPlaying) {
@@ -125,18 +123,9 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
             }
         }
 
-        NotificationUtils.ACTION_SKIP_NEXT -> {
-            R.drawable.ic_skip_next
-        }
+        NotificationUtils.ACTION_SKIP_NEXT -> R.drawable.ic_skip_next
 
-        NotificationUtils.ACTION_SHUFFLE -> {
-            if (playbackManager.isShuffling) {
-                R.drawable.ic_shuffle
-            } else {
-                R.drawable.ic_shuffle_disabled
-            }
-        }
-
+        NotificationUtils.ACTION_EXIT -> R.drawable.ic_exit
         else -> R.drawable.ic_play
     }
 

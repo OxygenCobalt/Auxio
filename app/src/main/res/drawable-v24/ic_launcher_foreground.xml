@@ -4,24 +4,29 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-  <path
-      android:pathData="M 54.000004,28.557237 V 58.38181 c -1.667916,-0.96117 -3.590261,-1.554837 -5.65395,-1.554837 -6.247608,0 -11.307896,5.060283 -11.307896,11.307898 0,6.24761 5.060288,11.307892 11.307896,11.307892 6.24761,0 11.307898,-5.06028 11.307898,-11.307891 V 39.865131 H 70.961841 V 28.557237 Z"
-      android:strokeWidth="0.890156"
-      android:strokeColor="#ffffff">
-    <aapt:attr name="android:fillColor">
-          <gradient
-              android:startX="60"
-              android:startY="61.5"
-              android:endX="64.75"
-              android:endY="28.5"
-              android:type="linear">
-              <item
-                  android:color="#2196f3"
-                  android:offset="0.0" />
-              <item
-                  android:color="#90caf9"
-                  android:offset="1.0" />
-          </gradient>
-      </aapt:attr>
-  </path>
+  <group android:scaleX="0.95"
+      android:scaleY="0.95"
+      android:translateX="2.7"
+      android:translateY="2.7">
+    <path
+        android:pathData="M 54.000004,28.557237 V 58.38181 c -1.667916,-0.96117 -3.590261,-1.554837 -5.65395,-1.554837 -6.247608,0 -11.307896,5.060283 -11.307896,11.307898 0,6.24761 5.060288,11.307892 11.307896,11.307892 6.24761,0 11.307898,-5.06028 11.307898,-11.307891 V 39.865131 H 70.961841 V 28.557237 Z"
+        android:strokeWidth="0.890156"
+        android:strokeColor="#ffffff">
+      <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="60"
+                android:startY="61.5"
+                android:endX="64.75"
+                android:endY="28.5"
+                android:type="linear">
+                <item
+                    android:color="#2196f3"
+                    android:offset="0.0" />
+                <item
+                    android:color="#90caf9"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+  </group>
 </vector>

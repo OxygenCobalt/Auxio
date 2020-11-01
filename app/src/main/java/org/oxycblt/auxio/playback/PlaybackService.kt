@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
@@ -56,6 +57,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     private var changeIsFromAudioFocus = true
     private var isForeground = false
+    private var isDetachedFromUI = false
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -70,7 +72,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? = null
+    override fun onBind(intent: Intent): IBinder? = LocalBinder()
 
     override fun onCreate() {
         super.onCreate()
@@ -113,7 +115,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             addAction(NotificationUtils.ACTION_SKIP_PREV)
             addAction(NotificationUtils.ACTION_PLAY_PAUSE)
             addAction(NotificationUtils.ACTION_SKIP_NEXT)
-            addAction(NotificationUtils.ACTION_SHUFFLE)
+            addAction(NotificationUtils.ACTION_EXIT)
 
             addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
@@ -229,17 +231,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
             startPollingPosition()
         } else {
             player.pause()
-
             notification.updatePlaying(this)
             startForegroundOrNotify()
         }
-    }
-
-    override fun onShuffleUpdate(isShuffling: Boolean) {
-        changeIsFromAudioFocus = false
-
-        notification.updateShuffle(this)
-        startForegroundOrNotify()
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
@@ -390,8 +384,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                     NotificationUtils.ACTION_PLAY_PAUSE ->
                         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
-                    NotificationUtils.ACTION_SHUFFLE ->
-                        playbackManager.setShuffleStatus(!playbackManager.isShuffling)
+                    NotificationUtils.ACTION_EXIT -> stop()
 
                     BluetoothDevice.ACTION_ACL_CONNECTED -> resume()
                     BluetoothDevice.ACTION_ACL_DISCONNECTED -> pause()
@@ -430,6 +423,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
                 playbackManager.setPlayingStatus(false)
             }
         }
+
+        private fun stop() {
+            playbackManager.setPlayingStatus(false)
+            stopForegroundAndNotification()
+        }
+    }
+
+    inner class LocalBinder : Binder() {
+        fun getService() = this@PlaybackService
     }
 
     companion object {
