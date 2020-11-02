@@ -15,6 +15,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 object NotificationUtils {
@@ -52,8 +53,7 @@ fun NotificationManager.createMediaNotification(
     )
 
     // TODO: Things that probably aren't possible but would be nice
-    //  - Swipe to close instead of a button to press
-    //  - Playing intent takes you to now playing screen instead of elsewhere
+    //  - Playing intent takes you to PlaybackFragment instead of MainFragment
     return NotificationCompat.Builder(context, NotificationUtils.CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_song)
         .setStyle(
@@ -64,12 +64,12 @@ fun NotificationManager.createMediaNotification(
         .setCategory(NotificationCompat.CATEGORY_SERVICE)
         .setChannelId(NotificationUtils.CHANNEL_ID)
         .setShowWhen(false)
-        .setTicker(context.getString(R.string.title_playback))
         .addAction(newAction(NotificationUtils.ACTION_LOOP, context))
         .addAction(newAction(NotificationUtils.ACTION_SKIP_PREV, context))
         .addAction(newAction(NotificationUtils.ACTION_PLAY_PAUSE, context))
         .addAction(newAction(NotificationUtils.ACTION_SKIP_NEXT, context))
         .addAction(newAction(NotificationUtils.ACTION_EXIT, context))
+        .setNotificationSilent()
         .setSubText(context.getString(R.string.title_playback))
         .setContentIntent(mainIntent)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -91,13 +91,23 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updatePlaying(context: Context) {
     mActions[2] = newAction(NotificationUtils.ACTION_PLAY_PAUSE, context)
-
-    setOngoing(PlaybackStateManager.getInstance().isPlaying)
 }
 
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updateLoop(context: Context) {
     mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
+}
+
+@SuppressLint("RestrictedApi")
+fun NotificationCompat.Builder.updateMode(context: Context) {
+    val playbackManager = PlaybackStateManager.getInstance()
+
+    // If the mode is ALL_SONGS, then just put a string, otherwise put the parent model's name.
+    if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
+        setSubText(context.getString(R.string.title_all_songs))
+    } else {
+        setSubText(playbackManager.parent!!.name)
+    }
 }
 
 private fun newAction(action: String, context: Context): NotificationCompat.Action {

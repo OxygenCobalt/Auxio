@@ -11,7 +11,7 @@ import org.oxycblt.auxio.music.Song
 import kotlin.random.Random
 
 // The manager of the current playback state [Current Song, Queue, Shuffling]
-// This class is for sole use by the classes in /playback/.
+// This class is for sole use by the code in /playback/.
 // If you want to add system-side things, add to PlaybackService.
 // If you want to add ui-side things, add to PlaybackViewModel.
 // [Yes, I know MediaSessionCompat exists, but I like having full control over the
@@ -42,6 +42,10 @@ class PlaybackStateManager private constructor() {
             callbacks.forEach { it.onIndexUpdate(value) }
         }
     private var mMode = PlaybackMode.ALL_SONGS
+        set(value) {
+            field = value
+            callbacks.forEach { it.onModeUpdate(value) }
+        }
 
     private var mIsPlaying = false
         set(value) {
@@ -62,9 +66,11 @@ class PlaybackStateManager private constructor() {
         }
 
     val song: Song? get() = mSong
+    val parent: BaseModel? get() = mParent
     val position: Long get() = mPosition
     val queue: MutableList<Song> get() = mQueue
     val index: Int get() = mIndex
+    val mode: PlaybackMode get() = mMode
     val isPlaying: Boolean get() = mIsPlaying
     val isShuffling: Boolean get() = mIsShuffling
     val loopMode: LoopMode get() = mLoopMode
@@ -136,6 +142,10 @@ class PlaybackStateManager private constructor() {
 
         Log.d(this::class.simpleName, "Playing ${baseModel.name}")
 
+        mParent = baseModel
+        mIndex = 0
+        mIsShuffling = shuffled
+
         when (baseModel) {
             is Album -> {
                 mQueue = orderSongsInAlbum(baseModel)
@@ -157,10 +167,6 @@ class PlaybackStateManager private constructor() {
 
         updatePlayback(mQueue[0])
 
-        mIndex = 0
-        mParent = baseModel
-        mIsShuffling = shuffled
-
         if (mIsShuffling) {
             genShuffle(false)
         } else {
@@ -178,8 +184,7 @@ class PlaybackStateManager private constructor() {
     }
 
     fun setPosition(position: Long) {
-        // Due to the hacky way I poll ExoPlayer positions, don't accept any bugged positions
-        // that are over the duration of the song.
+        // Don't accept any bugged positions that are over the duration of the song.
         mSong?.let {
             if (position <= it.duration) {
                 mPosition = position

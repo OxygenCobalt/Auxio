@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
@@ -57,7 +58,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
 
     private var changeIsFromAudioFocus = true
     private var isForeground = false
-    private var isDetachedFromUI = false
 
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(
@@ -218,6 +218,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
         // Stop playing/the notification if there's nothing to play.
         player.stop()
         stopForegroundAndNotification()
+    }
+
+    override fun onModeUpdate(mode: PlaybackMode) {
+        notification.updateMode(this)
+
+        startForegroundOrNotify()
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
