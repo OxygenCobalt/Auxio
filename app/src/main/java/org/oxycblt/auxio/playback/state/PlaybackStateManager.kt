@@ -102,10 +102,14 @@ class PlaybackStateManager private constructor() {
 
         val musicStore = MusicStore.getInstance()
 
-        mMode = mode
+        mParent = when (mode) {
+            PlaybackMode.ALL_SONGS -> null
+            PlaybackMode.IN_ARTIST -> song.album.artist
+            PlaybackMode.IN_ALBUM -> song.album
+            PlaybackMode.IN_GENRE -> error("what")
+        }
 
-        resetLoopMode()
-        updatePlayback(song)
+        mMode = mode
 
         mQueue = when (mode) {
             PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
@@ -114,12 +118,8 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.IN_GENRE -> error("what")
         }
 
-        mParent = when (mode) {
-            PlaybackMode.ALL_SONGS -> null
-            PlaybackMode.IN_ARTIST -> song.album.artist
-            PlaybackMode.IN_ALBUM -> song.album
-            PlaybackMode.IN_GENRE -> error("what")
-        }
+        resetLoopMode()
+        updatePlayback(song)
 
         if (mIsShuffling) {
             genShuffle(true)

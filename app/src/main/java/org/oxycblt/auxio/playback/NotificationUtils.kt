@@ -19,6 +19,8 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 object NotificationUtils {
+    val DO_COMPAT_SUBTEXT = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+
     const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
     const val NOTIFICATION_ID = 0xA0A0
     const val REQUEST_CODE = 0xA0C0
@@ -70,7 +72,6 @@ fun NotificationManager.createMediaNotification(
         .addAction(newAction(NotificationUtils.ACTION_SKIP_NEXT, context))
         .addAction(newAction(NotificationUtils.ACTION_EXIT, context))
         .setNotificationSilent()
-        .setSubText(context.getString(R.string.title_playback))
         .setContentIntent(mainIntent)
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 }
@@ -81,6 +82,14 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
         song.album.artist.name,
     )
 
+    // On older versions of android [API <26], show the song's album on the subtext instead of
+    // the current mode, as that makes more sense for the old style of media notifications.
+    if (NotificationUtils.DO_COMPAT_SUBTEXT) {
+        setSubText(song.album.name)
+    }
+
+    // getBitmap() is concurrent, so only call back to the object calling this function when
+    // the loading is over.
     getBitmap(song, context) {
         setLargeIcon(it)
 
@@ -98,15 +107,16 @@ fun NotificationCompat.Builder.updateLoop(context: Context) {
     mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
 }
 
-@SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updateMode(context: Context) {
-    val playbackManager = PlaybackStateManager.getInstance()
+    if (!NotificationUtils.DO_COMPAT_SUBTEXT) {
+        val playbackManager = PlaybackStateManager.getInstance()
 
-    // If the mode is ALL_SONGS, then just put a string, otherwise put the parent model's name.
-    if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
-        setSubText(context.getString(R.string.title_all_songs))
-    } else {
-        setSubText(playbackManager.parent!!.name)
+        // If the mode is ALL_SONGS, then just put a string, otherwise put the parent model's name.
+        if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
+            setSubText(context.getString(R.string.title_all_songs))
+        } else {
+            setSubText(playbackManager.parent!!.name)
+        }
     }
 }
 
