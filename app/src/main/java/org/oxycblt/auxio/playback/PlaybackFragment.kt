@@ -81,6 +81,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee scroll work
         binding.playbackSong.isSelected = true
+
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
@@ -178,7 +179,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
             // Disable the option to open the queue if there's nothing in it.
-            if (it.isEmpty()) {
+            if (it.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
                 queueMenuItem.isEnabled = false
                 queueMenuItem.icon = iconQueueInactive
             } else {
@@ -192,6 +193,16 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 binding.playbackSkipNext.disable(requireContext())
             } else {
                 binding.playbackSkipNext.enable(requireContext())
+            }
+        }
+
+        playbackModel.userQueue.observe(viewLifecycleOwner) {
+            if (it.isEmpty() && playbackModel.queue.value!!.isEmpty()) {
+                queueMenuItem.isEnabled = false
+                queueMenuItem.icon = iconQueueInactive
+            } else {
+                queueMenuItem.isEnabled = true
+                queueMenuItem.icon = iconQueueActive
             }
         }
 

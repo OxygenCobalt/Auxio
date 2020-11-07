@@ -4,24 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.theme.accent
-import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.toColor
 
+// TODO: Make this better
 class QueueFragment : BottomSheetDialogFragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-
-    override fun getTheme(): Int = R.style.Theme_BottomSheetFix
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,58 +22,24 @@ class QueueFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val helper = ItemTouchHelper(QueueDragCallback(playbackModel))
-        val queueAdapter = QueueAdapter(helper)
+        binding.queueViewpager.adapter = PagerAdapter()
 
-        // --- UI SETUP ---
-
-        binding.queueHeader.setTextColor(accent.first.toColor(requireContext()))
-        binding.queueRecycler.apply {
-            adapter = queueAdapter
-            itemAnimator = DefaultItemAnimator()
-            applyDivider()
-            setHasFixedSize(true)
-
-            helper.attachToRecyclerView(this)
-        }
-
-        // --- VIEWMODEL SETUP ---
-
-        playbackModel.mode.observe(viewLifecycleOwner) {
-            if (it == PlaybackMode.ALL_SONGS) {
-                binding.queueHeader.setText(R.string.label_next_songs)
-            } else {
-                binding.queueHeader.text = getString(
-                    R.string.format_next_from, playbackModel.parent.value!!.name
-                )
-            }
-        }
-
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                findNavController().navigateUp()
-
-                return@observe
-            }
-
-            // If the first item is being moved, then scroll to the top position on completion
-            // to prevent ListAdapter from scrolling uncontrollably.
-            if (queueAdapter.currentList.isNotEmpty() && it[0].id != queueAdapter.currentList[0].id) {
-                queueAdapter.submitList(it.toMutableList()) {
-                    // Make sure that the RecyclerView doesn't scroll to the top if the first item
-                    // changed, but is not visible.
-                    val firstItem = (binding.queueRecycler.layoutManager as LinearLayoutManager)
-                        .findFirstVisibleItemPosition()
-
-                    if (firstItem == -1 || firstItem == 0) {
-                        binding.queueRecycler.scrollToPosition(0)
-                    }
-                }
-            } else {
-                queueAdapter.submitList(it.toMutableList())
-            }
+        // TODO: Add option for default queue screen
+        if (playbackModel.userQueue.value!!.isEmpty()) {
+            binding.queueViewpager.setCurrentItem(1, false)
+        } else {
+            binding.queueViewpager.setCurrentItem(0, false)
         }
 
         return binding.root
+    }
+
+    private inner class PagerAdapter :
+        FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
+        override fun getItemCount(): Int = 2
+
+        override fun createFragment(position: Int): Fragment {
+            return QueueListFragment(position)
+        }
     }
 }

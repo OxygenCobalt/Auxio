@@ -24,7 +24,7 @@ class DetailSongAdapter(
     // Generic ViewHolder for a song
     inner class ViewHolder(
         private val binding: ItemAlbumSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick) {
+    ) : BaseViewHolder<Song>(binding, doOnClick, null) {
 
         override fun onBind(data: Song) {
             binding.song = data

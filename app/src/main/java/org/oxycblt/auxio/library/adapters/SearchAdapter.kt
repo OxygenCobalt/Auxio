@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.library.adapters
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,8 @@ import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SearchAdapter(
-    private val doOnClick: (data: BaseModel) -> Unit
+    private val doOnClick: (data: BaseModel) -> Unit,
+    private val doOnLongClick: (data: BaseModel, view: View) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
 
     override fun getItemViewType(position: Int): Int {
@@ -35,7 +37,11 @@ class SearchAdapter(
             GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(parent.context, doOnClick)
             ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(parent.context, doOnClick)
             AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(parent.context, doOnClick)
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(parent.context, doOnClick)
+            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
+                parent.context,
+                doOnClick,
+                doOnLongClick
+            )
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
             else -> HeaderViewHolder.from(parent.context)

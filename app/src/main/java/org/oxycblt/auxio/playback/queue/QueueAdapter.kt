@@ -25,7 +25,7 @@ class QueueAdapter(
     // Generic ViewHolder for a queue item
     inner class ViewHolder(
         private val binding: ItemQueueSongBinding,
-    ) : BaseViewHolder<Song>(binding, null) {
+    ) : BaseViewHolder<Song>(binding, null, null) {
 
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {

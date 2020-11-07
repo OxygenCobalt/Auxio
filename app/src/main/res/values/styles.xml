@@ -8,6 +8,7 @@
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:fitsSystemWindows">true</item>
 
+        <item name="android:popupMenuStyle">@style/Widget.CustomPopup</item>
         <item name="colorControlNormal">@color/control_color</item>
     </style>
 
@@ -39,6 +40,11 @@
     <style name="AppThemeOverlay.Popup" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">@color/background</item>
         <item name="colorControlHighlight">@color/selection_color</item>
+    </style>
+
+    <style name="Widget.CustomPopup" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:popupBackground">@color/background</item>
     </style>
 
     <!--

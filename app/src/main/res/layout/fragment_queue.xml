@@ -2,28 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:theme="@style/Theme.Base"
-        android:background="@color/background">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/queue_header"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/queue_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_medium"
-            android:text="@string/label_queue"
-            android:fontFamily="@font/inter_black"
-            android:textAppearance="@style/TextAppearance.Toolbar.Header" />
+            android:layout_height="match_parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/queue_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_song"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </LinearLayout>
+    </FrameLayout>
 </layout>

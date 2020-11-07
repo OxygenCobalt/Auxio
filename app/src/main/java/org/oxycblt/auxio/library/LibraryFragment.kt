@@ -50,9 +50,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             navToItem(it)
         }
 
-        val searchAdapter = SearchAdapter {
-            navToItem(it)
-        }
+        val searchAdapter = SearchAdapter(
+            {
+                navToItem(it)
+            },
+            { data, view -> }
+        )
 
         // --- UI SETUP ---
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/background">
+
+        <TextView
+            android:id="@+id/queue_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/inter_black"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:padding="@dimen/padding_medium"
+            android:singleLine="true"
+            android:text="@string/label_queue"
+            android:textColor="?android:attr/colorPrimary"
+            android:textAppearance="@style/TextAppearance.Toolbar.Header"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/queue_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/queue_header"
+            tools:layout_editor_absoluteX="0dp"
+            tools:listitem="@layout/item_song" />
+
+        <TextView
+            android:id="@+id/queue_nothing_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:textSize="15sp"
+            android:text="@string/label_empty_queue"
+            android:textAlignment="center"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+</layout>

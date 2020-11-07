@@ -2,6 +2,7 @@ package org.oxycblt.auxio.recycler.viewholders
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreBinding
@@ -19,7 +20,7 @@ import org.oxycblt.auxio.music.Song
 class GenreViewHolder private constructor(
     private val binding: ItemGenreBinding,
     doOnClick: (Genre) -> Unit
-) : BaseViewHolder<Genre>(binding, doOnClick) {
+) : BaseViewHolder<Genre>(binding, doOnClick, null) {
 
     override fun onBind(data: Genre) {
         binding.genre = data
@@ -41,7 +42,7 @@ class GenreViewHolder private constructor(
 class ArtistViewHolder private constructor(
     private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
-) : BaseViewHolder<Artist>(binding, doOnClick) {
+) : BaseViewHolder<Artist>(binding, doOnClick, null) {
 
     override fun onBind(data: Artist) {
         binding.artist = data
@@ -63,7 +64,7 @@ class ArtistViewHolder private constructor(
 class AlbumViewHolder private constructor(
     private val binding: ItemAlbumBinding,
     doOnClick: (data: Album) -> Unit
-) : BaseViewHolder<Album>(binding, doOnClick) {
+) : BaseViewHolder<Album>(binding, doOnClick, null) {
 
     override fun onBind(data: Album) {
         binding.album = data
@@ -87,7 +88,8 @@ class AlbumViewHolder private constructor(
 class SongViewHolder private constructor(
     private val binding: ItemSongBinding,
     doOnClick: (data: Song) -> Unit,
-) : BaseViewHolder<Song>(binding, doOnClick) {
+    doOnLongClick: (data: Song, view: View) -> Unit
+) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Song) {
         binding.song = data
@@ -102,10 +104,11 @@ class SongViewHolder private constructor(
         fun from(
             context: Context,
             doOnClick: (data: Song) -> Unit,
+            doOnLongClick: (data: Song, view: View) -> Unit
         ): SongViewHolder {
             return SongViewHolder(
                 ItemSongBinding.inflate(LayoutInflater.from(context)),
-                doOnClick
+                doOnClick, doOnLongClick
             )
         }
     }
@@ -113,7 +116,7 @@ class SongViewHolder private constructor(
 
 class HeaderViewHolder(
     private val binding: ItemHeaderBinding
-) : BaseViewHolder<Header>(binding, null) {
+) : BaseViewHolder<Header>(binding, null, null) {
 
     override fun onBind(data: Header) {
         binding.header = data

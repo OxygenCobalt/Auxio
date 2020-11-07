@@ -33,6 +33,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mQueue = MutableLiveData(mutableListOf<Song>())
     val queue: LiveData<MutableList<Song>> get() = mQueue
 
+    private val mUserQueue = MutableLiveData(mutableListOf<Song>())
+    val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
+
     private val mIndex = MutableLiveData(0)
     val index: LiveData<Int> get() = mIndex
 
@@ -169,6 +172,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.moveQueueItems(from, to)
     }
 
+    fun addToUserQueue(song: Song) {
+        playbackManager.addToUserQueue(song)
+    }
+
+    fun moveUserQueueItems(from: Int, to: Int) {
+        playbackManager.moveUserQueueItems(from, to)
+    }
+
+    fun removeUserQueueItem(index: Int) {
+        playbackManager.removeUserQueueItem(index)
+    }
+
     // --- STATUS FUNCTIONS ---
 
     // Flip the playing status.
@@ -215,6 +230,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mQueue.value = queue
     }
 
+    override fun onUserQueueUpdate(userQueue: MutableList<Song>) {
+        mUserQueue.value = userQueue
+    }
+
     override fun onIndexUpdate(index: Int) {
         mIndex.value = index
     }
@@ -241,6 +260,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mSong.value = playbackManager.song
         mPosition.value = playbackManager.position / 1000
         mQueue.value = playbackManager.queue
+        mUserQueue.value = playbackManager.userQueue
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying
         mIsShuffling.value = playbackManager.isShuffling

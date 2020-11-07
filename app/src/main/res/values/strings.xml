@@ -27,7 +27,9 @@
     <string name="label_play">Play</string>
     <string name="label_queue">Queue</string>
     <string name="label_queue_add">Add to queue</string>
+    <string name="label_next_user_queue">Next in Queue</string>
     <string name="label_next_songs">Next from: All Songs</string>
+    <string name="label_empty_queue">Nothing here.</string>
     <string name="label_notification_playback">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
 

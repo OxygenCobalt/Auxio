@@ -10,7 +10,8 @@ import kotlin.math.sign
 
 // The drag callback used for the Queue RecyclerView.
 class QueueDragCallback(
-    private val playbackModel: PlaybackViewModel
+    private val playbackModel: PlaybackViewModel,
+    private val isUserQueue: Boolean
 ) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.UP or ItemTouchHelper.DOWN,
     ItemTouchHelper.START
@@ -24,7 +25,6 @@ class QueueDragCallback(
     ): Int {
         // Fix to make QueueFragment scroll when an item is scrolled out of bounds.
         // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
-
         val standardSpeed = super.interpolateOutOfBoundsScroll(
             recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll
         )
@@ -45,13 +45,21 @@ class QueueDragCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition)
+        if (isUserQueue) {
+            playbackModel.moveUserQueueItems(viewHolder.adapterPosition, target.adapterPosition)
+        } else {
+            playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition)
+        }
 
         return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueItem(viewHolder.adapterPosition)
+        if (isUserQueue) {
+            playbackModel.removeUserQueueItem(viewHolder.adapterPosition)
+        } else {
+            playbackModel.removeQueueItem(viewHolder.adapterPosition)
+        }
     }
 
     companion object {

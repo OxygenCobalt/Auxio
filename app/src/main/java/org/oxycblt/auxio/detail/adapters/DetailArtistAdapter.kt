@@ -25,7 +25,7 @@ class DetailArtistAdapter(
     // Generic ViewHolder for an album
     inner class ViewHolder(
         private val binding: ItemGenreArtistBinding
-    ) : BaseViewHolder<Artist>(binding, doOnClick) {
+    ) : BaseViewHolder<Artist>(binding, doOnClick, null) {
 
         override fun onBind(data: Artist) {
             binding.artist = data

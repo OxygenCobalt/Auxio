@@ -15,6 +15,7 @@
             type="org.oxycblt.auxio.playback.PlaybackViewModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
@@ -213,7 +214,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause"
-            android:contentDescription="@string/description_loop"/>
+            android:contentDescription="@string/description_loop" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

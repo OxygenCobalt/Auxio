@@ -40,6 +40,12 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onQueueUpdate(value) }
         }
+    private var mUserQueue = mutableListOf<Song>()
+        set(value) {
+            Log.d(this::class.simpleName, "retard.")
+            field = value
+            callbacks.forEach { it.onUserQueueUpdate(value) }
+        }
     private var mIndex = 0
         set(value) {
             field = value
@@ -74,6 +80,7 @@ class PlaybackStateManager private constructor() {
     val parent: BaseModel? get() = mParent
     val position: Long get() = mPosition
     val queue: MutableList<Song> get() = mQueue
+    val userQueue: MutableList<Song> get() = mUserQueue
     val index: Int get() = mIndex
     val mode: PlaybackMode get() = mMode
     val isPlaying: Boolean get() = mIsPlaying
@@ -252,10 +259,8 @@ class PlaybackStateManager private constructor() {
 
     fun moveQueueItems(from: Int, to: Int) {
         try {
-            val currentItem = mQueue[from]
-
-            mQueue.removeAt(from)
-            mQueue.add(to, currentItem)
+            val item = mQueue.removeAt(from)
+            mQueue.add(to, item)
         } catch (exception: IndexOutOfBoundsException) {
             Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
 
@@ -265,9 +270,46 @@ class PlaybackStateManager private constructor() {
         forceQueueUpdate()
     }
 
+    fun addToUserQueue(song: Song) {
+        mUserQueue.add(song)
+
+        forceUserQueueUpdate()
+    }
+
+    fun removeUserQueueItem(index: Int) {
+        Log.d(this::class.simpleName, "Removing item ${mUserQueue[index].name}.")
+
+        if (index > mUserQueue.size || index < 0) {
+            Log.e(this::class.simpleName, "Index is out of bounds, did not remove queue item.")
+
+            return
+        }
+
+        mUserQueue.removeAt(index)
+
+        forceUserQueueUpdate()
+    }
+
+    fun moveUserQueueItems(from: Int, to: Int) {
+        try {
+            val item = mUserQueue.removeAt(from)
+            mUserQueue.add(to, item)
+        } catch (exception: IndexOutOfBoundsException) {
+            Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
+
+            return
+        }
+
+        forceUserQueueUpdate()
+    }
+
     // Force any callbacks to update when the queue is changed.
     private fun forceQueueUpdate() {
         mQueue = mQueue
+    }
+
+    private fun forceUserQueueUpdate() {
+        mUserQueue = mUserQueue
     }
 
     // --- SHUFFLE FUNCTIONS ---
@@ -408,6 +450,7 @@ class PlaybackStateManager private constructor() {
         fun onParentUpdate(parent: BaseModel?) {}
         fun onPositionUpdate(position: Long) {}
         fun onQueueUpdate(queue: MutableList<Song>) {}
+        fun onUserQueueUpdate(userQueue: MutableList<Song>) {}
         fun onModeUpdate(mode: PlaybackMode) {}
         fun onIndexUpdate(index: Int) {}
         fun onPlayingUpdate(isPlaying: Boolean) {}
