@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
-import org.oxycblt.auxio.playback.queue.QueueFragment
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.disable
@@ -71,7 +70,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
             setOnMenuItemClickListener {
                 if (it.itemId == R.id.action_queue) {
-                    QueueFragment().show(parentFragmentManager, "TAG_QUEUE")
+                    findNavController().navigate(PlaybackFragmentDirections.actionShowQueue())
                 }
 
                 true
@@ -185,6 +184,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             } else {
                 queueMenuItem.isEnabled = true
                 queueMenuItem.icon = iconQueueActive
+            }
+
+            // If someone edits the queue to make it have no songs left, then disable the
+            // skip next button.
+            if (playbackModel.index.value!! == it.size) {
+                binding.playbackSkipNext.disable(requireContext())
+            } else {
+                binding.playbackSkipNext.enable(requireContext())
             }
         }
 

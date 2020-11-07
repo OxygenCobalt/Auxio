@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.theme.accent
 import org.oxycblt.auxio.theme.applyDivider
 import org.oxycblt.auxio.theme.toColor
@@ -28,9 +30,7 @@ class QueueFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val helper = ItemTouchHelper(
-            QueueDragCallback(playbackModel)
-        )
+        val helper = ItemTouchHelper(QueueDragCallback(playbackModel))
         val queueAdapter = QueueAdapter(helper)
 
         // --- UI SETUP ---
@@ -47,9 +47,19 @@ class QueueFragment : BottomSheetDialogFragment() {
 
         // --- VIEWMODEL SETUP ---
 
+        playbackModel.mode.observe(viewLifecycleOwner) {
+            if (it == PlaybackMode.ALL_SONGS) {
+                binding.queueHeader.setText(R.string.label_next_songs)
+            } else {
+                binding.queueHeader.text = getString(
+                    R.string.format_next_from, playbackModel.parent.value!!.name
+                )
+            }
+        }
+
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
-                dismiss()
+                findNavController().navigateUp()
 
                 return@observe
             }

@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
@@ -22,6 +23,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mSong = MutableLiveData<Song?>()
     val song: LiveData<Song?> get() = mSong
 
+    private val mParent = MutableLiveData<BaseModel?>()
+    val parent: LiveData<BaseModel?> get() = mParent
+
     private val mPosition = MutableLiveData(0L)
     val position: LiveData<Long> get() = mPosition
 
@@ -31,6 +35,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     private val mIndex = MutableLiveData(0)
     val index: LiveData<Int> get() = mIndex
+
+    private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
+    val mode: LiveData<PlaybackMode> get() = mMode
 
     // States
     private val mIsPlaying = MutableLiveData(false)
@@ -194,6 +201,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mSong.value = song
     }
 
+    override fun onParentUpdate(parent: BaseModel?) {
+        mParent.value = parent
+    }
+
     override fun onPositionUpdate(position: Long) {
         if (!mIsSeeking.value!!) {
             mPosition.value = position / 1000
@@ -206,6 +217,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onIndexUpdate(index: Int) {
         mIndex.value = index
+    }
+
+    override fun onModeUpdate(mode: PlaybackMode) {
+        mMode.value = mode
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {

@@ -115,5 +115,14 @@
         android:id="@+id/playback_fragment"
         android:name="org.oxycblt.auxio.playback.PlaybackFragment"
         android:label="PlaybackFragment"
-        tools:layout="@layout/fragment_playback" />
+        tools:layout="@layout/fragment_playback" >
+        <action
+            android:id="@+id/action_show_queue"
+            app:destination="@id/queue_fragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/queue_fragment"
+        android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
+        android:label="QueueFragment"
+        tools:layout="@layout/fragment_queue"/>
 </navigation>

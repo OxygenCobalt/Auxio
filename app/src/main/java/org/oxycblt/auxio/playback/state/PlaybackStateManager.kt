@@ -29,6 +29,10 @@ class PlaybackStateManager private constructor() {
             callbacks.forEach { it.onPositionUpdate(value) }
         }
     private var mParent: BaseModel? = null
+        set(value) {
+            field = value
+            callbacks.forEach { it.onParentUpdate(value) }
+        }
 
     // Queue
     private var mQueue = mutableListOf<Song>()
@@ -47,6 +51,7 @@ class PlaybackStateManager private constructor() {
             callbacks.forEach { it.onModeUpdate(value) }
         }
 
+    // Status
     private var mIsPlaying = false
         set(value) {
             field = value
@@ -131,6 +136,7 @@ class PlaybackStateManager private constructor() {
     }
 
     fun playParentModel(baseModel: BaseModel, shuffled: Boolean) {
+        // This should never occur.
         if (baseModel is Song || baseModel is Header) {
             Log.e(
                 this::class.simpleName,
@@ -295,8 +301,7 @@ class PlaybackStateManager private constructor() {
         // If specified, make the current song the first member of the queue.
         if (keepSong) {
             mSong?.let {
-                mQueue.remove(it)
-                mQueue.add(0, it)
+                moveQueueItems(mQueue.indexOf(it), 0)
             }
         } else {
             // Otherwise, just start from the zeroth position in the queue.
@@ -400,6 +405,7 @@ class PlaybackStateManager private constructor() {
 
     interface Callback {
         fun onSongUpdate(song: Song?) {}
+        fun onParentUpdate(parent: BaseModel?) {}
         fun onPositionUpdate(position: Long) {}
         fun onQueueUpdate(queue: MutableList<Song>) {}
         fun onModeUpdate(mode: PlaybackMode) {}
