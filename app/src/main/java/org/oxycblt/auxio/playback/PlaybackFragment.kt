@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -46,6 +47,17 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             requireContext(), R.drawable.ic_play_to_pause
         ) as AnimatedVectorDrawable
 
+        // Can't set the tint of a MenuItem below Android 8, so use icons instead.
+        val iconQueueActive = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_queue
+        )
+
+        val iconQueueInactive = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_queue_inactive
+        )
+
+        val queueMenuItem: MenuItem
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -64,6 +76,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
                 true
             }
+
+            queueMenuItem = menu.findItem(R.id.action_queue)
         }
 
         // Make marquee scroll work
@@ -160,6 +174,17 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
             if (!playbackModel.isSeeking.value!!) {
                 binding.playbackSeekBar.progress = it
+            }
+        }
+
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
+            // Disable the option to open the queue if there's nothing in it.
+            if (it.isEmpty()) {
+                queueMenuItem.isEnabled = false
+                queueMenuItem.icon = iconQueueInactive
+            } else {
+                queueMenuItem.isEnabled = true
+                queueMenuItem.icon = iconQueueActive
             }
         }
 

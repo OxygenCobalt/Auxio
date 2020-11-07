@@ -39,12 +39,11 @@ import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 // A Service that manages the single ExoPlayer instance and manages the system-side
 // aspects of playback.
-class PlaybackService : Service(), Player.EventListener, PlaybackStateCallback {
+class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback {
     private val player: SimpleExoPlayer by lazy {
         SimpleExoPlayer.Builder(applicationContext).build()
     }

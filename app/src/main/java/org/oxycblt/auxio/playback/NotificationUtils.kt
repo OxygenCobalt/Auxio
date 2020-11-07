@@ -145,7 +145,8 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
         NotificationUtils.ACTION_SKIP_NEXT -> R.drawable.ic_skip_next
 
         NotificationUtils.ACTION_EXIT -> R.drawable.ic_exit
-        else -> R.drawable.ic_play
+
+        else -> R.drawable.ic_error
     }
 
     return NotificationCompat.Action.Builder(

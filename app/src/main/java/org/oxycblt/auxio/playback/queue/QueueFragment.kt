@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
@@ -47,11 +48,24 @@ class QueueFragment : BottomSheetDialogFragment() {
         // --- VIEWMODEL SETUP ---
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                dismiss()
+
+                return@observe
+            }
+
             // If the first item is being moved, then scroll to the top position on completion
             // to prevent ListAdapter from scrolling uncontrollably.
             if (queueAdapter.currentList.isNotEmpty() && it[0].id != queueAdapter.currentList[0].id) {
                 queueAdapter.submitList(it.toMutableList()) {
-                    binding.queueRecycler.scrollToPosition(0)
+                    // Make sure that the RecyclerView doesn't scroll to the top if the first item
+                    // changed, but is not visible.
+                    val firstItem = (binding.queueRecycler.layoutManager as LinearLayoutManager)
+                        .findFirstVisibleItemPosition()
+
+                    if (firstItem == -1 || firstItem == 0) {
+                        binding.queueRecycler.scrollToPosition(0)
+                    }
                 }
             } else {
                 queueAdapter.submitList(it.toMutableList())

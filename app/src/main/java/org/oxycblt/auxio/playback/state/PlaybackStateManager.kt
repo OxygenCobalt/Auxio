@@ -77,13 +77,13 @@ class PlaybackStateManager private constructor() {
 
     // --- CALLBACKS ---
 
-    private val callbacks = mutableListOf<PlaybackStateCallback>()
+    private val callbacks = mutableListOf<Callback>()
 
-    fun addCallback(callback: PlaybackStateCallback) {
+    fun addCallback(callback: Callback) {
         callbacks.add(callback)
     }
 
-    fun removeCallback(callback: PlaybackStateCallback) {
+    fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
 
@@ -396,5 +396,17 @@ class PlaybackStateManager private constructor() {
                 return newInstance
             }
         }
+    }
+
+    interface Callback {
+        fun onSongUpdate(song: Song?) {}
+        fun onPositionUpdate(position: Long) {}
+        fun onQueueUpdate(queue: MutableList<Song>) {}
+        fun onModeUpdate(mode: PlaybackMode) {}
+        fun onIndexUpdate(index: Int) {}
+        fun onPlayingUpdate(isPlaying: Boolean) {}
+        fun onShuffleUpdate(isShuffling: Boolean) {}
+        fun onLoopUpdate(mode: LoopMode) {}
+        fun onSeekConfirm(position: Long) {}
     }
 }

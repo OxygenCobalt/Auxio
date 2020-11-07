@@ -12,13 +12,12 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.playback.state.PlaybackStateCallback
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 // A ViewModel that acts as an intermediary between the UI and PlaybackStateManager
 // TODO: Implement User Queue
 // TODO: Implement Persistence through a Database
-class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
+class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
     private val mSong = MutableLiveData<Song?>()
     val song: LiveData<Song?> get() = mSong
@@ -59,7 +58,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateCallback {
         it.slice((mIndex.value!! + 1) until it.size)
     }
 
-    // Service setup
     private val playbackManager = PlaybackStateManager.getInstance()
 
     init {
