@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 
 // TODO: Make this better
-class QueueFragment : BottomSheetDialogFragment() {
+class QueueFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -22,13 +22,17 @@ class QueueFragment : BottomSheetDialogFragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
+        binding.queueToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.queueViewpager.adapter = PagerAdapter()
 
         // TODO: Add option for default queue screen
-        if (playbackModel.userQueue.value!!.isEmpty()) {
-            binding.queueViewpager.setCurrentItem(1, false)
-        } else {
+        if (playbackModel.userQueue.value!!.isNotEmpty()) {
             binding.queueViewpager.setCurrentItem(0, false)
+        } else {
+            binding.queueViewpager.setCurrentItem(1, false)
         }
 
         return binding.root

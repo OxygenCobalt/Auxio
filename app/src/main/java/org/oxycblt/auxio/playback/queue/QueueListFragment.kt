@@ -16,6 +16,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyDivider
 
+// TODO: Unify the user/next queues into a single fragment
 class QueueListFragment(private val type: Int) : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 

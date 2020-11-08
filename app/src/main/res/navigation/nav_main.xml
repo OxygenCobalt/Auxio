@@ -124,7 +124,7 @@
             app:popEnterAnim="@anim/anim_stationary"
             app:popExitAnim="@anim/anim_nav_slide_down" />
     </fragment>
-    <dialog
+    <fragment
         android:id="@+id/queue_fragment"
         android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
         android:label="QueueFragment"

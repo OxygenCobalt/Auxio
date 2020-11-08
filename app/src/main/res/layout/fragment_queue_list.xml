@@ -7,23 +7,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/background">
+        android:background="@color/background"
+        android:animateLayoutChanges="true">
 
         <TextView
             android:id="@+id/queue_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:fontFamily="@font/inter_black"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:padding="@dimen/padding_medium"
-            android:singleLine="true"
-            android:text="@string/label_queue"
-            android:textColor="?android:attr/colorPrimary"
-            android:textAppearance="@style/TextAppearance.Toolbar.Header"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@drawable/ui_header_dividers"
+            android:fontFamily="@font/inter_bold"
+            android:paddingStart="@dimen/padding_medium"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textSize="16sp"
+            tools:text="Next in Queue"
+            app:layout_constraintTop_toBottomOf="@+id/album_details" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/queue_recycler"
@@ -43,7 +43,6 @@
             android:text="@string/label_empty_queue"
             android:textAlignment="center"
             android:visibility="gone" />
-
 
     </LinearLayout>
 </layout>
