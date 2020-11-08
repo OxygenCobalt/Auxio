@@ -17,10 +17,10 @@ import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.songs.SongsFragment
-import org.oxycblt.auxio.theme.accent
-import org.oxycblt.auxio.theme.getInactiveAlpha
-import org.oxycblt.auxio.theme.getTransparentAccent
-import org.oxycblt.auxio.theme.toColor
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.getInactiveAlpha
+import org.oxycblt.auxio.ui.getTransparentAccent
+import org.oxycblt.auxio.ui.toColor
 
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

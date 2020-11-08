@@ -1,21 +1,15 @@
-package org.oxycblt.auxio.theme
+package org.oxycblt.auxio.ui
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
-import android.view.MenuItem
-import android.widget.ImageButton
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+
+// Functions for managing colors/accents/whatever.
 
 // Pairs of the base accent and its theme
 private val ACCENTS = listOf(
@@ -84,50 +78,4 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     }
 
     return color.toColor(context)
-}
-
-// Apply a color to a Menu Item
-fun MenuItem.applyColor(@ColorInt color: Int) {
-    SpannableString(title).apply {
-        setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        title = this
-    }
-}
-
-// Disable an ImageButton
-fun ImageButton.disable(context: Context) {
-    if (isEnabled) {
-        imageTintList = ColorStateList.valueOf(
-            R.color.inactive_color.toColor(context)
-        )
-
-        isEnabled = false
-    }
-}
-
-// Enable an ImageButton
-fun ImageButton.enable(context: Context) {
-    if (!isEnabled) {
-        imageTintList = ColorStateList.valueOf(
-            R.color.control_color.toColor(context)
-        )
-
-        isEnabled = true
-    }
-}
-
-// Apply a custom vertical divider
-fun RecyclerView.applyDivider() {
-    val div = DividerItemDecoration(
-        context,
-        DividerItemDecoration.VERTICAL
-    )
-
-    div.setDrawable(
-        ColorDrawable(
-            R.color.divider_color.toColor(context)
-        )
-    )
-
-    addItemDecoration(div)
 }

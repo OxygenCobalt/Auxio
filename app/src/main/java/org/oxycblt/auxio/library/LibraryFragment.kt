@@ -27,9 +27,10 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.theme.applyColor
-import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.resolveAttr
+import org.oxycblt.auxio.ui.applyColor
+import org.oxycblt.auxio.ui.applyDivider
+import org.oxycblt.auxio.ui.resolveAttr
+import org.oxycblt.auxio.ui.showActionMenuForSong
 
 // A Fragment to show all the music in the Library.
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -54,7 +55,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             {
                 navToItem(it)
             },
-            { data, view -> }
+            { data, view ->
+                if (data is Song) {
+                    showActionMenuForSong(requireContext(), data, view, playbackModel)
+                }
+            }
         )
 
         // --- UI SETUP ---

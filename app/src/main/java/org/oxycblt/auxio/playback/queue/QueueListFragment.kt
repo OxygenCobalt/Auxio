@@ -14,7 +14,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueListBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.theme.applyDivider
+import org.oxycblt.auxio.ui.applyDivider
 
 class QueueListFragment(private val type: Int) : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -53,13 +53,11 @@ class QueueListFragment(private val type: Int) : Fragment() {
         }
 
         playbackModel.mode.observe(viewLifecycleOwner) {
-            if (it == PlaybackMode.ALL_SONGS) {
-                binding.queueHeader.setText(R.string.label_next_songs)
-            } else {
-                binding.queueHeader.text = getString(
-                    R.string.format_next_from, playbackModel.parent.value!!.name
-                )
-            }
+            binding.queueHeader.text = getString(
+                R.string.format_next_from,
+                if (it == PlaybackMode.ALL_SONGS) getString(R.string.title_all_songs)
+                else playbackModel.parent.value!!.name
+            )
         }
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {

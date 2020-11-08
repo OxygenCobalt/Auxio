@@ -15,8 +15,8 @@ import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.theme.applyDivider
-import org.oxycblt.auxio.theme.disable
+import org.oxycblt.auxio.ui.applyDivider
+import org.oxycblt.auxio.ui.disable
 
 class AlbumDetailFragment : Fragment() {
 

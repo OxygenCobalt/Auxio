@@ -16,10 +16,8 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.theme.accent
-import org.oxycblt.auxio.theme.disable
-import org.oxycblt.auxio.theme.enable
-import org.oxycblt.auxio.theme.toColor
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.toColor
 
 // TODO: Add a swipe-to-next-track function using a ViewPager
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
@@ -99,20 +97,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.index.observe(viewLifecycleOwner) {
-            if (it > 0) {
-                binding.playbackSkipPrev.enable(requireContext())
-            } else {
-                binding.playbackSkipPrev.disable(requireContext())
-            }
-
-            if (it < playbackModel.queue.value!!.lastIndex) {
-                binding.playbackSkipNext.enable(requireContext())
-            } else {
-                binding.playbackSkipNext.disable(requireContext())
-            }
-        }
-
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
                 // Animate the playing status and switch the button to the accent color
@@ -185,14 +169,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             } else {
                 queueMenuItem.isEnabled = true
                 queueMenuItem.icon = iconQueueActive
-            }
-
-            // If someone edits the queue to make it have no songs left, then disable the
-            // skip next button.
-            if (playbackModel.index.value!! == it.size) {
-                binding.playbackSkipNext.disable(requireContext())
-            } else {
-                binding.playbackSkipNext.enable(requireContext())
             }
         }
 

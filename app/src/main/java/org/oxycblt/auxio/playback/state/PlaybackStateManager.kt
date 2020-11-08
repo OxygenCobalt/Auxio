@@ -216,19 +216,26 @@ class PlaybackStateManager private constructor() {
     fun next() {
         resetLoopMode()
 
-        if (mIndex < mQueue.lastIndex) {
-            mIndex = mIndex.inc()
+        if (mUserQueue.isNotEmpty()) {
+            updatePlayback(mUserQueue[0])
+            mUserQueue.removeAt(0)
+
+            forceUserQueueUpdate()
         } else {
-            // TODO: Implement option to make the playlist loop instead of stop
-            mQueue = mutableListOf()
-            mSong = null
+            if (mIndex < mQueue.lastIndex) {
+                mIndex = mIndex.inc()
+            } else {
+                // TODO: Implement option to make the playlist loop instead of stop
+                mQueue = mutableListOf()
+                mSong = null
 
-            return
+                return
+            }
+
+            updatePlayback(mQueue[mIndex])
+
+            forceQueueUpdate()
         }
-
-        updatePlayback(mQueue[mIndex])
-
-        forceQueueUpdate()
     }
 
     fun prev() {

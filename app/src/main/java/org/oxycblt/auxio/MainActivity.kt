@@ -7,7 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import org.oxycblt.auxio.playback.PlaybackService
-import org.oxycblt.auxio.theme.accent
+import org.oxycblt.auxio.ui.accent
 
 // FIXME: Fix bug where fast navigation will break the animations and
 //  lead to nothing being displayed [Possibly Un-fixable]
