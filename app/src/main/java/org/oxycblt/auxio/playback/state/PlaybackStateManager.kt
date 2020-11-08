@@ -75,6 +75,7 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onLoopUpdate(value) }
         }
+    private var mIsInUserQueue = false
 
     val song: Song? get() = mSong
     val parent: BaseModel? get() = mParent
@@ -194,6 +195,8 @@ class PlaybackStateManager private constructor() {
         if (!mIsPlaying) {
             mIsPlaying = true
         }
+
+        mIsInUserQueue = false
     }
 
     fun setPosition(position: Long) {
@@ -220,6 +223,8 @@ class PlaybackStateManager private constructor() {
             updatePlayback(mUserQueue[0])
             mUserQueue.removeAt(0)
 
+            mIsInUserQueue = true
+
             forceUserQueueUpdate()
         } else {
             if (mIndex < mQueue.lastIndex) {
@@ -239,7 +244,7 @@ class PlaybackStateManager private constructor() {
     }
 
     fun prev() {
-        if (mIndex > 0) {
+        if (mIndex > 0 && !mIsInUserQueue) {
             mIndex = mIndex.dec()
         }
 

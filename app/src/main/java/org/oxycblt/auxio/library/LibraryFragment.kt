@@ -162,6 +162,18 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
+        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(
+                    MainFragmentDirections.actionShowAlbum(
+                        playbackModel.song.value!!.album.id, true
+                    )
+                )
+
+                playbackModel.doneWithNavToPlayingSong()
+            }
+        }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root

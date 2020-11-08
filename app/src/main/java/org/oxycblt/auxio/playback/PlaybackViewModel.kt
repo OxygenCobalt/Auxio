@@ -16,7 +16,6 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 // A ViewModel that acts as an intermediary between the UI and PlaybackStateManager
-// TODO: Implement User Queue
 // TODO: Implement Persistence through a Database
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
@@ -55,6 +54,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Other
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
+
+    private val mNavToPlayingSong = MutableLiveData(false)
+    val navToPlayingSong: LiveData<Boolean> get() = mNavToPlayingSong
 
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
@@ -204,6 +206,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value
+    }
+
+    fun navigateToPlayingSong() {
+        mNavToPlayingSong.value = true
+    }
+
+    fun doneWithNavToPlayingSong() {
+        mNavToPlayingSong.value = false
     }
 
     // --- OVERRIDES ---

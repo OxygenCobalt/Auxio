@@ -42,10 +42,17 @@ class CompactPlaybackFragment : Fragment() {
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
 
-        binding.root.setOnClickListener {
-            findNavController().navigate(
-                MainFragmentDirections.actionGoToPlayback()
-            )
+        binding.root.apply {
+            setOnClickListener {
+                findNavController().navigate(
+                    MainFragmentDirections.actionGoToPlayback()
+                )
+            }
+
+            setOnLongClickListener {
+                playbackModel.navigateToPlayingSong()
+                true
+            }
         }
 
         // --- VIEWMODEL SETUP ---

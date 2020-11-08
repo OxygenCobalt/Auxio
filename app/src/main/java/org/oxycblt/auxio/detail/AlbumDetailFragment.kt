@@ -120,6 +120,8 @@ class AlbumDetailFragment : Fragment() {
             binding.albumArtist.setBackgroundResource(R.drawable.ui_ripple)
         }
 
+        // TODO: Make DetailFragment scroll to song if navigated from CompactPlaybackFragment
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root

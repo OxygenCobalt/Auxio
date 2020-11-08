@@ -23,7 +23,6 @@ import org.oxycblt.auxio.ui.toColor
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
-    // TODO: Implement nav to artists/albums
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,6 +77,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         // Make marquee scroll work
+        // TODO: Add nav here as well
         binding.playbackSong.isSelected = true
 
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
@@ -91,7 +91,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 binding.song = it
                 binding.playbackSeekBar.max = it.seconds.toInt()
             } else {
-                Log.d(this::class.simpleName, "No song played anymore, leaving.")
+                Log.d(this::class.simpleName, "No song is being played, leaving.")
 
                 findNavController().navigateUp()
             }
