@@ -85,7 +85,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 true
             }
 
-            // TODO: Add icons to overflow menu items?
             menu.apply {
                 val item = findItem(R.id.action_search)
                 val searchView = item.actionView as SearchView
@@ -100,11 +99,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
                 item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                        // When opened, update the adapter to the SearchAdapter, and make the
-                        // sorting group invisible. The query is also reset, as if the Auxio process
-                        // is killed in the background while still on the search adapter, then the
-                        // search query will stick around if its opened again
-                        // TODO: Couldn't you just try to restore the search state on restart?
                         binding.libraryRecycler.adapter = searchAdapter
                         setGroupVisible(R.id.group_sorting, false)
                         libraryModel.resetQuery()
@@ -113,8 +107,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     }
 
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                        // When closed, make the sorting icon visible again, change back to
-                        // LibraryAdapter, and reset the query.
                         binding.libraryRecycler.adapter = libraryAdapter
                         setGroupVisible(R.id.group_sorting, true)
                         libraryModel.resetQuery()
@@ -188,14 +180,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
-        libraryModel.updateSearchQuery(query)
+        libraryModel.updateSearchQuery(query, requireContext())
 
         return false
     }
 
     private fun navToItem(baseModel: BaseModel) {
-        // TODO: Implement shared element transitions to the DetailFragments [If possible]
-
         // If the item is a song [That was selected through search], then update the playback
         // to that song instead of doing any navigation
         if (baseModel is Song) {

@@ -27,7 +27,7 @@
             android:paddingBottom="@dimen/padding_small"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
             android:textSize="16sp"
-            app:headerText="@{header}"
+            android:text="@{header.name}"
             tools:text="Songs" />
 
     </FrameLayout>

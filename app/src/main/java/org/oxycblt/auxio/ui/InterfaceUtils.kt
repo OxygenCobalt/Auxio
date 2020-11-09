@@ -26,7 +26,6 @@ fun showActionMenuForSong(
     view: View,
     playbackModel: PlaybackViewModel
 ) {
-    // TODO: Replace this with a BottomSheet dialog?
     PopupMenu(context, view).apply {
         inflate(R.menu.menu_song_actions)
         setOnMenuItemClickListener {

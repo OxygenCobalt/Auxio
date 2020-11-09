@@ -42,7 +42,6 @@ class PlaybackStateManager private constructor() {
         }
     private var mUserQueue = mutableListOf<Song>()
         set(value) {
-            Log.d(this::class.simpleName, "retard.")
             field = value
             callbacks.forEach { it.onUserQueueUpdate(value) }
         }
@@ -174,7 +173,8 @@ class PlaybackStateManager private constructor() {
                 mMode = PlaybackMode.IN_GENRE
             }
 
-            else -> error("what")
+            else -> {
+            }
         }
 
         resetLoopMode()

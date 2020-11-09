@@ -153,37 +153,59 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.prev()
     }
 
-    // Remove a queue item, given a QueueAdapter index.
+    // Remove a queue OR user queue item, given a QueueAdapter index.
     fun removeQueueItem(adapterIndex: Int) {
-        // Translate the adapter indices into the correct queue indices
-        val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
+        var index = adapterIndex.dec()
 
-        val index = adapterIndex + delta
+        // If the item is in the user queue, then remove it from there after accounting for the header.
+        if (index < mUserQueue.value!!.size) {
+            playbackManager.removeUserQueueItem(index)
+        } else {
+            // Translate the indices into proper queue indices if removing an item from there.
+            index += (mQueue.value!!.size - nextItemsInQueue.value!!.size)
 
-        playbackManager.removeQueueItem(index)
+            if (userQueue.value!!.isNotEmpty()) {
+                index -= mUserQueue.value!!.size.inc()
+            }
+
+            playbackManager.removeQueueItem(index)
+        }
     }
 
-    // Move queue items, given QueueAdapter indices.
-    fun moveQueueItems(adapterFrom: Int, adapterTo: Int) {
-        // Translate the adapter indices into the correct queue indices
-        val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
+    // Move queue OR user queue items, given QueueAdapter indices.
+    // I have no idea what is going on in this function, but it works, so
+    fun moveQueueItems(adapterFrom: Int, adapterTo: Int): Boolean {
+        var from = adapterFrom.dec()
+        var to = adapterTo.dec()
 
-        val from = adapterFrom + delta
-        val to = adapterTo + delta
+        if (from < mUserQueue.value!!.size) {
 
-        playbackManager.moveQueueItems(from, to)
+            if (to >= mUserQueue.value!!.size || to < 0) return false
+
+            playbackManager.moveUserQueueItems(from, to)
+        } else {
+            if (to < 0) return false
+
+            val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
+
+            from += delta
+            to += delta
+
+            if (userQueue.value!!.isNotEmpty()) {
+                if (to <= mUserQueue.value!!.size.inc()) return false
+
+                from -= mUserQueue.value!!.size.inc()
+                to -= mUserQueue.value!!.size.inc()
+            }
+
+            playbackManager.moveQueueItems(from, to)
+        }
+
+        return true
     }
 
     fun addToUserQueue(song: Song) {
         playbackManager.addToUserQueue(song)
-    }
-
-    fun moveUserQueueItems(from: Int, to: Int) {
-        playbackManager.moveUserQueueItems(from, to)
-    }
-
-    fun removeUserQueueItem(index: Int) {
-        playbackManager.removeUserQueueItem(index)
     }
 
     // --- STATUS FUNCTIONS ---

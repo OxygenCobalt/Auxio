@@ -1,25 +1,53 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 
 class QueueAdapter(
     val touchHelper: ItemTouchHelper
-) : ListAdapter<Song, QueueAdapter.ViewHolder>(DiffCallback<Song>()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context)))
+) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
+    override fun getItemViewType(position: Int): Int {
+        val item = getItem(position)
+
+        if (item is Header) {
+            return HeaderViewHolder.ITEM_TYPE
+        } else {
+            return QUEUE_ITEM_VIEW_TYPE
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
+            QUEUE_ITEM_VIEW_TYPE -> ViewHolder(
+                ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
+            )
+            else -> error("Someone messed with the ViewHolder item types. Tell OxygenCobalt.")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is Song -> (holder as ViewHolder).bind(item)
+            is Header -> (holder as HeaderViewHolder).bind(item)
+
+            else -> {
+                Log.d(this::class.simpleName, "Bad data fed to QueueAdapter.")
+            }
+        }
     }
 
     // Generic ViewHolder for a queue item
@@ -45,5 +73,9 @@ class QueueAdapter(
                 false
             }
         }
+    }
+
+    companion object {
+        const val QUEUE_ITEM_VIEW_TYPE = 0xA030
     }
 }

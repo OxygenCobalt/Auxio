@@ -8,7 +8,6 @@ import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.recycler.ShowMode
 
 // List of ID3 genres + Winamp extensions, each index corresponds to their int value.
 // There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
@@ -157,19 +156,4 @@ fun TextView.bindAlbumInfo(album: Album) {
 @BindingAdapter("albumYear")
 fun TextView.bindAlbumYear(album: Album) {
     text = album.year.toYear(context)
-}
-
-// Bind the text used by the header item
-@BindingAdapter("headerText")
-fun TextView.bindHeaderText(header: Header) {
-    text = context.getString(
-        when (header.id) {
-            ShowMode.SHOW_GENRES.constant -> R.string.label_genres
-            ShowMode.SHOW_ARTISTS.constant -> R.string.label_artists
-            ShowMode.SHOW_ALBUMS.constant -> R.string.label_albums
-            ShowMode.SHOW_SONGS.constant -> R.string.label_songs
-
-            else -> R.string.label_artists
-        }
-    )
 }

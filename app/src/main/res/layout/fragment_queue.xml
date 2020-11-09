@@ -6,7 +6,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/background"
+        android:animateLayoutChanges="true">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/queue_toolbar"
@@ -22,10 +24,24 @@
             app:title="@string/label_queue"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/queue_viewpager"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/queue_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/queue_header"
+            tools:layout_editor_absoluteX="0dp"
+            tools:listitem="@layout/item_song" />
+
+        <TextView
+            android:id="@+id/queue_nothing_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:textSize="15sp"
+            android:text="@string/label_empty_queue"
+            android:textAlignment="center"
+            android:visibility="gone" />
 
     </LinearLayout>
 </layout>

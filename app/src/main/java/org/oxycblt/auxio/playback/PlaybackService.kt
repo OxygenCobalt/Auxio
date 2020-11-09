@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
-import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
@@ -71,7 +70,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         return START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? = LocalBinder()
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -295,9 +294,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
-    // Awful Hack to get position polling to work, as exoplayer does not provide any
-    // onPositionChanged callback for some inane reason.
-    // TODO: MediaSession might have a callback for positions. Idk.
     private fun pollCurrentPosition() = flow {
         while (player.isPlaying) {
             emit(player.currentPosition)
@@ -433,10 +429,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             playbackManager.setPlayingStatus(false)
             stopForegroundAndNotification()
         }
-    }
-
-    inner class LocalBinder : Binder() {
-        fun getService() = this@PlaybackService
     }
 
     companion object {

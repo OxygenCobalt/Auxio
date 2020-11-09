@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.library
 
+import android.content.Context
 import android.view.MenuItem
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,7 +45,7 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
-    fun updateSearchQuery(query: String) {
+    fun updateSearchQuery(query: String, context: Context) {
         // Don't bother if the query is blank.
         if (query == "") {
             resetQuery()
@@ -65,7 +66,7 @@ class LibraryViewModel : ViewModel() {
                 val genres = musicStore.genres.filter { it.name.contains(query, true) }
 
                 if (genres.isNotEmpty()) {
-                    combined.add(Header(id = ShowMode.SHOW_GENRES.constant))
+                    combined.add(Header(name = context.getString(R.string.label_genres)))
                     combined.addAll(genres)
                 }
             }
@@ -74,7 +75,7 @@ class LibraryViewModel : ViewModel() {
                 val artists = musicStore.artists.filter { it.name.contains(query, true) }
 
                 if (artists.isNotEmpty()) {
-                    combined.add(Header(id = ShowMode.SHOW_ARTISTS.constant))
+                    combined.add(Header(name = context.getString(R.string.label_artists)))
                     combined.addAll(artists)
                 }
             }
@@ -83,14 +84,14 @@ class LibraryViewModel : ViewModel() {
             val albums = musicStore.albums.filter { it.name.contains(query, true) }
 
             if (albums.isNotEmpty()) {
-                combined.add(Header(id = ShowMode.SHOW_ALBUMS.constant))
+                combined.add(Header(name = context.getString(R.string.label_albums)))
                 combined.addAll(albums)
             }
 
             val songs = musicStore.songs.filter { it.name.contains(query, true) }
 
             if (songs.isNotEmpty()) {
-                combined.add(Header(id = ShowMode.SHOW_SONGS.constant))
+                combined.add(Header(name = context.getString(R.string.label_songs)))
                 combined.addAll(songs)
             }
 

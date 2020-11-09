@@ -9,13 +9,22 @@ import kotlin.math.min
 import kotlin.math.sign
 
 // The drag callback used for the Queue RecyclerView.
-class QueueDragCallback(
-    private val playbackModel: PlaybackViewModel,
-    private val isUserQueue: Boolean
-) : ItemTouchHelper.SimpleCallback(
-    ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-    ItemTouchHelper.START
-) {
+class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        // Make header objects unswipable by only returning the swipe flags if the ViewHolder
+        // is for a queue item.
+        return if (viewHolder is QueueAdapter.ViewHolder) {
+            makeFlag(
+                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            ) or makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
+        } else {
+            0
+        }
+    }
+
     override fun interpolateOutOfBoundsScroll(
         recyclerView: RecyclerView,
         viewSize: Int,
@@ -45,21 +54,11 @@ class QueueDragCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        if (isUserQueue) {
-            playbackModel.moveUserQueueItems(viewHolder.adapterPosition, target.adapterPosition)
-        } else {
-            playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition)
-        }
-
-        return true
+        return playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition)
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        if (isUserQueue) {
-            playbackModel.removeUserQueueItem(viewHolder.adapterPosition)
-        } else {
-            playbackModel.removeQueueItem(viewHolder.adapterPosition)
-        }
+        playbackModel.removeQueueItem(viewHolder.adapterPosition)
     }
 
     companion object {
