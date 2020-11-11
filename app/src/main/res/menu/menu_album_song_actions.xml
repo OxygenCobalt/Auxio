@@ -5,11 +5,7 @@
         android:title="@string/label_queue_add"
         android:icon="@drawable/ic_queue_add" />
     <item
-        android:id="@+id/action_play_artist"
-        android:title="@string/label_play_artist"
+        android:id="@+id/action_go_artist"
+        android:title="@string/label_go_artist"
         android:icon="@drawable/ic_artist" />
-    <item
-        android:id="@+id/action_play_album"
-        android:title="@string/label_play_album"
-        android:icon="@drawable/ic_album" />
 </menu>

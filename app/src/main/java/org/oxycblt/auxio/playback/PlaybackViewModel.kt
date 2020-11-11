@@ -173,25 +173,27 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     // Move queue OR user queue items, given QueueAdapter indices.
-    // I have no idea what is going on in this function, but it works, so
     fun moveQueueItems(adapterFrom: Int, adapterTo: Int): Boolean {
         var from = adapterFrom.dec()
         var to = adapterTo.dec()
 
         if (from < mUserQueue.value!!.size) {
-
+            // Ignore invalid movements to out of bounds, header, or queue positions
             if (to >= mUserQueue.value!!.size || to < 0) return false
 
             playbackManager.moveUserQueueItems(from, to)
         } else {
+            // Ignore invalid movements to out of bounds or header positions
             if (to < 0) return false
 
+            // Get the real queue positions from the nextInQueue positions
             val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
 
             from += delta
             to += delta
 
             if (userQueue.value!!.isNotEmpty()) {
+                // Ignore user queue positions
                 if (to <= mUserQueue.value!!.size.inc()) return false
 
                 from -= mUserQueue.value!!.size.inc()

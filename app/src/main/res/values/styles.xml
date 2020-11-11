@@ -8,7 +8,7 @@
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:fitsSystemWindows">true</item>
 
-        <item name="android:popupMenuStyle">@style/Widget.CustomPopup</item>
+        <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
         <item name="colorControlNormal">@color/control_color</item>
     </style>
 

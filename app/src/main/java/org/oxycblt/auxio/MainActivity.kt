@@ -13,6 +13,7 @@ import org.oxycblt.auxio.ui.accent
 //  lead to nothing being displayed [Possibly Un-fixable]
 // FIXME: Compat issues with Versions 5/6 that cause recyclerview
 //  dividers not to show and for progress bars to look wonky
+// FIXME: Navigation memory leak that is really confusing
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {

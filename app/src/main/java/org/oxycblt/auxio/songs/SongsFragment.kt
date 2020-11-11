@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
@@ -13,7 +14,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyDivider
-import org.oxycblt.auxio.ui.showActionMenuForSong
+import org.oxycblt.auxio.ui.setupSongActions
 
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -46,7 +47,9 @@ class SongsFragment : Fragment() {
                     playbackModel.playSong(it, PlaybackMode.ALL_SONGS)
                 },
                 { data, view ->
-                    showActionMenuForSong(requireContext(), data, view, playbackModel)
+                    PopupMenu(requireContext(), view).setupSongActions(
+                        data, requireContext(), playbackModel
+                    )
                 }
             )
             applyDivider()

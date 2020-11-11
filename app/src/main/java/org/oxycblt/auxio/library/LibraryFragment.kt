@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
@@ -30,7 +31,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.resolveAttr
-import org.oxycblt.auxio.ui.showActionMenuForSong
+import org.oxycblt.auxio.ui.setupSongActions
 
 // A Fragment to show all the music in the Library.
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -57,7 +58,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             },
             { data, view ->
                 if (data is Song) {
-                    showActionMenuForSong(requireContext(), data, view, playbackModel)
+                    PopupMenu(requireContext(), view).setupSongActions(
+                        data, requireContext(), playbackModel
+                    )
                 }
             }
         )

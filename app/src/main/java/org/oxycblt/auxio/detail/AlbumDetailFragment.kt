@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.setupAlbumSongActions
 
 class AlbumDetailFragment : Fragment() {
 
@@ -36,7 +38,6 @@ class AlbumDetailFragment : Fragment() {
         if (detailModel.currentAlbum.value == null ||
             detailModel.currentAlbum.value?.id != args.albumId
         ) {
-
             detailModel.updateAlbum(
                 MusicStore.getInstance().albums.find {
                     it.id == args.albumId
@@ -44,9 +45,16 @@ class AlbumDetailFragment : Fragment() {
             )
         }
 
-        val songAdapter = DetailSongAdapter {
-            playbackModel.playSong(it, PlaybackMode.IN_ALBUM)
-        }
+        val songAdapter = DetailSongAdapter(
+            {
+                playbackModel.playSong(it, PlaybackMode.IN_ALBUM)
+            },
+            { data, view ->
+                PopupMenu(requireContext(), view).setupAlbumSongActions(
+                    data, requireContext(), detailModel, playbackModel
+                )
+            }
+        )
 
         // --- UI SETUP ---
 
@@ -100,24 +108,20 @@ class AlbumDetailFragment : Fragment() {
             )
         }
 
-        // If the album was shown directly from LibraryFragment, Then enable the ability to
-        // navigate upwards to the parent artist
-        if (args.enableParentNav) {
-            detailModel.doneWithNavToParent()
+        detailModel.doneWithNavToParent()
 
-            detailModel.navToParent.observe(viewLifecycleOwner) {
-                if (it) {
+        detailModel.navToParent.observe(viewLifecycleOwner) {
+            if (it) {
+                if (!args.enableParentNav) {
+                    findNavController().navigateUp()
+                } else {
                     findNavController().navigate(
                         AlbumDetailFragmentDirections.actionShowParentArtist(
                             detailModel.currentAlbum.value!!.artist.id
                         )
                     )
-
-                    detailModel.doneWithNavToParent()
                 }
             }
-
-            binding.albumArtist.setBackgroundResource(R.drawable.ui_ripple)
         }
 
         Log.d(this::class.simpleName, "Fragment created.")

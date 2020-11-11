@@ -19,14 +19,13 @@
             android:id="@+id/header_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ui_header_dividers"
-            android:fontFamily="@font/inter_bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:fontFamily="@font/inter_semibold"
             android:paddingStart="@dimen/padding_medium"
             android:paddingTop="@dimen/padding_small"
             android:paddingEnd="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-            android:textSize="16sp"
+            android:textSize="19sp"
             android:text="@{header.name}"
             tools:text="Songs" />
 

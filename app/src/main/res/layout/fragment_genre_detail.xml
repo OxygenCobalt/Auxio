@@ -104,18 +104,17 @@
                 <TextView
                     android:id="@+id/genre_artist_header"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_medium"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/padding_medium"
                     android:background="@drawable/ui_header_dividers"
-                    android:fontFamily="@font/inter_bold"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:fontFamily="@font/inter_semibold"
                     android:paddingStart="@dimen/padding_medium"
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"
                     android:text="@string/label_artists"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="19sp"
                     app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
 
                 <ImageButton

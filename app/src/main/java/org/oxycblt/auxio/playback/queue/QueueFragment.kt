@@ -44,6 +44,10 @@ class QueueFragment : Fragment() {
         }
 
         playbackModel.userQueue.observe(viewLifecycleOwner) {
+            if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
+                findNavController().navigateUp()
+            }
+
             queueAdapter.submitList(createQueueDisplay()) {
                 binding.queueRecycler.scrollToPosition(0)
                 scrollRecyclerIfNeeded(binding)
@@ -51,6 +55,10 @@ class QueueFragment : Fragment() {
         }
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
+            if (it.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
+                findNavController().navigateUp()
+            }
+
             queueAdapter.submitList(createQueueDisplay()) {
                 scrollRecyclerIfNeeded(binding)
             }
@@ -87,7 +95,7 @@ class QueueFragment : Fragment() {
 
     private fun scrollRecyclerIfNeeded(binding: FragmentQueueBinding) {
         if ((binding.queueRecycler.layoutManager as LinearLayoutManager)
-                .findFirstVisibleItemPosition() < 1
+            .findFirstVisibleItemPosition() < 1
         ) {
             binding.queueRecycler.scrollToPosition(0)
         }

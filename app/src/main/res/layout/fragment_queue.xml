@@ -18,6 +18,7 @@
             android:theme="@style/Toolbar.Style"
             android:clickable="true"
             android:focusable="true"
+            android:elevation="@dimen/elevation_normal"
             app:navigationIcon="@drawable/ic_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
