@@ -49,7 +49,6 @@ class QueueFragment : Fragment() {
             }
 
             queueAdapter.submitList(createQueueDisplay()) {
-                binding.queueRecycler.scrollToPosition(0)
                 scrollRecyclerIfNeeded(binding)
             }
         }

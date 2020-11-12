@@ -14,15 +14,12 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        // Make header objects unswipable by only returning the swipe flags if the ViewHolder
-        // is for a queue item.
+        // Only allow dragging/swiping with the queue item ViewHolder, not the header items.
         return if (viewHolder is QueueAdapter.ViewHolder) {
             makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN
             ) or makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
-        } else {
-            0
-        }
+        } else 0
     }
 
     override fun interpolateOutOfBoundsScroll(

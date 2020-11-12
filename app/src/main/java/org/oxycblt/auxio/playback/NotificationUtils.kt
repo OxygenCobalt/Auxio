@@ -36,7 +36,6 @@ fun NotificationManager.createMediaNotification(
     context: Context,
     mediaSession: MediaSessionCompat
 ): NotificationCompat.Builder {
-
     // Create a notification channel if required
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
@@ -97,6 +96,7 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
     }
 }
 
+// I have no idea how to update actions on the fly so I have to use these restricted APIs.
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updatePlaying(context: Context) {
     mActions[2] = newAction(NotificationUtils.ACTION_PLAY_PAUSE, context)

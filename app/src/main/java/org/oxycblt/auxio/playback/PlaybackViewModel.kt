@@ -15,8 +15,10 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
-// A ViewModel that acts as an intermediary between the UI and PlaybackStateManager
-// TODO: Implement Persistence through a Database
+/**
+ * The ViewModel that provides a UI-Focused frontend for [PlaybackStateManager].
+ * @author OxygenCobalt
+ */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
     private val mSong = MutableLiveData<Song?>()
@@ -198,6 +200,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
                 from -= mUserQueue.value!!.size.inc()
                 to -= mUserQueue.value!!.size.inc()
+
+                // Ignore movements that are past the next songs
+                if (to <= mIndex.value!!) return false
             }
 
             playbackManager.moveQueueItems(from, to)

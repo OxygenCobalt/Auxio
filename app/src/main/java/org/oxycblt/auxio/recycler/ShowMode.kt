@@ -1,8 +1,8 @@
 package org.oxycblt.auxio.recycler
 
 // TODO: Swap these temp values for actual constants
-enum class ShowMode(val constant: Long) {
-    SHOW_GENRES(0), SHOW_ARTISTS(1), SHOW_ALBUMS(2), SHOW_SONGS(3);
+enum class ShowMode {
+    SHOW_GENRES, SHOW_ARTISTS, SHOW_ALBUMS, SHOW_SONGS;
 
     // Make a slice of all the values that this ShowMode covers.
     // ex. SHOW_ARTISTS would return SHOW_ARTISTS, SHOW_ALBUMS, and SHOW_SONGS

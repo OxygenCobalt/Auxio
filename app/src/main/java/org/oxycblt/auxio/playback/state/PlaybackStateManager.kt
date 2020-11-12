@@ -10,12 +10,14 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import kotlin.random.Random
 
-// The manager of the current playback state [Current Song, Queue, Shuffling]
-// This class is for sole use by the code in /playback/.
-// If you want to add system-side things, add to PlaybackService.
-// If you want to add ui-side things, add to PlaybackViewModel.
-// [Yes, I know MediaSessionCompat exists, but I like having full control over the
-// playback state instead of dealing with android's likely buggy code.]
+/**
+ * Master class for the playback state. This should ***not*** be used outside of the playback module.
+ * - If you want to show the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel].
+ * - If you want to add to the system aspects or the exoplayer instance, use [org.oxycblt.auxio.playback.PlaybackService].
+ *
+ * All instantiation should be done with [PlaybackStateManager.from()].
+ * @author OxygenCobalt
+ */
 class PlaybackStateManager private constructor() {
     // Playback
     private var mSong: Song? = null
@@ -438,10 +440,32 @@ class PlaybackStateManager private constructor() {
         return final
     }
 
+    /**
+     * The interface for receiving updates from [PlaybackStateManager].
+     * Add the callback to [PlaybackStateManager] using [addCallback],
+     * remove them on destruction with [removeCallback].
+     */
+    interface Callback {
+        fun onSongUpdate(song: Song?) {}
+        fun onParentUpdate(parent: BaseModel?) {}
+        fun onPositionUpdate(position: Long) {}
+        fun onQueueUpdate(queue: MutableList<Song>) {}
+        fun onUserQueueUpdate(userQueue: MutableList<Song>) {}
+        fun onModeUpdate(mode: PlaybackMode) {}
+        fun onIndexUpdate(index: Int) {}
+        fun onPlayingUpdate(isPlaying: Boolean) {}
+        fun onShuffleUpdate(isShuffling: Boolean) {}
+        fun onLoopUpdate(mode: LoopMode) {}
+        fun onSeekConfirm(position: Long) {}
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: PlaybackStateManager? = null
 
+        /**
+         * Get/Instantiate the single instance of [PlaybackStateManager].
+         */
         fun getInstance(): PlaybackStateManager {
             val currentInstance = INSTANCE
 
@@ -455,19 +479,5 @@ class PlaybackStateManager private constructor() {
                 return newInstance
             }
         }
-    }
-
-    interface Callback {
-        fun onSongUpdate(song: Song?) {}
-        fun onParentUpdate(parent: BaseModel?) {}
-        fun onPositionUpdate(position: Long) {}
-        fun onQueueUpdate(queue: MutableList<Song>) {}
-        fun onUserQueueUpdate(userQueue: MutableList<Song>) {}
-        fun onModeUpdate(mode: PlaybackMode) {}
-        fun onIndexUpdate(index: Int) {}
-        fun onPlayingUpdate(isPlaying: Boolean) {}
-        fun onShuffleUpdate(isShuffling: Boolean) {}
-        fun onLoopUpdate(mode: LoopMode) {}
-        fun onSeekConfirm(position: Long) {}
     }
 }

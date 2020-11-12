@@ -8,7 +8,9 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
 import org.oxycblt.auxio.recycler.ShowMode
 
-// Storage for Music Data. Only use getInstance() to access this object.
+/**
+ * The main storage for music items. Use [MusicStore.from()] to get the instance.
+ */
 class MusicStore private constructor() {
     private var mGenres = listOf<Genre>()
     val genres: List<Genre> get() = mGenres
@@ -70,9 +72,7 @@ class MusicStore private constructor() {
                 this::class.simpleName,
                 "Music load completed successfully in ${elapsed}ms."
             )
-        }
 
-        if (loader.response == MusicLoaderResponse.DONE) {
             loaded = true
         }
 

@@ -19,7 +19,12 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.toColor
 
-// TODO: Add a swipe-to-next-track function using a ViewPager
+/**
+ * A [Fragment] that displays more information about the song, along with more media controls.
+ *
+ * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
+ * @author OxygenCobalt
+ */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
@@ -29,6 +34,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentPlaybackBinding.inflate(inflater)
+
+        // TODO: Add a swipe-to-next-track function using a ViewPager
 
         // Create accents & icons to use
         val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
@@ -173,7 +180,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.userQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty() && playbackModel.queue.value!!.isEmpty()) {
+            if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
                 queueMenuItem.isEnabled = false
                 queueMenuItem.icon = iconQueueInactive
             } else {

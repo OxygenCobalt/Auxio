@@ -5,21 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
 class LoadingViewModel(private val app: Application) : ViewModel() {
-    // Coroutine
-    private val loadingJob = Job()
-    private val ioScope = CoroutineScope(
-        loadingJob + Dispatchers.IO
-    )
-
     // UI control
     private val mResponse = MutableLiveData<MusicLoaderResponse>()
     val response: LiveData<MusicLoaderResponse> get() = mResponse
@@ -42,10 +35,12 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
     }
 
     private fun doLoad() {
-        ioScope.launch {
+        viewModelScope.launch {
             val musicStore = MusicStore.getInstance()
 
-            val response = musicStore.load(app)
+            val response = withContext(Dispatchers.IO) {
+                return@withContext musicStore.load(app)
+            }
 
             withContext(Dispatchers.Main) {
                 mResponse.value = response
@@ -73,13 +68,6 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     fun doneWithGrant() {
         mDoGrant.value = false
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        // Cancel the current loading job if the app has been stopped
-        loadingJob.cancel()
     }
 
     class Factory(private val application: Application) : ViewModelProvider.Factory {

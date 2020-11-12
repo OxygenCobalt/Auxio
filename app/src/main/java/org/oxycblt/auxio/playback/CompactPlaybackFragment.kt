@@ -15,6 +15,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicStore
 
+/**
+ * A [Fragment] that displays the currently played song at a glance, with some basic controls.
+ * Extends into [PlaybackFragment] when clicked on.
+ *
+ * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
+ * @author OxygenCobalt
+ */
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 

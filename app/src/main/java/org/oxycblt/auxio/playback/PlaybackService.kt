@@ -40,8 +40,18 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
-// A Service that manages the single ExoPlayer instance and manages the system-side
-// aspects of playback.
+/**
+ * A service that manages the system-side aspects of playback, such as:
+ * - The single [SimpleExoPlayer] instance.
+ * - The [MediaSessionCompat]
+ * - The Media Notification
+ * - Audio Focus
+ * - Headset management
+ *
+ * This service relies on [PlaybackStateManager.Callback], so therefore there's no need to bind
+ * to it to deliver commands.
+ * @author OxygenCobalt
+ */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback {
     private val player: SimpleExoPlayer by lazy {
         SimpleExoPlayer.Builder(applicationContext).build()

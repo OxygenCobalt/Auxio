@@ -98,28 +98,17 @@ fun ImageView.bindGenreImage(genre: Genre) {
 
         Log.d(this::class.simpleName, genre.numAlbums.toString())
 
-        // Try to create a 4x4 mosaic if possible, if not, just create a 2x2 mosaic.
-        if (genre.numAlbums >= 16) {
-            while (uris.size < 16) {
-                genre.artists.forEach { artist ->
-                    artist.albums.forEach {
-                        uris.add(it.coverUri)
-                    }
-                }
-            }
-        } else {
-            // Get the Nth cover from each artist, if possible.
-            for (i in 0..3) {
-                val artist = genre.artists[i]
+        // Get the Nth cover from each artist, if possible.
+        for (i in 0..3) {
+            val artist = genre.artists[i]
 
-                uris.add(
-                    if (artist.albums.size > i) {
-                        artist.albums[i].coverUri
-                    } else {
-                        artist.albums[0].coverUri
-                    }
-                )
-            }
+            uris.add(
+                if (artist.albums.size > i) {
+                    artist.albums[i].coverUri
+                } else {
+                    artist.albums[0].coverUri
+                }
+            )
         }
 
         val fetcher = MosaicFetcher(context)
