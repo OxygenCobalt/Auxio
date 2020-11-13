@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.music.processing
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums
@@ -20,6 +21,7 @@ enum class MusicLoaderResponse {
 
 // Class that loads music from the FileSystem.
 // TODO: Add custom artist images from the filesystem
+// TODO: Move genre loading of songs [Loads would take longer though]
 class MusicLoader(
     private val resolver: ContentResolver,
 
@@ -163,9 +165,9 @@ class MusicLoader(
                         it.genres.add(genre)
                     }
                 }
-
-                cursor.close()
             }
+
+            artistGenreCursor?.close()
         }
 
         Log.d(
@@ -174,6 +176,7 @@ class MusicLoader(
         )
     }
 
+    @SuppressLint("InlinedApi")
     private fun loadAlbums() {
         Log.d(this::class.simpleName, "Starting album search...")
 
@@ -225,6 +228,7 @@ class MusicLoader(
         )
     }
 
+    @SuppressLint("InlinedApi")
     private fun loadSongs() {
         Log.d(this::class.simpleName, "Starting song search...")
 

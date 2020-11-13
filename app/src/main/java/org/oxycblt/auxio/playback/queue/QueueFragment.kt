@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -27,8 +26,10 @@ class QueueFragment : Fragment() {
     ): View? {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val helper = ItemTouchHelper(QueueDragCallback(playbackModel))
+        val callback = QueueDragCallback(playbackModel)
+        val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper)
+        callback.addQueueAdapter(queueAdapter)
 
         // --- UI SETUP ---
 
@@ -50,9 +51,7 @@ class QueueFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            queueAdapter.submitList(createQueueDisplay()) {
-                scrollRecyclerIfNeeded(binding)
-            }
+            queueAdapter.submitList(createQueueData())
         }
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
@@ -60,15 +59,13 @@ class QueueFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            queueAdapter.submitList(createQueueDisplay()) {
-                scrollRecyclerIfNeeded(binding)
-            }
+            queueAdapter.submitList(createQueueData())
         }
 
         return binding.root
     }
 
-    private fun createQueueDisplay(): MutableList<BaseModel> {
+    private fun createQueueData(): MutableList<BaseModel> {
         val queue = mutableListOf<BaseModel>()
 
         if (playbackModel.userQueue.value!!.isNotEmpty()) {
@@ -92,13 +89,5 @@ class QueueFragment : Fragment() {
         }
 
         return queue
-    }
-
-    private fun scrollRecyclerIfNeeded(binding: FragmentQueueBinding) {
-        if ((binding.queueRecycler.layoutManager as LinearLayoutManager)
-            .findFirstVisibleItemPosition() < 1
-        ) {
-            binding.queueRecycler.scrollToPosition(0)
-        }
     }
 }

@@ -111,7 +111,7 @@ fun NotificationCompat.Builder.updateMode(context: Context) {
     if (!NotificationUtils.DO_COMPAT_SUBTEXT) {
         val playbackManager = PlaybackStateManager.getInstance()
 
-        // If the mode is ALL_SONGS, then just put a string, otherwise put the parent model's name.
+        // If playing from all songs, set the subtext as that, otherwise the currently played parent.
         if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
             setSubText(context.getString(R.string.title_all_songs))
         } else {

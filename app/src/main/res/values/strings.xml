@@ -61,7 +61,6 @@
     <string name="placeholder_genre">Unknown Genre</string>
     <string name="placeholder_artist">Unknown Artist</string>
     <string name="placeholder_album">Unknown Album</string>
-    <string name="placeholder_song">Unknown Song</string>
     <string name="placeholder_no_date">No Date</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

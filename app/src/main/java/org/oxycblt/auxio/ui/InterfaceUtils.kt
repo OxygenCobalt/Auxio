@@ -39,6 +39,10 @@ fun ImageButton.disable(context: Context) {
     }
 }
 
+fun String.createToast(context: Context) {
+    Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+}
+
 // Apply a custom vertical divider
 fun RecyclerView.applyDivider() {
     val div = DividerItemDecoration(
@@ -117,19 +121,7 @@ private fun doUserQueueAdd(context: Context, song: Song, playbackModel: Playback
     // This is just to prevent a bug with DiffCallback that creates strange
     // behavior when duplicate user queue items are added.
     // FIXME: Fix the duplicate item DiffCallback issue
-    if (!playbackModel.userQueue.value!!.contains(song)) {
-        playbackModel.addToUserQueue(song)
+    playbackModel.addToUserQueue(song)
 
-        Toast.makeText(
-            context,
-            context.getString(R.string.label_queue_added),
-            Toast.LENGTH_SHORT
-        ).show()
-    } else {
-        Toast.makeText(
-            context,
-            context.getString(R.string.label_queue_already_added),
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+    context.getString(R.string.label_queue_added).createToast(context)
 }

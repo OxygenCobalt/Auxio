@@ -11,6 +11,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
+import org.oxycblt.auxio.playback.queue.QueueAdapter
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -156,11 +157,13 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     // Remove a queue OR user queue item, given a QueueAdapter index.
-    fun removeQueueItem(adapterIndex: Int) {
+    fun removeQueueItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
         var index = adapterIndex.dec()
 
         // If the item is in the user queue, then remove it from there after accounting for the header.
         if (index < mUserQueue.value!!.size) {
+            queueAdapter.removeItem(adapterIndex)
+
             playbackManager.removeUserQueueItem(index)
         } else {
             // Translate the indices into proper queue indices if removing an item from there.
@@ -170,18 +173,22 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
                 index -= mUserQueue.value!!.size.inc()
             }
 
+            queueAdapter.removeItem(adapterIndex)
+
             playbackManager.removeQueueItem(index)
         }
     }
 
     // Move queue OR user queue items, given QueueAdapter indices.
-    fun moveQueueItems(adapterFrom: Int, adapterTo: Int): Boolean {
+    fun moveQueueItems(adapterFrom: Int, adapterTo: Int, queueAdapter: QueueAdapter): Boolean {
         var from = adapterFrom.dec()
         var to = adapterTo.dec()
 
         if (from < mUserQueue.value!!.size) {
             // Ignore invalid movements to out of bounds, header, or queue positions
             if (to >= mUserQueue.value!!.size || to < 0) return false
+
+            queueAdapter.moveItems(adapterFrom, adapterTo)
 
             playbackManager.moveUserQueueItems(from, to)
         } else {
@@ -204,6 +211,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
                 // Ignore movements that are past the next songs
                 if (to <= mIndex.value!!) return false
             }
+
+            queueAdapter.moveItems(adapterFrom, adapterTo)
 
             playbackManager.moveQueueItems(from, to)
         }

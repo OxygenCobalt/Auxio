@@ -13,7 +13,8 @@ import kotlin.random.Random
 /**
  * Master class for the playback state. This should ***not*** be used outside of the playback module.
  * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel].
- * - If you want to add to the system aspects or the exoplayer instance, use [org.oxycblt.auxio.playback.PlaybackService].
+ * - If you want to use the playback state with the ExoPlayer instance or system-side things,
+ * use [org.oxycblt.auxio.playback.PlaybackService].
  *
  * All instantiation should be done with [PlaybackStateManager.from()].
  * @author OxygenCobalt
@@ -120,7 +121,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.ALL_SONGS -> null
             PlaybackMode.IN_ARTIST -> song.album.artist
             PlaybackMode.IN_ALBUM -> song.album
-            PlaybackMode.IN_GENRE -> error("what")
+            PlaybackMode.IN_GENRE -> song.album.artist.genres[0]
         }
 
         mMode = mode
@@ -129,7 +130,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
             PlaybackMode.IN_ARTIST -> song.album.artist.songs
             PlaybackMode.IN_ALBUM -> song.album.songs
-            PlaybackMode.IN_GENRE -> error("what")
+            PlaybackMode.IN_GENRE -> song.album.artist.genres[0].songs
         }
 
         resetLoopMode()

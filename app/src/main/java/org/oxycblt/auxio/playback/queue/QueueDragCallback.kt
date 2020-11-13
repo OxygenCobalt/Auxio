@@ -10,6 +10,8 @@ import kotlin.math.sign
 
 // The drag callback used for the Queue RecyclerView.
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
+    private lateinit var queueAdapter: QueueAdapter
+
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
@@ -51,11 +53,15 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition)
+        return playbackModel.moveQueueItems(viewHolder.adapterPosition, target.adapterPosition, queueAdapter)
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueItem(viewHolder.adapterPosition)
+        playbackModel.removeQueueItem(viewHolder.adapterPosition, queueAdapter)
+    }
+
+    fun addQueueAdapter(adapter: QueueAdapter) {
+        queueAdapter = adapter
     }
 
     companion object {

@@ -19,7 +19,7 @@ private val ACCENTS = listOf(
     Pair(R.color.deep_purple, R.style.Theme_DeepPurple), // 3
     Pair(R.color.indigo, R.style.Theme_Indigo), // 4
     Pair(R.color.blue, R.style.Theme_Blue), // 5
-    Pair(R.color.light_blue, R.style.Theme_Blue), // 6
+    Pair(R.color.light_blue, R.style.Theme_LightBlue), // 6
     Pair(R.color.cyan, R.style.Theme_Cyan), // 7
     Pair(R.color.teal, R.style.Theme_Teal), // 8
     Pair(R.color.green, R.style.Theme_Green), // 9

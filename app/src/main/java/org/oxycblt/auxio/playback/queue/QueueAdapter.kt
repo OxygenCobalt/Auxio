@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -16,11 +16,24 @@ import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 
+/**
+ * The single adapter for both the Next Queue and the User Queue.
+ * - [submitList] is for the plain async diff calculations, use this if you
+ * have no idea what the differences are between the old data & the new data
+ * - [removeItem] and [moveItems] are used by [org.oxycblt.auxio.playback.PlaybackViewModel]
+ * so that this adapter doesn't flip-out when items are moved (Which happens with [AsyncListDiffer])
+ * @author OxygenCobalt
+ */
 class QueueAdapter(
-    val touchHelper: ItemTouchHelper
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
+    private val touchHelper: ItemTouchHelper
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var data = mutableListOf<BaseModel>()
+    private var listDiffer = AsyncListDiffer(this, DiffCallback())
+
+    override fun getItemCount(): Int = data.size
+
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
+        val item = data[position]
 
         return if (item is Header)
             HeaderViewHolder.ITEM_TYPE
@@ -39,7 +52,7 @@ class QueueAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
+        when (val item = data[position]) {
             is Song -> (holder as ViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
 
@@ -47,6 +60,27 @@ class QueueAdapter(
                 Log.d(this::class.simpleName, "Bad data fed to QueueAdapter.")
             }
         }
+    }
+
+    fun submitList(newData: MutableList<BaseModel>) {
+        if (data != newData) {
+            data = newData
+
+            listDiffer.submitList(newData)
+        }
+    }
+
+    fun moveItems(adapterFrom: Int, adapterTo: Int) {
+        val item = data.removeAt(adapterFrom)
+        data.add(adapterTo, item)
+
+        notifyItemMoved(adapterFrom, adapterTo)
+    }
+
+    fun removeItem(adapterIndex: Int) {
+        data.removeAt(adapterIndex)
+
+        notifyItemRemoved(adapterIndex)
     }
 
     // Generic ViewHolder for a queue item
