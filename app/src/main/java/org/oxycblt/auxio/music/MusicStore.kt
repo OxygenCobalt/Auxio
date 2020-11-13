@@ -92,6 +92,9 @@ class MusicStore private constructor() {
         @Volatile
         private var INSTANCE: MusicStore? = null
 
+        /**
+         * Get/Instantiate the single instance of [MusicStore].
+         */
         fun getInstance(): MusicStore {
             val currentInstance = INSTANCE
 

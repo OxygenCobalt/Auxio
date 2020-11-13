@@ -8,4 +8,8 @@
         android:id="@+id/action_go_artist"
         android:title="@string/label_go_artist"
         android:icon="@drawable/ic_artist" />
+    <item
+        android:id="@+id/action_play_artist"
+        android:title="@string/label_play_artist"
+        android:icon="@drawable/ic_artist" />
 </menu>

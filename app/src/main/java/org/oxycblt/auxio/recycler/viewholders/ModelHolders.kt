@@ -28,7 +28,7 @@ class GenreViewHolder private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 10
+        const val ITEM_TYPE = 0xA010
 
         fun from(context: Context, doOnClick: (Genre) -> Unit): GenreViewHolder {
             return GenreViewHolder(
@@ -50,7 +50,7 @@ class ArtistViewHolder private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 11
+        const val ITEM_TYPE = 0xA011
 
         fun from(context: Context, doOnClick: (Artist) -> Unit): ArtistViewHolder {
             return ArtistViewHolder(
@@ -72,7 +72,7 @@ class AlbumViewHolder private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 12
+        const val ITEM_TYPE = 0xA012
 
         fun from(context: Context, doOnClick: (data: Album) -> Unit): AlbumViewHolder {
             return AlbumViewHolder(
@@ -99,7 +99,7 @@ class SongViewHolder private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 13
+        const val ITEM_TYPE = 0xA013
 
         fun from(
             context: Context,
@@ -123,7 +123,7 @@ class HeaderViewHolder(
     }
 
     companion object {
-        const val ITEM_TYPE = 14
+        const val ITEM_TYPE = 0xA014
 
         fun from(context: Context): HeaderViewHolder {
             return HeaderViewHolder(

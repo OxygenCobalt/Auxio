@@ -3,7 +3,6 @@ package org.oxycblt.auxio.music
 import android.net.Uri
 
 // --- MUSIC MODELS ---
-// FIXME: Remove parent/child references so that they can be parcelable?
 
 // The base model for all music
 // This is used in a lot of general functions in order to have generic utilities

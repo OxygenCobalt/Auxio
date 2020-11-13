@@ -22,17 +22,16 @@ class QueueAdapter(
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
 
-        if (item is Header) {
-            return HeaderViewHolder.ITEM_TYPE
-        } else {
-            return QUEUE_ITEM_VIEW_TYPE
-        }
+        return if (item is Header)
+            HeaderViewHolder.ITEM_TYPE
+        else
+            QUEUE_ITEM_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-            QUEUE_ITEM_VIEW_TYPE -> ViewHolder(
+            QUEUE_ITEM_TYPE -> ViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
             else -> error("Someone messed with the ViewHolder item types. Tell OxygenCobalt.")
@@ -76,6 +75,6 @@ class QueueAdapter(
     }
 
     companion object {
-        const val QUEUE_ITEM_VIEW_TYPE = 0xA030
+        const val QUEUE_ITEM_TYPE = 0xA015
     }
 }

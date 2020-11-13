@@ -60,13 +60,7 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(song)
-
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.label_queue_added),
-                    Toast.LENGTH_SHORT
-                ).show()
+                doUserQueueAdd(context, song, playbackModel)
 
                 true
             }
@@ -97,13 +91,7 @@ fun PopupMenu.setupAlbumSongActions(
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(song)
-
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.label_queue_added),
-                    Toast.LENGTH_SHORT
-                ).show()
+                doUserQueueAdd(context, song, playbackModel)
 
                 true
             }
@@ -113,8 +101,35 @@ fun PopupMenu.setupAlbumSongActions(
                 true
             }
 
+            R.id.action_play_artist -> {
+                playbackModel.playSong(song, PlaybackMode.IN_ARTIST)
+                true
+            }
+
             else -> false
         }
     }
     show()
+}
+
+private fun doUserQueueAdd(context: Context, song: Song, playbackModel: PlaybackViewModel) {
+    // If the song was already added to the user queue, then don't add it again.
+    // This is just to prevent a bug with DiffCallback that creates strange
+    // behavior when duplicate user queue items are added.
+    // FIXME: Fix the duplicate item DiffCallback issue
+    if (!playbackModel.userQueue.value!!.contains(song)) {
+        playbackModel.addToUserQueue(song)
+
+        Toast.makeText(
+            context,
+            context.getString(R.string.label_queue_added),
+            Toast.LENGTH_SHORT
+        ).show()
+    } else {
+        Toast.makeText(
+            context,
+            context.getString(R.string.label_queue_already_added),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 }

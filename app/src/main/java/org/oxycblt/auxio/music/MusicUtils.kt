@@ -35,7 +35,7 @@ private val ID3_GENRES = arrayOf(
     "Anime", "JPop", "Synthpop"
 )
 
-const val PAREN_FILTER = "()"
+private const val PAREN_FILTER = "()"
 
 // --- EXTENSION FUNCTIONS ---
 

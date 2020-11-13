@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 /**
  * Master class for the playback state. This should ***not*** be used outside of the playback module.
- * - If you want to show the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel].
+ * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel].
  * - If you want to add to the system aspects or the exoplayer instance, use [org.oxycblt.auxio.playback.PlaybackService].
  *
  * All instantiation should be done with [PlaybackStateManager.from()].
@@ -300,6 +300,8 @@ class PlaybackStateManager private constructor() {
         }
 
         mUserQueue.removeAt(index)
+
+        Log.d(this::class.simpleName, mUserQueue.toString())
 
         forceUserQueueUpdate()
     }
