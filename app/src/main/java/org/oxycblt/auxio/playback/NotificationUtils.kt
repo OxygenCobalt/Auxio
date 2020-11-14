@@ -32,6 +32,12 @@ object NotificationUtils {
     const val ACTION_EXIT = "ACTION_AUXIO_EXIT"
 }
 
+/**
+ * Create the standard media notification used by Auxio.
+ * @param context [Context] required to create the notification
+ * @param mediaSession [MediaSessionCompat] required for the [MediaStyle] notification
+ * @author OxygenCobalt
+ */
 fun NotificationManager.createMediaNotification(
     context: Context,
     mediaSession: MediaSessionCompat

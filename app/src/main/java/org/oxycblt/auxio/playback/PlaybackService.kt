@@ -157,8 +157,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // Release everything that could cause a memory leak if left around
         player.release()
         mediaSession.release()
-        serviceJob.cancel()
         playbackManager.removeCallback(this)
+
+        serviceScope.launch {
+            playbackManager.saveStateToDatabase(this@PlaybackService)
+            serviceJob.cancel()
+        }
 
         Log.d(this::class.simpleName, "Service destroyed.")
     }
@@ -213,7 +217,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             player.setMediaItem(item)
             player.prepare()
-            player.play()
+
+            if (playbackManager.isPlaying) {
+                player.play()
+            }
 
             uploadMetadataToSession(it)
             notification.setMetadata(playbackManager.song!!, this) {
@@ -270,6 +277,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         changeIsFromAudioFocus = false
 
         player.seekTo(position)
+    }
+
+    override fun onNeedContextToRestoreState() {
+        Log.d(this::class.simpleName, "Giving context to PlaybackStateManager")
+
+        serviceScope.launch {
+            playbackManager.getStateFromDatabase(this@PlaybackService)
+        }
     }
 
     // --- OTHER FUNCTIONS ---
@@ -382,7 +397,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         return false
     }
 
-    // BroadcastReceiver for receiving system events [E.G Headphones connected/disconnected]
+    /**
+     * A [BroadcastReceiver] for receiving system events from the media notification or the headset.
+     */
     private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action

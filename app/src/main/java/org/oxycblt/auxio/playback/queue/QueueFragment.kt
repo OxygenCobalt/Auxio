@@ -16,6 +16,12 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyDivider
 
+/**
+ * A [Fragment] that contains both the user queue and the next queue, with the ability to
+ * edit them as well.
+ *
+ * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
+ */
 class QueueFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 

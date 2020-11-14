@@ -24,6 +24,14 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
+    val parents: MutableList<BaseModel> by lazy {
+        val parents = mutableListOf<BaseModel>()
+        parents.addAll(mGenres)
+        parents.addAll(mArtists)
+        parents.addAll(mAlbums)
+        parents
+    }
+
     var loaded = false
         private set
 

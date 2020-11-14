@@ -1,6 +1,12 @@
 package org.oxycblt.auxio.playback.state
 
+import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.database.PlaybackState
+import org.oxycblt.auxio.database.PlaybackStateDatabase
+import org.oxycblt.auxio.database.QueueConverter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -348,11 +354,10 @@ class PlaybackStateManager private constructor() {
         // can be restored when its started again.
         val newSeed = Random.Default.nextLong()
 
-        Log.d(this::class.simpleName, "Shuffling queue with a seed of $newSeed.")
-
         mShuffleSeed = newSeed
 
-        mQueue.shuffle(Random(newSeed))
+        Log.d(this::class.simpleName, "Shuffling queue with a seed of $mShuffleSeed.")
+        mQueue.shuffle(Random(mShuffleSeed))
         mIndex = 0
 
         // If specified, make the current song the first member of the queue.
@@ -380,6 +385,8 @@ class PlaybackStateManager private constructor() {
         }
 
         mIndex = mQueue.indexOf(mSong)
+
+        forceQueueUpdate()
     }
 
     // --- STATE FUNCTIONS ---
@@ -441,6 +448,106 @@ class PlaybackStateManager private constructor() {
         return final
     }
 
+    // --- PERSISTENCE FUNCTIONS ---
+    // TODO: Persist queue edits?
+    // FIXME: Calling genShuffle without knowing the original queue edit from keepSong will cause issues.
+
+    fun needContextToRestoreState() {
+        callbacks.forEach { it.onNeedContextToRestoreState() }
+    }
+
+    suspend fun saveStateToDatabase(context: Context) {
+        Log.d(this::class.simpleName, "Saving state to DB.")
+
+        withContext(Dispatchers.IO) {
+            val playbackState = packToPlaybackState()
+
+            val database = PlaybackStateDatabase.getInstance(context)
+            database.playbackStateDAO.clear()
+            database.playbackStateDAO.insert(playbackState)
+        }
+    }
+
+    suspend fun getStateFromDatabase(context: Context) {
+        Log.d(this::class.simpleName, "Getting state from DB.")
+
+        withContext(Dispatchers.IO) {
+            val database = PlaybackStateDatabase.getInstance(context)
+            val states = database.playbackStateDAO.getAll()
+
+            if (states.isEmpty()) {
+                Log.d(this::class.simpleName, "Nothing here. Not restoring.")
+                return@withContext
+            }
+
+            val state = states[0]
+
+            Log.d(this::class.simpleName, "Old state found, $state")
+
+            database.playbackStateDAO.clear()
+
+            withContext(Dispatchers.Main) {
+                val musicStore = MusicStore.getInstance()
+
+                mSong = musicStore.songs.find { it.id == state.songId }
+                mPosition = state.position
+                mParent = musicStore.parents.find { it.id == state.parentId }
+                mUserQueue = QueueConverter.fromString(state.userQueueIds)
+                mMode = PlaybackMode.fromConstant(state.mode) ?: PlaybackMode.ALL_SONGS
+                mLoopMode = LoopMode.fromConstant(state.loopMode) ?: LoopMode.NONE
+                mIsShuffling = state.isShuffling
+                mShuffleSeed = state.shuffleSeed
+                mIsInUserQueue = state.inUserQueue
+
+                mQueue = when (mMode) {
+                    PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
+                    PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
+                    PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
+                    PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
+                }
+
+                if (mIsShuffling) {
+                    Log.d(this::class.simpleName, "You stupid fucking retard. JUST FUNCTION.")
+                    mQueue.shuffle(Random(mShuffleSeed))
+                }
+
+                mIndex = state.index
+            }
+        }
+
+        // Update PlaybackService outside of the main thread since its special for some reason
+        callbacks.forEach {
+            it.onSeekConfirm(mPosition)
+        }
+    }
+
+    private fun packToPlaybackState(): PlaybackState {
+        val songId = mSong?.id ?: -1L
+        val parentId = mParent?.id ?: -1L
+        val userQueueString = QueueConverter.fromQueue(
+            mutableListOf<Long>().apply {
+                mUserQueue.forEach {
+                    this.add(it.id)
+                }
+            }
+        )
+        val intMode = mMode.toConstant()
+        val intLoopMode = mLoopMode.toConstant()
+
+        return PlaybackState(
+            songId = songId,
+            position = mPosition,
+            parentId = parentId,
+            userQueueIds = userQueueString,
+            index = mIndex,
+            mode = intMode,
+            isShuffling = mIsShuffling,
+            shuffleSeed = mShuffleSeed,
+            loopMode = intLoopMode,
+            inUserQueue = mIsInUserQueue
+        )
+    }
+
     /**
      * The interface for receiving updates from [PlaybackStateManager].
      * Add the callback to [PlaybackStateManager] using [addCallback],
@@ -458,6 +565,7 @@ class PlaybackStateManager private constructor() {
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(mode: LoopMode) {}
         fun onSeekConfirm(position: Long) {}
+        fun onNeedContextToRestoreState() {}
     }
 
     companion object {
