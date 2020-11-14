@@ -216,7 +216,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause"
-            android:contentDescription="@string/description_loop" />
+            android:contentDescription="@string/description_change_loop" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

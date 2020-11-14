@@ -302,8 +302,6 @@ class PlaybackStateManager private constructor() {
 
         mUserQueue.removeAt(index)
 
-        Log.d(this::class.simpleName, mUserQueue.toString())
-
         forceUserQueueUpdate()
     }
 

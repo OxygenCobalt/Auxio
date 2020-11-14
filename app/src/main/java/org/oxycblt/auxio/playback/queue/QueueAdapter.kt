@@ -81,6 +81,19 @@ class QueueAdapter(
         data.removeAt(adapterIndex)
 
         notifyItemRemoved(adapterIndex)
+
+        // Check for two things:
+        // If the data from the next queue is now entirely empty [Signified by a header at the end]
+        // Or if the data from the last queue is now entirely empty [Signified by there being 2 headers with no items in between]
+        if (data[data.lastIndex] is Header) {
+            val lastIndex = data.lastIndex
+
+            data.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        } else if (data.lastIndex >= 1 && data[0] is Header && data[1] is Header) {
+            data.removeAt(0)
+            notifyItemRemoved(0)
+        }
     }
 
     // Generic ViewHolder for a queue item

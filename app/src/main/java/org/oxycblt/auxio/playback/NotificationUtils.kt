@@ -40,7 +40,7 @@ fun NotificationManager.createMediaNotification(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
             NotificationUtils.CHANNEL_ID,
-            context.getString(R.string.label_notification_playback),
+            context.getString(R.string.label_channel),
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
