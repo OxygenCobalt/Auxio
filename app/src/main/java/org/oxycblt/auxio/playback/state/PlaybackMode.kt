@@ -19,8 +19,8 @@ enum class PlaybackMode {
     companion object {
         const val CONSTANT_IN_ARTIST = 0xA040
         const val CONSTANT_IN_GENRE = 0xA041
-        const val CONSTANT_IN_ALBUM = 0x4042
-        const val CONSTANT_ALL_SONGS = 0x4043
+        const val CONSTANT_IN_ALBUM = 0xA042
+        const val CONSTANT_ALL_SONGS = 0xA043
 
         fun fromConstant(constant: Int): PlaybackMode? {
             return when (constant) {

@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "playback_state_table")
 data class PlaybackState(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    var id: Long = Long.MIN_VALUE,
 
     @ColumnInfo(name = "song_id")
-    val songId: Long = -1L,
+    val songId: Long = Long.MIN_VALUE,
 
     @ColumnInfo(name = "position")
     val position: Long,

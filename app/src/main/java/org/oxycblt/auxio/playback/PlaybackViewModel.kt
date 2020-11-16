@@ -79,12 +79,15 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     init {
         playbackManager.addCallback(this)
 
-        // If the PlaybackViewModel was cleared [signified by the PlaybackStateManager having a
-        // song and the fact that were are in the init function], then try to restore the playback
-        // state.
-        if (playbackManager.song != null) {
+        // If the PlaybackViewModel was cleared [Signified by PlaybackStateManager still being
+        // around & the fact that we are in the init function], then attempt to restore the
+        // viewmodel state.
+        if (playbackManager.isRestored) {
             restorePlaybackState()
         } else {
+            // If [PlaybackStateManger] was also cleared [Due to Auxio's process dying], then
+            // attempt to restore it [Albeit PlaybackService will need to do the job as it
+            // has a context while PlaybackViewModel doesn't].
             playbackManager.needContextToRestoreState()
         }
     }
@@ -166,7 +169,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
                 mutableListOf<Long>().apply {
                     forEach {
                         this.add(it)
-                    } 
+                    }
                 }
             )
         )
@@ -323,7 +326,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
         mSong.value = playbackManager.song
         mPosition.value = playbackManager.position / 1000
+        mParent.value = playbackManager.parent
         mQueue.value = playbackManager.queue
+        mMode.value = playbackManager.mode
         mUserQueue.value = playbackManager.userQueue
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying

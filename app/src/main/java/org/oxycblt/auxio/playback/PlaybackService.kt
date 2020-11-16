@@ -285,6 +285,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         serviceScope.launch {
             playbackManager.getStateFromDatabase(this@PlaybackService)
         }
+
+        Log.d(this::class.simpleName, "notification restore")
+
+        // FIXME: Current position just will not show on notification when state is restored
+        restorePlayer()
+        restoreNotification()
     }
 
     // --- OTHER FUNCTIONS ---
@@ -300,6 +306,22 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 startForegroundOrNotify()
             }
         }
+    }
+
+    private fun restoreNotification() {
+        playbackManager.song?.let {
+            uploadMetadataToSession(it)
+            notification.updateLoop(this)
+            notification.updateMode(this)
+            notification.updatePlaying(this)
+            notification.setMetadata(it, this) {
+                startForegroundOrNotify()
+            }
+
+            return
+        }
+
+        stopForegroundAndNotification()
     }
 
     private fun uploadMetadataToSession(song: Song) {

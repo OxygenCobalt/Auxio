@@ -3,19 +3,19 @@ package org.oxycblt.auxio.playback.state
 enum class LoopMode {
     NONE, ONCE, INFINITE;
 
-    fun toConstant(): Int {
-        return when (this) {
-            NONE -> CONSTANT_NONE
-            ONCE -> CONSTANT_ONCE
-            INFINITE -> CONSTANT_INFINITE
-        }
-    }
-
     fun increment(): LoopMode {
         return when (this) {
             NONE -> ONCE
             ONCE -> INFINITE
             INFINITE -> NONE
+        }
+    }
+
+    fun toConstant(): Int {
+        return when (this) {
+            NONE -> CONSTANT_NONE
+            ONCE -> CONSTANT_ONCE
+            INFINITE -> CONSTANT_INFINITE
         }
     }
 
