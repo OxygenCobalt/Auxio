@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import org.oxycblt.auxio.database.QueueConverter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -158,19 +157,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Skip to last song.
     fun skipPrev() {
         playbackManager.prev()
-    }
-
-    fun goto(value: Boolean) {
-        Log.d(
-            this::class.simpleName,
-            QueueConverter.fromQueue(
-                mutableListOf<Long>().apply {
-                    forEach {
-                        this.add(it)
-                    }
-                }
-            )
-        )
     }
 
     // Remove a queue OR user queue item, given a QueueAdapter index.

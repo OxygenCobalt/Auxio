@@ -4,14 +4,18 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.NavigationUI
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -19,15 +23,10 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getInactiveAlpha
 import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.toColor
+import java.lang.IllegalArgumentException
 
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-
-    private val shownFragments = listOf(0, 1)
-    private val tabIcons = listOf(
-        R.drawable.ic_library,
-        R.drawable.ic_song
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +49,8 @@ class MainFragment : Fragment() {
             accent.first,
             getInactiveAlpha(accent.first)
         )
+
+        // Set up the tints for the navigation icon
         val navIconTints = ColorStateList(
             arrayOf(
                 intArrayOf(-android.R.attr.state_checked),
@@ -58,15 +59,22 @@ class MainFragment : Fragment() {
             intArrayOf(colorInactive, colorActive)
         )
 
+        val navController = (
+            childFragmentManager.findFragmentById(R.id.explore_nav_host)
+                as NavHostFragment?
+            )?.findNavController()
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
 
         binding.navBar.itemIconTintList = navIconTints
         binding.navBar.itemTextColor = navIconTints
-        ((childFragmentManager.findFragmentById(R.id.explore_nav_host) as NavHostFragment?))?.let {
-            // TODO: Add animation with BottomNavigationView navs
-            binding.navBar.setupWithNavController(it.findNavController())
+
+        navController?.let {
+            binding.navBar.setOnNavigationItemSelectedListener { item ->
+                navigateWithItem(item, navController)
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -88,5 +96,36 @@ class MainFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created.")
 
         return binding.root
+    }
+
+    /**
+     * Some custom navigator code based off [NavigationUI] that makes animations function
+     */
+    private fun navigateWithItem(item: MenuItem, navController: NavController): Boolean {
+        // Custom navigator code so that animations actually function
+        // [Which doesn't happen if I use BottomNavigationView.setupWithNavController()
+        if (item.itemId != navController.currentDestination!!.id) {
+            val builder = NavOptions.Builder().setLaunchSingleTop(true)
+
+            builder.setEnterAnim(R.anim.nav_default_enter_anim)
+                .setExitAnim(R.anim.nav_default_exit_anim)
+                .setPopEnterAnim(R.anim.nav_default_enter_anim)
+                .setPopExitAnim(R.anim.nav_default_exit_anim)
+
+            if ((item.order and Menu.CATEGORY_SECONDARY) == 0) {
+                builder.setPopUpTo(navController.graph.startDestination, false)
+            }
+
+            val options = builder.build()
+
+            return try {
+                navController.navigate(item.itemId, null, options)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
+            }
+        }
+
+        return true
     }
 }
