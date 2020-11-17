@@ -106,4 +106,10 @@ class ArtistDetailFragment : DetailFragment() {
 
         return binding.root
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        detailModel.updateNavigationStatus(false)
+    }
 }

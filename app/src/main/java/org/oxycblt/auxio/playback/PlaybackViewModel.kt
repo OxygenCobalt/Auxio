@@ -19,6 +19,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
  * The ViewModel that provides a UI-Focused frontend for [PlaybackStateManager].
+ * TODO: Implement navigation to playing album/artist
  * @author OxygenCobalt
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
@@ -58,9 +59,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Other
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
-
-    private val mNavToPlayingSong = MutableLiveData(false)
-    val navToPlayingSong: LiveData<Boolean> get() = mNavToPlayingSong
 
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
@@ -263,14 +261,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value
-    }
-
-    fun navigateToPlayingSong() {
-        mNavToPlayingSong.value = true
-    }
-
-    fun doneWithNavToPlayingSong() {
-        mNavToPlayingSong.value = false
     }
 
     // --- OVERRIDES ---

@@ -86,6 +86,7 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     android:clickable="true"
                     android:focusable="true"
+                    android:background="@drawable/ui_ripple"
                     android:onClick="@{() -> detailModel.doNavToParent()}"
                     android:text="@{album.artist.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"

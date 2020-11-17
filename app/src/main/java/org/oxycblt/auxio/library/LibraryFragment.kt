@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.adapters.LibraryAdapter
@@ -154,18 +153,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchAdapter.submitList(it) {
                     binding.libraryRecycler.scrollToPosition(0)
                 }
-            }
-        }
-
-        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(
-                    MainFragmentDirections.actionShowAlbum(
-                        playbackModel.song.value!!.album.id, true
-                    )
-                )
-
-                playbackModel.doneWithNavToPlayingSong()
             }
         }
 
