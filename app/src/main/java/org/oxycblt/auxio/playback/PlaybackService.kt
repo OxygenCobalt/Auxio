@@ -145,6 +145,19 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         if (playbackManager.song != null) {
             restorePlayer()
+            notification.updateLoop(this)
+            notification.updateMode(this)
+            notification.updatePlaying(this)
+
+            playbackManager.song?.let {
+                notification.setMetadata(it, this) {
+                    if (playbackManager.isPlaying) {
+                        startForegroundOrNotify("Restore")
+                    } else {
+                        stopForegroundAndNotification()
+                    }
+                }
+            }
         }
     }
 
@@ -223,8 +236,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
 
             uploadMetadataToSession(it)
-            notification.setMetadata(playbackManager.song!!, this) {
-                startForegroundOrNotify()
+
+            if (playbackManager.isRestored) {
+                notification.setMetadata(playbackManager.song!!, this) {
+                    startForegroundOrNotify("Song")
+                }
+            } else {
+                notification.setMetadata(playbackManager.song!!, this) {}
             }
 
             return
@@ -238,7 +256,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onModeUpdate(mode: PlaybackMode) {
         notification.updateMode(this)
 
-        startForegroundOrNotify()
+        startForegroundOrNotify("Mode")
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
@@ -247,13 +265,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         if (isPlaying && !player.isPlaying) {
             player.play()
             notification.updatePlaying(this)
-            startForegroundOrNotify()
+            startForegroundOrNotify("Play")
 
             startPollingPosition()
         } else {
             player.pause()
             notification.updatePlaying(this)
-            startForegroundOrNotify()
+            startForegroundOrNotify("Pause")
         }
     }
 
@@ -270,27 +288,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         notification.updateLoop(this)
-        startForegroundOrNotify()
+        startForegroundOrNotify("Loop")
     }
 
     override fun onSeekConfirm(position: Long) {
         changeIsFromAudioFocus = false
 
         player.seekTo(position)
-    }
-
-    override fun onNeedContextToRestoreState() {
-        Log.d(this::class.simpleName, "Giving context to PlaybackStateManager")
-
-        serviceScope.launch {
-            playbackManager.getStateFromDatabase(this@PlaybackService)
-        }
-
-        Log.d(this::class.simpleName, "notification restore")
-
-        // FIXME: Current position just will not show on notification when state is restored
-        restorePlayer()
-        restoreNotification()
     }
 
     // --- OTHER FUNCTIONS ---
@@ -301,27 +305,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             player.setMediaItem(item)
             player.prepare()
             player.seekTo(playbackManager.position)
-
-            notification.setMetadata(it, this) {
-                startForegroundOrNotify()
-            }
         }
     }
 
-    private fun restoreNotification() {
-        playbackManager.song?.let {
-            uploadMetadataToSession(it)
-            notification.updateLoop(this)
-            notification.updateMode(this)
-            notification.updatePlaying(this)
-            notification.setMetadata(it, this) {
-                startForegroundOrNotify()
-            }
+    override fun onRestoreFinish() {
+        Log.d(this::class.simpleName, "Restore done")
 
-            return
-        }
-
-        stopForegroundAndNotification()
+        restorePlayer()
     }
 
     private fun uploadMetadataToSession(song: Song) {
@@ -356,19 +346,23 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
-    private fun startForegroundOrNotify() {
+    private fun startForegroundOrNotify(reason: String) {
         // Start the service in the foreground if haven't already.
-        if (!isForeground) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(
-                    NotificationUtils.NOTIFICATION_ID, notification.build(),
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-                )
+        if (playbackManager.isRestored) {
+            Log.d(this::class.simpleName, "Starting foreground because of $reason")
+
+            if (!isForeground) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startForeground(
+                        NotificationUtils.NOTIFICATION_ID, notification.build(),
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                    )
+                } else {
+                    startForeground(NotificationUtils.NOTIFICATION_ID, notification.build())
+                }
             } else {
-                startForeground(NotificationUtils.NOTIFICATION_ID, notification.build())
+                notificationManager.notify(NotificationUtils.NOTIFICATION_ID, notification.build())
             }
-        } else {
-            notificationManager.notify(NotificationUtils.NOTIFICATION_ID, notification.build())
         }
     }
 

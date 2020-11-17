@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -50,8 +49,8 @@ class MainFragment : Fragment() {
             getInactiveAlpha(accent.first)
         )
 
-        // Set up the tints for the navigation icon
-        val navIconTints = ColorStateList(
+        // Set up the tints for the navigation icons + text
+        val navTints = ColorStateList(
             arrayOf(
                 intArrayOf(-android.R.attr.state_checked),
                 intArrayOf(android.R.attr.state_checked)
@@ -68,8 +67,8 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        binding.navBar.itemIconTintList = navIconTints
-        binding.navBar.itemTextColor = navIconTints
+        binding.navBar.itemIconTintList = navTints
+        binding.navBar.itemTextColor = navTints
 
         navController?.let {
             binding.navBar.setOnNavigationItemSelectedListener { item ->
@@ -92,6 +91,8 @@ class MainFragment : Fragment() {
                 binding.compactPlayback.visibility = View.VISIBLE
             }
         }
+
+        playbackModel.restorePlaybackIfNeeded(requireContext())
 
         Log.d(this::class.simpleName, "Fragment Created.")
 

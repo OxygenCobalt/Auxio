@@ -1,10 +1,13 @@
 package org.oxycblt.auxio.playback
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -78,14 +81,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
         // If the PlaybackViewModel was cleared [Signified by PlaybackStateManager still being
         // around & the fact that we are in the init function], then attempt to restore the
-        // viewmodel state.
+        // viewmodel state. If it isn't, then wait for MainFragment to give the command to restore
+        // PlaybackStateManager.
         if (playbackManager.isRestored) {
             restorePlaybackState()
-        } else {
-            // If [PlaybackStateManger] was also cleared [Due to Auxio's process dying], then
-            // attempt to restore it [Albeit PlaybackService will need to do the job as it
-            // has a context while PlaybackViewModel doesn't].
-            playbackManager.needContextToRestoreState()
         }
     }
 
@@ -247,6 +246,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value
+    }
+
+    fun restorePlaybackIfNeeded(context: Context) {
+        if (!playbackManager.isRestored) {
+            viewModelScope.launch {
+                playbackManager.getStateFromDatabase(context)
+            }
+        }
     }
 
     // --- OVERRIDES ---

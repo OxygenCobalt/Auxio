@@ -19,8 +19,6 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 object NotificationUtils {
-    val DO_COMPAT_SUBTEXT = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-
     const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
     const val NOTIFICATION_ID = 0xA0A0
     const val REQUEST_CODE = 0xA0C0
@@ -81,6 +79,13 @@ fun NotificationManager.createMediaNotification(
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 }
 
+/**
+ * Set the current metadata of a media notification.
+ * @param song The [Song] that the notification should reflect
+ * @param context The [Context] needed to load the cover bitmap
+ * @param onDone A callback for when the process is finished
+ * @author OxygenCobalt
+ */
 fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone: () -> Unit) {
     setContentTitle(song.name)
     setContentText(
@@ -89,7 +94,7 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
 
     // On older versions of android [API <26], show the song's album on the subtext instead of
     // the current mode, as that makes more sense for the old style of media notifications.
-    if (NotificationUtils.DO_COMPAT_SUBTEXT) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         setSubText(song.album.name)
     }
 
@@ -102,7 +107,7 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
     }
 }
 
-// I have no idea how to update actions on the fly so I have to use these restricted APIs.
+// I have no idea how to update a specific action on the fly so I have to use these restricted APIs
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updatePlaying(context: Context) {
     mActions[2] = newAction(NotificationUtils.ACTION_PLAY_PAUSE, context)
@@ -114,7 +119,7 @@ fun NotificationCompat.Builder.updateLoop(context: Context) {
 }
 
 fun NotificationCompat.Builder.updateMode(context: Context) {
-    if (!NotificationUtils.DO_COMPAT_SUBTEXT) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
         val playbackManager = PlaybackStateManager.getInstance()
 
         // If playing from all songs, set the subtext as that, otherwise the currently played parent.
@@ -126,6 +131,11 @@ fun NotificationCompat.Builder.updateMode(context: Context) {
     }
 }
 
+/**
+ * Create a new [NotificationCompat.Action].
+ * @param action The action that the notification action should represent
+ * @param context The [Context] needed to create the action
+ */
 private fun newAction(action: String, context: Context): NotificationCompat.Action {
     val playbackManager = PlaybackStateManager.getInstance()
 

@@ -24,7 +24,6 @@ import kotlin.random.Random
  *
  * All instantiation should be done with [PlaybackStateManager.from()].
  * @author OxygenCobalt
- * FIXME: Add started variable instead of relying on mSong being null
  */
 class PlaybackStateManager private constructor() {
     // Playback
@@ -455,10 +454,6 @@ class PlaybackStateManager private constructor() {
     // TODO: Persist queue edits?
     // FIXME: Shuffling w/o knowing the original queue edit from keepSong will cause issues
 
-    fun needContextToRestoreState() {
-        callbacks.forEach { it.onNeedContextToRestoreState() }
-    }
-
     suspend fun saveStateToDatabase(context: Context) {
         Log.d(this::class.simpleName, "Saving state to DB.")
 
@@ -483,16 +478,19 @@ class PlaybackStateManager private constructor() {
             return@withContext states
         }
 
-        mIsRestored = true
-
         if (states.isEmpty()) {
             Log.d(this::class.simpleName, "Nothing here. Not restoring.")
+
+            mIsRestored = true
+
             return
         }
 
         Log.d(this::class.simpleName, "Old state found, ${states[0]}")
 
         unpackFromPlaybackState(states[0])
+
+        mIsRestored = true
     }
 
     private fun packToPlaybackState(): PlaybackState {
@@ -580,6 +578,7 @@ class PlaybackStateManager private constructor() {
         callbacks.forEach {
             it.onSeekConfirm(mPosition)
             it.onModeUpdate(mMode)
+            it.onRestoreFinish()
         }
     }
 
@@ -600,7 +599,7 @@ class PlaybackStateManager private constructor() {
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(mode: LoopMode) {}
         fun onSeekConfirm(position: Long) {}
-        fun onNeedContextToRestoreState() {}
+        fun onRestoreFinish() {}
     }
 
     companion object {
