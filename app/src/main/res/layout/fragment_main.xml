@@ -4,43 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/main_view_pager"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/explore_nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:elevation="@dimen/elevation_normal"
+            app:layout_constraintBottom_toTopOf="@+id/compact_playback"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/nav_explore"
+            tools:layout="@layout/fragment_library" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/compact_playback"
+            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
-            android:elevation="@dimen/elevation_normal" />
+            app:layout_constraintBottom_toTopOf="@+id/nav_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout="@layout/fragment_compact_playback" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/main_tabs"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_tab_menu"
-            android:layout_gravity="bottom"
-            android:background="?android:attr/windowBackground"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
             android:elevation="@dimen/elevation_normal"
+            app:itemRippleColor="@color/selection_color"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:tabGravity="fill"
-            app:tabIconTint="?attr/colorPrimary"
-            app:tabIconTintMode="src_in"
-            app:tabIndicator="@drawable/ui_indicator"
-            app:tabIndicatorColor="?attr/colorPrimary"
-            app:tabMode="fixed"
-            app:tabRippleColor="@color/selection_color"
-            tools:background="@color/control_color" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/menu_nav" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

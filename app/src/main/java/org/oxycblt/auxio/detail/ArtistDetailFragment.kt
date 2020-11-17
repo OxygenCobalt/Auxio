@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,7 +16,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.disable
 
-class ArtistDetailFragment : Fragment() {
+class ArtistDetailFragment : DetailFragment() {
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -106,11 +105,5 @@ class ArtistDetailFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        detailModel.updateNavigationStatus(false)
     }
 }

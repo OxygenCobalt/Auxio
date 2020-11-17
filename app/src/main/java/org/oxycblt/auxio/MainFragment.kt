@@ -1,22 +1,20 @@
 package org.oxycblt.auxio
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.navigation.ui.setupWithNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
-import org.oxycblt.auxio.library.LibraryFragment
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.songs.SongsFragment
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getInactiveAlpha
 import org.oxycblt.auxio.ui.getTransparentAccent
@@ -52,40 +50,24 @@ class MainFragment : Fragment() {
             accent.first,
             getInactiveAlpha(accent.first)
         )
+        val navIconTints = ColorStateList(
+            arrayOf(
+                intArrayOf(-android.R.attr.state_checked),
+                intArrayOf(android.R.attr.state_checked)
+            ),
+            intArrayOf(colorInactive, colorActive)
+        )
 
         // --- UI SETUP ---
 
-        // TODO: Add nested viewpager navigation [If practical]
-
         binding.lifecycleOwner = this
-        binding.mainViewPager.adapter = PagerAdapter()
 
-        // Link the ViewPager & Tab View
-        TabLayoutMediator(binding.mainTabs, binding.mainViewPager) { tab, position ->
-            tab.icon = ContextCompat.getDrawable(requireContext(), tabIcons[position])
-
-            // Set the icon tint to deselected if its not the default tab
-            if (position > 0) {
-                tab.icon?.setTint(colorInactive)
-            }
-        }.attach()
-
-        // Set up the selected/deselected colors
-        binding.mainTabs.addOnTabSelectedListener(
-            object : TabLayout.OnTabSelectedListener {
-
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    tab.icon?.setTint(colorActive)
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                    tab.icon?.setTint(colorInactive)
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-                }
-            }
-        )
+        binding.navBar.itemIconTintList = navIconTints
+        binding.navBar.itemTextColor = navIconTints
+        ((childFragmentManager.findFragmentById(R.id.explore_nav_host) as NavHostFragment?))?.let {
+            // TODO: Add animation with BottomNavigationView navs
+            binding.navBar.setupWithNavController(it.findNavController())
+        }
 
         // --- VIEWMODEL SETUP ---
 
@@ -106,36 +88,5 @@ class MainFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created.")
 
         return binding.root
-    }
-
-    private fun fragmentAt(position: Int): Fragment {
-        return when (position) {
-            0 -> LibraryFragment()
-            1 -> SongsFragment()
-
-            else -> SongsFragment()
-        }
-    }
-
-    private inner class PagerAdapter :
-        FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
-        override fun getItemCount(): Int = shownFragments.size
-
-        override fun createFragment(position: Int): Fragment {
-            Log.d(this::class.simpleName, "Switching to fragment $position.")
-
-            if (shownFragments.contains(position)) {
-                return fragmentAt(position)
-            }
-
-            // If a fragment that shouldn't be shown is somehow shown anyway, just return
-            // its intended fragment.
-            Log.e(
-                this::class.simpleName,
-                "Attempted to index a fragment that shouldn't be shown."
-            )
-
-            return fragmentAt(position)
-        }
     }
 }

@@ -46,7 +46,7 @@
             android:layout_margin="@dimen/margin_mid_large"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             android:outlineProvider="bounds"
-            android:elevation="4dp"
+            android:elevation="2dp"
             app:coverArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_song"
             app:layout_constraintDimensionRatio="1:1"

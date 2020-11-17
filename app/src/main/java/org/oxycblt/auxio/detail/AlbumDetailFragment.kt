@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,7 +19,7 @@ import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
-class AlbumDetailFragment : Fragment() {
+class AlbumDetailFragment : DetailFragment() {
 
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailModel: DetailViewModel by activityViewModels()

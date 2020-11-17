@@ -539,7 +539,10 @@ class PlaybackStateManager private constructor() {
         // If the parent was somehow dropped during saving, attempt to restore it.
         mSong?.let {
             if (mParent == null && mMode != PlaybackMode.ALL_SONGS) {
-                Log.d(this::class.simpleName, "Parent was corrupted while in mode $mMode. Attempting to restore.")
+                Log.d(
+                    this::class.simpleName,
+                    "Parent was corrupted while in mode $mMode. Attempting to restore."
+                )
                 mParent = when (mMode) {
                     PlaybackMode.IN_ARTIST -> it.album.artist
                     PlaybackMode.IN_ALBUM -> it.album

@@ -203,9 +203,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
             findNavController().navigate(
                 when (baseModel) {
-                    is Genre -> MainFragmentDirections.actionShowGenre(baseModel.id)
-                    is Artist -> MainFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> MainFragmentDirections.actionShowAlbum(baseModel.id, true)
+                    is Genre -> LibraryFragmentDirections.actionShowGenre(baseModel.id)
+                    is Artist -> LibraryFragmentDirections.actionShowArtist(baseModel.id)
+                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id, true)
 
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.
