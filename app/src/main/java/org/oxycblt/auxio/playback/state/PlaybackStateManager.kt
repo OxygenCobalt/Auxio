@@ -2,7 +2,6 @@ package org.oxycblt.auxio.playback.state
 
 import android.content.Context
 import android.util.Log
-import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.database.AuxioDatabase
@@ -15,6 +14,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import kotlin.random.Random
 
 /**
  * Master class for the playback state. This should ***not*** be used outside of the playback module.
@@ -419,7 +419,7 @@ class PlaybackStateManager private constructor() {
     }
 
     // --- PERSISTENCE FUNCTIONS ---
-    // TODO: Optimize queue persistence [Storing seed + edits instead of entire queue.
+    // TODO: Implement a fast queue save function that can be enabled in settings
 
     suspend fun saveStateToDatabase(context: Context) {
         Log.d(this::class.simpleName, "Saving state to DB.")
@@ -461,6 +461,10 @@ class PlaybackStateManager private constructor() {
             database.playbackStateDAO.clear()
             database.queueDAO.clear()
         }
+
+        val loadTime = System.currentTimeMillis() - start
+
+        Log.d(this::class.simpleName, "Load finished in ${loadTime}ms")
 
         if (states.isEmpty()) {
             Log.d(this::class.simpleName, "Nothing here. Not restoring.")
@@ -510,11 +514,11 @@ class PlaybackStateManager private constructor() {
         val unified = mutableListOf<QueueItem>()
 
         mUserQueue.forEach {
-            unified.add(QueueItem(songId = it.id, isUserQueue = true))
+            unified.add(QueueItem(songId = it.id, albumId = it.albumId, isUserQueue = true))
         }
 
         mQueue.forEach {
-            unified.add(QueueItem(songId = it.id, isUserQueue = false))
+            unified.add(QueueItem(songId = it.id, albumId = it.albumId, isUserQueue = false))
         }
 
         return unified
@@ -542,12 +546,9 @@ class PlaybackStateManager private constructor() {
     private fun unpackQueue(queueItems: List<QueueItem>) {
         val musicStore = MusicStore.getInstance()
 
-        Log.d(this::class.simpleName, queueItems.size.toString())
-
-        for (item in queueItems) {
-            musicStore.songs.find { it.id == item.songId }?.let {
-                Log.d(this::class.simpleName, it.id.toString())
-
+        queueItems.forEach { item ->
+            // Traverse albums and then album songs instead of just the songs, as its faster.
+            musicStore.albums.find { it.id == item.albumId }?.songs?.find { it.id == item.songId }?.let {
                 if (item.isUserQueue) {
                     mUserQueue.add(it)
                 } else {
