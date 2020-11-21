@@ -44,19 +44,17 @@ class SearchAdapter(
             )
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            else -> HeaderViewHolder.from(parent.context)
+            else -> error("Someone messed with the ViewHolder item types.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is GenreViewHolder -> holder.bind(getItem(position) as Genre)
-            is ArtistViewHolder -> holder.bind(getItem(position) as Artist)
-            is AlbumViewHolder -> holder.bind(getItem(position) as Album)
-            is SongViewHolder -> holder.bind(getItem(position) as Song)
-            is HeaderViewHolder -> holder.bind(getItem(position) as Header)
-
-            else -> return
+        when (val item = getItem(position)) {
+            is Genre -> (holder as GenreViewHolder).bind(item)
+            is Artist -> (holder as ArtistViewHolder).bind(item)
+            is Album -> (holder as AlbumViewHolder).bind(item)
+            is Song -> (holder as SongViewHolder).bind(item)
+            is Header -> (holder as HeaderViewHolder).bind(item)
         }
     }
 }

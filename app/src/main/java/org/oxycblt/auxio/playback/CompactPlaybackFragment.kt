@@ -55,6 +55,11 @@ class CompactPlaybackFragment : Fragment() {
             )
         }
 
+        binding.root.setOnLongClickListener {
+            playbackModel.save(requireContext())
+            true
+        }
+
         // --- VIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) {

@@ -145,19 +145,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         if (playbackManager.song != null) {
             restorePlayer()
-            notification.updateLoop(this)
-            notification.updateMode(this)
-            notification.updatePlaying(this)
-
-            playbackManager.song?.let {
-                notification.setMetadata(it, this) {
-                    if (playbackManager.isPlaying) {
-                        startForegroundOrNotify("Restore")
-                    } else {
-                        stopForegroundAndNotification()
-                    }
-                }
-            }
+            restoreNotification()
         }
     }
 
@@ -275,6 +263,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    // TODO: Do testing where service is destroyed after restore [Possible edge case]
+
     override fun onLoopUpdate(mode: LoopMode) {
         changeIsFromAudioFocus = false
 
@@ -305,6 +295,22 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             player.setMediaItem(item)
             player.prepare()
             player.seekTo(playbackManager.position)
+        }
+    }
+
+    private fun restoreNotification() {
+        notification.updateLoop(this)
+        notification.updateMode(this)
+        notification.updatePlaying(this)
+
+        playbackManager.song?.let {
+            notification.setMetadata(it, this) {
+                if (playbackManager.isPlaying) {
+                    startForegroundOrNotify("Restore")
+                } else {
+                    stopForegroundAndNotification()
+                }
+            }
         }
     }
 
@@ -349,7 +355,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private fun startForegroundOrNotify(reason: String) {
         // Start the service in the foreground if haven't already.
         if (playbackManager.isRestored) {
-            Log.d(this::class.simpleName, "Starting foreground because of $reason")
+            Log.d(this::class.simpleName, "Starting foreground/notifying because of $reason")
 
             if (!isForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

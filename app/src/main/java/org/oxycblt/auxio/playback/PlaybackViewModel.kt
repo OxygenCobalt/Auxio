@@ -256,6 +256,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
+    fun save(context: Context) {
+        viewModelScope.launch {
+            playbackManager.saveStateToDatabase(context)
+        }
+    }
+
     // --- OVERRIDES ---
 
     override fun onCleared() {

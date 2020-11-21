@@ -18,20 +18,11 @@ data class PlaybackState(
     @ColumnInfo(name = "parent_id")
     val parentId: Long = -1L,
 
-    @ColumnInfo(name = "user_queue")
-    val userQueueIds: String,
-
-    @ColumnInfo(name = "index")
-    val index: Int,
-
     @ColumnInfo(name = "mode")
     val mode: Int,
 
     @ColumnInfo(name = "is_shuffling")
     val isShuffling: Boolean,
-
-    @ColumnInfo(name = "shuffle_seed")
-    val shuffleSeed: Long,
 
     @ColumnInfo(name = "loop_mode")
     val loopMode: Int,

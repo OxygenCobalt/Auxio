@@ -2,11 +2,12 @@ package org.oxycblt.auxio.playback.state
 
 import android.content.Context
 import android.util.Log
+import kotlin.random.Random
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.database.AuxioDatabase
 import org.oxycblt.auxio.database.PlaybackState
-import org.oxycblt.auxio.database.PlaybackStateDatabase
-import org.oxycblt.auxio.database.QueueConverter
+import org.oxycblt.auxio.database.QueueItem
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -14,7 +15,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import kotlin.random.Random
 
 /**
  * Master class for the playback state. This should ***not*** be used outside of the playback module.
@@ -77,7 +77,6 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onShuffleUpdate(value) }
         }
-    private var mShuffleSeed = -1L
     private var mLoopMode = LoopMode.NONE
         set(value) {
             field = value
@@ -85,6 +84,7 @@ class PlaybackStateManager private constructor() {
         }
     private var mIsInUserQueue = false
     private var mIsRestored = false
+    private var mShuffleSeed = -1L
 
     val song: Song? get() = mSong
     val parent: BaseModel? get() = mParent
@@ -125,21 +125,26 @@ class PlaybackStateManager private constructor() {
 
         val musicStore = MusicStore.getInstance()
 
-        mParent = when (mode) {
-            PlaybackMode.ALL_SONGS -> null
-            PlaybackMode.IN_ARTIST -> song.album.artist
-            PlaybackMode.IN_ALBUM -> song.album
-            PlaybackMode.IN_GENRE -> song.album.artist.genres[0]
+        when (mode) {
+            PlaybackMode.ALL_SONGS -> {
+                mParent = null
+                mQueue = musicStore.songs.toMutableList()
+            }
+
+            PlaybackMode.IN_ARTIST -> {
+                mParent = song.album.artist
+                mQueue = song.album.artist.songs
+            }
+
+            PlaybackMode.IN_ALBUM -> {
+                mParent = song.album
+                mQueue = song.album.songs
+            }
+
+            else -> {}
         }
 
         mMode = mode
-
-        mQueue = when (mode) {
-            PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
-            PlaybackMode.IN_ARTIST -> song.album.artist.songs
-            PlaybackMode.IN_ALBUM -> song.album.songs
-            PlaybackMode.IN_GENRE -> song.album.artist.genres[0].songs
-        }
 
         resetLoopMode()
         updatePlayback(song)
@@ -351,15 +356,13 @@ class PlaybackStateManager private constructor() {
 
     // Generate a new shuffled queue.
     private fun genShuffle(keepSong: Boolean) {
-        // Take a random seed and then shuffle the current queue based off of that.
-        // This seed will be saved in a database, so that the shuffle mode
-        // can be restored when its started again.
         val newSeed = Random.Default.nextLong()
+
+        Log.d(this::class.simpleName, "Shuffling queue with seed $newSeed")
 
         mShuffleSeed = newSeed
 
-        Log.d(this::class.simpleName, "Shuffling queue with a seed of $mShuffleSeed.")
-        mQueue.shuffle(Random(mShuffleSeed))
+        mQueue.shuffle(Random(newSeed))
         mIndex = 0
 
         // If specified, make the current song the first member of the queue.
@@ -377,14 +380,9 @@ class PlaybackStateManager private constructor() {
 
     // Stop the queue and attempt to restore to the previous state
     private fun resetShuffle() {
-        mShuffleSeed = -1
+        mShuffleSeed = -1L
 
-        mQueue = when (mMode) {
-            PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
-            PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
-            PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
-            PlaybackMode.ALL_SONGS -> MusicStore.getInstance().songs.toMutableList()
-        }
+        setupOrderedQueue()
 
         mIndex = mQueue.indexOf(mSong)
 
@@ -414,13 +412,164 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun resetLoopMode() {
-        // Reset the loop mode froM ONCE if needed.
+        // Reset the loop mode from ONCE if needed.
         if (mLoopMode == LoopMode.ONCE) {
             mLoopMode = LoopMode.NONE
         }
     }
 
+    // --- PERSISTENCE FUNCTIONS ---
+    // TODO: Optimize queue persistence [Storing seed + edits instead of entire queue.
+
+    suspend fun saveStateToDatabase(context: Context) {
+        Log.d(this::class.simpleName, "Saving state to DB.")
+
+        val start = System.currentTimeMillis()
+
+        Log.d(this::class.simpleName, packQueue().size.toString())
+
+        withContext(Dispatchers.IO) {
+            val playbackState = packToPlaybackState()
+            val queueItems = packQueue()
+
+            val database = AuxioDatabase.getInstance(context)
+            database.playbackStateDAO.clear()
+            database.queueDAO.clear()
+
+            database.playbackStateDAO.insert(playbackState)
+            database.queueDAO.insertAll(queueItems)
+        }
+
+        val time = System.currentTimeMillis() - start
+
+        Log.d(this::class.simpleName, "Save finished in ${time}ms")
+    }
+
+    suspend fun getStateFromDatabase(context: Context) {
+        Log.d(this::class.simpleName, "Getting state from DB.")
+
+        val start = System.currentTimeMillis()
+
+        val states: List<PlaybackState>
+        val queueItems: List<QueueItem>
+
+        withContext(Dispatchers.IO) {
+            val database = AuxioDatabase.getInstance(context)
+            states = database.playbackStateDAO.getAll()
+            queueItems = database.queueDAO.getAll()
+
+            database.playbackStateDAO.clear()
+            database.queueDAO.clear()
+        }
+
+        if (states.isEmpty()) {
+            Log.d(this::class.simpleName, "Nothing here. Not restoring.")
+
+            mIsRestored = true
+
+            return
+        }
+
+        Log.d(this::class.simpleName, "Old state found, ${states[0]}")
+
+        unpackFromPlaybackState(states[0])
+
+        Log.d(this::class.simpleName, "Found queue of size ${queueItems.size}")
+
+        unpackQueue(queueItems)
+
+        mSong?.let {
+            mIndex = mQueue.indexOf(mSong)
+        }
+
+        val time = System.currentTimeMillis() - start
+
+        Log.d(this::class.simpleName, "Restore finished in ${time}ms")
+
+        mIsRestored = true
+    }
+
+    private fun packToPlaybackState(): PlaybackState {
+        val songId = mSong?.id ?: -1L
+        val parentId = mParent?.id ?: -1L
+        val intMode = mMode.toConstant()
+        val intLoopMode = mLoopMode.toConstant()
+
+        return PlaybackState(
+            songId = songId,
+            position = mPosition,
+            parentId = parentId,
+            mode = intMode,
+            isShuffling = mIsShuffling,
+            loopMode = intLoopMode,
+            inUserQueue = mIsInUserQueue
+        )
+    }
+
+    private fun packQueue(): List<QueueItem> {
+        val unified = mutableListOf<QueueItem>()
+
+        mUserQueue.forEach {
+            unified.add(QueueItem(songId = it.id, isUserQueue = true))
+        }
+
+        mQueue.forEach {
+            unified.add(QueueItem(songId = it.id, isUserQueue = false))
+        }
+
+        return unified
+    }
+
+    private fun unpackFromPlaybackState(playbackState: PlaybackState) {
+        val musicStore = MusicStore.getInstance()
+
+        // Turn the simplified information from PlaybackState into values that can be used
+        mSong = musicStore.songs.find { it.id == playbackState.songId }
+        mPosition = playbackState.position
+        mParent = musicStore.parents.find { it.id == playbackState.parentId }
+        mMode = PlaybackMode.fromConstant(playbackState.mode) ?: PlaybackMode.ALL_SONGS
+        mLoopMode = LoopMode.fromConstant(playbackState.loopMode) ?: LoopMode.NONE
+        mIsShuffling = playbackState.isShuffling
+        mIsInUserQueue = playbackState.inUserQueue
+
+        callbacks.forEach {
+            it.onSeekConfirm(mPosition)
+            it.onModeUpdate(mMode)
+            it.onRestoreFinish()
+        }
+    }
+
+    private fun unpackQueue(queueItems: List<QueueItem>) {
+        val musicStore = MusicStore.getInstance()
+
+        Log.d(this::class.simpleName, queueItems.size.toString())
+
+        for (item in queueItems) {
+            musicStore.songs.find { it.id == item.songId }?.let {
+                Log.d(this::class.simpleName, it.id.toString())
+
+                if (item.isUserQueue) {
+                    mUserQueue.add(it)
+                } else {
+                    mQueue.add(it)
+                }
+            }
+        }
+
+        forceQueueUpdate()
+        forceUserQueueUpdate()
+    }
+
     // --- ORDERING FUNCTIONS ---
+
+    private fun setupOrderedQueue() {
+        mQueue = when (mMode) {
+            PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
+            PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
+            PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
+            PlaybackMode.ALL_SONGS -> MusicStore.getInstance().songs.toMutableList()
+        }
+    }
 
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
         return album.songs.sortedBy { it.track }.toMutableList()
@@ -448,138 +597,6 @@ class PlaybackStateManager private constructor() {
         }
 
         return final
-    }
-
-    // --- PERSISTENCE FUNCTIONS ---
-    // TODO: Persist queue edits?
-    // FIXME: Shuffling w/o knowing the original queue edit from keepSong will cause issues
-
-    suspend fun saveStateToDatabase(context: Context) {
-        Log.d(this::class.simpleName, "Saving state to DB.")
-
-        withContext(Dispatchers.IO) {
-            val playbackState = packToPlaybackState()
-
-            val database = PlaybackStateDatabase.getInstance(context)
-            database.playbackStateDAO.clear()
-            database.playbackStateDAO.insert(playbackState)
-        }
-    }
-
-    suspend fun getStateFromDatabase(context: Context) {
-        Log.d(this::class.simpleName, "Getting state from DB.")
-
-        val states = withContext(Dispatchers.IO) {
-            val database = PlaybackStateDatabase.getInstance(context)
-            val states = database.playbackStateDAO.getAll()
-
-            database.playbackStateDAO.clear()
-
-            return@withContext states
-        }
-
-        if (states.isEmpty()) {
-            Log.d(this::class.simpleName, "Nothing here. Not restoring.")
-
-            mIsRestored = true
-
-            return
-        }
-
-        Log.d(this::class.simpleName, "Old state found, ${states[0]}")
-
-        unpackFromPlaybackState(states[0])
-
-        mIsRestored = true
-    }
-
-    private fun packToPlaybackState(): PlaybackState {
-        val songId = mSong?.id ?: -1L
-        val parentId = mParent?.id ?: -1L
-        val userQueueString = QueueConverter.fromQueue(
-            mutableListOf<Long>().apply {
-                mUserQueue.forEach {
-                    this.add(it.id)
-                }
-            }
-        )
-        val intMode = mMode.toConstant()
-        val intLoopMode = mLoopMode.toConstant()
-
-        return PlaybackState(
-            songId = songId,
-            position = mPosition,
-            parentId = parentId,
-            userQueueIds = userQueueString,
-            index = mIndex,
-            mode = intMode,
-            isShuffling = mIsShuffling,
-            shuffleSeed = mShuffleSeed,
-            loopMode = intLoopMode,
-            inUserQueue = mIsInUserQueue
-        )
-    }
-
-    private fun unpackFromPlaybackState(playbackState: PlaybackState) {
-        val musicStore = MusicStore.getInstance()
-
-        // Turn the simplified information from PlaybackState into values that can be used
-        mSong = musicStore.songs.find { it.id == playbackState.songId }
-        mPosition = playbackState.position
-        mParent = musicStore.parents.find { it.id == playbackState.parentId }
-        mUserQueue = QueueConverter.fromString(playbackState.userQueueIds)
-        mMode = PlaybackMode.fromConstant(playbackState.mode) ?: PlaybackMode.ALL_SONGS
-        mLoopMode = LoopMode.fromConstant(playbackState.loopMode) ?: LoopMode.NONE
-        mIsShuffling = playbackState.isShuffling
-        mShuffleSeed = playbackState.shuffleSeed
-        mIsInUserQueue = playbackState.inUserQueue
-
-        // If the parent was somehow dropped during saving, attempt to restore it.
-        mSong?.let {
-            if (mParent == null && mMode != PlaybackMode.ALL_SONGS) {
-                Log.d(
-                    this::class.simpleName,
-                    "Parent was corrupted while in mode $mMode. Attempting to restore."
-                )
-                mParent = when (mMode) {
-                    PlaybackMode.IN_ARTIST -> it.album.artist
-                    PlaybackMode.IN_ALBUM -> it.album
-                    else -> {
-                        // If that fails, then just put the mode into all songs.
-                        mMode = PlaybackMode.ALL_SONGS
-                        null
-                    }
-                }
-            }
-        }
-
-        if (mIsShuffling) {
-            mQueue = when (mMode) {
-                PlaybackMode.IN_ARTIST -> (mParent as Artist).songs
-                PlaybackMode.IN_ALBUM -> (mParent as Album).songs
-                PlaybackMode.IN_GENRE -> (mParent as Genre).songs
-                PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
-            }
-
-            mQueue.shuffle(Random(mShuffleSeed))
-
-            forceQueueUpdate()
-        } else {
-            mQueue = when (mMode) {
-                PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
-                PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
-                PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
-                PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
-            }
-        }
-
-        mIndex = playbackState.index
-
-        callbacks.forEach {
-            it.onSeekConfirm(mPosition)
-            it.onModeUpdate(mMode)
-            it.onRestoreFinish()
-        }
     }
 
     /**

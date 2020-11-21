@@ -14,6 +14,7 @@
         android:theme="@style/Theme.Base">
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleInstance"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:windowSoftInputMode="adjustPan">

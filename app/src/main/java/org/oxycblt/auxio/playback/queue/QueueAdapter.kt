@@ -47,7 +47,7 @@ class QueueAdapter(
             QUEUE_ITEM_TYPE -> ViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
-            else -> error("Someone messed with the ViewHolder item types. Tell OxygenCobalt.")
+            else -> error("Someone messed with the ViewHolder item types.")
         }
     }
 
@@ -57,7 +57,7 @@ class QueueAdapter(
             is Header -> (holder as HeaderViewHolder).bind(item)
 
             else -> {
-                Log.d(this::class.simpleName, "Bad data fed to QueueAdapter.")
+                Log.e(this::class.simpleName, "Bad data fed to QueueAdapter.")
             }
         }
     }
@@ -88,6 +88,7 @@ class QueueAdapter(
         if (data[data.lastIndex] is Header) {
             val lastIndex = data.lastIndex
 
+            // TODO: Do notifyItemRangeRemoved instead of notifyItemRemoved
             data.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         } else if (data.lastIndex >= 1 && data[0] is Header && data[1] is Header) {
