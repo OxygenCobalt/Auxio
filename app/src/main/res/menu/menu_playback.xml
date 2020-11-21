@@ -5,5 +5,5 @@
         android:id="@+id/action_queue"
         android:icon="@drawable/ic_queue"
         android:title="@string/label_queue"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

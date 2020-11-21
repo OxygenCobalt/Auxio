@@ -22,7 +22,7 @@ class LibraryViewModel : ViewModel() {
     val searchHasFocus: Boolean get() = mSearchHasFocus
 
     // TODO: Move these to prefs when they're added
-    private val mShowMode = MutableLiveData(ShowMode.SHOW_ARTISTS)
+    private val mShowMode = MutableLiveData(ShowMode.SHOW_GENRES)
     val showMode: LiveData<ShowMode> get() = mShowMode
 
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)

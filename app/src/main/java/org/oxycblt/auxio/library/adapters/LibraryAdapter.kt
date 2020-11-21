@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.library.adapters
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
@@ -11,12 +12,11 @@ import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
 
-// A ListAdapter that can contain three different types of ViewHolders depending
-// the ShowMode given.
-// It cannot display multiple ViewHolders *at once* however. That's what SearchAdapter is for.
+// The primary RecyclerView adapter for the library. Displays genres, artists, and albums.
 class LibraryAdapter(
     private val showMode: ShowMode,
-    private val doOnClick: (data: BaseModel) -> Unit
+    private val doOnClick: (data: BaseModel) -> Unit,
+    private val doOnLongClick: (data: BaseModel, view: View) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data: List<BaseModel>
@@ -37,10 +37,11 @@ class LibraryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         // Return a different View Holder depending on the show type
         return when (showMode) {
-            ShowMode.SHOW_GENRES -> GenreViewHolder.from(parent.context, doOnClick)
-            ShowMode.SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, doOnClick)
-            ShowMode.SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, doOnClick)
-            else -> ArtistViewHolder.from(parent.context, doOnClick)
+            ShowMode.SHOW_GENRES -> GenreViewHolder.from(parent.context, doOnClick, doOnLongClick)
+            ShowMode.SHOW_ARTISTS -> ArtistViewHolder.from(parent.context, doOnClick, doOnLongClick)
+            ShowMode.SHOW_ALBUMS -> AlbumViewHolder.from(parent.context, doOnClick, doOnLongClick)
+
+            else -> error("Bad ShowMode given.")
         }
     }
 

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -15,11 +16,11 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.setupArtistActions
 
 class GenreDetailFragment : DetailFragment() {
 
     private val args: GenreDetailFragmentArgs by navArgs()
-    private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -41,15 +42,22 @@ class GenreDetailFragment : DetailFragment() {
             )
         }
 
-        val artistAdapter = DetailArtistAdapter {
-            if (!detailModel.isNavigating) {
-                detailModel.updateNavigationStatus(true)
+        val artistAdapter = DetailArtistAdapter(
+            doOnClick = {
+                if (!detailModel.isNavigating) {
+                    detailModel.updateNavigationStatus(true)
 
-                findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowArtist(it.id)
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowArtist(it.id)
+                    )
+                }
+            },
+            doOnLongClick = { data, view ->
+                PopupMenu(requireContext(), view).setupArtistActions(
+                    data, requireContext(), playbackModel
                 )
             }
-        }
+        )
 
         // --- UI SETUP ---
 
@@ -105,11 +113,5 @@ class GenreDetailFragment : DetailFragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        detailModel.updateNavigationStatus(false)
     }
 }

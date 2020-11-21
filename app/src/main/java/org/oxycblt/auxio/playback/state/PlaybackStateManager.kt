@@ -141,7 +141,8 @@ class PlaybackStateManager private constructor() {
                 mQueue = song.album.songs
             }
 
-            else -> {}
+            else -> {
+            }
         }
 
         mMode = mode
@@ -254,7 +255,6 @@ class PlaybackStateManager private constructor() {
             }
 
             updatePlayback(mQueue[mIndex])
-
             forceQueueUpdate()
         }
     }
@@ -300,6 +300,12 @@ class PlaybackStateManager private constructor() {
 
     fun addToUserQueue(song: Song) {
         mUserQueue.add(song)
+
+        forceUserQueueUpdate()
+    }
+
+    fun addToUserQueue(songs: List<Song>) {
+        mUserQueue.addAll(songs)
 
         forceUserQueueUpdate()
     }
@@ -426,8 +432,6 @@ class PlaybackStateManager private constructor() {
 
         val start = System.currentTimeMillis()
 
-        Log.d(this::class.simpleName, packQueue().size.toString())
-
         withContext(Dispatchers.IO) {
             val playbackState = packToPlaybackState()
             val queueItems = packQueue()
@@ -450,13 +454,16 @@ class PlaybackStateManager private constructor() {
 
         val start = System.currentTimeMillis()
 
-        val states: List<PlaybackState>
+        val state: PlaybackState?
         val queueItems: List<QueueItem>
+        val userQueueItems: List<QueueItem>
 
         withContext(Dispatchers.IO) {
             val database = AuxioDatabase.getInstance(context)
-            states = database.playbackStateDAO.getAll()
-            queueItems = database.queueDAO.getAll()
+
+            state = database.playbackStateDAO.getRecent()
+            queueItems = database.queueDAO.getQueue()
+            userQueueItems = database.queueDAO.getUserQueue()
 
             database.playbackStateDAO.clear()
             database.queueDAO.clear()
@@ -466,7 +473,7 @@ class PlaybackStateManager private constructor() {
 
         Log.d(this::class.simpleName, "Load finished in ${loadTime}ms")
 
-        if (states.isEmpty()) {
+        if (state == null) {
             Log.d(this::class.simpleName, "Nothing here. Not restoring.")
 
             mIsRestored = true
@@ -474,13 +481,13 @@ class PlaybackStateManager private constructor() {
             return
         }
 
-        Log.d(this::class.simpleName, "Old state found, ${states[0]}")
+        Log.d(this::class.simpleName, "Old state found, $state")
 
-        unpackFromPlaybackState(states[0])
+        unpackFromPlaybackState(state)
 
         Log.d(this::class.simpleName, "Found queue of size ${queueItems.size}")
 
-        unpackQueue(queueItems)
+        unpackQueues(queueItems, userQueueItems)
 
         mSong?.let {
             mIndex = mQueue.indexOf(mSong)
@@ -543,18 +550,22 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    private fun unpackQueue(queueItems: List<QueueItem>) {
+    private fun unpackQueues(queueItems: List<QueueItem>, userQueueItems: List<QueueItem>) {
         val musicStore = MusicStore.getInstance()
 
         queueItems.forEach { item ->
             // Traverse albums and then album songs instead of just the songs, as its faster.
-            musicStore.albums.find { it.id == item.albumId }?.songs?.find { it.id == item.songId }?.let {
-                if (item.isUserQueue) {
-                    mUserQueue.add(it)
-                } else {
+            musicStore.albums.find { it.id == item.albumId }
+                ?.songs?.find { it.id == item.songId }?.let {
                     mQueue.add(it)
                 }
-            }
+        }
+
+        userQueueItems.forEach { item ->
+            musicStore.albums.find { it.id == item.albumId }
+                ?.songs?.find { it.id == item.songId }?.let {
+                    mUserQueue.add(it)
+                }
         }
 
         forceQueueUpdate()

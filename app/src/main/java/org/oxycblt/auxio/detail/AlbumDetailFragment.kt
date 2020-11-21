@@ -22,7 +22,6 @@ import org.oxycblt.auxio.ui.setupAlbumSongActions
 class AlbumDetailFragment : DetailFragment() {
 
     private val args: AlbumDetailFragmentArgs by navArgs()
-    private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -45,10 +44,8 @@ class AlbumDetailFragment : DetailFragment() {
         }
 
         val songAdapter = DetailSongAdapter(
-            {
-                playbackModel.playSong(it, PlaybackMode.IN_ALBUM)
-            },
-            { data, view ->
+            doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
+            doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupAlbumSongActions(
                     data, requireContext(), detailModel, playbackModel
                 )
@@ -75,6 +72,10 @@ class AlbumDetailFragment : DetailFragment() {
                     )
                     R.id.action_play -> playbackModel.playAlbum(
                         detailModel.currentAlbum.value!!, false
+                    )
+
+                    R.id.action_queue_add -> playbackModel.addToUserQueue(
+                        detailModel.currentAlbum.value!!.songs
                     )
                 }
 

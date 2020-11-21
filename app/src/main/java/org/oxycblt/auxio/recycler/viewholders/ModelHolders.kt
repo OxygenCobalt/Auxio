@@ -19,8 +19,9 @@ import org.oxycblt.auxio.music.Song
 
 class GenreViewHolder private constructor(
     private val binding: ItemGenreBinding,
-    doOnClick: (Genre) -> Unit
-) : BaseViewHolder<Genre>(binding, doOnClick, null) {
+    doOnClick: (Genre) -> Unit,
+    doOnLongClick: (data: Genre, view: View) -> Unit
+) : BaseViewHolder<Genre>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Genre) {
         binding.genre = data
@@ -30,10 +31,14 @@ class GenreViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA010
 
-        fun from(context: Context, doOnClick: (Genre) -> Unit): GenreViewHolder {
+        fun from(
+            context: Context,
+            doOnClick: (Genre) -> Unit,
+            doOnLongClick: (data: Genre, view: View) -> Unit
+        ): GenreViewHolder {
             return GenreViewHolder(
                 ItemGenreBinding.inflate(LayoutInflater.from(context)),
-                doOnClick
+                doOnClick, doOnLongClick
             )
         }
     }
@@ -42,7 +47,8 @@ class GenreViewHolder private constructor(
 class ArtistViewHolder private constructor(
     private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
-) : BaseViewHolder<Artist>(binding, doOnClick, null) {
+    doOnLongClick: (data: Artist, view: View) -> Unit
+) : BaseViewHolder<Artist>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Artist) {
         binding.artist = data
@@ -52,10 +58,14 @@ class ArtistViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA011
 
-        fun from(context: Context, doOnClick: (Artist) -> Unit): ArtistViewHolder {
+        fun from(
+            context: Context,
+            doOnClick: (Artist) -> Unit,
+            doOnLongClick: (data: Artist, view: View) -> Unit
+        ): ArtistViewHolder {
             return ArtistViewHolder(
                 ItemArtistBinding.inflate(LayoutInflater.from(context)),
-                doOnClick
+                doOnClick, doOnLongClick
             )
         }
     }
@@ -63,8 +73,9 @@ class ArtistViewHolder private constructor(
 
 class AlbumViewHolder private constructor(
     private val binding: ItemAlbumBinding,
-    doOnClick: (data: Album) -> Unit
-) : BaseViewHolder<Album>(binding, doOnClick, null) {
+    doOnClick: (data: Album) -> Unit,
+    doOnLongClick: (data: Album, view: View) -> Unit
+) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Album) {
         binding.album = data
@@ -74,10 +85,14 @@ class AlbumViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA012
 
-        fun from(context: Context, doOnClick: (data: Album) -> Unit): AlbumViewHolder {
+        fun from(
+            context: Context,
+            doOnClick: (data: Album) -> Unit,
+            doOnLongClick: (data: Album, view: View) -> Unit
+        ): AlbumViewHolder {
             return AlbumViewHolder(
                 ItemAlbumBinding.inflate(LayoutInflater.from(context)),
-                doOnClick,
+                doOnClick, doOnLongClick
             )
         }
     }

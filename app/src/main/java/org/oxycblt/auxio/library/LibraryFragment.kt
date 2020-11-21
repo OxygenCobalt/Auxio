@@ -30,6 +30,9 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.resolveAttr
+import org.oxycblt.auxio.ui.setupAlbumActions
+import org.oxycblt.auxio.ui.setupArtistActions
+import org.oxycblt.auxio.ui.setupGenreActions
 import org.oxycblt.auxio.ui.setupSongActions
 
 // A Fragment to show all the music in the Library.
@@ -47,21 +50,15 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         val musicStore = MusicStore.getInstance()
 
-        val libraryAdapter = LibraryAdapter(libraryModel.showMode.value!!) {
-            navToItem(it)
-        }
+        val libraryAdapter = LibraryAdapter(
+            libraryModel.showMode.value!!,
+            doOnClick = { navToItem(it) },
+            doOnLongClick = { data, view -> showActionsForItem(data, view) }
+        )
 
         val searchAdapter = SearchAdapter(
-            {
-                navToItem(it)
-            },
-            { data, view ->
-                if (data is Song) {
-                    PopupMenu(requireContext(), view).setupSongActions(
-                        data, requireContext(), playbackModel
-                    )
-                }
-            }
+            doOnClick = { navToItem(it) },
+            doOnLongClick = { data, view -> showActionsForItem(data, view) }
         )
 
         // --- UI SETUP ---
@@ -173,6 +170,19 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         libraryModel.updateSearchQuery(query, requireContext())
 
         return false
+    }
+
+    private fun showActionsForItem(data: BaseModel, view: View) {
+        val menu = PopupMenu(requireContext(), view)
+        when (data) {
+            is Song -> menu.setupSongActions(data, requireContext(), playbackModel)
+            is Album -> menu.setupAlbumActions(data, requireContext(), playbackModel)
+            is Artist -> menu.setupArtistActions(data, requireContext(), playbackModel)
+            is Genre -> menu.setupGenreActions(data, requireContext(), playbackModel)
+
+            else -> {
+            }
+        }
     }
 
     private fun navToItem(baseModel: BaseModel) {

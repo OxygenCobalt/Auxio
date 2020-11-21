@@ -226,6 +226,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.addToUserQueue(song)
     }
 
+    fun addToUserQueue(songs: List<Song>) {
+        playbackManager.addToUserQueue(songs)
+    }
+
     // --- STATUS FUNCTIONS ---
 
     // Flip the playing status.

@@ -86,7 +86,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         // Make marquee scroll work
         // TODO: Add nav here as well
         binding.playbackSong.isSelected = true
-
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
@@ -127,6 +126,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             } else {
                 binding.playbackShuffle.imageTintList = controlColor
             }
+
+            Log.d(this::class.simpleName, "Shuffle swap")
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) {

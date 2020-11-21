@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -64,8 +67,8 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
-                doUserQueueAdd(context, song, playbackModel)
-
+                playbackModel.addToUserQueue(song)
+                context.getString(R.string.label_queue_added).createToast(context)
                 true
             }
 
@@ -95,7 +98,8 @@ fun PopupMenu.setupAlbumSongActions(
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
-                doUserQueueAdd(context, song, playbackModel)
+                playbackModel.addToUserQueue(song)
+                context.getString(R.string.label_queue_added).createToast(context)
 
                 true
             }
@@ -116,12 +120,95 @@ fun PopupMenu.setupAlbumSongActions(
     show()
 }
 
-private fun doUserQueueAdd(context: Context, song: Song, playbackModel: PlaybackViewModel) {
-    // If the song was already added to the user queue, then don't add it again.
-    // This is just to prevent a bug with DiffCallback that creates strange
-    // behavior when duplicate user queue items are added.
-    // FIXME: Fix the duplicate item DiffCallback issue
-    playbackModel.addToUserQueue(song)
+fun PopupMenu.setupAlbumActions(
+    album: Album,
+    context: Context,
+    playbackModel: PlaybackViewModel
+) {
+    inflate(R.menu.menu_album_actions)
+    setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(album.songs)
+                context.getString(R.string.label_queue_added).createToast(context)
 
-    context.getString(R.string.label_queue_added).createToast(context)
+                true
+            }
+
+            R.id.action_play -> {
+                playbackModel.playAlbum(album, false)
+                true
+            }
+
+            R.id.action_shuffle -> {
+                playbackModel.playAlbum(album, true)
+                true
+            }
+
+            else -> false
+        }
+    }
+    show()
+}
+
+fun PopupMenu.setupArtistActions(
+    artist: Artist,
+    context: Context,
+    playbackModel: PlaybackViewModel
+) {
+    inflate(R.menu.menu_detail)
+    setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(artist.songs)
+                context.getString(R.string.label_queue_added).createToast(context)
+
+                true
+            }
+
+            R.id.action_play -> {
+                playbackModel.playArtist(artist, false)
+                true
+            }
+
+            R.id.action_shuffle -> {
+                playbackModel.playArtist(artist, true)
+                true
+            }
+
+            else -> false
+        }
+    }
+    show()
+}
+
+fun PopupMenu.setupGenreActions(
+    genre: Genre,
+    context: Context,
+    playbackModel: PlaybackViewModel
+) {
+    inflate(R.menu.menu_detail)
+    setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(genre.songs)
+                context.getString(R.string.label_queue_added).createToast(context)
+
+                true
+            }
+
+            R.id.action_play -> {
+                playbackModel.playGenre(genre, false)
+                true
+            }
+
+            R.id.action_shuffle -> {
+                playbackModel.playGenre(genre, true)
+                true
+            }
+
+            else -> false
+        }
+    }
+    show()
 }

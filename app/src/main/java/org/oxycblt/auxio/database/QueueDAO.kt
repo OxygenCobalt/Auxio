@@ -18,8 +18,11 @@ interface QueueDAO {
         }
     }
 
-    @Query("SELECT * FROM queue_table")
-    fun getAll(): List<QueueItem>
+    @Query("SELECT * FROM queue_table WHERE is_user_queue == 1")
+    fun getUserQueue(): List<QueueItem>
+
+    @Query("SELECT * FROM queue_table WHERE is_user_queue == 0")
+    fun getQueue(): List<QueueItem>
 
     @Query("DELETE FROM queue_table")
     fun clear()

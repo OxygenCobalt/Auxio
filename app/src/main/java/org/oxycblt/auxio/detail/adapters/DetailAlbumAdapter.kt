@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.detail.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
@@ -9,7 +10,8 @@ import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
 class DetailAlbumAdapter(
-    private val doOnClick: (data: Album) -> Unit
+    private val doOnClick: (data: Album) -> Unit,
+    private val doOnLongClick: (data: Album, view: View) -> Unit
 ) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,7 +27,7 @@ class DetailAlbumAdapter(
     // Generic ViewHolder for a detail album
     inner class ViewHolder(
         private val binding: ItemArtistAlbumBinding,
-    ) : BaseViewHolder<Album>(binding, doOnClick, null) {
+    ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 
         override fun onBind(data: Album) {
             binding.album = data

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_play"
+        android:title="@string/label_play"
+        android:icon="@drawable/ic_play"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_shuffle"
+        android:icon="@drawable/ic_shuffle"
+        android:title="@string/label_shuffle"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_queue_add"
+        android:icon="@drawable/ic_queue_add"
+        app:showAsAction="never"
+        android:title="@string/label_queue_add" />
+</menu>

@@ -34,14 +34,22 @@ class SearchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(parent.context, doOnClick)
-            ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(parent.context, doOnClick)
-            AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(parent.context, doOnClick)
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
-                parent.context,
-                doOnClick,
-                doOnLongClick
+            GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(
+                parent.context, doOnClick, doOnLongClick
             )
+
+            ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(
+                parent.context, doOnClick, doOnLongClick
+            )
+
+            AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(
+                parent.context, doOnClick, doOnLongClick
+            )
+
+            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
+                parent.context, doOnClick, doOnLongClick
+            )
+
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
             else -> error("Someone messed with the ViewHolder item types.")

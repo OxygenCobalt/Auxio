@@ -28,6 +28,7 @@
     <string name="label_play_artist">Play from artist</string>
     <string name="label_play_album">Play from album</string>
     <string name="label_go_artist">Go to artist</string>
+    <string name="label_go_album">Go to album</string>
     <string name="label_queue">Queue</string>
     <string name="label_queue_add">Add to queue</string>
     <string name="label_queue_added">Added to queue</string>

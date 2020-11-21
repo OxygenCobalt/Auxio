@@ -43,10 +43,8 @@ class SongsFragment : Fragment() {
         binding.songRecycler.apply {
             adapter = SongAdapter(
                 musicStore.songs,
-                {
-                    playbackModel.playSong(it, PlaybackMode.ALL_SONGS)
-                },
-                { data, view ->
+                doOnClick = { playbackModel.playSong(it, PlaybackMode.ALL_SONGS) },
+                doOnLongClick = { data, view ->
                     PopupMenu(requireContext(), view).setupSongActions(
                         data, requireContext(), playbackModel
                     )
