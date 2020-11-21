@@ -45,7 +45,6 @@ data class Song(
  * @property year     The year this album was released. 0 if there is none in the metadata.
  * @property artist   The Album's parent [Artist]. use this instead of [artistId]
  * @property songs    The Album's child [Song]s.
- * @property numSongs The amount of songs in an Album.
  * @property totalDuration The combined duration of all of the album's child songs, formatted.
  * @author OxygenCobalt
  */
@@ -59,7 +58,6 @@ data class Album(
     lateinit var artist: Artist
 
     val songs = mutableListOf<Song>()
-    val numSongs: Int get() = songs.size
     val totalDuration: String by lazy {
         var seconds: Long = 0
         songs.forEach {
@@ -80,15 +78,7 @@ data class Artist(
     val albums = mutableListOf<Album>()
     val genres = mutableListOf<Genre>()
 
-    val numAlbums: Int get() = albums.size
-    val numSongs: Int by lazy {
-        var num = 0
-        albums.forEach {
-            num += it.numSongs
-        }
-        num
-    }
-    val songs: MutableList<Song> by lazy {
+    val songs: List<Song> by lazy {
         val songs = mutableListOf<Song>()
         albums.forEach {
             songs.addAll(it.songs)
@@ -109,22 +99,14 @@ data class Genre(
 ) : BaseModel() {
     val artists = mutableListOf<Artist>()
 
-    val numArtists: Int get() = artists.size
-    val numAlbums: Int by lazy {
-        var num = 0
+    val albums: List<Album> by lazy {
+        val albums = mutableListOf<Album>()
         artists.forEach {
-            num += it.numAlbums
+            albums.addAll(it.albums)
         }
-        num
+        albums
     }
-    val numSongs: Int by lazy {
-        var num = 0
-        artists.forEach {
-            num += it.numSongs
-        }
-        num
-    }
-    val songs: MutableList<Song> by lazy {
+    val songs: List<Song> by lazy {
         val songs = mutableListOf<Song>()
         artists.forEach {
             songs.addAll(it.songs)

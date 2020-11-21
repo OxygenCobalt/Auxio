@@ -59,9 +59,9 @@ class MainFragment : Fragment() {
         )
 
         val navController = (
-                childFragmentManager.findFragmentById(R.id.explore_nav_host)
-                        as NavHostFragment?
-                )?.findNavController()
+            childFragmentManager.findFragmentById(R.id.explore_nav_host)
+                as NavHostFragment?
+            )?.findNavController()
 
         // --- UI SETUP ---
 

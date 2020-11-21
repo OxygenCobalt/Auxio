@@ -34,7 +34,7 @@
             app:menu="@menu/menu_album_actions"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:navigationIcon="@drawable/ic_back"
-            app:title="@string/title_library_fragment" />
+            app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nested_scroll"

@@ -35,7 +35,7 @@
             app:navigationIcon="@drawable/ic_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/title_playback"
+            app:title="@string/label_playback"
             app:menu="@menu/menu_playback"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
 

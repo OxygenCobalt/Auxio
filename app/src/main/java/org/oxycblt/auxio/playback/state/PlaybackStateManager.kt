@@ -133,7 +133,7 @@ class PlaybackStateManager private constructor() {
 
             PlaybackMode.IN_ARTIST -> {
                 mParent = song.album.artist
-                mQueue = song.album.artist.songs
+                mQueue = song.album.artist.songs.toMutableList()
             }
 
             PlaybackMode.IN_ALBUM -> {
@@ -425,7 +425,7 @@ class PlaybackStateManager private constructor() {
     }
 
     // --- PERSISTENCE FUNCTIONS ---
-    // TODO: Implement a fast queue save function that can be enabled in settings
+    // TODO: Implement a fast queue save function
 
     suspend fun saveStateToDatabase(context: Context) {
         Log.d(this::class.simpleName, "Saving state to DB.")
@@ -557,15 +557,15 @@ class PlaybackStateManager private constructor() {
             // Traverse albums and then album songs instead of just the songs, as its faster.
             musicStore.albums.find { it.id == item.albumId }
                 ?.songs?.find { it.id == item.songId }?.let {
-                    mQueue.add(it)
-                }
+                mQueue.add(it)
+            }
         }
 
         userQueueItems.forEach { item ->
             musicStore.albums.find { it.id == item.albumId }
                 ?.songs?.find { it.id == item.songId }?.let {
-                    mUserQueue.add(it)
-                }
+                mUserQueue.add(it)
+            }
         }
 
         forceQueueUpdate()

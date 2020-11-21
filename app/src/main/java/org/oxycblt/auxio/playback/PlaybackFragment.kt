@@ -158,7 +158,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        // Updates for the current duration TextView/Seekbar
+        // Updates for the current duration TextView/SeekBar
         playbackModel.formattedPosition.observe(viewLifecycleOwner) {
             binding.playbackDurationCurrent.text = it
         }

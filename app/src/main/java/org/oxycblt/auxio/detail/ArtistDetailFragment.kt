@@ -86,7 +86,7 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         // Disable the sort button if there is only one album [Or less]
-        if (detailModel.currentArtist.value!!.numAlbums < 2) {
+        if (detailModel.currentArtist.value!!.albums.size < 2) {
             binding.artistSortButton.disable(requireContext())
         }
 

@@ -34,7 +34,7 @@
             app:menu="@menu/menu_detail"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:navigationIcon="@drawable/ic_back"
-            app:title="@string/title_library_fragment" />
+            app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{@plurals/format_song_count(genre.numSongs, genre.numSongs)}"
+                    android:text="@{@plurals/format_song_count(genre.songs.size, genre.songs.size)}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/genre_counts"
                     tools:text="80 Songs" />

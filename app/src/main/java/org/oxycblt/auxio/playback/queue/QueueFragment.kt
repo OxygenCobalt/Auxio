@@ -85,7 +85,7 @@ class QueueFragment : Fragment() {
                     name = getString(
                         R.string.format_next_from,
                         if (playbackModel.mode.value == PlaybackMode.ALL_SONGS)
-                            getString(R.string.title_all_songs)
+                            getString(R.string.label_all_songs)
                         else
                             playbackModel.parent.value!!.name
                     )

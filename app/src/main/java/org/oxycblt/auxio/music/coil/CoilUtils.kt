@@ -3,7 +3,6 @@ package org.oxycblt.auxio.music.coil
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
@@ -16,7 +15,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 // Get a bitmap for a song, onDone will be called when the bitmap is loaded.
-// Don't use this on UI elements, thats what the BindingAdapters are for.
+// Don't use this on UI elements, that's what the BindingAdapters are for.
 fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
     Coil.enqueue(
         ImageRequest.Builder(context)
@@ -57,7 +56,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
     val request: ImageRequest
 
     // If there is more than one album, then create a mosaic of them.
-    if (artist.numAlbums >= 4) {
+    if (artist.albums.size >= 4) {
         val uris = mutableListOf<Uri>()
 
         for (i in 0..3) {
@@ -93,10 +92,8 @@ fun ImageView.bindArtistImage(artist: Artist) {
 fun ImageView.bindGenreImage(genre: Genre) {
     val request: ImageRequest
 
-    if (genre.numArtists >= 4) {
+    if (genre.artists.size >= 4) {
         val uris = mutableListOf<Uri>()
-
-        Log.d(this::class.simpleName, genre.numAlbums.toString())
 
         // Get the Nth cover from each artist, if possible.
         for (i in 0..3) {

@@ -21,7 +21,7 @@ enum class MusicLoaderResponse {
 
 // Class that loads music from the FileSystem.
 // TODO: Add custom artist images from the filesystem
-// TODO: Move genre loading of songs [Loads would take longer though]
+// TODO: Move genre loading to songs [Loads would take longer though]
 class MusicLoader(
     private val resolver: ContentResolver,
 
@@ -219,7 +219,7 @@ class MusicLoader(
         }
 
         albums = albums.distinctBy {
-            it.name to it.artistId to it.year to it.numSongs
+            it.name to it.artistId to it.year
         }.toMutableList()
 
         Log.d(

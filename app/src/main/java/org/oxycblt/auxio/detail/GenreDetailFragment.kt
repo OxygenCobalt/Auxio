@@ -86,7 +86,7 @@ class GenreDetailFragment : DetailFragment() {
         }
 
         // Disable the sort button if there is only one artist [Or less]
-        if (detailModel.currentGenre.value!!.numArtists < 2) {
+        if (detailModel.currentGenre.value!!.artists.size < 2) {
             binding.genreSortButton.disable(requireContext())
         }
 

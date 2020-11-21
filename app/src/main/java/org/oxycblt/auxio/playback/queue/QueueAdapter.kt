@@ -80,20 +80,21 @@ class QueueAdapter(
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
-        notifyItemRemoved(adapterIndex)
-
         // Check for two things:
         // If the data from the next queue is now entirely empty [Signified by a header at the end]
         // Or if the data from the last queue is now entirely empty [Signified by there being 2 headers with no items in between]
         if (data[data.lastIndex] is Header) {
             val lastIndex = data.lastIndex
 
-            // TODO: Do notifyItemRangeRemoved instead of notifyItemRemoved
             data.removeAt(lastIndex)
-            notifyItemRemoved(lastIndex)
+
+            notifyItemRangeRemoved(lastIndex, 2)
         } else if (data.lastIndex >= 1 && data[0] is Header && data[1] is Header) {
             data.removeAt(0)
-            notifyItemRemoved(0)
+
+            notifyItemRangeRemoved(0, 2)
+        } else {
+            notifyItemRemoved(adapterIndex)
         }
     }
 

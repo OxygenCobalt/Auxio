@@ -43,7 +43,7 @@ fun ImageButton.disable(context: Context) {
 }
 
 fun String.createToast(context: Context) {
-    Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+    Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
 }
 
 // Apply a custom vertical divider

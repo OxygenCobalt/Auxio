@@ -4,21 +4,14 @@
     <dimen name="padding_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
-    <dimen name="padding_mid_large">24dp</dimen>
-    <dimen name="padding_large">32dp</dimen>
-    <dimen name="padding_huge">64dp</dimen>
 
     <!-- Margin namespace | Dimens for margin attributes -->
-    <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_mid_small">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_mid_large">24dp</dimen>
-    <dimen name="margin_large">32dp</dimen>
-    <dimen name="margin_huge">64dp</dimen>
 
     <!-- Height Namespace | Height for UI elements -->
-    <dimen name="height_tab_menu">40dp</dimen>
     <dimen name="height_compact_progress">2dp</dimen>
 
     <!-- Width Namespace | Width for UI elements -->

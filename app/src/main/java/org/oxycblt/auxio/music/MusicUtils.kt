@@ -92,10 +92,10 @@ fun Int.toYear(context: Context): String {
 @BindingAdapter("genreCounts")
 fun TextView.bindGenreCounts(genre: Genre) {
     val artists = context.resources.getQuantityString(
-        R.plurals.format_artist_count, genre.numArtists, genre.numArtists
+        R.plurals.format_artist_count, genre.artists.size, genre.artists.size
     )
     val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, genre.numAlbums, genre.numAlbums
+        R.plurals.format_album_count, genre.albums.size, genre.albums.size
     )
 
     text = context.getString(R.string.format_double_counts, artists, albums)
@@ -116,10 +116,10 @@ fun TextView.bindArtistGenre(artist: Artist) {
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
     val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, artist.numAlbums, artist.numAlbums
+        R.plurals.format_album_count, artist.albums.size, artist.albums.size
     )
     val songs = context.resources.getQuantityString(
-        R.plurals.format_song_count, artist.numSongs, artist.numSongs
+        R.plurals.format_song_count, artist.songs.size, artist.songs.size
     )
 
     text = context.getString(R.string.format_double_counts, albums, songs)
@@ -133,7 +133,7 @@ fun TextView.bindAllAlbumDetails(album: Album) {
         album.year.toYear(context),
         context.resources.getQuantityString(
             R.plurals.format_song_count,
-            album.numSongs, album.numSongs
+            album.songs.size, album.songs.size
         ),
         album.totalDuration
     )
@@ -147,7 +147,7 @@ fun TextView.bindAlbumInfo(album: Album) {
         album.artist.name,
         context.resources.getQuantityString(
             R.plurals.format_song_count,
-            album.numSongs, album.numSongs
+            album.songs.size, album.songs.size
         )
     )
 }

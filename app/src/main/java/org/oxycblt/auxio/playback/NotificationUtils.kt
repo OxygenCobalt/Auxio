@@ -57,8 +57,6 @@ fun NotificationManager.createMediaNotification(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    // TODO: Things that probably aren't possible but would be nice
-    //  - Playing intent takes you to PlaybackFragment instead of MainFragment
     return NotificationCompat.Builder(context, NotificationUtils.CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_song)
         .setStyle(
@@ -124,7 +122,7 @@ fun NotificationCompat.Builder.updateMode(context: Context) {
 
         // If playing from all songs, set the subtext as that, otherwise the currently played parent.
         if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
-            setSubText(context.getString(R.string.title_all_songs))
+            setSubText(context.getString(R.string.label_all_songs))
         } else {
             setSubText(playbackManager.parent!!.name)
         }

@@ -48,12 +48,13 @@
     </style>
 
     <!--
-    Fix to get QueueFragment to not overlap the Status Bar or Navigation Bar
+    Fix to get QueueFragment to not overlap the Status Bar or Navigation Bar [Currently unused but still here]
     https://stackoverflow.com/a/57790787/14143986
-    -->
+
     <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    -->
 </resources>

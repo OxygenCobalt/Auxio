@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/library_fragment"
-        android:title="@string/title_library_fragment"
+        android:title="@string/label_library"
         android:icon="@drawable/ic_library" />
     <item
         android:id="@+id/songs_fragment"

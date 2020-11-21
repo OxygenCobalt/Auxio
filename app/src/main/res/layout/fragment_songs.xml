@@ -18,7 +18,7 @@
             android:elevation="@dimen/elevation_normal"
             app:menu="@menu/menu_songs"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
-            app:title="@string/title_all_songs" />
+            app:title="@string/label_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"
