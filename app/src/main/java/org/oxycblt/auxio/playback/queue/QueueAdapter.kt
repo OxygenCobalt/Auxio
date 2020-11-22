@@ -98,6 +98,14 @@ class QueueAdapter(
         }
     }
 
+    fun clearUserQueue() {
+        val nextQueueHeaderIndex = data.indexOfLast { it is Header }
+        val slice = data.slice(0 until nextQueueHeaderIndex)
+
+        data.removeAll(slice)
+        notifyItemRangeRemoved(0, slice.size)
+    }
+
     // Generic ViewHolder for a queue item
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,

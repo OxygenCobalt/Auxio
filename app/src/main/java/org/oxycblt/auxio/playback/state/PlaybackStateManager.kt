@@ -337,6 +337,12 @@ class PlaybackStateManager private constructor() {
         forceUserQueueUpdate()
     }
 
+    fun clearUserQueue() {
+        mUserQueue.clear()
+
+        forceUserQueueUpdate()
+    }
+
     // Force any callbacks to update when the queue is changed.
     private fun forceQueueUpdate() {
         mQueue = mQueue

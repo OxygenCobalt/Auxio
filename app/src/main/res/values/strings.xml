@@ -25,6 +25,7 @@
     <string name="label_queue_add">Add to queue</string>
     <string name="label_queue_added">Added to queue</string>
     <string name="label_next_user_queue">Next in Queue</string>
+    <string name="label_clear_user_queue">Clear queue</string>
     <string name="label_channel">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
 

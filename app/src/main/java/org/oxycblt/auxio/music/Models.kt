@@ -120,6 +120,5 @@ data class Genre(
  */
 data class Header(
     override val id: Long = -1,
-    override var name: String = "",
-    val isAction: Boolean = false
+    override var name: String = ""
 ) : BaseModel()

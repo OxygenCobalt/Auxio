@@ -159,7 +159,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     // Remove a queue OR user queue item, given a QueueAdapter index.
-    fun removeQueueItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
+    fun removeQueueAdapterItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
         var index = adapterIndex.dec()
 
         // If the item is in the user queue, then remove it from there after accounting for the header.
@@ -182,7 +182,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     // Move queue OR user queue items, given QueueAdapter indices.
-    fun moveQueueItems(adapterFrom: Int, adapterTo: Int, queueAdapter: QueueAdapter): Boolean {
+    fun moveQueueAdapterItems(adapterFrom: Int, adapterTo: Int, queueAdapter: QueueAdapter): Boolean {
         var from = adapterFrom.dec()
         var to = adapterTo.dec()
 
@@ -228,6 +228,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     fun addToUserQueue(songs: List<Song>) {
         playbackManager.addToUserQueue(songs)
+    }
+
+    fun clearUserQueue() {
+        playbackManager.clearUserQueue()
     }
 
     // --- STATUS FUNCTIONS ---

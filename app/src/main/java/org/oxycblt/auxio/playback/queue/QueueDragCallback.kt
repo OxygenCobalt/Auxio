@@ -53,7 +53,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return playbackModel.moveQueueItems(
+        return playbackModel.moveQueueAdapterItems(
             viewHolder.adapterPosition,
             target.adapterPosition,
             queueAdapter
@@ -61,7 +61,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueItem(viewHolder.adapterPosition, queueAdapter)
+        playbackModel.removeQueueAdapterItem(viewHolder.adapterPosition, queueAdapter)
     }
 
     fun addQueueAdapter(adapter: QueueAdapter) {

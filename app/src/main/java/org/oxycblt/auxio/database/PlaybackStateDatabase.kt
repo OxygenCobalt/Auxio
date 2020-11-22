@@ -8,7 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
 /**
- * A bootstrapped SQLite database for managing the persistent playback state and queue.
+ * A SQLite database for managing the persistent playback state and queue.
+ * Yes, I know androidx has Room which supposedly makes database creation easier, but it also
+ * has a crippling bug where it will endlessly allocate rows even if you clear the entire db, so...
+ * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -64,6 +67,9 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
 
     // --- INTERFACE FUNCTIONS ---
 
+    /**
+     * Clear the previously written [PlaybackState] and write a new one.
+     */
     fun writeState(state: PlaybackState) {
         val database = writableDatabase
         database.beginTransaction()
@@ -102,6 +108,11 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
         }
     }
 
+    /**
+     * Read the stored [PlaybackState] from the database, if there is one.
+     * @return The stored [PlaybackState], null if there isnt one,.
+     * @author OxygenCobalt
+     */
     fun readState(): PlaybackState? {
         val database = writableDatabase
 
@@ -112,6 +123,7 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
             stateCursor = database.query(TABLE_NAME_STATE, null, null, null, null, null, null)
 
             stateCursor?.use { cursor ->
+                // Don't bother if the cursor [and therefore database] has nothing in it.
                 if (cursor.count == 0) return@use
 
                 val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_ID)
@@ -127,6 +139,7 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
                 val inUserQueueIndex =
                     cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IN_USER_QUEUE)
 
+                // If there is something in it, get the first item from it, ignoring anything else.
                 cursor.moveToFirst()
 
                 state = PlaybackState(
@@ -147,6 +160,11 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
         }
     }
 
+    /**
+     * Write a list of [QueueItem]s to the database, clearing the previous queue present.
+     * @param queue The list of [QueueItem]s to be written.
+     * @author OxygenCobalt
+     */
     fun writeQueue(queue: List<QueueItem>) {
         val database = readableDatabase
         database.beginTransaction()
@@ -196,6 +214,11 @@ class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAM
         }
     }
 
+    /**
+     * Read the database for any [QueueItem]s.
+     * @return A list of any stored [QueueItem]s.
+     * @author OxygenCobalt
+     */
     fun readQueue(): List<QueueItem> {
         val database = readableDatabase
 

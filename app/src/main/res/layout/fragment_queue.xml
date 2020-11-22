@@ -20,6 +20,8 @@
             android:clickable="true"
             android:focusable="true"
             android:elevation="@dimen/elevation_normal"
+            app:popupTheme="@style/Widget.CustomPopup"
+            app:menu="@menu/menu_queue"
             app:navigationIcon="@drawable/ic_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
