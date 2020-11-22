@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.database.AuxioDatabase
 import org.oxycblt.auxio.database.PlaybackState
+import org.oxycblt.auxio.database.PlaybackStateDatabase
 import org.oxycblt.auxio.database.QueueItem
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -436,12 +436,9 @@ class PlaybackStateManager private constructor() {
             val playbackState = packToPlaybackState()
             val queueItems = packQueue()
 
-            val database = AuxioDatabase.getInstance(context)
-            database.playbackStateDAO.clear()
-            database.queueDAO.clear()
-
-            database.playbackStateDAO.insert(playbackState)
-            database.queueDAO.insertAll(queueItems)
+            val database = PlaybackStateDatabase.getInstance(context)
+            database.writeState(playbackState)
+            database.writeQueue(queueItems)
         }
 
         val time = System.currentTimeMillis() - start
@@ -455,42 +452,24 @@ class PlaybackStateManager private constructor() {
         val start = System.currentTimeMillis()
 
         val state: PlaybackState?
-        val queueItems: List<QueueItem>
-        val userQueueItems: List<QueueItem>
 
-        withContext(Dispatchers.IO) {
-            val database = AuxioDatabase.getInstance(context)
+        val queueItems = withContext(Dispatchers.IO) {
+            val database = PlaybackStateDatabase.getInstance(context)
 
-            state = database.playbackStateDAO.getRecent()
-            queueItems = database.queueDAO.getQueue()
-            userQueueItems = database.queueDAO.getUserQueue()
-
-            database.playbackStateDAO.clear()
-            database.queueDAO.clear()
+            state = database.readState()
+            database.readQueue()
         }
 
         val loadTime = System.currentTimeMillis() - start
 
         Log.d(this::class.simpleName, "Load finished in ${loadTime}ms")
 
-        if (state == null) {
-            Log.d(this::class.simpleName, "Nothing here. Not restoring.")
+        state?.let {
+            Log.d(this::class.simpleName, "Valid playback state $it")
+            Log.d(this::class.simpleName, "Valid queue size ${queueItems.size}")
 
-            mIsRestored = true
-
-            return
-        }
-
-        Log.d(this::class.simpleName, "Old state found, $state")
-
-        unpackFromPlaybackState(state)
-
-        Log.d(this::class.simpleName, "Found queue of size ${queueItems.size}")
-
-        unpackQueues(queueItems, userQueueItems)
-
-        mSong?.let {
-            mIndex = mQueue.indexOf(mSong)
+            unpackFromPlaybackState(it)
+            unpackQueue(queueItems)
         }
 
         val time = System.currentTimeMillis() - start
@@ -510,8 +489,10 @@ class PlaybackStateManager private constructor() {
             songId = songId,
             position = mPosition,
             parentId = parentId,
+            index = mIndex,
             mode = intMode,
             isShuffling = mIsShuffling,
+            shuffleSeed = mShuffleSeed,
             loopMode = intLoopMode,
             inUserQueue = mIsInUserQueue
         )
@@ -520,12 +501,16 @@ class PlaybackStateManager private constructor() {
     private fun packQueue(): List<QueueItem> {
         val unified = mutableListOf<QueueItem>()
 
+        var queueItemId = 0L
+
         mUserQueue.forEach {
-            unified.add(QueueItem(songId = it.id, albumId = it.albumId, isUserQueue = true))
+            unified.add(QueueItem(queueItemId, it.id, it.albumId, true))
+            queueItemId++
         }
 
         mQueue.forEach {
-            unified.add(QueueItem(songId = it.id, albumId = it.albumId, isUserQueue = false))
+            unified.add(QueueItem(queueItemId, it.id, it.albumId, false))
+            queueItemId++
         }
 
         return unified
@@ -541,7 +526,9 @@ class PlaybackStateManager private constructor() {
         mMode = PlaybackMode.fromConstant(playbackState.mode) ?: PlaybackMode.ALL_SONGS
         mLoopMode = LoopMode.fromConstant(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
+        mShuffleSeed = playbackState.shuffleSeed
         mIsInUserQueue = playbackState.inUserQueue
+        mIndex = playbackState.index
 
         callbacks.forEach {
             it.onSeekConfirm(mPosition)
@@ -550,21 +537,26 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    private fun unpackQueues(queueItems: List<QueueItem>, userQueueItems: List<QueueItem>) {
+    private fun unpackQueue(queueItems: List<QueueItem>) {
         val musicStore = MusicStore.getInstance()
 
         queueItems.forEach { item ->
             // Traverse albums and then album songs instead of just the songs, as its faster.
             musicStore.albums.find { it.id == item.albumId }
                 ?.songs?.find { it.id == item.songId }?.let {
-                mQueue.add(it)
+                if (item.isUserQueue) {
+                    mUserQueue.add(it)
+                } else {
+                    mQueue.add(it)
+                }
             }
         }
 
-        userQueueItems.forEach { item ->
-            musicStore.albums.find { it.id == item.albumId }
-                ?.songs?.find { it.id == item.songId }?.let {
-                mUserQueue.add(it)
+        // Get a more accurate index [At least if were not in the user queue]
+        if (!mIsInUserQueue) {
+            mSong?.let {
+                val index = mQueue.indexOf(it)
+                mIndex = if (index != -1) index else mIndex
             }
         }
 

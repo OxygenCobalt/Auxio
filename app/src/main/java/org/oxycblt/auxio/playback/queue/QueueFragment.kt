@@ -75,7 +75,12 @@ class QueueFragment : Fragment() {
         val queue = mutableListOf<BaseModel>()
 
         if (playbackModel.userQueue.value!!.isNotEmpty()) {
-            queue.add(Header(name = getString(R.string.label_next_user_queue)))
+            queue.add(
+                Header(
+                    name = getString(R.string.label_next_user_queue),
+                    isAction = true
+                )
+            )
             queue.addAll(playbackModel.userQueue.value!!)
         }
 
@@ -88,7 +93,8 @@ class QueueFragment : Fragment() {
                             getString(R.string.label_all_songs)
                         else
                             playbackModel.parent.value!!.name
-                    )
+                    ),
+                    isAction = false
                 )
             )
             queue.addAll(playbackModel.nextItemsInQueue.value!!)

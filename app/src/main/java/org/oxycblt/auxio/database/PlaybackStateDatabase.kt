@@ -1,0 +1,261 @@
+package org.oxycblt.auxio.database
+
+import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+
+/**
+ * A bootstrapped SQLite database for managing the persistent playback state and queue.
+ */
+class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+    override fun onCreate(db: SQLiteDatabase) {
+        createTable(db, TABLE_NAME_STATE)
+        createTable(db, TABLE_NAME_QUEUE)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_STATE")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_QUEUE")
+
+        onCreate(db)
+    }
+
+    // --- DATABASE CONSTRUCTION FUNCTIONS ---
+
+    private fun createTable(database: SQLiteDatabase, tableName: String) {
+        val command = StringBuilder()
+        command.append("CREATE TABLE IF NOT EXISTS $tableName(")
+
+        if (tableName == TABLE_NAME_STATE) {
+            constructStateTable(command)
+        } else if (tableName == TABLE_NAME_QUEUE) {
+            constructQueueTable(command)
+        }
+
+        database.execSQL(command.toString())
+    }
+
+    private fun constructStateTable(command: StringBuilder): StringBuilder {
+        command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
+        command.append("${PlaybackState.COLUMN_SONG_ID} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_PARENT_ID} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
+        command.append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
+        command.append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
+        command.append("${PlaybackState.COLUMN_SHUFFLE_SEED} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
+        command.append("${PlaybackState.COLUMN_IN_USER_QUEUE} BOOLEAN NOT NULL)")
+
+        return command
+    }
+
+    private fun constructQueueTable(command: StringBuilder): StringBuilder {
+        command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
+        command.append("${QueueItem.COLUMN_SONG_ID} LONG NOT NULL,")
+        command.append("${QueueItem.COLUMN_ALBUM_ID} LONG NOT NULL,")
+        command.append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
+
+        return command
+    }
+
+    // --- INTERFACE FUNCTIONS ---
+
+    fun writeState(state: PlaybackState) {
+        val database = writableDatabase
+        database.beginTransaction()
+
+        try {
+            database.delete(TABLE_NAME_STATE, null, null)
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
+
+            Log.d(this::class.simpleName, "Successfully wiped previous state.")
+        }
+
+        try {
+            database.beginTransaction()
+
+            val stateData = ContentValues(10)
+
+            stateData.put(PlaybackState.COLUMN_ID, state.id)
+            stateData.put(PlaybackState.COLUMN_SONG_ID, state.songId)
+            stateData.put(PlaybackState.COLUMN_POSITION, state.position)
+            stateData.put(PlaybackState.COLUMN_PARENT_ID, state.parentId)
+            stateData.put(PlaybackState.COLUMN_INDEX, state.index)
+            stateData.put(PlaybackState.COLUMN_MODE, state.mode)
+            stateData.put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
+            stateData.put(PlaybackState.COLUMN_SHUFFLE_SEED, state.shuffleSeed)
+            stateData.put(PlaybackState.COLUMN_LOOP_MODE, state.loopMode)
+            stateData.put(PlaybackState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
+
+            database.insert(TABLE_NAME_STATE, null, stateData)
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
+
+            Log.d(this::class.simpleName, "Wrote state to database.")
+        }
+    }
+
+    fun readState(): PlaybackState? {
+        val database = writableDatabase
+
+        var state: PlaybackState? = null
+        var stateCursor: Cursor? = null
+
+        try {
+            stateCursor = database.query(TABLE_NAME_STATE, null, null, null, null, null, null)
+
+            stateCursor?.use { cursor ->
+                if (cursor.count == 0) return@use
+
+                val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_ID)
+                val positionIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
+                val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_ID)
+                val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
+                val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
+                val isShufflingIndex =
+                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IS_SHUFFLING)
+                val shuffleSeedIndex =
+                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SHUFFLE_SEED)
+                val loopModeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_LOOP_MODE)
+                val inUserQueueIndex =
+                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IN_USER_QUEUE)
+
+                cursor.moveToFirst()
+
+                state = PlaybackState(
+                    songId = cursor.getLong(songIndex),
+                    position = cursor.getLong(positionIndex),
+                    parentId = cursor.getLong(parentIndex),
+                    index = cursor.getInt(indexIndex),
+                    mode = cursor.getInt(modeIndex),
+                    isShuffling = cursor.getInt(isShufflingIndex) == 1,
+                    shuffleSeed = cursor.getLong(shuffleSeedIndex),
+                    loopMode = cursor.getInt(loopModeIndex),
+                    inUserQueue = cursor.getInt(inUserQueueIndex) == 1
+                )
+            }
+        } finally {
+            stateCursor?.close()
+            return state
+        }
+    }
+
+    fun writeQueue(queue: List<QueueItem>) {
+        val database = readableDatabase
+        database.beginTransaction()
+
+        try {
+            database.delete(TABLE_NAME_QUEUE, null, null)
+            database.setTransactionSuccessful()
+        } finally {
+            database.endTransaction()
+
+            Log.d(this::class.simpleName, "Successfully wiped queue.")
+        }
+
+        Log.d(this::class.simpleName, "Writing to queue.")
+
+        var position = 0
+
+        while (position < queue.size) {
+            database.beginTransaction()
+            var i = position
+
+            try {
+                while (i < queue.size) {
+                    val item = queue[i]
+                    val itemData = ContentValues(4)
+
+                    i++
+
+                    itemData.put(QueueItem.COLUMN_ID, item.id)
+                    itemData.put(QueueItem.COLUMN_SONG_ID, item.songId)
+                    itemData.put(QueueItem.COLUMN_ALBUM_ID, item.albumId)
+                    itemData.put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
+
+                    database.insert(TABLE_NAME_QUEUE, null, itemData)
+                }
+
+                database.setTransactionSuccessful()
+            } finally {
+                database.endTransaction()
+
+                // Update the position at the end, if an insert failed at any point, then
+                // the next iteration should skip it.
+                position = i
+
+                Log.d(this::class.simpleName, "Wrote batch of $position songs.")
+            }
+        }
+    }
+
+    fun readQueue(): List<QueueItem> {
+        val database = readableDatabase
+
+        val queueItems = mutableListOf<QueueItem>()
+        var queueCursor: Cursor? = null
+
+        try {
+            queueCursor = database.query(TABLE_NAME_QUEUE, null, null, null, null, null, null)
+
+            queueCursor?.use { cursor ->
+                if (cursor.count == 0) return@use
+
+                val idIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ID)
+                val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_ID)
+                val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_ID)
+                val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_IS_USER_QUEUE)
+
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idIndex)
+                    val songId = cursor.getLong(songIdIndex)
+                    val albumId = cursor.getLong(albumIdIndex)
+                    val isUserQueue = cursor.getInt(isUserQueueIndex) == 1
+
+                    queueItems.add(
+                        QueueItem(id, songId, albumId, isUserQueue)
+                    )
+                }
+            }
+        } finally {
+            queueCursor?.close()
+
+            return queueItems
+        }
+    }
+
+    companion object {
+        const val DB_VERSION = 1
+        const val DB_NAME = "auxio_state_database"
+
+        const val TABLE_NAME_STATE = "playback_state_table"
+        const val TABLE_NAME_QUEUE = "queue_table"
+
+        @Volatile
+        private var INSTANCE: PlaybackStateDatabase? = null
+
+        /**
+         * Get/Instantiate the single instance of [PlaybackStateDatabase].
+         */
+        fun getInstance(context: Context): PlaybackStateDatabase {
+            val currentInstance = INSTANCE
+
+            if (currentInstance != null) {
+                return currentInstance
+            }
+
+            synchronized(this) {
+                val newInstance = PlaybackStateDatabase(context.applicationContext)
+                INSTANCE = newInstance
+                return newInstance
+            }
+        }
+    }
+}

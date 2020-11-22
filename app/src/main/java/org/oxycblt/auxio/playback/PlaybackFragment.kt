@@ -126,8 +126,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             } else {
                 binding.playbackShuffle.imageTintList = controlColor
             }
-
-            Log.d(this::class.simpleName, "Shuffle swap")
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) {

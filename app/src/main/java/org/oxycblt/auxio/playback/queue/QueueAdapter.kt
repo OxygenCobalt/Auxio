@@ -44,7 +44,7 @@ class QueueAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-            QUEUE_ITEM_TYPE -> ViewHolder(
+            QUEUE_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
             else -> error("Someone messed with the ViewHolder item types.")
@@ -53,7 +53,7 @@ class QueueAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = data[position]) {
-            is Song -> (holder as ViewHolder).bind(item)
+            is Song -> (holder as QueueSongViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
 
             else -> {
@@ -99,7 +99,7 @@ class QueueAdapter(
     }
 
     // Generic ViewHolder for a queue item
-    inner class ViewHolder(
+    inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding, null, null) {
 

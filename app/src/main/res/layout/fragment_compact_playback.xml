@@ -15,11 +15,9 @@
             type="org.oxycblt.auxio.playback.PlaybackViewModel" />
     </data>
 
-    <!-- TODO: Fix elevation not showing -->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:animateLayoutChanges="true"
-        android:background="@drawable/ui_ripple"
+        android:background="@drawable/ui_background_ripple"
         android:clickable="true"
         android:focusable="true"
         android:layout_width="match_parent"

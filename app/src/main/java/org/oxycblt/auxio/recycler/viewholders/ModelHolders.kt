@@ -129,7 +129,7 @@ class SongViewHolder private constructor(
     }
 }
 
-class HeaderViewHolder(
+open class HeaderViewHolder(
     private val binding: ItemHeaderBinding
 ) : BaseViewHolder<Header>(binding, null, null) {
 

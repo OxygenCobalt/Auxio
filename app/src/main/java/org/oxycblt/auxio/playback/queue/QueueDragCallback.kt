@@ -17,7 +17,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         // Only allow dragging/swiping with the queue item ViewHolder, not the headers.
-        return if (viewHolder is QueueAdapter.ViewHolder) {
+        return if (viewHolder is QueueAdapter.QueueSongViewHolder) {
             makeFlag(
                 ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN
             ) or makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)

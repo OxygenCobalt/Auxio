@@ -1,32 +1,27 @@
 package org.oxycblt.auxio.database
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "playback_state_table")
 data class PlaybackState(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = Long.MIN_VALUE,
-
-    @ColumnInfo(name = "song_id")
-    val songId: Long = Long.MIN_VALUE,
-
-    @ColumnInfo(name = "position")
+    val id: Long = 0L,
+    val songId: Long = -1L,
     val position: Long,
-
-    @ColumnInfo(name = "parent_id")
     val parentId: Long = -1L,
-
-    @ColumnInfo(name = "mode")
+    val index: Int,
     val mode: Int,
-
-    @ColumnInfo(name = "is_shuffling")
     val isShuffling: Boolean,
-
-    @ColumnInfo(name = "loop_mode")
+    val shuffleSeed: Long,
     val loopMode: Int,
-
-    @ColumnInfo(name = "in_user_queue")
     val inUserQueue: Boolean
-)
+) {
+    companion object {
+        const val COLUMN_ID = "state_id"
+        const val COLUMN_SONG_ID = "song_id"
+        const val COLUMN_POSITION = "position"
+        const val COLUMN_PARENT_ID = "parent_id"
+        const val COLUMN_INDEX = "state_index"
+        const val COLUMN_MODE = "mode"
+        const val COLUMN_IS_SHUFFLING = "is_shuffling"
+        const val COLUMN_SHUFFLE_SEED = "shuffle_seed"
+        const val COLUMN_LOOP_MODE = "loop_mode"
+        const val COLUMN_IN_USER_QUEUE = "is_user_queue"
+    }
+}
