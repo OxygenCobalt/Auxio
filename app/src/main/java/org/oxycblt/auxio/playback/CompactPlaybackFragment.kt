@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.playback
 
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,7 +31,7 @@ class CompactPlaybackFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
         val iconPauseToPlay = ContextCompat.getDrawable(
@@ -74,13 +75,21 @@ class CompactPlaybackFragment : Fragment() {
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (it) {
-                // Animate the icon transition when the playing status switches
-                binding.playbackControls.setImageDrawable(iconPauseToPlay)
-                iconPauseToPlay.start()
+            if (playbackModel.canAnimate) {
+                if (it) {
+                    // Animate the icon transition when the playing status switches
+                    binding.playbackControls.setImageDrawable(iconPlayToPause)
+                    iconPlayToPause.start()
+                } else {
+                    binding.playbackControls.setImageDrawable(iconPauseToPlay)
+                    iconPauseToPlay.start()
+                }
             } else {
-                binding.playbackControls.setImageDrawable(iconPlayToPause)
-                iconPlayToPause.start()
+                if (it) {
+                    binding.playbackControls.setImageResource(R.drawable.ic_pause_large)
+                } else {
+                    binding.playbackControls.setImageResource(R.drawable.ic_play_large)
+                }
             }
         }
 
@@ -91,5 +100,11 @@ class CompactPlaybackFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created")
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        playbackModel.resetCanAnimate()
     }
 }

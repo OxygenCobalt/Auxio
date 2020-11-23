@@ -58,6 +58,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
     val loopMode: LiveData<LoopMode> get() = mLoopMode
 
+    private var mCanAnimate = false
+    val canAnimate: Boolean get() = mCanAnimate
+
     // Other
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
@@ -238,6 +241,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // Flip the playing status.
     fun invertPlayingStatus() {
+        mCanAnimate = true
+
         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
 
@@ -268,6 +273,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         viewModelScope.launch {
             playbackManager.saveStateToDatabase(context)
         }
+    }
+
+    fun resetCanAnimate() {
+        mCanAnimate = false
     }
 
     // --- OVERRIDES ---
@@ -308,6 +317,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
         mIsPlaying.value = isPlaying
+
+        mCanAnimate = true
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {

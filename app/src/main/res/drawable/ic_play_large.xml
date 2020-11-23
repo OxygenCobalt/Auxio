@@ -1,0 +1,26 @@
+<vector
+    android:width="32dp"
+    android:height="32dp"
+    android:tint="@color/control_color"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:name="play"
+        android:pivotX="12"
+        android:pivotY="12">
+
+        <path
+            android:name="play_upper"
+            android:fillColor="#FF000000"
+            android:pathData="M8.25,6L8.25,12L18.75,12L18.75,12Z" />
+
+        <path
+            android:name="play_lower"
+            android:fillColor="#FF000000"
+            android:pathData="M8.25,18L8.25,12L18.75,12L18.75,12Z" />
+
+    </group>
+
+</vector>

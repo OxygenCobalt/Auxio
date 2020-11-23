@@ -72,7 +72,7 @@ class MainFragment : Fragment() {
 
         navController?.let {
             binding.navBar.setOnNavigationItemSelectedListener { item ->
-                navigateWithItem(item, navController)
+                navigateWithItem(item, it)
             }
         }
 
@@ -87,6 +87,7 @@ class MainFragment : Fragment() {
                 )
 
                 binding.compactPlayback.visibility = View.GONE
+                playbackModel.resetCanAnimate()
             } else {
                 binding.compactPlayback.visibility = View.VISIBLE
             }
@@ -103,8 +104,6 @@ class MainFragment : Fragment() {
      * Some custom navigator code based off [NavigationUI] that makes animations function
      */
     private fun navigateWithItem(item: MenuItem, navController: NavController): Boolean {
-        // Custom navigator code so that animations actually function
-        // [Which doesn't happen if I use BottomNavigationView.setupWithNavController()
         if (item.itemId != navController.currentDestination!!.id) {
             val builder = NavOptions.Builder().setLaunchSingleTop(true)
 

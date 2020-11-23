@@ -107,13 +107,13 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             if (it) {
                 // Animate the playing status and switch the button to the accent color
                 // if its playing, and back to a inactive gray if not.
-                binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
-                iconPauseToPlay.start()
+                binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
+                iconPlayToPause.start()
 
                 binding.playbackPlayPause.backgroundTintList = accentColor
             } else {
-                binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
-                iconPlayToPause.start()
+                binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
+                iconPauseToPlay.start()
 
                 binding.playbackPlayPause.backgroundTintList = controlColor
             }
