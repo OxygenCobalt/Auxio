@@ -34,25 +34,16 @@ class QueueFragment : Fragment() {
 
         val callback = QueueDragCallback(playbackModel)
         val helper = ItemTouchHelper(callback)
-        val queueAdapter = QueueAdapter(helper)
-        callback.addQueueAdapter(queueAdapter)
+        val queueAdapter = QueueAdapter(helper) {
+            playbackModel.clearUserQueue()
+        }
 
-        val queueClearItem = binding.queueToolbar.menu.findItem(R.id.action_clear_user_queue)
+        callback.addQueueAdapter(queueAdapter)
 
         // --- UI SETUP ---
 
-        binding.queueToolbar.apply {
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-
-            setOnMenuItemClickListener {
-                if (it.itemId == R.id.action_clear_user_queue) {
-                    queueAdapter.clearUserQueue()
-                    playbackModel.clearUserQueue()
-                    true
-                } else false
-            }
+        binding.queueToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
         binding.queueRecycler.apply {
@@ -65,14 +56,10 @@ class QueueFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         playbackModel.userQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                queueClearItem.isEnabled = false
+            if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
+                findNavController().navigateUp()
 
-                if (playbackModel.nextItemsInQueue.value!!.isEmpty()) {
-                    findNavController().navigateUp()
-
-                    return@observe
-                }
+                return@observe
             }
 
             queueAdapter.submitList(createQueueData())
@@ -94,7 +81,7 @@ class QueueFragment : Fragment() {
 
         if (playbackModel.userQueue.value!!.isNotEmpty()) {
             queue.add(
-                Header(name = getString(R.string.label_next_user_queue))
+                Header(name = getString(R.string.label_next_user_queue), isAction = true)
             )
             queue.addAll(playbackModel.userQueue.value!!)
         }
@@ -108,7 +95,8 @@ class QueueFragment : Fragment() {
                             getString(R.string.label_all_songs)
                         else
                             playbackModel.parent.value!!.name
-                    )
+                    ),
+                    isAction = false
                 )
             )
             queue.addAll(playbackModel.nextItemsInQueue.value!!)

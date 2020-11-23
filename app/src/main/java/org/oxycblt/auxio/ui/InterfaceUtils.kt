@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.ColorInt
+import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -63,7 +64,6 @@ fun RecyclerView.applyDivider() {
 }
 
 fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: PlaybackViewModel) {
-    inflate(R.menu.menu_song_actions)
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -85,7 +85,7 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
             else -> false
         }
     }
-    show()
+    inflateAndShow(R.menu.menu_song_actions)
 }
 
 fun PopupMenu.setupAlbumSongActions(
@@ -94,7 +94,6 @@ fun PopupMenu.setupAlbumSongActions(
     detailViewModel: DetailViewModel,
     playbackModel: PlaybackViewModel
 ) {
-    inflate(R.menu.menu_album_song_actions)
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -117,7 +116,7 @@ fun PopupMenu.setupAlbumSongActions(
             else -> false
         }
     }
-    show()
+    inflateAndShow(R.menu.menu_album_song_actions)
 }
 
 fun PopupMenu.setupAlbumActions(
@@ -125,7 +124,6 @@ fun PopupMenu.setupAlbumActions(
     context: Context,
     playbackModel: PlaybackViewModel
 ) {
-    inflate(R.menu.menu_album_actions)
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -148,7 +146,7 @@ fun PopupMenu.setupAlbumActions(
             else -> false
         }
     }
-    show()
+    inflateAndShow(R.menu.menu_album_actions)
 }
 
 fun PopupMenu.setupArtistActions(
@@ -156,7 +154,6 @@ fun PopupMenu.setupArtistActions(
     context: Context,
     playbackModel: PlaybackViewModel
 ) {
-    inflate(R.menu.menu_detail)
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -179,7 +176,7 @@ fun PopupMenu.setupArtistActions(
             else -> false
         }
     }
-    show()
+    inflateAndShow(R.menu.menu_detail)
 }
 
 fun PopupMenu.setupGenreActions(
@@ -187,7 +184,6 @@ fun PopupMenu.setupGenreActions(
     context: Context,
     playbackModel: PlaybackViewModel
 ) {
-    inflate(R.menu.menu_detail)
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -210,5 +206,10 @@ fun PopupMenu.setupGenreActions(
             else -> false
         }
     }
+    inflateAndShow(R.menu.menu_detail)
+}
+
+private fun PopupMenu.inflateAndShow(@MenuRes menuRes: Int) {
+    inflate(menuRes)
     show()
 }

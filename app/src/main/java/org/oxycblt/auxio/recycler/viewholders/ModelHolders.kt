@@ -3,6 +3,8 @@ package org.oxycblt.auxio.recycler.viewholders
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.DrawableRes
+import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreBinding
@@ -129,7 +131,7 @@ class SongViewHolder private constructor(
     }
 }
 
-open class HeaderViewHolder(
+class HeaderViewHolder(
     private val binding: ItemHeaderBinding
 ) : BaseViewHolder<Header>(binding, null, null) {
 
@@ -146,4 +148,21 @@ open class HeaderViewHolder(
             )
         }
     }
+}
+
+abstract class ActionHeaderViewHolder(
+    protected val binding: ItemActionHeaderBinding,
+    @DrawableRes private val iconRes: Int
+) : BaseViewHolder<Header>(binding, null, null) {
+    override fun onBind(data: Header) {
+        binding.header = data
+        binding.headerButton.apply {
+            setImageResource(iconRes)
+            setOnClickListener {
+                onActionClick()
+            }
+        }
+    }
+
+    abstract fun onActionClick()
 }

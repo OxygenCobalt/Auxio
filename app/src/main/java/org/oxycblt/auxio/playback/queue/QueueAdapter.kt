@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
@@ -25,7 +27,8 @@ import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
  * @author OxygenCobalt
  */
 class QueueAdapter(
-    private val touchHelper: ItemTouchHelper
+    private val touchHelper: ItemTouchHelper,
+    private val onHeaderAction: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data = mutableListOf<BaseModel>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
@@ -36,7 +39,10 @@ class QueueAdapter(
         val item = data[position]
 
         return if (item is Header)
-            HeaderViewHolder.ITEM_TYPE
+            if (item.isAction)
+                USER_QUEUE_HEADER_ITEM_tYPE
+            else
+                HeaderViewHolder.ITEM_TYPE
         else
             QUEUE_ITEM_TYPE
     }
@@ -47,6 +53,9 @@ class QueueAdapter(
             QUEUE_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
+            USER_QUEUE_HEADER_ITEM_tYPE -> UserQueueHeaderViewHolder(
+                ItemActionHeaderBinding.inflate(LayoutInflater.from(parent.context))
+            )
             else -> error("Someone messed with the ViewHolder item types.")
         }
     }
@@ -54,7 +63,12 @@ class QueueAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = data[position]) {
             is Song -> (holder as QueueSongViewHolder).bind(item)
-            is Header -> (holder as HeaderViewHolder).bind(item)
+            is Header ->
+                if (item.isAction) {
+                    (holder as UserQueueHeaderViewHolder).bind(item)
+                } else {
+                    (holder as HeaderViewHolder).bind(item)
+                }
 
             else -> {
                 Log.e(this::class.simpleName, "Bad data fed to QueueAdapter.")
@@ -131,7 +145,24 @@ class QueueAdapter(
         }
     }
 
+    inner class UserQueueHeaderViewHolder(
+        private val binding: ItemActionHeaderBinding
+    ) : BaseViewHolder<Header>(binding, null, null) {
+        override fun onBind(data: Header) {
+            binding.header = data
+            binding.headerButton.apply {
+                setImageResource(R.drawable.ic_clear)
+
+                setOnClickListener {
+                    clearUserQueue()
+                    onHeaderAction()
+                }
+            }
+        }
+    }
+
     companion object {
         const val QUEUE_ITEM_TYPE = 0xA015
+        const val USER_QUEUE_HEADER_ITEM_tYPE = 0xA016
     }
 }

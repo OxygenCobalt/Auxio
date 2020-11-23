@@ -105,17 +105,28 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
     }
 }
 
-// I have no idea how to update a specific action on the fly so I have to use these restricted APIs
+/**
+ * Update the playing button on the media notification.
+ * @param context The context required to refresh the action
+ */
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updatePlaying(context: Context) {
     mActions[2] = newAction(NotificationUtils.ACTION_PLAY_PAUSE, context)
 }
 
+/**
+ * Update the loop button on the media notification
+ * @param context The context required to refresh the action
+ */
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updateLoop(context: Context) {
     mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
 }
 
+/**
+ * Update the subtext of the media notification to reflect the current mode.
+ * @param context The context required to get the strings required to show certain modes
+ */
 fun NotificationCompat.Builder.updateMode(context: Context) {
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
         val playbackManager = PlaybackStateManager.getInstance()
@@ -164,12 +175,10 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
     }
 
     return NotificationCompat.Action.Builder(
-        drawable, action, newPlaybackIntent(action, context)
+        drawable, action,
+        PendingIntent.getBroadcast(
+            context, NotificationUtils.REQUEST_CODE,
+            Intent(action), PendingIntent.FLAG_UPDATE_CURRENT
+        )
     ).build()
-}
-
-private fun newPlaybackIntent(action: String, context: Context): PendingIntent {
-    return PendingIntent.getBroadcast(
-        context, NotificationUtils.REQUEST_CODE, Intent(action), PendingIntent.FLAG_UPDATE_CURRENT
-    )
 }

@@ -12,20 +12,20 @@ import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 class DetailAlbumAdapter(
     private val doOnClick: (data: Album) -> Unit,
     private val doOnLongClick: (data: Album, view: View) -> Unit
-) : ListAdapter<Album, DetailAlbumAdapter.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Album, DetailAlbumAdapter.AlbumViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
+        return AlbumViewHolder(
             ItemArtistAlbumBinding.inflate(LayoutInflater.from(parent.context))
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
     // Generic ViewHolder for a detail album
-    inner class ViewHolder(
+    inner class AlbumViewHolder(
         private val binding: ItemArtistAlbumBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 

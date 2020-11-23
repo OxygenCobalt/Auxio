@@ -263,8 +263,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
-    // TODO: Do testing where service is destroyed after restore [Possible edge case]
-
     override fun onLoopUpdate(mode: LoopMode) {
         changeIsFromAudioFocus = false
 
@@ -295,6 +293,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             player.setMediaItem(item)
             player.prepare()
             player.seekTo(playbackManager.position)
+        }
+
+        when (playbackManager.loopMode) {
+            LoopMode.NONE -> {
+                player.repeatMode = Player.REPEAT_MODE_OFF
+            }
+            else -> {
+                player.repeatMode = Player.REPEAT_MODE_ONE
+            }
         }
     }
 

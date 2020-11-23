@@ -14,6 +14,7 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.ui.createToast
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -57,6 +58,7 @@ class CompactPlaybackFragment : Fragment() {
 
         binding.root.setOnLongClickListener {
             playbackModel.save(requireContext())
+            getString(R.string.debug_state_saved).createToast(requireContext())
             true
         }
 
