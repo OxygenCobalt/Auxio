@@ -14,7 +14,6 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.applyDivider
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
@@ -48,7 +47,6 @@ class QueueFragment : Fragment() {
 
         binding.queueRecycler.apply {
             setHasFixedSize(true)
-            applyDivider()
             adapter = queueAdapter
             helper.attachToRecyclerView(this)
         }

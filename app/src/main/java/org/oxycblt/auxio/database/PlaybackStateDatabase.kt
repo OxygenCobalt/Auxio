@@ -13,7 +13,8 @@ import android.util.Log
  * has a crippling bug where it will endlessly allocate rows even if you clear the entire db, so...
  * @author OxygenCobalt
  */
-class PlaybackStateDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class PlaybackStateDatabase(context: Context) :
+    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         createTable(db, TABLE_NAME_STATE)
         createTable(db, TABLE_NAME_QUEUE)

@@ -30,6 +30,7 @@
             app:layout_constraintEnd_toStartOf="@+id/header_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/ui_header_dividers"
             tools:text="Songs" />
 
         <ImageButton

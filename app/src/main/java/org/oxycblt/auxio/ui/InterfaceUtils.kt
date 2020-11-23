@@ -2,7 +2,6 @@ package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
@@ -11,7 +10,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -45,22 +43,6 @@ fun ImageButton.disable(context: Context) {
 
 fun String.createToast(context: Context) {
     Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
-}
-
-// Apply a custom vertical divider
-fun RecyclerView.applyDivider() {
-    val div = DividerItemDecoration(
-        context,
-        DividerItemDecoration.VERTICAL
-    )
-
-    div.setDrawable(
-        ColorDrawable(
-            R.color.divider_color.toColor(context)
-        )
-    )
-
-    addItemDecoration(div)
 }
 
 fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: PlaybackViewModel) {

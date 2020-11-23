@@ -28,7 +28,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.applyColor
-import org.oxycblt.auxio.ui.applyDivider
 import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.setupAlbumActions
 import org.oxycblt.auxio.ui.setupArtistActions
@@ -93,6 +92,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                     libraryModel.updateSearchFocusStatus(hasFocus)
+                    libraryModel.updateSearchQuery(searchView.query.toString(), requireContext())
                     item.isVisible = !hasFocus
                 }
 
@@ -118,8 +118,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         binding.libraryRecycler.apply {
             adapter = libraryAdapter
-
-            applyDivider()
             setHasFixedSize(true)
         }
 
@@ -169,7 +167,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextChange(query: String): Boolean {
         libraryModel.updateSearchQuery(query, requireContext())
 
-        return false
+        return true
     }
 
     private fun showActionsForItem(data: BaseModel, view: View) {

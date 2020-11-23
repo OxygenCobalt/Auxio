@@ -185,7 +185,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     // Move queue OR user queue items, given QueueAdapter indices.
-    fun moveQueueAdapterItems(adapterFrom: Int, adapterTo: Int, queueAdapter: QueueAdapter): Boolean {
+    fun moveQueueAdapterItems(
+        adapterFrom: Int,
+        adapterTo: Int,
+        queueAdapter: QueueAdapter
+    ): Boolean {
         var from = adapterFrom.dec()
         var to = adapterTo.dec()
 

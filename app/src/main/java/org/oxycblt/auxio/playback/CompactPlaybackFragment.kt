@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.playback
 
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

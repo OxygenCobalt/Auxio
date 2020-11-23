@@ -14,7 +14,7 @@ import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.applyDivider
+
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumActions
 
@@ -26,7 +26,7 @@ class ArtistDetailFragment : DetailFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentArtistDetailBinding.inflate(inflater)
 
         // If DetailViewModel isn't already storing the artist, get it from MusicStore
@@ -92,7 +92,6 @@ class ArtistDetailFragment : DetailFragment() {
 
         binding.artistAlbumRecycler.apply {
             adapter = albumAdapter
-            applyDivider()
             setHasFixedSize(true)
         }
 
