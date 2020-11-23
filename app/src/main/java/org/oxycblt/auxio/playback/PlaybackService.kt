@@ -141,6 +141,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
+        playbackManager.resetHasPlayedStatus()
+
         playbackManager.addCallback(this)
 
         if (playbackManager.song != null) {
@@ -225,12 +227,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             uploadMetadataToSession(it)
 
-            if (playbackManager.isRestored) {
-                notification.setMetadata(playbackManager.song!!, this) {
-                    startForegroundOrNotify("Song")
-                }
-            } else {
-                notification.setMetadata(playbackManager.song!!, this) {}
+            notification.setMetadata(playbackManager.song!!, this) {
+                startForegroundOrNotify("Song")
             }
 
             return
@@ -285,6 +283,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         player.seekTo(position)
     }
 
+    override fun onRestoreFinish() {
+        Log.d(this::class.simpleName, "Restore done")
+
+        restorePlayer()
+    }
+
     // --- OTHER FUNCTIONS ---
 
     private fun restorePlayer() {
@@ -321,12 +325,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
-    override fun onRestoreFinish() {
-        Log.d(this::class.simpleName, "Restore done")
-
-        restorePlayer()
-    }
-
     private fun uploadMetadataToSession(song: Song) {
         val builder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
@@ -361,7 +359,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     private fun startForegroundOrNotify(reason: String) {
         // Start the service in the foreground if haven't already.
-        if (playbackManager.isRestored) {
+        if (playbackManager.hasPlayed) {
             Log.d(this::class.simpleName, "Starting foreground/notifying because of $reason")
 
             if (!isForeground) {

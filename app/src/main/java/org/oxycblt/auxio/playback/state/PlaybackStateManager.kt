@@ -84,6 +84,7 @@ class PlaybackStateManager private constructor() {
         }
     private var mIsInUserQueue = false
     private var mIsRestored = false
+    private var mHasPlayed = false
     private var mShuffleSeed = -1L
 
     val song: Song? get() = mSong
@@ -97,6 +98,7 @@ class PlaybackStateManager private constructor() {
     val isShuffling: Boolean get() = mIsShuffling
     val loopMode: LoopMode get() = mLoopMode
     val isRestored: Boolean get() = mIsRestored
+    val hasPlayed: Boolean get() = mHasPlayed
 
     // --- CALLBACKS ---
 
@@ -210,7 +212,7 @@ class PlaybackStateManager private constructor() {
         mPosition = 0
 
         if (!mIsPlaying) {
-            mIsPlaying = true
+            setPlayingStatus(true)
         }
 
         mIsInUserQueue = false
@@ -405,6 +407,10 @@ class PlaybackStateManager private constructor() {
 
     fun setPlayingStatus(value: Boolean) {
         if (mIsPlaying != value) {
+            if (value) {
+                mHasPlayed = true
+            }
+
             mIsPlaying = value
         }
     }
@@ -421,6 +427,10 @@ class PlaybackStateManager private constructor() {
 
     fun setLoopMode(mode: LoopMode) {
         mLoopMode = mode
+    }
+
+    fun resetHasPlayedStatus() {
+        mHasPlayed = false
     }
 
     private fun resetLoopMode() {
