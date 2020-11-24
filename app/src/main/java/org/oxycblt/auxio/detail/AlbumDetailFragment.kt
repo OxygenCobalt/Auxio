@@ -124,10 +124,12 @@ class AlbumDetailFragment : DetailFragment() {
 
         playbackModel.navToSong.observe(viewLifecycleOwner) {
             if (it) {
+                // Calculate where the item for the currently played song is, and navigate to there.
                 val pos = detailModel.currentAlbum.value!!.songs.indexOf(playbackModel.song.value)
 
                 if (pos != -1) {
                     binding.albumSongRecycler.post {
+                        // Only scroll after UI creation
                         val y = binding.albumSongRecycler.y +
                             binding.albumSongRecycler.getChildAt(pos).y
 
@@ -135,8 +137,6 @@ class AlbumDetailFragment : DetailFragment() {
                     }
 
                     playbackModel.doneWithNavToPlayingSong()
-                } else {
-                    findNavController().navigateUp()
                 }
             }
         }

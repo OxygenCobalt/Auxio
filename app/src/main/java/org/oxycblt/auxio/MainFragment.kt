@@ -23,7 +23,7 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getInactiveAlpha
 import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.toColor
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -72,8 +72,12 @@ class MainFragment : Fragment() {
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints
 
+        // TODO: Add the navigation
+        //  Do the trick to test if the memleak is real: Nav to songs, nav to playing, nav out of playing, nav to playing album, nav to songs
         navController?.let { controller ->
-            binding.navBar.setupWithNavController(controller)
+            binding.navBar.setOnNavigationItemSelectedListener {
+                navigateWithItem(controller, it)
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -96,10 +100,13 @@ class MainFragment : Fragment() {
         playbackModel.navToSong.observe(viewLifecycleOwner) {
             if (it) {
                 if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    navController!!.currentDestination?.id == R.id.artist_detail_fragment ||
-                    navController.currentDestination?.id == R.id.genre_detail_fragment ||
-                    detailModel.currentAlbum.value == null ||
-                    detailModel.currentAlbum.value?.id != playbackModel.song.value!!.album.id
+                    (navController!!.currentDestination?.id == R.id.album_detail_fragment
+                            && detailModel.currentAlbum.value == null
+                            || detailModel.currentAlbum.value?.id
+                            != playbackModel.song.value!!.album.id
+                    ) ||
+                    navController.currentDestination?.id == R.id.artist_detail_fragment ||
+                    navController.currentDestination?.id == R.id.genre_detail_fragment
                 ) {
                     binding.navBar.selectedItemId = R.id.library_fragment
                 }
@@ -113,17 +120,15 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * Some custom navigator code based off [NavigationUI] that makes animations function
-     */
-    private fun navigateWithItem(item: MenuItem, navController: NavController): Boolean {
-        if (item.itemId != navController.currentDestination!!.id) {
-            val builder = NavOptions.Builder().setLaunchSingleTop(true)
-
-            val options = builder.setEnterAnim(R.anim.nav_default_enter_anim)
-                .setExitAnim(R.anim.nav_default_exit_anim)
-                .setPopEnterAnim(R.anim.nav_default_enter_anim)
-                .setPopExitAnim(R.anim.nav_default_exit_anim)
+    private fun navigateWithItem(navController: NavController, item: MenuItem): Boolean {
+        if (navController.currentDestination!!.id != item.itemId) {
+            // Create custom NavOptions myself so that animations work
+            val options = NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setEnterAnim(R.animator.nav_default_enter_anim)
+                .setExitAnim(R.animator.nav_default_exit_anim)
+                .setPopEnterAnim(R.animator.nav_default_pop_enter_anim)
+                .setPopExitAnim(R.animator.nav_default_pop_exit_anim)
                 .build()
 
             return try {
@@ -134,6 +139,6 @@ class MainFragment : Fragment() {
             }
         }
 
-        return true
+        return false
     }
 }
