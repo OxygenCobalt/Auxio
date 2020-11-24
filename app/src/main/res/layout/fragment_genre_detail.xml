@@ -121,18 +121,17 @@
                     android:id="@+id/genre_sort_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_medium"
                     android:background="@drawable/ui_header_dividers"
                     android:contentDescription="@string/description_sort_button"
+                    android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
                     android:paddingStart="@dimen/padding_medium"
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
-                    android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-                    tools:src="@drawable/ic_sort_alpha_down"
-                    app:layout_constraintBottom_toTopOf="@+id/genre_artist_recycler"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
+                    app:layout_constraintBottom_toBottomOf="@+id/genre_artist_header"
+                    app:layout_constraintTop_toTopOf="@+id/genre_artist_header"
+                    tools:layout_editor_absoluteX="355dp"
+                    tools:src="@drawable/ic_sort_alpha_down" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/genre_artist_recycler"

@@ -107,5 +107,5 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         )
     }
 
-    override fun key(data: List<Uri>): String? = data.toString()
+    override fun key(data: List<Uri>): String = data.toString()
 }

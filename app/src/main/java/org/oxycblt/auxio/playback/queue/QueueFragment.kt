@@ -28,7 +28,7 @@ class QueueFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
 
         val callback = QueueDragCallback(playbackModel)

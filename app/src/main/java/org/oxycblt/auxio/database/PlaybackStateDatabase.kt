@@ -15,6 +15,7 @@ import android.util.Log
  */
 class PlaybackStateDatabase(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+
     override fun onCreate(db: SQLiteDatabase) {
         createTable(db, TABLE_NAME_STATE)
         createTable(db, TABLE_NAME_QUEUE)
@@ -111,7 +112,7 @@ class PlaybackStateDatabase(context: Context) :
 
     /**
      * Read the stored [PlaybackState] from the database, if there is one.
-     * @return The stored [PlaybackState], null if there isnt one,.
+     * @return The stored [PlaybackState], null if there isn't one,.
      * @author OxygenCobalt
      */
     fun readState(): PlaybackState? {
@@ -121,7 +122,11 @@ class PlaybackStateDatabase(context: Context) :
         var stateCursor: Cursor? = null
 
         try {
-            stateCursor = database.query(TABLE_NAME_STATE, null, null, null, null, null, null)
+            stateCursor = database.query(
+                TABLE_NAME_STATE,
+                null, null, null,
+                null, null, null
+            )
 
             stateCursor?.use { cursor ->
                 // Don't bother if the cursor [and therefore database] has nothing in it.
@@ -227,7 +232,10 @@ class PlaybackStateDatabase(context: Context) :
         var queueCursor: Cursor? = null
 
         try {
-            queueCursor = database.query(TABLE_NAME_QUEUE, null, null, null, null, null, null)
+            queueCursor = database.query(
+                TABLE_NAME_QUEUE, null, null,
+                null, null, null, null
+            )
 
             queueCursor?.use { cursor ->
                 if (cursor.count == 0) return@use

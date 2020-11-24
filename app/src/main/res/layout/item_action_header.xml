@@ -13,37 +13,38 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/ui_header_dividers">
 
         <TextView
-            android:id="@+id/header_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/header_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/padding_medium"
             android:fontFamily="@font/inter_semibold"
             android:paddingStart="@dimen/padding_medium"
             android:paddingTop="@dimen/padding_small"
             android:paddingEnd="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_small"
             android:text="@{header.name}"
+            tools:text="Songs"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="19sp"
-            app:layout_constraintEnd_toStartOf="@+id/header_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/ui_header_dividers"
-            tools:text="Songs" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
             android:id="@+id/header_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@drawable/ui_header_dividers"
-            android:tint="?android:attr/colorPrimary"
-            app:layout_constraintDimensionRatio="1:1"
+            android:contentDescription="@string/description_sort_button"
+            android:paddingStart="@dimen/padding_medium"
+            android:paddingTop="@dimen/padding_small"
+            android:background="@drawable/ui_small_unbounded_ripple"
+            android:paddingEnd="@dimen/margin_medium"
+            android:paddingBottom="@dimen/padding_small"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_clear"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="@+id/header_title"
+            tools:src="@drawable/ic_sort_numeric_down" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

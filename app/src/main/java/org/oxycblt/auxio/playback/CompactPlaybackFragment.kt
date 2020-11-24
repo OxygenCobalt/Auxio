@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,8 +26,6 @@ import org.oxycblt.auxio.ui.createToast
  */
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-
-    private var playbackControls: ImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,9 +75,6 @@ class CompactPlaybackFragment : Fragment() {
             binding.playbackProgress.progress = it
         }
 
-        // Use the playback control ImageView for later.
-        playbackControls = binding.playbackControls
-
         Log.d(this::class.simpleName, "Fragment Created")
 
         return binding.root
@@ -89,6 +84,10 @@ class CompactPlaybackFragment : Fragment() {
         super.onResume()
 
         playbackModel.disableAnimation()
+
+        // Use the caveman method of getting a view as storing the binding will cause a memory
+        // leak.
+        val playbackControls = requireView().findViewById<ImageButton>(R.id.playback_controls)
 
         // Observe the changes to isPlaying for
         val iconPauseToPlay = ContextCompat.getDrawable(
@@ -121,11 +120,5 @@ class CompactPlaybackFragment : Fragment() {
                 playbackModel.enableAnimation()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        playbackControls = null
     }
 }

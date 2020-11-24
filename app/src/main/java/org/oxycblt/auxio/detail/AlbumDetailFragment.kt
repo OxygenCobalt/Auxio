@@ -131,7 +131,7 @@ class AlbumDetailFragment : DetailFragment() {
                     binding.albumSongRecycler.post {
                         // Only scroll after UI creation
                         val y = binding.albumSongRecycler.y +
-                            binding.albumSongRecycler.getChildAt(pos).y
+                                binding.albumSongRecycler.getChildAt(pos).y
 
                         binding.nestedScroll.smoothScrollBy(0, y.toInt())
                     }

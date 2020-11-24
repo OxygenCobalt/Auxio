@@ -560,12 +560,12 @@ class PlaybackStateManager private constructor() {
             // Traverse albums and then album songs instead of just the songs, as its faster.
             musicStore.albums.find { it.id == item.albumId }
                 ?.songs?.find { it.id == item.songId }?.let {
-                if (item.isUserQueue) {
-                    mUserQueue.add(it)
-                } else {
-                    mQueue.add(it)
+                    if (item.isUserQueue) {
+                        mUserQueue.add(it)
+                    } else {
+                        mQueue.add(it)
+                    }
                 }
-            }
         }
 
         // Get a more accurate index [At least if were not in the user queue]

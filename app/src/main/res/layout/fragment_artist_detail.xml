@@ -104,15 +104,15 @@
                     android:id="@+id/artist_album_header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/padding_medium"
+                    android:layout_marginTop="@dimen/margin_medium"
                     android:background="@drawable/ui_header_dividers"
-                    android:textColor="?android:attr/textColorPrimary"
                     android:fontFamily="@font/inter_semibold"
                     android:paddingStart="@dimen/padding_medium"
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/padding_small"
                     android:paddingBottom="@dimen/padding_small"
                     android:text="@string/label_albums"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="19sp"
                     app:layout_constraintTop_toBottomOf="@+id/artist_counts" />
 
@@ -120,7 +120,6 @@
                     android:id="@+id/artist_sort_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_medium"
                     android:background="@drawable/ui_header_dividers"
                     android:contentDescription="@string/description_sort_button"
                     android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
@@ -128,9 +127,9 @@
                     android:paddingTop="@dimen/padding_small"
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
-                    app:layout_constraintBottom_toTopOf="@+id/artist_album_recycler"
+                    app:layout_constraintBottom_toBottomOf="@+id/artist_album_header"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artist_counts"
+                    app:layout_constraintTop_toTopOf="@+id/artist_album_header"
                     tools:src="@drawable/ic_sort_numeric_down" />
 
                 <androidx.recyclerview.widget.RecyclerView

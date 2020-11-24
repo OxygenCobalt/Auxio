@@ -22,7 +22,7 @@ class SongsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentSongsBinding.inflate(inflater)
 
         val musicStore = MusicStore.getInstance()

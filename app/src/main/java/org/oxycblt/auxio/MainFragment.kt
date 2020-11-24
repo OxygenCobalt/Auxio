@@ -59,9 +59,9 @@ class MainFragment : Fragment() {
         )
 
         val navController = (
-            childFragmentManager.findFragmentById(R.id.explore_nav_host)
-                as NavHostFragment?
-            )?.findNavController()
+                childFragmentManager.findFragmentById(R.id.explore_nav_host)
+                        as NavHostFragment?
+                )?.findNavController()
 
         // --- UI SETUP ---
 
@@ -97,11 +97,11 @@ class MainFragment : Fragment() {
             if (it) {
                 if (binding.navBar.selectedItemId != R.id.library_fragment ||
                     (
-                        navController!!.currentDestination?.id == R.id.album_detail_fragment &&
-                            detailModel.currentAlbum.value == null ||
-                            detailModel.currentAlbum.value?.id
-                                != playbackModel.song.value!!.album.id
-                        ) ||
+                            navController!!.currentDestination?.id == R.id.album_detail_fragment &&
+                                    detailModel.currentAlbum.value == null ||
+                                    detailModel.currentAlbum.value?.id
+                                    != playbackModel.song.value!!.album.id
+                            ) ||
                     navController.currentDestination?.id == R.id.artist_detail_fragment ||
                     navController.currentDestination?.id == R.id.genre_detail_fragment
                 ) {

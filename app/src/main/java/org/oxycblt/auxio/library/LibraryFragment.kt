@@ -44,7 +44,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
         val musicStore = MusicStore.getInstance()

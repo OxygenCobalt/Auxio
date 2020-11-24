@@ -32,7 +32,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentPlaybackBinding.inflate(inflater)
 
         // TODO: Add a swipe-to-next-track function using a ViewPager
@@ -84,7 +84,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         // Make marquee scroll work
-        // TODO: Add nav here as well
         binding.playbackSong.isSelected = true
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 

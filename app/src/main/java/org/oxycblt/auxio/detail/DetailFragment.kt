@@ -11,7 +11,8 @@ import androidx.navigation.fragment.findNavController
  * A Base [Fragment] implementing a [OnBackPressedCallback] so that Auxio will navigate upwards
  * instead of out of the app if a Detail Fragment is currently open. Also carries the
  * multi-navigation fix.
- * // TODO: Merge headers with recyclerview [if possible]
+ * TODO: Implement a system where the Toolbar will update with some info when
+ *   the main detail header is obscured.
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {
@@ -32,6 +33,7 @@ abstract class DetailFragment : Fragment() {
         super.onPause()
         callback.isEnabled = false
     }
+
     private val callback = object : OnBackPressedCallback(false) {
 
         override fun handleOnBackPressed() {
