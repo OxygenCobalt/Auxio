@@ -248,7 +248,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // Flip the playing status.
     fun invertPlayingStatus() {
-        mCanAnimate = true
+        enableAnimation()
 
         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
@@ -290,7 +290,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mNavToSong.value = false
     }
 
-    fun resetCanAnimate() {
+    fun enableAnimation() {
+        mCanAnimate = true
+    }
+
+    fun disableAnimation() {
         mCanAnimate = false
     }
 
@@ -332,8 +336,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
         mIsPlaying.value = isPlaying
-
-        mCanAnimate = true
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {

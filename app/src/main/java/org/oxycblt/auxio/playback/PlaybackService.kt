@@ -436,8 +436,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     NotificationUtils.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
-                    NotificationUtils.ACTION_PLAY_PAUSE ->
+                    NotificationUtils.ACTION_PLAY_PAUSE -> {
                         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                    }
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
                     NotificationUtils.ACTION_EXIT -> stop()
 

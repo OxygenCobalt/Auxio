@@ -545,7 +545,6 @@ class PlaybackStateManager private constructor() {
         mShuffleSeed = playbackState.shuffleSeed
         mIsInUserQueue = playbackState.inUserQueue
         mIndex = playbackState.index
-        mIsPlaying = false
 
         callbacks.forEach {
             it.onSeekConfirm(mPosition)

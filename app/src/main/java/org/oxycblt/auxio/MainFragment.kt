@@ -13,8 +13,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
@@ -72,8 +70,6 @@ class MainFragment : Fragment() {
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints
 
-        // TODO: Add the navigation
-        //  Do the trick to test if the memleak is real: Nav to songs, nav to playing, nav out of playing, nav to playing album, nav to songs
         navController?.let { controller ->
             binding.navBar.setOnNavigationItemSelectedListener {
                 navigateWithItem(controller, it)
@@ -91,7 +87,7 @@ class MainFragment : Fragment() {
                 )
 
                 binding.compactPlayback.visibility = View.GONE
-                playbackModel.resetCanAnimate()
+                playbackModel.disableAnimation()
             } else {
                 binding.compactPlayback.visibility = View.VISIBLE
             }
@@ -100,11 +96,12 @@ class MainFragment : Fragment() {
         playbackModel.navToSong.observe(viewLifecycleOwner) {
             if (it) {
                 if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    (navController!!.currentDestination?.id == R.id.album_detail_fragment
-                            && detailModel.currentAlbum.value == null
-                            || detailModel.currentAlbum.value?.id
-                            != playbackModel.song.value!!.album.id
-                    ) ||
+                    (
+                        navController!!.currentDestination?.id == R.id.album_detail_fragment &&
+                            detailModel.currentAlbum.value == null ||
+                            detailModel.currentAlbum.value?.id
+                                != playbackModel.song.value!!.album.id
+                        ) ||
                     navController.currentDestination?.id == R.id.artist_detail_fragment ||
                     navController.currentDestination?.id == R.id.genre_detail_fragment
                 ) {
