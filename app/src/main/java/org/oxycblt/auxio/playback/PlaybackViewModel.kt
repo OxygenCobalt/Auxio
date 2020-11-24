@@ -58,12 +58,15 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
     val loopMode: LiveData<LoopMode> get() = mLoopMode
 
-    private var mCanAnimate = false
-    val canAnimate: Boolean get() = mCanAnimate
-
     // Other
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
+
+    private val mNavToSong = MutableLiveData(false)
+    val navToSong: LiveData<Boolean> get() = mNavToSong
+
+    private var mCanAnimate = false
+    val canAnimate: Boolean get() = mCanAnimate
 
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
@@ -277,6 +280,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         viewModelScope.launch {
             playbackManager.saveStateToDatabase(context)
         }
+    }
+
+    fun navToPlayingSong() {
+        mNavToSong.value = true
+    }
+
+    fun doneWithNavToPlayingSong() {
+        mNavToSong.value = false
     }
 
     fun resetCanAnimate() {

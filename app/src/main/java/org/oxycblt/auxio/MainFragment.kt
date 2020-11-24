@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.accent
@@ -26,6 +27,7 @@ import java.lang.IllegalArgumentException
 
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,10 +72,8 @@ class MainFragment : Fragment() {
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints
 
-        navController?.let {
-            binding.navBar.setOnNavigationItemSelectedListener { item ->
-                navigateWithItem(item, it)
-            }
+        navController?.let { controller ->
+            binding.navBar.setupWithNavController(controller)
         }
 
         // --- VIEWMODEL SETUP ---
@@ -93,6 +93,19 @@ class MainFragment : Fragment() {
             }
         }
 
+        playbackModel.navToSong.observe(viewLifecycleOwner) {
+            if (it) {
+                if (binding.navBar.selectedItemId != R.id.library_fragment ||
+                    navController!!.currentDestination?.id == R.id.artist_detail_fragment ||
+                    navController.currentDestination?.id == R.id.genre_detail_fragment ||
+                    detailModel.currentAlbum.value == null ||
+                    detailModel.currentAlbum.value?.id != playbackModel.song.value!!.album.id
+                ) {
+                    binding.navBar.selectedItemId = R.id.library_fragment
+                }
+            }
+        }
+
         playbackModel.restorePlaybackIfNeeded(requireContext())
 
         Log.d(this::class.simpleName, "Fragment Created.")
@@ -107,16 +120,11 @@ class MainFragment : Fragment() {
         if (item.itemId != navController.currentDestination!!.id) {
             val builder = NavOptions.Builder().setLaunchSingleTop(true)
 
-            builder.setEnterAnim(R.anim.nav_default_enter_anim)
+            val options = builder.setEnterAnim(R.anim.nav_default_enter_anim)
                 .setExitAnim(R.anim.nav_default_exit_anim)
                 .setPopEnterAnim(R.anim.nav_default_enter_anim)
                 .setPopExitAnim(R.anim.nav_default_exit_anim)
-
-            if ((item.order and Menu.CATEGORY_SECONDARY) == 0) {
-                builder.setPopUpTo(navController.graph.startDestination, false)
-            }
-
-            val options = builder.build()
+                .build()
 
             return try {
                 navController.navigate(item.itemId, null, options)

@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album

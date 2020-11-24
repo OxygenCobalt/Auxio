@@ -151,6 +151,14 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
+        playbackModel.navToSong.observe(viewLifecycleOwner) {
+            if (it) {
+                libraryModel.updateNavigationStatus(false)
+
+                navToItem(playbackModel.song.value!!.album)
+            }
+        }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root

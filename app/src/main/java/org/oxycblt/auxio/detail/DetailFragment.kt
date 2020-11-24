@@ -32,7 +32,6 @@ abstract class DetailFragment : Fragment() {
         super.onPause()
         callback.isEnabled = false
     }
-
     private val callback = object : OnBackPressedCallback(false) {
 
         override fun handleOnBackPressed() {

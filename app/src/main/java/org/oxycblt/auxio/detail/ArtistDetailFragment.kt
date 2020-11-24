@@ -14,7 +14,6 @@ import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumActions
 

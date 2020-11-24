@@ -122,6 +122,25 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
+        playbackModel.navToSong.observe(viewLifecycleOwner) {
+            if (it) {
+                val pos = detailModel.currentAlbum.value!!.songs.indexOf(playbackModel.song.value)
+
+                if (pos != -1) {
+                    binding.albumSongRecycler.post {
+                        val y = binding.albumSongRecycler.y +
+                            binding.albumSongRecycler.getChildAt(pos).y
+
+                        binding.nestedScroll.smoothScrollBy(0, y.toInt())
+                    }
+
+                    playbackModel.doneWithNavToPlayingSong()
+                } else {
+                    findNavController().navigateUp()
+                }
+            }
+        }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
