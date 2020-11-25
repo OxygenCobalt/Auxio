@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".songs.SongsFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -16,17 +16,38 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_songs"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
-            app:title="@string/label_all_songs" />
+            app:title="@string/label_all_songs"
+            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_fast_scroll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/song_toolbar"
             tools:listitem="@layout/item_song" />
 
-    </LinearLayout>
+        <com.reddit.indicatorfastscroll.FastScrollerView
+            android:id="@+id/song_fast_scroll"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
+
+        <com.reddit.indicatorfastscroll.FastScrollerThumbView
+            android:id="@+id/song_fast_scroll_thumb"
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_fast_scroll"
+            app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

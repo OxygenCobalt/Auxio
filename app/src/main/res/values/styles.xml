@@ -47,6 +47,14 @@
         <item name="android:popupBackground">@color/background</item>
     </style>
 
+    <style name="TextAppearance.FastScroll" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="TextAppearance.ThumbIndicator" parent="TextAppearance.FastScroll">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <!--
     Fix to get QueueFragment to not overlap the Status Bar or Navigation Bar [Currently unused but still here]
     https://stackoverflow.com/a/57790787/14143986

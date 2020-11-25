@@ -77,16 +77,21 @@ dependencies {
 
     // --- THIRD PARTY ---
 
+    // ExoPlayer
+    def exoplayer_version = "2.12.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+
     // Image loading
     implementation 'io.coil-kt:coil:0.13.0'
 
     // Material
     implementation 'com.google.android.material:material:1.3.0-alpha03'
 
-    // ExoPlayer
-    def exoplayer_version = "2.12.1"
-    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+    // Fast-Scroll [Too lazy to make it myself]
+    implementation 'com.reddit:indicator-fast-scroll:1.3.0'
+
+    // --- DEV ---
 
     // Lint
     ktlint "com.pinterest:ktlint:0.37.2"

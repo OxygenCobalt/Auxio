@@ -7,7 +7,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 class SongAdapter(
-    private val data: List<Song>,
+    val data: List<Song>,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : RecyclerView.Adapter<SongViewHolder>() {
