@@ -11,6 +11,7 @@ package org.oxycblt.auxio.database
  * @property shuffleSeed - A long for the seed used to shuffle the queue [Used for quick-restore]
  * @property loopMode - The integer form of the current [org.oxycblt.auxio.playback.state.LoopMode]
  * @property inUserQueue - A bool for if the state was currently playing from the user queue.
+ * @author OxygenCobalt
  */
 data class PlaybackState(
     val id: Long = 0L,

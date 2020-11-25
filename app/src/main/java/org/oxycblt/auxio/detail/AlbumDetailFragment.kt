@@ -11,13 +11,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
-import org.oxycblt.auxio.detail.adapters.DetailSongAdapter
+import org.oxycblt.auxio.detail.adapters.AlbumSongAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
+/**
+ * The [DetailFragment] for an album.
+ * @author OxygenCobalt
+ */
 class AlbumDetailFragment : DetailFragment() {
 
     private val args: AlbumDetailFragmentArgs by navArgs()
@@ -42,7 +46,7 @@ class AlbumDetailFragment : DetailFragment() {
             )
         }
 
-        val songAdapter = DetailSongAdapter(
+        val songAdapter = AlbumSongAdapter(
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupAlbumSongActions(

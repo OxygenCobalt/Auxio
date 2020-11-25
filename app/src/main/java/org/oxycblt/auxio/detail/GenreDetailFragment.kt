@@ -11,12 +11,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
-import org.oxycblt.auxio.detail.adapters.DetailArtistAdapter
+import org.oxycblt.auxio.detail.adapters.GenreArtistAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupArtistActions
 
+/**
+ * The [DetailFragment] for a genre.
+ * @author OxygenCobalt
+ */
 class GenreDetailFragment : DetailFragment() {
 
     private val args: GenreDetailFragmentArgs by navArgs()
@@ -41,7 +45,7 @@ class GenreDetailFragment : DetailFragment() {
             )
         }
 
-        val artistAdapter = DetailArtistAdapter(
+        val artistAdapter = GenreArtistAdapter(
             doOnClick = {
                 if (!detailModel.isNavigating) {
                     detailModel.updateNavigationStatus(true)

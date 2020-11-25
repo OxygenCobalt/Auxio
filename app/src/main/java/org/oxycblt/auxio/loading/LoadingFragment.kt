@@ -17,6 +17,11 @@ import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
+/**
+ * The intermediary [Fragment] that asks for the READ_EXTERNAL_STORAGE permission and runs
+ * the music loading process in the background.
+ * @author OxygenCobalt
+ */
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
 
     private val loadingModel: LoadingViewModel by activityViewModels {

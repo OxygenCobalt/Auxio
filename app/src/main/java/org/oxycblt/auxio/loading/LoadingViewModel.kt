@@ -12,6 +12,11 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 
+/**
+ * A [ViewModel] responsible for getting the music loading process going and managing the response
+ * returned.
+ * @author OxygenCobalt
+ */
 class LoadingViewModel(private val app: Application) : ViewModel() {
     // UI control
     private val mResponse = MutableLiveData<MusicLoaderResponse>()

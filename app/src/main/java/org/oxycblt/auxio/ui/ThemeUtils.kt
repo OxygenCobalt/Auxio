@@ -36,7 +36,13 @@ private val ACCENTS = listOf(
 
 val accent = ACCENTS[5]
 
-// Get the transparent variant of a color int
+/**
+ * Gets the transparent form of a color.
+ * @param context [Context] required to create the color
+ * @param color The RESOURCE ID for the color
+ * @param alpha The new alpha that wants to be applied
+ * @return The new, resolved transparent color
+ */
 @ColorInt
 fun getTransparentAccent(context: Context, @ColorRes color: Int, alpha: Int): Int {
     return ColorUtils.setAlphaComponent(
@@ -45,13 +51,19 @@ fun getTransparentAccent(context: Context, @ColorRes color: Int, alpha: Int): In
     )
 }
 
-// Get the inactive transparency of an accent
+/**
+ * Get the inactive alpha of an accent.
+ */
 @ColorInt
 fun getInactiveAlpha(@ColorRes color: Int): Int {
     return if (color == R.color.yellow) 100 else 150
 }
 
-// Convert an integer to a color
+/**
+ * Resolve a color.
+ * @param context [Context] required
+ * @return The resolved color, black if the resolving process failed.
+ */
 @ColorInt
 fun Int.toColor(context: Context): Int {
     return try {
@@ -62,7 +74,12 @@ fun Int.toColor(context: Context): Int {
     }
 }
 
-// Resolve an attribute into a color
+/**
+ * Resolve an attribute into a color.
+ * @param context [Context] required
+ * @param attr The Resource ID for the attribute
+ * @return The resolved color for that attribute. Black if the process failed.
+ */
 @ColorInt
 fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     // Convert the attribute into its color

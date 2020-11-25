@@ -9,10 +9,13 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
-class DetailSongAdapter(
+/**
+ * An adapter for displaying the [Song]s of an album.
+ */
+class AlbumSongAdapter(
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
-) : ListAdapter<Song, DetailSongAdapter.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Song, AlbumSongAdapter.ViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemAlbumSongBinding.inflate(LayoutInflater.from(parent.context))

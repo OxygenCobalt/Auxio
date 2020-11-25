@@ -95,10 +95,13 @@ class QueueAdapter(
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
-        // Check for two things:
-        // If the data from the next queue is now entirely empty [Signified by a header at the end]
-        // Or if the data from the last queue is now entirely empty [Signified by there being 2 headers with no items in between]
-        // If so, remove that item and the removed item in a range. Otherwise just remove the item.
+        /*
+         * Check for two things:
+         * If the data from the next queue is now entirely empty [Signified by a header at the end]
+         * Or if the data from the last queue is now entirely empty [Signified by there being
+         * 2 headers with no items in between]
+         * If so, remove the header and the removed item in a range. Otherwise just remove the item.
+         */
         if (data[data.lastIndex] is Header) {
             val lastIndex = data.lastIndex
 
@@ -114,7 +117,7 @@ class QueueAdapter(
         }
     }
 
-    fun clearUserQueue() {
+    private fun clearUserQueue() {
         val nextQueueHeaderIndex = data.indexOfLast { it is Header }
         val slice = data.slice(0 until nextQueueHeaderIndex)
 

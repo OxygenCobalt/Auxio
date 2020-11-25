@@ -1,7 +1,7 @@
 package org.oxycblt.auxio.library
 
 import android.content.Context
-import android.view.MenuItem
+import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +14,11 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.SortMode
 
+/**
+ * A [ViewModel] that manages what [LibraryFragment] is currently showing, and also the search
+ * functionality.
+ * @author OxygenCobalt
+ */
 class LibraryViewModel : ViewModel() {
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
@@ -31,21 +36,13 @@ class LibraryViewModel : ViewModel() {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
 
-    fun updateSortMode(item: MenuItem) {
-        val mode = when (item.itemId) {
-            R.id.option_sort_none -> SortMode.NONE
-            R.id.option_sort_alpha_down -> SortMode.ALPHA_DOWN
-            R.id.option_sort_alpha_up -> SortMode.ALPHA_UP
-
-            else -> SortMode.NONE
-        }
-
-        if (mode != mSortMode.value) {
-            mSortMode.value = mode
-        }
-    }
-
-    fun updateSearchQuery(query: String, context: Context) {
+    /**
+     * Perform a search of the music library, given a query.
+     * Results are pushed to [searchResults].
+     * @param query The query for this search
+     * @param context The context needed to create the header text
+     */
+    fun doSearch(query: String, context: Context) {
         // Don't bother if the query is blank.
         if (query == "") {
             resetQuery()
@@ -109,5 +106,19 @@ class LibraryViewModel : ViewModel() {
 
     fun updateSearchFocusStatus(value: Boolean) {
         mSearchHasFocus = value
+    }
+
+    fun updateSortMode(@IdRes itemId: Int) {
+        val mode = when (itemId) {
+            R.id.option_sort_none -> SortMode.NONE
+            R.id.option_sort_alpha_down -> SortMode.ALPHA_DOWN
+            R.id.option_sort_alpha_up -> SortMode.ALPHA_UP
+
+            else -> SortMode.NONE
+        }
+
+        if (mode != mSortMode.value) {
+            mSortMode.value = mode
+        }
     }
 }

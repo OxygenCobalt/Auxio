@@ -9,7 +9,8 @@ import org.oxycblt.auxio.music.processing.MusicSorter
 import org.oxycblt.auxio.recycler.ShowMode
 
 /**
- * The main storage for music items. Use [MusicStore.getInstance] to get the instance.
+ * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
+ * TODO: Add a viewmodel so that UI elements aren't messing with the shared object.
  */
 class MusicStore private constructor() {
     private var mGenres = listOf<Genre>()

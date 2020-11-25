@@ -8,7 +8,11 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
-// The drag callback used for the Queue RecyclerView.
+/**
+ * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
+ * and [QueueAdapter] simultaneously.
+ * @author OxygenCobalt
+ */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter
 

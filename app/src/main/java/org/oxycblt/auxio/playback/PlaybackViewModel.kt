@@ -20,7 +20,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
- * The ViewModel that provides a UI-Focused frontend for [PlaybackStateManager].
+ * The ViewModel that provides a UI frontend for [PlaybackStateManager].
  * @author OxygenCobalt
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {

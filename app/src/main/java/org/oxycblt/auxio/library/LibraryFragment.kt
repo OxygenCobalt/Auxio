@@ -69,7 +69,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
             setOnMenuItemClickListener {
                 if (it.itemId != R.id.action_search) {
-                    libraryModel.updateSortMode(it)
+                    libraryModel.updateSortMode(it.itemId)
                 } else {
                     // Do whatever this is in order to make the SearchView focusable.
                     (it.actionView as SearchView).isIconified = false
@@ -92,7 +92,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                     libraryModel.updateSearchFocusStatus(hasFocus)
-                    libraryModel.updateSearchQuery(searchView.query.toString(), requireContext())
+                    libraryModel.doSearch(searchView.query.toString(), requireContext())
                     item.isVisible = !hasFocus
                 }
 
@@ -177,7 +177,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
-        libraryModel.updateSearchQuery(query, requireContext())
+        libraryModel.doSearch(query, requireContext())
 
         return true
     }

@@ -20,6 +20,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
  * edit them as well.
  *
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
+ * @author OxygenCobalt
  */
 class QueueFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

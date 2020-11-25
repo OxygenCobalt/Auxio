@@ -12,7 +12,10 @@ import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
 
-// The primary RecyclerView adapter for the library. Displays genres, artists, and albums.
+/**
+ * The primary recyclerview for the library. Can display either Genres, Artists, and Albums.
+ * @author OxygenCobalt
+ */
 class LibraryAdapter(
     private val showMode: ShowMode,
     private val doOnClick: (data: BaseModel) -> Unit,

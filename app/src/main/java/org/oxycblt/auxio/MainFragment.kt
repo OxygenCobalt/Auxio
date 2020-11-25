@@ -120,6 +120,9 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    // Functions that check if MainFragment should nav over to LibraryFragment, or whether
+    // it should stay put. Mostly by checking if the navController is currently in a detail
+    // fragment, and if the playing item is already being shown.
     private fun shouldGoToAlbum(controller: NavController): Boolean {
         return (
             controller.currentDestination!!.id == R.id.album_detail_fragment &&
@@ -156,6 +159,8 @@ class MainFragment : Fragment() {
                 false
             }
         }
+
+        //
 
         return false
     }

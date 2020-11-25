@@ -10,7 +10,10 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
-class DetailAlbumAdapter(
+/**
+ * An adapter for displaying the [Album]s of an artist.
+ */
+class ArtistAlbumAdapter(
     private val doOnClick: (data: Album) -> Unit,
     private val doOnLongClick: (data: Album, view: View) -> Unit,
 ) : ListAdapter<Album, RecyclerView.ViewHolder>(DiffCallback()) {

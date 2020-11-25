@@ -80,6 +80,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         return START_NOT_STICKY
     }
 
+    // No binding, service is headless. Deliver updates through PlaybackStateManager instead.
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {

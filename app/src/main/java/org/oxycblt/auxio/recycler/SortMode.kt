@@ -6,7 +6,12 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 
-// Sorting modes
+/**
+ * An enum for the current sorting mode. Contains helper functions to sort lists based
+ * off the given sorting mode.
+ * @property iconRes The icon for this [SortMode]
+ * @author OxygenCobalt
+ */
 enum class SortMode(val iconRes: Int) {
     // Icons for each mode are assigned to the enums themselves
     NONE(R.drawable.ic_sort_none),

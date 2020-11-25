@@ -15,6 +15,11 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.setupSongActions
 
+/**
+ * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
+ * them.
+ * @author OxygenCobalt
+ */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 

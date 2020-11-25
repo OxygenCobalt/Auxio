@@ -8,7 +8,10 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
-// ViewModel for the Detail Fragments.
+/**
+ * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
+ * [SortMode] they are currently on.
+ */
 class DetailViewModel : ViewModel() {
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating

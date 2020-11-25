@@ -21,7 +21,10 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 
 // Functions for managing UI elements [Not Colors]
 
-// Apply a color to a Menu Item
+/**
+ * Apply a text color to a [MenuItem]
+ * @param color The text color that should be applied.
+ */
 fun MenuItem.applyColor(@ColorInt color: Int) {
     SpannableString(title).apply {
         setSpan(ForegroundColorSpan(color), 0, length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -29,7 +32,10 @@ fun MenuItem.applyColor(@ColorInt color: Int) {
     }
 }
 
-// Disable an ImageButton
+/**
+ * Disable an image button.
+ * @param context [Context] required to change the [ImageButton]s color.
+ */
 fun ImageButton.disable(context: Context) {
     if (isEnabled) {
         imageTintList = ColorStateList.valueOf(
@@ -40,10 +46,17 @@ fun ImageButton.disable(context: Context) {
     }
 }
 
+/**
+ * Create a [Toast] from a [String]
+ * @param context [Context] required to create the toast
+ */
 fun String.createToast(context: Context) {
     Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
 }
 
+/**
+ * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
+ */
 fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: PlaybackViewModel) {
     setOnMenuItemClickListener {
         when (it.itemId) {
@@ -68,11 +81,13 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
     }
     inflateAndShow(R.menu.menu_song_actions)
 }
-
+/**
+ * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
+ */
 fun PopupMenu.setupAlbumSongActions(
     song: Song,
     context: Context,
-    detailViewModel: DetailViewModel,
+    detailModel: DetailViewModel,
     playbackModel: PlaybackViewModel
 ) {
     setOnMenuItemClickListener {
@@ -85,7 +100,7 @@ fun PopupMenu.setupAlbumSongActions(
             }
 
             R.id.action_go_artist -> {
-                detailViewModel.doNavToParent()
+                detailModel.doNavToParent()
                 true
             }
 
@@ -100,6 +115,9 @@ fun PopupMenu.setupAlbumSongActions(
     inflateAndShow(R.menu.menu_album_song_actions)
 }
 
+/**
+ * Show actions for an [Album]
+ */
 fun PopupMenu.setupAlbumActions(
     album: Album,
     context: Context,
@@ -130,6 +148,9 @@ fun PopupMenu.setupAlbumActions(
     inflateAndShow(R.menu.menu_album_actions)
 }
 
+/**
+ * Show actions for an [Artist]
+ */
 fun PopupMenu.setupArtistActions(
     artist: Artist,
     context: Context,
@@ -160,6 +181,9 @@ fun PopupMenu.setupArtistActions(
     inflateAndShow(R.menu.menu_detail)
 }
 
+/**
+ * Show actions for a [Genre]
+ */
 fun PopupMenu.setupGenreActions(
     genre: Genre,
     context: Context,
@@ -190,6 +214,9 @@ fun PopupMenu.setupGenreActions(
     inflateAndShow(R.menu.menu_detail)
 }
 
+/**
+ * Shortcut method that inflates a menu and shows the action menu.
+ */
 private fun PopupMenu.inflateAndShow(@MenuRes menuRes: Int) {
     inflate(menuRes)
     show()

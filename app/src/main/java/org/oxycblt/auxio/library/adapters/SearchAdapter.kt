@@ -17,6 +17,10 @@ import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
+/**
+ * A Multi-ViewHolder adapter that displays the results of a search query.
+ * @author OxygenCobalt
+ */
 class SearchAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,
     private val doOnLongClick: (data: BaseModel, view: View) -> Unit

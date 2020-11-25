@@ -9,10 +9,13 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
-class DetailArtistAdapter(
+/**
+ * An adapter for displaying the [Artist]s of an genre.
+ */
+class GenreArtistAdapter(
     private val doOnClick: (data: Artist) -> Unit,
     private val doOnLongClick: (data: Artist, view: View) -> Unit
-) : ListAdapter<Artist, DetailArtistAdapter.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Artist, GenreArtistAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

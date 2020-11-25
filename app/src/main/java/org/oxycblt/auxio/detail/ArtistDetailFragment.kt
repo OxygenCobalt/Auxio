@@ -11,13 +11,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
-import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
+import org.oxycblt.auxio.detail.adapters.ArtistAlbumAdapter
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumActions
 
+/**
+ * The [DetailFragment] for an artist.
+ * @author OxygenCobalt
+ */
 class ArtistDetailFragment : DetailFragment() {
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -41,7 +45,7 @@ class ArtistDetailFragment : DetailFragment() {
             )
         }
 
-        val albumAdapter = DetailAlbumAdapter(
+        val albumAdapter = ArtistAlbumAdapter(
             doOnClick = {
                 if (!detailModel.isNavigating) {
                     detailModel.updateNavigationStatus(true)
