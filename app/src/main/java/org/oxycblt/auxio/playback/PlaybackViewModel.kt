@@ -62,8 +62,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
 
-    private val mNavToSong = MutableLiveData(false)
-    val navToSong: LiveData<Boolean> get() = mNavToSong
+    private val mNavToPlayingSong = MutableLiveData(false)
+    val navToPlayingSong: LiveData<Boolean> get() = mNavToPlayingSong
+
+    private val mNavToPlayingAlbum = MutableLiveData(false)
+    val navToPlayingAlbum: LiveData<Boolean> get() = mNavToPlayingAlbum
+
+    private val mNavToPlayingArtist = MutableLiveData(false)
+    val navToPlayingArtist: LiveData<Boolean> get() = mNavToPlayingArtist
 
     private var mCanAnimate = false
     val canAnimate: Boolean get() = mCanAnimate
@@ -283,11 +289,27 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     fun navToPlayingSong() {
-        mNavToSong.value = true
+        mNavToPlayingSong.value = true
     }
 
     fun doneWithNavToPlayingSong() {
-        mNavToSong.value = false
+        mNavToPlayingSong.value = false
+    }
+
+    fun navToPlayingAlbum() {
+        mNavToPlayingAlbum.value = true
+    }
+
+    fun doneWithNavToPlayingAlbum() {
+        mNavToPlayingAlbum.value = false
+    }
+
+    fun navToPlayingArtist() {
+        mNavToPlayingArtist.value = true
+    }
+
+    fun doneWithNavToPlayingArtist() {
+        mNavToPlayingArtist.value = false
     }
 
     fun enableAnimation() {

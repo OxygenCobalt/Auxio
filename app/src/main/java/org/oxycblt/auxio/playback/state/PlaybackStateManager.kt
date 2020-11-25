@@ -22,7 +22,7 @@ import kotlin.random.Random
  * - If you want to use the playback state with the ExoPlayer instance or system-side things,
  * use [org.oxycblt.auxio.playback.PlaybackService].
  *
- * All instantiation should be done with [PlaybackStateManager.from()].
+ * All instantiation should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -560,12 +560,12 @@ class PlaybackStateManager private constructor() {
             // Traverse albums and then album songs instead of just the songs, as its faster.
             musicStore.albums.find { it.id == item.albumId }
                 ?.songs?.find { it.id == item.songId }?.let {
-                    if (item.isUserQueue) {
-                        mUserQueue.add(it)
-                    } else {
-                        mQueue.add(it)
-                    }
+                if (item.isUserQueue) {
+                    mUserQueue.add(it)
+                } else {
+                    mQueue.add(it)
                 }
+            }
         }
 
         // Get a more accurate index [At least if were not in the user queue]

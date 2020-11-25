@@ -188,6 +188,7 @@ class PlaybackStateDatabase(context: Context) :
 
         var position = 0
 
+        // Try to write out the entirety of the queue, any failed inserts will be skipped.
         while (position < queue.size) {
             database.beginTransaction()
             var i = position

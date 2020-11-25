@@ -108,6 +108,12 @@ class ArtistDetailFragment : DetailFragment() {
             )
         }
 
+        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
+            if (it) {
+                playbackModel.doneWithNavToPlayingArtist()
+            }
+        }
+
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root

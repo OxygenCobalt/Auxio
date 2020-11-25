@@ -187,6 +187,24 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
+        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigateUp()
+            }
+        }
+
+        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigateUp()
+            }
+        }
+
+        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigateUp()
+            }
+        }
+
         Log.d(this::class.simpleName, "Fragment Created.")
 
         return binding.root

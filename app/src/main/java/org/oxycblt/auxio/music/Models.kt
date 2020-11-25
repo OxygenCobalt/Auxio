@@ -69,6 +69,9 @@ data class Album(
 
 /**
  * The data object for an artist. Inherits [BaseModel]
+ * @property albums The list of all [Album]s in this artist
+ * @property genres The list of all parent [Genre]s in this artist, sorted by relevance
+ * @property songs  The list of all [Song]s in this artist
  * @author OxygenCobalt
  */
 data class Artist(
@@ -89,7 +92,8 @@ data class Artist(
 
 /**
  * The data object for a genre. Inherits [BaseModel]
- * @property artists The list of all [Artist]s in this genre
+ * @property artists The list of all [Artist]s in this genre.
+ * @property albums  The list of all [Album]s in this genre.
  * @property songs   The list of all [Song]s in this genre.
  * @author OxygenCobalt
  */
@@ -117,6 +121,8 @@ data class Genre(
 
 /**
  * A data object used solely for the "Header" UI element. Inherits [BaseModel].
+ * @property isAction Value that marks whether this header should have an action attached to it.
+ * @author OxygenCobalt
  */
 data class Header(
     override val id: Long = -1,

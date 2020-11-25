@@ -151,11 +151,27 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        playbackModel.navToSong.observe(viewLifecycleOwner) {
+        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
             if (it) {
                 libraryModel.updateNavigationStatus(false)
 
                 navToItem(playbackModel.song.value!!.album)
+            }
+        }
+
+        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
+            if (it) {
+                libraryModel.updateNavigationStatus(false)
+
+                navToItem(playbackModel.song.value!!.album)
+            }
+        }
+
+        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
+            if (it) {
+                libraryModel.updateNavigationStatus(false)
+
+                navToItem(playbackModel.song.value!!.album.artist)
             }
         }
 

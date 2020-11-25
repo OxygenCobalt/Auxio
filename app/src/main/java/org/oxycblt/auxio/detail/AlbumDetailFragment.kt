@@ -122,22 +122,30 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        playbackModel.navToSong.observe(viewLifecycleOwner) {
+        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
             if (it) {
                 // Calculate where the item for the currently played song is, and navigate to there.
-                val pos = detailModel.currentAlbum.value!!.songs.indexOf(playbackModel.song.value)
+                val pos = detailModel.albumSortMode.value!!.getSortedSongList(
+                    detailModel.currentAlbum.value!!.songs
+                ).indexOf(playbackModel.song.value)
 
                 if (pos != -1) {
                     binding.albumSongRecycler.post {
                         // Only scroll after UI creation
                         val y = binding.albumSongRecycler.y +
-                                binding.albumSongRecycler.getChildAt(pos).y
+                            binding.albumSongRecycler.getChildAt(pos).y
 
-                        binding.nestedScroll.smoothScrollBy(0, y.toInt())
+                        binding.nestedScroll.smoothScrollTo(0, y.toInt())
                     }
 
                     playbackModel.doneWithNavToPlayingSong()
                 }
+            }
+        }
+
+        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
+            if (it) {
+                playbackModel.doneWithNavToPlayingAlbum()
             }
         }
 

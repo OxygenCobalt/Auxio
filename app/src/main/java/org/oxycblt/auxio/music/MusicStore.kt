@@ -9,7 +9,7 @@ import org.oxycblt.auxio.music.processing.MusicSorter
 import org.oxycblt.auxio.recycler.ShowMode
 
 /**
- * The main storage for music items. Use [MusicStore.from()] to get the instance.
+ * The main storage for music items. Use [MusicStore.getInstance] to get the instance.
  */
 class MusicStore private constructor() {
     private var mGenres = listOf<Genre>()

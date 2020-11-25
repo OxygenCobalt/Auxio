@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
@@ -54,10 +55,14 @@ class CompactPlaybackFragment : Fragment() {
             true
         }
 
-        binding.playbackControls.setOnLongClickListener {
-            playbackModel.save(requireContext())
-            getString(R.string.debug_state_saved).createToast(requireContext())
-            true
+        // Enable the ability to force-save the state in debug builds, in order to check
+        // for persistence issues without waiting for PlaybackService to be killed.
+        if (BuildConfig.DEBUG) {
+            binding.playbackControls.setOnLongClickListener {
+                playbackModel.save(requireContext())
+                getString(R.string.debug_state_saved).createToast(requireContext())
+                true
+            }
         }
 
         // --- VIEWMODEL SETUP ---

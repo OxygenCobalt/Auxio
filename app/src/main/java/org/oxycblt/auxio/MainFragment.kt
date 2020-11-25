@@ -59,9 +59,9 @@ class MainFragment : Fragment() {
         )
 
         val navController = (
-                childFragmentManager.findFragmentById(R.id.explore_nav_host)
-                        as NavHostFragment?
-                )?.findNavController()
+            childFragmentManager.findFragmentById(R.id.explore_nav_host)
+                as NavHostFragment?
+            )?.findNavController()
 
         // --- UI SETUP ---
 
@@ -93,17 +93,30 @@ class MainFragment : Fragment() {
             }
         }
 
-        playbackModel.navToSong.observe(viewLifecycleOwner) {
+        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
             if (it) {
                 if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    (
-                            navController!!.currentDestination?.id == R.id.album_detail_fragment &&
-                                    detailModel.currentAlbum.value == null ||
-                                    detailModel.currentAlbum.value?.id
-                                    != playbackModel.song.value!!.album.id
-                            ) ||
-                    navController.currentDestination?.id == R.id.artist_detail_fragment ||
-                    navController.currentDestination?.id == R.id.genre_detail_fragment
+                    shouldGoToAlbum(navController!!)
+                ) {
+                    binding.navBar.selectedItemId = R.id.library_fragment
+                }
+            }
+        }
+
+        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
+            if (it) {
+                if (binding.navBar.selectedItemId != R.id.library_fragment ||
+                    shouldGoToAlbum(navController!!)
+                ) {
+                    binding.navBar.selectedItemId = R.id.library_fragment
+                }
+            }
+        }
+
+        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
+            if (it) {
+                if (binding.navBar.selectedItemId != R.id.library_fragment ||
+                    shouldGoToArtist(navController!!)
                 ) {
                     binding.navBar.selectedItemId = R.id.library_fragment
                 }
@@ -115,6 +128,25 @@ class MainFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment Created.")
 
         return binding.root
+    }
+
+    // I have no idea what these things even do
+    private fun shouldGoToAlbum(controller: NavController): Boolean {
+        return (
+            controller.currentDestination!!.id == R.id.album_detail_fragment &&
+                detailModel.currentAlbum.value?.id != playbackModel.song.value!!.album.id
+            ) ||
+            controller.currentDestination!!.id == R.id.artist_detail_fragment ||
+            controller.currentDestination!!.id == R.id.genre_detail_fragment
+    }
+
+    private fun shouldGoToArtist(controller: NavController): Boolean {
+        return (
+            controller.currentDestination!!.id == R.id.artist_detail_fragment &&
+                detailModel.currentArtist.value?.id != playbackModel.song.value!!.album.artist.id
+            ) ||
+            controller.currentDestination!!.id == R.id.album_detail_fragment ||
+            controller.currentDestination!!.id == R.id.genre_detail_fragment
     }
 
     private fun navigateWithItem(navController: NavController, item: MenuItem): Boolean {
