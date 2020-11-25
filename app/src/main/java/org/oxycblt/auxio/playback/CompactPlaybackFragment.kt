@@ -51,7 +51,7 @@ class CompactPlaybackFragment : Fragment() {
         }
 
         binding.root.setOnLongClickListener {
-            playbackModel.navToPlayingSong()
+            playbackModel.navToItem(playbackModel.song.value!!)
             true
         }
 

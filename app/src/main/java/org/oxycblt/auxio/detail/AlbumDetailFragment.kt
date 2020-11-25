@@ -122,8 +122,9 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
-            if (it) {
+        playbackModel.navToItem.observe(viewLifecycleOwner) {
+            if (it != null) {
+                /*
                 // Calculate where the item for the currently played song is, and navigate to there.
                 val pos = detailModel.albumSortMode.value!!.getSortedSongList(
                     detailModel.currentAlbum.value!!.songs
@@ -135,17 +136,14 @@ class AlbumDetailFragment : DetailFragment() {
                         val y = binding.albumSongRecycler.y +
                             binding.albumSongRecycler.getChildAt(pos).y
 
-                        binding.nestedScroll.smoothScrollTo(0, y.toInt())
+                        binding.nestedScroll.scrollTo(0, y.toInt())
                     }
 
-                    playbackModel.doneWithNavToPlayingSong()
+                    playbackModel.doneWithNavToItem()
                 }
-            }
-        }
-
-        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
-            if (it) {
-                playbackModel.doneWithNavToPlayingAlbum()
+                TODO: Re-add scroll if you find a way to implement the playing indicators on song items
+                 */
+                playbackModel.doneWithNavToItem()
             }
         }
 

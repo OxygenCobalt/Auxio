@@ -21,7 +21,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
  * The ViewModel that provides a UI-Focused frontend for [PlaybackStateManager].
- * TODO: Implement navigation to playing album/artist
  * @author OxygenCobalt
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
@@ -62,14 +61,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsSeeking = MutableLiveData(false)
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
 
-    private val mNavToPlayingSong = MutableLiveData(false)
-    val navToPlayingSong: LiveData<Boolean> get() = mNavToPlayingSong
-
-    private val mNavToPlayingAlbum = MutableLiveData(false)
-    val navToPlayingAlbum: LiveData<Boolean> get() = mNavToPlayingAlbum
-
-    private val mNavToPlayingArtist = MutableLiveData(false)
-    val navToPlayingArtist: LiveData<Boolean> get() = mNavToPlayingArtist
+    private val mNavToItem = MutableLiveData<BaseModel?>()
+    val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
     private var mCanAnimate = false
     val canAnimate: Boolean get() = mCanAnimate
@@ -288,28 +281,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    fun navToPlayingSong() {
-        mNavToPlayingSong.value = true
+    fun navToItem(item: BaseModel) {
+        mNavToItem.value = item
     }
 
-    fun doneWithNavToPlayingSong() {
-        mNavToPlayingSong.value = false
-    }
-
-    fun navToPlayingAlbum() {
-        mNavToPlayingAlbum.value = true
-    }
-
-    fun doneWithNavToPlayingAlbum() {
-        mNavToPlayingAlbum.value = false
-    }
-
-    fun navToPlayingArtist() {
-        mNavToPlayingArtist.value = true
-    }
-
-    fun doneWithNavToPlayingArtist() {
-        mNavToPlayingArtist.value = false
+    fun doneWithNavToItem() {
+        mNavToItem.value = null
     }
 
     fun enableAnimation() {

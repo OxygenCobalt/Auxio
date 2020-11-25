@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
 import org.oxycblt.auxio.detail.adapters.DetailAlbumAdapter
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.disable
@@ -108,9 +109,9 @@ class ArtistDetailFragment : DetailFragment() {
             )
         }
 
-        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
-            if (it) {
-                playbackModel.doneWithNavToPlayingArtist()
+        playbackModel.navToItem.observe(viewLifecycleOwner) {
+            if (it != null && it is Artist) {
+                playbackModel.doneWithNavToItem()
             }
         }
 

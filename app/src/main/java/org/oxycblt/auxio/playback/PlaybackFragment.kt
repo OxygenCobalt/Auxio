@@ -187,20 +187,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigateUp()
-            }
-        }
-
-        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigateUp()
-            }
-        }
-
-        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
-            if (it) {
+        playbackModel.navToItem.observe(viewLifecycleOwner) {
+            if (it != null) {
                 findNavController().navigateUp()
             }
         }

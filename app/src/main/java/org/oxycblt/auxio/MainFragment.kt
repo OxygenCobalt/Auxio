@@ -15,7 +15,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getInactiveAlpha
@@ -93,32 +96,19 @@ class MainFragment : Fragment() {
             }
         }
 
-        playbackModel.navToPlayingSong.observe(viewLifecycleOwner) {
-            if (it) {
-                if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    shouldGoToAlbum(navController!!)
-                ) {
+        playbackModel.navToItem.observe(viewLifecycleOwner) {
+            if (it != null) {
+                // If the current destination isnt even LibraryFragment, then navigate there first
+                if (binding.navBar.selectedItemId != R.id.library_fragment) {
                     binding.navBar.selectedItemId = R.id.library_fragment
-                }
-            }
-        }
-
-        playbackModel.navToPlayingAlbum.observe(viewLifecycleOwner) {
-            if (it) {
-                if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    shouldGoToAlbum(navController!!)
-                ) {
-                    binding.navBar.selectedItemId = R.id.library_fragment
-                }
-            }
-        }
-
-        playbackModel.navToPlayingArtist.observe(viewLifecycleOwner) {
-            if (it) {
-                if (binding.navBar.selectedItemId != R.id.library_fragment ||
-                    shouldGoToArtist(navController!!)
-                ) {
-                    binding.navBar.selectedItemId = R.id.library_fragment
+                } else {
+                    // If the user currently is in library, check if its valid to navigate to the
+                    // item in question.
+                    if ((it is Album || it is Song) && shouldGoToAlbum(navController!!)) {
+                        binding.navBar.selectedItemId = R.id.library_fragment
+                    } else if (it is Artist && shouldGoToArtist(navController!!)) {
+                        binding.navBar.selectedItemId = R.id.library_fragment
+                    }
                 }
             }
         }
@@ -130,7 +120,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    // I have no idea what these things even do
     private fun shouldGoToAlbum(controller: NavController): Boolean {
         return (
             controller.currentDestination!!.id == R.id.album_detail_fragment &&
