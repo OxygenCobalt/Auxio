@@ -82,19 +82,20 @@ class SongsFragment : Fragment() {
                     val item = musicStore.songs[pos]
                     iters++
 
-                    var char = item.name[0].toUpperCase()
-
                     // If the item starts with "the"/"a", then actually use the character after that
-                    // as its initial. Yes, this is stupidly anglo-centric but the code [hopefully]
+                    // as its initial. Yes, this is stupidly western-centric but the code [hopefully]
                     // shouldn't run with other languages.
-                    if (item.name.length > 5 &&
+                    val char: Char = if (item.name.length > 5 &&
                         item.name.startsWith("the ", ignoreCase = true)
                     ) {
-                        char = item.name[4].toUpperCase()
+                        item.name[4].toUpperCase()
                     } else if (item.name.length > 3 &&
                         item.name.startsWith("a ", ignoreCase = true)
                     ) {
-                        char = item.name[2].toUpperCase()
+                        item.name[2].toUpperCase()
+                    } else {
+                        // If it doesn't begin with that word, then just use the first character.
+                        item.name[0].toUpperCase()
                     }
 
                     // Check if this song starts with a number, if so, then concat it with a single

@@ -129,8 +129,8 @@
                     android:paddingEnd="@dimen/margin_medium"
                     android:paddingBottom="@dimen/padding_small"
                     app:layout_constraintBottom_toBottomOf="@+id/genre_artist_header"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/genre_artist_header"
-                    tools:layout_editor_absoluteX="355dp"
                     tools:src="@drawable/ic_sort_alpha_down" />
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -235,17 +235,25 @@ class PlaybackStateManager private constructor() {
 
     // --- QUEUE FUNCTIONS ---
 
+    /**
+     * Go to the next song, along with doing all the checks that entails.
+     */
     fun next() {
         resetLoopMode()
 
+        // If there's anything in the user queue, go to the first song in there instead
+        // of incrementing the index.
         if (mUserQueue.isNotEmpty()) {
             updatePlayback(mUserQueue[0])
             mUserQueue.removeAt(0)
 
+            // Mark that the playback state is currently in the user queue, for later.
             mIsInUserQueue = true
 
             forceUserQueueUpdate()
         } else {
+            // If not in the user queue, then increment the current index
+            // If it cant be incremented anymore, end playback or loop depending on the setting.
             if (mIndex < mQueue.lastIndex) {
                 mIndex = mIndex.inc()
             } else {
@@ -261,6 +269,9 @@ class PlaybackStateManager private constructor() {
         }
     }
 
+    /**
+     * Go to the previous song, doing any checks that are needed.
+     */
     fun prev() {
         if (mIndex > 0 && !mIsInUserQueue) {
             mIndex = mIndex.dec()
@@ -457,6 +468,8 @@ class PlaybackStateManager private constructor() {
             database.writeQueue(queueItems)
         }
 
+        getCommonGenre()
+
         val time = System.currentTimeMillis() - start
 
         Log.d(this::class.simpleName, "Save finished in ${time}ms")
@@ -486,6 +499,7 @@ class PlaybackStateManager private constructor() {
 
             unpackFromPlaybackState(it)
             unpackQueue(queueItems)
+            doParentSanityCheck()
         }
 
         val time = System.currentTimeMillis() - start
@@ -568,7 +582,8 @@ class PlaybackStateManager private constructor() {
             }
         }
 
-        // Get a more accurate index [At least if were not in the user queue]
+        // When done, get a more accurate index to prevent issues with queue songs that were saved
+        // to the db but are now deleted when the restore occurred.
         if (!mIsInUserQueue) {
             mSong?.let {
                 val index = mQueue.indexOf(it)
@@ -578,6 +593,62 @@ class PlaybackStateManager private constructor() {
 
         forceQueueUpdate()
         forceUserQueueUpdate()
+    }
+
+    private fun doParentSanityCheck() {
+        // Check if the parent was lost while in the DB.
+        if (mSong != null && mParent == null && mMode != PlaybackMode.ALL_SONGS) {
+            Log.d(this::class.simpleName, "Parent lost, attempting restore.")
+
+            mParent = when (mMode) {
+                PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
+                PlaybackMode.IN_ARTIST -> mQueue.firstOrNull()?.album?.artist
+                PlaybackMode.IN_GENRE -> getCommonGenre()
+                PlaybackMode.ALL_SONGS -> null
+            }
+        }
+    }
+
+    /**
+     * Search for the common genre out of a queue of songs that **should have a common genre**.
+     * @return The **single** common genre, null if there isn't any or if there's multiple.
+     */
+    private fun getCommonGenre(): Genre? {
+        // Pool of "Possible" genres, these get narrowed down until the list is only
+        // the actual genre(s) that all songs in the queue have in common.
+        var genres = mutableListOf<Genre>()
+        var otherGenres: MutableList<Genre>
+
+        for (queueSong in mQueue) {
+            // If there's still songs to check despite the pool of genres being empty, re-add them.
+            if (genres.size == 0) {
+                genres.addAll(queueSong.album.artist.genres)
+                continue
+            }
+
+            otherGenres = genres.toMutableList()
+
+            // Iterate through the current genres and remove the ones that don't exist in this song,
+            // narrowing down the pool of possible genres.
+            for (genre in genres) {
+                if (queueSong.album.artist.genres.find { it.id == genre.id } == null) {
+                    otherGenres.remove(genre)
+                }
+            }
+
+            genres = otherGenres.toMutableList()
+        }
+
+        Log.d(this::class.simpleName, "Found genre $genres")
+
+        // There should not be more than one common genre, so return null if that's the case
+        if (genres.size > 1) {
+            return null
+        }
+
+        // Sometimes the narrowing process will lead to a zero-size list, so return null if that
+        // is the case.
+        return genres.firstOrNull()
     }
 
     // --- ORDERING FUNCTIONS ---

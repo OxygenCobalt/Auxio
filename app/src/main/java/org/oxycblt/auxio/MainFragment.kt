@@ -26,6 +26,7 @@ import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.toColor
 import kotlin.IllegalArgumentException
 
+// TODO: Dedicated Search Tab?
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -98,7 +99,7 @@ class MainFragment : Fragment() {
 
         playbackModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
-                // If the current destination isnt even LibraryFragment, then navigate there first
+                // If the current destination isn't even LibraryFragment, then navigate there first
                 if (binding.navBar.selectedItemId != R.id.library_fragment) {
                     binding.navBar.selectedItemId = R.id.library_fragment
                 } else {

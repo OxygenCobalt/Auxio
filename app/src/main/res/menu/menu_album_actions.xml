@@ -10,7 +10,7 @@
         android:id="@+id/action_shuffle"
         android:icon="@drawable/ic_shuffle"
         android:title="@string/label_shuffle"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_queue_add"
         android:icon="@drawable/ic_queue_add"

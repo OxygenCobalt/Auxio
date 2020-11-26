@@ -49,6 +49,7 @@
 
     <style name="TextAppearance.FastScroll" parent="TextAppearance.AppCompat.Body2">
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:verticalSpacing">1dp</item>
     </style>
 
     <style name="TextAppearance.ThumbIndicator" parent="TextAppearance.FastScroll">
