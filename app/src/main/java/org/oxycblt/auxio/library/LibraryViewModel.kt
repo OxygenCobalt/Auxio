@@ -20,12 +20,6 @@ import org.oxycblt.auxio.recycler.SortMode
  * @author OxygenCobalt
  */
 class LibraryViewModel : ViewModel() {
-    private var mIsNavigating = false
-    val isNavigating: Boolean get() = mIsNavigating
-
-    private var mSearchHasFocus = false
-    val searchHasFocus: Boolean get() = mSearchHasFocus
-
     // TODO: Move these to prefs when they're added
     private val mShowMode = MutableLiveData(ShowMode.SHOW_ARTISTS)
     val showMode: LiveData<ShowMode> get() = mShowMode
@@ -35,6 +29,12 @@ class LibraryViewModel : ViewModel() {
 
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
+
+    private var mIsNavigating = false
+    val isNavigating: Boolean get() = mIsNavigating
+
+    private var mSearchHasFocus = false
+    val searchHasFocus: Boolean get() = mSearchHasFocus
 
     /**
      * Perform a search of the music library, given a query.

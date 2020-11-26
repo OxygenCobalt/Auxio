@@ -5,5 +5,5 @@
         android:id="@+id/action_shuffle"
         android:icon="@drawable/ic_shuffle"
         android:title="@string/label_shuffle"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

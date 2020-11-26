@@ -129,25 +129,30 @@ class AlbumDetailFragment : DetailFragment() {
         playbackModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 /*
-                // Calculate where the item for the currently played song is, and navigate to there.
-                val pos = detailModel.albumSortMode.value!!.getSortedSongList(
-                    detailModel.currentAlbum.value!!.songs
-                ).indexOf(playbackModel.song.value)
+                if (it is Song) {
+                    // Calculate where the item for the currently played song is, and navigate to there.
+                    val pos = detailModel.albumSortMode.value!!.getSortedSongList(
+                        detailModel.currentAlbum.value!!.songs
+                    ).indexOf(playbackModel.song.value)
 
-                if (pos != -1) {
-                    binding.albumSongRecycler.post {
-                        // Only scroll after UI creation
-                        val y = binding.albumSongRecycler.y +
-                            binding.albumSongRecycler.getChildAt(pos).y
+                    if (pos != -1) {
+                        binding.albumSongRecycler.post {
+                            // Only scroll after UI creation
+                            val y = binding.albumSongRecycler.y +
+                                    binding.albumSongRecycler.getChildAt(pos).y
 
-                        binding.nestedScroll.scrollTo(0, y.toInt())
+                            binding.nestedScroll.scrollTo(0, y.toInt())
+                        }
+
+                        playbackModel.doneWithNavToItem()
                     }
-
-                    playbackModel.doneWithNavToItem()
                 }
                 TODO: Re-add scroll if you find a way to implement the playing indicators on song items
-                 */
-                playbackModel.doneWithNavToItem()
+                */
+
+                if (detailModel.currentAlbum.value!!.id == playbackModel.song.value!!.album.id) {
+                    playbackModel.doneWithNavToItem()
+                }
             }
         }
 

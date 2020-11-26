@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
-class SongAdapter(
-    val data: List<Song>,
+class SongsAdapter(
+    private val data: List<Song>,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : RecyclerView.Adapter<SongViewHolder>() {

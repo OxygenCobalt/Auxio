@@ -38,7 +38,7 @@ class SongsFragment : Fragment() {
 
         val musicStore = MusicStore.getInstance()
 
-        val songAdapter = SongAdapter(
+        val songAdapter = SongsAdapter(
             musicStore.songs,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.ALL_SONGS) },
             doOnLongClick = { data, view ->
@@ -47,8 +47,6 @@ class SongsFragment : Fragment() {
                 )
             }
         )
-
-        // TODO: Add option to search songs [Or just make a dedicated tab]
 
         // --- UI SETUP ---
 
@@ -63,6 +61,16 @@ class SongsFragment : Fragment() {
             adapter = songAdapter
             setHasFixedSize(true)
         }
+
+        setupFastScroller(binding)
+
+        Log.d(this::class.simpleName, "Fragment created.")
+
+        return binding.root
+    }
+
+    private fun setupFastScroller(binding: FragmentSongsBinding) {
+        val musicStore = MusicStore.getInstance()
 
         binding.songFastScroll.apply {
             var hasAddedNumber = false
@@ -126,13 +134,11 @@ class SongsFragment : Fragment() {
                     }
                 }
             )
-
-            binding.songFastScrollThumb.setupWithFastScroller(this)
-            binding.songFastScrollThumb.textAppearanceRes = R.style.TextAppearance_ThumbIndicator
         }
 
-        Log.d(this::class.simpleName, "Fragment created.")
-
-        return binding.root
+        binding.songFastScrollThumb.apply {
+            setupWithFastScroller(binding.songFastScroll)
+            textAppearanceRes = R.style.TextAppearance_ThumbIndicator
+        }
     }
 }

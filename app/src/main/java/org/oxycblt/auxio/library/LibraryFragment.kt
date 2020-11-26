@@ -92,7 +92,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
                     libraryModel.updateSearchFocusStatus(hasFocus)
-                    libraryModel.doSearch(searchView.query.toString(), requireContext())
                     item.isVisible = !hasFocus
                 }
 
@@ -155,8 +154,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             if (it != null) {
                 libraryModel.updateNavigationStatus(false)
 
-                if (it is Song) {
-                    navToItem(it.album)
+                if (it is Song || it is Album) {
+                    navToItem(playbackModel.song.value!!.album)
                 } else {
                     navToItem(it)
                 }

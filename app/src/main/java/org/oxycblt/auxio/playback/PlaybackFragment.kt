@@ -83,8 +83,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             queueMenuItem = menu.findItem(R.id.action_queue)
         }
 
-        // Make marquee scroll work
-        binding.playbackSong.isSelected = true
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
