@@ -13,6 +13,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumSongAdapter
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.disable
@@ -54,6 +55,8 @@ class AlbumDetailFragment : DetailFragment() {
                 )
             }
         )
+
+        var lastHolder: AlbumSongAdapter.ViewHolder? = null
 
         // --- UI SETUP ---
 
@@ -126,9 +129,36 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (song != null) {
+                val pos = detailModel.albumSortMode.value!!.getSortedSongList(
+                    detailModel.currentAlbum.value!!.songs
+                ).indexOfFirst { it.id == song.id }
+
+                if (pos != -1) {
+                    binding.albumSongRecycler.post {
+                        lastHolder?.removePlaying()
+
+                        lastHolder = (
+                            binding.albumSongRecycler.getChildViewHolder(
+                                binding.albumSongRecycler.getChildAt(pos)
+                            ) as AlbumSongAdapter.ViewHolder
+                            )
+
+                        lastHolder?.setPlaying(requireContext())
+                    }
+
+                    return@observe
+                } else {
+                    lastHolder?.removePlaying()
+                }
+            }
+
+            lastHolder?.removePlaying()
+        }
+
         playbackModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
-                /*
                 if (it is Song) {
                     // Calculate where the item for the currently played song is, and navigate to there.
                     val pos = detailModel.albumSortMode.value!!.getSortedSongList(
@@ -139,7 +169,7 @@ class AlbumDetailFragment : DetailFragment() {
                         binding.albumSongRecycler.post {
                             // Only scroll after UI creation
                             val y = binding.albumSongRecycler.y +
-                                    binding.albumSongRecycler.getChildAt(pos).y
+                                binding.albumSongRecycler.getChildAt(pos).y
 
                             binding.nestedScroll.scrollTo(0, y.toInt())
                         }
@@ -147,8 +177,6 @@ class AlbumDetailFragment : DetailFragment() {
                         playbackModel.doneWithNavToItem()
                     }
                 }
-                TODO: Re-add scroll if you find a way to implement the playing indicators on song items
-                */
 
                 if (detailModel.currentAlbum.value!!.id == playbackModel.song.value!!.album.id) {
                     playbackModel.doneWithNavToItem()

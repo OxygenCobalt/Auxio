@@ -468,8 +468,6 @@ class PlaybackStateManager private constructor() {
             database.writeQueue(queueItems)
         }
 
-        getCommonGenre()
-
         val time = System.currentTimeMillis() - start
 
         Log.d(this::class.simpleName, "Save finished in ${time}ms")
