@@ -2,6 +2,8 @@ package org.oxycblt.auxio.music
 
 import android.app.Application
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
@@ -36,56 +38,61 @@ class MusicStore private constructor() {
     var loaded = false
         private set
 
-    // Load/Sort the entire library.
-    // ONLY CALL THIS FROM AN IO THREAD.
-    fun load(app: Application): MusicLoaderResponse {
-        Log.i(this::class.simpleName, "Starting initial music load...")
+    /**
+     * Load/Sort the entire music library.
+     * ***THIS SHOULD ONLY BE RAN FROM AN IO THREAD.***
+     * @param app [Application] required to load the music.
+     */
+    suspend fun load(app: Application): MusicLoaderResponse {
+        return withContext(Dispatchers.IO) {
+            Log.i(this::class.simpleName, "Starting initial music load...")
 
-        val start = System.currentTimeMillis()
+            val start = System.currentTimeMillis()
 
-        // Get the placeholder strings, which are used by MusicLoader & MusicSorter for
-        // any music that doesn't have metadata.
-        val genrePlaceholder = app.getString(R.string.placeholder_genre)
-        val artistPlaceholder = app.getString(R.string.placeholder_artist)
-        val albumPlaceholder = app.getString(R.string.placeholder_album)
+            // Get the placeholder strings, which are used by MusicLoader & MusicSorter for
+            // any music that doesn't have metadata.
+            val genrePlaceholder = app.getString(R.string.placeholder_genre)
+            val artistPlaceholder = app.getString(R.string.placeholder_artist)
+            val albumPlaceholder = app.getString(R.string.placeholder_album)
 
-        val loader = MusicLoader(
-            app.contentResolver,
-
-            genrePlaceholder,
-            artistPlaceholder,
-            albumPlaceholder
-        )
-
-        if (loader.response == MusicLoaderResponse.DONE) {
-            // If the loading succeeds, then sort the songs and update the value
-            val sorter = MusicSorter(
-                loader.genres,
-                loader.artists,
-                loader.albums,
-                loader.songs,
+            val loader = MusicLoader(
+                app.contentResolver,
 
                 genrePlaceholder,
                 artistPlaceholder,
                 albumPlaceholder
             )
 
-            mSongs = sorter.songs.toList()
-            mAlbums = sorter.albums.toList()
-            mArtists = sorter.artists.toList()
-            mGenres = sorter.genres.toList()
+            if (loader.response == MusicLoaderResponse.DONE) {
+                // If the loading succeeds, then sort the songs and update the value
+                val sorter = MusicSorter(
+                    loader.genres,
+                    loader.artists,
+                    loader.albums,
+                    loader.songs,
 
-            val elapsed = System.currentTimeMillis() - start
+                    genrePlaceholder,
+                    artistPlaceholder,
+                    albumPlaceholder
+                )
 
-            Log.i(
-                this::class.simpleName,
-                "Music load completed successfully in ${elapsed}ms."
-            )
+                mSongs = sorter.songs.toList()
+                mAlbums = sorter.albums.toList()
+                mArtists = sorter.artists.toList()
+                mGenres = sorter.genres.toList()
 
-            loaded = true
+                val elapsed = System.currentTimeMillis() - start
+
+                Log.i(
+                    this::class.simpleName,
+                    "Music load completed successfully in ${elapsed}ms."
+                )
+
+                loaded = true
+            }
+
+            loader.response
         }
-
-        return loader.response
     }
 
     fun getListForShowMode(showMode: ShowMode): List<BaseModel> {

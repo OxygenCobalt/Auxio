@@ -186,8 +186,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         when (data) {
             is Song -> menu.setupSongActions(data, requireContext(), playbackModel)
             is Album -> menu.setupAlbumActions(data, requireContext(), playbackModel)
-            is Artist -> menu.setupArtistActions(data, requireContext(), playbackModel)
-            is Genre -> menu.setupGenreActions(data, requireContext(), playbackModel)
+            is Artist -> menu.setupArtistActions(data, playbackModel)
+            is Genre -> menu.setupGenreActions(data, playbackModel)
 
             else -> {
             }

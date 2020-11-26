@@ -153,18 +153,10 @@ fun PopupMenu.setupAlbumActions(
  */
 fun PopupMenu.setupArtistActions(
     artist: Artist,
-    context: Context,
     playbackModel: PlaybackViewModel
 ) {
     setOnMenuItemClickListener {
         when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(artist.songs)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
             R.id.action_play -> {
                 playbackModel.playArtist(artist, false)
                 true
@@ -186,18 +178,10 @@ fun PopupMenu.setupArtistActions(
  */
 fun PopupMenu.setupGenreActions(
     genre: Genre,
-    context: Context,
     playbackModel: PlaybackViewModel
 ) {
     setOnMenuItemClickListener {
         when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(genre.songs)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
             R.id.action_play -> {
                 playbackModel.playGenre(genre, false)
                 true

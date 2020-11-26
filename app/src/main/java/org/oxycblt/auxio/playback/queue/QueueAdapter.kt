@@ -118,8 +118,9 @@ class QueueAdapter(
     }
 
     private fun clearUserQueue() {
-        val nextQueueHeaderIndex = data.indexOfLast { it is Header }
-        val slice = data.slice(0 until nextQueueHeaderIndex)
+        val nextQueueHeaderIndex = data.indexOfLast { it is Header && !it.isAction }
+        Log.d(this::class.simpleName, nextQueueHeaderIndex.toString())
+        val slice = data.slice(0..nextQueueHeaderIndex.dec())
 
         data.removeAll(slice)
         notifyItemRangeRemoved(0, slice.size)

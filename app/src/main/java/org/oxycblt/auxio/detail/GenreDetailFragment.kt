@@ -57,7 +57,7 @@ class GenreDetailFragment : DetailFragment() {
             },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupArtistActions(
-                    data, requireContext(), playbackModel
+                    data, playbackModel
                 )
             }
         )

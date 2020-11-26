@@ -4,7 +4,7 @@ https://stackoverflow.com/a/64314693/14143986
 -->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
     <translate
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@integer/config_navAnimTime"
         android:fromYDelta="0.0%p"
         android:toYDelta="0.0%p" />
 </set>

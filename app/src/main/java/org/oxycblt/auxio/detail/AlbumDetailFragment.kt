@@ -16,6 +16,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
@@ -80,9 +81,12 @@ class AlbumDetailFragment : DetailFragment() {
                         detailModel.currentAlbum.value!!, false
                     )
 
-                    R.id.action_queue_add -> playbackModel.addToUserQueue(
-                        detailModel.currentAlbum.value!!.songs
-                    )
+                    R.id.action_queue_add -> {
+                        playbackModel.addToUserQueue(
+                            detailModel.currentAlbum.value!!.songs
+                        )
+                        context.getString(R.string.label_queue_added).createToast(requireContext())
+                    }
                 }
 
                 true
@@ -139,11 +143,9 @@ class AlbumDetailFragment : DetailFragment() {
                     binding.albumSongRecycler.post {
                         lastHolder?.removePlaying()
 
-                        lastHolder = (
-                            binding.albumSongRecycler.getChildViewHolder(
-                                binding.albumSongRecycler.getChildAt(pos)
-                            ) as AlbumSongAdapter.ViewHolder
-                            )
+                        lastHolder = binding.albumSongRecycler.getChildViewHolder(
+                            binding.albumSongRecycler.getChildAt(pos)
+                        ) as AlbumSongAdapter.ViewHolder
 
                         lastHolder?.setPlaying(requireContext())
                     }

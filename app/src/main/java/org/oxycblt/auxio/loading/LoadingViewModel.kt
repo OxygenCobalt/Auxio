@@ -43,9 +43,7 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
         viewModelScope.launch {
             val musicStore = MusicStore.getInstance()
 
-            val response = withContext(Dispatchers.IO) {
-                return@withContext musicStore.load(app)
-            }
+            val response = musicStore.load(app)
 
             withContext(Dispatchers.Main) {
                 mResponse.value = response

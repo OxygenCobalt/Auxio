@@ -98,8 +98,6 @@ class AlbumViewHolder private constructor(
     }
 }
 
-// TODO: Add indicators to song recycler items when they're being played?
-
 class SongViewHolder private constructor(
     private val binding: ItemSongBinding,
     doOnClick: (data: Song) -> Unit,
