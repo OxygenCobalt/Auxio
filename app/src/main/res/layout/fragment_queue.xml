@@ -34,7 +34,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/queue_header"
             tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/item_song" />
+            tools:listitem="@layout/item_basic_song" />
 
     </LinearLayout>
 </layout>

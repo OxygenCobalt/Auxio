@@ -1,12 +1,12 @@
 package org.oxycblt.auxio.songs
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,16 +17,14 @@ import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.setupSongActions
-import org.oxycblt.auxio.ui.toColor
 
 /**
  * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
  * them.
  * @author OxygenCobalt
  */
-class SongsFragment : Fragment() {
+class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -50,11 +48,13 @@ class SongsFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.songToolbar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.action_shuffle) {
-                playbackModel.shuffleAll()
+        binding.songToolbar.apply {
+            setOnMenuItemClickListener {
+                if (it.itemId == R.id.action_shuffle) {
+                    playbackModel.shuffleAll()
+                }
+                true
             }
-            true
         }
 
         binding.songRecycler.apply {
@@ -67,6 +67,14 @@ class SongsFragment : Fragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
     }
 
     private fun setupFastScroller(binding: FragmentSongsBinding) {
@@ -105,6 +113,8 @@ class SongsFragment : Fragment() {
                         if (char.isDigit()) {
                             if (!hasAddedNumber) {
                                 hasAddedNumber = true
+
+                                return@setupWithRecyclerView FastScrollItemIndicator.Text("#")
                             } else {
                                 return@setupWithRecyclerView null
                             }
@@ -117,23 +127,20 @@ class SongsFragment : Fragment() {
                 }
             )
 
-            textAppearanceRes = R.style.TextAppearance_FastScroll
-            textColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
             useDefaultScroller = false
 
-            itemIndicatorSelectedCallbacks.add(
-                object : FastScrollerView.ItemIndicatorSelectedCallback {
-                    override fun onItemIndicatorSelected(
-                        indicator: FastScrollItemIndicator,
-                        indicatorCenterY: Int,
-                        itemPosition: Int
-                    ) {
-                        val layoutManager = binding.songRecycler.layoutManager
-                            as LinearLayoutManager
+            itemIndicatorSelectedCallbacks.add(object : FastScrollerView.ItemIndicatorSelectedCallback {
+                override fun onItemIndicatorSelected(
+                    indicator: FastScrollItemIndicator,
+                    indicatorCenterY: Int,
+                    itemPosition: Int
+                ) {
+                    val layoutManager = binding.songRecycler.layoutManager
+                        as LinearLayoutManager
 
-                        layoutManager.scrollToPositionWithOffset(itemPosition, 0)
-                    }
+                    layoutManager.scrollToPositionWithOffset(itemPosition, 0)
                 }
+            }
             )
         }
 

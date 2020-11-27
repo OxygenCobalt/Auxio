@@ -28,10 +28,10 @@
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/song_fast_scroll"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_toolbar"
-            tools:listitem="@layout/item_song" />
+            tools:listitem="@layout/item_basic_song" />
 
         <com.reddit.indicatorfastscroll.FastScrollerView
             android:id="@+id/song_fast_scroll"
@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
 
-        <com.reddit.indicatorfastscroll.FastScrollerThumbView
+        <org.oxycblt.auxio.recycler.NoLeakThumbView
             android:id="@+id/song_fast_scroll_thumb"
             android:layout_width="50dp"
             android:layout_height="0dp"

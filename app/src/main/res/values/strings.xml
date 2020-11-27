@@ -27,6 +27,7 @@
     <string name="label_next_user_queue">Next in Queue</string>
     <string name="label_channel">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
+    <string name="label_settings">Settings</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>
