@@ -75,6 +75,9 @@ dependencies {
     // Media
     implementation 'androidx.media:media:1.2.0'
 
+    // Preferences
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+
     // --- THIRD PARTY ---
 
     // ExoPlayer

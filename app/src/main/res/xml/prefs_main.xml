@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/label_settings_ui"
+        android:layout="@layout/item_prefs_header">
+        <ListPreference
+            app:key="KEY_THEME"
+            android:title="@string/label_settings_theme"
+            android:icon="@drawable/ic_day"
+            android:entries="@array/theme_entries"
+            android:entryValues="@array/theme_values"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

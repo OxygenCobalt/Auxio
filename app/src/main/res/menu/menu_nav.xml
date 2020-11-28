@@ -8,4 +8,8 @@
         android:id="@+id/songs_fragment"
         android:title="@string/label_songs"
         android:icon="@drawable/ic_song" />
+    <item
+        android:id="@+id/settings_fragment"
+        android:title="@string/label_settings"
+        android:icon="@drawable/ic_settings" />
 </menu>

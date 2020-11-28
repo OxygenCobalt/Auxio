@@ -13,9 +13,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.prefs.PrefsManager
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * A [ViewModel] that manages what [LibraryFragment] is currently showing, and also the search
@@ -40,7 +40,7 @@ class LibraryViewModel : ViewModel() {
     val searchHasFocus: Boolean get() = mSearchHasFocus
 
     init {
-        val prefsManager = PrefsManager.getInstance()
+        val prefsManager = SettingsManager.getInstance()
 
         viewModelScope.launch {
             mSortMode.value = withContext(Dispatchers.IO) {
@@ -135,7 +135,7 @@ class LibraryViewModel : ViewModel() {
 
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    val prefsManager = PrefsManager.getInstance()
+                    val prefsManager = SettingsManager.getInstance()
 
                     prefsManager.setLibrarySortMode(mSortMode.value!!)
                 }

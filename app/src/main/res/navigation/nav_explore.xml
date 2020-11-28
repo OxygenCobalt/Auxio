@@ -88,4 +88,9 @@
         android:name="org.oxycblt.auxio.songs.SongsFragment"
         android:label="fragment_songs"
         tools:layout="@layout/fragment_songs" />
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="org.oxycblt.auxio.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

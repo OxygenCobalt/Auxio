@@ -5,12 +5,14 @@
         <item name="android:windowBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:fontFamily">@font/inter</item>
-        <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:fitsSystemWindows">true</item>
+        <item name="android:scrollbars">none</item>
 
         <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
         <item name="colorControlNormal">@color/control_color</item>
+        <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
+        <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
     </style>
 
     <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->
@@ -48,6 +50,19 @@
         <item name="android:popupBackground">@color/background</item>
     </style>
 
+    <!-- Custom Dialog Theme -->
+    <style name="Theme.CustomDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorBackgroundFloating">@color/background</item>
+        <item name="android:windowTitleStyle">@style/TextAppearance.Dialog.Title</item>
+        <item name="colorPrimary">@color/control_color</item>
+        <item name="colorSecondary">@color/control_color</item>
+    </style>
+
+    <style name="TextAppearance.Dialog.Title" parent="@android:style/TextAppearance.Material.Title">
+        <item name="android:fontFamily">@font/inter_black</item>
+    </style>
+
+    <!-- Fast scroll theme -->
     <style name="FastScrollTheme" parent="Widget.IndicatorFastScroll.FastScroller">
         <item name="android:textColor">@color/ui_state_color</item>
         <item name="android:textAppearance">@style/TextAppearance.FastScroll</item>
