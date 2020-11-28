@@ -36,11 +36,7 @@ class NoLeakThumbView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.indicatorFastScrollerThumbStyle
-) : ConstraintLayout(
-    context,
-    attrs,
-    defStyleAttr
-),
+) : ConstraintLayout(context, attrs, defStyleAttr),
     FastScrollerView.ItemIndicatorSelectedCallback {
 
     private var thumbColor = ColorStateList.valueOf(accent.first.toColor(context))
@@ -98,7 +94,7 @@ class NoLeakThumbView @JvmOverloads constructor(
 
     /**
      * Hack so that I can detect when the pointer is off the FastScrollerView's items
-     * without using onItemIndicatorTouched [Which is internal]
+     * without using onItemIndicatorTouched (Which is internal)
      * @author OxygenCobalt
      */
     private fun isPointerOnItem(fastScrollerView: FastScrollerView, touchY: Int): Boolean {

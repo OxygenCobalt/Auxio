@@ -94,4 +94,34 @@ enum class SortMode(val iconRes: Int) {
             else -> R.id.option_sort_none
         }
     }
+
+    fun toConstant(): Int {
+        return when (this) {
+            NONE -> CONSTANT_NONE
+            ALPHA_UP -> CONSTANT_ALPHA_UP
+            ALPHA_DOWN -> CONSTANT_ALPHA_DOWN
+            NUMERIC_UP -> CONSTANT_NUMERIC_UP
+            NUMERIC_DOWN -> CONSTANT_NUMERIC_DOWN
+        }
+    }
+
+    companion object {
+        const val CONSTANT_NONE = 0xA060
+        const val CONSTANT_ALPHA_UP = 0xA061
+        const val CONSTANT_ALPHA_DOWN = 0xA062
+        const val CONSTANT_NUMERIC_UP = 0xA063
+        const val CONSTANT_NUMERIC_DOWN = 0xA065
+
+        fun fromConstant(constant: Int): SortMode? {
+            return when (constant) {
+                CONSTANT_NONE -> NONE
+                CONSTANT_ALPHA_UP -> ALPHA_UP
+                CONSTANT_ALPHA_DOWN -> ALPHA_DOWN
+                CONSTANT_NUMERIC_UP -> NUMERIC_UP
+                CONSTANT_NUMERIC_DOWN -> NUMERIC_DOWN
+
+                else -> null
+            }
+        }
+    }
 }

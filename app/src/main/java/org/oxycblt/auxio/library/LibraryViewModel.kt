@@ -6,11 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.prefs.PrefsManager
 import org.oxycblt.auxio.recycler.ShowMode
 import org.oxycblt.auxio.recycler.SortMode
 
@@ -35,6 +38,16 @@ class LibraryViewModel : ViewModel() {
 
     private var mSearchHasFocus = false
     val searchHasFocus: Boolean get() = mSearchHasFocus
+
+    init {
+        val prefsManager = PrefsManager.getInstance()
+
+        viewModelScope.launch {
+            mSortMode.value = withContext(Dispatchers.IO) {
+                prefsManager.getLibrarySortMode()
+            }
+        }
+    }
 
     /**
      * Perform a search of the music library, given a query.
@@ -119,6 +132,14 @@ class LibraryViewModel : ViewModel() {
 
         if (mode != mSortMode.value) {
             mSortMode.value = mode
+
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    val prefsManager = PrefsManager.getInstance()
+
+                    prefsManager.setLibrarySortMode(mSortMode.value!!)
+                }
+            }
         }
     }
 }

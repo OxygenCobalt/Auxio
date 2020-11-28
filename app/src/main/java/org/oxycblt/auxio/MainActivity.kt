@@ -5,8 +5,8 @@ import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import org.oxycblt.auxio.playback.PlaybackService
+import org.oxycblt.auxio.prefs.PrefsManager
 import org.oxycblt.auxio.ui.accent
 
 // FIXME: Fix bug where fast navigation will break the animations and
@@ -16,7 +16,8 @@ import org.oxycblt.auxio.ui.accent
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        val prefsManager = PrefsManager.init(this)
+
         // Apply the theme
         setTheme(accent.second)
 

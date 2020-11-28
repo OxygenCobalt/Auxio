@@ -271,6 +271,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Go to the previous song, doing any checks that are needed.
+     * TODO: Implement option to rewind before skipping back
      */
     fun prev() {
         if (mIndex > 0 && !mIsInUserQueue) {
