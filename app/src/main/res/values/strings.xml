@@ -34,6 +34,7 @@
     <string name="label_settings_theme_light">Light</string>
     <string name="label_settings_theme_dark">Dark</string>
     <string name="label_settings_theme_choose">Choose theme</string>
+    <string name="label_settings_accent">Accent</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.ui.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -30,6 +31,39 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
         callbacks.remove(callback)
     }
 
+    fun getTheme(): Int {
+        // Turn the string from SharedPreferences into an actual theme value that can
+        // be used, as apparently the preference system provided by androidx doesn't like integers
+        // for some...reason.
+        return when (sharedPrefs.getString(Keys.KEY_THEME, Theme.THEME_AUTO)) {
+            Theme.THEME_AUTO -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            Theme.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            Theme.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
+
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+    }
+
+    fun getAccent(): Pair<Int, Int> {
+        val accentIndex = sharedPrefs.getInt(Keys.KEY_ACCENT, 5)
+
+        return ACCENTS[accentIndex]
+    }
+
+    fun setAccent(accent: Pair<Int, Int>) {
+        val accentIndex = ACCENTS.indexOf(accent)
+
+        check(accentIndex != -1) { "Invalid accent" }
+
+        sharedPrefs.edit()
+            .putInt(Keys.KEY_ACCENT, accentIndex)
+            .apply()
+
+        callbacks.forEach {
+            it.onAccentUpdate(getAccent())
+        }
+    }
+
     fun setLibrarySortMode(sortMode: SortMode) {
         sharedPrefs.edit()
             .putInt(Keys.KEY_LIBRARY_SORT_MODE, sortMode.toConstant())
@@ -45,18 +79,7 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
         ) ?: SortMode.ALPHA_DOWN
     }
 
-    fun getTheme(): Int {
-        // Turn the string from SharedPreferences into an actual theme value that can
-        // be used, as apparently the preference system provided by androidx doesn't like integers
-        // for some...reason.
-        return when (sharedPrefs.getString(Keys.KEY_THEME, Theme.THEME_AUTO)) {
-            Theme.THEME_AUTO -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            Theme.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-            Theme.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
-
-            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-    }
+    // --- OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -100,6 +123,7 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
     object Keys {
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_THEME = "KEY_THEME"
+        const val KEY_ACCENT = "KEY_ACCENT"
     }
 
     private object Theme {
@@ -113,6 +137,7 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
      * [SharedPreferences.OnSharedPreferenceChangeListener].
      */
     interface Callback {
-        fun onThemeUpdate(value: Int) {}
+        fun onThemeUpdate(newTheme: Int) {}
+        fun onAccentUpdate(newAccent: Pair<Int, Int>) {}
     }
 }

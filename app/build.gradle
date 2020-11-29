@@ -94,6 +94,8 @@ dependencies {
     // Fast-Scroll
     implementation 'com.reddit:indicator-fast-scroll:1.3.0'
 
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+
     // --- DEV ---
 
     // Lint

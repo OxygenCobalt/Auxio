@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), SettingsManager.
             settingsManager.getTheme()
         )
 
+        accent = settingsManager.getAccent()
+
         // Apply the theme
         setTheme(accent.second)
 
@@ -50,7 +52,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), SettingsManager.
         SettingsManager.getInstance().removeCallback(this)
     }
 
-    override fun onThemeUpdate(value: Int) {
-        AppCompatDelegate.setDefaultNightMode(value)
+    override fun onThemeUpdate(newTheme: Int) {
+        AppCompatDelegate.setDefaultNightMode(newTheme)
+    }
+
+    override fun onAccentUpdate(newAccent: Pair<Int, Int>) {
+        recreate()
     }
 }

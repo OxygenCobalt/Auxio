@@ -13,6 +13,12 @@
         <item name="colorControlNormal">@color/control_color</item>
         <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
         <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
+
+        <item name="md_divider_color">@android:color/transparent</item>
+        <item name="md_background_color">@color/background</item>
+        <item name="md_corner_radius">0dp</item>
+        <item name="md_color_button_text">@color/control_color</item>
+        <item name="md_font_title">@font/inter_black</item>
     </style>
 
     <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->
@@ -56,6 +62,7 @@
         <item name="android:windowTitleStyle">@style/TextAppearance.Dialog.Title</item>
         <item name="colorPrimary">@color/control_color</item>
         <item name="colorSecondary">@color/control_color</item>
+        <item name="dialogCornerRadius">0dp</item>
     </style>
 
     <style name="TextAppearance.Dialog.Title" parent="@android:style/TextAppearance.Material.Title">

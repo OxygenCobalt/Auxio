@@ -11,5 +11,12 @@
             android:entries="@array/theme_entries"
             android:entryValues="@array/theme_values"
             app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            app:key="KEY_ACCENT"
+            android:title="@string/label_settings_accent"
+            android:icon="@drawable/ic_accent"
+            app:summary="@string/label_settings_accent"
+            app:enableCopying="true" />
     </PreferenceCategory>
 </PreferenceScreen>

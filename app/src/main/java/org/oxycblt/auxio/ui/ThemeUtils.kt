@@ -8,11 +8,12 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import org.oxycblt.auxio.R
+import java.util.Locale
 
 // Functions for managing colors/accents/whatever.
 
 // Pairs of the base accent and its theme
-private val ACCENTS = listOf(
+val ACCENTS = listOf(
     Pair(R.color.red, R.style.Theme_Red), // 0
     Pair(R.color.pink, R.style.Theme_Pink), // 1
     Pair(R.color.purple, R.style.Theme_Purple), // 2
@@ -34,7 +35,7 @@ private val ACCENTS = listOf(
     Pair(R.color.blue_grey, R.style.Theme_BlueGrey) // 18
 )
 
-val accent = ACCENTS[5]
+lateinit var accent: Pair<Int, Int>
 
 /**
  * Gets the transparent form of a color.
@@ -95,4 +96,9 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     }
 
     return color.toColor(context)
+}
+
+fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
+    return context.resources.getResourceEntryName(newAccent.first)
+        .replace("_", " ").capitalize(Locale.getDefault())
 }

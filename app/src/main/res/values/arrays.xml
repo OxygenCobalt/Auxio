@@ -5,6 +5,7 @@
         <item>@string/label_settings_theme_light</item>
         <item>@string/label_settings_theme_dark</item>
     </array>
+
     <array name="theme_values">
         <item>AUTO</item>
         <item>LIGHT</item>
