@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="theme_entries">
-        <item>@string/label_settings_theme_auto</item>
-        <item>@string/label_settings_theme_light</item>
-        <item>@string/label_settings_theme_dark</item>
+        <item>@string/setting_theme_auto</item>
+        <item>@string/setting_theme_day</item>
+        <item>@string/setting_theme_night</item>
     </array>
 
     <array name="theme_values">

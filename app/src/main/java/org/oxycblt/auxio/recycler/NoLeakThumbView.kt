@@ -26,8 +26,8 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.toColor
 
 /**
- * A source code copy of [com.reddit.indicatorfastscroll.FastScrollerThumbView] that fixes a
- * memory leak that occurs from having nested fragments. All credit goes to the authors of
+ * A semi-copy, semi-custom implementation of [com.reddit.indicatorfastscroll.FastScrollerThumbView]
+ * that fixes a memory leak that occurs from a bug fix they added. All credit goes to the authors of
  * the fast scroll library.
  * <a href="https://github.com/reddit/IndicatorFastScroll"> Link to repo </a>
  * @author Reddit, OxygenCobalt
@@ -81,7 +81,11 @@ class NoLeakThumbView @JvmOverloads constructor(
             fastScrollerView.onTouchEvent(event)
             fastScrollerView.performClick()
 
-            if (event.actionMasked in intArrayOf(MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL)) {
+            if (event.actionMasked in intArrayOf(
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL
+            )
+            ) {
                 isActivated = false
                 return@setOnTouchListener true
             }
@@ -104,15 +108,9 @@ class NoLeakThumbView @JvmOverloads constructor(
 
         fastScrollerView.apply {
             children.forEach { view ->
-                if (view.containsY(touchY)) {
-                    when (view) {
-                        is ImageView -> {
-                            consumed = true
-                        }
-                        is TextView -> {
-                            consumed = true
-                        }
-                    }
+                if (view.containsY(touchY) && (view is ImageView || view is TextView)) {
+                    consumed = true
+                    return@forEach
                 }
             }
         }

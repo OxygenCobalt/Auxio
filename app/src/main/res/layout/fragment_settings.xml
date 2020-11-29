@@ -16,12 +16,12 @@
             android:elevation="@dimen/elevation_normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/label_settings"
+            app:title="@string/setting_title"
             app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/settings_list_fragment"
-            android:name="org.oxycblt.auxio.settings.SettingListFragment"
+            android:name="org.oxycblt.auxio.settings.SettingsListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.settings.adapters
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +8,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.getAccentItemSummary
 import org.oxycblt.auxio.ui.toColor
 
 class AccentAdapter(
@@ -29,19 +29,24 @@ class AccentAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(accentData: Pair<Int, Int>) {
-            binding.accent.setOnClickListener {
-                Log.d(this::class.simpleName, accentData.toString())
-                doOnAccentConfirm(accentData)
-            }
-
             binding.accent.apply {
-                imageTintList = if (accentData.first != accent.first) {
-                    ColorStateList.valueOf(
-                        android.R.color.transparent.toColor(context)
-                    )
-                } else {
+                contentDescription = getAccentItemSummary(context, accentData)
+
+                setOnClickListener {
+                    doOnAccentConfirm(accentData)
+                }
+
+                imageTintList = if (accentData.first == accent.first) {
+                    isEnabled = false
+
                     ColorStateList.valueOf(
                         R.color.background.toColor(context)
+                    )
+                } else {
+                    isEnabled = true
+
+                    ColorStateList.valueOf(
+                        android.R.color.transparent.toColor(context)
                     )
                 }
 

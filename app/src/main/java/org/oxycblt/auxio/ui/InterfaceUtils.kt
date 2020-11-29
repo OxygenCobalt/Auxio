@@ -93,6 +93,7 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
     }
     inflateAndShow(R.menu.menu_song_actions)
 }
+
 /**
  * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
  */

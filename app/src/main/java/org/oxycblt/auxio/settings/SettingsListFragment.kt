@@ -1,12 +1,17 @@
 package org.oxycblt.auxio.settings
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceGroupAdapter
+import androidx.preference.PreferenceScreen
+import androidx.preference.PreferenceViewHolder
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -18,11 +23,14 @@ import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
-class SettingListFragment : PreferenceFragmentCompat() {
+class SettingsListFragment : PreferenceFragmentCompat() {
     private val settingsModel: SettingsViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.apply {
+        }
 
         val themePref = findPreference<Preference>(SettingsManager.Keys.KEY_THEME)?.apply {
             setIcon(
@@ -80,9 +88,33 @@ class SettingListFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.prefs_main, rootKey)
     }
 
+    // Forcefully override the adapter creation process so I can get rid of the ugly
+    // colorPrimary ripples.
+    @SuppressLint("RestrictedApi")
+    override fun onCreateAdapter(preferenceScreen: PreferenceScreen?): RecyclerView.Adapter<*> {
+        return object : PreferenceGroupAdapter(preferenceScreen) {
+            override fun onCreateViewHolder(
+                parent: ViewGroup,
+                viewType: Int
+            ): PreferenceViewHolder {
+                val holder = super.onCreateViewHolder(parent, viewType)
+
+                if (holder.itemView.id != android.R.id.title) {
+                    holder.itemView.setBackgroundResource(R.drawable.ui_ripple)
+                }
+
+                return holder
+            }
+        }
+    }
+
+    private fun offLoad(something: String) {
+        Log.d(this::class.simpleName, something)
+    }
+
     private fun showAccentDialog() {
         MaterialDialog(requireActivity()).show {
-            title(R.string.label_settings_accent)
+            title(R.string.setting_accent)
 
             // Roll my own RecyclerView since [To no surprise whatsoever] Material Dialogs
             // has a bug where ugly dividers will show with the RecyclerView even if you disable them.

@@ -14,7 +14,8 @@ import org.oxycblt.auxio.ui.ACCENTS
  * the first time it occurs.
  * @author OxygenCobalt
  */
-class SettingsManager private constructor(context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsManager private constructor(context: Context) :
+    SharedPreferences.OnSharedPreferenceChangeListener {
     private val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
@@ -79,6 +80,10 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
         ) ?: SortMode.ALPHA_DOWN
     }
 
+    fun getEdgeToEdge(): Boolean {
+        return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
+    }
+
     // --- OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -124,6 +129,7 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_THEME = "KEY_THEME"
         const val KEY_ACCENT = "KEY_ACCENT"
+        const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
     }
 
     private object Theme {
@@ -133,11 +139,12 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
     }
 
     /**
-     * A safe interface for receiving preference updates, use this instead of
+     * An interface for receiving some settings updates.
      * [SharedPreferences.OnSharedPreferenceChangeListener].
      */
     interface Callback {
         fun onThemeUpdate(newTheme: Int) {}
         fun onAccentUpdate(newAccent: Pair<Int, Int>) {}
+        fun onEdgeToEdgeUpdate(isEdgeToEdge: Boolean) {}
     }
 }

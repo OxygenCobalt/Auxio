@@ -22,4 +22,4 @@
 
 -dontobfuscate
 
--keep class org.oxycblt.auxio.settings.SettingListFragment
+-keep class org.oxycblt.auxio.settings.SettingsListFragment

@@ -13,12 +13,17 @@
         <item name="colorControlNormal">@color/control_color</item>
         <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
         <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorControlHighlight">?attr/colorPrimary</item>
+        <item name="preferenceTheme">@style/Theme.Preference</item>
 
         <item name="md_divider_color">@android:color/transparent</item>
         <item name="md_background_color">@color/background</item>
         <item name="md_corner_radius">0dp</item>
         <item name="md_color_button_text">@color/control_color</item>
         <item name="md_font_title">@font/inter_black</item>
+
+        <item name="android:activatedBackgroundIndicator">@drawable/ui_ripple</item>
     </style>
 
     <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->
@@ -81,6 +86,12 @@
 
     <style name="TextAppearance.ThumbIndicator" parent="TextAppearance.FastScroll">
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Theme.Preference" parent="PreferenceThemeOverlay">
+        <item name="rippleColor">@color/selection_color</item>
+        <item name="itemRippleColor">@color/selection_color</item>
+        <item name="tabRippleColor">@color/selection_color</item>
     </style>
 
     <!--

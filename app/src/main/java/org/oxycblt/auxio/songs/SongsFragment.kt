@@ -129,18 +129,19 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
 
             useDefaultScroller = false
 
-            itemIndicatorSelectedCallbacks.add(object : FastScrollerView.ItemIndicatorSelectedCallback {
-                override fun onItemIndicatorSelected(
-                    indicator: FastScrollItemIndicator,
-                    indicatorCenterY: Int,
-                    itemPosition: Int
-                ) {
-                    val layoutManager = binding.songRecycler.layoutManager
-                        as LinearLayoutManager
+            itemIndicatorSelectedCallbacks.add(object :
+                    FastScrollerView.ItemIndicatorSelectedCallback {
+                    override fun onItemIndicatorSelected(
+                        indicator: FastScrollItemIndicator,
+                        indicatorCenterY: Int,
+                        itemPosition: Int
+                    ) {
+                        val layoutManager = binding.songRecycler.layoutManager
+                            as LinearLayoutManager
 
-                    layoutManager.scrollToPositionWithOffset(itemPosition, 0)
+                        layoutManager.scrollToPositionWithOffset(itemPosition, 0)
+                    }
                 }
-            }
             )
         }
 

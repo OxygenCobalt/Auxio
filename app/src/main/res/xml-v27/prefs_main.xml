@@ -18,5 +18,13 @@
             android:title="@string/setting_accent"
             android:icon="@drawable/ic_accent"
             app:summary="@string/setting_accent" />
+
+        <SwitchPreferenceCompat
+            app:key="KEY_EDGE"
+            android:title="@string/setting_edge"
+            app:summaryOn="@string/setting_edge_desc_on"
+            app:summaryOff="@string/setting_edge_desc_off"
+            app:iconSpaceReserved="false"
+            android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

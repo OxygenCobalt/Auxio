@@ -27,14 +27,18 @@
     <string name="label_next_user_queue">Next in Queue</string>
     <string name="label_channel">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
-    <string name="label_settings">Settings</string>
-    <string name="label_settings_ui">Appearance</string>
-    <string name="label_settings_theme">Theme</string>
-    <string name="label_settings_theme_auto">Automatic</string>
-    <string name="label_settings_theme_light">Light</string>
-    <string name="label_settings_theme_dark">Dark</string>
-    <string name="label_settings_theme_choose">Choose theme</string>
-    <string name="label_settings_accent">Accent</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Settings</string>
+    <string name="setting_ui">Appearance</string>
+    <string name="setting_theme">Theme</string>
+    <string name="setting_theme_auto">Automatic</string>
+    <string name="setting_theme_day">Light</string>
+    <string name="setting_theme_night">Dark</string>
+    <string name="setting_accent">Accent</string>
+    <string name="setting_edge">Edge-To-Edge</string>
+    <string name="setting_edge_desc_on">Disable edge-to-edge</string>
+    <string name="setting_edge_desc_off">Enable edge-to-edge</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>
