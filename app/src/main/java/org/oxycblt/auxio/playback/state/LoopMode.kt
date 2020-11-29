@@ -11,7 +11,7 @@ enum class LoopMode {
         }
     }
 
-    fun toConstant(): Int {
+    fun toInt(): Int {
         return when (this) {
             NONE -> CONSTANT_NONE
             ONCE -> CONSTANT_ONCE
@@ -24,7 +24,7 @@ enum class LoopMode {
         const val CONSTANT_ONCE = 0xA051
         const val CONSTANT_INFINITE = 0xA052
 
-        fun fromConstant(constant: Int): LoopMode? {
+        fun fromInt(constant: Int): LoopMode? {
             return when (constant) {
                 CONSTANT_NONE -> NONE
                 CONSTANT_ONCE -> ONCE

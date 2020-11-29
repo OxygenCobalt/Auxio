@@ -511,8 +511,8 @@ class PlaybackStateManager private constructor() {
     private fun packToPlaybackState(): PlaybackState {
         val songId = mSong?.id ?: -1L
         val parentId = mParent?.id ?: -1L
-        val intMode = mMode.toConstant()
-        val intLoopMode = mLoopMode.toConstant()
+        val intMode = mMode.toInt()
+        val intLoopMode = mLoopMode.toInt()
 
         return PlaybackState(
             songId = songId,
@@ -552,8 +552,8 @@ class PlaybackStateManager private constructor() {
         mSong = musicStore.songs.find { it.id == playbackState.songId }
         mPosition = playbackState.position
         mParent = musicStore.parents.find { it.id == playbackState.parentId }
-        mMode = PlaybackMode.fromConstant(playbackState.mode) ?: PlaybackMode.ALL_SONGS
-        mLoopMode = LoopMode.fromConstant(playbackState.loopMode) ?: LoopMode.NONE
+        mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
+        mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
         mShuffleSeed = playbackState.shuffleSeed
         mIsInUserQueue = playbackState.inUserQueue

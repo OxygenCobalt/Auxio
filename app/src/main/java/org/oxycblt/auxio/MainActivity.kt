@@ -14,7 +14,7 @@ import org.oxycblt.auxio.ui.accent
 //  lead to nothing being displayed [Possibly Un-fixable]
 // TODO: Landscape UI layouts
 // FIXME: Compat issue with Versions 5 that leads to progress bar looking off
-class MainActivity : AppCompatActivity(R.layout.activity_main), SettingsManager.Callback {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         val settingsManager = SettingsManager.init(applicationContext)
 
@@ -38,25 +38,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), SettingsManager.
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Perform callback additions/removals in onPause/onResume so that they are always
-        // ran when the activity is recreated.
-        SettingsManager.getInstance().addCallback(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        SettingsManager.getInstance().removeCallback(this)
-    }
-
-    override fun onThemeUpdate(newTheme: Int) {
+    fun doThemeRecreate(newTheme: Int) {
         AppCompatDelegate.setDefaultNightMode(newTheme)
     }
 
-    override fun onAccentUpdate(newAccent: Pair<Int, Int>) {
+    fun doAccentRecreate() {
         recreate()
     }
 }

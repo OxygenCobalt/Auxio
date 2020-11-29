@@ -1,12 +1,14 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
+import android.text.Spanned
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.text.toSpanned
 import org.oxycblt.auxio.R
 import java.util.Locale
 
@@ -101,4 +103,14 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
 fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
     return context.resources.getResourceEntryName(newAccent.first)
         .replace("_", " ").capitalize(Locale.getDefault())
+}
+
+fun getDetailedAccentSummary(context: Context, newAccent: Pair<Int, Int>): Spanned {
+    val name = getAccentItemSummary(context, newAccent)
+    val hex = context.getString(accent.first).toUpperCase(Locale.getDefault())
+
+    return context.getString(
+        R.string.format_accent_summary,
+        name, hex
+    ).toSpanned().render()
 }

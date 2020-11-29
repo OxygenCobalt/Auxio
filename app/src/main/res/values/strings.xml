@@ -30,7 +30,7 @@
     <string name="label_settings">Settings</string>
     <string name="label_settings_ui">Appearance</string>
     <string name="label_settings_theme">Theme</string>
-    <string name="label_settings_theme_auto">Auto</string>
+    <string name="label_settings_theme_auto">Automatic</string>
     <string name="label_settings_theme_light">Light</string>
     <string name="label_settings_theme_dark">Dark</string>
     <string name="label_settings_theme_choose">Choose theme</string>
@@ -77,6 +77,7 @@
     <string name="format_double_info">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
     <string name="format_next_from">Next From: %s</string>
+    <string name="format_accent_summary">&lt;b>%1s&lt;/b>:&#160;%2s</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>

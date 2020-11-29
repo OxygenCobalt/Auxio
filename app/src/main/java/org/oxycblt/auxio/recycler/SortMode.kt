@@ -95,7 +95,7 @@ enum class SortMode(val iconRes: Int) {
         }
     }
 
-    fun toConstant(): Int {
+    fun toInt(): Int {
         return when (this) {
             NONE -> CONSTANT_NONE
             ALPHA_UP -> CONSTANT_ALPHA_UP
@@ -112,8 +112,8 @@ enum class SortMode(val iconRes: Int) {
         const val CONSTANT_NUMERIC_UP = 0xA063
         const val CONSTANT_NUMERIC_DOWN = 0xA065
 
-        fun fromConstant(constant: Int): SortMode? {
-            return when (constant) {
+        fun fromInt(value: Int): SortMode? {
+            return when (value) {
                 CONSTANT_NONE -> NONE
                 CONSTANT_ALPHA_UP -> ALPHA_UP
                 CONSTANT_ALPHA_DOWN -> ALPHA_DOWN

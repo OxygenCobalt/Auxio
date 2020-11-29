@@ -7,7 +7,7 @@ package org.oxycblt.auxio.playback.state
 enum class PlaybackMode {
     IN_ARTIST, IN_GENRE, IN_ALBUM, ALL_SONGS;
 
-    fun toConstant(): Int {
+    fun toInt(): Int {
         return when (this) {
             IN_ARTIST -> CONSTANT_IN_ARTIST
             IN_GENRE -> CONSTANT_IN_GENRE
@@ -22,7 +22,7 @@ enum class PlaybackMode {
         const val CONSTANT_IN_ALBUM = 0xA042
         const val CONSTANT_ALL_SONGS = 0xA043
 
-        fun fromConstant(constant: Int): PlaybackMode? {
+        fun fromInt(constant: Int): PlaybackMode? {
             return when (constant) {
                 CONSTANT_IN_ARTIST -> IN_ARTIST
                 CONSTANT_IN_ALBUM -> IN_ALBUM

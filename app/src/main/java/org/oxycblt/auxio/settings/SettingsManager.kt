@@ -66,12 +66,12 @@ class SettingsManager private constructor(context: Context) : SharedPreferences.
 
     fun setLibrarySortMode(sortMode: SortMode) {
         sharedPrefs.edit()
-            .putInt(Keys.KEY_LIBRARY_SORT_MODE, sortMode.toConstant())
+            .putInt(Keys.KEY_LIBRARY_SORT_MODE, sortMode.toInt())
             .apply()
     }
 
     fun getLibrarySortMode(): SortMode {
-        return SortMode.fromConstant(
+        return SortMode.fromInt(
             sharedPrefs.getInt(
                 Keys.KEY_LIBRARY_SORT_MODE,
                 SortMode.CONSTANT_ALPHA_DOWN

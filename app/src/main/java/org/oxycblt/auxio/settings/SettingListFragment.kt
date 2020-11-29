@@ -3,30 +3,74 @@ package org.oxycblt.auxio.settings
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.adapters.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.getAccentItemSummary
+import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
-class SettingListFragment : PreferenceFragmentCompat(), SettingsManager.Callback {
+class SettingListFragment : PreferenceFragmentCompat() {
+    private val settingsModel: SettingsViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        findPreference<Preference>(SettingsManager.Keys.KEY_ACCENT)?.apply {
+        val themePref = findPreference<Preference>(SettingsManager.Keys.KEY_THEME)?.apply {
+            setIcon(
+                when (AppCompatDelegate.getDefaultNightMode()) {
+                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
+                    AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_day
+                    AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_night
+
+                    else -> R.drawable.ic_auto
+                }
+            )
+        }
+
+        val accentPref = findPreference<Preference>(SettingsManager.Keys.KEY_ACCENT)?.apply {
             onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 showAccentDialog()
                 true
             }
 
-            summary = getAccentItemSummary(requireActivity(), accent)
+            summary = getDetailedAccentSummary(requireActivity(), accent)
+        }
+
+        settingsModel.theme.observe(viewLifecycleOwner) {
+            if (it != null) {
+                themePref?.setIcon(
+                    when (it) {
+                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
+                        AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_day
+                        AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_night
+
+                        else -> R.drawable.ic_auto
+                    }
+                )
+
+                (requireActivity() as MainActivity).doThemeRecreate(it)
+
+                settingsModel.doneWithThemeUpdate()
+            }
+        }
+
+        settingsModel.accent.observe(viewLifecycleOwner) {
+            if (it != null) {
+                accentPref?.summary = getDetailedAccentSummary(requireActivity(), it)
+
+                (requireActivity() as MainActivity).doAccentRecreate()
+
+                settingsModel.doneWithAccentUpdate()
+            }
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
@@ -34,18 +78,6 @@ class SettingListFragment : PreferenceFragmentCompat(), SettingsManager.Callback
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_main, rootKey)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        SettingsManager.getInstance().addCallback(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        SettingsManager.getInstance().removeCallback(this)
     }
 
     private fun showAccentDialog() {
@@ -88,12 +120,6 @@ class SettingListFragment : PreferenceFragmentCompat(), SettingsManager.Callback
             negativeButton(android.R.string.cancel)
 
             show()
-        }
-    }
-
-    override fun onAccentUpdate(newAccent: Pair<Int, Int>) {
-        findPreference<Preference>(getString(R.string.label_settings_accent))?.apply {
-            summary = getAccentItemSummary(requireActivity(), accent)
         }
     }
 }

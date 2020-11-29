@@ -3,6 +3,7 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.content.res.ColorStateList
 import android.text.SpannableString
+import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.widget.ImageButton
@@ -10,6 +11,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
@@ -52,6 +54,16 @@ fun ImageButton.disable(context: Context) {
  */
 fun String.createToast(context: Context) {
     Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
+}
+
+/**
+ * "Render" a [Spanned] using [HtmlCompat].
+ * @return A [Spanned] that actually works.
+ */
+fun Spanned.render(): Spanned {
+    return HtmlCompat.fromHtml(
+        this.toString(), HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS
+    )
 }
 
 /**
