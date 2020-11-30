@@ -11,6 +11,9 @@ class SettingsViewModel : ViewModel(), SettingsManager.Callback {
     private val mAccent = MutableLiveData<Pair<Int, Int>?>()
     val accent: LiveData<Pair<Int, Int>?> get() = mAccent
 
+    private val mEdge = MutableLiveData<Boolean?>()
+    val edge: LiveData<Boolean?> = mEdge
+
     private val settingsManager = SettingsManager.getInstance()
 
     init {
@@ -25,16 +28,20 @@ class SettingsViewModel : ViewModel(), SettingsManager.Callback {
         mAccent.value = null
     }
 
-    override fun onThemeUpdate(newTheme: Int) {
-        super.onThemeUpdate(newTheme)
+    fun doneWithEdgeUpdate() {
+        mEdge.value = null
+    }
 
+    override fun onThemeUpdate(newTheme: Int) {
         mTheme.value = newTheme
     }
 
     override fun onAccentUpdate(newAccent: Pair<Int, Int>) {
-        super.onAccentUpdate(newAccent)
-
         mAccent.value = newAccent
+    }
+
+    override fun onEdgeToEdgeUpdate(isEdgeToEdge: Boolean) {
+        mEdge.value = isEdgeToEdge
     }
 
     override fun onCleared() {

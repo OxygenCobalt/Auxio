@@ -59,6 +59,9 @@ class NoLeakThumbView @JvmOverloads constructor(
         textView = thumbView.findViewById(R.id.fast_scroller_thumb_text)
         iconView = thumbView.findViewById(R.id.fast_scroller_thumb_icon)
 
+        isActivated = false
+        isVisible = false
+
         applyStyle()
 
         thumbAnimation = SpringAnimation(thumbView, DynamicAnimation.TRANSLATION_Y).apply {
@@ -87,10 +90,12 @@ class NoLeakThumbView @JvmOverloads constructor(
             )
             ) {
                 isActivated = false
+                isVisible = true
                 return@setOnTouchListener true
             }
 
             isActivated = isPointerOnItem(fastScrollerView, event.y.toInt())
+            isVisible = true
 
             true
         }

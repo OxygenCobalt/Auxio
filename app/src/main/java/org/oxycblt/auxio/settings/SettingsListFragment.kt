@@ -29,8 +29,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.apply {
-        }
+        // --- PREFERENCE ITEM SETUP ---
 
         val themePref = findPreference<Preference>(SettingsManager.Keys.KEY_THEME)?.apply {
             setIcon(
@@ -52,6 +51,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
             summary = getDetailedAccentSummary(requireActivity(), accent)
         }
+
+        // --- VIEWMODEL SETUP ---
 
         settingsModel.theme.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -75,9 +76,17 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             if (it != null) {
                 accentPref?.summary = getDetailedAccentSummary(requireActivity(), it)
 
-                (requireActivity() as MainActivity).doAccentRecreate()
+                requireActivity().recreate()
 
                 settingsModel.doneWithAccentUpdate()
+            }
+        }
+
+        settingsModel.edge.observe(viewLifecycleOwner) {
+            if (it != null) {
+                requireActivity().recreate()
+
+                settingsModel.doneWithEdgeUpdate()
             }
         }
 

@@ -8,6 +8,7 @@
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:scrollbars">none</item>
+        <item name="android:windowIsFloating">false</item>
 
         <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
         <item name="colorControlNormal">@color/control_color</item>
@@ -15,9 +16,7 @@
         <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="colorControlHighlight">?attr/colorPrimary</item>
-        <item name="preferenceTheme">@style/Theme.Preference</item>
 
-        <item name="md_divider_color">@android:color/transparent</item>
         <item name="md_background_color">@color/background</item>
         <item name="md_corner_radius">0dp</item>
         <item name="md_color_button_text">@color/control_color</item>
@@ -88,20 +87,9 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="Theme.Preference" parent="PreferenceThemeOverlay">
-        <item name="rippleColor">@color/selection_color</item>
-        <item name="itemRippleColor">@color/selection_color</item>
-        <item name="tabRippleColor">@color/selection_color</item>
-    </style>
-
-    <!--
-    Fix to get QueueFragment to not overlap the Status Bar or Navigation Bar [Currently unused but still here]
-    https://stackoverflow.com/a/57790787/14143986
-
     <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-    -->
 </resources>

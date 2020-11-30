@@ -65,6 +65,10 @@ class SettingsManager private constructor(context: Context) :
         }
     }
 
+    fun getEdgeToEdge(): Boolean {
+        return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
+    }
+
     fun setLibrarySortMode(sortMode: SortMode) {
         sharedPrefs.edit()
             .putInt(Keys.KEY_LIBRARY_SORT_MODE, sortMode.toInt())
@@ -80,10 +84,6 @@ class SettingsManager private constructor(context: Context) :
         ) ?: SortMode.ALPHA_DOWN
     }
 
-    fun getEdgeToEdge(): Boolean {
-        return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
-    }
-
     // --- OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -91,6 +91,12 @@ class SettingsManager private constructor(context: Context) :
             Keys.KEY_THEME -> {
                 callbacks.forEach {
                     it.onThemeUpdate(getTheme())
+                }
+            }
+
+            Keys.KEY_EDGE_TO_EDGE -> {
+                callbacks.forEach {
+                    it.onEdgeToEdgeUpdate(getEdgeToEdge())
                 }
             }
         }

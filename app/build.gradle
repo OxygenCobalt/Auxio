@@ -97,8 +97,8 @@ dependencies {
     // Dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
 
-    // Edge-To-Edge
-    implementation 'de.halfbit:edge-to-edge:0.10'
+    // Edge-To-Edge insets
+    implementation "dev.chrisbanes:insetter-ktx:0.3.1"
 
     // --- DEV ---
 
