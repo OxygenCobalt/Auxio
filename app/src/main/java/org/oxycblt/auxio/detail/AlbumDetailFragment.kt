@@ -82,9 +82,7 @@ class AlbumDetailFragment : DetailFragment() {
                     )
 
                     R.id.action_queue_add -> {
-                        playbackModel.addToUserQueue(
-                            detailModel.currentAlbum.value!!.songs
-                        )
+                        playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
                         context.getString(R.string.label_queue_added).createToast(requireContext())
                     }
                 }

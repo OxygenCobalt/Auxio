@@ -80,7 +80,11 @@ class QueueFragment : Fragment() {
 
         if (playbackModel.userQueue.value!!.isNotEmpty()) {
             queue.add(
-                Header(name = getString(R.string.label_next_user_queue), isAction = true)
+                Header(
+                    id = 0,
+                    name = getString(R.string.label_next_user_queue),
+                    isAction = true
+                )
             )
             queue.addAll(playbackModel.userQueue.value!!)
         }
@@ -88,6 +92,7 @@ class QueueFragment : Fragment() {
         if (playbackModel.nextItemsInQueue.value!!.isNotEmpty()) {
             queue.add(
                 Header(
+                    id = 1,
                     name = getString(
                         R.string.format_next_from,
                         if (playbackModel.mode.value == PlaybackMode.ALL_SONGS)

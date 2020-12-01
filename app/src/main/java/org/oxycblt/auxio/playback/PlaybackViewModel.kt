@@ -18,6 +18,7 @@ import org.oxycblt.auxio.playback.queue.QueueAdapter
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.recycler.SortMode
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -235,7 +236,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.addToUserQueue(song)
     }
 
-    fun addToUserQueue(songs: List<Song>) {
+    fun addToUserQueue(album: Album) {
+        val songs = SortMode.NUMERIC_DOWN.getSortedSongList(album.songs)
+
         playbackManager.addToUserQueue(songs)
     }
 

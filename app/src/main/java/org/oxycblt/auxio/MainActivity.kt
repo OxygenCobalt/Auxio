@@ -10,7 +10,6 @@ import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
-import dev.chrisbanes.insetter.applySystemWindowInsetsToMargin
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
                 // I barely know how insets work so here's another third party library
                 // that I think does things
-                binding.root.applySystemWindowInsetsToMargin(top = false, bottom = false)
+                // binding.root.applySystemWindowInsetsToMargin(top = false, bottom = false)
             }
         }
     }

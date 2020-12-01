@@ -177,7 +177,7 @@ fun PopupMenu.setupAlbumActions(
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(album.songs)
+                playbackModel.addToUserQueue(album)
                 context.getString(R.string.label_queue_added).createToast(context)
 
                 true

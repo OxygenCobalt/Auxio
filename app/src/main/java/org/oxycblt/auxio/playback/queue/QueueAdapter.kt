@@ -41,7 +41,7 @@ class QueueAdapter(
 
         return if (item is Header)
             if (item.isAction)
-                USER_QUEUE_HEADER_ITEM_tYPE
+                USER_QUEUE_HEADER_ITEM_TYPE
             else
                 HeaderViewHolder.ITEM_TYPE
         else
@@ -54,7 +54,7 @@ class QueueAdapter(
             QUEUE_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
-            USER_QUEUE_HEADER_ITEM_tYPE -> UserQueueHeaderViewHolder(
+            USER_QUEUE_HEADER_ITEM_TYPE -> UserQueueHeaderViewHolder(
                 parent.context, ItemActionHeaderBinding.inflate(LayoutInflater.from(parent.context))
             )
             else -> error("Someone messed with the ViewHolder item types.")
@@ -117,15 +117,6 @@ class QueueAdapter(
         }
     }
 
-    private fun clearUserQueue() {
-        val nextQueueHeaderIndex = data.indexOfLast { it is Header && !it.isAction }
-        Log.d(this::class.simpleName, nextQueueHeaderIndex.toString())
-        val slice = data.slice(0..nextQueueHeaderIndex.dec())
-
-        data.removeAll(slice)
-        notifyItemRangeRemoved(0, slice.size)
-    }
-
     // Generic ViewHolder for a queue item
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
@@ -168,7 +159,6 @@ class QueueAdapter(
                 setImageResource(R.drawable.ic_clear)
 
                 setOnClickListener {
-                    clearUserQueue()
                     onHeaderAction()
                 }
             }
@@ -177,6 +167,6 @@ class QueueAdapter(
 
     companion object {
         const val QUEUE_ITEM_TYPE = 0xA015
-        const val USER_QUEUE_HEADER_ITEM_tYPE = 0xA016
+        const val USER_QUEUE_HEADER_ITEM_TYPE = 0xA016
     }
 }

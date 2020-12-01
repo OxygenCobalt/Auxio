@@ -14,15 +14,17 @@
         <item name="colorControlNormal">@color/control_color</item>
         <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
         <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
-        <item name="colorControlHighlight">?attr/colorPrimary</item>
 
         <item name="md_background_color">@color/background</item>
         <item name="md_corner_radius">0dp</item>
         <item name="md_color_button_text">@color/control_color</item>
         <item name="md_font_title">@font/inter_black</item>
+    </style>
 
-        <item name="android:activatedBackgroundIndicator">@drawable/ui_ripple</item>
+    <style name="ThemeOverlay.Accented" parent="ThemeOverlay.AppCompat.DayNight">
+        <item name="android:windowBackground">@color/background</item>
     </style>
 
     <!-- Hack to fix the weird icon/underline with LibraryFragment's SearchView -->

@@ -84,25 +84,25 @@ class NoLeakThumbView @JvmOverloads constructor(
             fastScrollerView.onTouchEvent(event)
             fastScrollerView.performClick()
 
+            isVisible = true
+
             if (event.actionMasked in intArrayOf(
                 MotionEvent.ACTION_UP,
                 MotionEvent.ACTION_CANCEL
             )
             ) {
                 isActivated = false
-                isVisible = true
                 return@setOnTouchListener true
             }
 
             isActivated = isPointerOnItem(fastScrollerView, event.y.toInt())
-            isVisible = true
 
             true
         }
     }
 
     /**
-     * Hack so that I can detect when the pointer is off the FastScrollerView's items
+     * Hack so that I can detect when the pointer is on the FastScrollerView's items
      * without using onItemIndicatorTouched (Which is internal)
      * @author OxygenCobalt
      */
@@ -113,7 +113,7 @@ class NoLeakThumbView @JvmOverloads constructor(
 
         fastScrollerView.apply {
             children.forEach { view ->
-                if (view.containsY(touchY) && (view is ImageView || view is TextView)) {
+                if (view.containsY(touchY)) {
                     consumed = true
                     return@forEach
                 }
@@ -125,6 +125,7 @@ class NoLeakThumbView @JvmOverloads constructor(
 
     private fun applyStyle() {
         thumbView.backgroundTintList = thumbColor
+
         if (Build.VERSION.SDK_INT == 21) {
             // Workaround for 21 background tint bug
             (thumbView.background as GradientDrawable).apply {
