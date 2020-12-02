@@ -153,7 +153,7 @@
             android:id="@+id/playback_play_pause"
             android:layout_width="@dimen/size_play_pause"
             android:layout_height="@dimen/size_play_pause"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:background="@drawable/ui_circular_button"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"

@@ -15,12 +15,15 @@ import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.handleTransparentSystemBars
+import org.oxycblt.auxio.ui.toColor
 
 // FIXME: Fix bug where fast navigation will break the animations and
 //  lead to nothing being displayed [Possibly Un-fixable]
 // TODO: Landscape UI layouts
 // FIXME: Compat issue with Versions 5 that leads to progress bar looking off
 class MainActivity : AppCompatActivity() {
+
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,13 +48,14 @@ class MainActivity : AppCompatActivity() {
         if (settingsManager.getEdgeToEdge() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             window?.apply {
                 statusBarColor = Color.TRANSPARENT
+                navigationBarColor = R.color.nav_color.toColor(this@MainActivity)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     Log.d(this::class.simpleName, "Doing R+ edge-to-edge.")
 
                     setDecorFitsSystemWindows(false)
 
-                    binding.root.setOnApplyWindowInsetsListener { v, insets ->
+                    binding.root.setOnApplyWindowInsetsListener { _, insets ->
                         WindowInsets.Builder()
                             .setInsets(
                                 WindowInsets.Type.systemBars(),
@@ -60,18 +64,13 @@ class MainActivity : AppCompatActivity() {
                             .build()
                     }
                 } else {
-                    Log.d(this::class.simpleName, "Doing deprec edge-to-edge.")
+                    Log.d(this::class.simpleName, "Doing legacy edge-to-edge.")
+
                     binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 }
 
-                navigationBarColor = Color.TRANSPARENT
-
                 handleTransparentSystemBars(resources.configuration)
-
-                // I barely know how insets work so here's another third party library
-                // that I think does things
-                // binding.root.applySystemWindowInsetsToMargin(top = false, bottom = false)
             }
         }
     }

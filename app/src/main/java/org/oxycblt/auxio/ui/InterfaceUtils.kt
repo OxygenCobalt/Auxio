@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.ui
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -15,7 +16,6 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
@@ -76,7 +76,7 @@ fun Spanned.render(): Spanned {
  * Handle transparent system bars on light mode. Adapted from Music Player GO
  * (https://github.com/enricocid/Music-Player-GO)
  */
-@RequiresApi(Build.VERSION_CODES.O_MR1)
+@TargetApi(Build.VERSION_CODES.O_MR1)
 @Suppress("DEPRECATION")
 fun Window.handleTransparentSystemBars(config: Configuration) {
     fun isNight() = config.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES

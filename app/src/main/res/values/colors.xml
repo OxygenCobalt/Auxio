@@ -5,6 +5,7 @@
     <color name="selection_color">#cbcbcb</color>
     <color name="inactive_color">#c4c4c4</color>
     <color name="control_color">#202020</color>
+    <color name="nav_color">#01fafafa</color>
 
     <!--
     Base color set derived from Music Player GO.
