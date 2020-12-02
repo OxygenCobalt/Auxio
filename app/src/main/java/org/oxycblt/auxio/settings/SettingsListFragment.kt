@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.adapters.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
@@ -60,28 +59,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                         else -> R.drawable.ic_auto
                     }
                 )
-
-                (requireActivity() as MainActivity).doThemeRecreate(it)
-
-                settingsModel.doneWithThemeUpdate()
             }
         }
 
         settingsModel.accent.observe(viewLifecycleOwner) {
             if (it != null) {
                 accentPref?.summary = getDetailedAccentSummary(requireActivity(), it)
-
-                requireActivity().recreate()
-
-                settingsModel.doneWithAccentUpdate()
-            }
-        }
-
-        settingsModel.edge.observe(viewLifecycleOwner) {
-            if (it != null) {
-                requireActivity().recreate()
-
-                settingsModel.doneWithEdgeUpdate()
             }
         }
 

@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import dev.chrisbanes.insetter.applySystemWindowInsetsToMargin
+import com.afollestad.materialdialogs.utils.MDUtil.updatePadding
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -44,8 +44,18 @@ class QueueFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.queueToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+        binding.queueToolbar.apply {
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnApplyWindowInsetsListener { v, insets ->
+                (parent as View).updatePadding(
+                    top = insets.systemWindowInsetTop
+                )
+
+                insets
+            }
         }
 
         binding.queueRecycler.apply {
@@ -75,12 +85,6 @@ class QueueFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        view.findViewById<Toolbar>(R.id.queue_toolbar).applySystemWindowInsetsToMargin(top = true)
     }
 
     private fun createQueueData(): MutableList<BaseModel> {

@@ -87,9 +87,11 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <!--
     <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    -->
 </resources>

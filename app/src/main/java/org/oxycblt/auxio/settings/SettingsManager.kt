@@ -9,9 +9,6 @@ import org.oxycblt.auxio.ui.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
- *
- * **Note:** Run any getter in a IO coroutine if possible, as SharedPrefs will read from disk
- * the first time it occurs.
  * @author OxygenCobalt
  */
 class SettingsManager private constructor(context: Context) :

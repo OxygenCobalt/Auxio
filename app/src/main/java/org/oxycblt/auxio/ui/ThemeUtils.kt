@@ -100,11 +100,18 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
     return color.toColor(context)
 }
 
+/**
+ * Get the name of an accent.
+ * TODO: Make these use translatable string resources!!!!
+ */
 fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
     return context.resources.getResourceEntryName(newAccent.first)
         .replace("_", " ").capitalize(Locale.getDefault())
 }
 
+/**
+ * Get the name [in bold]] and the hex value of a theme.
+ */
 fun getDetailedAccentSummary(context: Context, newAccent: Pair<Int, Int>): Spanned {
     val name = getAccentItemSummary(context, newAccent)
     val hex = context.getString(accent.first).toUpperCase(Locale.getDefault())

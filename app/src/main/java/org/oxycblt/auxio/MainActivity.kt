@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.SettingsViewModel
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.handleTransparentSystemBars
 import org.oxycblt.auxio.ui.toColor
@@ -22,10 +24,13 @@ import org.oxycblt.auxio.ui.toColor
 // TODO: Landscape UI layouts
 // FIXME: Compat issue with Versions 5 that leads to progress bar looking off
 class MainActivity : AppCompatActivity() {
+    private val settingsModel: SettingsViewModel by viewModels()
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // --- UI SETUP ---
 
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
             this, R.layout.activity_main
@@ -42,35 +47,33 @@ class MainActivity : AppCompatActivity() {
         // Apply the theme
         setTheme(accent.second)
 
-        // If enabled and possible, go through a stupidly long & complicated process
-        // just to get edge-to-edge to work.
-        // TODO: Make the navigation bar fully transparent
         if (settingsManager.getEdgeToEdge() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            window?.apply {
-                statusBarColor = Color.TRANSPARENT
-                navigationBarColor = R.color.nav_color.toColor(this@MainActivity)
+            doEdgeToEdgeSetup(binding)
+        }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    Log.d(this::class.simpleName, "Doing R+ edge-to-edge.")
+        // --- VIEWMODEL SETUP ---
 
-                    setDecorFitsSystemWindows(false)
+        settingsModel.theme.observe(this) {
+            if (it != null) {
+                doThemeRecreate(it)
 
-                    binding.root.setOnApplyWindowInsetsListener { _, insets ->
-                        WindowInsets.Builder()
-                            .setInsets(
-                                WindowInsets.Type.systemBars(),
-                                insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-                            )
-                            .build()
-                    }
-                } else {
-                    Log.d(this::class.simpleName, "Doing legacy edge-to-edge.")
+                settingsModel.doneWithThemeUpdate()
+            }
+        }
 
-                    binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                }
+        settingsModel.accent.observe(this) {
+            if (it != null) {
+                recreate()
 
-                handleTransparentSystemBars(resources.configuration)
+                settingsModel.doneWithAccentUpdate()
+            }
+        }
+
+        settingsModel.edge.observe(this) {
+            if (it != null) {
+                recreate()
+
+                settingsModel.doneWithEdgeUpdate()
             }
         }
     }
@@ -83,6 +86,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
+        window?.apply {
+            statusBarColor = Color.TRANSPARENT
+
+            // Use a heavily transparent scrim on the nav bar as otherwise the transparency wont
+            // work.
+            navigationBarColor = R.color.nav_color.toColor(this@MainActivity)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Do modern edge to edge [Which is really a shot in the dark tbh]
+                Log.d(this::class.simpleName, "Doing R+ edge-to-edge.")
+
+                setDecorFitsSystemWindows(false)
+
+                binding.root.setOnApplyWindowInsetsListener { _, insets ->
+                    WindowInsets.Builder()
+                        .setInsets(
+                            WindowInsets.Type.systemBars(),
+                            insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+                        )
+                        .build()
+                }
+            } else {
+                // Do old edge-to-edge otherwise
+                Log.d(this::class.simpleName, "Doing legacy edge-to-edge.")
+
+                binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            }
+
+            handleTransparentSystemBars(resources.configuration)
+        }
+    }
+
+    /**
+     *
+     */
     fun doThemeRecreate(newTheme: Int) {
         AppCompatDelegate.setDefaultNightMode(newTheme)
     }

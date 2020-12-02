@@ -4,6 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+/**
+ * A [ViewModel] that provides a better interface for observing settings updates compared to
+ * [SettingsManager.Callback] or the default SharedPreferences listener.
+ * // TODO: Roll values & updates into this viewmodel
+ * @author OxygenCobalt
+ */
 class SettingsViewModel : ViewModel(), SettingsManager.Callback {
     private val mTheme = MutableLiveData<Int?>()
     val theme: LiveData<Int?> get() = mTheme

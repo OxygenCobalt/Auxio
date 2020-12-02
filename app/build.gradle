@@ -97,9 +97,6 @@ dependencies {
     // Dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
 
-    // Edge-To-Edge insets
-    implementation "dev.chrisbanes:insetter-ktx:0.3.1"
-
     // --- DEV ---
 
     // Lint
