@@ -10,7 +10,7 @@ https://github.com/ashutoshgngwr/noice/
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="200"
+                    android:duration="@android:integer/config_shortAnimTime"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="pathData"
                     android:valueFrom="M6,7.5L6,10.5L18,10.5L18,7.5Z"
@@ -24,7 +24,7 @@ https://github.com/ashutoshgngwr/noice/
         <aapt:attr name="android:animation">
             <set>
                 <objectAnimator
-                    android:duration="200"
+                    android:duration="@android:integer/config_shortAnimTime"
                     android:interpolator="@android:interpolator/fast_out_slow_in"
                     android:propertyName="pathData"
                     android:valueFrom="M6,16.5L6,13.5L18,13.5L18,16.5Z"

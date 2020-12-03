@@ -26,18 +26,13 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            android:theme="@style/Toolbar.Style"
-            android:clickable="true"
-            android:focusable="true"
+            style="@style/Toolbar.Style.Icon"
+            android:elevation="0dp"
             app:navigationIcon="@drawable/ic_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/label_playback"
-            app:menu="@menu/menu_playback"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
+            app:menu="@menu/menu_playback" />
 
         <ImageView
             android:id="@+id/playback_cover"

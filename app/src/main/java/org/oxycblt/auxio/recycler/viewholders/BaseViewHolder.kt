@@ -27,7 +27,7 @@ abstract class BaseViewHolder<T : BaseModel>(
     /**
      * Bind the viewholder with whatever [BaseModel] instance that has been specified.
      * Will call [onBind] on the inheriting ViewHolder.
-     * @param data Data that the viewholder should be binded with
+     * @param data Data that the viewholder should be bound with
      */
     fun bind(data: T) {
         doOnClick?.let { onClick ->

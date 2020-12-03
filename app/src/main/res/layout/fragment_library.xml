@@ -12,14 +12,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/library_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
-            android:theme="@style/Toolbar.Style"
-            app:popupTheme="@style/AppThemeOverlay.Popup"
+            style="@style/Toolbar.Style"
+            android:theme="@style/Toolbar.Style.Search"
             app:menu="@menu/menu_library"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
             app:title="@string/label_library" />
 
         <androidx.recyclerview.widget.RecyclerView

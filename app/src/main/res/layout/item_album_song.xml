@@ -11,15 +11,9 @@
             type="org.oxycblt.auxio.music.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ui_ripple"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="@dimen/padding_medium">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
             android:id="@+id/song_track"
             android:layout_width="@dimen/width_track_number"
             android:layout_height="wrap_content"
@@ -30,10 +24,10 @@
             android:textSize="@dimen/text_size_track_max"
             android:maxLines="1"
             android:contentDescription="@{@string/description_track_number(song.track)}"
-            app:autoSizeMaxTextSize="@dimen/text_size_header_max"
+            android:gravity="center"
+            app:autoSizeMaxTextSize="@dimen/text_size_detail_header_max"
             app:autoSizeMinTextSize="@dimen/text_size_min"
             app:autoSizeStepGranularity="@dimen/text_size_increment"
-            android:gravity="center"
             app:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,15 +36,8 @@
 
         <TextView
             android:id="@+id/song_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:ellipsize="end"
-            android:maxLines="1"
+            style="@style/ItemText.Primary"
             android:text="@{song.name}"
-            android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="?android:attr/textColorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/song_duration"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/song_track"
@@ -60,13 +47,7 @@
 
         <TextView
             android:id="@+id/song_duration"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            style="@style/ItemText.Secondary"
             android:textColor="?android:attr/textColorSecondary"
             android:text="@{song.formattedDuration}"
             app:layout_constraintBottom_toBottomOf="parent"

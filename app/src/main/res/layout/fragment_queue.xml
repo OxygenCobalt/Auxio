@@ -13,28 +13,16 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/queue_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            android:theme="@style/Toolbar.Style"
-            android:clickable="true"
-            android:focusable="true"
-            android:elevation="@dimen/elevation_normal"
-            app:popupTheme="@style/Widget.CustomPopup"
+            style="@style/Toolbar.Style.Icon"
             app:navigationIcon="@drawable/ic_down"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/label_queue"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
+            app:title="@string/label_queue" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/queue_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/queue_header"
-            tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/item_basic_song" />
+            tools:listitem="@layout/item_queue_song" />
 
     </LinearLayout>
 </layout>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         android:title="@string/setting_ui"
-        android:layout="@layout/item_prefs_header">
+        android:layout="@layout/item_header">
         <ListPreference
             app:key="KEY_THEME"
             android:title="@string/setting_theme"

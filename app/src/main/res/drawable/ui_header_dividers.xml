@@ -13,10 +13,4 @@ https://stackoverflow.com/a/61157571/14143986
                 android:color="@color/divider_color" />
         </shape>
     </item>
-
-    <item>
-        <ripple
-            android:color="@color/selection_color"
-            android:radius="@dimen/size_divider_ripple" />
-    </item>
 </layer-list>

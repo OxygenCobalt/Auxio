@@ -1,15 +1,16 @@
 package org.oxycblt.auxio.playback.queue
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.afollestad.materialdialogs.utils.MDUtil.updatePadding
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -49,9 +50,15 @@ class QueueFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            setOnApplyWindowInsetsListener { v, insets ->
+            setOnApplyWindowInsetsListener { _, insets ->
+                val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(WindowInsets.Type.systemBars()).top
+                } else {
+                    insets.systemWindowInsetTop
+                }
+
                 (parent as View).updatePadding(
-                    top = insets.systemWindowInsetTop
+                    top = top
                 )
 
                 insets

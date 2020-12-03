@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
@@ -59,6 +61,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                         else -> R.drawable.ic_auto
                     }
                 )
+
+                settingsModel.doneWithThemeUpdate()
             }
         }
 

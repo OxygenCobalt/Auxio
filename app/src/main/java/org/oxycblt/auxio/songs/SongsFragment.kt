@@ -84,6 +84,8 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
             var hasAddedNumber = false
             var iters = 0
 
+            // TODO: Do selection instead of using iters
+
             setupWithRecyclerView(
                 binding.songRecycler,
                 { pos ->

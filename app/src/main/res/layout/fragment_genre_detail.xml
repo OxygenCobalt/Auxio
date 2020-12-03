@@ -26,14 +26,8 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/genre_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
-            app:popupTheme="@style/AppThemeOverlay.Popup"
+            style="@style/Toolbar.Style.Icon"
             app:menu="@menu/menu_detail"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header"
-            app:navigationIcon="@drawable/ic_back"
             app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView
@@ -60,14 +54,14 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/genre_name"
-                    style="@style/DetailHeader"
+                    style="@style/DetailTitleText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:text="@{genre.name}"
-                    app:autoSizeMaxTextSize="@dimen/text_size_header_max"
+                    app:autoSizeMaxTextSize="@dimen/text_size_detail_header_max"
                     app:autoSizeMinTextSize="@dimen/text_size_min"
                     app:autoSizeStepGranularity="@dimen/text_size_increment"
                     app:autoSizeTextType="uniform"
@@ -103,31 +97,17 @@
 
                 <TextView
                     android:id="@+id/genre_artist_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    style="@style/HeaderText"
                     android:layout_marginTop="@dimen/padding_medium"
-                    android:background="@drawable/ui_header_dividers"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:fontFamily="@font/inter_semibold"
-                    android:paddingStart="@dimen/padding_medium"
-                    android:paddingTop="@dimen/padding_small"
-                    android:paddingEnd="@dimen/padding_small"
-                    android:paddingBottom="@dimen/padding_small"
                     android:text="@string/label_artists"
-                    android:textSize="19sp"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
 
                 <ImageButton
                     android:id="@+id/genre_sort_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:background="@drawable/ui_header_dividers"
+                    style="@style/HeaderAction"
                     android:contentDescription="@string/description_sort_button"
                     android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-                    android:paddingStart="@dimen/padding_medium"
-                    android:paddingTop="@dimen/padding_small"
-                    android:paddingEnd="@dimen/margin_medium"
-                    android:paddingBottom="@dimen/padding_small"
                     app:layout_constraintBottom_toBottomOf="@+id/genre_artist_header"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/genre_artist_header"

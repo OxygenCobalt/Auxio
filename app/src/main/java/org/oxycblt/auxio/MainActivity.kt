@@ -26,7 +26,6 @@ import org.oxycblt.auxio.ui.toColor
 class MainActivity : AppCompatActivity() {
     private val settingsModel: SettingsViewModel by viewModels()
 
-    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,8 +55,6 @@ class MainActivity : AppCompatActivity() {
         settingsModel.theme.observe(this) {
             if (it != null) {
                 doThemeRecreate(it)
-
-                settingsModel.doneWithThemeUpdate()
             }
         }
 
@@ -86,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
         window?.apply {
             statusBarColor = Color.TRANSPARENT
@@ -120,10 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     *
-     */
-    fun doThemeRecreate(newTheme: Int) {
+    private fun doThemeRecreate(newTheme: Int) {
         AppCompatDelegate.setDefaultNightMode(newTheme)
     }
 }

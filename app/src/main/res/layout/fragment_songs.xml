@@ -12,15 +12,11 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
+            style="@style/Toolbar.Style"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_songs"
-            app:title="@string/label_all_songs"
-            app:titleTextAppearance="@style/TextAppearance.Toolbar.Header" />
+            app:title="@string/label_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"

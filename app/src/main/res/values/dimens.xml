@@ -19,7 +19,8 @@
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_error_icon">48dp</dimen>
-    <dimen name="size_divider_ripple">18dp</dimen>
+    <dimen name="size_small_unb_ripple">18dp</dimen>
+    <dimen name="size_unb_ripple">24dp</dimen>
     <dimen name="size_cover_compact">44dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
     <dimen name="size_cover_large">68dp</dimen>
@@ -31,7 +32,9 @@
     <dimen name="text_size_min">10sp</dimen>
     <dimen name="text_size_increment">2sp</dimen>
     <dimen name="text_size_track_max">20sp</dimen>
-    <dimen name="text_size_header_max">26sp</dimen>
+    <dimen name="text_size_detail_header_max">26sp</dimen>
+    <dimen name="text_size_thumb">18sp</dimen>
+    <dimen name="text_size_header">19sp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_normal">4dp</dimen>

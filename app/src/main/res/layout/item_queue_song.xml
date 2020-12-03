@@ -30,15 +30,9 @@
 
         <TextView
             android:id="@+id/song_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
+            style="@style/ItemText.Primary"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:ellipsize="end"
-            android:maxLines="1"
             android:text="@{song.name}"
-            android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="?android:attr/textColorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
             app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
@@ -48,14 +42,9 @@
 
         <TextView
             android:id="@+id/song_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/ItemText.Secondary"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-            android:textColor="?android:attr/textColorSecondary"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
@@ -67,13 +56,13 @@
             android:id="@+id/song_drag_handle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:padding="@dimen/padding_tiny"
             android:clickable="true"
             android:focusable="true"
+            android:padding="@dimen/padding_tiny"
             android:src="@drawable/ic_handle"
             app:layout_constraintBottom_toBottomOf="@+id/song_info"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/song_name"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

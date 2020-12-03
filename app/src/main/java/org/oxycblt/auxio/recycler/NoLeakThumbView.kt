@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package org.oxycblt.auxio.recycler
 
 import android.annotation.SuppressLint
@@ -40,9 +42,9 @@ class NoLeakThumbView @JvmOverloads constructor(
     FastScrollerView.ItemIndicatorSelectedCallback {
 
     private var thumbColor = ColorStateList.valueOf(accent.first.toColor(context))
-    var iconColor = R.color.background.toColor(context)
+    private var iconColor = R.color.background.toColor(context)
     var textAppearanceRes = R.style.TextAppearance_ThumbIndicator
-    var textColor = R.color.background.toColor(context)
+    private var textColor = R.color.background.toColor(context)
 
     private val thumbView: ViewGroup
     private val textView: TextView
@@ -80,16 +82,14 @@ class NoLeakThumbView @JvmOverloads constructor(
 
         // FastScrollerView's "onItemIndicatorTouched" [Which I would've used here] is internal,
         // so instead I just use a setOnTouchListener to get the same-ish effect.
-        fastScrollerView.setOnTouchListener { v, event ->
+        fastScrollerView.setOnTouchListener { _, event ->
             fastScrollerView.onTouchEvent(event)
             fastScrollerView.performClick()
 
             isVisible = true
 
-            if (event.actionMasked in intArrayOf(
-                MotionEvent.ACTION_UP,
-                MotionEvent.ACTION_CANCEL
-            )
+            if (event.actionMasked == MotionEvent.ACTION_UP ||
+                event.actionMasked == MotionEvent.ACTION_CANCEL
             ) {
                 isActivated = false
                 return@setOnTouchListener true
