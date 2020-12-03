@@ -107,7 +107,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                         )
                 }
 
-                // TODO: Implement dialog edge-to-edge
                 layoutManager = LinearLayoutManager(
                     requireContext()
                 ).also { it.orientation = LinearLayoutManager.HORIZONTAL }

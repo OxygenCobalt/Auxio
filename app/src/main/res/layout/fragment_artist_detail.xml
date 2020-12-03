@@ -27,6 +27,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/artist_toolbar"
             style="@style/Toolbar.Style.Icon"
+            android:elevation="@dimen/elevation_normal"
             app:menu="@menu/menu_detail"
             app:title="@string/label_library" />
 

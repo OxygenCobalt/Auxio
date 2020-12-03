@@ -75,9 +75,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             setOnMenuItemClickListener {
                 if (it.itemId == R.id.action_queue) {
                     findNavController().navigate(PlaybackFragmentDirections.actionShowQueue())
-                }
 
-                true
+                    true
+                } else false
             }
 
             queueMenuItem = menu.findItem(R.id.action_queue)

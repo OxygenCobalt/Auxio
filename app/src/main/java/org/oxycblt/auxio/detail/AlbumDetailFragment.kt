@@ -73,21 +73,30 @@ class AlbumDetailFragment : DetailFragment() {
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_shuffle -> playbackModel.playAlbum(
-                        detailModel.currentAlbum.value!!,
+                    R.id.action_shuffle -> {
+                        playbackModel.playAlbum(
+                            detailModel.currentAlbum.value!!, true
+                        )
+
                         true
-                    )
-                    R.id.action_play -> playbackModel.playAlbum(
-                        detailModel.currentAlbum.value!!, false
-                    )
+                    }
+                    R.id.action_play -> {
+                        playbackModel.playAlbum(
+                            detailModel.currentAlbum.value!!, false
+                        )
+
+                        true
+                    }
 
                     R.id.action_queue_add -> {
                         playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
                         context.getString(R.string.label_queue_added).createToast(requireContext())
-                    }
-                }
 
-                true
+                        true
+                    }
+
+                    else -> false
+                }
             }
         }
 

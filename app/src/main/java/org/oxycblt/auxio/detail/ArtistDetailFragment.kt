@@ -76,16 +76,24 @@ class ArtistDetailFragment : DetailFragment() {
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_shuffle -> playbackModel.playArtist(
-                        detailModel.currentArtist.value!!,
-                        true
-                    )
-                    R.id.action_play -> playbackModel.playArtist(
-                        detailModel.currentArtist.value!!, false
-                    )
-                }
+                    R.id.action_shuffle -> {
+                        playbackModel.playArtist(
+                            detailModel.currentArtist.value!!,
+                            true
+                        )
 
-                true
+                        true
+                    }
+                    R.id.action_play -> {
+                        playbackModel.playArtist(
+                            detailModel.currentArtist.value!!, false
+                        )
+
+                        true
+                    }
+
+                    else -> false
+                }
             }
         }
 

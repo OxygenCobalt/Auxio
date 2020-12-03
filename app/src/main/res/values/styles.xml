@@ -26,19 +26,25 @@
     <style name="Toolbar.Style" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
-        <item name="android:elevation">4dp</item>
+        <item name="popupTheme">@style/AppThemeOverlay.ToolbarPopup</item>
 
-        <item name="popupTheme">@style/Widget.CustomPopup</item>
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
     </style>
 
+    <!-- Toolbar sub-style with a nav icon -->
     <style name="Toolbar.Style.Icon" parent="Toolbar.Style">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
 
-    <!-- Toolbar sub theme with a fix for an odd search style -->
+    <!-- Toolbar sub-style with a fix for an odd search style -->
     <style name="Toolbar.Style.Search" parent="Toolbar.Style">
         <item name="android:searchViewStyle">@style/Widget.AppCompat.SearchView</item>
+    </style>
+
+    <!-- Toolbar popup menu -->
+    <style name="AppThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
     </style>
 
     <!-- Toolbar Title Theme -->
@@ -62,7 +68,6 @@
 
     <!-- Custom popup menu theme -->
     <style name="Widget.CustomPopup" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:colorBackground">@color/background</item>
         <item name="android:popupBackground">@color/background</item>
         <item name="colorControlHighlight">@color/selection_color</item>
         <item name="cornerRadius">0dp</item>
@@ -143,6 +148,7 @@
         <item name="android:background">@drawable/ui_header_dividers</item>
     </style>
 
+    <!-- Style for an action header -->
     <style name="HeaderAction">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>

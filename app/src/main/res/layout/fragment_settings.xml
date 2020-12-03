@@ -10,6 +10,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
             style="@style/Toolbar.Style"
+            android:elevation="@dimen/elevation_normal"
             app:title="@string/setting_title" />
 
         <androidx.fragment.app.FragmentContainerView

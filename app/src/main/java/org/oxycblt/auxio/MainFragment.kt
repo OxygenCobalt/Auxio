@@ -71,6 +71,8 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
+        handleCompactPlaybackVisibility(binding, playbackModel.song.value)
+
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints
 
@@ -84,17 +86,7 @@ class MainFragment : Fragment() {
 
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
         playbackModel.song.observe(viewLifecycleOwner) {
-            if (it == null) {
-                Log.d(
-                    this::class.simpleName,
-                    "Hiding CompactPlaybackFragment since no song is being played."
-                )
-
-                binding.compactPlayback.visibility = View.GONE
-                playbackModel.disableAnimation()
-            } else {
-                binding.compactPlayback.visibility = View.VISIBLE
-            }
+            handleCompactPlaybackVisibility(binding, it)
         }
 
         playbackModel.navToItem.observe(viewLifecycleOwner) {
@@ -161,8 +153,20 @@ class MainFragment : Fragment() {
             }
         }
 
-        //
-
         return false
+    }
+
+    private fun handleCompactPlaybackVisibility(binding: FragmentMainBinding, song: Song?) {
+        if (song == null) {
+            Log.d(
+                this::class.simpleName,
+                "Hiding CompactPlaybackFragment since no song is being played."
+            )
+
+            binding.compactPlayback.visibility = View.GONE
+            playbackModel.disableAnimation()
+        } else {
+            binding.compactPlayback.visibility = View.VISIBLE
+        }
     }
 }

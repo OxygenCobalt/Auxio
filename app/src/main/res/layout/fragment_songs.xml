@@ -13,6 +13,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
             style="@style/Toolbar.Style"
+            android:elevation="@dimen/elevation_normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_songs"
@@ -39,7 +40,7 @@
 
         <org.oxycblt.auxio.recycler.NoLeakThumbView
             android:id="@+id/song_fast_scroll_thumb"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/width_thumb_view"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_fast_scroll"

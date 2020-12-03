@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +23,7 @@ import org.oxycblt.auxio.ui.setupSongActions
  * them.
  * @author OxygenCobalt
  */
-class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
+class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -52,8 +51,9 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
             setOnMenuItemClickListener {
                 if (it.itemId == R.id.action_shuffle) {
                     playbackModel.shuffleAll()
-                }
-                true
+
+                    true
+                } else false
             }
         }
 
@@ -69,28 +69,16 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
         return binding.root
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return false
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return false
-    }
-
     private fun setupFastScroller(binding: FragmentSongsBinding) {
         val musicStore = MusicStore.getInstance()
 
         binding.songFastScroll.apply {
             var hasAddedNumber = false
-            var iters = 0
-
-            // TODO: Do selection instead of using iters
 
             setupWithRecyclerView(
                 binding.songRecycler,
                 { pos ->
                     val item = musicStore.songs[pos]
-                    iters++
 
                     // If the item starts with "the"/"a", then actually use the character after that
                     // as its initial. Yes, this is stupidly western-centric but the code [hopefully]
@@ -108,31 +96,36 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
                         item.name[0].toUpperCase()
                     }
 
-                    // Check if this song starts with a number, if so, then concat it with a single
-                    // "Numeric" item if haven't already.
-                    // This check only occurs on the second time the fast scroller is polled for items.
-                    if (iters >= musicStore.songs.size) {
-                        if (char.isDigit()) {
-                            if (!hasAddedNumber) {
-                                hasAddedNumber = true
-
-                                return@setupWithRecyclerView FastScrollItemIndicator.Text("#")
-                            } else {
-                                return@setupWithRecyclerView null
-                            }
-                        }
+                    // Use "#" if the character is a digit.
+                    if (char.isDigit()) {
+                        FastScrollItemIndicator.Text("#")
+                    } else {
+                        FastScrollItemIndicator.Text(char.toString())
                     }
-
-                    FastScrollItemIndicator.Text(
-                        char.toString()
-                    )
                 }
             )
 
+            showIndicator = { indicator, _, _ ->
+                var isGood = true
+
+                // Remove all but the first "#" character
+                if (indicator is FastScrollItemIndicator.Text) {
+                    if (indicator.text == "#") {
+                        if (hasAddedNumber) {
+                            isGood = false
+                        }
+
+                        hasAddedNumber = true
+                    }
+                }
+
+                isGood
+            }
+
             useDefaultScroller = false
 
-            itemIndicatorSelectedCallbacks.add(object :
-                    FastScrollerView.ItemIndicatorSelectedCallback {
+            itemIndicatorSelectedCallbacks.add(
+                object : FastScrollerView.ItemIndicatorSelectedCallback {
                     override fun onItemIndicatorSelected(
                         indicator: FastScrollItemIndicator,
                         indicatorCenterY: Int,

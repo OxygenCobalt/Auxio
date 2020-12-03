@@ -80,6 +80,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     )
                     it.expandActionView()
                 }
+
                 true
             }
 

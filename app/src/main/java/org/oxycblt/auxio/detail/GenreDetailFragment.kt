@@ -75,16 +75,24 @@ class GenreDetailFragment : DetailFragment() {
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_shuffle -> playbackModel.playGenre(
-                        detailModel.currentGenre.value!!,
-                        true
-                    )
-                    R.id.action_play -> playbackModel.playGenre(
-                        detailModel.currentGenre.value!!, false
-                    )
-                }
+                    R.id.action_shuffle -> {
+                        playbackModel.playGenre(
+                            detailModel.currentGenre.value!!,
+                            true
+                        )
 
-                true
+                        true
+                    }
+                    R.id.action_play -> {
+                        playbackModel.playGenre(
+                            detailModel.currentGenre.value!!, false
+                        )
+
+                        true
+                    }
+
+                    else -> false
+                }
             }
         }
 
