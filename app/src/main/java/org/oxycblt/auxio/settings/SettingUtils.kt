@@ -18,6 +18,9 @@ fun String.toThemeInt(): Int {
     }
 }
 
+/**
+ * Convert an theme integer into an icon that can be used.
+ */
 @DrawableRes
 fun Int.toThemeIcon(): Int {
     return when (this) {

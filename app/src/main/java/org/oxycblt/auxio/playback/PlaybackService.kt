@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -52,12 +53,14 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  * to it to deliver commands.
  * @author OxygenCobalt
  */
-class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback {
+class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
     private val player: SimpleExoPlayer by lazy {
         SimpleExoPlayer.Builder(applicationContext).build()
     }
 
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
 
@@ -121,6 +124,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         systemReceiver = SystemEventReceiver()
         IntentFilter().apply {
             addAction(NotificationUtils.ACTION_LOOP)
+            addAction(NotificationUtils.ACTION_SHUFFLE)
             addAction(NotificationUtils.ACTION_SKIP_PREV)
             addAction(NotificationUtils.ACTION_PLAY_PAUSE)
             addAction(NotificationUtils.ACTION_SKIP_NEXT)
@@ -150,6 +154,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             restorePlayer()
             restoreNotification()
         }
+
+        // --- SETTINGSMANAGER SETUP ---
+
+        settingsManager.addCallback(this)
     }
 
     override fun onDestroy() {
@@ -162,6 +170,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         player.release()
         mediaSession.release()
         playbackManager.removeCallback(this)
+        settingsManager.removeCallback(this)
 
         serviceScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
@@ -274,8 +283,16 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
-        notification.updateLoop(this)
+        notification.updateExtraAction(this)
         startForegroundOrNotify("Loop")
+    }
+
+    override fun onShuffleUpdate(isShuffling: Boolean) {
+        if (settingsManager.useAltNotifAction) {
+            notification.updateExtraAction(this)
+
+            startForegroundOrNotify("Shuffle update")
+        }
     }
 
     override fun onSeekConfirm(position: Long) {
@@ -288,6 +305,22 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         Log.d(this::class.simpleName, "Restore done")
 
         restorePlayer()
+    }
+
+    // --- SETTINGSMANAGER OVERRIDES ---
+
+    override fun onColorizeNotifUpdate(doColorize: Boolean) {
+        playbackManager.song?.let {
+            notification.setMetadata(it, this) {
+                startForegroundOrNotify("Colorize update")
+            }
+        }
+    }
+
+    override fun onNotifActionUpdate(useAltAction: Boolean) {
+        notification.updateExtraAction(this)
+
+        startForegroundOrNotify("Notif action update")
     }
 
     // --- OTHER FUNCTIONS ---
@@ -311,7 +344,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     private fun restoreNotification() {
-        notification.updateLoop(this)
+        notification.updateExtraAction(this)
         notification.updateMode(this)
         notification.updatePlaying(this)
 
@@ -436,6 +469,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 when (it) {
                     NotificationUtils.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
+                    NotificationUtils.ACTION_SHUFFLE ->
+                        playbackManager.setShuffleStatus(!playbackManager.isShuffling)
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
                     NotificationUtils.ACTION_PLAY_PAUSE -> {
                         playbackManager.setPlayingStatus(!playbackManager.isPlaying)

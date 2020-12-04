@@ -2,7 +2,6 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.ACCENTS
@@ -19,10 +18,11 @@ class SettingsManager private constructor(context: Context) :
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
     }
 
+    // --- VALUES ---
+
     val theme: Int
         get() {
-            return sharedPrefs.getString(Keys.KEY_THEME, EntryNames.THEME_AUTO)?.toThemeInt()
-                ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            return sharedPrefs.getString(Keys.KEY_THEME, EntryNames.THEME_AUTO)!!.toThemeInt()
         }
 
     var accent: Pair<Int, Int>
@@ -45,6 +45,16 @@ class SettingsManager private constructor(context: Context) :
     val edgeEnabled: Boolean
         get() {
             return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
+        }
+
+    val colorizeNotif: Boolean
+        get() {
+            return sharedPrefs.getBoolean(Keys.KEY_COLORIZE_NOTIFICATION, true)
+        }
+
+    val useAltNotifAction: Boolean
+        get() {
+            return sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
         }
 
     var librarySortMode: SortMode
@@ -77,6 +87,15 @@ class SettingsManager private constructor(context: Context) :
     // --- OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        when (key) {
+            Keys.KEY_COLORIZE_NOTIFICATION -> callbacks.forEach {
+                it.onColorizeNotifUpdate(colorizeNotif)
+            }
+
+            Keys.KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach {
+                it.onNotifActionUpdate(useAltNotifAction)
+            }
+        }
     }
 
     companion object {
@@ -113,6 +132,8 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_THEME = "KEY_THEME"
         const val KEY_ACCENT = "KEY_ACCENT"
         const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
+        const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
+        const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
     }
 
     object EntryNames {
@@ -121,9 +142,8 @@ class SettingsManager private constructor(context: Context) :
         const val THEME_DARK = "DARK"
     }
 
-    /**
-     * An interface for receiving some settings updates.
-     * [SharedPreferences.OnSharedPreferenceChangeListener].
-     */
-    interface Callback
+    interface Callback {
+        fun onColorizeNotifUpdate(doColorize: Boolean) {}
+        fun onNotifActionUpdate(useAltAction: Boolean) {}
+    }
 }

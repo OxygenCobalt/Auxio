@@ -25,6 +25,29 @@
             app:summaryOn="@string/setting_edge_desc_on"
             app:summaryOff="@string/setting_edge_desc_off"
             app:iconSpaceReserved="false"
+            app:allowDividerBelow="false"
             android:defaultValue="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/setting_display"
+        android:layout="@layout/item_header">
+
+        <SwitchPreferenceCompat
+            app:key="KEY_COLOR_NOTIF"
+            android:title="@string/setting_color_notif"
+            app:summaryOn="@string/setting_color_desc_on"
+            app:summaryOff="@string/setting_color_desc_off"
+            app:iconSpaceReserved="false"
+            android:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="KEY_ALT_NOTIF_ACTION"
+            android:title="@string/setting_use_alt_action"
+            app:iconSpaceReserved="false"
+            app:summaryOn="@string/setting_use_alt_shuffle"
+            app:summaryOff="@string/setting_use_alt_loop"
+            android:defaultValue="false"/>
+
     </PreferenceCategory>
 </PreferenceScreen>

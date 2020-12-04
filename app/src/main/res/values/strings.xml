@@ -44,8 +44,15 @@
     <string name="setting_theme_night">Dark</string>
     <string name="setting_accent">Accent</string>
     <string name="setting_edge">Edge-To-Edge</string>
-    <string name="setting_edge_desc_on">Disable edge-to-edge</string>
-    <string name="setting_edge_desc_off">Enable edge-to-edge</string>
+    <string name="setting_edge_desc_on">Edge-to-edge is enabled</string>
+    <string name="setting_edge_desc_off">Edge-to-edge is disabled</string>
+    <string name="setting_display">Display</string>
+    <string name="setting_color_notif">Colorize notification</string>]
+    <string name="setting_color_desc_on">Show album art on notification</string>
+    <string name="setting_color_desc_off">Hide album art on notification</string>
+    <string name="setting_use_alt_action">Use alternate notification action</string>
+    <string name="setting_use_alt_loop">Prefer repeat mode action</string>
+    <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>

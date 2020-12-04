@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.MainActivity
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.settings.SettingsManager
 
 object NotificationUtils {
     const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
@@ -24,6 +26,7 @@ object NotificationUtils {
     const val REQUEST_CODE = 0xA0C0
 
     const val ACTION_LOOP = "ACTION_AUXIO_LOOP"
+    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE"
     const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV"
     const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE"
     const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT"
@@ -96,10 +99,17 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
         setSubText(song.album.name)
     }
 
-    // getBitmap() is concurrent, so only call back to the object calling this function when
-    // the loading is over.
-    getBitmap(song, context) {
-        setLargeIcon(it)
+    // Also set the cover art [If reasonable]
+    if (SettingsManager.getInstance().colorizeNotif) {
+        // getBitmap() is concurrent, so only call back to the object calling this function when
+        // the loading is over.
+        getBitmap(song, context) {
+            setLargeIcon(it)
+
+            onDone()
+        }
+    } else {
+        setLargeIcon(null)
 
         onDone()
     }
@@ -115,12 +125,16 @@ fun NotificationCompat.Builder.updatePlaying(context: Context) {
 }
 
 /**
- * Update the loop button on the media notification
+ * Update the loop/shuffle button on the media notification
  * @param context The context required to refresh the action
  */
 @SuppressLint("RestrictedApi")
-fun NotificationCompat.Builder.updateLoop(context: Context) {
-    mActions[0] = newAction(NotificationUtils.ACTION_LOOP, context)
+fun NotificationCompat.Builder.updateExtraAction(context: Context) {
+    mActions[0] = if (SettingsManager.getInstance().useAltNotifAction) {
+        newAction(NotificationUtils.ACTION_SHUFFLE, context)
+    } else {
+        newAction(NotificationUtils.ACTION_LOOP, context)
+    }
 }
 
 /**
@@ -151,9 +165,19 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
     val drawable = when (action) {
         NotificationUtils.ACTION_LOOP -> {
             when (playbackManager.loopMode) {
-                LoopMode.NONE -> R.drawable.ic_loop_disabled
+                LoopMode.NONE -> R.drawable.ic_loop_inactive
                 LoopMode.ONCE -> R.drawable.ic_loop_one
                 LoopMode.INFINITE -> R.drawable.ic_loop
+            }
+        }
+
+        NotificationUtils.ACTION_SHUFFLE -> {
+            Log.d("A function", "Jesus christ does this even call???")
+
+            if (playbackManager.isShuffling) {
+                R.drawable.ic_shuffle
+            } else {
+                R.drawable.ic_shuffle_inactive
             }
         }
 
@@ -170,7 +194,6 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
         NotificationUtils.ACTION_SKIP_NEXT -> R.drawable.ic_skip_next
 
         NotificationUtils.ACTION_EXIT -> R.drawable.ic_exit
-
         else -> R.drawable.ic_error
     }
 
