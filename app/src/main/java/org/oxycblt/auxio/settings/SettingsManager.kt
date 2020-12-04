@@ -19,6 +19,51 @@ class SettingsManager private constructor(context: Context) :
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
     }
 
+    val theme: Int
+        get() {
+            return sharedPrefs.getString(Keys.KEY_THEME, EntryNames.THEME_AUTO)?.toThemeInt()
+                ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+
+    var accent: Pair<Int, Int>
+        get() {
+            val accentIndex = sharedPrefs.getInt(Keys.KEY_ACCENT, 5)
+
+            // Accent is stored as an index [to be efficient], so retrieve it when done.
+            return ACCENTS[accentIndex]
+        }
+        set(value) {
+            val accentIndex = ACCENTS.indexOf(value)
+
+            check(accentIndex != -1) { "Invalid accent" }
+
+            sharedPrefs.edit()
+                .putInt(Keys.KEY_ACCENT, accentIndex)
+                .apply()
+        }
+
+    val edgeEnabled: Boolean
+        get() {
+            return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
+        }
+
+    var librarySortMode: SortMode
+        get() {
+            return SortMode.fromInt(
+                sharedPrefs.getInt(
+                    Keys.KEY_LIBRARY_SORT_MODE,
+                    SortMode.CONSTANT_ALPHA_DOWN
+                )
+            ) ?: SortMode.ALPHA_DOWN
+        }
+        set(value) {
+            sharedPrefs.edit()
+                .putInt(Keys.KEY_LIBRARY_SORT_MODE, value.toInt())
+                .apply()
+        }
+
+    // --- CALLBACKS ---
+
     private val callbacks = mutableListOf<Callback>()
 
     fun addCallback(callback: Callback) {
@@ -29,74 +74,9 @@ class SettingsManager private constructor(context: Context) :
         callbacks.remove(callback)
     }
 
-    fun getTheme(): Int {
-        // Turn the string from SharedPreferences into an actual theme value that can
-        // be used, as apparently the preference system provided by androidx doesn't like integers
-        // for some...reason.
-        return when (sharedPrefs.getString(Keys.KEY_THEME, Theme.THEME_AUTO)) {
-            Theme.THEME_AUTO -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            Theme.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-            Theme.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
-
-            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-    }
-
-    fun getAccent(): Pair<Int, Int> {
-        val accentIndex = sharedPrefs.getInt(Keys.KEY_ACCENT, 5)
-
-        return ACCENTS[accentIndex]
-    }
-
-    fun setAccent(accent: Pair<Int, Int>) {
-        val accentIndex = ACCENTS.indexOf(accent)
-
-        check(accentIndex != -1) { "Invalid accent" }
-
-        sharedPrefs.edit()
-            .putInt(Keys.KEY_ACCENT, accentIndex)
-            .apply()
-
-        callbacks.forEach {
-            it.onAccentUpdate(getAccent())
-        }
-    }
-
-    fun getEdgeToEdge(): Boolean {
-        return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
-    }
-
-    fun setLibrarySortMode(sortMode: SortMode) {
-        sharedPrefs.edit()
-            .putInt(Keys.KEY_LIBRARY_SORT_MODE, sortMode.toInt())
-            .apply()
-    }
-
-    fun getLibrarySortMode(): SortMode {
-        return SortMode.fromInt(
-            sharedPrefs.getInt(
-                Keys.KEY_LIBRARY_SORT_MODE,
-                SortMode.CONSTANT_ALPHA_DOWN
-            )
-        ) ?: SortMode.ALPHA_DOWN
-    }
-
     // --- OVERRIDES ---
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        when (key) {
-            Keys.KEY_THEME -> {
-                callbacks.forEach {
-                    it.onThemeUpdate(getTheme())
-                }
-            }
-
-            Keys.KEY_EDGE_TO_EDGE -> {
-                callbacks.forEach {
-                    it.onEdgeToEdgeUpdate(getEdgeToEdge())
-                }
-            }
-        }
     }
 
     companion object {
@@ -135,7 +115,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
     }
 
-    private object Theme {
+    object EntryNames {
         const val THEME_AUTO = "AUTO"
         const val THEME_LIGHT = "LIGHT"
         const val THEME_DARK = "DARK"
@@ -145,9 +125,5 @@ class SettingsManager private constructor(context: Context) :
      * An interface for receiving some settings updates.
      * [SharedPreferences.OnSharedPreferenceChangeListener].
      */
-    interface Callback {
-        fun onThemeUpdate(newTheme: Int) {}
-        fun onAccentUpdate(newAccent: Pair<Int, Int>) {}
-        fun onEdgeToEdgeUpdate(isEdgeToEdge: Boolean) {}
-    }
+    interface Callback
 }

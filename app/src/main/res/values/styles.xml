@@ -47,7 +47,7 @@
         <item name="colorControlHighlight">@color/selection_color</item>
     </style>
 
-    <!-- Toolbar Title Theme -->
+    <!-- Toolbar Title EntryNames -->
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textColor">?attr/colorPrimary</item>
@@ -73,7 +73,7 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <!-- Custom Dialog Theme -->
+    <!-- Custom Dialog EntryNames -->
     <style name="Theme.CustomDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorBackgroundFloating">@color/background</item>
         <item name="android:windowTitleStyle">@style/TextAppearance.Dialog.Title</item>

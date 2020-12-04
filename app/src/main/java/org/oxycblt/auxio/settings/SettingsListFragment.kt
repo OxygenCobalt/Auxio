@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -20,56 +21,13 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
 class SettingsListFragment : PreferenceFragmentCompat() {
-    private val settingsModel: SettingsViewModel by activityViewModels()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // --- PREFERENCE ITEM SETUP ---
 
-        val themePref = findPreference<Preference>(SettingsManager.Keys.KEY_THEME)?.apply {
-            setIcon(
-                when (AppCompatDelegate.getDefaultNightMode()) {
-                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
-                    AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_day
-                    AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_night
-
-                    else -> R.drawable.ic_auto
-                }
-            )
-        }
-
-        val accentPref = findPreference<Preference>(SettingsManager.Keys.KEY_ACCENT)?.apply {
-            onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                showAccentDialog()
-                true
-            }
-
-            summary = getDetailedAccentSummary(requireActivity(), accent)
-        }
-
-        // --- VIEWMODEL SETUP ---
-
-        settingsModel.theme.observe(viewLifecycleOwner) {
-            if (it != null) {
-                themePref?.setIcon(
-                    when (it) {
-                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
-                        AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_day
-                        AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_night
-
-                        else -> R.drawable.ic_auto
-                    }
-                )
-
-                settingsModel.doneWithThemeUpdate()
-            }
-        }
-
-        settingsModel.accent.observe(viewLifecycleOwner) {
-            if (it != null) {
-                accentPref?.summary = getDetailedAccentSummary(requireActivity(), it)
-            }
+        preferenceScreen.children.forEach {
+            recursivelyHandleChildren(it)
         }
 
         Log.d(this::class.simpleName, "Fragment created.")
@@ -77,6 +35,51 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_main, rootKey)
+    }
+
+    private fun recursivelyHandleChildren(pref: Preference) {
+        if (pref is PreferenceCategory) {
+            pref.children.forEach {
+                recursivelyHandleChildren(it)
+            }
+        } else {
+            handlePreference(pref)
+        }
+    }
+
+    private fun handlePreference(it: Preference) {
+        it.apply {
+            when (it.key) {
+                SettingsManager.Keys.KEY_THEME -> {
+                    setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
+
+                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
+                        AppCompatDelegate.setDefaultNightMode((value as String).toThemeInt())
+
+                        setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
+
+                        true
+                    }
+                }
+
+                SettingsManager.Keys.KEY_ACCENT -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        showAccentDialog()
+                        true
+                    }
+
+                    summary = getDetailedAccentSummary(requireActivity(), accent)
+                }
+
+                SettingsManager.Keys.KEY_EDGE_TO_EDGE -> {
+                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                        requireActivity().recreate()
+
+                        true
+                    }
+                }
+            }
+        }
     }
 
     private fun showAccentDialog() {
@@ -89,7 +92,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             val recycler = RecyclerView(requireContext()).apply {
                 adapter = AccentAdapter {
                     if (it.first != accent.first) {
-                        SettingsManager.getInstance().setAccent(it)
+                        SettingsManager.getInstance().accent = it
+
+                        requireActivity().recreate()
                     }
 
                     this@show.dismiss()

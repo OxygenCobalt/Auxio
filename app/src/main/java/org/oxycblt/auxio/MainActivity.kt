@@ -7,14 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.settings.SettingsViewModel
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.handleTransparentSystemBars
 import org.oxycblt.auxio.ui.toColor
@@ -24,8 +22,6 @@ import org.oxycblt.auxio.ui.toColor
 // TODO: Landscape UI layouts
 // FIXME: Compat issue with Versions 5 that leads to progress bar looking off
 class MainActivity : AppCompatActivity() {
-    private val settingsModel: SettingsViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,41 +33,15 @@ class MainActivity : AppCompatActivity() {
 
         val settingsManager = SettingsManager.init(applicationContext)
 
-        AppCompatDelegate.setDefaultNightMode(
-            settingsManager.getTheme()
-        )
+        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
 
-        accent = settingsManager.getAccent()
+        accent = settingsManager.accent
 
         // Apply the theme
         setTheme(accent.second)
 
-        if (settingsManager.getEdgeToEdge() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+        if (settingsManager.edgeEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             doEdgeToEdgeSetup(binding)
-        }
-
-        // --- VIEWMODEL SETUP ---
-
-        settingsModel.theme.observe(this) {
-            if (it != null) {
-                doThemeRecreate(it)
-            }
-        }
-
-        settingsModel.accent.observe(this) {
-            if (it != null) {
-                recreate()
-
-                settingsModel.doneWithAccentUpdate()
-            }
-        }
-
-        settingsModel.edge.observe(this) {
-            if (it != null) {
-                recreate()
-
-                settingsModel.doneWithEdgeUpdate()
-            }
         }
     }
 
@@ -88,8 +58,7 @@ class MainActivity : AppCompatActivity() {
         window?.apply {
             statusBarColor = Color.TRANSPARENT
 
-            // Use a heavily transparent scrim on the nav bar as otherwise the transparency wont
-            // work.
+            // Use a heavily transparent scrim on the nav bar as full transparency is borked
             navigationBarColor = R.color.nav_color.toColor(this@MainActivity)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

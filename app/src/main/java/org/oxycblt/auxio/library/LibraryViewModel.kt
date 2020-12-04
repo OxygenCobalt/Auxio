@@ -39,12 +39,13 @@ class LibraryViewModel : ViewModel() {
     private var mSearchHasFocus = false
     val searchHasFocus: Boolean get() = mSearchHasFocus
 
-    init {
-        val prefsManager = SettingsManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
+    init {
+        // The SortMode isn't really that urgent, so throw it into a coroutine because I can
         viewModelScope.launch {
             mSortMode.value = withContext(Dispatchers.IO) {
-                prefsManager.getLibrarySortMode()
+                settingsManager.librarySortMode
             }
         }
     }
@@ -133,13 +134,7 @@ class LibraryViewModel : ViewModel() {
         if (mode != mSortMode.value) {
             mSortMode.value = mode
 
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    val prefsManager = SettingsManager.getInstance()
-
-                    prefsManager.setLibrarySortMode(mSortMode.value!!)
-                }
-            }
+            settingsManager.librarySortMode = mode
         }
     }
 }

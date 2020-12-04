@@ -13,6 +13,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
             style="@style/Toolbar.Style"
+            android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
