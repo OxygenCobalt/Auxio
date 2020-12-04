@@ -2,6 +2,7 @@ package org.oxycblt.auxio.songs
 
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.setupSongActions
+import kotlin.math.ceil
 
 /**
  * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
@@ -25,6 +27,12 @@ import org.oxycblt.auxio.ui.setupSongActions
  */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val indicatorTextSize: Float by lazy {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, 14F,
+            requireContext().resources.displayMetrics
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +81,7 @@ class SongsFragment : Fragment() {
         val musicStore = MusicStore.getInstance()
 
         binding.songFastScroll.apply {
-            var hasAddedNumber = false
+            var concatInterval = -1
 
             setupWithRecyclerView(
                 binding.songRecycler,
@@ -96,7 +104,8 @@ class SongsFragment : Fragment() {
                         item.name[0].toUpperCase()
                     }
 
-                    // Use "#" if the character is a digit.
+                    // Use "#" if the character is a digit, also has the nice side-effect of
+                    // truncating extra numbers.
                     if (char.isDigit()) {
                         FastScrollItemIndicator.Text("#")
                     } else {
@@ -105,18 +114,31 @@ class SongsFragment : Fragment() {
                 }
             )
 
-            showIndicator = { indicator, _, _ ->
+            showIndicator = { _, i, total ->
                 var isGood = true
 
-                // Remove all but the first "#" character
-                if (indicator is FastScrollItemIndicator.Text) {
-                    if (indicator.text == "#") {
-                        if (hasAddedNumber) {
-                            isGood = false
-                        }
+                if (concatInterval == -1) {
+                    // If the screen size is too small to contain all the entries,
+                    val maxEntries = (height / (indicatorTextSize + textPadding))
 
-                        hasAddedNumber = true
+                    if (total > maxEntries.toInt()) {
+                        concatInterval = ceil(total / maxEntries).toInt()
+
+                        Log.d(
+                            this::class.simpleName,
+                            "More entries than screen space, truncating by $concatInterval..."
+                        )
+
+                        check(concatInterval > 1) {
+                            "ConcatInterval was one despite truncation being needed"
+                        }
+                    } else {
+                        concatInterval = 1
                     }
+                }
+
+                if ((i % concatInterval) != 0) {
+                    isGood = false
                 }
 
                 isGood
