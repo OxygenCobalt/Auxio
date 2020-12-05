@@ -21,7 +21,6 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.getInactiveAlpha
 import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.toColor
 import kotlin.IllegalArgumentException
@@ -48,9 +47,7 @@ class MainFragment : Fragment() {
 
         val colorActive = accent.first.toColor(requireContext())
         val colorInactive = getTransparentAccent(
-            requireContext(),
-            accent.first,
-            getInactiveAlpha(accent.first)
+            requireContext(), accent.first, 150
         )
 
         // Set up the tints for the navigation icons + text

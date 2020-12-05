@@ -38,7 +38,8 @@ val ACCENTS = arrayOf(
     Pair(R.color.deep_orange, R.style.Theme_DeepOrange), // 15
     Pair(R.color.brown, R.style.Theme_Brown), // 16
     Pair(R.color.grey, R.style.Theme_Gray), // 17
-    Pair(R.color.blue_grey, R.style.Theme_BlueGrey) // 18
+    Pair(R.color.blue_grey, R.style.Theme_BlueGrey), // 18
+    Pair(R.color.control_color, R.style.Theme_Neutral)
 )
 
 /**
@@ -55,7 +56,7 @@ private val ACCENT_NAMES = arrayOf(
     R.string.color_label_yellow, R.string.color_label_amber,
     R.string.color_label_orange, R.string.color_label_deep_orange,
     R.string.color_label_brown, R.string.color_label_grey,
-    R.string.color_label_blue_grey
+    R.string.color_label_blue_grey, R.string.color_label_neutral
 )
 
 /**
@@ -76,14 +77,6 @@ fun getTransparentAccent(context: Context, @ColorRes color: Int, alpha: Int): In
         color.toColor(context),
         alpha
     )
-}
-
-/**
- * Get the inactive alpha of an accent.
- */
-@ColorInt
-fun getInactiveAlpha(@ColorRes color: Int): Int {
-    return if (color == R.color.yellow) 100 else 150
 }
 
 /**

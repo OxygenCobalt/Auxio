@@ -119,6 +119,7 @@
     <string name="color_label_brown">Brown</string>
     <string name="color_label_grey">Grey</string>
     <string name="color_label_blue_grey">Blue Grey</string>
+    <string name="color_label_neutral">Neutral</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_info">%1$s / %2$s</string>

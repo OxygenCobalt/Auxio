@@ -6,7 +6,7 @@ import org.oxycblt.auxio.R
 
 /**
  * Convert a string representing a theme entry name to an actual theme int that can be used.
- * This is only done because PreferenceFragment does not like int arrays.
+ * This is only done because PreferenceFragment does not like int arrays for some...reason.
  */
 fun String.toThemeInt(): Int {
     return when (this) {

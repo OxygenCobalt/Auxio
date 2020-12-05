@@ -97,4 +97,9 @@
         <item name="colorPrimary">@color/blue_grey</item>
         <item name="colorSecondary">@color/blue_grey</item>
     </style>
+
+    <style name="Theme.Neutral" parent="Theme.Base">
+        <item name="colorPrimary">@color/control_color</item>
+        <item name="colorSecondary">@color/control_color</item>
+    </style>
 </resources>

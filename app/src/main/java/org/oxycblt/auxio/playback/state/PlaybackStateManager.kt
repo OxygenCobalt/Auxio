@@ -285,31 +285,35 @@ class PlaybackStateManager private constructor() {
         forceQueueUpdate()
     }
 
-    fun removeQueueItem(index: Int) {
+    fun removeQueueItem(index: Int): Boolean {
         Log.d(this::class.simpleName, "Removing item ${mQueue[index].name}.")
 
         if (index > mQueue.size || index < 0) {
             Log.e(this::class.simpleName, "Index is out of bounds, did not remove queue item.")
 
-            return
+            return false
         }
 
         mQueue.removeAt(index)
 
         forceQueueUpdate()
+
+        return true
     }
 
-    fun moveQueueItems(from: Int, to: Int) {
+    fun moveQueueItems(from: Int, to: Int): Boolean {
         try {
             val item = mQueue.removeAt(from)
             mQueue.add(to, item)
         } catch (exception: IndexOutOfBoundsException) {
             Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
 
-            return
+            return false
         }
 
         forceQueueUpdate()
+
+        return true
     }
 
     fun addToUserQueue(song: Song) {

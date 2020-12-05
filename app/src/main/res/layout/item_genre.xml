@@ -40,6 +40,7 @@
             style="@style/ItemText.Secondary"
             app:genreCounts="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_image"
             app:layout_constraintTop_toBottomOf="@+id/genre_name"
             tools:text="2 Artists, 4 Albums" />
