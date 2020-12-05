@@ -6,14 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.recycler.ShowMode
+import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
 
@@ -22,10 +20,9 @@ import org.oxycblt.auxio.settings.SettingsManager
  * functionality.
  * @author OxygenCobalt
  */
-class LibraryViewModel : ViewModel() {
-    // TODO: Move these to prefs when they're added
-    private val mShowMode = MutableLiveData(ShowMode.SHOW_ARTISTS)
-    val showMode: LiveData<ShowMode> get() = mShowMode
+class LibraryViewModel : ViewModel(), SettingsManager.Callback {
+    private val mDisplayMode = MutableLiveData(DisplayMode.SHOW_ARTISTS)
+    val displayMode: LiveData<DisplayMode> get() = mDisplayMode
 
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val sortMode: LiveData<SortMode> get() = mSortMode
@@ -42,12 +39,10 @@ class LibraryViewModel : ViewModel() {
     private val settingsManager = SettingsManager.getInstance()
 
     init {
-        // The SortMode isn't really that urgent, so throw it into a coroutine because I can
-        viewModelScope.launch {
-            mSortMode.value = withContext(Dispatchers.IO) {
-                settingsManager.librarySortMode
-            }
-        }
+        settingsManager.addCallback(this)
+
+        mDisplayMode.value = settingsManager.libraryDisplayMode
+        mSortMode.value = settingsManager.librarySortMode
     }
 
     /**
@@ -70,10 +65,10 @@ class LibraryViewModel : ViewModel() {
         viewModelScope.launch {
             val musicStore = MusicStore.getInstance()
             val combined = mutableListOf<BaseModel>()
-            val children = showMode.value!!.getChildren()
+            val children = displayMode.value!!.getChildren()
 
-            // If the Library ShowMode supports it, include artists / genres in the search.
-            if (children.contains(ShowMode.SHOW_GENRES)) {
+            // If the Library DisplayMode supports it, include artists / genres in the search.
+            if (children.contains(DisplayMode.SHOW_GENRES)) {
                 val genres = musicStore.genres.filter { it.name.contains(query, true) }
 
                 if (genres.isNotEmpty()) {
@@ -82,7 +77,7 @@ class LibraryViewModel : ViewModel() {
                 }
             }
 
-            if (children.contains(ShowMode.SHOW_ARTISTS)) {
+            if (children.contains(DisplayMode.SHOW_ARTISTS)) {
                 val artists = musicStore.artists.filter { it.name.contains(query, true) }
 
                 if (artists.isNotEmpty()) {
@@ -136,5 +131,17 @@ class LibraryViewModel : ViewModel() {
 
             settingsManager.librarySortMode = mode
         }
+    }
+
+    // --- OVERRIDES ---
+
+    override fun onCleared() {
+        super.onCleared()
+
+        settingsManager.removeCallback(this)
+    }
+
+    override fun onLibDisplayModeUpdate(displayMode: DisplayMode) {
+        mDisplayMode.value = displayMode
     }
 }

@@ -33,6 +33,15 @@
         android:title="@string/setting_display"
         android:layout="@layout/item_header">
 
+        <ListPreference
+            app:key="KEY_LIBRARY_DISPLAY_MODE"
+            android:title="@string/setting_lib_display"
+            android:icon="@drawable/ic_artist"
+            app:entries="@array/lib_display_entries"
+            app:entryValues="@array/lib_display_values"
+            app:defaultValue="SHOW_ARTISTS"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:key="KEY_COLOR_NOTIF"
             android:title="@string/setting_color_notif"
@@ -47,7 +56,7 @@
             app:iconSpaceReserved="false"
             app:summaryOn="@string/setting_use_alt_shuffle"
             app:summaryOff="@string/setting_use_alt_loop"
-            android:defaultValue="false"/>
+            android:defaultValue="false" />
 
     </PreferenceCategory>
 </PreferenceScreen>

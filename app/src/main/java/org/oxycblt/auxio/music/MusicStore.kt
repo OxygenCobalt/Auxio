@@ -8,7 +8,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
-import org.oxycblt.auxio.recycler.ShowMode
+import org.oxycblt.auxio.recycler.DisplayMode
 
 /**
  * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
@@ -95,12 +95,12 @@ class MusicStore private constructor() {
         }
     }
 
-    fun getListForShowMode(showMode: ShowMode): List<BaseModel> {
-        return when (showMode) {
-            ShowMode.SHOW_GENRES -> mGenres
-            ShowMode.SHOW_ARTISTS -> mArtists
-            ShowMode.SHOW_ALBUMS -> mAlbums
-            ShowMode.SHOW_SONGS -> mSongs
+    fun getListForShowMode(displayMode: DisplayMode): List<BaseModel> {
+        return when (displayMode) {
+            DisplayMode.SHOW_GENRES -> mGenres
+            DisplayMode.SHOW_ARTISTS -> mArtists
+            DisplayMode.SHOW_ALBUMS -> mAlbums
+            DisplayMode.SHOW_SONGS -> mSongs
         }
     }
 

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.adapters.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
@@ -74,6 +75,16 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.Keys.KEY_EDGE_TO_EDGE -> {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                         requireActivity().recreate()
+
+                        true
+                    }
+                }
+
+                SettingsManager.Keys.KEY_LIBRARY_DISPLAY_MODE -> {
+                    setIcon(SettingsManager.getInstance().libraryDisplayMode.iconRes)
+
+                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
+                        setIcon(DisplayMode.valueOfOrFallback(value as String).iconRes)
 
                         true
                     }

@@ -50,7 +50,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         val musicStore = MusicStore.getInstance()
 
         val libraryAdapter = LibraryAdapter(
-            libraryModel.showMode.value!!,
+            libraryModel.displayMode.value!!,
             doOnClick = { navToItem(it) },
             doOnLongClick = { data, view -> showActionsForItem(data, view) }
         )
@@ -129,7 +129,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             // Update the adapter with the new data
             libraryAdapter.updateData(
                 mode.getSortedBaseModelList(
-                    musicStore.getListForShowMode(libraryModel.showMode.value!!)
+                    musicStore.getListForShowMode(libraryModel.displayMode.value!!)
                 )
             )
 

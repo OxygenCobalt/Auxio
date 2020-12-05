@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.recycler
 
+import androidx.annotation.DrawableRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -12,7 +13,7 @@ import org.oxycblt.auxio.music.Song
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
  */
-enum class SortMode(val iconRes: Int) {
+enum class SortMode(@DrawableRes val iconRes: Int) {
     // Icons for each mode are assigned to the enums themselves
     NONE(R.drawable.ic_sort_none),
     ALPHA_UP(R.drawable.ic_sort_alpha_up),

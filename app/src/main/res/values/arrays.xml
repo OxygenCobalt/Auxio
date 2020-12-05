@@ -11,4 +11,16 @@
         <item>LIGHT</item>
         <item>DARK</item>
     </array>
+
+    <array name="lib_display_entries">
+        <item>@string/label_genres</item>
+        <item>@string/label_artists</item>
+        <item>@string/label_albums</item>
+    </array>
+
+    <array name="lib_display_values">
+        <item>SHOW_GENRES</item>
+        <item>SHOW_ARTISTS</item>
+        <item>SHOW_ALBUMS</item>
+    </array>
 </resources>

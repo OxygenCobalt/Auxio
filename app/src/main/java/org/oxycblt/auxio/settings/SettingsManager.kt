@@ -3,6 +3,7 @@ package org.oxycblt.auxio.settings
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.ACCENTS
 
@@ -57,6 +58,16 @@ class SettingsManager private constructor(context: Context) :
             return sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
         }
 
+    val libraryDisplayMode: DisplayMode
+        get() {
+            return DisplayMode.valueOfOrFallback(
+                sharedPrefs.getString(
+                    Keys.KEY_LIBRARY_DISPLAY_MODE,
+                    DisplayMode.SHOW_ARTISTS.toString()
+                )
+            )
+        }
+
     var librarySortMode: SortMode
         get() {
             return SortMode.fromInt(
@@ -95,6 +106,10 @@ class SettingsManager private constructor(context: Context) :
             Keys.KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach {
                 it.onNotifActionUpdate(useAltNotifAction)
             }
+
+            Keys.KEY_LIBRARY_DISPLAY_MODE -> callbacks.forEach {
+                it.onLibDisplayModeUpdate(libraryDisplayMode)
+            }
         }
     }
 
@@ -128,12 +143,13 @@ class SettingsManager private constructor(context: Context) :
     }
 
     object Keys {
-        const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_THEME = "KEY_THEME"
         const val KEY_ACCENT = "KEY_ACCENT"
         const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
         const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
+        const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
+        const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
     }
 
     object EntryNames {
@@ -145,5 +161,6 @@ class SettingsManager private constructor(context: Context) :
     interface Callback {
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
+        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
     }
 }

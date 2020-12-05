@@ -118,7 +118,8 @@ class SongsFragment : Fragment() {
                 var isGood = true
 
                 if (concatInterval == -1) {
-                    // If the screen size is too small to contain all the entries,
+                    // If the screen size is too small to contain all the entries, truncate entries
+                    // so that the fast scroller entries fit.
                     val maxEntries = (height / (indicatorTextSize + textPadding))
 
                     if (total > maxEntries.toInt()) {
@@ -164,7 +165,6 @@ class SongsFragment : Fragment() {
 
         binding.songFastScrollThumb.apply {
             setupWithFastScroller(binding.songFastScroll)
-            textAppearanceRes = R.style.TextAppearance_ThumbIndicator
         }
     }
 }

@@ -41,10 +41,10 @@ class NoLeakThumbView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr),
     FastScrollerView.ItemIndicatorSelectedCallback {
 
-    private var thumbColor = ColorStateList.valueOf(accent.first.toColor(context))
-    private var iconColor = R.color.background.toColor(context)
-    var textAppearanceRes = R.style.TextAppearance_ThumbIndicator
-    private var textColor = R.color.background.toColor(context)
+    private val thumbColor = ColorStateList.valueOf(accent.first.toColor(context))
+    private val iconColor = R.color.background.toColor(context)
+    private val textAppearanceRes = R.style.TextAppearance_ThumbIndicator
+    private val textColor = R.color.background.toColor(context)
 
     private val thumbView: ViewGroup
     private val textView: TextView
@@ -56,7 +56,10 @@ class NoLeakThumbView @JvmOverloads constructor(
     private val thumbAnimation: SpringAnimation
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.fast_scroller_thumb_view, this, true)
+        LayoutInflater.from(context).inflate(
+            R.layout.fast_scroller_thumb_view, this, true
+        )
+
         thumbView = findViewById(R.id.fast_scroller_thumb)
         textView = thumbView.findViewById(R.id.fast_scroller_thumb_text)
         iconView = thumbView.findViewById(R.id.fast_scroller_thumb_icon)
@@ -76,6 +79,7 @@ class NoLeakThumbView @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     fun setupWithFastScroller(fastScrollerView: FastScrollerView) {
         check(!isSetup) { "Only set this view's FastScrollerView once!" }
+
         this.fastScrollerView = fastScrollerView
 
         fastScrollerView.itemIndicatorSelectedCallbacks += this

@@ -47,6 +47,7 @@
     <string name="setting_edge_desc_on">Edge-to-edge is enabled</string>
     <string name="setting_edge_desc_off">Edge-to-edge is disabled</string>
     <string name="setting_display">Display</string>
+    <string name="setting_lib_display">Library Items</string>
     <string name="setting_color_notif">Colorize notification</string>]
     <string name="setting_color_desc_on">Show album art on notification</string>
     <string name="setting_color_desc_off">Hide album art on notification</string>
