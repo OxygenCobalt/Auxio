@@ -12,16 +12,16 @@ import androidx.core.text.toSpanned
 import org.oxycblt.auxio.R
 import java.util.Locale
 
-// Functions for managing colors/accents/whatever.
+// Functions for managing colors/accents.
 
 // Pairs of the base accent and its theme
-val ACCENTS = listOf(
+val ACCENTS = arrayOf(
     Pair(R.color.red, R.style.Theme_Red), // 0
     Pair(R.color.pink, R.style.Theme_Pink), // 1
     Pair(R.color.purple, R.style.Theme_Purple), // 2
     Pair(R.color.deep_purple, R.style.Theme_DeepPurple), // 3
     Pair(R.color.indigo, R.style.Theme_Indigo), // 4
-    Pair(R.color.blue, R.style.Theme_Blue), // 5
+    Pair(R.color.blue, R.style.Theme_Blue), // 5 - Default!
     Pair(R.color.light_blue, R.style.Theme_LightBlue), // 6
     Pair(R.color.cyan, R.style.Theme_Cyan), // 7
     Pair(R.color.teal, R.style.Theme_Teal), // 8
@@ -35,6 +35,21 @@ val ACCENTS = listOf(
     Pair(R.color.brown, R.style.Theme_Brown), // 16
     Pair(R.color.grey, R.style.Theme_Gray), // 17
     Pair(R.color.blue_grey, R.style.Theme_BlueGrey) // 18
+)
+
+// The names for each colors. These are translatable, so make sure to use these instead of getting
+// the color name directly.
+private val ACCENT_NAMES = arrayOf(
+    R.string.color_label_red, R.string.color_label_pink,
+    R.string.color_label_purple, R.string.color_label_deep_purple,
+    R.string.color_label_indigo, R.string.color_label_blue,
+    R.string.color_label_light_blue, R.string.color_label_cyan,
+    R.string.color_label_teal, R.string.color_label_green,
+    R.string.color_label_light_green, R.string.color_label_lime,
+    R.string.color_label_yellow, R.string.color_label_amber,
+    R.string.color_label_orange, R.string.color_label_deep_orange,
+    R.string.color_label_brown, R.string.color_label_grey,
+    R.string.color_label_blue_grey
 )
 
 lateinit var accent: Pair<Int, Int>
@@ -102,11 +117,13 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
 
 /**
  * Get the name of an accent.
- * TODO: Make these use translatable string resources!!!!
  */
 fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
-    return context.resources.getResourceEntryName(newAccent.first)
-        .replace("_", " ").capitalize(Locale.getDefault())
+    val accentIndex = ACCENTS.indexOf(newAccent)
+
+    check(accentIndex != -1) { "Invalid accent given" }
+
+    return context.getString(ACCENT_NAMES[accentIndex])
 }
 
 /**
