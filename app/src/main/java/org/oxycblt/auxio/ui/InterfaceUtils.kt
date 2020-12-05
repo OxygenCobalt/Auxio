@@ -73,7 +73,7 @@ fun Spanned.render(): Spanned {
 }
 
 /**
- * Handle the new transparent system bars on light mode. Adapted from Music Player GO
+ * Handle transparent system bars. Adapted from Music Player GO
  * (https://github.com/enricocid/Music-Player-GO)
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)

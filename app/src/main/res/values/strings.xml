@@ -43,6 +43,7 @@
     <string name="setting_theme_day">Light</string>
     <string name="setting_theme_night">Dark</string>
     <string name="setting_accent">Accent</string>
+    <string name="setting_accent_unknown">Unknown Accent</string>
     <string name="setting_edge">Edge-To-Edge</string>
     <string name="setting_edge_desc_on">Edge-to-edge is enabled</string>
     <string name="setting_edge_desc_off">Edge-to-edge is disabled</string>
@@ -54,6 +55,13 @@
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>
     <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
+    <string name="setting_playback">Audio</string>
+    <string name="setting_playback_audio_focus">Audio focus</string>
+    <string name="setting_playback_focus_desc_on">Audio focus is enabled</string>
+    <string name="setting_playback_focus_desc_off">Audio focus is disabled</string>
+    <string name="setting_playback_plug_mgt">Headset plug management</string>
+    <string name="setting_playback_plug_mgt_desc_on">Headset plug management is enabled</string>
+    <string name="setting_playback_plug_mgt_desc_off">Headset plug management is disabled</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>
@@ -98,7 +106,7 @@
     <string name="color_label_deep_purple">Deep Purple</string>
     <string name="color_label_indigo">Indigo</string>
     <string name="color_label_blue">Blue</string>
-    <string name="color_label_light_blue">Light blue</string>
+    <string name="color_label_light_blue">Light Blue</string>
     <string name="color_label_cyan">Cyan</string>
     <string name="color_label_teal">Teal</string>
     <string name="color_label_green">Green</string>

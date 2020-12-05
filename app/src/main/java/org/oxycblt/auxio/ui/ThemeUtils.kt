@@ -1,7 +1,9 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.Spanned
+import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -14,7 +16,9 @@ import java.util.Locale
 
 // Functions for managing colors/accents.
 
-// Pairs of the base accent and its theme
+/**
+ * An array of the base accents and their respective themes.
+ */
 val ACCENTS = arrayOf(
     Pair(R.color.red, R.style.Theme_Red), // 0
     Pair(R.color.pink, R.style.Theme_Pink), // 1
@@ -37,8 +41,10 @@ val ACCENTS = arrayOf(
     Pair(R.color.blue_grey, R.style.Theme_BlueGrey) // 18
 )
 
-// The names for each colors. These are translatable, so make sure to use these instead of getting
-// the color name directly.
+/**
+ * An array of strings for each accent, use these instead of [Resources.getResourceName] so that
+ * the accent names are translated.
+ */
 private val ACCENT_NAMES = arrayOf(
     R.string.color_label_red, R.string.color_label_pink,
     R.string.color_label_purple, R.string.color_label_deep_purple,
@@ -52,6 +58,9 @@ private val ACCENT_NAMES = arrayOf(
     R.string.color_label_blue_grey
 )
 
+/**
+ * The programmatically accessible accent, reflects the currently set accent.
+ */
 lateinit var accent: Pair<Int, Int>
 
 /**
@@ -86,7 +95,9 @@ fun getInactiveAlpha(@ColorRes color: Int): Int {
 fun Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)
-    } catch (e: Exception) {
+    } catch (e: Resources.NotFoundException) {
+        Log.e(this::class.simpleName, "Attempted color load failed.")
+
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)
     }
@@ -127,7 +138,7 @@ fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
 }
 
 /**
- * Get the name [in bold]] and the hex value of a theme.
+ * Get the name (in bold) and the hex value of a theme.
  */
 fun getDetailedAccentSummary(context: Context, newAccent: Pair<Int, Int>): Spanned {
     val name = getAccentItemSummary(context, newAccent)

@@ -22,9 +22,7 @@ class SettingsManager private constructor(context: Context) :
     // --- VALUES ---
 
     val theme: Int
-        get() {
-            return sharedPrefs.getString(Keys.KEY_THEME, EntryNames.THEME_AUTO)!!.toThemeInt()
-        }
+        get() = sharedPrefs.getString(Keys.KEY_THEME, EntryNames.THEME_AUTO)!!.toThemeInt()
 
     var accent: Pair<Int, Int>
         get() {
@@ -44,19 +42,13 @@ class SettingsManager private constructor(context: Context) :
         }
 
     val edgeEnabled: Boolean
-        get() {
-            return sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
-        }
+        get() = sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
 
     val colorizeNotif: Boolean
-        get() {
-            return sharedPrefs.getBoolean(Keys.KEY_COLORIZE_NOTIFICATION, true)
-        }
+        get() = sharedPrefs.getBoolean(Keys.KEY_COLORIZE_NOTIFICATION, true)
 
     val useAltNotifAction: Boolean
-        get() {
-            return sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
-        }
+        get() = sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     val libraryDisplayMode: DisplayMode
         get() {
@@ -67,6 +59,12 @@ class SettingsManager private constructor(context: Context) :
                 )
             )
         }
+
+    val doAudioFocus: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_AUDIO_FOCUS, true)
+
+    val doPlugMgt: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_PLUG_MANAGEMENT, true)
 
     var librarySortMode: SortMode
         get() {
@@ -110,6 +108,10 @@ class SettingsManager private constructor(context: Context) :
             Keys.KEY_LIBRARY_DISPLAY_MODE -> callbacks.forEach {
                 it.onLibDisplayModeUpdate(libraryDisplayMode)
             }
+
+            Keys.KEY_AUDIO_FOCUS -> callbacks.forEach {
+                it.onAudioFocusUpdate(doAudioFocus)
+            }
         }
     }
 
@@ -149,6 +151,9 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
         const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
+        const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
+        const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
+
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
     }
 
@@ -158,9 +163,15 @@ class SettingsManager private constructor(context: Context) :
         const val THEME_DARK = "DARK"
     }
 
+    /**
+     * An safe interface for receiving some preference updates. Use this instead of
+     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
+     * context.
+     */
     interface Callback {
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
+        fun onAudioFocusUpdate(doAudioFocus: Boolean) {}
     }
 }

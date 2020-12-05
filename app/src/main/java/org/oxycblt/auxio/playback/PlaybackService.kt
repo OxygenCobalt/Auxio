@@ -63,6 +63,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
+    private val audioAttributes = AudioAttributes.Builder()
+        .setUsage(C.USAGE_MEDIA)
+        .setContentType(C.CONTENT_TYPE_MUSIC)
+        .build()
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var notification: NotificationCompat.Builder
@@ -95,11 +99,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // Set up AudioFocus/AudioAttributes
         player.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.CONTENT_TYPE_MUSIC)
-                .build(),
-            true
+            audioAttributes, settingsManager.doAudioFocus
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -323,6 +323,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         startForegroundOrNotify("Notif action update")
     }
 
+    override fun onAudioFocusUpdate(doAudioFocus: Boolean) {
+        player.setAudioAttributes(
+            audioAttributes,
+            doAudioFocus
+        )
+    }
+
     // --- OTHER FUNCTIONS ---
 
     private fun restorePlayer() {
@@ -392,8 +399,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     private fun startForegroundOrNotify(reason: String) {
-        // Start the service in the foreground if haven't already.
-        if (playbackManager.hasPlayed) {
+        // Don't start the foreground if the playback hasn't started yet AND if the playback hasn't
+        // been restored
+        if (playbackManager.hasPlayed && playbackManager.isRestored) {
             Log.d(this::class.simpleName, "Starting foreground/notifying because of $reason")
 
             if (!isForeground) {
@@ -501,7 +509,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         private fun resume() {
-            if (playbackManager.song != null) {
+            if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 Log.d(this::class.simpleName, "Device connected, resuming...")
 
                 playbackManager.setPlayingStatus(true)
@@ -509,7 +517,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         private fun pause() {
-            if (playbackManager.song != null) {
+            if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 Log.d(this::class.simpleName, "Device disconnected, pausing...")
 
                 playbackManager.setPlayingStatus(false)

@@ -17,7 +17,7 @@
             app:key="KEY_ACCENT"
             android:title="@string/setting_accent"
             android:icon="@drawable/ic_accent"
-            app:summary="@string/setting_accent" />
+            app:summary="@string/setting_accent_unknown" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -39,7 +39,7 @@
             app:summaryOn="@string/setting_color_desc_on"
             app:summaryOff="@string/setting_color_desc_off"
             app:iconSpaceReserved="false"
-            android:defaultValue="true" />
+            app:defaultValue="true" />
 
         <SwitchPreferenceCompat
             app:key="KEY_ALT_NOTIF_ACTION"
@@ -47,7 +47,29 @@
             app:iconSpaceReserved="false"
             app:summaryOn="@string/setting_use_alt_shuffle"
             app:summaryOff="@string/setting_use_alt_loop"
-            android:defaultValue="false" />
+            app:allowDividerBelow="false"
+            app:defaultValue="false" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/setting_playback"
+        android:layout="@layout/item_header">
+
+        <SwitchPreferenceCompat
+            app:key="KEY_AUDIO_FOCUS"
+            android:title="@string/setting_playback_audio_focus"
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:summaryOn="@string/setting_playback_focus_desc_on"
+            app:summaryOff="@string/setting_playback_focus_desc_off" />
+
+        <SwitchPreferenceCompat
+            app:key="KEY_PLUG_MGT"
+            android:title="@string/setting_playback_plug_mgt"
+            app:iconSpaceReserved="false"
+            app:defaultValue="true"
+            app:summaryOn="@string/setting_playback_plug_mgt_desc_on"
+            app:summaryOff="@string/setting_playback_plug_mgt_desc_off" />
     </PreferenceCategory>
 </PreferenceScreen>
