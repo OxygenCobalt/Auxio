@@ -16,7 +16,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.setupSongActions
 import kotlin.math.ceil
 
@@ -42,10 +42,11 @@ class SongsFragment : Fragment() {
         val binding = FragmentSongsBinding.inflate(inflater)
 
         val musicStore = MusicStore.getInstance()
+        val settingsManager = SettingsManager.getInstance()
 
         val songAdapter = SongsAdapter(
             musicStore.songs,
-            doOnClick = { playbackModel.playSong(it, PlaybackMode.ALL_SONGS) },
+            doOnClick = { playbackModel.playSong(it, settingsManager.songPlaybackMode) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupSongActions(
                     data, requireContext(), playbackModel

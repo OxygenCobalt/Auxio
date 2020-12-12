@@ -1,9 +1,7 @@
 package org.oxycblt.auxio.library.adapters
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album

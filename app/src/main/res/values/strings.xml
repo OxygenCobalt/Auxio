@@ -23,8 +23,9 @@
 
     <string name="label_play">Play</string>
     <string name="label_shuffle">Shuffle</string>
-    <string name="label_play_artist">Play from artist</string>
+    <string name="label_play_all_songs">Play from all songs</string>
     <string name="label_play_album">Play from album</string>
+    <string name="label_play_artist">Play from artist</string>
     <string name="label_go_artist">Go to artist</string>
 
     <string name="label_queue">Queue</string>
@@ -38,30 +39,37 @@
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Settings</string>
     <string name="setting_ui">Appearance</string>
+
     <string name="setting_theme">Theme</string>
     <string name="setting_theme_auto">Automatic</string>
     <string name="setting_theme_day">Light</string>
     <string name="setting_theme_night">Dark</string>
+
     <string name="setting_accent">Accent</string>
     <string name="setting_accent_unknown">Unknown Accent</string>
+
     <string name="setting_edge">Edge-To-Edge</string>
-    <string name="setting_edge_desc_on">Edge-to-edge is enabled</string>
-    <string name="setting_edge_desc_off">Edge-to-edge is disabled</string>
+    <string name="setting_edge_desc">Enable edge-to-edge</string>
     <string name="setting_display">Display</string>
+
     <string name="setting_lib_display">Library Items</string>
+
     <string name="setting_color_notif">Colorize notification</string>]
-    <string name="setting_color_desc_on">Show album art on notification</string>
-    <string name="setting_color_desc_off">Hide album art on notification</string>
+    <string name="setting_color_desc">Show album art on notification</string>
+
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>
     <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
+
     <string name="setting_playback">Audio</string>
     <string name="setting_playback_audio_focus">Audio focus</string>
-    <string name="setting_playback_focus_desc_on">Audio focus is enabled</string>
-    <string name="setting_playback_focus_desc_off">Audio focus is disabled</string>
+    <string name="setting_playback_focus_desc">Pause when other audio plays [ex. Alarms]</string>
+
     <string name="setting_playback_plug_mgt">Headset plug management</string>
-    <string name="setting_playback_plug_mgt_desc_on">Headset plug management is enabled</string>
-    <string name="setting_playback_plug_mgt_desc_off">Headset plug management is disabled</string>
+    <string name="setting_playback_plug_mgt_desc">Play/Pause when headset connection changes</string>
+
+    <string name="setting_behavior">Behavior</string>
+    <string name="setting_behavior_song_play">When a song is selected</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_state_saved">State saved</string>

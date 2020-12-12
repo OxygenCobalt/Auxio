@@ -8,6 +8,7 @@ import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -26,6 +27,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.settings.SettingsManager
 
 // Functions for managing UI elements [Not Colors]
 
@@ -108,6 +110,8 @@ fun Window.handleTransparentSystemBars(config: Configuration) {
  * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
  */
 fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: PlaybackViewModel) {
+    inflateAndShow(R.menu.menu_song_actions)
+
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -126,14 +130,34 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
                 true
             }
 
+            R.id.action_play_all_songs -> {
+                playbackModel.playSong(song, PlaybackMode.ALL_SONGS)
+                true
+            }
+
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_song_actions)
+
+    val settingsManager = SettingsManager.getInstance()
+
+    // Find the action that is redundant from the menu and hide it.
+    val idToRemove = when (settingsManager.songPlaybackMode) {
+        PlaybackMode.ALL_SONGS -> R.id.action_play_all_songs
+        PlaybackMode.IN_ARTIST -> R.id.action_play_artist
+        PlaybackMode.IN_ALBUM -> R.id.action_play_album
+
+        else -> -1
+    }
+
+    Log.d(this::class.simpleName, (idToRemove == R.id.action_play_album).toString())
+
+    menu.findItem(idToRemove)?.isVisible = false
 }
 
 /**
- * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
+ * Show actions for a album song item, such as the ones found in
+ * [org.oxycblt.auxio.detail.AlbumDetailFragment]
  */
 fun PopupMenu.setupAlbumSongActions(
     song: Song,

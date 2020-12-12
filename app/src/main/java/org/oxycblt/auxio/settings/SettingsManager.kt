@@ -3,6 +3,7 @@ package org.oxycblt.auxio.settings
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.ACCENTS
@@ -51,20 +52,26 @@ class SettingsManager private constructor(context: Context) :
         get() = sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     val libraryDisplayMode: DisplayMode
-        get() {
-            return DisplayMode.valueOfOrFallback(
-                sharedPrefs.getString(
-                    Keys.KEY_LIBRARY_DISPLAY_MODE,
-                    DisplayMode.SHOW_ARTISTS.toString()
-                )
+        get() = DisplayMode.valueOfOrFallback(
+            sharedPrefs.getString(
+                Keys.KEY_LIBRARY_DISPLAY_MODE,
+                DisplayMode.SHOW_ARTISTS.toString()
             )
-        }
+        )
 
     val doAudioFocus: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_AUDIO_FOCUS, true)
 
     val doPlugMgt: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_PLUG_MANAGEMENT, true)
+
+    val songPlaybackMode: PlaybackMode
+        get() = PlaybackMode.valueOfOrFallback(
+            sharedPrefs.getString(
+                Keys.KEY_SONG_PLAYBACK_MODE,
+                PlaybackMode.ALL_SONGS.toString()
+            )
+        )
 
     var librarySortMode: SortMode
         get() {
@@ -153,6 +160,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
+        const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
     }

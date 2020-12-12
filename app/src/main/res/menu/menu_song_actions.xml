@@ -5,6 +5,10 @@
         android:title="@string/label_queue_add"
         android:icon="@drawable/ic_queue_add" />
     <item
+        android:id="@+id/action_play_all_songs"
+        android:title="@string/label_play_all_songs"
+        android:icon="@drawable/ic_song" />
+    <item
         android:id="@+id/action_play_artist"
         android:title="@string/label_play_artist"
         android:icon="@drawable/ic_artist" />

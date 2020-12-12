@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
@@ -21,6 +19,7 @@ import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
+@Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

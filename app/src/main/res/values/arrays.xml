@@ -23,4 +23,16 @@
         <item>SHOW_ARTISTS</item>
         <item>SHOW_ALBUMS</item>
     </array>
+
+    <array name="song_playback_mode_entries">
+        <item>@string/label_play_all_songs</item>
+        <item>@string/label_play_artist</item>
+        <item>@string/label_play_album</item>
+    </array>
+
+    <array name="song_playback_mode_values">
+        <item>ALL_SONGS</item>
+        <item>IN_ARTIST</item>
+        <item>IN_ALBUM</item>
+    </array>
 </resources>

@@ -25,7 +25,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.setupAlbumActions
@@ -197,7 +197,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         // If the item is a song [That was selected through search], then update the playback
         // to that song instead of doing any navigation
         if (baseModel is Song) {
-            playbackModel.playSong(baseModel, PlaybackMode.ALL_SONGS)
+            val settingsManager = SettingsManager.getInstance()
+
+            playbackModel.playSong(baseModel, settingsManager.songPlaybackMode)
             return
         }
 

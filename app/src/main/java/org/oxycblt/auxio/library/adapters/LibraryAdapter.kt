@@ -1,23 +1,16 @@
 package org.oxycblt.auxio.library.adapters
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
-import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
-import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 /**
  * A near-identical adapter as [SearchAdapter] but this one isn't a [ListAdapter]

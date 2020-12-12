@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -45,7 +43,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
 
     private val mIndex = MutableLiveData(0)
-    val index: LiveData<Int> get() = mIndex
+    // val index: LiveData<Int> get() = mIndex
 
     private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
     val mode: LiveData<PlaybackMode> get() = mMode

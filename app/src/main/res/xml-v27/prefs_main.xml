@@ -22,8 +22,7 @@
         <SwitchPreferenceCompat
             app:key="KEY_EDGE"
             android:title="@string/setting_edge"
-            app:summaryOn="@string/setting_edge_desc_on"
-            app:summaryOff="@string/setting_edge_desc_off"
+            app:summary="@string/setting_edge_desc"
             app:iconSpaceReserved="false"
             app:allowDividerBelow="false"
             app:defaultValue="false" />
@@ -45,8 +44,7 @@
         <SwitchPreferenceCompat
             app:key="KEY_COLOR_NOTIF"
             android:title="@string/setting_color_notif"
-            app:summaryOn="@string/setting_color_desc_on"
-            app:summaryOff="@string/setting_color_desc_off"
+            app:summary="@string/setting_color_desc"
             app:iconSpaceReserved="false"
             app:defaultValue="true" />
 
@@ -70,15 +68,30 @@
             android:title="@string/setting_playback_audio_focus"
             app:iconSpaceReserved="false"
             app:defaultValue="true"
-            app:summaryOn="@string/setting_playback_focus_desc_on"
-            app:summaryOff="@string/setting_playback_focus_desc_off" />
+            app:summary="@string/setting_playback_focus_desc" />
 
         <SwitchPreferenceCompat
             app:key="KEY_PLUG_MGT"
             android:title="@string/setting_playback_plug_mgt"
             app:iconSpaceReserved="false"
             app:defaultValue="true"
-            app:summaryOn="@string/setting_playback_plug_mgt_desc_on"
-            app:summaryOff="@string/setting_playback_plug_mgt_desc_off" />
+            app:allowDividerBelow="false"
+            app:summary="@string/setting_playback_plug_mgt_desc" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/setting_behavior"
+        android:layout="@layout/item_header">
+
+        <ListPreference
+            app:key="KEY_SONG_PLAY_MODE"
+            android:title="@string/setting_behavior_song_play"
+            app:defaultValue="ALL_SONGS"
+            app:entries="@array/song_playback_mode_entries"
+            app:entryValues="@array/song_playback_mode_values"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 </PreferenceScreen>

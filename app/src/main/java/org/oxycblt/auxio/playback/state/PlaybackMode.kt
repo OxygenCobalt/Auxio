@@ -1,5 +1,7 @@
 package org.oxycblt.auxio.playback.state
 
+import java.lang.IllegalArgumentException
+
 // Enum for instruction how the queue should function.
 // ALL SONGS -> Play from all songs
 // IN_ARTIST -> Play from the songs of the artist
@@ -30,6 +32,18 @@ enum class PlaybackMode {
                 CONSTANT_ALL_SONGS -> ALL_SONGS
 
                 else -> null
+            }
+        }
+
+        fun valueOfOrFallback(value: String?): PlaybackMode {
+            if (value == null) {
+                return ALL_SONGS
+            }
+
+            return try {
+                valueOf(value)
+            } catch (e: IllegalArgumentException) {
+                ALL_SONGS
             }
         }
     }
