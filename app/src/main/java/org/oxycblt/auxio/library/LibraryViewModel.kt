@@ -21,14 +21,16 @@ import org.oxycblt.auxio.settings.SettingsManager
  * @author OxygenCobalt
  */
 class LibraryViewModel : ViewModel(), SettingsManager.Callback {
-    private val mDisplayMode = MutableLiveData(DisplayMode.SHOW_ARTISTS)
-    val displayMode: LiveData<DisplayMode> get() = mDisplayMode
-
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val sortMode: LiveData<SortMode> get() = mSortMode
 
+    private val mLibraryData = MutableLiveData(listOf<BaseModel>())
+    val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
+
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
+
+    private var mDisplayMode = DisplayMode.SHOW_ARTISTS
 
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
@@ -37,13 +39,18 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     val searchHasFocus: Boolean get() = mSearchHasFocus
 
     private val settingsManager = SettingsManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
 
     init {
         settingsManager.addCallback(this)
 
-        mDisplayMode.value = settingsManager.libraryDisplayMode
+        mDisplayMode = settingsManager.libraryDisplayMode
         mSortMode.value = settingsManager.librarySortMode
+
+        updateLibraryData()
     }
+
+    // --- SEARCH FUNCTIONS ---
 
     /**
      * Perform a search of the music library, given a query.
@@ -63,9 +70,8 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         // the query, and update the LiveData with those items. This is done on a separate
         // thread as it can be a very long operation for large music libraries.
         viewModelScope.launch {
-            val musicStore = MusicStore.getInstance()
             val combined = mutableListOf<BaseModel>()
-            val children = displayMode.value!!.getChildren()
+            val children = mDisplayMode.getChildren()
 
             // If the Library DisplayMode supports it, include artists / genres in the search.
             if (children.contains(DisplayMode.SHOW_GENRES)) {
@@ -105,17 +111,15 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
+    fun updateSearchFocusStatus(value: Boolean) {
+        mSearchHasFocus = value
+    }
+
     fun resetQuery() {
         mSearchResults.value = listOf()
     }
 
-    fun updateNavigationStatus(value: Boolean) {
-        mIsNavigating = value
-    }
-
-    fun updateSearchFocusStatus(value: Boolean) {
-        mSearchHasFocus = value
-    }
+    // --- LIBRARY FUNCTIONS ---
 
     fun updateSortMode(@IdRes itemId: Int) {
         val mode = when (itemId) {
@@ -128,9 +132,14 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
         if (mode != mSortMode.value) {
             mSortMode.value = mode
-
             settingsManager.librarySortMode = mode
+
+            updateLibraryData()
         }
+    }
+
+    fun updateNavigationStatus(value: Boolean) {
+        mIsNavigating = value
     }
 
     // --- OVERRIDES ---
@@ -142,6 +151,16 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     }
 
     override fun onLibDisplayModeUpdate(displayMode: DisplayMode) {
-        mDisplayMode.value = displayMode
+        mDisplayMode = displayMode
+
+        updateLibraryData()
+    }
+
+    // --- UTILS ---
+
+    private fun updateLibraryData() {
+        mLibraryData.value = mSortMode.value!!.getSortedBaseModelList(
+            musicStore.getListForShowMode(mDisplayMode)
+        )
     }
 }

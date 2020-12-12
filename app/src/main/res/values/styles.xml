@@ -80,6 +80,7 @@
         <item name="colorPrimary">@color/control_color</item>
         <item name="colorSecondary">@color/control_color</item>
         <item name="dialogCornerRadius">0dp</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
     </style>
 
     <!-- Custom dialog title theme -->

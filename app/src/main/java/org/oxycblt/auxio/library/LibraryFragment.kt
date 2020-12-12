@@ -23,7 +23,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -51,10 +50,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val musicStore = MusicStore.getInstance()
-
         val libraryAdapter = LibraryAdapter(
-            libraryModel.displayMode.value!!,
             doOnClick = { navToItem(it) },
             doOnLongClick = { data, view -> showActionsForItem(data, view) }
         )
@@ -127,15 +123,20 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
         // --- VIEWMODEL SETUP ---
 
+        libraryModel.libraryData.observe(viewLifecycleOwner) {
+            libraryAdapter.updateData(it)
+        }
+
+        libraryModel.searchResults.observe(viewLifecycleOwner) {
+            if (libraryModel.searchHasFocus) {
+                searchAdapter.submitList(it) {
+                    binding.libraryRecycler.scrollToPosition(0)
+                }
+            }
+        }
+
         libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
             Log.d(this::class.simpleName, "Updating sort mode to $mode")
-
-            // Update the adapter with the new data
-            libraryAdapter.updateData(
-                mode.getSortedBaseModelList(
-                    musicStore.getListForShowMode(libraryModel.displayMode.value!!)
-                )
-            )
 
             // Then update the menu item in the toolbar to reflect the new mode
             binding.libraryToolbar.menu.forEach {
@@ -143,14 +144,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     it.applyColor(resolveAttr(requireContext(), R.attr.colorPrimary))
                 } else {
                     it.applyColor(resolveAttr(requireContext(), android.R.attr.textColorPrimary))
-                }
-            }
-        }
-
-        libraryModel.searchResults.observe(viewLifecycleOwner) {
-            if (libraryModel.searchHasFocus) {
-                searchAdapter.submitList(it) {
-                    binding.libraryRecycler.scrollToPosition(0)
                 }
             }
         }
@@ -188,6 +181,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun showActionsForItem(data: BaseModel, view: View) {
         val menu = PopupMenu(requireContext(), view)
+
         when (data) {
             is Song -> menu.setupSongActions(data, requireContext(), playbackModel)
             is Album -> menu.setupAlbumActions(data, requireContext(), playbackModel)

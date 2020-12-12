@@ -68,6 +68,13 @@ class SongsFragment : Fragment() {
         binding.songRecycler.apply {
             adapter = songAdapter
             setHasFixedSize(true)
+
+            post {
+                if (computeVerticalScrollRange() < height) {
+                    binding.songFastScroll.visibility = View.GONE
+                    binding.songFastScrollThumb.visibility = View.GONE
+                }
+            }
         }
 
         setupFastScroller(binding)

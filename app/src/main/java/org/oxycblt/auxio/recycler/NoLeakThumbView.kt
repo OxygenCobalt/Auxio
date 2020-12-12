@@ -29,9 +29,10 @@ import org.oxycblt.auxio.ui.toColor
 
 /**
  * A semi-copy, semi-custom implementation of [com.reddit.indicatorfastscroll.FastScrollerThumbView]
- * that fixes a memory leak that occurs from a bug fix they added. All credit goes to the authors of
- * the fast scroll library.
- * <a href="https://github.com/reddit/IndicatorFastScroll"> Link to repo </a>
+ * that fixes a memory leak that occurs from a bug fix they added.
+ * All credit goes to the authors of the fast scroll library.
+ *
+ * https://github.com/reddit/IndicatorFastScroll
  * @author Reddit, OxygenCobalt
  */
 class NoLeakThumbView @JvmOverloads constructor(
