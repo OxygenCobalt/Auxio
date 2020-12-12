@@ -93,5 +93,23 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreference
+            app:key="KEY_PREV_REWIND"
+            android:title="@string/setting_behavior_rewind_prev"
+            app:summary="@string/setting_behavior_rewind_prev_desc"
+            app:iconSpaceReserved="false"
+            app:defaultValue="true" />
+
+        <SeekBarPreference
+            app:key="KEY_REWIND_THRESHOLD"
+            android:title="@string/setting_behavior_rewind_threshold"
+            android:defaultValue="@integer/rewind_threshold_default"
+            android:max="@integer/rewind_threshold_max"
+            app:min="@integer/rewind_threshold_min"
+            app:summary="@string/setting_behavior_rewind_threshold_desc"
+            app:showSeekBarValue="true"
+            app:iconSpaceReserved="false"
+            app:dependency="KEY_PREV_REWIND" />
+
     </PreferenceCategory>
 </PreferenceScreen>

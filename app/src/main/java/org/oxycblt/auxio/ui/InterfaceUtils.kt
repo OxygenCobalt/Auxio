@@ -8,7 +8,6 @@ import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -149,8 +148,6 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
 
         else -> -1
     }
-
-    Log.d(this::class.simpleName, (idToRemove == R.id.action_play_album).toString())
 
     menu.findItem(idToRemove)?.isVisible = false
 }

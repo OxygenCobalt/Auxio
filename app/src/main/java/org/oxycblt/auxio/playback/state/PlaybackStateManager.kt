@@ -14,6 +14,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.settings.SettingsManager
 import kotlin.random.Random
 
 /**
@@ -99,6 +100,8 @@ class PlaybackStateManager private constructor() {
     val loopMode: LoopMode get() = mLoopMode
     val isRestored: Boolean get() = mIsRestored
     val hasPlayed: Boolean get() = mHasPlayed
+
+    private val settingsManager = SettingsManager.getInstance()
 
     // --- CALLBACKS ---
 
@@ -252,7 +255,7 @@ class PlaybackStateManager private constructor() {
 
             forceUserQueueUpdate()
         } else {
-            // If not in the user queue, then increment the current index
+            // Increment the index.
             // If it cant be incremented anymore, end playback or loop depending on the setting.
             if (mIndex < mQueue.lastIndex) {
                 mIndex = mIndex.inc()
@@ -271,18 +274,24 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Go to the previous song, doing any checks that are needed.
-     * TODO: Implement option to rewind before skipping back
      */
     fun prev() {
-        if (mIndex > 0 && !mIsInUserQueue) {
-            mIndex = mIndex.dec()
+        // If enabled, rewind before skipping back if the position is past the threshold set.
+        if (settingsManager.rewindWithPrev && mPosition >= settingsManager.rewindThreshold) {
+            seekTo(0)
+        } else {
+            // Only decrement the index if there's a song to move back to AND if we are not exiting
+            // the user queue.
+            if (mIndex > 0 && !mIsInUserQueue) {
+                mIndex = mIndex.dec()
+            }
+
+            resetLoopMode()
+
+            updatePlayback(mQueue[mIndex])
+
+            forceQueueUpdate()
         }
-
-        resetLoopMode()
-
-        updatePlayback(mQueue[mIndex])
-
-        forceQueueUpdate()
     }
 
     fun removeQueueItem(index: Int): Boolean {

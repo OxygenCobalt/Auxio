@@ -73,6 +73,12 @@ class SettingsManager private constructor(context: Context) :
             )
         )
 
+    val rewindWithPrev: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_PREV_REWIND, true)
+
+    val rewindThreshold: Long
+        get() = (sharedPrefs.getInt(Keys.KEY_REWIND_THRESHOLD, 5) * 1000).toLong()
+
     var librarySortMode: SortMode
         get() {
             return SortMode.fromInt(
@@ -145,7 +151,7 @@ class SettingsManager private constructor(context: Context) :
          */
         fun getInstance(): SettingsManager {
             check(::INSTANCE.isInitialized) {
-                "PrefsManager must be initialized with init() before getting its instance."
+                "SettingsManager must be initialized with init() before getting its instance."
             }
             return INSTANCE
         }
@@ -161,6 +167,8 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
+        const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
+        const val KEY_REWIND_THRESHOLD = "KEY_REWIND_THRESHOLD"
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
     }
