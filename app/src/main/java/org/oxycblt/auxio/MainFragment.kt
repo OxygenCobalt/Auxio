@@ -25,7 +25,6 @@ import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.toColor
 import kotlin.IllegalArgumentException
 
-// TODO: Dedicated Search Tab?
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()

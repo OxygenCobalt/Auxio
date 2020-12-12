@@ -457,7 +457,6 @@ class PlaybackStateManager private constructor() {
     }
 
     // --- PERSISTENCE FUNCTIONS ---
-    // TODO: Implement a fast queue save function
 
     suspend fun saveStateToDatabase(context: Context) {
         Log.d(this::class.simpleName, "Saving state to DB.")

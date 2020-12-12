@@ -34,7 +34,11 @@ import org.oxycblt.auxio.ui.setupArtistActions
 import org.oxycblt.auxio.ui.setupGenreActions
 import org.oxycblt.auxio.ui.setupSongActions
 
-// A Fragment to show all the music in the Library.
+/**
+ * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
+ * search functionality.
+ * TODO: Move search to separate tab?
+ */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val libraryModel: LibraryViewModel by activityViewModels()

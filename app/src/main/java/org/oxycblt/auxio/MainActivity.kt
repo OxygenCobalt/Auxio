@@ -86,8 +86,4 @@ class MainActivity : AppCompatActivity() {
             handleTransparentSystemBars(resources.configuration)
         }
     }
-
-    private fun doThemeRecreate(newTheme: Int) {
-        AppCompatDelegate.setDefaultNightMode(newTheme)
-    }
 }

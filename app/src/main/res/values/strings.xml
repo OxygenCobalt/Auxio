@@ -126,7 +126,7 @@
     <string name="format_double_info">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts">%1$s, %2$s</string>
     <string name="format_next_from">Next From: %s</string>
-    <string name="format_accent_summary">&lt;b>%1s&lt;/b>:&#160;%2s</string>
+    <string name="format_accent_summary">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>

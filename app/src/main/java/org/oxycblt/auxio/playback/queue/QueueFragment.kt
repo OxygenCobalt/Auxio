@@ -53,7 +53,7 @@ class QueueFragment : Fragment() {
             // Since QueueFragment doesn't fit system windows, inset padding needs to be
             // artificially applied to the Toolbar so that it fits on the main window AND
             // so that the elevation doesn't show on the top.
-            setOnApplyWindowInsetsListener { _, insets ->
+            setOnApplyWindowInsetsListener @Suppress("DEPRECATION") { _, insets ->
                 val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     insets.getInsets(WindowInsets.Type.systemBars()).top
                 } else {

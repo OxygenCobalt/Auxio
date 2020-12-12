@@ -119,7 +119,7 @@ class PlaybackStateDatabase(context: Context) :
         val database = writableDatabase
 
         var state: PlaybackState? = null
-        var stateCursor: Cursor? = null
+        val stateCursor: Cursor
 
         try {
             stateCursor = database.query(
@@ -161,7 +161,6 @@ class PlaybackStateDatabase(context: Context) :
                 )
             }
         } finally {
-            stateCursor?.close()
             return state
         }
     }
@@ -230,7 +229,7 @@ class PlaybackStateDatabase(context: Context) :
         val database = readableDatabase
 
         val queueItems = mutableListOf<QueueItem>()
-        var queueCursor: Cursor? = null
+        val queueCursor: Cursor
 
         try {
             queueCursor = database.query(
@@ -258,8 +257,6 @@ class PlaybackStateDatabase(context: Context) :
                 }
             }
         } finally {
-            queueCursor?.close()
-
             return queueItems
         }
     }

@@ -11,8 +11,7 @@ import androidx.navigation.fragment.findNavController
  * A Base [Fragment] implementing a [OnBackPressedCallback] so that Auxio will navigate upwards
  * instead of out of the app if a Detail Fragment is currently open. Also carries the
  * multi-navigation fix.
- * TODO: Implement a system where the Toolbar will update with some info when
- *   the main detail header is obscured.
+ * TODO: Migrate to a more powerful/efficient CoordinatorLayout instead of NestedScrollView
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {
@@ -38,7 +37,7 @@ abstract class DetailFragment : Fragment() {
 
         override fun handleOnBackPressed() {
             val navController = findNavController()
-            // Check if it's the root of nested fragments in this navhost
+            // Check if it's the root of nested fragments in this NavHost
             if (navController.currentDestination?.id == navController.graph.startDestination) {
                 isEnabled = false
                 requireActivity().onBackPressed()

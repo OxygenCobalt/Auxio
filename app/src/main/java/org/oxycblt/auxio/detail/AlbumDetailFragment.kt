@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumSongAdapter
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -110,6 +111,13 @@ class AlbumDetailFragment : DetailFragment() {
             binding.albumSortButton.disable(requireContext())
         }
 
+        // If this fragment was created in order to nav to an item, then snap scroll to that item.
+        playbackModel.navToItem.value?.let {
+            if (it is Song) {
+                scrollToPlayingItem(binding, smooth = false)
+            }
+        }
+
         // -- VIEWMODEL SETUP ---
 
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
@@ -169,25 +177,10 @@ class AlbumDetailFragment : DetailFragment() {
         playbackModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it is Song) {
-                    // Calculate where the item for the currently played song is, and navigate to there.
-                    val pos = detailModel.albumSortMode.value!!.getSortedSongList(
-                        detailModel.currentAlbum.value!!.songs
-                    ).indexOf(playbackModel.song.value)
-
-                    if (pos != -1) {
-                        binding.albumSongRecycler.post {
-                            // Only scroll after UI creation
-                            val y = binding.albumSongRecycler.y +
-                                binding.albumSongRecycler.getChildAt(pos).y
-
-                            binding.nestedScroll.scrollTo(0, y.toInt())
-                        }
-
-                        playbackModel.doneWithNavToItem()
-                    }
+                    scrollToPlayingItem(binding, smooth = true)
                 }
 
-                if (detailModel.currentAlbum.value!!.id == playbackModel.song.value!!.album.id) {
+                if (it is Album && it.id == detailModel.currentAlbum.value!!.id) {
                     playbackModel.doneWithNavToItem()
                 }
             }
@@ -196,5 +189,32 @@ class AlbumDetailFragment : DetailFragment() {
         Log.d(this::class.simpleName, "Fragment created.")
 
         return binding.root
+    }
+
+    /**
+     * Calculate the position and and scroll to a currently playing item.
+     * @param binding The binding required
+     * @param smooth  Whether to scroll smoothly or not, true for yes, false for no.
+     */
+    private fun scrollToPlayingItem(binding: FragmentAlbumDetailBinding, smooth: Boolean) {
+        // Calculate where the item for the currently played song is, and scroll to there
+        val pos = detailModel.albumSortMode.value!!.getSortedSongList(
+            detailModel.currentAlbum.value!!.songs
+        ).indexOf(playbackModel.song.value)
+
+        if (pos != -1) {
+            binding.albumSongRecycler.post {
+                val y = binding.albumSongRecycler.y +
+                    binding.albumSongRecycler.getChildAt(pos).y
+
+                if (smooth) {
+                    binding.nestedScroll.smoothScrollTo(0, y.toInt())
+                } else {
+                    binding.nestedScroll.scrollTo(0, y.toInt())
+                }
+            }
+
+            playbackModel.doneWithNavToItem()
+        }
     }
 }
