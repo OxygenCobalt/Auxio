@@ -1,9 +1,8 @@
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.utils
 
 import android.content.Context
 import android.content.res.Resources
 import android.text.Spanned
-import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt

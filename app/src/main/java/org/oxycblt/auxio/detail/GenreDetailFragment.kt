@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,8 @@ import org.oxycblt.auxio.detail.adapters.GenreArtistAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.setupArtistActions
+import org.oxycblt.auxio.utils.disable
+import org.oxycblt.auxio.utils.setupArtistActions
 
 /**
  * The [DetailFragment] for a genre.

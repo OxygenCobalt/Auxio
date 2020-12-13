@@ -1,9 +1,9 @@
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
@@ -12,16 +12,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.adapters.AccentAdapter
-import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.getDetailedAccentSummary
+import org.oxycblt.auxio.utils.ACCENTS
+import org.oxycblt.auxio.utils.accent
+import org.oxycblt.auxio.utils.createToast
+import org.oxycblt.auxio.utils.getDetailedAccentSummary
 
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
+    private val playbackModel: PlaybackViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -38,6 +43,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     private fun recursivelyHandleChildren(pref: Preference) {
         if (pref is PreferenceCategory) {
+            if (pref.title == getString(R.string.debug_title) && BuildConfig.DEBUG) {
+                logD("Showing debug category.")
+
+                pref.isVisible = true
+            }
+
             pref.children.forEach {
                 recursivelyHandleChildren(it)
             }
@@ -83,6 +94,15 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
                         setIcon(DisplayMode.valueOfOrFallback(value as String).iconRes)
+
+                        true
+                    }
+                }
+
+                SettingsManager.Keys.KEY_DEBUG_SAVE -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        playbackModel.save(requireContext())
+                        getString(R.string.debug_state_saved).createToast(requireContext())
 
                         true
                     }

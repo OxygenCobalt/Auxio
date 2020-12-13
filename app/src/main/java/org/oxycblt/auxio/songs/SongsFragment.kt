@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.songs
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.setupSongActions
+import org.oxycblt.auxio.utils.setupSongActions
 import kotlin.math.ceil
 
 /**

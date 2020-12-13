@@ -17,9 +17,9 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.setupAlbumSongActions
+import org.oxycblt.auxio.utils.createToast
+import org.oxycblt.auxio.utils.disable
+import org.oxycblt.auxio.utils.setupAlbumSongActions
 
 /**
  * The [DetailFragment] for an album.

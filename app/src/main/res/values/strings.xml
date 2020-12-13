@@ -85,6 +85,9 @@
     <string name="setting_behavior_rewind_threshold_desc">Progress at which a rewind should occur (seconds)</string>
 
     <!-- Debug Namespace | Debug labels -->
+    <string name="debug_title">Debug</string>
+    <string name="debug_state_save">Save playback state</string>
+    <string name="debug_state_save_desc">Force save the current playback state</string>
     <string name="debug_state_saved">State saved</string>
 
     <!-- Error Namespace | Error Labels -->

@@ -12,9 +12,9 @@ import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.handleTransparentSystemBars
-import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.utils.accent
+import org.oxycblt.auxio.utils.handleTransparentSystemBars
+import org.oxycblt.auxio.utils.toColor
 
 // FIXME: Fix bug where fast navigation will break the animations and
 //  lead to nothing being displayed [Possibly Un-fixable]

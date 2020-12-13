@@ -7,7 +7,6 @@ import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
-import android.util.Log
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album

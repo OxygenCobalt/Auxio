@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music
 
 import android.app.Application
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R

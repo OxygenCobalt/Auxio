@@ -124,8 +124,22 @@
             app:min="@integer/rewind_threshold_min"
             app:summary="@string/setting_behavior_rewind_threshold_desc"
             app:showSeekBarValue="true"
+            app:allowDividerBelow="false"
             app:iconSpaceReserved="false"
             app:dependency="KEY_PREV_REWIND" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/debug_title"
+        app:isPreferenceVisible="false"
+        app:layout="@layout/item_header">
+
+        <Preference
+            app:key="KEY_SAVE_STATE"
+            android:title="@string/debug_state_save"
+            app:summary="@string/debug_state_save_desc"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 </PreferenceScreen>

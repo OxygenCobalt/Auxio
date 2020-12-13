@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package org.oxycblt.auxio.recycler
 
 import android.annotation.SuppressLint
@@ -24,8 +22,8 @@ import androidx.dynamicanimation.animation.SpringForce
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.utils.accent
+import org.oxycblt.auxio.utils.toColor
 
 /**
  * A semi-copy, semi-custom implementation of [com.reddit.indicatorfastscroll.FastScrollerThumbView]

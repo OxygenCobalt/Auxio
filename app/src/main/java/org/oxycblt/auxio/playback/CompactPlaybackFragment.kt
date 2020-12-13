@@ -2,7 +2,6 @@ package org.oxycblt.auxio.playback
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.createToast
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -54,16 +51,6 @@ class CompactPlaybackFragment : Fragment() {
         binding.root.setOnLongClickListener {
             playbackModel.navToItem(playbackModel.song.value!!)
             true
-        }
-
-        // Enable the ability to force-save the state in debug builds, in order to check
-        // for persistence issues without waiting for PlaybackService to be killed.
-        if (BuildConfig.DEBUG) {
-            binding.playbackControls.setOnLongClickListener {
-                playbackModel.save(requireContext())
-                getString(R.string.debug_state_saved).createToast(requireContext())
-                true
-            }
         }
 
         // --- VIEWMODEL SETUP ---

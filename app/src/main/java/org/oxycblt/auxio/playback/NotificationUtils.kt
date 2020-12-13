@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.MainActivity
@@ -18,7 +17,6 @@ import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.settings.SettingsManager
 
 object NotificationUtils {
     const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"

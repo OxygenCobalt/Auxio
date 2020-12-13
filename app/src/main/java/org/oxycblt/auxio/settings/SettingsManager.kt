@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
-import org.oxycblt.auxio.ui.ACCENTS
+import org.oxycblt.auxio.utils.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -179,6 +179,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_REWIND_THRESHOLD = "KEY_REWIND_THRESHOLD"
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
+        const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
     }
 
     object EntryNames {

@@ -14,7 +14,6 @@ import android.os.IBinder
 import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.C

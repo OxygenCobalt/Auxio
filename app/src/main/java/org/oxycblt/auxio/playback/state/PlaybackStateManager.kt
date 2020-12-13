@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.playback.state
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.database.PlaybackState

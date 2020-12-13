@@ -15,8 +15,8 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.setupAlbumActions
+import org.oxycblt.auxio.utils.disable
+import org.oxycblt.auxio.utils.setupAlbumActions
 
 /**
  * The [DetailFragment] for an artist.
