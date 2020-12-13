@@ -23,7 +23,6 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
  * @author OxygenCobalt
  */
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
-
     private val loadingModel: LoadingViewModel by activityViewModels {
         LoadingViewModel.Factory(requireActivity().application)
     }

@@ -155,10 +155,14 @@ class PlaybackStateManager private constructor() {
         resetLoopMode()
         updatePlayback(song)
 
-        if (mIsShuffling) {
-            genShuffle(true)
+        if (settingsManager.keepShuffle) {
+            if (mIsShuffling) {
+                genShuffle(true)
+            } else {
+                resetShuffle()
+            }
         } else {
-            resetShuffle()
+            setShuffleStatus(false)
         }
 
         mIndex = mQueue.indexOf(song)
@@ -210,11 +214,11 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    private fun updatePlayback(song: Song) {
+    private fun updatePlayback(song: Song, dontPlay: Boolean = false) {
         mSong = song
         mPosition = 0
 
-        if (!mIsPlaying) {
+        if (!mIsPlaying && !dontPlay) {
             setPlayingStatus(true)
         }
 
@@ -260,9 +264,7 @@ class PlaybackStateManager private constructor() {
             if (mIndex < mQueue.lastIndex) {
                 mIndex = mIndex.inc()
             } else {
-                // TODO: Implement option to make the playlist loop instead of stop
-                mQueue = mutableListOf()
-                mSong = null
+                handlePlaylistEnd()
 
                 return
             }
@@ -293,6 +295,37 @@ class PlaybackStateManager private constructor() {
             forceQueueUpdate()
         }
     }
+
+    /**
+     * Handle what to do at then end of a playlist.
+     */
+    private fun handlePlaylistEnd() {
+        when (settingsManager.doAtEnd) {
+            SettingsManager.EntryNames.AT_END_LOOP_PAUSE -> {
+                mIndex = 0
+                forceQueueUpdate()
+
+                updatePlayback(mQueue[0], dontPlay = true)
+                setPlayingStatus(false)
+            }
+
+            SettingsManager.EntryNames.AT_END_LOOP -> {
+                mIndex = 0
+                forceQueueUpdate()
+
+                updatePlayback(mQueue[0])
+            }
+
+            SettingsManager.EntryNames.AT_END_STOP -> {
+                mQueue.clear()
+                forceQueueUpdate()
+
+                mSong = null
+            }
+        }
+    }
+
+    // --- QUEUE EDITING FUNCTIONS ---
 
     fun removeQueueItem(index: Int): Boolean {
         Log.d(this::class.simpleName, "Removing item ${mQueue[index].name}.")

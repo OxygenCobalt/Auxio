@@ -73,6 +73,13 @@ class SettingsManager private constructor(context: Context) :
             )
         )
 
+    val doAtEnd: String
+        get() = sharedPrefs.getString(Keys.KEY_AT_END, EntryNames.AT_END_LOOP_PAUSE)
+            ?: EntryNames.AT_END_LOOP_PAUSE
+
+    val keepShuffle: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_KEEP_SHUFFLE, false)
+
     val rewindWithPrev: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_PREV_REWIND, true)
 
@@ -80,14 +87,13 @@ class SettingsManager private constructor(context: Context) :
         get() = (sharedPrefs.getInt(Keys.KEY_REWIND_THRESHOLD, 5) * 1000).toLong()
 
     var librarySortMode: SortMode
-        get() {
-            return SortMode.fromInt(
-                sharedPrefs.getInt(
-                    Keys.KEY_LIBRARY_SORT_MODE,
-                    SortMode.CONSTANT_ALPHA_DOWN
-                )
-            ) ?: SortMode.ALPHA_DOWN
-        }
+        get() = SortMode.fromInt(
+            sharedPrefs.getInt(
+                Keys.KEY_LIBRARY_SORT_MODE,
+                SortMode.CONSTANT_ALPHA_DOWN
+            )
+        ) ?: SortMode.ALPHA_DOWN
+
         set(value) {
             sharedPrefs.edit()
                 .putInt(Keys.KEY_LIBRARY_SORT_MODE, value.toInt())
@@ -167,6 +173,8 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
+        const val KEY_AT_END = "KEY_AT_END"
+        const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
         const val KEY_REWIND_THRESHOLD = "KEY_REWIND_THRESHOLD"
 
@@ -177,6 +185,10 @@ class SettingsManager private constructor(context: Context) :
         const val THEME_AUTO = "AUTO"
         const val THEME_LIGHT = "LIGHT"
         const val THEME_DARK = "DARK"
+
+        const val AT_END_LOOP_PAUSE = "LOOP_PAUSE"
+        const val AT_END_LOOP = "LOOP"
+        const val AT_END_STOP = "STOP"
     }
 
     /**

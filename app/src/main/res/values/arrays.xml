@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="theme_entries">
+    <array name="entires_theme">
         <item>@string/setting_theme_auto</item>
         <item>@string/setting_theme_day</item>
         <item>@string/setting_theme_night</item>
     </array>
 
-    <array name="theme_values">
+    <array name="values_theme">
         <item>AUTO</item>
         <item>LIGHT</item>
         <item>DARK</item>
     </array>
 
-    <array name="lib_display_entries">
+    <array name="entries_lib_display">
         <item>@string/label_genres</item>
         <item>@string/label_artists</item>
         <item>@string/label_albums</item>
     </array>
 
-    <array name="lib_display_values">
+    <array name="values_lib_display">
         <item>SHOW_GENRES</item>
         <item>SHOW_ARTISTS</item>
         <item>SHOW_ALBUMS</item>
     </array>
 
-    <array name="song_playback_mode_entries">
+    <array name="entries_song_playback_mode">
         <item>@string/label_play_all_songs</item>
         <item>@string/label_play_artist</item>
         <item>@string/label_play_album</item>
     </array>
 
-    <array name="song_playback_mode_values">
+    <array name="values_song_playback_mode">
         <item>ALL_SONGS</item>
         <item>IN_ARTIST</item>
         <item>IN_ALBUM</item>
+    </array>
+
+    <array name="entries_at_end">
+        <item>@string/setting_behavior_end_loop_pause</item>
+        <item>@string/setting_behavior_end_loop</item>
+        <item>@string/setting_behavior_end_stop</item>
+    </array>
+
+    <array name="values_at_end">
+        <item>LOOP_PAUSE</item>
+        <item>LOOP</item>
+        <item>STOP</item>
     </array>
 </resources>

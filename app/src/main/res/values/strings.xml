@@ -69,7 +69,15 @@
     <string name="setting_playback_plug_mgt_desc">Play/Pause when headset connection changes</string>
 
     <string name="setting_behavior">Behavior</string>
-    <string name="setting_behavior_song_play">When a song is selected</string>
+    <string name="setting_behavior_song_playback_mode">When a song is selected</string>
+
+    <string name="setting_behavior_at_end">When a playlist ends</string>
+    <string name="setting_behavior_end_loop">Loop</string>
+    <string name="setting_behavior_end_stop">Stop</string>
+    <string name="setting_behavior_end_loop_pause">Loop &amp; Pause</string>
+
+    <string name="setting_behavior_keep_shuffle">Remember shuffle</string>
+    <string name="setting_behavior_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
 
     <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>

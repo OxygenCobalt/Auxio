@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.MainActivity
@@ -172,8 +171,6 @@ private fun newAction(action: String, context: Context): NotificationCompat.Acti
         }
 
         NotificationUtils.ACTION_SHUFFLE -> {
-            Log.d("A function", "Jesus christ does this even call???")
-
             if (playbackManager.isShuffling) {
                 R.drawable.ic_shuffle
             } else {

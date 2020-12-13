@@ -8,8 +8,8 @@
             app:key="KEY_THEME"
             android:title="@string/setting_theme"
             android:icon="@drawable/ic_day"
-            android:entries="@array/theme_entries"
-            android:entryValues="@array/theme_values"
+            android:entries="@array/entires_theme"
+            android:entryValues="@array/values_theme"
             app:defaultValue="AUTO"
             app:useSimpleSummaryProvider="true" />
 
@@ -28,8 +28,8 @@
             app:key="KEY_LIBRARY_DISPLAY_MODE"
             android:title="@string/setting_lib_display"
             android:icon="@drawable/ic_artist"
-            app:entries="@array/lib_display_entries"
-            app:entryValues="@array/lib_display_values"
+            app:entries="@array/entries_lib_display"
+            app:entryValues="@array/values_lib_display"
             app:defaultValue="SHOW_ARTISTS"
             app:useSimpleSummaryProvider="true" />
 
@@ -77,10 +77,19 @@
 
         <ListPreference
             app:key="KEY_SONG_PLAY_MODE"
-            android:title="@string/setting_behavior_song_play"
+            android:title="@string/setting_behavior_song_playback_mode"
             app:defaultValue="ALL_SONGS"
-            app:entries="@array/song_playback_mode_entries"
-            app:entryValues="@array/song_playback_mode_values"
+            app:entries="@array/entries_song_playback_mode"
+            app:entryValues="@array/values_song_playback_mode"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="KEY_AT_END"
+            android:title="@string/setting_behavior_at_end"
+            app:defaultValue="LOOP_PAUSE"
+            app:entries="@array/entries_at_end"
+            app:entryValues="@array/values_at_end"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
