@@ -5,6 +5,7 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicLoaderResponse
 import org.oxycblt.auxio.music.processing.MusicSorter
@@ -45,7 +46,7 @@ class MusicStore private constructor() {
      */
     suspend fun load(app: Application): MusicLoaderResponse {
         return withContext(Dispatchers.IO) {
-            Log.i(this::class.simpleName, "Starting initial music load...")
+            logD("Starting initial music load...")
 
             val start = System.currentTimeMillis()
 
@@ -83,10 +84,7 @@ class MusicStore private constructor() {
 
                 val elapsed = System.currentTimeMillis() - start
 
-                Log.i(
-                    this::class.simpleName,
-                    "Music load completed successfully in ${elapsed}ms."
-                )
+                logD("Music load completed successfully in ${elapsed}ms.")
 
                 loaded = true
             }

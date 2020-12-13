@@ -7,6 +7,8 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.database.PlaybackState
 import org.oxycblt.auxio.database.PlaybackStateDatabase
 import org.oxycblt.auxio.database.QueueItem
+import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -121,12 +123,12 @@ class PlaybackStateManager private constructor() {
         // Auxio doesn't support playing songs while swapping the mode to GENRE, as its impossible
         // to determine what genre a song has.
         if (mode == PlaybackMode.IN_GENRE) {
-            Log.e(this::class.simpleName, "Auxio cant play songs with the mode of IN_GENRE.")
+            logE("Auxio cant play songs with the mode of IN_GENRE.")
 
             return
         }
 
-        Log.d(this::class.simpleName, "Updating song to ${song.name} and mode to $mode")
+        logD("Updating song to ${song.name} and mode to $mode")
 
         val musicStore = MusicStore.getInstance()
 
@@ -171,15 +173,12 @@ class PlaybackStateManager private constructor() {
     fun playParentModel(baseModel: BaseModel, shuffled: Boolean) {
         // This should never occur.
         if (baseModel is Song || baseModel is Header) {
-            Log.e(
-                this::class.simpleName,
-                "playParentModel does not support ${baseModel::class.simpleName}."
-            )
+            logE("playParentModel does not support ${baseModel::class.simpleName}.")
 
             return
         }
 
-        Log.d(this::class.simpleName, "Playing ${baseModel.name}")
+        logD("Playing ${baseModel.name}")
 
         mParent = baseModel
         mIndex = 0
@@ -328,10 +327,10 @@ class PlaybackStateManager private constructor() {
     // --- QUEUE EDITING FUNCTIONS ---
 
     fun removeQueueItem(index: Int): Boolean {
-        Log.d(this::class.simpleName, "Removing item ${mQueue[index].name}.")
+        logD("Removing item ${mQueue[index].name}.")
 
         if (index > mQueue.size || index < 0) {
-            Log.e(this::class.simpleName, "Index is out of bounds, did not remove queue item.")
+            logE("Index is out of bounds, did not remove queue item.")
 
             return false
         }
@@ -348,7 +347,7 @@ class PlaybackStateManager private constructor() {
             val item = mQueue.removeAt(from)
             mQueue.add(to, item)
         } catch (exception: IndexOutOfBoundsException) {
-            Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
+            logE("Indices were out of bounds, did not move queue item")
 
             return false
         }
@@ -371,10 +370,10 @@ class PlaybackStateManager private constructor() {
     }
 
     fun removeUserQueueItem(index: Int) {
-        Log.d(this::class.simpleName, "Removing item ${mUserQueue[index].name}.")
+        logD("Removing item ${mUserQueue[index].name}.")
 
         if (index > mUserQueue.size || index < 0) {
-            Log.e(this::class.simpleName, "Index is out of bounds, did not remove queue item.")
+            logE("Index is out of bounds, did not remove queue item.")
 
             return
         }
@@ -389,7 +388,7 @@ class PlaybackStateManager private constructor() {
             val item = mUserQueue.removeAt(from)
             mUserQueue.add(to, item)
         } catch (exception: IndexOutOfBoundsException) {
-            Log.e(this::class.simpleName, "Indices were out of bounds, did not move queue item")
+            logE("Indices were out of bounds, did not move queue item")
 
             return
         }
@@ -430,7 +429,7 @@ class PlaybackStateManager private constructor() {
     private fun genShuffle(keepSong: Boolean) {
         val newSeed = Random.Default.nextLong()
 
-        Log.d(this::class.simpleName, "Shuffling queue with seed $newSeed")
+        logD("Shuffling queue with seed $newSeed")
 
         mShuffleSeed = newSeed
 
@@ -501,7 +500,7 @@ class PlaybackStateManager private constructor() {
     // --- PERSISTENCE FUNCTIONS ---
 
     suspend fun saveStateToDatabase(context: Context) {
-        Log.d(this::class.simpleName, "Saving state to DB.")
+        logD("Saving state to DB.")
 
         val start = System.currentTimeMillis()
 
@@ -516,11 +515,11 @@ class PlaybackStateManager private constructor() {
 
         val time = System.currentTimeMillis() - start
 
-        Log.d(this::class.simpleName, "Save finished in ${time}ms")
+        logD("Save finished in ${time}ms")
     }
 
     suspend fun getStateFromDatabase(context: Context) {
-        Log.d(this::class.simpleName, "Getting state from DB.")
+        logD("Getting state from DB.")
 
         val start = System.currentTimeMillis()
 
@@ -535,11 +534,11 @@ class PlaybackStateManager private constructor() {
 
         val loadTime = System.currentTimeMillis() - start
 
-        Log.d(this::class.simpleName, "Load finished in ${loadTime}ms")
+        logD("Load finished in ${loadTime}ms")
 
         state?.let {
-            Log.d(this::class.simpleName, "Valid playback state $it")
-            Log.d(this::class.simpleName, "Valid queue size ${queueItems.size}")
+            logD("Valid playback state $it")
+            logD("Valid queue size ${queueItems.size}")
 
             unpackFromPlaybackState(it)
             unpackQueue(queueItems)
@@ -548,7 +547,7 @@ class PlaybackStateManager private constructor() {
 
         val time = System.currentTimeMillis() - start
 
-        Log.d(this::class.simpleName, "Restore finished in ${time}ms")
+        logD("Restore finished in ${time}ms")
 
         mIsRestored = true
     }
@@ -642,7 +641,7 @@ class PlaybackStateManager private constructor() {
     private fun doParentSanityCheck() {
         // Check if the parent was lost while in the DB.
         if (mSong != null && mParent == null && mMode != PlaybackMode.ALL_SONGS) {
-            Log.d(this::class.simpleName, "Parent lost, attempting restore.")
+            logD("Parent lost, attempting restore.")
 
             mParent = when (mMode) {
                 PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
@@ -683,7 +682,7 @@ class PlaybackStateManager private constructor() {
             genres = otherGenres.toMutableList()
         }
 
-        Log.d(this::class.simpleName, "Found genre $genres")
+        logD("Found genre $genres")
 
         // There should not be more than one common genre, so return null if that's the case
         if (genres.size > 1) {

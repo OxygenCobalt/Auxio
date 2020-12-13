@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.music.processing
 
 import android.util.Log
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -24,7 +25,7 @@ class MusicSorter(
     }
 
     private fun sortSongsIntoAlbums() {
-        Log.d(this::class.simpleName, "Sorting songs into albums...")
+        logD("Sorting songs into albums...")
 
         val unknownSongs = songs.toMutableList()
 
@@ -56,15 +57,12 @@ class MusicSorter(
 
             albums.add(unknownAlbum)
 
-            Log.d(
-                this::class.simpleName,
-                "${unknownSongs.size} songs were placed into an unknown album."
-            )
+            logD("${unknownSongs.size} songs were placed into an unknown album.")
         }
     }
 
     private fun sortAlbumsIntoArtists() {
-        Log.d(this::class.simpleName, "Sorting albums into artists...")
+        logD("Sorting albums into artists...")
 
         val unknownAlbums = albums.toMutableList()
 
@@ -109,15 +107,12 @@ class MusicSorter(
 
             artists.add(unknownArtist)
 
-            Log.d(
-                this::class.simpleName,
-                "${unknownAlbums.size} albums were placed into an unknown artist."
-            )
+            logD("${unknownAlbums.size} albums were placed into an unknown artist.")
         }
     }
 
     private fun sortArtistsIntoGenres() {
-        Log.d(this::class.simpleName, "Sorting artists into genres...")
+        logD("Sorting artists into genres...")
 
         val unknownArtists = artists.toMutableList()
 
@@ -147,10 +142,7 @@ class MusicSorter(
             }
             genres.add(unknownGenre)
 
-            Log.d(
-                this::class.simpleName,
-                "${unknownArtists.size} artists were placed into an unknown genre."
-            )
+            logD("${unknownArtists.size} artists were placed into an unknown genre.")
         }
     }
 

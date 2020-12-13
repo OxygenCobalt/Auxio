@@ -8,6 +8,8 @@ import android.provider.MediaStore.Audio.Artists
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import android.util.Log
+import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -47,7 +49,7 @@ class MusicLoader(
             loadAlbums()
             loadSongs()
         } catch (error: Exception) {
-            Log.e(this::class.simpleName, "Something went horribly wrong.")
+            logE("Something went horribly wrong.")
             error.printStackTrace()
 
             return MusicLoaderResponse.FAILURE
@@ -61,7 +63,7 @@ class MusicLoader(
     }
 
     private fun loadGenres() {
-        Log.d(this::class.simpleName, "Starting genre search...")
+        logD("Starting genre search...")
 
         // First, get a cursor for every genre in the android system
         val genreCursor = resolver.query(
@@ -99,14 +101,11 @@ class MusicLoader(
             cursor.close()
         }
 
-        Log.d(
-            this::class.simpleName,
-            "Genre search finished with ${genres.size} genres found."
-        )
+        logD("Genre search finished with ${genres.size} genres found.")
     }
 
     private fun loadArtists() {
-        Log.d(this::class.simpleName, "Starting artist search...")
+        logD("Starting artist search...")
 
         // Load all the artists
         val artistCursor = resolver.query(
@@ -170,15 +169,12 @@ class MusicLoader(
             artistGenreCursor?.close()
         }
 
-        Log.d(
-            this::class.simpleName,
-            "Artist search finished with ${artists.size} artists found."
-        )
+        logD("Artist search finished with ${artists.size} artists found.")
     }
 
     @SuppressLint("InlinedApi")
     private fun loadAlbums() {
-        Log.d(this::class.simpleName, "Starting album search...")
+        logD("Starting album search...")
 
         val albumCursor = resolver.query(
             Albums.EXTERNAL_CONTENT_URI,
@@ -222,15 +218,12 @@ class MusicLoader(
             it.name to it.artistId to it.year
         }.toMutableList()
 
-        Log.d(
-            this::class.simpleName,
-            "Album search finished with ${albums.size} albums found"
-        )
+        logD("Album search finished with ${albums.size} albums found")
     }
 
     @SuppressLint("InlinedApi")
     private fun loadSongs() {
-        Log.d(this::class.simpleName, "Starting song search...")
+        logD("Starting song search...")
 
         val songCursor = resolver.query(
             Media.EXTERNAL_CONTENT_URI,
@@ -276,9 +269,6 @@ class MusicLoader(
             it.name to it.albumId to it.track to it.duration
         }.toMutableList()
 
-        Log.d(
-            this::class.simpleName,
-            "Song search finished with ${songs.size} found"
-        )
+        logD("Song search finished with ${songs.size} found")
     }
 }

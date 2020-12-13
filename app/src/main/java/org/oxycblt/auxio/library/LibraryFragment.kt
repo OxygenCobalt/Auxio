@@ -19,6 +19,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.library.adapters.LibraryAdapter
 import org.oxycblt.auxio.library.adapters.SearchAdapter
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -136,7 +137,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
-            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+            logD("Updating sort mode to $mode")
 
             // Then update the menu item in the toolbar to reflect the new mode
             binding.libraryToolbar.menu.forEach {
@@ -160,7 +161,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        Log.d(this::class.simpleName, "Fragment created.")
+        logD("Fragment created.")
 
         return binding.root
     }
@@ -206,7 +207,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         if (!libraryModel.isNavigating) {
             libraryModel.updateNavigationStatus(true)
 
-            Log.d(this::class.simpleName, "Navigating to the detail fragment for ${baseModel.name}")
+            logD("Navigating to the detail fragment for ${baseModel.name}")
 
             findNavController().navigate(
                 when (baseModel) {

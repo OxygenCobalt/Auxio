@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
@@ -72,7 +73,7 @@ class QueueAdapter(
                 }
 
             else -> {
-                Log.e(this::class.simpleName, "Bad data fed to QueueAdapter.")
+                logE("Bad data fed to QueueAdapter.")
             }
         }
     }

@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.toColor
@@ -92,12 +93,12 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         playbackModel.song.observe(viewLifecycleOwner) {
             if (it != null) {
-                Log.d(this::class.simpleName, "Updating song display to ${it.name}.")
+                logD("Updating song display to ${it.name}.")
 
                 binding.song = it
                 binding.playbackSeekBar.max = it.seconds.toInt()
             } else {
-                Log.d(this::class.simpleName, "No song is being played, leaving.")
+                logD("No song is being played, leaving.")
 
                 findNavController().navigateUp()
             }
@@ -194,7 +195,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        Log.d(this::class.simpleName, "Fragment Created.")
+        logD("Fragment Created.")
 
         return binding.root
     }

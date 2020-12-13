@@ -15,6 +15,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.createToast
 
@@ -69,7 +70,7 @@ class CompactPlaybackFragment : Fragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) {
             if (it != null) {
-                Log.d(this::class.simpleName, "Updating song display to ${it.name}")
+                logD("Updating song display to ${it.name}")
 
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
@@ -80,7 +81,7 @@ class CompactPlaybackFragment : Fragment() {
             binding.playbackProgress.progress = it
         }
 
-        Log.d(this::class.simpleName, "Fragment Created")
+        logD("Fragment Created")
 
         return binding.root
     }

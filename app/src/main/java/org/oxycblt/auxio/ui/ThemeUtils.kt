@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.toSpanned
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logE
 import java.util.Locale
 
 // Functions for managing colors/accents.
@@ -89,7 +90,7 @@ fun Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)
     } catch (e: Resources.NotFoundException) {
-        Log.e(this::class.simpleName, "Attempted color load failed.")
+        logE("Attempted color load failed.")
 
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)

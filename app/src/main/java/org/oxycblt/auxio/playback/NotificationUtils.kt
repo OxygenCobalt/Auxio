@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.MainActivity
@@ -81,12 +82,18 @@ fun NotificationManager.createMediaNotification(
 
 /**
  * Set the current metadata of a media notification.
- * @param song The [Song] that the notification should reflect
  * @param context The [Context] needed to load the cover bitmap
+ * @param song The [Song] that the notification should reflect
+ * @param colorize Whether to load the album art and colorize the notification based off it
  * @param onDone A callback for when the process is finished
  * @author OxygenCobalt
  */
-fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone: () -> Unit) {
+fun NotificationCompat.Builder.setMetadata(
+    context: Context,
+    song: Song,
+    colorize: Boolean,
+    onDone: () -> Unit
+) {
     setContentTitle(song.name)
     setContentText(
         song.album.artist.name,
@@ -98,8 +105,7 @@ fun NotificationCompat.Builder.setMetadata(song: Song, context: Context, onDone:
         setSubText(song.album.name)
     }
 
-    // Also set the cover art [If reasonable]
-    if (SettingsManager.getInstance().colorizeNotif) {
+    if (colorize) {
         // getBitmap() is concurrent, so only call back to the object calling this function when
         // the loading is over.
         getBitmap(song, context) {
@@ -124,12 +130,12 @@ fun NotificationCompat.Builder.updatePlaying(context: Context) {
 }
 
 /**
- * Update the loop/shuffle button on the media notification
+ * Update the extra action on the media notification [E.G the Loop/Shuffle button]
  * @param context The context required to refresh the action
  */
 @SuppressLint("RestrictedApi")
-fun NotificationCompat.Builder.updateExtraAction(context: Context) {
-    mActions[0] = if (SettingsManager.getInstance().useAltNotifAction) {
+fun NotificationCompat.Builder.updateExtraAction(context: Context, useAltAction: Boolean) {
+    mActions[0] = if (useAltAction) {
         newAction(NotificationUtils.ACTION_SHUFFLE, context)
     } else {
         newAction(NotificationUtils.ACTION_LOOP, context)

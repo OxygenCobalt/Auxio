@@ -14,6 +14,7 @@ import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
@@ -80,7 +81,7 @@ class SongsFragment : Fragment() {
 
         setupFastScroller(binding)
 
-        Log.d(this::class.simpleName, "Fragment created.")
+        logD("Fragment created.")
 
         return binding.root
     }
@@ -133,10 +134,7 @@ class SongsFragment : Fragment() {
                     if (total > maxEntries.toInt()) {
                         concatInterval = ceil(total / maxEntries).toInt()
 
-                        Log.d(
-                            this::class.simpleName,
-                            "More entries than screen space, truncating by $concatInterval..."
-                        )
+                        logD("More entries than screen space, truncating by $concatInterval.")
 
                         check(concatInterval > 1) {
                             "ConcatInterval was one despite truncation being needed"

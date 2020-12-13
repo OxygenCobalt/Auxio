@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
 import org.oxycblt.auxio.detail.adapters.GenreArtistAdapter
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.disable
@@ -109,7 +110,7 @@ class GenreDetailFragment : DetailFragment() {
         // --- VIEWMODEL SETUP ---
 
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
-            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+            logD("Updating sort mode to $mode")
 
             // Update the current sort icon
             binding.genreSortButton.setImageResource(mode.iconRes)
@@ -120,7 +121,7 @@ class GenreDetailFragment : DetailFragment() {
             )
         }
 
-        Log.d(this::class.simpleName, "Fragment created.")
+        logD("Fragment created.")
 
         return binding.root
     }

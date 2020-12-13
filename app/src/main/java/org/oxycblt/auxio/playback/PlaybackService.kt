@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.music.toURI
@@ -82,7 +83,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     // --- SERVICE OVERRIDES ---
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(this::class.simpleName, "Service is active.")
+        logD("Service is active.")
 
         return START_NOT_STICKY
     }
@@ -177,7 +178,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             serviceJob.cancel()
         }
 
-        Log.d(this::class.simpleName, "Service destroyed.")
+        logD("Service destroyed.")
     }
 
     // --- PLAYER EVENT LISTENER OVERRIDES ---
@@ -237,7 +238,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             uploadMetadataToSession(it)
 
-            notification.setMetadata(playbackManager.song!!, this) {
+            notification.setMetadata(this, playbackManager.song!!, settingsManager.colorizeNotif) {
                 startForegroundOrNotify("Song")
             }
 
@@ -283,13 +284,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
-        notification.updateExtraAction(this)
+        notification.updateExtraAction(this, settingsManager.useAltNotifAction)
         startForegroundOrNotify("Loop")
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
-            notification.updateExtraAction(this)
+            notification.updateExtraAction(this, settingsManager.useAltNotifAction)
 
             startForegroundOrNotify("Shuffle update")
         }
@@ -302,7 +303,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onRestoreFinish() {
-        Log.d(this::class.simpleName, "Restore done")
+        logD("Restore done")
 
         restorePlayer()
     }
@@ -311,14 +312,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let {
-            notification.setMetadata(it, this) {
+            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
                 startForegroundOrNotify("Colorize update")
             }
         }
     }
 
     override fun onNotifActionUpdate(useAltAction: Boolean) {
-        notification.updateExtraAction(this)
+        notification.updateExtraAction(this, useAltAction)
 
         startForegroundOrNotify("Notif action update")
     }
@@ -351,12 +352,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     private fun restoreNotification() {
-        notification.updateExtraAction(this)
+        notification.updateExtraAction(this, settingsManager.useAltNotifAction)
         notification.updateMode(this)
         notification.updatePlaying(this)
 
         playbackManager.song?.let {
-            notification.setMetadata(it, this) {
+            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
                 if (playbackManager.isPlaying) {
                     startForegroundOrNotify("Restore")
                 } else {
@@ -402,7 +403,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // Don't start the foreground if the playback hasn't started yet AND if the playback hasn't
         // been restored
         if (playbackManager.hasPlayed && playbackManager.isRestored) {
-            Log.d(this::class.simpleName, "Starting foreground/notifying because of $reason")
+            logD("Starting foreground/notifying because of $reason")
 
             if (!isForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -510,7 +511,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         private fun resume() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
-                Log.d(this::class.simpleName, "Device connected, resuming...")
+                logD("Device connected, resuming...")
 
                 playbackManager.setPlayingStatus(true)
             }
@@ -518,7 +519,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         private fun pause() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
-                Log.d(this::class.simpleName, "Device disconnected, pausing...")
+                logD("Device disconnected, pausing...")
 
                 playbackManager.setPlayingStatus(false)
             }

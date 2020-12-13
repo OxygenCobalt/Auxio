@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumSongAdapter
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
@@ -121,7 +121,7 @@ class AlbumDetailFragment : DetailFragment() {
         // -- VIEWMODEL SETUP ---
 
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
-            Log.d(this::class.simpleName, "Updating sort mode to $mode")
+            logD("Updating sort mode to $mode")
 
             // Update the current sort icon
             binding.albumSortButton.setImageResource(mode.iconRes)
@@ -186,7 +186,7 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        Log.d(this::class.simpleName, "Fragment created.")
+        logD("Fragment created.")
 
         return binding.root
     }

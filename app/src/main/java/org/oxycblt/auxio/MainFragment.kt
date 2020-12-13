@@ -104,7 +104,7 @@ class MainFragment : Fragment() {
 
         playbackModel.restorePlaybackIfNeeded(requireContext())
 
-        Log.d(this::class.simpleName, "Fragment Created.")
+        logD("Fragment Created.")
 
         return binding.root
     }
@@ -154,10 +154,7 @@ class MainFragment : Fragment() {
 
     private fun handleCompactPlaybackVisibility(binding: FragmentMainBinding, song: Song?) {
         if (song == null) {
-            Log.d(
-                this::class.simpleName,
-                "Hiding CompactPlaybackFragment since no song is being played."
-            )
+            logD("Hiding CompactPlaybackFragment since no song is being played.")
 
             binding.compactPlayback.visibility = View.GONE
             playbackModel.disableAnimation()

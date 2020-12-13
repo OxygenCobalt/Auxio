@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.adapters.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
@@ -24,13 +25,11 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // --- PREFERENCE ITEM SETUP ---
-
         preferenceScreen.children.forEach {
             recursivelyHandleChildren(it)
         }
 
-        Log.d(this::class.simpleName, "Fragment created.")
+        logD("Fragment created.")
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

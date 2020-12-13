@@ -8,6 +8,8 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -109,7 +111,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Play an album
     fun playAlbum(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
-            Log.e(this::class.simpleName, "Album is empty, Not playing.")
+            logE("Album is empty, Not playing.")
 
             return
         }
@@ -120,7 +122,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Play an artist
     fun playArtist(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
-            Log.e(this::class.simpleName, "Artist is empty, Not playing.")
+            logE("Artist is empty, Not playing.")
 
             return
         }
@@ -131,7 +133,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Play a genre
     fun playGenre(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
-            Log.e(this::class.simpleName, "Genre is empty, Not playing.")
+            logE("Genre is empty, Not playing.")
 
             return
         }
@@ -349,7 +351,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     private fun restorePlaybackState() {
-        Log.d(this::class.simpleName, "Attempting to restore playback state.")
+        logD("Attempting to restore playback state.")
 
         mSong.value = playbackManager.song
         mPosition.value = playbackManager.position / 1000

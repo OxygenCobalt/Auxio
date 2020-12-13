@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
+import org.oxycblt.auxio.logD
 
 /**
  * A SQLite database for managing the persistent playback state and queue.
@@ -82,7 +82,7 @@ class PlaybackStateDatabase(context: Context) :
         } finally {
             database.endTransaction()
 
-            Log.d(this::class.simpleName, "Successfully wiped previous state.")
+            logD("Successfully wiped previous state.")
         }
 
         try {
@@ -106,7 +106,7 @@ class PlaybackStateDatabase(context: Context) :
         } finally {
             database.endTransaction()
 
-            Log.d(this::class.simpleName, "Wrote state to database.")
+            logD("Wrote state to database.")
         }
     }
 
@@ -180,10 +180,10 @@ class PlaybackStateDatabase(context: Context) :
         } finally {
             database.endTransaction()
 
-            Log.d(this::class.simpleName, "Successfully wiped queue.")
+            logD("Successfully wiped queue.")
         }
 
-        Log.d(this::class.simpleName, "Writing to queue.")
+        logD("Writing to queue.")
 
         var position = 0
 
@@ -215,7 +215,7 @@ class PlaybackStateDatabase(context: Context) :
                 // the next iteration should skip it.
                 position = i
 
-                Log.d(this::class.simpleName, "Wrote batch of $position songs.")
+                logD("Wrote batch of $position songs.")
             }
         }
     }
