@@ -67,8 +67,6 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        handleCompactPlaybackVisibility(binding, playbackModel.song.value)
-
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints
 
@@ -81,8 +79,12 @@ class MainFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
-        playbackModel.song.observe(viewLifecycleOwner) {
-            handleCompactPlaybackVisibility(binding, it)
+        if (!isLandscape(resources)) {
+            handleCompactPlaybackVisibility(binding, playbackModel.song.value)
+
+            playbackModel.song.observe(viewLifecycleOwner) {
+                handleCompactPlaybackVisibility(binding, it)
+            }
         }
 
         playbackModel.navToItem.observe(viewLifecycleOwner) {
@@ -156,11 +158,7 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            // Dont hide if the mode is landscape.
-            if (!isLandscape(resources)) {
-                binding.compactPlayback.visibility = View.GONE
-            }
-
+            binding.compactPlayback.visibility = View.GONE
             playbackModel.disableAnimation()
         } else {
             binding.compactPlayback.visibility = View.VISIBLE

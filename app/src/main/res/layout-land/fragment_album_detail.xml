@@ -2,13 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".detail.GenreDetailFragment">
+    tools:context=".detail.AlbumDetailFragment">
 
     <data>
-
-        <variable
-            name="genre"
-            type="org.oxycblt.auxio.music.Genre" />
 
         <variable
             name="detailModel"
@@ -17,6 +13,10 @@
         <variable
             name="playbackModel"
             type="org.oxycblt.auxio.playback.PlaybackViewModel" />
+
+        <variable
+            name="album"
+            type="org.oxycblt.auxio.music.Album" />
     </data>
 
     <LinearLayout
@@ -25,108 +25,115 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/genre_toolbar"
+            android:id="@+id/album_toolbar"
             style="@style/Toolbar.Style.Icon"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:menu="@menu/menu_detail"
+            app:menu="@menu/menu_album_actions"
             app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:animateLayoutChanges="true">
 
                 <ImageView
-                    android:id="@+id/genre_image"
-                    android:layout_width="@dimen/size_cover_huge"
-                    android:layout_height="@dimen/size_cover_huge"
+                    android:id="@+id/album_cover"
+                    android:layout_width="@dimen/size_cover_mid_huge"
+                    android:layout_height="@dimen/size_cover_mid_huge"
+                    android:layout_marginStart="@dimen/margin_medium"
                     android:layout_marginTop="@dimen/margin_medium"
-                    android:contentDescription="@{@string/description_genre_image(genre.name)}"
-                    app:genreImage="@{genre}"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="@{@string/description_album_cover(album.name)}"
+                    app:coverArt="@{album}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/ic_genre" />
+                    tools:src="@drawable/ic_album" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/genre_name"
+                    android:id="@+id/album_name"
                     style="@style/DetailTitleText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
-                    android:text="@{genre.name}"
+                    android:text="@{album.name}"
+                    app:layout_constraintBottom_toTopOf="@+id/album_artist"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_image"
-                    tools:text="Genre Name" />
+                    app:layout_constraintStart_toEndOf="@+id/album_cover"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Album Name" />
 
                 <TextView
-                    android:id="@+id/genre_counts"
+                    android:id="@+id/album_artist"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:background="@drawable/ui_ripple"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{() -> detailModel.doNavToParent()}"
+                    android:text="@{album.artist.name}"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    app:layout_constraintBottom_toTopOf="@+id/album_details"
+                    app:layout_constraintStart_toEndOf="@+id/album_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/album_name"
+                    tools:text="Artist Name" />
+
+                <TextView
+                    android:id="@+id/album_details"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
-                    app:genreCounts="@{genre}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_name"
-                    tools:text="2 Artists, 4 Albums" />
+                    app:albumDetails="@{album}"
+                    app:layout_constraintBottom_toTopOf="@+id/album_song_header"
+                    app:layout_constraintStart_toEndOf="@+id/album_cover"
+                    app:layout_constraintTop_toBottomOf="@+id/album_artist"
+                    tools:text="2020 / 10 Songs / 16:16" />
 
                 <TextView
-                    android:id="@+id/genre_song_count"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{@plurals/format_song_count(genre.songs.size, genre.songs.size)}"
-                    android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="?android:attr/textColorSecondary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_counts"
-                    tools:text="80 Songs" />
-
-                <TextView
-                    android:id="@+id/genre_artist_header"
+                    android:id="@+id/album_song_header"
                     style="@style/HeaderText"
-                    android:layout_marginTop="@dimen/padding_medium"
-                    android:text="@string/label_artists"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:text="@string/label_songs"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/album_cover" />
 
                 <ImageButton
-                    android:id="@+id/genre_sort_button"
+                    android:id="@+id/album_sort_button"
                     style="@style/HeaderAction"
                     android:contentDescription="@string/description_sort_button"
-                    android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/genre_artist_header"
+                    android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/album_song_header"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/genre_artist_header"
-                    tools:src="@drawable/ic_sort_alpha_down" />
+                    app:layout_constraintTop_toTopOf="@+id/album_song_header"
+                    tools:src="@drawable/ic_sort_numeric_down" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/genre_artist_recycler"
+                    android:id="@+id/album_song_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_artist_header"
+                    app:layout_constraintTop_toBottomOf="@+id/album_song_header"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_artist" />
+                    tools:listitem="@layout/item_album_song" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
-
 </layout>

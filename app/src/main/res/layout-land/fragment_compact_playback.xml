@@ -25,15 +25,17 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/size_cover_compact"
+            android:layout_height="@dimen/size_cover_compact"
             android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             app:coverArt="@{song}"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_info"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/playback_song"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_song" />
 
         <TextView
@@ -41,7 +43,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_small"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/margin_mid_small"
             android:ellipsize="marquee"
             android:fontFamily="@font/inter_semibold"
@@ -52,7 +53,7 @@
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_controls"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/playback_cover"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Song Name" />
 
@@ -62,13 +63,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_small"
             android:layout_marginEnd="@dimen/margin_mid_small"
-            android:layout_marginBottom="@dimen/margin_small"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:layout_constraintBottom_toTopOf="@+id/playback_progress"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_controls"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song"

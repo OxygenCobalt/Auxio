@@ -18,7 +18,6 @@ import org.oxycblt.auxio.ui.toColor
 
 // FIXME: Fix bug where fast navigation will break the animations and
 //  lead to nothing being displayed [Possibly Un-fixable]
-// TODO: Landscape UI layouts
 // FIXME: Compat issue with Versions 5 that leads to progress bar looking off
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

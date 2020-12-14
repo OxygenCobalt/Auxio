@@ -15,6 +15,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.ui.isLandscape
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -33,6 +34,8 @@ class CompactPlaybackFragment : Fragment() {
     ): View {
         val binding = FragmentCompactPlaybackBinding.inflate(inflater)
 
+        val isLandscape = isLandscape(resources)
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -41,7 +44,7 @@ class CompactPlaybackFragment : Fragment() {
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
 
-        if (playbackModel.song.value == null) {
+        if (playbackModel.song.value == null && isLandscape) {
             hideAll(binding)
         }
 
@@ -64,11 +67,13 @@ class CompactPlaybackFragment : Fragment() {
             if (it != null) {
                 logD("Updating song display to ${it.name}")
 
-                showAll(binding)
-
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
-            } else {
+
+                if (isLandscape) {
+                    showAll(binding)
+                }
+            } else if (isLandscape) {
                 hideAll(binding)
             }
         }

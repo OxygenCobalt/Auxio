@@ -60,6 +60,13 @@
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textSize">@dimen/text_size_detail_header_max</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+
+        <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
+        <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
+        <item name="autoSizeStepGranularity">@dimen/text_size_increment</item>
+        <item name="autoSizeTextType">uniform</item>
     </style>
 
     <!-- Smaller Title theme that is used for headers -->
