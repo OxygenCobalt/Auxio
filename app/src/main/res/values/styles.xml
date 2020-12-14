@@ -51,6 +51,7 @@
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_black</item>
         <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <!-- Title theme for Detail Fragments -->

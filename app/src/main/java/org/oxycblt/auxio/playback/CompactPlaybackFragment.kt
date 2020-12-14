@@ -45,15 +45,17 @@ class CompactPlaybackFragment : Fragment() {
             hideAll(binding)
         }
 
-        binding.root.setOnClickListener {
-            findNavController().navigate(
-                MainFragmentDirections.actionGoToPlayback()
-            )
-        }
+        binding.root.apply {
+            setOnClickListener {
+                findNavController().navigate(
+                    MainFragmentDirections.actionGoToPlayback()
+                )
+            }
 
-        binding.root.setOnLongClickListener {
-            playbackModel.navToItem(playbackModel.song.value!!)
-            true
+            setOnLongClickListener {
+                playbackModel.navToItem(playbackModel.song.value!!)
+                true
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -89,7 +91,6 @@ class CompactPlaybackFragment : Fragment() {
         // leak.
         val playbackControls = requireView().findViewById<ImageButton>(R.id.playback_controls)
 
-        // Observe the changes to isPlaying for
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
         ) as AnimatedVectorDrawable
