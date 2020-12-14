@@ -19,10 +19,10 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.utils.accent
-import org.oxycblt.auxio.utils.getTransparentAccent
-import org.oxycblt.auxio.utils.isLandscape
-import org.oxycblt.auxio.utils.toColor
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.getTransparentAccent
+import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.toColor
 import kotlin.IllegalArgumentException
 
 class MainFragment : Fragment() {

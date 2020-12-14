@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.utils.ACCENTS
-import org.oxycblt.auxio.utils.accent
-import org.oxycblt.auxio.utils.getAccentItemSummary
-import org.oxycblt.auxio.utils.toColor
+import org.oxycblt.auxio.ui.ACCENTS
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.getAccentItemSummary
+import org.oxycblt.auxio.ui.toColor
 
 class AccentAdapter(
     private val doOnAccentConfirm: (accent: Pair<Int, Int>) -> Unit

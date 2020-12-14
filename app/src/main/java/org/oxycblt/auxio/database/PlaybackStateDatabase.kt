@@ -51,7 +51,6 @@ class PlaybackStateDatabase(context: Context) :
         command.append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
         command.append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
         command.append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
-        command.append("${PlaybackState.COLUMN_SHUFFLE_SEED} LONG NOT NULL,")
         command.append("${PlaybackState.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
         command.append("${PlaybackState.COLUMN_IN_USER_QUEUE} BOOLEAN NOT NULL)")
 
@@ -88,7 +87,7 @@ class PlaybackStateDatabase(context: Context) :
         try {
             database.beginTransaction()
 
-            val stateData = ContentValues(10)
+            val stateData = ContentValues(9)
 
             stateData.put(PlaybackState.COLUMN_ID, state.id)
             stateData.put(PlaybackState.COLUMN_SONG_ID, state.songId)
@@ -97,7 +96,6 @@ class PlaybackStateDatabase(context: Context) :
             stateData.put(PlaybackState.COLUMN_INDEX, state.index)
             stateData.put(PlaybackState.COLUMN_MODE, state.mode)
             stateData.put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
-            stateData.put(PlaybackState.COLUMN_SHUFFLE_SEED, state.shuffleSeed)
             stateData.put(PlaybackState.COLUMN_LOOP_MODE, state.loopMode)
             stateData.put(PlaybackState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
 
@@ -139,8 +137,6 @@ class PlaybackStateDatabase(context: Context) :
                 val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
                 val isShufflingIndex =
                     cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IS_SHUFFLING)
-                val shuffleSeedIndex =
-                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SHUFFLE_SEED)
                 val loopModeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_LOOP_MODE)
                 val inUserQueueIndex =
                     cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IN_USER_QUEUE)
@@ -155,7 +151,6 @@ class PlaybackStateDatabase(context: Context) :
                     index = cursor.getInt(indexIndex),
                     mode = cursor.getInt(modeIndex),
                     isShuffling = cursor.getInt(isShufflingIndex) == 1,
-                    shuffleSeed = cursor.getLong(shuffleSeedIndex),
                     loopMode = cursor.getInt(loopModeIndex),
                     inUserQueue = cursor.getInt(inUserQueueIndex) == 1
                 )

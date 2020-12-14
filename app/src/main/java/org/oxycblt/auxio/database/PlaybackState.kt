@@ -8,7 +8,6 @@ package org.oxycblt.auxio.database
  * @property index - The current index in the queue.
  * @property mode - The integer form of the current [org.oxycblt.auxio.playback.state.PlaybackMode]
  * @property isShuffling - A bool for if the queue was shuffled
- * @property shuffleSeed - A long for the seed used to shuffle the queue [Used for quick-restore]
  * @property loopMode - The integer form of the current [org.oxycblt.auxio.playback.state.LoopMode]
  * @property inUserQueue - A bool for if the state was currently playing from the user queue.
  * @author OxygenCobalt
@@ -21,7 +20,6 @@ data class PlaybackState(
     val index: Int,
     val mode: Int,
     val isShuffling: Boolean,
-    val shuffleSeed: Long,
     val loopMode: Int,
     val inUserQueue: Boolean
 ) {
@@ -33,7 +31,6 @@ data class PlaybackState(
         const val COLUMN_INDEX = "state_index"
         const val COLUMN_MODE = "mode"
         const val COLUMN_IS_SHUFFLING = "is_shuffling"
-        const val COLUMN_SHUFFLE_SEED = "shuffle_seed"
         const val COLUMN_LOOP_MODE = "loop_mode"
         const val COLUMN_IN_USER_QUEUE = "is_user_queue"
     }

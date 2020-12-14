@@ -9,8 +9,8 @@ import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
-import org.oxycblt.auxio.utils.accent
-import org.oxycblt.auxio.utils.toColor
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.toColor
 
 /**
  * An adapter for displaying the [Song]s of an album.

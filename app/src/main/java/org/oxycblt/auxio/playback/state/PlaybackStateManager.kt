@@ -564,7 +564,6 @@ class PlaybackStateManager private constructor() {
             index = mIndex,
             mode = intMode,
             isShuffling = mIsShuffling,
-            shuffleSeed = mShuffleSeed,
             loopMode = intLoopMode,
             inUserQueue = mIsInUserQueue
         )
@@ -598,7 +597,6 @@ class PlaybackStateManager private constructor() {
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
-        mShuffleSeed = playbackState.shuffleSeed
         mIsInUserQueue = playbackState.inUserQueue
         mIndex = playbackState.index
 

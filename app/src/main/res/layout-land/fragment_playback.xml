@@ -63,7 +63,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintBottom_toTopOf="@+id/playback_artist"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toTopOf="@+id/playback_cover"
+            app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Song Name" />
 
@@ -81,7 +81,6 @@
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
             tools:text="Artist Name" />
@@ -92,7 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_large"
             android:layout_marginEnd="@dimen/margin_mid_large"
-            android:layout_marginBottom="16dp"
             android:ellipsize="end"
             android:onClick="@{() -> playbackModel.navToItem(playbackModel.song.album)}"
             android:singleLine="true"
@@ -101,7 +99,6 @@
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_artist"
             tools:text="Album Name" />
@@ -110,6 +107,7 @@
             android:id="@+id/playback_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
             android:clickable="true"
             android:focusable="true"
             android:paddingStart="@dimen/margin_mid_large"
@@ -121,7 +119,6 @@
             android:thumbTint="?attr/colorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/playback_duration_current"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_album"
             tools:progress="70" />
@@ -131,7 +128,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_large"
-            android:layout_marginBottom="@dimen/margin_medium"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
@@ -142,26 +138,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_mid_large"
-            android:layout_marginBottom="@dimen/margin_medium"
             android:text="@{song.formattedDuration}"
-            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:text="16:16" />
 
         <ImageButton
             android:id="@+id/playback_play_pause"
             android:layout_width="@dimen/size_play_pause"
             android:layout_height="@dimen/size_play_pause"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_large"
             android:background="@drawable/ui_circular_button"
             android:backgroundTint="?attr/colorPrimary"
             android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"
             android:foregroundTint="@color/background"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             android:tint="@color/background"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
+            app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
             app:layout_constraintTop_toBottomOf="@+id/playback_duration_current"
             tools:src="@drawable/ic_play_to_pause" />
 
@@ -170,12 +167,13 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginStart="@dimen/margin_mid_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_next"
             android:onClick="@{() -> playbackModel.skipNext()}"
             android:src="@drawable/ic_skip_next_large"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
@@ -184,13 +182,14 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_prev"
             android:onClick="@{() -> playbackModel.skipPrev()}"
             android:src="@drawable/ic_skip_prev_large"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
+            app:layout_constraintStart_toEndOf="@+id/playback_loop"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
@@ -198,28 +197,29 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginStart="@dimen/margin_mid_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle_large"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
-            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
+            app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />
 
         <ImageButton
             android:id="@+id/playback_loop"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginEnd="@dimen/margin_mid_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop_large"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
             app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
-            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
+            app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

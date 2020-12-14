@@ -16,8 +16,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.utils.accent
-import org.oxycblt.auxio.utils.toColor
+import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.toColor
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.

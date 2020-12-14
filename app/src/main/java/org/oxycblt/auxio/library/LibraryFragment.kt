@@ -28,13 +28,13 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.utils.applyColor
-import org.oxycblt.auxio.utils.isLandscape
-import org.oxycblt.auxio.utils.resolveAttr
-import org.oxycblt.auxio.utils.setupAlbumActions
-import org.oxycblt.auxio.utils.setupArtistActions
-import org.oxycblt.auxio.utils.setupGenreActions
-import org.oxycblt.auxio.utils.setupSongActions
+import org.oxycblt.auxio.ui.applyColor
+import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.resolveAttr
+import org.oxycblt.auxio.ui.setupAlbumActions
+import org.oxycblt.auxio.ui.setupArtistActions
+import org.oxycblt.auxio.ui.setupGenreActions
+import org.oxycblt.auxio.ui.setupSongActions
 
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for

@@ -14,8 +14,8 @@ import org.oxycblt.auxio.detail.adapters.GenreArtistAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.utils.disable
-import org.oxycblt.auxio.utils.setupArtistActions
+import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.setupArtistActions
 
 /**
  * The [DetailFragment] for a genre.

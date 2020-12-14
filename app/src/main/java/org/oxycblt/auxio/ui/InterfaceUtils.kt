@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.utils
+package org.oxycblt.auxio.ui
 
 import android.annotation.TargetApi
 import android.content.Context

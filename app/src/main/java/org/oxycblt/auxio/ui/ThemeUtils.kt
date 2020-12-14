@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.utils
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.content.res.Resources
