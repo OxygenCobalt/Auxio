@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector android:width="32dp"
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
     android:height="32dp"
     android:tint="@color/control_color"
     android:viewportWidth="24"
-    android:viewportHeight="24"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:viewportHeight="24">
 
     <group
         android:name="play"

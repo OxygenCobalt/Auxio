@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".recycler.viewholders.SongViewHolder">
 
@@ -50,10 +50,10 @@
         <TextView
             android:id="@+id/duration"
             style="@style/ItemText.Secondary"
+            android:ellipsize="none"
+            android:gravity="end"
             android:text="@{song.formattedDuration}"
             android:textAlignment="viewEnd"
-            android:gravity="end"
-            android:ellipsize="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

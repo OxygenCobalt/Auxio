@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".recycler.viewholders.GenreViewHolder">
 
@@ -17,8 +17,8 @@
             android:id="@+id/genre_image"
             android:layout_width="@dimen/size_cover_normal"
             android:layout_height="@dimen/size_cover_normal"
-            app:genreImage="@{genre}"
             android:contentDescription="@{@string/description_genre_image(genre.name)}"
+            app:genreImage="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

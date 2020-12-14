@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_play"
-        android:title="@string/label_play"
         android:icon="@drawable/ic_play"
+        android:title="@string/label_play"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_shuffle"
@@ -14,6 +14,6 @@
     <item
         android:id="@+id/action_queue_add"
         android:icon="@drawable/ic_queue_add"
-        app:showAsAction="never"
-        android:title="@string/label_queue_add" />
+        android:title="@string/label_queue_add"
+        app:showAsAction="never" />
 </menu>

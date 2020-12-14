@@ -2,123 +2,123 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:title="@string/setting_ui"
-        android:layout="@layout/item_header">
+        android:layout="@layout/item_header"
+        android:title="@string/setting_ui">
         <ListPreference
-            app:key="KEY_THEME"
-            android:title="@string/setting_theme"
-            android:icon="@drawable/ic_day"
             android:entries="@array/entires_theme"
             android:entryValues="@array/values_theme"
+            android:icon="@drawable/ic_day"
+            android:title="@string/setting_theme"
             app:defaultValue="AUTO"
+            app:key="KEY_THEME"
             app:useSimpleSummaryProvider="true" />
 
         <Preference
-            app:key="KEY_ACCENT"
-            android:title="@string/setting_accent"
             android:icon="@drawable/ic_accent"
+            android:title="@string/setting_accent"
+            app:key="KEY_ACCENT"
             app:summary="@string/setting_accent_unknown" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/setting_display"
-        android:layout="@layout/item_header">
+        android:layout="@layout/item_header"
+        android:title="@string/setting_display">
 
         <ListPreference
-            app:key="KEY_LIBRARY_DISPLAY_MODE"
-            android:title="@string/setting_lib_display"
             android:icon="@drawable/ic_artist"
+            android:title="@string/setting_lib_display"
+            app:defaultValue="SHOW_ARTISTS"
             app:entries="@array/entries_lib_display"
             app:entryValues="@array/values_lib_display"
-            app:defaultValue="SHOW_ARTISTS"
+            app:key="KEY_LIBRARY_DISPLAY_MODE"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
-            app:key="KEY_COLOR_NOTIF"
             android:title="@string/setting_color_notif"
-            app:summary="@string/setting_color_desc"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:defaultValue="true" />
+            app:key="KEY_COLOR_NOTIF"
+            app:summary="@string/setting_color_desc" />
 
         <SwitchPreferenceCompat
-            app:key="KEY_ALT_NOTIF_ACTION"
             android:title="@string/setting_use_alt_action"
-            app:iconSpaceReserved="false"
-            app:summaryOn="@string/setting_use_alt_shuffle"
-            app:summaryOff="@string/setting_use_alt_loop"
             app:allowDividerBelow="false"
-            app:defaultValue="false" />
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="KEY_ALT_NOTIF_ACTION"
+            app:summaryOff="@string/setting_use_alt_loop"
+            app:summaryOn="@string/setting_use_alt_shuffle" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/setting_playback"
-        android:layout="@layout/item_header">
+        android:layout="@layout/item_header"
+        android:title="@string/setting_playback">
 
         <SwitchPreferenceCompat
-            app:key="KEY_AUDIO_FOCUS"
             android:title="@string/setting_playback_audio_focus"
-            app:iconSpaceReserved="false"
             app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="KEY_AUDIO_FOCUS"
             app:summary="@string/setting_playback_focus_desc" />
 
         <SwitchPreferenceCompat
-            app:key="KEY_PLUG_MGT"
             android:title="@string/setting_playback_plug_mgt"
-            app:iconSpaceReserved="false"
-            app:defaultValue="true"
             app:allowDividerBelow="false"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="KEY_PLUG_MGT"
             app:summary="@string/setting_playback_plug_mgt_desc" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/setting_behavior"
-        android:layout="@layout/item_header">
+        android:layout="@layout/item_header"
+        android:title="@string/setting_behavior">
 
         <ListPreference
-            app:key="KEY_SONG_PLAY_MODE"
             android:title="@string/setting_behavior_song_playback_mode"
             app:defaultValue="ALL_SONGS"
             app:entries="@array/entries_song_playback_mode"
             app:entryValues="@array/values_song_playback_mode"
             app:iconSpaceReserved="false"
+            app:key="KEY_SONG_PLAY_MODE"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:key="KEY_AT_END"
             android:title="@string/setting_behavior_at_end"
             app:defaultValue="LOOP_PAUSE"
             app:entries="@array/entries_at_end"
             app:entryValues="@array/values_at_end"
             app:iconSpaceReserved="false"
+            app:key="KEY_AT_END"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
-            app:key="KEY_KEEP_SHUFFLE"
             android:title="@string/setting_behavior_keep_shuffle"
-            app:summary="@string/setting_behavior_keep_shuffle_desc"
             app:defaultValue="false"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:key="KEY_KEEP_SHUFFLE"
+            app:summary="@string/setting_behavior_keep_shuffle_desc" />
 
         <SwitchPreference
-            app:key="KEY_PREV_REWIND"
             android:title="@string/setting_behavior_rewind_prev"
-            app:summary="@string/setting_behavior_rewind_prev_desc"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:defaultValue="true" />
+            app:key="KEY_PREV_REWIND"
+            app:summary="@string/setting_behavior_rewind_prev_desc" />
 
         <SeekBarPreference
-            app:key="KEY_REWIND_THRESHOLD"
-            android:title="@string/setting_behavior_rewind_threshold"
             android:defaultValue="@integer/rewind_threshold_default"
             android:max="@integer/rewind_threshold_max"
-            app:min="@integer/rewind_threshold_min"
-            app:summary="@string/setting_behavior_rewind_threshold_desc"
-            app:showSeekBarValue="true"
+            android:title="@string/setting_behavior_rewind_threshold"
+            app:dependency="KEY_PREV_REWIND"
             app:iconSpaceReserved="false"
-            app:dependency="KEY_PREV_REWIND" />
+            app:key="KEY_REWIND_THRESHOLD"
+            app:min="@integer/rewind_threshold_min"
+            app:showSeekBarValue="true"
+            app:summary="@string/setting_behavior_rewind_threshold_desc" />
 
     </PreferenceCategory>
 
@@ -128,10 +128,10 @@
         app:layout="@layout/item_header">
 
         <Preference
-            app:key="KEY_SAVE_STATE"
             android:title="@string/debug_state_save"
-            app:summary="@string/debug_state_save_desc"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:key="KEY_SAVE_STATE"
+            app:summary="@string/debug_state_save_desc" />
 
     </PreferenceCategory>
 </PreferenceScreen>

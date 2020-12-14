@@ -37,10 +37,13 @@ class CompactPlaybackFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        // Put a placeholder song in the binding & hide the playback fragment initially,
-        // just in case.
+        // Put a placeholder song in the binding & hide the playback fragment initially.
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
+
+        if (playbackModel.song.value == null) {
+            hideAll(binding)
+        }
 
         binding.root.setOnClickListener {
             findNavController().navigate(
@@ -59,8 +62,12 @@ class CompactPlaybackFragment : Fragment() {
             if (it != null) {
                 logD("Updating song display to ${it.name}")
 
+                showAll(binding)
+
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
+            } else {
+                hideAll(binding)
             }
         }
 
@@ -112,6 +119,36 @@ class CompactPlaybackFragment : Fragment() {
 
                 playbackModel.enableAnimation()
             }
+        }
+    }
+
+    /**
+     * Hide all UI elements, and disable the fragment from being clickable.
+     */
+    private fun hideAll(binding: FragmentCompactPlaybackBinding) {
+        binding.apply {
+            root.isEnabled = false
+
+            playbackCover.visibility = View.INVISIBLE
+            playbackSong.visibility = View.INVISIBLE
+            playbackInfo.visibility = View.INVISIBLE
+            playbackControls.visibility = View.INVISIBLE
+            playbackProgress.visibility = View.INVISIBLE
+        }
+    }
+
+    /**
+     * Unhide all UI elements, and make the fragment clickable.
+     */
+    private fun showAll(binding: FragmentCompactPlaybackBinding) {
+        binding.apply {
+            root.isEnabled = true
+
+            playbackCover.visibility = View.VISIBLE
+            playbackSong.visibility = View.VISIBLE
+            playbackInfo.visibility = View.VISIBLE
+            playbackControls.visibility = View.VISIBLE
+            playbackProgress.visibility = View.VISIBLE
         }
     }
 }

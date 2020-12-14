@@ -25,24 +25,25 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/compact_playback"
             android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_high"
+            android:elevation="@dimen/elevation_weird"
             android:outlineProvider="bounds"
-            app:layout_constraintBottom_toTopOf="@+id/nav_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/nav_bar"
+            app:layout_constraintTop_toTopOf="@+id/nav_bar"
             tools:layout="@layout/fragment_compact_playback" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_bar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/background"
-            android:elevation="@dimen/elevation_normal"
+            app:elevation="@dimen/elevation_normal"
+            app:labelVisibilityMode="selected"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/menu_nav" />
 

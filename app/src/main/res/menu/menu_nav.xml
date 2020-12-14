@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/library_fragment"
-        android:title="@string/label_library"
-        android:icon="@drawable/ic_library" />
+        android:icon="@drawable/ic_library"
+        android:title="@string/label_library" />
     <item
         android:id="@+id/songs_fragment"
-        android:title="@string/label_songs"
-        android:icon="@drawable/ic_song" />
+        android:icon="@drawable/ic_song"
+        android:title="@string/label_songs" />
     <item
         android:id="@+id/settings_fragment"
-        android:title="@string/setting_title"
-        android:icon="@drawable/ic_settings" />
+        android:icon="@drawable/ic_settings"
+        android:title="@string/setting_title" />
 </menu>

@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_play"
-        android:title="@string/label_play"
         android:icon="@drawable/ic_play"
+        android:title="@string/label_play"
         app:showAsAction="never" />
 </menu>

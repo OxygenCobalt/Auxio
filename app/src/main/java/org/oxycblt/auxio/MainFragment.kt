@@ -21,6 +21,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.utils.accent
 import org.oxycblt.auxio.utils.getTransparentAccent
+import org.oxycblt.auxio.utils.isLandscape
 import org.oxycblt.auxio.utils.toColor
 import kotlin.IllegalArgumentException
 
@@ -155,7 +156,11 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            binding.compactPlayback.visibility = View.GONE
+            // Dont hide if the mode is landscape.
+            if (!isLandscape(resources)) {
+                binding.compactPlayback.visibility = View.GONE
+            }
+
             playbackModel.disableAnimation()
         } else {
             binding.compactPlayback.visibility = View.VISIBLE

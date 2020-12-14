@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.adapters.DetailSongAdapter.ViewHolder">
 
@@ -17,14 +17,14 @@
             android:id="@+id/song_track"
             android:layout_width="@dimen/width_track_number"
             android:layout_height="wrap_content"
+            android:contentDescription="@{@string/description_track_number(song.track)}"
+            android:gravity="center"
+            android:maxLines="1"
             android:text="@{String.valueOf(song.track)}"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorTertiary"
             android:textSize="@dimen/text_size_track_max"
-            android:maxLines="1"
-            android:contentDescription="@{@string/description_track_number(song.track)}"
-            android:gravity="center"
             app:autoSizeMaxTextSize="@dimen/text_size_detail_header_max"
             app:autoSizeMinTextSize="@dimen/text_size_min"
             app:autoSizeStepGranularity="@dimen/text_size_increment"
@@ -48,8 +48,8 @@
         <TextView
             android:id="@+id/song_duration"
             style="@style/ItemText.Secondary"
-            android:textColor="?android:attr/textColorSecondary"
             android:text="@{song.formattedDuration}"
+            android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/song_track"

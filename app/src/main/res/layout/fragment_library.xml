@@ -7,15 +7,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/library_toolbar"
             style="@style/Toolbar.Style"
-            android:theme="@style/Toolbar.Style.Search"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            android:theme="@style/Toolbar.Style.Search"
             app:menu="@menu/menu_library"
             app:title="@string/label_library" />
 

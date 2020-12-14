@@ -62,9 +62,9 @@
                     android:layout_marginStart="@dimen/margin_medium"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:layout_marginEnd="@dimen/margin_medium"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@{album.name}"
-                    android:ellipsize="end"
                     app:autoSizeMaxTextSize="@dimen/text_size_detail_header_max"
                     app:autoSizeMinTextSize="@dimen/text_size_min"
                     app:autoSizeStepGranularity="@dimen/text_size_increment"
@@ -80,9 +80,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium"
+                    android:background="@drawable/ui_ripple"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="@drawable/ui_ripple"
                     android:onClick="@{() -> detailModel.doNavToParent()}"
                     android:text="@{album.artist.name}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
@@ -108,8 +108,8 @@
                     style="@style/HeaderText"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:text="@string/label_songs"
-                    app:layout_constraintTop_toBottomOf="@+id/album_details"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/album_details" />
 
                 <ImageButton
                     android:id="@+id/album_sort_button"

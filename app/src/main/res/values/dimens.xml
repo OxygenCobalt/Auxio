@@ -39,5 +39,7 @@
 
     <!-- Misc -->
     <dimen name="elevation_normal">4dp</dimen>
+    <dimen name="elevation_weird">4.2dp</dimen>
+    <dimen name="elevation_high">8dp</dimen>
     <dimen name="offset_thumb">4dp</dimen>
 </resources>

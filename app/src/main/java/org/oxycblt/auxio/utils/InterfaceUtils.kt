@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
@@ -53,6 +54,13 @@ fun ImageButton.disable(context: Context) {
 
         isEnabled = false
     }
+}
+
+/**
+ * Determine if the device is currently in landscape.
+ */
+fun isLandscape(resources: Resources): Boolean {
+    return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }
 
 /**

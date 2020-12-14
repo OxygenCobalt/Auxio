@@ -11,9 +11,9 @@
             android:id="@+id/accent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/ui_circular_button"
             android:padding="@dimen/margin_medium"
             android:scaleType="fitCenter"
-            android:background="@drawable/ui_circular_button"
             android:src="@drawable/ic_check"
             tools:backgroundTint="?attr/colorPrimary"
             tools:ignore="contentDescription" />

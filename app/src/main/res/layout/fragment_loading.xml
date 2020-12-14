@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".loading.LoadingFragment">
 
     <data>
@@ -34,11 +34,11 @@
             android:id="@+id/loading_error_icon"
             android:layout_width="@dimen/size_error_icon"
             android:layout_height="@dimen/size_error_icon"
+            android:contentDescription="@string/description_error"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:src="@drawable/ic_error"
             android:visibility="gone"
-            android:contentDescription="@string/description_error"
             app:layout_constraintBottom_toTopOf="@+id/loading_error_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,10 +49,10 @@
             android:id="@+id/loading_error_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
             android:fontFamily="@font/inter"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
-            android:layout_marginTop="@dimen/margin_small"
             app:layout_constraintBottom_toTopOf="@+id/loading_retry_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -71,11 +71,11 @@
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/loading_grant_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/loading_error_text"
-            app:layout_constraintBottom_toTopOf="@+id/loading_grant_button"
             app:layout_constraintVertical_bias="0.673"
             tools:visibility="visible" />
 

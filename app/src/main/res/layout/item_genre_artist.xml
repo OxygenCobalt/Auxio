@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.adapters.DetailArtistAdapter.ViewHolder">
 
@@ -18,10 +18,10 @@
             android:layout_width="@dimen/size_cover_large"
             android:layout_height="@dimen/size_cover_large"
             android:contentDescription="@{@string/description_artist_image(artist.name)}"
+            app:artistImage="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:artistImage="@{artist}"
             tools:src="@drawable/ic_artist" />
 
         <TextView
