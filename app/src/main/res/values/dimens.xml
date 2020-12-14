@@ -10,6 +10,7 @@
     <dimen name="margin_mid_small">10dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_mid_large">24dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
 
     <!-- Height Namespace | Height for UI elements -->
     <dimen name="height_compact_progress">2dp</dimen>
@@ -39,7 +40,6 @@
 
     <!-- Misc -->
     <dimen name="elevation_normal">4dp</dimen>
-    <dimen name="elevation_weird">4.2dp</dimen>
     <dimen name="elevation_high">8dp</dimen>
     <dimen name="offset_thumb">4dp</dimen>
 </resources>

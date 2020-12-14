@@ -193,13 +193,13 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_mid_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle_large"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
@@ -207,13 +207,13 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginStart="@dimen/margin_mid_large"
+            android:layout_marginEnd="@dimen/margin_mid_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop_large"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

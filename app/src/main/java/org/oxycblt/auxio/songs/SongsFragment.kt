@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.utils.isLandscape
 import org.oxycblt.auxio.utils.setupSongActions
 import kotlin.math.ceil
 
@@ -69,6 +71,12 @@ class SongsFragment : Fragment() {
         binding.songRecycler.apply {
             adapter = songAdapter
             setHasFixedSize(true)
+
+            if (isLandscape(resources)) {
+                layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).also {
+                    it.spanCount = 3
+                }
+            }
 
             post {
                 if (computeVerticalScrollRange() < height) {

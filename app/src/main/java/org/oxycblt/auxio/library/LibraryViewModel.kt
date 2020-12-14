@@ -34,10 +34,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
-
-    private var mSearchHasFocus = false
-    val searchHasFocus: Boolean get() = mSearchHasFocus
-
     private val settingsManager = SettingsManager.getInstance()
     private val musicStore = MusicStore.getInstance()
 
@@ -109,10 +105,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
             mSearchResults.value = combined
         }
-    }
-
-    fun updateSearchFocusStatus(value: Boolean) {
-        mSearchHasFocus = value
     }
 
     fun resetQuery() {

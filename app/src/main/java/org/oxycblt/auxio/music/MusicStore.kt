@@ -45,7 +45,7 @@ class MusicStore private constructor() {
      */
     suspend fun load(app: Application): MusicLoaderResponse {
         return withContext(Dispatchers.IO) {
-            logD("Starting initial music load...")
+            this@MusicStore.logD("Starting initial music load...")
 
             val start = System.currentTimeMillis()
 
@@ -83,7 +83,7 @@ class MusicStore private constructor() {
 
                 val elapsed = System.currentTimeMillis() - start
 
-                logD("Music load completed successfully in ${elapsed}ms.")
+                this@MusicStore.logD("Music load completed successfully in ${elapsed}ms.")
 
                 loaded = true
             }

@@ -144,6 +144,7 @@ class MusicLoader(
         }.toMutableList()
 
         // Then try to associate any genres with their respective artists.
+        // TODO: This is already querying all genre songs, just move it.
         for (genre in genres) {
             val artistGenreCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
@@ -155,7 +156,6 @@ class MusicLoader(
 
             artistGenreCursor?.let { cursor ->
                 val idIndex = cursor.getColumnIndexOrThrow(Genres.Members.ARTIST_ID)
-
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
 

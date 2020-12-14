@@ -27,7 +27,6 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
             style="@style/Toolbar.Style.Icon"
-            android:elevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_playback"
@@ -38,13 +37,13 @@
             android:id="@+id/playback_cover"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/margin_mid_large"
+            android:layout_margin="@dimen/margin_large"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             android:elevation="@dimen/elevation_normal"
             android:outlineProvider="bounds"
             app:coverArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintDimensionRatio="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             tools:src="@drawable/ic_song" />

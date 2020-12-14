@@ -12,6 +12,7 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import org.oxycblt.auxio.R
@@ -23,10 +24,12 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.utils.applyColor
+import org.oxycblt.auxio.utils.isLandscape
 import org.oxycblt.auxio.utils.resolveAttr
 import org.oxycblt.auxio.utils.setupAlbumActions
 import org.oxycblt.auxio.utils.setupArtistActions
@@ -92,7 +95,6 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchView.maxWidth = Int.MAX_VALUE
                 searchView.setOnQueryTextListener(this@LibraryFragment)
                 searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                    libraryModel.updateSearchFocusStatus(hasFocus)
                     item.isVisible = !hasFocus
                 }
 
@@ -100,6 +102,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = searchAdapter
                         setGroupVisible(R.id.group_sorting, false)
+
                         libraryModel.resetQuery()
 
                         return true
@@ -108,6 +111,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = libraryAdapter
                         setGroupVisible(R.id.group_sorting, true)
+
                         libraryModel.resetQuery()
 
                         return true
@@ -119,6 +123,19 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         binding.libraryRecycler.apply {
             adapter = libraryAdapter
             setHasFixedSize(true)
+
+            if (isLandscape(resources)) {
+                layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).apply {
+                    spanCount = 3
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (binding.libraryRecycler.adapter == searchAdapter) {
+                                if (searchAdapter.currentList[position] is Header) 3 else 1
+                            } else 1
+                        }
+                    }
+                }
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -128,7 +145,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         libraryModel.searchResults.observe(viewLifecycleOwner) {
-            if (libraryModel.searchHasFocus) {
+            if (binding.libraryRecycler.adapter == searchAdapter) {
                 searchAdapter.submitList(it) {
                     binding.libraryRecycler.scrollToPosition(0)
                 }
