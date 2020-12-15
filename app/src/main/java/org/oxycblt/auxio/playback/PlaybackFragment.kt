@@ -84,7 +84,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         // Make ellipsizing of song title work
-        binding.playbackSong.isSelected = true
+        // Disabled until I can figure out why marquee causes a memory leak.
+        // binding.playbackSong.isSelected = true
 
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 

@@ -111,7 +111,6 @@ class PlaybackStateDatabase(context: Context) :
     /**
      * Read the stored [PlaybackState] from the database, if there is one.
      * @return The stored [PlaybackState], null if there isn't one,.
-     * @author OxygenCobalt
      */
     fun readState(): PlaybackState? {
         val database = writableDatabase
@@ -163,7 +162,6 @@ class PlaybackStateDatabase(context: Context) :
     /**
      * Write a list of [QueueItem]s to the database, clearing the previous queue present.
      * @param queue The list of [QueueItem]s to be written.
-     * @author OxygenCobalt
      */
     fun writeQueue(queue: List<QueueItem>) {
         val database = readableDatabase
@@ -218,7 +216,6 @@ class PlaybackStateDatabase(context: Context) :
     /**
      * Read the database for any [QueueItem]s.
      * @return A list of any stored [QueueItem]s.
-     * @author OxygenCobalt
      */
     fun readQueue(): List<QueueItem> {
         val database = readableDatabase

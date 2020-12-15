@@ -8,7 +8,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAlbumDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumSongAdapter
@@ -20,7 +19,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
 /**

@@ -69,12 +69,12 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
     // Navigation
-    def navigation_version = "2.3.1"
+    def navigation_version = "2.3.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // Media
-    implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.media:media:1.2.1'
 
     // Preferences
     implementation 'androidx.preference:preference-ktx:1.1.1'
@@ -104,7 +104,7 @@ dependencies {
     ktlint "com.pinterest:ktlint:0.37.2"
 
     // Memory Leak checking
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
