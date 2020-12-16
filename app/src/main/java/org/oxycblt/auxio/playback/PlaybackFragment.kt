@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -84,8 +85,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         // Make ellipsizing of song title work
-        // Disabled until I can figure out why marquee causes a memory leak.
-        // binding.playbackSong.isSelected = true
+        binding.playbackSong.isSelected = true
 
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
@@ -198,6 +198,13 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // Stop the marqueeing of the song name to prevent a weird memory leak
+        requireView().findViewById<TextView>(R.id.playback_song).isSelected = false
     }
 
     // Seeking callbacks

@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity() {
 
     @Suppress("DEPRECATION")
     private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
-        // TODO: Add landscape edge-to-edge support
-
         window?.apply {
             statusBarColor = Color.TRANSPARENT
 

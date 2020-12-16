@@ -48,25 +48,35 @@
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             tools:src="@drawable/ic_song" />
 
-        <TextView
-            android:id="@+id/playback_song"
+        <!-- TextView is wrapped in a container so that marquee doesn't break -->
+
+        <FrameLayout
+            android:id="@+id/playback_song_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_large"
-            android:layout_marginEnd="24dp"
-            android:ellipsize="end"
-            android:focusable="true"
-            android:fontFamily="@font/inter_semibold"
-            android:onClick="@{() -> playbackModel.navToItem(playbackModel.song)}"
-            android:singleLine="true"
-            android:text="@{song.name}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_marginEnd="@dimen/margin_mid_large"
             app:layout_constraintBottom_toTopOf="@+id/playback_artist"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Song Name" />
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <TextView
+                android:id="@+id/playback_song"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:fontFamily="@font/inter_semibold"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:onClick="@{() -> playbackModel.navToItem(playbackModel.song)}"
+                android:singleLine="true"
+                android:text="@{song.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:text="Song Name" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/playback_artist"
@@ -83,7 +93,7 @@
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_song"
+            app:layout_constraintTop_toBottomOf="@+id/playback_song_container"
             tools:text="Artist Name" />
 
         <TextView
@@ -135,7 +145,7 @@
             tools:text="11:38" />
 
         <TextView
-            android:id="@+id/playback_song_duration"
+            android:id="@+id/playback_song_container_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_mid_large"
@@ -203,7 +213,7 @@
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle_large"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />
 

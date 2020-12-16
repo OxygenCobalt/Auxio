@@ -17,9 +17,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.isLandscape
-import org.oxycblt.auxio.ui.isSystemBarOnBottom
+import org.oxycblt.auxio.ui.isInIrregularLandscapeMode
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
@@ -38,34 +36,20 @@ class QueueFragment : Fragment() {
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val settingsManager = SettingsManager.getInstance()
         val callback = QueueDragCallback(playbackModel)
         val helper = ItemTouchHelper(callback)
-        val queueAdapter = QueueAdapter(helper) {
-            playbackModel.clearUserQueue()
-        }
+        val queueAdapter = QueueAdapter(helper, playbackModel)
 
         callback.addQueueAdapter(queueAdapter)
 
         // --- UI SETUP ---
-
-        // Band-aid that fixes a bug with landscape edge-to-edge where the queue drag buttons
-        // will be behind the status bar.
-        if (settingsManager.edgeEnabled) {
-            if (isLandscape(resources) && !isSystemBarOnBottom(requireActivity())) {
-                binding.root.rootView.fitsSystemWindows = true
-            }
-        }
 
         binding.queueToolbar.apply {
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
 
-            // Since QueueFragment doesn't fit system windows, inset padding needs to be
-            // artificially applied to the Toolbar so that it fits on the main window AND
-            // so that the elevation doesn't show on the top.
-            if (!binding.root.rootView.fitsSystemWindows) {
+            if (!requireActivity().isInIrregularLandscapeMode()) {
                 setOnApplyWindowInsetsListener @Suppress("DEPRECATION") { _, insets ->
                     val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         insets.getInsets(WindowInsets.Type.systemBars()).top
@@ -79,6 +63,8 @@ class QueueFragment : Fragment() {
 
                     insets
                 }
+            } else {
+                binding.root.fitsSystemWindows = true
             }
         }
 

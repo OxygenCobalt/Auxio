@@ -28,7 +28,7 @@
     <dimen name="size_cover_compact">44dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
     <dimen name="size_cover_large">68dp</dimen>
-    <dimen name="size_cover_mid_huge">120dp</dimen>
+    <dimen name="size_cover_mid_huge">130dp</dimen>
     <dimen name="size_cover_huge">260dp</dimen>
 
     <dimen name="size_play_pause">70dp</dimen>

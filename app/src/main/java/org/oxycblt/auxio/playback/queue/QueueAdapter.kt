@@ -15,6 +15,7 @@ import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
@@ -29,7 +30,7 @@ import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
  */
 class QueueAdapter(
     private val touchHelper: ItemTouchHelper,
-    private val onHeaderAction: () -> Unit
+    private val playbackModel: PlaybackViewModel,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data = mutableListOf<BaseModel>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
@@ -51,12 +52,15 @@ class QueueAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-            QUEUE_ITEM_TYPE -> QueueSongViewHolder(
-                ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
-            )
+
             USER_QUEUE_HEADER_ITEM_TYPE -> UserQueueHeaderViewHolder(
                 parent.context, ItemActionHeaderBinding.inflate(LayoutInflater.from(parent.context))
             )
+
+            QUEUE_ITEM_TYPE -> QueueSongViewHolder(
+                ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
+            )
+
             else -> error("Someone messed with the ViewHolder item types.")
         }
     }
@@ -159,7 +163,7 @@ class QueueAdapter(
                 setImageResource(R.drawable.ic_clear)
 
                 setOnClickListener {
-                    onHeaderAction()
+                    playbackModel.clearUserQueue()
                 }
             }
         }

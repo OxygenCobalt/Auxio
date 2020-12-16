@@ -430,6 +430,8 @@ class PlaybackStateManager private constructor() {
 
         logD("Shuffling queue with seed $newSeed")
 
+        val lastSong = mQueue[mIndex]
+
         mShuffleSeed = newSeed
 
         mQueue.shuffle(Random(newSeed))
@@ -437,9 +439,7 @@ class PlaybackStateManager private constructor() {
 
         // If specified, make the current song the first member of the queue.
         if (keepSong) {
-            mSong?.let {
-                moveQueueItems(mQueue.indexOf(it), 0)
-            }
+            moveQueueItems(mQueue.indexOf(lastSong), 0)
         } else {
             // Otherwise, just start from the zeroth position in the queue.
             mSong = mQueue[0]
@@ -452,9 +452,11 @@ class PlaybackStateManager private constructor() {
     private fun resetShuffle() {
         mShuffleSeed = -1L
 
+        val lastSong = mQueue[mIndex]
+
         setupOrderedQueue()
 
-        mIndex = mQueue.indexOf(mSong)
+        mIndex = mQueue.indexOf(lastSong)
 
         forceQueueUpdate()
     }

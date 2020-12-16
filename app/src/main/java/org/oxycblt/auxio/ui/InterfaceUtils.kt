@@ -1,22 +1,13 @@
 package org.oxycblt.auxio.ui
 
-import android.annotation.TargetApi
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Point
-import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.util.DisplayMetrics
 import android.view.MenuItem
-import android.view.View
-import android.view.Window
-import android.view.WindowInsetsController
-import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -32,15 +23,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.SettingsManager
-
-// Functions for managing UI elements [Not Colors]
-
-object InterfaceUtils {
-    const val NAV_HIDDEN = -1
-    const val NAV_ON_LEFT = 0
-    const val NAV_ON_RIGHT = 1
-    const val NAV_ON_BOTTOM = 2
-}
 
 /**
  * Apply a text color to a [MenuItem]
@@ -90,75 +72,6 @@ fun Spanned.render(): Spanned {
     return HtmlCompat.fromHtml(
         this.toString(), HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS
     )
-}
-
-/**
- * Check if the system bars are on the bottom.
- * @return If the system bars are on the bottom, false if no.
- */
-@Suppress("DEPRECATION")
-fun isSystemBarOnBottom(activity: Activity): Boolean {
-    val realPoint = Point()
-    val metrics = DisplayMetrics()
-
-    var width = 0
-    var height = 0
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        activity.display?.let { display ->
-            display.getRealSize(realPoint)
-
-            activity.windowManager.currentWindowMetrics.bounds.also {
-                width = it.width()
-                height = it.height()
-            }
-        }
-    } else {
-        (activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager).apply {
-            defaultDisplay.getRealSize(realPoint)
-            defaultDisplay.getMetrics(metrics)
-
-            width = metrics.widthPixels
-            height = metrics.heightPixels
-        }
-    }
-
-    val config = activity.resources.configuration
-    val canMove = (width != height && config.smallestScreenWidthDp < 600)
-
-    return (!canMove || width < height)
-}
-
-/**
- * Handle transparent system bars. Adapted from Music Player GO
- * (https://github.com/enricocid/Music-Player-GO)
- */
-@TargetApi(Build.VERSION_CODES.O_MR1)
-@Suppress("DEPRECATION")
-fun Window.handleTransparentSystemBars(config: Configuration) {
-    fun isNight() = config.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        insetsController?.let { controller ->
-            val appearance = WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS or
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-
-            val mask = if (isNight()) 0 else appearance
-
-            controller.setSystemBarsAppearance(appearance, mask)
-        }
-    } else {
-        val flags = decorView.systemUiVisibility
-
-        decorView.systemUiVisibility =
-            if (isNight()) {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv() and
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-            } else {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            }
-    }
 }
 
 /**

@@ -120,10 +120,10 @@
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/artist_album_header"
+                    app:spanCount="2"
                     tools:itemCount="4"
                     tools:listitem="@layout/item_album" />
 
