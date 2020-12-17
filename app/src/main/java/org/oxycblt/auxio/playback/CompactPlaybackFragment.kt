@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,6 +14,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.isLandscape
 
 /**
@@ -26,14 +26,15 @@ import org.oxycblt.auxio.ui.isLandscape
  */
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val binding: FragmentCompactPlaybackBinding by memberBinding(
+        FragmentCompactPlaybackBinding::inflate
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentCompactPlaybackBinding.inflate(inflater)
-
         val isLandscape = isLandscape(resources)
 
         // --- UI SETUP ---
@@ -94,7 +95,7 @@ class CompactPlaybackFragment : Fragment() {
 
         // Use the caveman method of getting a view as storing the binding will cause a memory
         // leak.
-        val playbackControls = requireView().findViewById<ImageButton>(R.id.playback_controls)
+        val playbackControls = binding.playbackControls
 
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play

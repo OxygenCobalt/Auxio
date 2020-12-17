@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,6 +17,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -28,14 +28,13 @@ import org.oxycblt.auxio.ui.toColor
  */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentPlaybackBinding.inflate(inflater)
-
         // TODO: Add a swipe-to-next-track function using a ViewPager
 
         // Create accents & icons to use
@@ -203,8 +202,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onStop() {
         super.onStop()
 
-        // Stop the marqueeing of the song name to prevent a weird memory leak
-        requireView().findViewById<TextView>(R.id.playback_song).isSelected = false
+        binding.playbackSong.isSelected = false
     }
 
     // Seeking callbacks
