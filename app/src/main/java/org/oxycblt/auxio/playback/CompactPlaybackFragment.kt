@@ -14,8 +14,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.memberBinding
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.

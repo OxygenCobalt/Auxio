@@ -20,7 +20,8 @@ import kotlin.reflect.KProperty
  * @param onDestroy      Any code that should be run when the binding is destroyed.
  */
 fun <T : ViewBinding> Fragment.memberBinding(
-    bindingFactory: (LayoutInflater) -> T, onDestroy: T.() -> Unit = {}
+    bindingFactory: (LayoutInflater) -> T,
+    onDestroy: T.() -> Unit = {}
 ) = FragmentBinderDelegate(this, bindingFactory, onDestroy)
 
 /**

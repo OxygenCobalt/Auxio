@@ -17,7 +17,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 
 /**
@@ -50,8 +50,7 @@ class QueueFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            if (!requireActivity().isIrregularLandscape() &&
-                SettingsManager.getInstance().edgeEnabled) {
+            if (!requireActivity().isIrregularLandscape() && isEdgeOn()) {
                 setOnApplyWindowInsetsListener @Suppress("DEPRECATION") { _, insets ->
                     val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         insets.getInsets(WindowInsets.Type.systemBars()).top

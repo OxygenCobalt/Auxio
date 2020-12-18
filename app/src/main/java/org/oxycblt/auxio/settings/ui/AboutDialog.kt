@@ -1,16 +1,15 @@
 package org.oxycblt.auxio.settings.ui
 
-import android.app.Dialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -20,8 +19,7 @@ import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.handleTransparentSystemBars
-import org.oxycblt.auxio.ui.handleTransparentSystemNavBar
+import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.toColor
@@ -40,12 +38,10 @@ class AboutDialog : BottomSheetDialogFragment() {
         val settingsManager = SettingsManager.getInstance()
 
         // --- UI SETUP ---
-
-        // Apply edge-to-edge to the dialog if supported/enabled.
-        if (settingsManager.edgeEnabled && !requireActivity().isIrregularLandscape()) {
+        if (isEdgeOn() && !requireActivity().isIrregularLandscape()) {
             requireDialog().window?.apply {
                 navigationBarColor = R.color.background.toColor(requireContext())
-                handleTransparentSystemNavBar(resources.configuration)
+                // handleTransparentSystemNavBar(resources.configuration)
             }
         }
 
@@ -61,6 +57,15 @@ class AboutDialog : BottomSheetDialogFragment() {
         binding.aboutAuthor.text = getString(
             R.string.format_author, getString(R.string.author_oxycblt)
         )
+
+        if (isLandscape(resources)) {
+            val dialog = requireDialog() as BottomSheetDialog
+            dialog.findViewById<CoordinatorLayout>(
+                com.google.android.material.R.id.design_bottom_sheet
+            )?.let {
+                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
 
         logD("Dialog created.")
 
@@ -111,7 +116,6 @@ class AboutDialog : BottomSheetDialogFragment() {
     }
 
     companion object {
-        // TODO: Change dev to master
         private const val LINK_CODEBASE = "https://github.com/oxygencobalt/Auxio"
         private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/FAQ.md"
         private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/LICENSES.md"

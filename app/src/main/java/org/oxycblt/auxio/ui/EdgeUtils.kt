@@ -6,15 +6,10 @@ package org.oxycblt.auxio.ui
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.View
-import android.view.Window
-import android.view.WindowInsetsController
 import android.view.WindowManager
-import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * Check if we are in the "Irregular" landscape mode [e.g landscape, but nav bar is on the sides]
@@ -25,6 +20,10 @@ import org.oxycblt.auxio.settings.SettingsManager
 fun Activity.isIrregularLandscape(): Boolean {
     return isLandscape(resources) &&
         !isSystemBarOnBottom(this)
+}
+
+fun isEdgeOn(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
 }
 
 /**
@@ -61,62 +60,4 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
     val canMove = (width != height && config.smallestScreenWidthDp < 600)
 
     return (!canMove || width < height)
-}
-
-/**
- * Handle transparent system bars. Adapted from Music Player GO
- * (https://github.com/enricocid/Music-Player-GO)
- */
-fun Window.handleTransparentSystemBars(config: Configuration) {
-    fun isNight() = config.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        insetsController?.let { controller ->
-            val appearance = WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS or
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-
-            val mask = if (isNight()) 0 else appearance
-
-            controller.setSystemBarsAppearance(appearance, mask)
-        }
-    } else {
-        val flags = decorView.systemUiVisibility
-
-        decorView.systemUiVisibility =
-            if (isNight()) {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv() and
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-            } else {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            }
-    }
-}
-
-/**
- * Handle only the transparent navigation bar.
- */
-fun Window.handleTransparentSystemNavBar(config: Configuration) {
-    fun isNight() = config.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        insetsController?.let { controller ->
-            val appearance = WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-
-            val mask = if (isNight()) 0 else appearance
-
-            controller.setSystemBarsAppearance(appearance, mask)
-        }
-    } else {
-        val flags = decorView.systemUiVisibility
-
-        decorView.systemUiVisibility =
-            if (isNight()) {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv() and
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-            } else {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR or
-                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            }
-    }
 }

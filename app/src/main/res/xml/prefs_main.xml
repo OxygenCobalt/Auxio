@@ -16,9 +16,9 @@
         <Preference
             android:icon="@drawable/ic_accent"
             android:title="@string/setting_accent"
+            app:allowDividerBelow="false"
             app:key="KEY_ACCENT"
             app:summary="@string/setting_accent_unknown" />
-
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -113,6 +113,7 @@
             android:defaultValue="@integer/rewind_threshold_default"
             android:max="@integer/rewind_threshold_max"
             android:title="@string/setting_behavior_rewind_threshold"
+            app:allowDividerBelow="false"
             app:dependency="KEY_PREV_REWIND"
             app:iconSpaceReserved="false"
             app:key="KEY_REWIND_THRESHOLD"

@@ -42,9 +42,6 @@ class SettingsManager private constructor(context: Context) :
                 .apply()
         }
 
-    val edgeEnabled: Boolean
-        get() = sharedPrefs.getBoolean(Keys.KEY_EDGE_TO_EDGE, false)
-
     val colorizeNotif: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_COLORIZE_NOTIFICATION, true)
 
