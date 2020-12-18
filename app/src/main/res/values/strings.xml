@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Auxio</string>
+    <string name="app_desc">A sensible and customizable music player for android.</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
@@ -35,6 +36,12 @@
 
     <string name="label_channel">Music Playback</string>
     <string name="label_service_playback">The music playback service for Auxio.</string>
+
+    <string name="label_about">About</string>
+    <string name="label_version">Version</string>
+    <string name="label_code">View on Github</string>
+    <string name="label_licenses">Licenses</string>
+    <string name="label_faq">FAQ</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Settings</string>
@@ -94,6 +101,7 @@
     <string name="error_no_music">No music found.</string>
     <string name="error_music_load_failed">Music loading failed.</string>
     <string name="error_no_perms">Permissions to read storage are needed.</string>
+    <string name="error_no_browser">Could not open link.</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search Library…</string>
@@ -116,6 +124,8 @@
     <string name="description_shuffle_on">Turn shuffle on</string>
     <string name="description_shuffle_off">Turn shuffle off</string>
     <string name="description_change_loop">Change Repeat Mode</string>
+    <string name="description_auxio_icon">Auxio icon</string>
+    <string name="description_code">Code</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>
@@ -151,6 +161,8 @@
     <string name="format_double_counts">%1$s, %2$s</string>
     <string name="format_next_from">Next From: %s</string>
     <string name="format_accent_summary">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
+    <string name="format_songs_loaded">Songs Loaded: %s</string>
+    <string name="format_author">Created by %s</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>

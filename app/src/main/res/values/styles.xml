@@ -167,4 +167,10 @@
         <item name="android:paddingEnd">@dimen/padding_medium</item>
         <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
     </style>
+
+    <!-- Bottomsheet style -->
+    <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>

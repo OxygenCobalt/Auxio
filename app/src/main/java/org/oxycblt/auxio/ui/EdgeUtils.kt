@@ -22,9 +22,8 @@ import org.oxycblt.auxio.settings.SettingsManager
  * TODO: Make edge-to-edge work in irregular mode
  * @return True if we are in the irregular landscape mode, false if not.
  */
-fun Activity.isInIrregularLandscapeMode(): Boolean {
-    return SettingsManager.getInstance().edgeEnabled &&
-        isLandscape(resources) &&
+fun Activity.isIrregularLandscape(): Boolean {
+    return isLandscape(resources) &&
         !isSystemBarOnBottom(this)
 }
 
@@ -89,6 +88,34 @@ fun Window.handleTransparentSystemBars(config: Configuration) {
                     View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
             } else {
                 flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
+                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            }
+    }
+}
+
+/**
+ * Handle only the transparent navigation bar.
+ */
+fun Window.handleTransparentSystemNavBar(config: Configuration) {
+    fun isNight() = config.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        insetsController?.let { controller ->
+            val appearance = WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+
+            val mask = if (isNight()) 0 else appearance
+
+            controller.setSystemBarsAppearance(appearance, mask)
+        }
+    } else {
+        val flags = decorView.systemUiVisibility
+
+        decorView.systemUiVisibility =
+            if (isNight()) {
+                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv() and
+                    View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+            } else {
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR or
                     View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
             }
     }

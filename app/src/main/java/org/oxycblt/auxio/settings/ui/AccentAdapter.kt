@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.settings.adapters
+package org.oxycblt.auxio.settings.ui
 
 import android.content.res.ColorStateList
 import android.view.LayoutInflater

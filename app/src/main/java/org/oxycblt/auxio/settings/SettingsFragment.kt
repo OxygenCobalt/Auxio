@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
+import org.oxycblt.auxio.settings.ui.AboutDialog
 
 class SettingsFragment : Fragment() {
     override fun onCreateView(
@@ -14,6 +16,13 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentSettingsBinding.inflate(inflater)
+
+        binding.settingsToolbar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.action_open_about) {
+                AboutDialog().show(childFragmentManager, "DIALOG")
+                true
+            } else false
+        }
 
         return binding.root
     }

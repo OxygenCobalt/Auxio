@@ -34,6 +34,8 @@
     <dimen name="size_play_pause">70dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
 
+    <dimen name="size_app_icon">60dp</dimen>
+
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_min">10sp</dimen>
     <dimen name="text_size_increment">2sp</dimen>

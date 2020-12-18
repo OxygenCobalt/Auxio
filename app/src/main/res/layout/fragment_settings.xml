@@ -8,10 +8,11 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/song_toolbar"
+            android:id="@+id/settings_toolbar"
             style="@style/Toolbar.Style"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            app:menu="@menu/menu_settings"
             app:title="@string/setting_title" />
 
         <androidx.fragment.app.FragmentContainerView

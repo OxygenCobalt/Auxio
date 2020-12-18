@@ -17,7 +17,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
-import org.oxycblt.auxio.settings.adapters.AccentAdapter
+import org.oxycblt.auxio.settings.ui.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.createToast

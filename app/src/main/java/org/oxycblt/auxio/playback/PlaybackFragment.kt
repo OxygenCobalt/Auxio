@@ -28,7 +28,9 @@ import org.oxycblt.auxio.ui.toColor
  */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate)
+    private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate) {
+        binding.playbackSong.isSelected = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -197,12 +199,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        binding.playbackSong.isSelected = false
     }
 
     // Seeking callbacks

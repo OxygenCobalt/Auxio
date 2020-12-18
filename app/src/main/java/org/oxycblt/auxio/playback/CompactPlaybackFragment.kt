@@ -90,12 +90,7 @@ class CompactPlaybackFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         playbackModel.disableAnimation()
-
-        // Use the caveman method of getting a view as storing the binding will cause a memory
-        // leak.
-        val playbackControls = binding.playbackControls
 
         val iconPauseToPlay = ContextCompat.getDrawable(
             requireContext(), R.drawable.ic_pause_to_play
@@ -109,19 +104,19 @@ class CompactPlaybackFragment : Fragment() {
             if (playbackModel.canAnimate) {
                 if (it) {
                     // Animate the icon transition when the playing status switches
-                    playbackControls?.setImageDrawable(iconPlayToPause)
+                    binding.playbackControls.setImageDrawable(iconPlayToPause)
                     iconPlayToPause.start()
                 } else {
-                    playbackControls?.setImageDrawable(iconPauseToPlay)
+                    binding.playbackControls.setImageDrawable(iconPauseToPlay)
                     iconPauseToPlay.start()
                 }
             } else {
                 // Use static icons on the first firing of this observer so that the icons
                 // don't animate on startup, which looks weird.
                 if (it) {
-                    playbackControls?.setImageResource(R.drawable.ic_pause_large)
+                    binding.playbackControls.setImageResource(R.drawable.ic_pause_large)
                 } else {
-                    playbackControls?.setImageResource(R.drawable.ic_play_large)
+                    binding.playbackControls.setImageResource(R.drawable.ic_play_large)
                 }
 
                 playbackModel.enableAnimation()

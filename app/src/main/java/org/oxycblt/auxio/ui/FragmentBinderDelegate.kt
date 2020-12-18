@@ -16,20 +16,21 @@ import kotlin.reflect.KProperty
 /**
  * A delegate that creates a binding that can be used as a member variable without nullability or
  * memory leaks.
+ * @param bindingFactory The ViewBinding inflation method that should be used
+ * @param onDestroy      Any code that should be run when the binding is destroyed.
  */
 fun <T : ViewBinding> Fragment.memberBinding(
-    viewBindingFactory: (LayoutInflater) -> T,
-    disposeEvents: T.() -> Unit = {}
-) = FragmentBinderDelegate(this, viewBindingFactory, disposeEvents)
+    bindingFactory: (LayoutInflater) -> T, onDestroy: T.() -> Unit = {}
+) = FragmentBinderDelegate(this, bindingFactory, onDestroy)
 
 /**
- * The delegate for the [binder] shortcut function.
+ * The delegate for the [memberBinding] shortcut function.
  * Adapted from KAHelpers (https://github.com/FunkyMuse/KAHelpers/tree/master/viewbinding)
  */
 class FragmentBinderDelegate<T : ViewBinding>(
     private val fragment: Fragment,
-    private val binder: (LayoutInflater) -> T,
-    private val disposeEvents: T.() -> Unit
+    private val inflate: (LayoutInflater) -> T,
+    private val onDestroy: T.() -> Unit
 ) : ReadOnlyProperty<Fragment, T>, LifecycleObserver {
     private var fragmentBinding: T? = null
 
@@ -46,8 +47,8 @@ class FragmentBinderDelegate<T : ViewBinding>(
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
 
-                viewLifecycleOwnerLiveData.observe(this@observeOwnerThroughCreation) { owner ->
-                    owner.viewOwner()
+                viewLifecycleOwnerLiveData.observe(this@observeOwnerThroughCreation) {
+                    it.viewOwner()
                 }
             }
         })
@@ -69,13 +70,13 @@ class FragmentBinderDelegate<T : ViewBinding>(
             throw IllegalStateException("Fragment views are destroyed.")
         }
 
-        return binder(LayoutInflater.from(thisRef.requireContext())).also { fragmentBinding = it }
+        return inflate(LayoutInflater.from(thisRef.requireContext())).also { fragmentBinding = it }
     }
 
     @Suppress("UNUSED")
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun dispose() {
-        fragmentBinding?.disposeEvents()
+        fragmentBinding?.onDestroy()
         fragmentBinding = null
     }
 }

@@ -17,7 +17,8 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.isInIrregularLandscapeMode
+import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.isIrregularLandscape
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
@@ -49,7 +50,8 @@ class QueueFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            if (!requireActivity().isInIrregularLandscapeMode()) {
+            if (!requireActivity().isIrregularLandscape() &&
+                SettingsManager.getInstance().edgeEnabled) {
                 setOnApplyWindowInsetsListener @Suppress("DEPRECATION") { _, insets ->
                     val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         insets.getInsets(WindowInsets.Type.systemBars()).top
