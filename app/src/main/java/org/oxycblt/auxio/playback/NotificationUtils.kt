@@ -106,7 +106,7 @@ fun NotificationCompat.Builder.setMetadata(
     if (colorize) {
         // getBitmap() is concurrent, so only call back to the object calling this function when
         // the loading is over.
-        getBitmap(song, context) {
+        getBitmap(context, song) {
             setLargeIcon(it)
 
             onDone()
@@ -165,6 +165,7 @@ fun NotificationCompat.Builder.updateMode(context: Context) {
 private fun newAction(action: String, context: Context): NotificationCompat.Action {
     val playbackManager = PlaybackStateManager.getInstance()
 
+    // Get the icon depending on the action & current state.
     val drawable = when (action) {
         NotificationUtils.ACTION_LOOP -> {
             when (playbackManager.loopMode) {

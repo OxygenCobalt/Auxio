@@ -121,6 +121,9 @@ fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
 
 /**
  * Get the name of an accent.
+ * @param context [Context] required
+ * @param newAccent The accent the name should be given for.
+ * @return The accent name according to the strings for this specific locale.
  */
 fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
     val accentIndex = ACCENTS.indexOf(newAccent)
@@ -131,7 +134,10 @@ fun getAccentItemSummary(context: Context, newAccent: Pair<Int, Int>): String {
 }
 
 /**
- * Get the name (in bold) and the hex value of a theme.
+ * Get the name (in bold) and the hex value of a accent.
+ * @param context [Context] required
+ * @param newAccent Accent to get the information for
+ * @return A rendered span with the name in bold + the hex value of the accent.
  */
 fun getDetailedAccentSummary(context: Context, newAccent: Pair<Int, Int>): Spanned {
     val name = getAccentItemSummary(context, newAccent)

@@ -53,7 +53,7 @@ class AlbumDetailFragment : DetailFragment() {
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupAlbumSongActions(
-                    data, requireContext(), detailModel, playbackModel
+                    requireContext(), data, detailModel, playbackModel
                 )
             }
         )

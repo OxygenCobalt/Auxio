@@ -55,6 +55,7 @@ class NoLeakThumbView @JvmOverloads constructor(
     private val thumbAnimation: SpringAnimation
 
     init {
+        // --- VIEW SETUP ---
         LayoutInflater.from(context).inflate(
             R.layout.fast_scroller_thumb_view, this, true
         )
@@ -63,10 +64,25 @@ class NoLeakThumbView @JvmOverloads constructor(
         textView = thumbView.findViewById(R.id.fast_scroller_thumb_text)
         iconView = thumbView.findViewById(R.id.fast_scroller_thumb_icon)
 
+        // --- UI SETUP ---
+
         isActivated = false
         isVisible = false
 
-        applyStyle()
+        thumbView.backgroundTintList = thumbColor
+
+        if (Build.VERSION.SDK_INT == 21) {
+            // Workaround for 21 background tint bug
+            (thumbView.background as GradientDrawable).apply {
+                mutate()
+                color = thumbColor
+            }
+        }
+
+        TextViewCompat.setTextAppearance(textView, textAppearanceRes)
+
+        textView.setTextColor(textColor)
+        iconView.imageTintList = ColorStateList.valueOf(iconColor)
 
         thumbAnimation = SpringAnimation(thumbView, DynamicAnimation.TRANSLATION_Y).apply {
             spring = SpringForce().apply {
@@ -75,6 +91,9 @@ class NoLeakThumbView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Setup this view with a [FastScrollerView].
+     */
     @SuppressLint("ClickableViewAccessibility")
     fun setupWithFastScroller(fastScrollerView: FastScrollerView) {
         check(!isSetup) { "Only set this view's FastScrollerView once!" }
@@ -126,29 +145,19 @@ class NoLeakThumbView @JvmOverloads constructor(
         return consumed
     }
 
-    private fun applyStyle() {
-        thumbView.backgroundTintList = thumbColor
-
-        if (Build.VERSION.SDK_INT == 21) {
-            // Workaround for 21 background tint bug
-            (thumbView.background as GradientDrawable).apply {
-                mutate()
-                color = thumbColor
-            }
-        }
-
-        TextViewCompat.setTextAppearance(textView, textAppearanceRes)
-        textView.setTextColor(textColor)
-        iconView.imageTintList = ColorStateList.valueOf(iconColor)
-    }
-
     override fun onItemIndicatorSelected(
         indicator: FastScrollItemIndicator,
         indicatorCenterY: Int,
         itemPosition: Int
     ) {
         val thumbTargetY = indicatorCenterY.toFloat() - (thumbView.measuredHeight / 2)
-        thumbAnimation.animateToFinalPosition(thumbTargetY)
+
+        // Don't animate if the view is invisible.
+        if (!isActivated || !isVisible) {
+            y = thumbTargetY
+        } else {
+            thumbAnimation.animateToFinalPosition(thumbTargetY)
+        }
 
         when (indicator) {
             is FastScrollItemIndicator.Text -> {

@@ -8,6 +8,12 @@ import org.oxycblt.auxio.databinding.ItemBasicSongBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 
+/**
+ * The adapter for [SongsFragment], shows basic songs without durations.
+ * @param data List of [Song]s to be shown
+ * @param doOnClick What to do on a click action
+ * @param doOnLongClick What to do on a long click action
+ */
 class SongsAdapter(
     private val data: List<Song>,
     private val doOnClick: (data: Song) -> Unit,

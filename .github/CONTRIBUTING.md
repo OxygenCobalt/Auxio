@@ -23,10 +23,10 @@ These should also be logged in the  [Issues](https://github.com/OxygenCobalt/Aux
 Please keep in mind when requesting a feature:
 - **Has it already been requested?** Make sure request for this feature is not already here.
 - **Has it been already added?** Make sure this feature has not already been added in the most recent release.
-- **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelyhood that your request will be accepted.
+- **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelihood that your request will be accepted.
 
 If you do make a request, provide the following:
-- What kind of addition is this?
+- What kind of addition is this? (A Full Feature? A new customization option? A UI Change?)
 - What is it that you want?
 - Why do you think it will benefit everyone's usage of the app?
 
@@ -48,4 +48,4 @@ If you have knowledge of Android/Kotlin, feel free to to contribute to the proje
 - Please ***FULLY TEST*** your changes before creating a PR. Untested code will not be merged.
 - Java code will **NOT** be accepted. Kotlin only.
 - Keep your code up the date with the upstream and continue to maintain it after you create the PR. This makes it less of a hassle to merge.
-- Make sure you have read [Accepted Additions and Requests](../info/ADDITIONS.md) before working on your addition.
+- Make sure you have read about the [Accepted Additions and Requests](../info/ADDITIONS.md) before working on your addition.

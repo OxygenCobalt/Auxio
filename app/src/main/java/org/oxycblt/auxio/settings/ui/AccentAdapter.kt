@@ -11,6 +11,11 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getAccentItemSummary
 import org.oxycblt.auxio.ui.toColor
 
+/**
+ * An adapter that displays the list of all possible accents, and highlights the current one.
+ * @author OxygenCobalt
+ * @param doOnAccentConfirm What to do when an accent is confirmed.
+ */
 class AccentAdapter(
     private val doOnAccentConfirm: (accent: Pair<Int, Int>) -> Unit
 ) : RecyclerView.Adapter<AccentAdapter.ViewHolder>() {

@@ -19,8 +19,11 @@ import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.isLandscape
-import java.lang.Exception
 
+/**
+ * A [BottomSheetDialogFragment] that shows Auxio's about screen.
+ * @author OxygenCobalt
+ */
 class AboutDialog : BottomSheetDialogFragment() {
     override fun getTheme() = R.style.Theme_BottomSheetFix
 
@@ -59,6 +62,9 @@ class AboutDialog : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    /**
+     * Go through the process of opening one of the about links in a browser.
+     */
     private fun openLinkInBrowser(link: String) {
         check(link in LINKS) { "Invalid link." }
 

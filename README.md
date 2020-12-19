@@ -14,9 +14,9 @@
 
 ## About
 
-Auxio is a music player for android that I built for myself, its intended to only have the features that I use out of a music player and nothing more.
+Auxio is a local music player for android that I primarily built for myself.
 
-However, Auxio is also structured to be customizable and extendable, in the case you want to add features that I personally don't need.
+It only has the features that I use out of a music player and nothing more, with a UI/UX mostly derived from [Spotify](https://spotify.com), but with elements from [Phonograph](https://github.com/kabouzeid/Phonograph) and [Music Player GO](https://github.com/OxygenCobalt/Auxio). Its meant to be consistent and reliable, while still being customizable and extendable if one wants to add their own features that I (Personally) don't need.
 
 ## Screenshots
 
@@ -33,7 +33,7 @@ However, Auxio is also structured to be customizable and extendable, in the case
 
 ## Features
 
-- Reliable, ExoPlayer based playback
+- Reliable, [ExoPlayer](https://exoplayer.dev/) based playback
 - Customizable UI & Behavior
 - Extensive Genres/Artists/Albums/Songs support
 - Powerful queue system
@@ -50,11 +50,14 @@ However, Auxio is also structured to be customizable and extendable, in the case
 - Better music loading system
 - Improved genre/artist/album UIs
 - Dedicated search tab
-- Better edge-to-edge support
+- Swipe-to-next-track function
+- Artist Images
 - Black theme
 - Custom accents
 - Playlists
 - Liked songs
+- More notification actions
+- Better edge-to-edge support
 - More customization options
 - Other things, presumably
 

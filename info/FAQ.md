@@ -18,7 +18,7 @@ I still need to set up Weblate, but you can open a [Pull Request](https://github
 
 ## Why ExoPlayer?
 
-ExoPlayer is far more flexible than the native MediaPlayer API, which allows Auxio to have consistent behavior across devices & OEMs, and also allowing the app to be extended to sources beyond local music files.
+ExoPlayer is far more flexible than the native MediaPlayer API, which allows Auxio to have consistent behavior across devices & OEMs, along with allowing Auxio to be extended to music sources outside of local files. You can read more about the benefits (and drawbacks) of ExoPlayer [Here](https://exoplayer.dev/pros-and-cons.html).
 
 ## Why is there no black mode?
 
@@ -40,10 +40,14 @@ The APIs for changing system bar colors were only added in API Level 27 (Oreo MR
 
 I could possibly extend edge-to-edge support to those versions, but it would take awhile.
 
+## Why doesnt edge-to-edge work when my phone is in landscape?
+
+The way insets work when a *phone* (Not a tablet) is in landscape mode is somewhat broken, making it extremely hard (if not impossible) to get edge-to-edge working. Therefore its mostly disabled.
+
 ## How can I contribute/report issues?
 
 Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md).
 
-## Does this app keep/send any information about myself or my device.
+## Does this app keep/send any information about myself or my device?
 
-Never. There's no need. Auxio can't even access the internet.
+Auxio does not log any information about the device or its owner, and it has no internet access to send that information off in the first place.

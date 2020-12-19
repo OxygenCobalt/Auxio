@@ -19,10 +19,9 @@ import okio.source
 import org.oxycblt.auxio.R
 import java.io.InputStream
 
-const val MOSAIC_BITMAP_SIZE = 512
-const val MOSAIC_BITMAP_INCREMENT = 256
-
-// A Fetcher that takes multiple cover uris and turns them into a 2x2 mosaic image.
+/**
+ * A [Fetcher] that takes multiple cover uris and turns them into a 2x2 mosaic image.
+ */
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
         pool: BitmapPool,
@@ -108,4 +107,9 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     }
 
     override fun key(data: List<Uri>): String = data.toString()
+
+    companion object {
+        private const val MOSAIC_BITMAP_SIZE = 512
+        private const val MOSAIC_BITMAP_INCREMENT = 256
+    }
 }

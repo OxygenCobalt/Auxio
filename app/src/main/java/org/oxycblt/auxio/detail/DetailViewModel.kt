@@ -38,10 +38,17 @@ class DetailViewModel : ViewModel() {
     private val mNavToParent = MutableLiveData<Boolean>()
     val navToParent: LiveData<Boolean> get() = mNavToParent
 
+    /**
+     * Update the current navigation status
+     * @param value Whether the current [DetailFragment] is navigating or not.
+     */
     fun updateNavigationStatus(value: Boolean) {
         mIsNavigating = value
     }
 
+    /**
+     * Increment the sort mode of the genre artists
+     */
     fun incrementGenreSortMode() {
         mGenreSortMode.value = when (mGenreSortMode.value) {
             SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
@@ -51,6 +58,9 @@ class DetailViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Increment the sort mode of the artist albums
+     */
     fun incrementArtistSortMode() {
         mArtistSortMode.value = when (mArtistSortMode.value) {
             SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
@@ -62,6 +72,9 @@ class DetailViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Increment the sort mode of the album songs
+     */
     fun incrementAlbumSortMode() {
         mAlbumSortMode.value = when (mAlbumSortMode.value) {
             SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
@@ -83,10 +96,12 @@ class DetailViewModel : ViewModel() {
         mCurrentAlbum.value = album
     }
 
+    /** Mark that parent navigation should occur */
     fun doNavToParent() {
         mNavToParent.value = true
     }
 
+    /** Mark that the UI is done with the parent navigation */
     fun doneWithNavToParent() {
         mNavToParent.value = false
     }

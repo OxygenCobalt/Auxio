@@ -75,6 +75,8 @@ class CompactPlaybackFragment : Fragment() {
                     showAll(binding)
                 }
             } else if (isLandscape) {
+                // CompactPlaybackFragment isn't fully hidden in landscape mode, only
+                // its UI elements are hidden.
                 hideAll(binding)
             }
         }
@@ -126,6 +128,7 @@ class CompactPlaybackFragment : Fragment() {
 
     /**
      * Hide all UI elements, and disable the fragment from being clickable.
+     * Only called in landscape mode.
      */
     private fun hideAll(binding: FragmentCompactPlaybackBinding) {
         binding.apply {
@@ -141,6 +144,7 @@ class CompactPlaybackFragment : Fragment() {
 
     /**
      * Unhide all UI elements, and make the fragment clickable.
+     * Only called in landscape mode.
      */
     private fun showAll(binding: FragmentCompactPlaybackBinding) {
         binding.apply {

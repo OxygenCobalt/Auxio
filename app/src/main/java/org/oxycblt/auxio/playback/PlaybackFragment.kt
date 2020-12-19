@@ -201,9 +201,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         return binding.root
     }
 
-    // Seeking callbacks
+    // --- SEEK CALLBACKS ---
+
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser) {
+            // Only update the display if the change occured from a user
             playbackModel.updatePositionDisplay(progress)
         }
     }
@@ -215,6 +217,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekBar: SeekBar) {
         playbackModel.setSeekingStatus(false)
 
-        playbackModel.updatePosition(seekBar.progress)
+        // Confirm the position when seeking stops.
+        playbackModel.setPosition(seekBar.progress)
     }
 }

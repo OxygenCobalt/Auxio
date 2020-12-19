@@ -13,10 +13,15 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder.Companion.from
+import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder.Companion.from
+import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder.Companion.from
+import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder.Companion.from
+import org.oxycblt.auxio.recycler.viewholders.SongViewHolder.Companion.from
 
-// Shared ViewHolders for each ViewModel, providing basic information
-// All new instances should be created with from() instead of direct instantiation.
-
+/**
+ * The Shared ViewHolder for a [Genre]. Instantiation should be done with [from].
+ */
 class GenreViewHolder private constructor(
     private val binding: ItemGenreBinding,
     doOnClick: (Genre) -> Unit,
@@ -31,6 +36,9 @@ class GenreViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA010
 
+        /**
+         * Create an instance of [GenreViewHolder]
+         */
         fun from(
             context: Context,
             doOnClick: (Genre) -> Unit,
@@ -44,6 +52,9 @@ class GenreViewHolder private constructor(
     }
 }
 
+/**
+ * The Shared ViewHolder for a [Artist]. Instantiation should be done with [from].
+ */
 class ArtistViewHolder private constructor(
     private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
@@ -58,6 +69,9 @@ class ArtistViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA011
 
+        /**
+         * Create an instance of [ArtistViewHolder]
+         */
         fun from(
             context: Context,
             doOnClick: (Artist) -> Unit,
@@ -71,6 +85,9 @@ class ArtistViewHolder private constructor(
     }
 }
 
+/**
+ * The Shared ViewHolder for a [Album]. Instantiation should be done with [from].
+ */
 class AlbumViewHolder private constructor(
     private val binding: ItemAlbumBinding,
     doOnClick: (data: Album) -> Unit,
@@ -85,6 +102,9 @@ class AlbumViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA012
 
+        /**
+         * Create an instance of [AlbumViewHolder]
+         */
         fun from(
             context: Context,
             doOnClick: (data: Album) -> Unit,
@@ -98,6 +118,9 @@ class AlbumViewHolder private constructor(
     }
 }
 
+/**
+ * The Shared ViewHolder for a [Song]. Instantiation should be done with [from].
+ */
 class SongViewHolder private constructor(
     private val binding: ItemSongBinding,
     doOnClick: (data: Song) -> Unit,
@@ -114,6 +137,9 @@ class SongViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA013
 
+        /**
+         * Create an instance of [SongViewHolder]
+         */
         fun from(
             context: Context,
             doOnClick: (data: Song) -> Unit,
@@ -127,6 +153,9 @@ class SongViewHolder private constructor(
     }
 }
 
+/**
+ * The Shared ViewHolder for a [Header]. Instantiation should be done with [from]
+ */
 class HeaderViewHolder(
     private val binding: ItemHeaderBinding
 ) : BaseViewHolder<Header>(binding, null, null) {
@@ -138,6 +167,9 @@ class HeaderViewHolder(
     companion object {
         const val ITEM_TYPE = 0xA014
 
+        /**
+         * Create an instance of [HeaderViewHolder]
+         */
         fun from(context: Context): HeaderViewHolder {
             return HeaderViewHolder(
                 ItemHeaderBinding.inflate(LayoutInflater.from(context))

@@ -23,6 +23,10 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
+/**
+ * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
+ * @author OxygenCobalt
+ */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -43,6 +47,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     private fun recursivelyHandleChildren(pref: Preference) {
         if (pref is PreferenceCategory) {
+            // Show the debug category if this build is a debug build
             if (pref.title == getString(R.string.debug_title) && BuildConfig.DEBUG) {
                 logD("Showing debug category.")
 

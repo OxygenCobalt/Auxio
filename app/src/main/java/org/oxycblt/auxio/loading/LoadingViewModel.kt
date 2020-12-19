@@ -18,7 +18,6 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
  * @author OxygenCobalt
  */
 class LoadingViewModel(private val app: Application) : ViewModel() {
-    // UI control
     private val mResponse = MutableLiveData<MusicLoaderResponse>()
     val response: LiveData<MusicLoaderResponse> get() = mResponse
 
@@ -30,8 +29,10 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
 
     private var started = false
 
-    // Start the music loading sequence.
-    // This should only be ran once, use reload() for all other loads.
+    /**
+     * Start the music loading sequence.
+     * This should only be ran once, use reload() for all other loads.
+     */
     fun go() {
         if (!started) {
             started = true
@@ -51,28 +52,39 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
         }
     }
 
-    // UI communication functions
-    // LoadingFragment uses these so that button presses can update the ViewModel.
-    // all doneWithX functions are to reset the value so that LoadingFragment doesn't
-    // repeat commands if the view is recreated.
+    /**
+     * Reload the music
+     */
     fun reload() {
         mRedo.value = true
 
         doLoad()
     }
 
+    /**
+     * Mark that the UI is done with the reload call
+     */
     fun doneWithReload() {
         mRedo.value = false
     }
 
+    /**
+     * Mark to start the grant process
+     */
     fun grant() {
         mDoGrant.value = true
     }
 
+    /**
+     * Mark that the UI is done with the grant process.
+     */
     fun doneWithGrant() {
         mDoGrant.value = false
     }
 
+    /**
+     * Factory for [LoadingViewModel] instances.
+     */
     class Factory(private val application: Application) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {

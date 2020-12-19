@@ -22,10 +22,8 @@ import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 
 /**
  * The single adapter for both the Next Queue and the User Queue.
- * - [submitList] is for the plain async diff calculations, use this if you
- * have no idea what the differences are between the old data & the new data
- * - [removeItem] and [moveItems] are used by [org.oxycblt.auxio.playback.PlaybackViewModel]
- * so that this adapter doesn't flip-out when items are moved (Which happens with [AsyncListDiffer])
+ * @param touchHelper The [ItemTouchHelper] ***containing*** [QueueDragCallback] to be used
+ * @param playbackModel The [PlaybackViewModel] to dispatch updates to.
  * @author OxygenCobalt
  */
 class QueueAdapter(
@@ -81,6 +79,9 @@ class QueueAdapter(
         }
     }
 
+    /**
+     * Submit data using [AsyncListDiffer]. **Only use this if you have no idea what changes occurred to the data**
+     */
     fun submitList(newData: MutableList<BaseModel>) {
         if (data != newData) {
             data = newData
@@ -89,6 +90,9 @@ class QueueAdapter(
         }
     }
 
+    /**
+     * Move Items. Used since [submitList] will cause QueueAdapter to freak-out here.
+     */
     fun moveItems(adapterFrom: Int, adapterTo: Int) {
         val item = data.removeAt(adapterFrom)
         data.add(adapterTo, item)
@@ -96,6 +100,9 @@ class QueueAdapter(
         notifyItemMoved(adapterFrom, adapterTo)
     }
 
+    /**
+     * Remove an item. Used since [submitList] will cause QueueAdapter to freak-out here.
+     */
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
@@ -121,7 +128,9 @@ class QueueAdapter(
         }
     }
 
-    // Generic ViewHolder for a queue item
+    /**
+     * Generic ViewHolder for a queue song
+     */
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding, null, null) {
@@ -146,6 +155,9 @@ class QueueAdapter(
         }
     }
 
+    /**
+     * Generic ViewHolder for the **user queue header**. Has the clear queue button.
+     */
     inner class UserQueueHeaderViewHolder(
         context: Context,
         private val binding: ItemActionHeaderBinding

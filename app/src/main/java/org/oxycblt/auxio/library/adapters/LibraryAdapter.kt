@@ -62,6 +62,10 @@ class LibraryAdapter(
         }
     }
 
+    /**
+     * Update the data directly. [notifyDataSetChanged] will be called
+     * @param newData The new data to be used
+     */
     fun updateData(newData: List<BaseModel>) {
         data = newData
 

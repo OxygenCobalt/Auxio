@@ -30,6 +30,11 @@ class PlaybackStateDatabase(context: Context) :
 
     // --- DATABASE CONSTRUCTION FUNCTIONS ---
 
+    /**
+     * Create a table
+     * @param database DB to create the tables on
+     * @param tableName The name of the table to create.
+     */
     private fun createTable(database: SQLiteDatabase, tableName: String) {
         val command = StringBuilder()
         command.append("CREATE TABLE IF NOT EXISTS $tableName(")
@@ -43,6 +48,9 @@ class PlaybackStateDatabase(context: Context) :
         database.execSQL(command.toString())
     }
 
+    /**
+     * Construct a [PlaybackState] table
+     */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
         command.append("${PlaybackState.COLUMN_SONG_ID} LONG NOT NULL,")
@@ -57,6 +65,9 @@ class PlaybackStateDatabase(context: Context) :
         return command
     }
 
+    /**
+     * Construct a [QueueItem] table
+     */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
         command.append("${QueueItem.COLUMN_SONG_ID} LONG NOT NULL,")

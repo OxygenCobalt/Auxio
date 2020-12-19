@@ -12,7 +12,8 @@ import org.oxycblt.auxio.recycler.DisplayMode
 
 /**
  * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
- * TODO: Add a viewmodel so that UI elements aren't messing with the shared object.
+ * TODO: Completely rewrite this system.
+ * @author OxygenCobalt
  */
 class MusicStore private constructor() {
     private var mGenres = listOf<Genre>()
@@ -27,6 +28,7 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
+    /** All parent models loaded by Auxio */
     val parents: MutableList<BaseModel> by lazy {
         val parents = mutableListOf<BaseModel>()
         parents.addAll(mGenres)
@@ -92,7 +94,12 @@ class MusicStore private constructor() {
         }
     }
 
-    fun getListForShowMode(displayMode: DisplayMode): List<BaseModel> {
+    /**
+     * Get a list of data for a [DisplayMode].
+     * @param displayMode The [DisplayMode] given
+     * @return A list of [BaseModel]s for that [DisplayMode]
+     */
+    fun getListForDisplayMode(displayMode: DisplayMode): List<BaseModel> {
         return when (displayMode) {
             DisplayMode.SHOW_GENRES -> mGenres
             DisplayMode.SHOW_ARTISTS -> mArtists

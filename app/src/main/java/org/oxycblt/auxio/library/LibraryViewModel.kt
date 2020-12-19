@@ -22,24 +22,27 @@ import org.oxycblt.auxio.settings.SettingsManager
  */
 class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
-    val sortMode: LiveData<SortMode> get() = mSortMode
-
     private val mLibraryData = MutableLiveData(listOf<BaseModel>())
-    val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
-
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
-    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
-
     private var mDisplayMode = DisplayMode.SHOW_ARTISTS
-
     private var mIsNavigating = false
+
+    /** The current [SortMode] */
+    val sortMode: LiveData<SortMode> get() = mSortMode
+    /** The current library data */
+    val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
+    /** The results from the last search query */
+    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
+    /** If LibraryFragment is already navigating */
     val isNavigating: Boolean get() = mIsNavigating
+
     private val settingsManager = SettingsManager.getInstance()
     private val musicStore = MusicStore.getInstance()
 
     init {
         settingsManager.addCallback(this)
 
+        // Set up the display/sort modes
         mDisplayMode = settingsManager.libraryDisplayMode
         mSortMode.value = settingsManager.librarySortMode
 
@@ -107,12 +110,19 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
+    /**
+     * Reset the search query.
+     */
     fun resetQuery() {
         mSearchResults.value = listOf()
     }
 
     // --- LIBRARY FUNCTIONS ---
 
+    /**
+     * Update the current [SortMode].
+     * @param itemId The id of the menu item selected.
+     */
     fun updateSortMode(@IdRes itemId: Int) {
         val mode = when (itemId) {
             R.id.option_sort_none -> SortMode.NONE
@@ -130,6 +140,10 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
+    /**
+     * Update the current navigation status
+     * @param value Whether LibraryFragment is navigating or not
+     */
     fun updateNavigationStatus(value: Boolean) {
         mIsNavigating = value
     }
@@ -150,9 +164,12 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
     // --- UTILS ---
 
+    /**
+     * Shortcut function for updating the library data with the current [SortMode]/[DisplayMode]
+     */
     private fun updateLibraryData() {
         mLibraryData.value = mSortMode.value!!.getSortedBaseModelList(
-            musicStore.getListForShowMode(mDisplayMode)
+            musicStore.getListForDisplayMode(mDisplayMode)
         )
     }
 }

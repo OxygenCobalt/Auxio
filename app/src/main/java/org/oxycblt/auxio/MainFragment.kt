@@ -23,8 +23,10 @@ import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getTransparentAccent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.toColor
-import kotlin.IllegalArgumentException
 
+/**
+ * The primary "Home" [Fragment] for Auxio.
+ */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -38,6 +40,7 @@ class MainFragment : Fragment() {
 
         // If the music was cleared while the app was closed [Likely due to Auxio being suspended
         // in the background], then navigate back to LoadingFragment to reload the music.
+        // This may actually not happen in normal use, but its a good failsafe.
         if (MusicStore.getInstance().songs.isEmpty()) {
             findNavController().navigate(MainFragmentDirections.actionReturnToLoading())
 
@@ -111,9 +114,10 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    // Functions that check if MainFragment should nav over to LibraryFragment, or whether
-    // it should stay put. Mostly by checking if the navController is currently in a detail
-    // fragment, and if the playing item is already being shown.
+    /**
+     * Whether its okay to navigate to the album detail fragment when the playing song/album needs to
+     * be navigated to
+     */
     private fun shouldGoToAlbum(controller: NavController): Boolean {
         return (
             controller.currentDestination!!.id == R.id.album_detail_fragment &&
@@ -123,6 +127,10 @@ class MainFragment : Fragment() {
             controller.currentDestination!!.id == R.id.genre_detail_fragment
     }
 
+    /**
+     * Whether its okay to go to the artist detail fragment when the current playing artist
+     * is selected.
+     */
     private fun shouldGoToArtist(controller: NavController): Boolean {
         return (
             controller.currentDestination!!.id == R.id.artist_detail_fragment &&
@@ -132,6 +140,9 @@ class MainFragment : Fragment() {
             controller.currentDestination!!.id == R.id.genre_detail_fragment
     }
 
+    /**
+     * Custom navigator code that has proper animations, unlike BottomNavigationView.setupWithNavController().
+     */
     private fun navigateWithItem(navController: NavController, item: MenuItem): Boolean {
         if (navController.currentDestination!!.id != item.itemId) {
             // Create custom NavOptions myself so that animations work
@@ -154,6 +165,9 @@ class MainFragment : Fragment() {
         return false
     }
 
+    /**
+     * Handle the visibility of CompactPlaybackFragment. Done here so that there's a nice animation.
+     */
     private fun handleCompactPlaybackVisibility(binding: FragmentMainBinding, song: Song?) {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")

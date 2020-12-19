@@ -29,6 +29,8 @@ import kotlin.math.ceil
  */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+
+    // Lazy init the text size so that it doesn't have to be calculated every time.
     private val indicatorTextSize: Float by lazy {
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP, 14F,
@@ -51,7 +53,7 @@ class SongsFragment : Fragment() {
             doOnClick = { playbackModel.playSong(it, settingsManager.songPlaybackMode) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupSongActions(
-                    data, requireContext(), playbackModel
+                    requireContext(), data, playbackModel
                 )
             }
         )
@@ -93,6 +95,10 @@ class SongsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Go through the fast scroller process.
+     * @param binding Binding required
+     */
     private fun setupFastScroller(binding: FragmentSongsBinding) {
         val musicStore = MusicStore.getInstance()
 

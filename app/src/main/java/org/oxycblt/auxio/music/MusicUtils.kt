@@ -9,8 +9,10 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 
-// List of ID3 genres + Winamp extensions, each index corresponds to their int value.
-// There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
+/**
+ * List of ID3 genres + Winamp extensions, each index corresponds to their int value.
+ * There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
+ */
 private val ID3_GENRES = arrayOf(
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
     "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno",
@@ -39,7 +41,10 @@ private const val PAREN_FILTER = "()"
 
 // --- EXTENSION FUNCTIONS ---
 
-// Convert legacy ID3 genres to a named genre
+/**
+ * Convert legacy ID3 genres to their named genre
+ * @return The named genre for this legacy genre.
+ */
 fun String.toNamedGenre(): String? {
     // Strip the genres of any parentheses, and convert it to an int
     val intGenre = this.filterNot {
@@ -51,7 +56,10 @@ fun String.toNamedGenre(): String? {
     return ID3_GENRES.getOrNull(intGenre)
 }
 
-// Convert a song to its URI
+/**
+ * Convert a song id to its URI
+ * @return The [Uri] for this song/
+ */
 fun Long.toURI(): Uri {
     return ContentUris.withAppendedId(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -59,7 +67,10 @@ fun Long.toURI(): Uri {
     )
 }
 
-// Convert an albums ID into its album art URI
+/**
+ * Get the URI for an album's cover art.
+ * @return The [Uri] for the album's cover art/
+ */
 fun Long.toAlbumArtURI(): Uri {
     return ContentUris.withAppendedId(
         Uri.parse("content://media/external/audio/albumart"),
@@ -67,7 +78,9 @@ fun Long.toAlbumArtURI(): Uri {
     )
 }
 
-// Convert seconds into its string duration
+/**
+ * Convert a [Long] of seconds into a string duration.
+ */
 fun Long.toDuration(): String {
     var durationString = DateUtils.formatElapsedTime(this)
 
@@ -79,7 +92,9 @@ fun Long.toDuration(): String {
     return durationString
 }
 
-// Convert an integer to its formatted year
+/**
+ * Convert an integer to its formatted year.
+ */
 fun Int.toYear(context: Context): String {
     return if (this > 0) {
         this.toString()
@@ -87,8 +102,12 @@ fun Int.toYear(context: Context): String {
         context.getString(R.string.placeholder_no_date)
     }
 }
+
 // --- BINDING ADAPTERS ---
 
+/**
+ * Bind the artist + album counts for a genre
+ */
 @BindingAdapter("genreCounts")
 fun TextView.bindGenreCounts(genre: Genre) {
     val artists = context.resources.getQuantityString(
@@ -101,7 +120,9 @@ fun TextView.bindGenreCounts(genre: Genre) {
     text = context.getString(R.string.format_double_counts, artists, albums)
 }
 
-// Get the artist genre.
+/**
+ * Bind the most prominent artist genre
+ */
 // TODO: Add option to list all genres
 @BindingAdapter("artistGenre")
 fun TextView.bindArtistGenre(artist: Artist) {
@@ -112,7 +133,9 @@ fun TextView.bindArtistGenre(artist: Artist) {
     }
 }
 
-// Get the artist counts
+/**
+ * Bind the album + song counts for an artist
+ */
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
     val albums = context.resources.getQuantityString(
@@ -125,7 +148,9 @@ fun TextView.bindArtistCounts(artist: Artist) {
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
 
-// Get a bunch of miscellaneous album information [Year, Songs, Duration] and combine them
+/**
+ * Get all album information, used on [org.oxycblt.auxio.detail.AlbumDetailFragment]
+ */
 @BindingAdapter("albumDetails")
 fun TextView.bindAllAlbumDetails(album: Album) {
     text = context.getString(
@@ -139,7 +164,9 @@ fun TextView.bindAllAlbumDetails(album: Album) {
     )
 }
 
-// Get *less* miscellaneous album information. Please don't confuse this with the above.
+/**
+ * Get basic information about an album, used on album ViewHolders
+ */
 @BindingAdapter("albumInfo")
 fun TextView.bindAlbumInfo(album: Album) {
     text = context.getString(
@@ -152,7 +179,9 @@ fun TextView.bindAlbumInfo(album: Album) {
     )
 }
 
-// Bind the album year
+/**
+ * Bind the year for an album.
+ */
 @BindingAdapter("albumYear")
 fun TextView.bindAlbumYear(album: Album) {
     text = album.year.toYear(context)

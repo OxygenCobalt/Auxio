@@ -9,6 +9,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
 import org.oxycblt.auxio.settings.ui.AboutDialog
 
+/**
+ * A container [Fragment] for the settings menu.
+ * @author OxygenCobalt
+ */
 class SettingsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,

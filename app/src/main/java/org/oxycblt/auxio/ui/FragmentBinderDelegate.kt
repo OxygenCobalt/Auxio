@@ -9,7 +9,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.viewbinding.ViewBinding
-import java.lang.IllegalStateException
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

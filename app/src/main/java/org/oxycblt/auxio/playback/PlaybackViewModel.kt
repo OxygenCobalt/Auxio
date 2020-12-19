@@ -28,55 +28,61 @@ import org.oxycblt.auxio.recycler.SortMode
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
     private val mSong = MutableLiveData<Song?>()
-    val song: LiveData<Song?> get() = mSong
-
     private val mParent = MutableLiveData<BaseModel?>()
-    val parent: LiveData<BaseModel?> get() = mParent
-
     private val mPosition = MutableLiveData(0L)
-    val position: LiveData<Long> get() = mPosition
 
     // Queue
     private val mQueue = MutableLiveData(mutableListOf<Song>())
-    val queue: LiveData<MutableList<Song>> get() = mQueue
-
     private val mUserQueue = MutableLiveData(mutableListOf<Song>())
-    val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
-
     private val mIndex = MutableLiveData(0)
-    // val index: LiveData<Int> get() = mIndex
-
     private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
-    val mode: LiveData<PlaybackMode> get() = mMode
 
     // States
     private val mIsPlaying = MutableLiveData(false)
-    val isPlaying: LiveData<Boolean> get() = mIsPlaying
-
     private val mIsShuffling = MutableLiveData(false)
-    val isShuffling: LiveData<Boolean> get() = mIsShuffling
-
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
-    val loopMode: LiveData<LoopMode> get() = mLoopMode
 
     // Other
     private val mIsSeeking = MutableLiveData(false)
-    val isSeeking: LiveData<Boolean> get() = mIsSeeking
-
     private val mNavToItem = MutableLiveData<BaseModel?>()
-    val navToItem: LiveData<BaseModel?> get() = mNavToItem
-
     private var mCanAnimate = false
+
+    /** The current song. */
+    val song: LiveData<Song?> get() = mSong
+    /** The current model that is being played from, such as an [Album] or [Artist] */
+    val parent: LiveData<BaseModel?> get() = mParent
+    /** The current playback position, in seconds */
+    val position: LiveData<Long> get() = mPosition
+    /** The current queue determined my [mode] and [parent] */
+    val queue: LiveData<MutableList<Song>> get() = mQueue
+    /** The queue created by the user. */
+    val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
+    /** The current [PlaybackMode] that also determines the queue */
+    val mode: LiveData<PlaybackMode> get() = mMode
+    /** Whether the playback is paused or played. */
+    val isPlaying: LiveData<Boolean> get() = mIsPlaying
+    /** Whether the queue is shuffled or not. */
+    val isShuffling: LiveData<Boolean> get() = mIsShuffling
+    /** The current [LoopMode] */
+    val loopMode: LiveData<LoopMode> get() = mLoopMode
+    /** Whether the user is seeking or not */
+    val isSeeking: LiveData<Boolean> get() = mIsSeeking
+    /** Whether to nav to an item or not */
+    val navToItem: LiveData<BaseModel?> get() = mNavToItem
+    /** Whether the play/pause button on CompactPlaybackFragment can animate */
     val canAnimate: Boolean get() = mCanAnimate
 
+    /** The position as a duration string. */
     val formattedPosition = Transformations.map(mPosition) {
         it.toDuration()
     }
 
+    /** The position as SeekBar progress. */
     val positionAsProgress = Transformations.map(mPosition) {
         if (mSong.value != null) it.toInt() else 0
     }
 
+    /** The queue, without the previous items. */
     val nextItemsInQueue = Transformations.map(mQueue) {
         it.slice((mIndex.value!! + 1) until it.size)
     }
@@ -88,7 +94,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
         // If the PlaybackViewModel was cleared [Signified by PlaybackStateManager still being
         // around & the fact that we are in the init function], then attempt to restore the
-        // viewmodel state. If it isn't, then wait for MainFragment to give the command to restore
+        // ViewModel state. If it isn't, then wait for MainFragment to give the command to restore
         // PlaybackStateManager.
         if (playbackManager.isRestored) {
             restorePlaybackState()
@@ -97,17 +103,16 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // --- PLAYING FUNCTIONS ---
 
-    // Play a song
+    /**
+     * Play a song.
+     * @param song The song to be played
+     * @param mode The [PlaybackMode] for it to be played in.
+     */
     fun playSong(song: Song, mode: PlaybackMode) {
         playbackManager.playSong(song, mode)
     }
 
-    // Play all songs
-    fun shuffleAll() {
-        playbackManager.shuffleAll()
-    }
-
-    // Play an album
+    /** Play an album.*/
     fun playAlbum(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
             logE("Album is empty, Not playing.")
@@ -118,7 +123,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParentModel(album, shuffled)
     }
 
-    // Play an artist
+    /** Play an Artist */
     fun playArtist(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
             logE("Artist is empty, Not playing.")
@@ -129,7 +134,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParentModel(artist, shuffled)
     }
 
-    // Play a genre
+    /** Play a genre. */
     fun playGenre(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
             logE("Genre is empty, Not playing.")
@@ -140,32 +145,44 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParentModel(genre, shuffled)
     }
 
+    /** Shuffle all songs */
+    fun shuffleAll() {
+        playbackManager.shuffleAll()
+    }
+
     // --- POSITION FUNCTIONS ---
 
-    // Update the position without pushing the change to playbackManager.
-    // This is used during seek events to give the user an idea of where they're seeking to.
+    /** Update the position and push it to [PlaybackStateManager] */
+    fun setPosition(progress: Int) {
+        playbackManager.seekTo((progress * 1000).toLong())
+    }
+
+    /**
+     * Update the position without pushing the change to [PlaybackStateManager].
+     * This is used during seek events to give the user an idea of where they're seeking to.
+     * @param progress The SeekBar progress to seek to.
+     */
     fun updatePositionDisplay(progress: Int) {
         mPosition.value = progress.toLong()
     }
 
-    // Update the position and push the change the playbackManager.
-    fun updatePosition(progress: Int) {
-        playbackManager.seekTo((progress * 1000).toLong())
-    }
-
     // --- QUEUE FUNCTIONS ---
 
-    // Skip to next song.
+    /** Skip to the next song. */
     fun skipNext() {
         playbackManager.next()
     }
 
-    // Skip to last song.
+    /** Skip to the previous song */
     fun skipPrev() {
         playbackManager.prev()
     }
 
-    // Remove a queue OR user queue item, given a QueueAdapter index.
+    /**
+     * Remove a queue OR user queue item, given a QueueAdapter index.
+     * @param adapterIndex The [QueueAdapter] index to remove
+     * @param queueAdapter The [QueueAdapter] itself to push changes to when successful.
+     */
     fun removeQueueAdapterItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
         var index = adapterIndex.dec()
 
@@ -188,7 +205,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    // Move queue OR user queue items, given QueueAdapter indices.
+    /**
+     * Move queue OR user queue items, given QueueAdapter indices.
+     * @param adapterFrom The [QueueAdapter] index that needs to be moved
+     * @param adapterTo The destination [QueueAdapter] index.
+     * @param queueAdapter the [QueueAdapter] to push changes to when successful.
+     */
     fun moveQueueAdapterItems(
         adapterFrom: Int,
         adapterTo: Int,
@@ -233,44 +255,48 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         return true
     }
 
+    /** Add a [Song] to the user queue.*/
     fun addToUserQueue(song: Song) {
         playbackManager.addToUserQueue(song)
     }
 
+    /** Add an [Album] to the user queue */
     fun addToUserQueue(album: Album) {
         val songs = SortMode.NUMERIC_DOWN.getSortedSongList(album.songs)
 
         playbackManager.addToUserQueue(songs)
     }
 
+    /** Clear the user queue entirely */
     fun clearUserQueue() {
         playbackManager.clearUserQueue()
     }
 
     // --- STATUS FUNCTIONS ---
 
-    // Flip the playing status.
+    /** Flip the playing status, e.g from playing to paused */
     fun invertPlayingStatus() {
         enableAnimation()
 
         playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
 
-    // Flip the shuffle status.
+    /** Flip the shuffle status, e.g from on to off */
     fun invertShuffleStatus() {
         playbackManager.setShuffleStatus(!playbackManager.isShuffling)
     }
 
+    /** Increment the loop status, e.g from off to loop once */
     fun incrementLoopStatus() {
         playbackManager.setLoopMode(playbackManager.loopMode.increment())
     }
 
-    // --- OTHER FUNCTIONS ---
+    // --- SAVE/RESTORE FUNCTIONS ---
 
-    fun setSeekingStatus(value: Boolean) {
-        mIsSeeking.value = value
-    }
-
+    /**
+     * Get [PlaybackStateManager] to restore its state from the database, if needed. Called by MainFragment.
+     * @param context [Context] required.
+     */
     fun restorePlaybackIfNeeded(context: Context) {
         if (!playbackManager.isRestored) {
             viewModelScope.launch {
@@ -279,24 +305,55 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
+    /**
+     * Force save the current [PlaybackStateManager] state to the database. Called by SettingsListFragment.
+     * @param context [Context] required.
+     */
     fun save(context: Context) {
         viewModelScope.launch {
             playbackManager.saveStateToDatabase(context)
         }
     }
 
+    /** Attempt to restore the current playback state from an existing [PlaybackStateManager] instance */
+    private fun restorePlaybackState() {
+        logD("Attempting to restore playback state.")
+
+        mSong.value = playbackManager.song
+        mPosition.value = playbackManager.position / 1000
+        mParent.value = playbackManager.parent
+        mQueue.value = playbackManager.queue
+        mMode.value = playbackManager.mode
+        mUserQueue.value = playbackManager.userQueue
+        mIndex.value = playbackManager.index
+        mIsPlaying.value = playbackManager.isPlaying
+        mIsShuffling.value = playbackManager.isShuffling
+        mLoopMode.value = playbackManager.loopMode
+    }
+
+    // --- OTHER FUNCTIONS ---
+
+    /** Set whether the seeking indicator should be highlighted */
+    fun setSeekingStatus(value: Boolean) {
+        mIsSeeking.value = value
+    }
+
+    /** Navigate to an item, whether a song/album/artist */
     fun navToItem(item: BaseModel) {
         mNavToItem.value = item
     }
 
+    /** Mark that the navigation process is done. */
     fun doneWithNavToItem() {
         mNavToItem.value = null
     }
 
+    /** Enable animation on CompactPlaybackFragment */
     fun enableAnimation() {
         mCanAnimate = true
     }
 
+    /** Disable animation on CompactPlaybackFragment */
     fun disableAnimation() {
         mCanAnimate = false
     }
@@ -347,20 +404,5 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onLoopUpdate(mode: LoopMode) {
         mLoopMode.value = mode
-    }
-
-    private fun restorePlaybackState() {
-        logD("Attempting to restore playback state.")
-
-        mSong.value = playbackManager.song
-        mPosition.value = playbackManager.position / 1000
-        mParent.value = playbackManager.parent
-        mQueue.value = playbackManager.queue
-        mMode.value = playbackManager.mode
-        mUserQueue.value = playbackManager.userQueue
-        mIndex.value = playbackManager.index
-        mIsPlaying.value = playbackManager.isPlaying
-        mIsShuffling.value = playbackManager.isShuffling
-        mLoopMode.value = playbackManager.loopMode
     }
 }

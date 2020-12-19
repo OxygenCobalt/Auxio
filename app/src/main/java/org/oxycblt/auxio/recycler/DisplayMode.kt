@@ -2,7 +2,6 @@ package org.oxycblt.auxio.recycler
 
 import androidx.annotation.DrawableRes
 import org.oxycblt.auxio.R
-import java.lang.IllegalArgumentException
 
 /**
  * An enum for determining what items to show in a given list.

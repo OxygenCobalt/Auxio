@@ -98,6 +98,10 @@ class QueueFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Create the queue data that should be displayed
+     * @return The list of headers/songs that should be displayed.
+     */
     private fun createQueueData(): MutableList<BaseModel> {
         val queue = mutableListOf<BaseModel>()
 

@@ -51,6 +51,7 @@ fun ImageButton.disable(context: Context) {
 
 /**
  * Determine if the device is currently in landscape.
+ * @param resources [Resources] required
  */
 fun isLandscape(resources: Resources): Boolean {
     return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -76,8 +77,11 @@ fun Spanned.render(): Spanned {
 
 /**
  * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
+ * @param context [Context] required
+ * @param song [Song] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
  */
-fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: PlaybackViewModel) {
+fun PopupMenu.setupSongActions(context: Context, song: Song, playbackModel: PlaybackViewModel) {
     inflateAndShow(R.menu.menu_song_actions)
 
     setOnMenuItemClickListener {
@@ -124,10 +128,14 @@ fun PopupMenu.setupSongActions(song: Song, context: Context, playbackModel: Play
 /**
  * Show actions for a album song item, such as the ones found in
  * [org.oxycblt.auxio.detail.AlbumDetailFragment]
+ * @param context [Context] required
+ * @param song [Song] The menu should correspond to
+ * @param detailModel The [DetailViewModel] the menu should dispatch some actions to.
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
  */
 fun PopupMenu.setupAlbumSongActions(
-    song: Song,
     context: Context,
+    song: Song,
     detailModel: DetailViewModel,
     playbackModel: PlaybackViewModel
 ) {
@@ -157,11 +165,14 @@ fun PopupMenu.setupAlbumSongActions(
 }
 
 /**
- * Show actions for an [Album]
+ * Show actions for an [Album].
+ * @param context [Context] required
+ * @param album [Album] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
  */
 fun PopupMenu.setupAlbumActions(
-    album: Album,
     context: Context,
+    album: Album,
     playbackModel: PlaybackViewModel
 ) {
     setOnMenuItemClickListener {
@@ -190,12 +201,11 @@ fun PopupMenu.setupAlbumActions(
 }
 
 /**
- * Show actions for an [Artist]
+ * Show actions for an [Artist].
+ * @param artist The [Artist] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
  */
-fun PopupMenu.setupArtistActions(
-    artist: Artist,
-    playbackModel: PlaybackViewModel
-) {
+fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewModel) {
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_play -> {
@@ -215,12 +225,11 @@ fun PopupMenu.setupArtistActions(
 }
 
 /**
- * Show actions for a [Genre]
+ * Show actions for a [Genre].
+ * @param genre The [Genre] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
  */
-fun PopupMenu.setupGenreActions(
-    genre: Genre,
-    playbackModel: PlaybackViewModel
-) {
+fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) {
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_play -> {
@@ -241,6 +250,7 @@ fun PopupMenu.setupGenreActions(
 
 /**
  * Shortcut method that inflates a menu and shows the action menu.
+ * @param menuRes the menu that should be shown.
  */
 private fun PopupMenu.inflateAndShow(@MenuRes menuRes: Int) {
     inflate(menuRes)

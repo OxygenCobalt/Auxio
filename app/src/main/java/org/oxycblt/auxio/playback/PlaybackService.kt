@@ -87,7 +87,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         return START_NOT_STICKY
     }
 
-    // No binding, service is headless. Deliver updates through PlaybackStateManager instead.
+    // No binding, service is headless. Deliver updates through PlaybackStateManager/SettingsManager instead.
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
@@ -150,7 +150,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         playbackManager.addCallback(this)
 
-        if (playbackManager.song != null) {
+        if (playbackManager.song != null || playbackManager.isRestored) {
             restorePlayer()
             restoreNotification()
         }
@@ -332,6 +332,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     // --- OTHER FUNCTIONS ---
 
+    /**
+     * Restore the [SimpleExoPlayer] state, if the service was destroyed while [PlaybackStateManager] persisted.
+     */
     private fun restorePlayer() {
         playbackManager.song?.let {
             val item = MediaItem.fromUri(it.id.toURI())
@@ -350,6 +353,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    /**
+     * Restore the notification, if the service was destroyed while [PlaybackStateManager] persisted.
+     */
     private fun restoreNotification() {
         notification.updateExtraAction(this, settingsManager.useAltNotifAction)
         notification.updateMode(this)
@@ -366,6 +372,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    /**
+     * Upload the song metadata to the [MediaSessionCompat], so that things such as album art
+     * show up on the lock screen.
+     */
     private fun uploadMetadataToSession(song: Song) {
         val builder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
@@ -377,20 +387,23 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
-        getBitmap(song, this) {
+        getBitmap(this, song) {
             builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it)
             mediaSession.setMetadata(builder.build())
         }
     }
 
-    private fun pollCurrentPosition() = flow {
-        while (player.isPlaying) {
-            emit(player.currentPosition)
-            delay(250)
-        }
-    }.conflate()
-
+    /**
+     * Start polling the position on a co-routine.
+     */
     private fun startPollingPosition() {
+        fun pollCurrentPosition() = flow {
+            while (player.isPlaying) {
+                emit(player.currentPosition)
+                delay(250)
+            }
+        }.conflate()
+
         serviceScope.launch {
             pollCurrentPosition().takeWhile { player.isPlaying }.collect {
                 playbackManager.setPosition(it)
@@ -398,6 +411,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    /**
+     * Bring the service into the foreground and show the notification, or refresh the notification.
+     * @param reason (Debug) The reason for this call.
+     */
     private fun startForegroundOrNotify(reason: String) {
         // Don't start the foreground if the playback hasn't started yet AND if the playback hasn't
         // been restored
@@ -419,6 +436,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    /**
+     * Stop the foreground state and hide the notification
+     */
     private fun stopForegroundAndNotification() {
         stopForeground(true)
         notificationManager.cancel(NotificationUtils.NOTIFICATION_ID)
@@ -426,34 +446,41 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         isForeground = false
     }
 
-    // Handle a media button event.
+    /**
+     * Handle a media button intent.
+     */
     private fun handleMediaButtonEvent(event: Intent): Boolean {
         val item = event
             .getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
 
         if (item.action == KeyEvent.ACTION_DOWN) {
             return when (item.keyCode) {
+                // Play/Pause if any of the keys are play/pause
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
                     playbackManager.setPlayingStatus(!playbackManager.isPlaying)
                     true
                 }
 
+                // Go to the next song is the key is next
                 KeyEvent.KEYCODE_MEDIA_NEXT -> {
                     playbackManager.next()
                     true
                 }
 
+                // Go to the previous song if the key is back
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
                     playbackManager.prev()
                     true
                 }
 
+                // Rewind if the key is rewind
                 KeyEvent.KEYCODE_MEDIA_REWIND -> {
                     player.seekTo(0)
                     true
                 }
 
+                // Stop the service entirely if the key was stop/close
                 KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> {
                     stopSelf()
                     true
@@ -508,6 +535,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
+        /**
+         * Resume, as long as its allowed.
+         */
         private fun resume() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device connected, resuming...")
@@ -516,6 +546,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
+        /**
+         * Pause, as long as its allowed.
+         */
         private fun pause() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device disconnected, pausing...")
@@ -524,6 +557,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
+        /**
+         * Stop if the X button was clicked from the notification
+         */
         private fun stop() {
             playbackManager.setPlayingStatus(false)
             stopForegroundAndNotification()

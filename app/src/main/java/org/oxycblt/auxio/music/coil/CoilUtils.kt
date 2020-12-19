@@ -14,9 +14,14 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
-// Get a bitmap for a song, onDone will be called when the bitmap is loaded.
-// Don't use this on UI elements, that's what the BindingAdapters are for.
-fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
+/**
+ * Get a bitmap for a song. onDone will be called when the bitmap is loaded.
+ * **Do not use this on the UI elements, instead use the Binding Adapters.**
+ * @param context [Context] required
+ * @param song Song to load the cover for
+ * @param onDone What to do with the bitmap when the loading is finished.
+ */
+fun getBitmap(context: Context, song: Song, onDone: (Bitmap) -> Unit) {
     Coil.enqueue(
         ImageRequest.Builder(context)
             .data(song.album.coverUri)
@@ -28,7 +33,9 @@ fun getBitmap(song: Song, context: Context, onDone: (Bitmap) -> Unit) {
 
 // --- BINDING ADAPTERS ---
 
-// Get the cover art for a song
+/**
+ * Bind the cover art for a song.
+ */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(song: Song) {
     val request = getDefaultRequest(context, this)
@@ -39,7 +46,9 @@ fun ImageView.bindCoverArt(song: Song) {
     Coil.imageLoader(context).enqueue(request)
 }
 
-// Get the cover art for an album
+/**
+ * Bind the cover art for an album
+ */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(album: Album) {
     val request = getDefaultRequest(context, this)
@@ -50,7 +59,9 @@ fun ImageView.bindCoverArt(album: Album) {
     Coil.imageLoader(context).enqueue(request)
 }
 
-// Get the artist image
+/**
+ * Bind the artist image for an artist.
+ */
 @BindingAdapter("artistImage")
 fun ImageView.bindArtistImage(artist: Artist) {
     val request: ImageRequest
@@ -88,6 +99,9 @@ fun ImageView.bindArtistImage(artist: Artist) {
     Coil.imageLoader(context).enqueue(request)
 }
 
+/**
+ * Bind the genre image for an artist.
+ */
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre) {
     val request: ImageRequest
@@ -131,7 +145,10 @@ fun ImageView.bindGenreImage(genre: Genre) {
     Coil.imageLoader(context).enqueue(request)
 }
 
-// Get the base request used across the other functions.
+/**
+ * Get the base request used by the above functions
+ * @return The base request
+ */
 private fun getDefaultRequest(context: Context, imageView: ImageView): ImageRequest.Builder {
     return ImageRequest.Builder(context)
         .crossfade(true)

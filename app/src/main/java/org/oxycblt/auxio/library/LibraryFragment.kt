@@ -55,12 +55,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
         val libraryAdapter = LibraryAdapter(
-            doOnClick = { navToItem(it) },
+            doOnClick = { onItemSelection(it) },
             doOnLongClick = { data, view -> showActionsForItem(data, view) }
         )
 
         val searchAdapter = SearchAdapter(
-            doOnClick = { navToItem(it) },
+            doOnClick = { onItemSelection(it) },
             doOnLongClick = { data, view -> showActionsForItem(data, view) }
         )
 
@@ -171,9 +171,9 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 libraryModel.updateNavigationStatus(false)
 
                 if (it is Song || it is Album) {
-                    navToItem(playbackModel.song.value!!.album)
+                    onItemSelection(playbackModel.song.value!!.album)
                 } else {
-                    navToItem(it)
+                    onItemSelection(it)
                 }
             }
         }
@@ -197,12 +197,17 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         return true
     }
 
+    /**
+     * Show the [PopupMenu] actions for an item.
+     * @param data The model that the actions should correspond to
+     * @param view The anchor view the menu should be bound to.
+     */
     private fun showActionsForItem(data: BaseModel, view: View) {
         val menu = PopupMenu(requireContext(), view)
 
         when (data) {
-            is Song -> menu.setupSongActions(data, requireContext(), playbackModel)
-            is Album -> menu.setupAlbumActions(data, requireContext(), playbackModel)
+            is Song -> menu.setupSongActions(requireContext(), data, playbackModel)
+            is Album -> menu.setupAlbumActions(requireContext(), data, playbackModel)
             is Artist -> menu.setupArtistActions(data, playbackModel)
             is Genre -> menu.setupGenreActions(data, playbackModel)
 
@@ -211,7 +216,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    private fun navToItem(baseModel: BaseModel) {
+    /**
+     * Navigate to an item, or play it, depending on what the given item is.
+     * @param baseModel The data things should be done with
+     */
+    private fun onItemSelection(baseModel: BaseModel) {
         // If the item is a song [That was selected through search], then update the playback
         // to that song instead of doing any navigation
         if (baseModel is Song) {

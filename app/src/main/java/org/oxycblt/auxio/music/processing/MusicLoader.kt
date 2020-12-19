@@ -16,13 +16,16 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toNamedGenre
 
+/** The response that [MusicLoader] gives when the process is done */
 enum class MusicLoaderResponse {
     DONE, FAILURE, NO_MUSIC
 }
 
-// Class that loads music from the FileSystem.
-// TODO: Add custom artist images from the filesystem
-// TODO: Move genre loading to songs [Loads would take longer though]
+/**
+ * Object that loads music from the filesystem.
+ * TODO: Add custom artist images from the filesystem
+ * TODO: Move genre loading to songs [Loads would take longer though]
+ */
 class MusicLoader(
     private val resolver: ContentResolver,
 

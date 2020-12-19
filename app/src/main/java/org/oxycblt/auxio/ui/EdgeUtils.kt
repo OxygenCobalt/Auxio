@@ -6,15 +6,10 @@ package org.oxycblt.auxio.ui
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.View
-import android.view.Window
-import android.view.WindowInsetsController
 import android.view.WindowManager
-import org.oxycblt.auxio.logD
 
 /**
  * Check if we are in the "Irregular" landscape mode [e.g landscape, but nav bar is on the sides]
@@ -27,6 +22,10 @@ fun Activity.isIrregularLandscape(): Boolean {
         !isSystemBarOnBottom(this)
 }
 
+/**
+ * Check if edge is on. Really a glorified version check.
+ * @return Whether edge is on.
+ */
 fun isEdgeOn(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
 }
