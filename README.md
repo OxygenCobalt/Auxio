@@ -29,7 +29,7 @@ However, Auxio is also structured to be customizable and extendable, in the case
 [<img src="assets/shot_queue_port.png" width=160>](assets/shot_queue_port.png)
 [<img src="assets/shot_notif.png" width=160>](assets/shot_notif.png)
 [<img src="assets/shot_settings_port.png" width=160>](assets/shot_settings_port.png)
-[<img src="assets/shot_album_alt.png" width=160>](info/shot_album_alt.png)
+[<img src="assets/shot_album_alt.png" width=160>](assets/shot_album_alt.png)
 
 ## Features
 

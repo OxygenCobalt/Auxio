@@ -40,6 +40,7 @@ import org.oxycblt.auxio.ui.setupSongActions
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
  * search functionality.
  * TODO: Move search to separate tab?
+ * FIXME: Leak when navving from search
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 

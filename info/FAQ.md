@@ -18,7 +18,7 @@ I still need to set up Weblate, but you can open a [Pull Request](https://github
 
 ## Why ExoPlayer?
 
-ExoPlayer is far more flexible than the native MediaPlayer API, allowing Auxio to be extended to sources that aren't just the local files on the phone, while still providing consistent playback behavior across devices and OEMs.
+ExoPlayer is far more flexible than the native MediaPlayer API, which allows Auxio to have consistent behavior across devices & OEMs, and also allowing the app to be extended to sources beyond local music files.
 
 ## Why is there no black mode?
 
@@ -30,13 +30,9 @@ Custom accents would require some changes to the accent system in the app, which
 
 ## Why are accents lighter/less saturated in dark mode?
 
-As per the [Material Guidelines](https://material.io/design/color/dark-theme.html), accents should be less saturated on dark mode to reduce eye strain.
+As per the [Material Guidelines](https://material.io/design/color/dark-theme.html), accents should be less saturated on dark mode to reduce eye strain and to make it look better in general.
 
 You will be able to set the accent to something less saturated when I implement custom accents.
-
-## Does Auxio have an equalizer?
-
-No. Don't need it. Will never add it.
 
 ## Why isn't edge-to-edge enabled on versions below Oreo?
 

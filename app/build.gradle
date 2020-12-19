@@ -23,6 +23,8 @@ android {
 
     buildTypes {
         debug {
+            debuggable true
+
             applicationIdSuffix = '.debug'
             versionNameSuffix = "-DEBUG"
         }
@@ -43,6 +45,10 @@ android {
 
 configurations {
     ktlint
+}
+
+afterEvaluate {
+    preDebugBuild.dependsOn ktlintFormat
 }
 
 dependencies {
