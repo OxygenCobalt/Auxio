@@ -1,6 +1,7 @@
 ---
 name: Bug/Crash Report
 about: Propose an idea for Auxio
+title: 
 labels: enhancement
 assignees: ''
 

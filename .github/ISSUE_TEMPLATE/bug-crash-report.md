@@ -1,33 +1,31 @@
 ---
 name: Bug/Crash Report
 about: Report an issue with Auxio
-title: 
+title: ''
 labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug/crash**
+#### Describe the bug/crash
 <!-- A clear and concise description of what the bug or crash is. -->
-
-**To Reproduce**
+#### Steps To Reproduce the bug/crash:
 <!--
-Steps to reproduce the bug/crash:
 1. Go to X
 2. Click on Y
 3. Scroll down to Z
 4. See error
 -->
 
-**Logs/Stack Traces**
+#### Logs/Stack Traces:
 <!-- If possible, provide a stack trace or a Logcat. This can help identify the issue. -->
 
-**Screenshots**
+#### Screenshots:
 <!-- If applicable, add screenshots to help explain your problem. -->
 
-**Phone Information**
+#### Phone Information:
 <!-- Please provide information about your phone's android version/model. -->
 
-**Due Diligence**
+#### Due Diligence:
 
-- [ ] I have read the [Contribution Guidelines](../CONTRIBUTING.md).
+- [ ] I have read the [Contribution Guidelines](https://github.com/OxygenCobalt/Auxio/blob/dev/.github/CONTRIBUTING.md).
