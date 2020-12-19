@@ -100,7 +100,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
 }
 
 /**
- * Bind the genre image for an artist.
+ * Bind the genre image for a genre.
  */
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre) {

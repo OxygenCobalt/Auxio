@@ -156,7 +156,7 @@ class QueueAdapter(
     }
 
     /**
-     * Generic ViewHolder for the **user queue header**. Has the clear queue button.
+     * ViewHolder for the **user queue header**. Has the clear queue button.
      */
     inner class UserQueueHeaderViewHolder(
         context: Context,

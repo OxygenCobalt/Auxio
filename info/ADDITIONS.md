@@ -18,7 +18,7 @@ These will be accepted/added if I see the value in the addition of those options
 
 ## Feature Additions and UI Changes
 
-These are far less likely to be accepted/added. As I said, I want to avoid Auxio from becoming overly bloated with features I do not use, and therefore **I will only accept features/UI changes that directly benefit my own usage.** If they do not, then I will reject/ignore them.
+These are far less likely to be accepted/added. As I said, I want to avoid Auxio from becoming overly bloated with features I do not use, and therefore **I will only accept features/UI changes that directly benefit my own usage.** If they do not, then I will reject/ignore them. This does not rule out certain additions, but I am generally less likely to accept these kinds of requests.
 
 Feel free to fork Auxio to add your own features however.
 

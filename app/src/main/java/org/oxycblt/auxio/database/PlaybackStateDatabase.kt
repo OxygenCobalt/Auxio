@@ -121,7 +121,7 @@ class PlaybackStateDatabase(context: Context) :
 
     /**
      * Read the stored [PlaybackState] from the database, if there is one.
-     * @return The stored [PlaybackState], null if there isn't one,.
+     * @return The stored [PlaybackState], null if there isn't one.
      */
     fun readState(): PlaybackState? {
         val database = writableDatabase

@@ -53,23 +53,20 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val parent: LiveData<BaseModel?> get() = mParent
     /** The current playback position, in seconds */
     val position: LiveData<Long> get() = mPosition
-    /** The current queue determined my [mode] and [parent] */
+
+    /** The current queue determined by [mode] and [parent] */
     val queue: LiveData<MutableList<Song>> get() = mQueue
     /** The queue created by the user. */
     val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
     /** The current [PlaybackMode] that also determines the queue */
     val mode: LiveData<PlaybackMode> get() = mMode
-    /** Whether the playback is paused or played. */
+
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
-    /** Whether the queue is shuffled or not. */
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
-    /** The current [LoopMode] */
+    /** The current repeat mode */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
-    /** Whether the user is seeking or not */
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
-    /** Whether to nav to an item or not */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
-    /** Whether the play/pause button on CompactPlaybackFragment can animate */
     val canAnimate: Boolean get() = mCanAnimate
 
     /** The position as a duration string. */

@@ -96,7 +96,7 @@ class SongsFragment : Fragment() {
     }
 
     /**
-     * Go through the fast scroller process.
+     * Go through the fast scroller setup process.
      * @param binding Binding required
      */
     private fun setupFastScroller(binding: FragmentSongsBinding) {

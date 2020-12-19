@@ -851,7 +851,6 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Create an ordered queue based on an [Artist].
-     * @return A list of the songs in the [Artist], ordered.
      */
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
         val final = mutableListOf<Song>()
@@ -865,7 +864,6 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Create an ordered queue based on a [Genre].
-     * @return A list of the songs in the [Genre], ordered.
      */
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
         val final = mutableListOf<Song>()
@@ -887,29 +885,17 @@ class PlaybackStateManager private constructor() {
      * remove them on destruction with [removeCallback].
      */
     interface Callback {
-        /** Called when the song updates */
         fun onSongUpdate(song: Song?) {}
-        /** Called when the parent updates */
         fun onParentUpdate(parent: BaseModel?) {}
-        /** Called when the position updates */
         fun onPositionUpdate(position: Long) {}
-        /** Called when the queue updates */
         fun onQueueUpdate(queue: MutableList<Song>) {}
-        /** Called when the user queue updates */
         fun onUserQueueUpdate(userQueue: MutableList<Song>) {}
-        /** Called when the mode updates */
         fun onModeUpdate(mode: PlaybackMode) {}
-        /** Called when the index updates */
         fun onIndexUpdate(index: Int) {}
-        /** Called when the playing status changes */
         fun onPlayingUpdate(isPlaying: Boolean) {}
-        /** Called when the shuffle status changes */
         fun onShuffleUpdate(isShuffling: Boolean) {}
-        /** Called when the loop mode changes */
         fun onLoopUpdate(mode: LoopMode) {}
-        /** Called when a seek is confirmed */
         fun onSeekConfirm(position: Long) {}
-        /** Called when the restore process is finished */
         fun onRestoreFinish() {}
     }
 

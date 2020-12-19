@@ -10,9 +10,9 @@ Please keep in mind when reporting an issue:
 - **Is it still relevant in the latest version?** Make sure to test it in the latest version.
 
 If you do make an issue, Make sure to provide:
-- A summary of what you were doing before the bug/crash
-- What do you did that caused the bug/crash
-- A trace/logcat if possible, the longer the better.
+- A description of the bug/crash
+- A summary of the steps to create the bug/crash
+- A stack trace/logcat if possible, the longer the better.
 
 If you have knowledge of Android/Kotlin in general, you could also go about fixing the bug yourself and opening a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls).
 
@@ -23,7 +23,7 @@ These should also be logged in the  [Issues](https://github.com/OxygenCobalt/Aux
 Please keep in mind when requesting a feature:
 - **Has it already been requested?** Make sure request for this feature is not already here.
 - **Has it been already added?** Make sure this feature has not already been added in the most recent release.
-- **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelihood that your request will be accepted.
+- **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelihood that your request will be implemented.
 
 If you do make a request, provide the following:
 - What kind of addition is this? (A Full Feature? A new customization option? A UI Change?)

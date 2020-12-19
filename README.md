@@ -16,7 +16,10 @@
 
 Auxio is a local music player for android that I primarily built for myself.
 
-It only has the features that I use out of a music player and nothing more, with a UI/UX mostly derived from [Spotify](https://spotify.com), but with elements from [Phonograph](https://github.com/kabouzeid/Phonograph) and [Music Player GO](https://github.com/OxygenCobalt/Auxio). Its meant to be consistent and reliable, while still being customizable and extendable if one wants to add their own features that I (Personally) don't need.
+It only has the features that I use out of a music player and nothing more, with a Spotify-Like UI/UX combined with elements from [Phonograph](https://github.com/kabouzeid/Phonograph) and [Music Player GO](https://github.com/enricocid/Music-Player-GO).
+Its meant to be consistent and reliable, while still being customizable and extendable if one wants to add their own features that I (Personally) don't need.
+
+**Note:** Auxio is still early in development, meaning that some things may change as time passes.
 
 ## Screenshots
 
@@ -40,6 +43,7 @@ It only has the features that I use out of a music player and nothing more, with
 - Full playback persistence system
 - Embedded covers support
 - Search Functionality
+- Audio Focus / Headset Management
 - No internet connectivity whatsoever
 - Kotlin from the ground-up
 - Modular, feature-based architecture

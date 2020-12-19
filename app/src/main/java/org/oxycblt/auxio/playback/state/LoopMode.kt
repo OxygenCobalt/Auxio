@@ -1,5 +1,8 @@
 package org.oxycblt.auxio.playback.state
 
+/**
+ * Enum that determines the playback repeat mode.
+ */
 enum class LoopMode {
     NONE, ONCE, INFINITE;
 

@@ -27,13 +27,9 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private var mDisplayMode = DisplayMode.SHOW_ARTISTS
     private var mIsNavigating = false
 
-    /** The current [SortMode] */
     val sortMode: LiveData<SortMode> get() = mSortMode
-    /** The current library data */
     val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
-    /** The results from the last search query */
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
-    /** If LibraryFragment is already navigating */
     val isNavigating: Boolean get() = mIsNavigating
 
     private val settingsManager = SettingsManager.getInstance()
@@ -110,9 +106,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
-    /**
-     * Reset the search query.
-     */
     fun resetQuery() {
         mSearchResults.value = listOf()
     }
@@ -120,7 +113,7 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     // --- LIBRARY FUNCTIONS ---
 
     /**
-     * Update the current [SortMode].
+     * Update the current [SortMode] with a menu id.
      * @param itemId The id of the menu item selected.
      */
     fun updateSortMode(@IdRes itemId: Int) {
