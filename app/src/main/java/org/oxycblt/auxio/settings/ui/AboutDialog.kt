@@ -17,12 +17,8 @@ import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.isEdgeOn
-import org.oxycblt.auxio.ui.isIrregularLandscape
 import org.oxycblt.auxio.ui.isLandscape
-import org.oxycblt.auxio.ui.toColor
 import java.lang.Exception
 
 class AboutDialog : BottomSheetDialogFragment() {
@@ -35,15 +31,6 @@ class AboutDialog : BottomSheetDialogFragment() {
     ): View {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
         val musicStore = MusicStore.getInstance()
-        val settingsManager = SettingsManager.getInstance()
-
-        // --- UI SETUP ---
-        if (isEdgeOn() && !requireActivity().isIrregularLandscape()) {
-            requireDialog().window?.apply {
-                navigationBarColor = R.color.background.toColor(requireContext())
-                // handleTransparentSystemNavBar(resources.configuration)
-            }
-        }
 
         binding.aboutVersion.text = BuildConfig.VERSION_NAME
 
@@ -55,7 +42,7 @@ class AboutDialog : BottomSheetDialogFragment() {
             R.string.format_songs_loaded, musicStore.songs.size.toString()
         )
         binding.aboutAuthor.text = getString(
-            R.string.format_author, getString(R.string.author_oxycblt)
+            R.string.format_author, getString(R.string.label_author_oxycblt)
         )
 
         if (isLandscape(resources)) {

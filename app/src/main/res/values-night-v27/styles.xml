@@ -26,4 +26,12 @@
         <item name="md_color_button_text">@color/control_color</item>
         <item name="md_font_title">@font/inter_black</item>
     </style>
+
+    <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomSheetStyle">@style/Theme.BottomSheetHeightFix</item>
+    </style>
 </resources>

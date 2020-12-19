@@ -6,15 +6,20 @@ package org.oxycblt.auxio.ui
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.Window
+import android.view.WindowInsetsController
 import android.view.WindowManager
+import org.oxycblt.auxio.logD
 
 /**
  * Check if we are in the "Irregular" landscape mode [e.g landscape, but nav bar is on the sides]
  * Used to disable most of edge-to-edge if that's the case, as I cant get it to work on this mode yet.
- * TODO: Make edge-to-edge work in irregular mode
+ * TODO: Make edge-to-edge work better in irregular mode
  * @return True if we are in the irregular landscape mode, false if not.
  */
 fun Activity.isIrregularLandscape(): Boolean {

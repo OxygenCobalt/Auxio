@@ -156,11 +156,7 @@
     <string name="color_label_neutral">Neutral</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_info">%1$s / %2$s</string>
-    <string name="format_double_info">%1$s / %2$s / %3$s</string>
-    <string name="format_double_counts">%1$s, %2$s</string>
     <string name="format_next_from">Next From: %s</string>
-    <string name="format_accent_summary">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
     <string name="format_songs_loaded">Songs Loaded: %s</string>
     <string name="format_author">Created by %s</string>
 

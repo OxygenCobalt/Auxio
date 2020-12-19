@@ -430,7 +430,7 @@ class PlaybackStateManager private constructor() {
 
         logD("Shuffling queue with seed $newSeed")
 
-        val lastSong = mQueue[mIndex]
+        val lastSong = if (mIsInUserQueue) mQueue[mIndex] else mSong
 
         mShuffleSeed = newSeed
 
@@ -452,7 +452,7 @@ class PlaybackStateManager private constructor() {
     private fun resetShuffle() {
         mShuffleSeed = -1L
 
-        val lastSong = mQueue[mIndex]
+        val lastSong = if (mIsInUserQueue) mQueue[mIndex] else mSong
 
         setupOrderedQueue()
 
