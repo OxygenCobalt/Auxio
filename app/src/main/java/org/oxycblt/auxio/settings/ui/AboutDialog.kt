@@ -104,8 +104,8 @@ class AboutDialog : BottomSheetDialogFragment() {
 
     companion object {
         private const val LINK_CODEBASE = "https://github.com/oxygencobalt/Auxio"
-        private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/FAQ.md"
-        private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/LICENSES.md"
+        private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/info/FAQ.md"
+        private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/info/LICENSES.md"
 
         val LINKS = arrayOf(LINK_CODEBASE, LINK_FAQ, LINK_LICENSES)
     }
