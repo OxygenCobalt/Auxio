@@ -97,9 +97,9 @@ fun NotificationCompat.Builder.setMetadata(
         song.album.artist.name,
     )
 
-    // On older versions of android [API <26], show the song's album on the subtext instead of
+    // On older versions of android [API <24], show the song's album on the subtext instead of
     // the current mode, as that makes more sense for the old style of media notifications.
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
         setSubText(song.album.name)
     }
 
@@ -145,7 +145,7 @@ fun NotificationCompat.Builder.updateExtraAction(context: Context, useAltAction:
  * @param context The context required to get the strings required to show certain modes
  */
 fun NotificationCompat.Builder.updateMode(context: Context) {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         val playbackManager = PlaybackStateManager.getInstance()
 
         // If playing from all songs, set the subtext as that, otherwise the currently played parent.

@@ -237,7 +237,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             uploadMetadataToSession(it)
 
-            notification.setMetadata(this, playbackManager.song!!, settingsManager.colorizeNotif) {
+            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
                 startForegroundOrNotify("Song")
             }
 

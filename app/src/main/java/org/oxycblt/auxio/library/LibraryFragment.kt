@@ -41,6 +41,7 @@ import org.oxycblt.auxio.ui.setupSongActions
  * search functionality.
  * TODO: Move search to separate tab?
  * FIXME: Leak when navving from search
+ * FIXME: Leak on older versions
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 

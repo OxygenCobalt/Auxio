@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FIXME: Use custom drawable for < API 23 -->
+    <dimen name="height_compact_progress">6dp</dimen>
+</resources>

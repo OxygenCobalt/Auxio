@@ -1,5 +1,7 @@
 package org.oxycblt.auxio.songs
 
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -18,8 +20,10 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupSongActions
+import org.oxycblt.auxio.ui.toColor
 import kotlin.math.ceil
 
 /**
@@ -104,6 +108,11 @@ class SongsFragment : Fragment() {
 
         binding.songFastScroll.apply {
             var concatInterval = -1
+
+            // API 22 and below don't support the state color, so just use the accent.
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                textColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
+            }
 
             setupWithRecyclerView(
                 binding.songRecycler,

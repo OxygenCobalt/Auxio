@@ -38,16 +38,17 @@ Its meant to be consistent and reliable, while still being customizable and exte
 
 - Reliable, [ExoPlayer](https://exoplayer.dev/) based playback
 - Customizable UI & Behavior
-- Extensive Genres/Artists/Albums/Songs support
-- Powerful queue system
+- Genres/Artists/Albums/Songs support
+- Extensive queue system
 - Full playback persistence system
+- Edge-to-edge (Oreo+ Only)
 - Embedded covers support
 - Search Functionality
 - Audio Focus / Headset Management
 - No internet connectivity whatsoever
 - Kotlin from the ground-up
 - Modular, feature-based architecture
-- No rounded corners (The way god intended)
+- No rounded corners
 
 ## To Come in the future:
 

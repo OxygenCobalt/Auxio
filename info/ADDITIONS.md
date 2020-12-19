@@ -8,7 +8,7 @@ All guidelines from the [Contribution Guidelines](../.github/CONTRIBUTING.md) st
 
 ## Bug Fixes, Optimizations, Library Updates, Formatting, etc.
 
-These will likely be accepted/add as long as they do not cause too much harm to the app's architecture or UX.
+These will likely be accepted/added as long as they do not cause too much harm to the app's architecture or UX.
 
 ## New Options/Customizations
 

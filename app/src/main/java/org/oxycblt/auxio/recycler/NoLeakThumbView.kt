@@ -152,12 +152,7 @@ class NoLeakThumbView @JvmOverloads constructor(
     ) {
         val thumbTargetY = indicatorCenterY.toFloat() - (thumbView.measuredHeight / 2)
 
-        // Don't animate if the view is invisible.
-        if (!isActivated || !isVisible) {
-            y = thumbTargetY
-        } else {
-            thumbAnimation.animateToFinalPosition(thumbTargetY)
-        }
+        thumbAnimation.animateToFinalPosition(thumbTargetY)
 
         when (indicator) {
             is FastScrollItemIndicator.Text -> {

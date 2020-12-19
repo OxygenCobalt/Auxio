@@ -19,16 +19,15 @@ import org.oxycblt.auxio.music.Song
  * **Do not use this on the UI elements, instead use the Binding Adapters.**
  * @param context [Context] required
  * @param song Song to load the cover for
- * @param onDone What to do with the bitmap when the loading is finished.
+ * @param onDone What to do with the bitmap when the loading is finished. Bitmap will be null if loading failed.
  */
-fun getBitmap(context: Context, song: Song, onDone: (Bitmap) -> Unit) {
-    Coil.enqueue(
-        ImageRequest.Builder(context)
-            .data(song.album.coverUri)
-            .error(R.drawable.ic_song)
-            .target { onDone(it.toBitmap()) }
-            .build()
-    )
+fun getBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
+    val request = ImageRequest.Builder(context)
+        .data(song.album.coverUri)
+        .target(onError = { onDone(null) }, onSuccess = { onDone(it.toBitmap()) })
+        .build()
+
+    Coil.imageLoader(context).enqueue(request)
 }
 
 // --- BINDING ADAPTERS ---
