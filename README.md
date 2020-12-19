@@ -1,4 +1,4 @@
-<p align="center"><img src="info/ic_auxio.png" width="150"></p>
+<p align="center"><img src="assets/ic_auxio.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A sensible and customizable music player for android.</h4>
 <p align="center">
@@ -20,16 +20,16 @@ However, Auxio is also structured to be customizable and extendable, in the case
 
 ## Screenshots
 
-[<img src="info/shot_library_port.png" width=160>](info/shot_library_port.png)
-[<img src="info/shot_playback_port.png" width=160>](info/shot_playback_port.png)
-[<img src="info/shot_songs_port.png" width=160>](info/shot_songs_port.png)
-[<img src="info/shot_search_port.png" width=160>](info/shot_search_port.png)
-[<img src="info/shot_album_port.png" width=160>](info/shot_album_port.png)
-[<img src="info/shot_artist_port.png" width=160>](info/shot_artist_port.png)
-[<img src="info/shot_queue_port.png" width=160>](info/shot_queue_port.png)
-[<img src="info/shot_notif.png" width=160>](info/shot_notif.png)
-[<img src="info/shot_settings_port.png" width=160>](info/shot_settings_port.png)
-[<img src="info/shot_album_alt.png" width=160>](info/shot_album_alt.png)
+[<img src="assets/shot_library_port.png" width=160>](assets/shot_library_port.png)
+[<img src="assets/shot_playback_port.png" width=160>](assets/shot_playback_port.png)
+[<img src="assets/shot_songs_port.png" width=160>](assets/shot_songs_port.png)
+[<img src="assets/shot_search_port.png" width=160>](assets/shot_search_port.png)
+[<img src="assets/shot_album_port.png" width=160>](assets/shot_album_port.png)
+[<img src="assets/shot_artist_port.png" width=160>](assets/shot_artist_port.png)
+[<img src="assets/shot_queue_port.png" width=160>](assets/shot_queue_port.png)
+[<img src="assets/shot_notif.png" width=160>](assets/shot_notif.png)
+[<img src="assets/shot_settings_port.png" width=160>](assets/shot_settings_port.png)
+[<img src="assets/shot_album_alt.png" width=160>](info/shot_album_alt.png)
 
 ## Features
 
