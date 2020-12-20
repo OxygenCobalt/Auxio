@@ -46,10 +46,12 @@ class MusicLoader(
 
     private fun findMusic(): MusicLoaderResponse {
         try {
+            val start = System.currentTimeMillis()
             loadGenres()
             loadArtists()
             loadAlbums()
             loadSongs()
+            logD("Done in ${System.currentTimeMillis() - start}ms")
         } catch (error: Exception) {
             logE("Something went horribly wrong.")
             error.printStackTrace()

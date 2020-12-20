@@ -10,6 +10,7 @@ import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
@@ -23,12 +24,14 @@ object NotificationUtils {
     const val NOTIFICATION_ID = 0xA0A0
     const val REQUEST_CODE = 0xA0C0
 
-    const val ACTION_LOOP = "ACTION_AUXIO_LOOP"
-    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE"
-    const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV"
-    const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE"
-    const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT"
-    const val ACTION_EXIT = "ACTION_AUXIO_EXIT"
+    // Strings for each action, version name is applied so that broadcasts will only reach
+    // one instance of Auxio.
+    const val ACTION_LOOP = "ACTION_AUXIO_LOOP_" + BuildConfig.VERSION_NAME
+    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE_" + BuildConfig.VERSION_NAME
+    const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV_" + BuildConfig.VERSION_NAME
+    const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE_" + BuildConfig.VERSION_NAME
+    const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT_" + BuildConfig.VERSION_NAME
+    const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.VERSION_NAME
 }
 
 /**
@@ -130,6 +133,7 @@ fun NotificationCompat.Builder.updatePlaying(context: Context) {
 /**
  * Update the extra action on the media notification [E.G the Loop/Shuffle button]
  * @param context The context required to refresh the action
+ * @param useAltAction Whether to use the shuffle action or not, true if yes, false if no
  */
 @SuppressLint("RestrictedApi")
 fun NotificationCompat.Builder.updateExtraAction(context: Context, useAltAction: Boolean) {
