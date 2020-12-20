@@ -63,7 +63,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
-    /** The current repeat mode */
+    /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
     val navToItem: LiveData<BaseModel?> get() = mNavToItem

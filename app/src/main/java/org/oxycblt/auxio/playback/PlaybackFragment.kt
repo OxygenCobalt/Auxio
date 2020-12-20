@@ -22,14 +22,22 @@ import org.oxycblt.auxio.ui.toColor
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
- *
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
  * @author OxygenCobalt
  */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate) {
+        // Marquee must be disabled on destroy to prevent memory leaks
         binding.playbackSong.isSelected = false
+    }
+
+    // Colors/Icons
+    private val accentColor: ColorStateList by lazy {
+        ColorStateList.valueOf(accent.first.toColor(requireContext()))
+    }
+    private val controlColor: ColorStateList by lazy {
+        ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
     }
 
     override fun onCreateView(
@@ -39,18 +47,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     ): View {
         // TODO: Add a swipe-to-next-track function using a ViewPager
 
-        // Create accents & icons to use
-        val accentColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
-        val controlColor = ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
-
-        val iconPauseToPlay = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_pause_to_play
-        ) as AnimatedVectorDrawable
-
-        val iconPlayToPause = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_play_to_pause
-        ) as AnimatedVectorDrawable
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
         val iconQueueActive = ContextCompat.getDrawable(
@@ -85,7 +82,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             queueMenuItem = menu.findItem(R.id.action_queue)
         }
 
-        // Make ellipsizing of song title work
+        // Make marquee of song title work
         binding.playbackSong.isSelected = true
 
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
@@ -102,22 +99,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 logD("No song is being played, leaving.")
 
                 findNavController().navigateUp()
-            }
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (it) {
-                // Animate the playing status and switch the button to the accent color
-                // if its playing, and back to a inactive gray if not.
-                binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
-                iconPlayToPause.start()
-
-                binding.playbackPlayPause.backgroundTintList = accentColor
-            } else {
-                binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
-                iconPauseToPlay.start()
-
-                binding.playbackPlayPause.backgroundTintList = controlColor
             }
         }
 
@@ -201,11 +182,53 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        playbackModel.disableAnimation()
+
+        val iconPauseToPlay = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_pause_to_play
+        ) as AnimatedVectorDrawable
+
+        val iconPlayToPause = ContextCompat.getDrawable(
+            requireContext(), R.drawable.ic_play_to_pause
+        ) as AnimatedVectorDrawable
+
+        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+            if (it) {
+                if (playbackModel.canAnimate) {
+                    binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
+                    iconPlayToPause.start()
+                } else {
+                    // Use a static icon the first time around to fix premature animation
+                    // [Which looks weird]
+                    binding.playbackPlayPause.setImageResource(R.drawable.ic_pause_large)
+
+                    playbackModel.enableAnimation()
+                }
+
+                binding.playbackPlayPause.backgroundTintList = accentColor
+            } else {
+                if (playbackModel.canAnimate) {
+                    binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
+                    iconPauseToPlay.start()
+                } else {
+                    binding.playbackPlayPause.setImageResource(R.drawable.ic_play_large)
+
+                    playbackModel.enableAnimation()
+                }
+
+                binding.playbackPlayPause.backgroundTintList = controlColor
+            }
+        }
+    }
+
     // --- SEEK CALLBACKS ---
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
         if (fromUser) {
-            // Only update the display if the change occured from a user
+            // Only update the display when seeking, as to have PlaybackService seek
+            // [causing possible buffering] on every movement is really odd.
             playbackModel.updatePositionDisplay(progress)
         }
     }
