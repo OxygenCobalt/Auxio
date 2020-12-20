@@ -8,17 +8,19 @@ All guidelines from the [Contribution Guidelines](../.github/CONTRIBUTING.md) st
 
 ## Bug Fixes, Optimizations, Library Updates, Formatting, etc.
 
-These will likely be accepted/added as long as they do not cause too much harm to the app's architecture or UX.
+These will likely be accepted as long as they do not cause too much harm to the app's architecture or UX.
 
 ## New Options/Customizations
 
-These will be accepted/added if I see the value in the addition of those options and if they don't cause harm to the app's design. Most new options are fine as long as they dont degrade the UI/UX.
+These will be looked at with more scrutiny, as certain customizations may cause harm to the apps UI/UX while still not providing alot of benefits as a whole.
+
+Overall I tend to accept these however if I see the benefits of adding this UI/Behavior customization.
 
 **Note:** I will be adding Black Mode/Custom Accents in the future. Read the [FAQ](FAQ.md) for more information.
 
 ## Feature Additions and UI Changes
 
-These are far less likely to be accepted/added. As I said, I want to avoid Auxio from becoming overly bloated with features I do not use, and therefore **I will only accept features/UI changes that directly benefit my own usage.** If they do not, then I will reject/ignore them. This does not rule out certain additions, but I am generally less likely to accept these kinds of requests.
+These are far less likely to be accepted/added. As I said, I want to avoid Auxio from becoming overly bloated with features I do not use, and therefore **I will only accept features/UI changes that directly benefit my own usage.** If they do not, then I will reject/ignore them. This does not rule out all additions of this kind, but I am generally less likely to accept these kinds of requests/PRs.
 
 Feel free to fork Auxio to add your own features however.
 
