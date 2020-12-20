@@ -17,7 +17,7 @@
 - 
 
 **Any additional information**
-<!-- Also add any information relevant to this PR -->
+<!-- Also add any information relevant to this PR. -->
 
 **APK testing** 
 <!-- Please create a debug APK for your changes. -->
@@ -25,4 +25,4 @@ debug.zip
 
 **Due Diligence**
 
-- [ ] I have read the [Contribution Guidelines](CONTRIBUTING.md) and [Accepted additions & Requests](../info/ADDITIONS.md).
+- [ ] I have read the [Contribution Guidelines](https://github.com/OxygenCobalt/Auxio/blob/dev/.github/CONTRIBUTING.md) and [Accepted additions & Requests](https://github.com/OxygenCobalt/Auxio/blob/dev/info/ADDITIONS.md).

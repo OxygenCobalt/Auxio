@@ -53,6 +53,11 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                     returnToLoading(binding)
 
                     loadingModel.reload()
+                } else {
+                    showError(binding)
+
+                    binding.loadingGrantButton.visibility = View.VISIBLE
+                    binding.loadingErrorText.text = getString(R.string.error_no_perms)
                 }
             }
 

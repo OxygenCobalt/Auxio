@@ -6,7 +6,7 @@ Since I want to keep this app from suffering the same fate as those others, Any 
 
 All guidelines from the [Contribution Guidelines](../.github/CONTRIBUTING.md) still apply.
 
-## Bug Fixes, Optimizations, Library Updates, Formatting, etc.
+## Bug Fixes, Optimizations, Library Updates, Formatting, Architecture Improvements, etc.
 
 These will likely be accepted as long as they do not cause too much harm to the app's architecture or UX.
 
