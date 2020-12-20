@@ -54,7 +54,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@drawable/ic_album" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/album_name"
                     style="@style/DetailTitleText"
                     android:layout_width="0dp"

@@ -15,7 +15,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.processing.MusicLoaderResponse
+import org.oxycblt.auxio.music.processing.MusicLoader
 
 /**
  * An intermediary [Fragment] that asks for the READ_EXTERNAL_STORAGE permission and runs
@@ -69,7 +69,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         // --- VIEWMODEL SETUP ---
 
         loadingModel.response.observe(viewLifecycleOwner) {
-            if (it == MusicLoaderResponse.DONE) {
+            if (it == MusicLoader.Response.SUCCESS) {
                 findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
                 )
@@ -77,7 +77,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
                 // If the response wasn't a success, then show the specific error message
                 // depending on which error response was given, along with a retry button
                 binding.loadingErrorText.text =
-                    if (it == MusicLoaderResponse.NO_MUSIC)
+                    if (it == MusicLoader.Response.NO_MUSIC)
                         getString(R.string.error_no_music)
                     else
                         getString(R.string.error_music_load_failed)

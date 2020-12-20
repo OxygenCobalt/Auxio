@@ -21,6 +21,7 @@ sealed class BaseModel {
  * @property track    The Song's Track number
  * @property duration The duration of the song, in millis.
  * @property album    The Song's parent album. Use this instead of [albumId].
+ * @property genre    The Song's [Genre]
  * @property seconds  The Song's duration in seconds
  * @property formattedDuration The Song's duration as a duration string.
  * @author OxygenCobalt
@@ -32,7 +33,31 @@ data class Song(
     val track: Int = -1,
     val duration: Long = 0,
 ) : BaseModel() {
-    lateinit var album: Album
+    private var mAlbum: Album? = null
+    private var mGenre: Genre? = null
+
+    val genre: Genre? get() = mGenre
+    val album: Album get() {
+        val album = mAlbum
+
+        if (album != null) {
+            return album
+        } else {
+            error("Song $name must have an album")
+        }
+    }
+
+    fun applyGenre(genre: Genre) {
+        check(mGenre == null) { "Genre is already applied" }
+
+        mGenre = genre
+    }
+
+    fun applyAlbum(album: Album) {
+        check(mAlbum == null) { "Album is already applied" }
+
+        mAlbum = album
+    }
 
     val seconds = duration / 1000
     val formattedDuration: String = seconds.toDuration()
@@ -40,24 +65,35 @@ data class Song(
 
 /**
  * The data object for an album. Inherits [BaseModel].
- * @property artistId The Album's parent artist ID. Do not use this outside of attaching an album to its parent artist.
- * @property coverUri The [Uri] for the album's cover. **Load this using Coil.**
- * @property year     The year this album was released. 0 if there is none in the metadata.
- * @property artist   The Album's parent [Artist]. use this instead of [artistId]
- * @property songs    The Album's child [Song]s.
+ * @property artistName    The name of the parent artist. Do not use this outside of creating the artist from albums
+ * @property coverUri      The [Uri] for the album's cover. **Load this using Coil.**
+ * @property year          The year this album was released. 0 if there is none in the metadata.
+ * @property artist        The Album's parent [Artist]. use this instead of [artistName]
+ * @property songs         The Album's child [Song]s.
  * @property totalDuration The combined duration of all of the album's child songs, formatted.
  * @author OxygenCobalt
  */
 data class Album(
     override val id: Long = -1,
     override val name: String,
-    val artistId: Long = -1,
+    val artistName: String,
     val coverUri: Uri = Uri.EMPTY,
     val year: Int = 0
 ) : BaseModel() {
-    lateinit var artist: Artist
+    private var mArtist: Artist? = null
+    val artist: Artist get() {
+        val artist = mArtist
 
-    val songs = mutableListOf<Song>()
+        if (artist != null) {
+            return artist
+        } else {
+            error("Album $name must have an artist")
+        }
+    }
+
+    private val mSongs = mutableListOf<Song>()
+    val songs: List<Song> get() = mSongs
+
     val totalDuration: String by lazy {
         var seconds: Long = 0
         songs.forEach {
@@ -65,21 +101,44 @@ data class Album(
         }
         seconds.toDuration()
     }
+
+    fun applySongs(songs: List<Song>) {
+        songs.forEach {
+            it.applyAlbum(this)
+            mSongs.add(it)
+        }
+    }
+
+    fun applyArtist(artist: Artist) {
+        mArtist = artist
+    }
 }
 
 /**
  * The data object for an artist. Inherits [BaseModel]
  * @property albums The list of all [Album]s in this artist
- * @property genres The list of all parent [Genre]s in this artist, sorted by relevance
+ * @property genre  The most prominent genre for this artist
  * @property songs  The list of all [Song]s in this artist
  * @author OxygenCobalt
  */
 data class Artist(
     override val id: Long = -1,
-    override var name: String
+    override var name: String,
+    val albums: List<Album>
 ) : BaseModel() {
-    val albums = mutableListOf<Album>()
-    val genres = mutableListOf<Genre>()
+    init {
+        albums.forEach {
+            it.applyArtist(this)
+        }
+    }
+
+    val genre: Genre? by lazy {
+        val groupedGenres = songs.groupBy { it.genre }
+
+        groupedGenres.keys.maxByOrNull { key ->
+            groupedGenres[key]?.size ?: 0
+        }
+    }
 
     val songs: List<Song> by lazy {
         val songs = mutableListOf<Song>()
@@ -92,8 +151,6 @@ data class Artist(
 
 /**
  * The data object for a genre. Inherits [BaseModel]
- * @property artists The list of all [Artist]s in this genre.
- * @property albums  The list of all [Album]s in this genre.
  * @property songs   The list of all [Song]s in this genre.
  * @author OxygenCobalt
  */
@@ -101,21 +158,20 @@ data class Genre(
     override val id: Long = -1,
     override var name: String,
 ) : BaseModel() {
-    val artists = mutableListOf<Artist>()
+    private val mSongs = mutableListOf<Song>()
+    val songs: List<Song> get() = mSongs
 
-    val albums: List<Album> by lazy {
-        val albums = mutableListOf<Album>()
-        artists.forEach {
-            albums.addAll(it.albums)
-        }
-        albums
+    val albumCount: Int by lazy {
+        songs.groupBy { it.album }.size
     }
-    val songs: List<Song> by lazy {
-        val songs = mutableListOf<Song>()
-        artists.forEach {
-            songs.addAll(it.songs)
-        }
-        songs
+
+    val artistCount: Int by lazy {
+        songs.groupBy { it.album.artist }.size
+    }
+
+    fun addSong(song: Song) {
+        mSongs.add(song)
+        song.applyGenre(this)
     }
 }
 

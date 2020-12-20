@@ -10,12 +10,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
-import org.oxycblt.auxio.detail.adapters.GenreArtistAdapter
+import org.oxycblt.auxio.detail.adapters.GenreSongAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.setupArtistActions
+import org.oxycblt.auxio.ui.setupSongActions
 
 /**
  * The [DetailFragment] for a genre.
@@ -45,19 +46,13 @@ class GenreDetailFragment : DetailFragment() {
             )
         }
 
-        val artistAdapter = GenreArtistAdapter(
+        val songAdapter = GenreSongAdapter(
             doOnClick = {
-                if (!detailModel.isNavigating) {
-                    detailModel.updateNavigationStatus(true)
-
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowArtist(it.id)
-                    )
-                }
+                playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupArtistActions(
-                    data, playbackModel
+                PopupMenu(requireContext(), view).setupSongActions(
+                    requireContext(), data, playbackModel
                 )
             }
         )
@@ -96,13 +91,12 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
-        // Disable the sort button if there is only one artist [Or less]
-        if (detailModel.currentGenre.value!!.artists.size < 2) {
+        if (detailModel.currentGenre.value!!.songs.size < 2) {
             binding.genreSortButton.disable(requireContext())
         }
 
-        binding.genreArtistRecycler.apply {
-            adapter = artistAdapter
+        binding.genreSongRecycler.apply {
+            adapter = songAdapter
             setHasFixedSize(true)
         }
 
@@ -115,8 +109,8 @@ class GenreDetailFragment : DetailFragment() {
             binding.genreSortButton.setImageResource(mode.iconRes)
 
             // Then update the sort mode of the artist adapter.
-            artistAdapter.submitList(
-                mode.getSortedArtistList(detailModel.currentGenre.value!!.artists)
+            songAdapter.submitList(
+                mode.getSortedSongList(detailModel.currentGenre.value!!.songs)
             )
         }
 

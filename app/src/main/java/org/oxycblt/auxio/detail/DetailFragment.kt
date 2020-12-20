@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
  * instead of out of the app if a Detail Fragment is currently open. Also carries the
  * multi-navigation fix.
  * TODO: Migrate to a more powerful/efficient CoordinatorLayout instead of NestedScrollView
+ * TODO: Add custom artist images
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {

@@ -15,6 +15,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
 import kotlin.random.Random
 
@@ -143,14 +144,6 @@ class PlaybackStateManager private constructor() {
      * @param mode The [PlaybackMode] to construct the queue off of.
      */
     fun playSong(song: Song, mode: PlaybackMode) {
-        // Auxio doesn't support playing songs while swapping the mode to GENRE, as its impossible
-        // to determine what genre a song has.
-        if (mode == PlaybackMode.IN_GENRE) {
-            logE("Auxio cant play songs with the mode of IN_GENRE.")
-
-            return
-        }
-
         logD("Updating song to ${song.name} and mode to $mode")
 
         val musicStore = MusicStore.getInstance()
@@ -161,17 +154,19 @@ class PlaybackStateManager private constructor() {
                 mQueue = musicStore.songs.toMutableList()
             }
 
+            PlaybackMode.IN_GENRE -> {
+                mParent = song.genre
+                mQueue = orderSongsInGenre(song.genre!!)
+            }
+
             PlaybackMode.IN_ARTIST -> {
                 mParent = song.album.artist
-                mQueue = song.album.artist.songs.toMutableList()
+                mQueue = orderSongsInArtist(song.album.artist)
             }
 
             PlaybackMode.IN_ALBUM -> {
                 mParent = song.album
-                mQueue = song.album.songs
-            }
-
-            else -> {
+                mQueue = orderSongsInAlbum(song.album)
             }
         }
 
@@ -780,52 +775,10 @@ class PlaybackStateManager private constructor() {
             mParent = when (mMode) {
                 PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
                 PlaybackMode.IN_ARTIST -> mQueue.firstOrNull()?.album?.artist
-                PlaybackMode.IN_GENRE -> getCommonGenre()
+                PlaybackMode.IN_GENRE -> mQueue.firstOrNull()?.genre
                 PlaybackMode.ALL_SONGS -> null
             }
         }
-    }
-
-    /**
-     * Search for the common genre out of a queue of songs that **should have a common genre**.
-     * @return The **single** common genre, null if there isn't any or if there's multiple.
-     */
-    private fun getCommonGenre(): Genre? {
-        // Pool of "Possible" genres, these get narrowed down until the list is only
-        // the actual genre(s) that all songs in the queue have in common.
-        var genres = mutableListOf<Genre>()
-        var otherGenres: MutableList<Genre>
-
-        for (queueSong in mQueue) {
-            // If there's still songs to check despite the pool of genres being empty, re-add them.
-            if (genres.size == 0) {
-                genres.addAll(queueSong.album.artist.genres)
-                continue
-            }
-
-            otherGenres = genres.toMutableList()
-
-            // Iterate through the current genres and remove the ones that don't exist in this song,
-            // narrowing down the pool of possible genres.
-            for (genre in genres) {
-                if (queueSong.album.artist.genres.find { it.id == genre.id } == null) {
-                    otherGenres.remove(genre)
-                }
-            }
-
-            genres = otherGenres.toMutableList()
-        }
-
-        logD("Found genre $genres")
-
-        // There should not be more than one common genre, so return null if that's the case
-        if (genres.size > 1) {
-            return null
-        }
-
-        // Sometimes the narrowing process will lead to a zero-size list, so return null if that
-        // is the case.
-        return genres.firstOrNull()
     }
 
     // --- ORDERING FUNCTIONS ---
@@ -866,17 +819,7 @@ class PlaybackStateManager private constructor() {
      * Create an ordered queue based on a [Genre].
      */
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
-        val final = mutableListOf<Song>()
-
-        genre.artists.sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-        ).forEach { artist ->
-            artist.albums.sortedByDescending { it.year }.forEach { album ->
-                final.addAll(album.songs.sortedBy { it.track })
-            }
-        }
-
-        return final
+        return SortMode.ALPHA_DOWN.getSortedSongList(genre.songs).toMutableList()
     }
 
     /**

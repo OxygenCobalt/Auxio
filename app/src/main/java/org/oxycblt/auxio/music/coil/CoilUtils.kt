@@ -104,34 +104,24 @@ fun ImageView.bindArtistImage(artist: Artist) {
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre) {
     val request: ImageRequest
+    val genreCovers = mutableListOf<Uri>()
 
-    if (genre.artists.size >= 4) {
-        val uris = mutableListOf<Uri>()
+    genre.songs.groupBy { it.album }.forEach {
+        genreCovers.add(it.key.coverUri)
+    }
 
-        // Get the Nth cover from each artist, if possible.
-        for (i in 0..3) {
-            val artist = genre.artists[i]
-
-            uris.add(
-                if (artist.albums.size > i) {
-                    artist.albums[i].coverUri
-                } else {
-                    artist.albums[0].coverUri
-                }
-            )
-        }
-
+    if (genreCovers.size >= 4) {
         val fetcher = MosaicFetcher(context)
 
         request = getDefaultRequest(context, this)
-            .data(uris)
+            .data(genreCovers.slice(0..3))
             .fetcher(fetcher)
             .error(R.drawable.ic_genre)
             .build()
     } else {
-        if (genre.artists.isNotEmpty()) {
+        if (genreCovers.isNotEmpty()) {
             request = getDefaultRequest(context, this)
-                .data(genre.artists[0].albums[0].coverUri)
+                .data(genreCovers[0])
                 .error(R.drawable.ic_genre)
                 .build()
         } else {

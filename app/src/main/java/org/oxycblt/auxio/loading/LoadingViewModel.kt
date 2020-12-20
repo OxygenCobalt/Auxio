@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.processing.MusicLoaderResponse
+import org.oxycblt.auxio.music.processing.MusicLoader
 
 /**
  * A [ViewModel] responsible for getting the music loading process going and managing the response
@@ -18,8 +18,8 @@ import org.oxycblt.auxio.music.processing.MusicLoaderResponse
  * @author OxygenCobalt
  */
 class LoadingViewModel(private val app: Application) : ViewModel() {
-    private val mResponse = MutableLiveData<MusicLoaderResponse>()
-    val response: LiveData<MusicLoaderResponse> get() = mResponse
+    private val mResponse = MutableLiveData<MusicLoader.Response>()
+    val response: LiveData<MusicLoader.Response> get() = mResponse
 
     private val mRedo = MutableLiveData<Boolean>()
     val doReload: LiveData<Boolean> get() = mRedo

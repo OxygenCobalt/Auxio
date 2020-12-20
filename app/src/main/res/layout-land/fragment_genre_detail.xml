@@ -53,7 +53,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@drawable/ic_genre" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/genre_name"
                     style="@style/DetailTitleText"
                     android:layout_width="0dp"
@@ -90,16 +90,16 @@
                     android:text="@{@plurals/format_song_count(genre.songs.size, genre.songs.size)}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
-                    app:layout_constraintBottom_toTopOf="@+id/genre_artist_header"
+                    app:layout_constraintBottom_toTopOf="@+id/genre_song_header"
                     app:layout_constraintStart_toEndOf="@+id/genre_image"
                     app:layout_constraintTop_toBottomOf="@+id/genre_counts"
                     tools:text="80 Songs" />
 
                 <TextView
-                    android:id="@+id/genre_artist_header"
+                    android:id="@+id/genre_song_header"
                     style="@style/HeaderText"
                     android:layout_marginTop="@dimen/margin_medium"
-                    android:text="@string/label_artists"
+                    android:text="@string/label_songs"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/genre_image" />
 
@@ -108,13 +108,13 @@
                     style="@style/HeaderAction"
                     android:contentDescription="@string/description_sort_button"
                     android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/genre_artist_header"
+                    app:layout_constraintBottom_toBottomOf="@+id/genre_song_header"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/genre_artist_header"
+                    app:layout_constraintTop_toTopOf="@+id/genre_song_header"
                     tools:src="@drawable/ic_sort_alpha_down" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/genre_artist_recycler"
+                    android:id="@+id/genre_song_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -123,10 +123,10 @@
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_artist_header"
+                    app:layout_constraintTop_toBottomOf="@+id/genre_song_header"
                     app:spanCount="2"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_artist" />
+                    tools:listitem="@layout/item_song" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

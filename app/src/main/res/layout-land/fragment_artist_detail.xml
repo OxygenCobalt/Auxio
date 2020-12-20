@@ -52,7 +52,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@drawable/ic_artist" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/artist_name"
                     style="@style/DetailTitleText"
                     android:layout_width="0dp"
