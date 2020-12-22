@@ -1,10 +1,12 @@
 package org.oxycblt.auxio.music.processing
 
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Song
 
+/**
+ * Object responsible for creating [Artist]s from [Album]s and generally sorting everything.
+ */
 class MusicSorter(
     val songs: MutableList<Song>,
     val albums: MutableList<Album>
@@ -27,7 +29,6 @@ class MusicSorter(
         val groupedAlbums = albums.groupBy { it.artistName }
 
         groupedAlbums.forEach {
-            logD(it.key)
             artists.add(
                 Artist(id = artists.size.toLong(), name = it.key, albums = it.value)
             )

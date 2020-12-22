@@ -84,7 +84,8 @@ class ArtistDetailFragment : DetailFragment() {
 
                         true
                     }
-                    R.id.action_play -> {
+
+                    R.id.action_play_albums -> {
                         playbackModel.playArtist(
                             detailModel.currentArtist.value!!, false
                         )

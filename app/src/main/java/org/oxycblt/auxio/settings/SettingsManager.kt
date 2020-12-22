@@ -10,6 +10,7 @@ import org.oxycblt.auxio.ui.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
+ * TODO: Add option to play song from genre, now that its possible
  * @author OxygenCobalt
  */
 class SettingsManager private constructor(context: Context) :

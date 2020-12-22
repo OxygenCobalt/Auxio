@@ -29,7 +29,7 @@
             style="@style/Toolbar.Style.Icon"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:menu="@menu/menu_detail"
+            app:menu="@menu/menu_artist_detail"
             app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView

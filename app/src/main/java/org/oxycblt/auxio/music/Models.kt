@@ -161,12 +161,12 @@ data class Genre(
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val albumCount: Int by lazy {
-        songs.groupBy { it.album }.size
-    }
-
-    val artistCount: Int by lazy {
-        songs.groupBy { it.album.artist }.size
+    val totalDuration: String by lazy {
+        var seconds: Long = 0
+        songs.forEach {
+            seconds += it.seconds
+        }
+        seconds.toDuration()
     }
 
     fun addSong(song: Song) {

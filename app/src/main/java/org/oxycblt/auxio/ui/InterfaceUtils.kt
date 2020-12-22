@@ -197,7 +197,7 @@ fun PopupMenu.setupAlbumActions(
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_album_actions)
+    inflateAndShow(R.menu.menu_album_detail)
 }
 
 /**
@@ -221,7 +221,7 @@ fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewMode
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_detail)
+    inflateAndShow(R.menu.menu_artist_detail)
 }
 
 /**
@@ -232,11 +232,6 @@ fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewMode
 fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) {
     setOnMenuItemClickListener {
         when (it.itemId) {
-            R.id.action_play -> {
-                playbackModel.playGenre(genre, false)
-                true
-            }
-
             R.id.action_shuffle -> {
                 playbackModel.playGenre(genre, true)
                 true
@@ -245,7 +240,43 @@ fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) 
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_detail)
+    inflateAndShow(R.menu.menu_artist_detail)
+}
+
+/**
+ * Show actions for a song in a genre.
+ * @param context [Context] required
+ * @param song [Song] the menu should correspond to
+ * @param playbackModel [PlaybackViewModel] to dispatch actions to
+ */
+fun PopupMenu.setupGenreSongActions(context: Context, song: Song, playbackModel: PlaybackViewModel) {
+    setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(song)
+                context.getString(R.string.label_queue_added).createToast(context)
+                true
+            }
+
+            R.id.action_play_artist -> {
+                playbackModel.playSong(song, PlaybackMode.IN_ARTIST)
+                true
+            }
+
+            R.id.action_play_album -> {
+                playbackModel.playSong(song, PlaybackMode.IN_ALBUM)
+                true
+            }
+
+            R.id.action_play_all_songs -> {
+                playbackModel.playSong(song, PlaybackMode.ALL_SONGS)
+                true
+            }
+
+            else -> false
+        }
+    }
+    inflateAndShow(R.menu.menu_genre_song_actions)
 }
 
 /**

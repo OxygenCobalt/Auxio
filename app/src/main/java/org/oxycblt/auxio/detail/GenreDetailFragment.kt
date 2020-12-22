@@ -16,7 +16,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.setupSongActions
+import org.oxycblt.auxio.ui.setupGenreSongActions
 
 /**
  * The [DetailFragment] for a genre.
@@ -51,7 +51,7 @@ class GenreDetailFragment : DetailFragment() {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupSongActions(
+                PopupMenu(requireContext(), view).setupGenreSongActions(
                     requireContext(), data, playbackModel
                 )
             }
@@ -74,13 +74,6 @@ class GenreDetailFragment : DetailFragment() {
                         playbackModel.playGenre(
                             detailModel.currentGenre.value!!,
                             true
-                        )
-
-                        true
-                    }
-                    R.id.action_play -> {
-                        playbackModel.playGenre(
-                            detailModel.currentGenre.value!!, false
                         )
 
                         true

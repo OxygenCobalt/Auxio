@@ -507,15 +507,13 @@ class PlaybackStateManager private constructor() {
      * @param useLastSong (Optional, defaults to false) Whether to use the previous song for the index calculations caused by the above parameter.
      */
     private fun genShuffle(keepSong: Boolean, useLastSong: Boolean = false) {
-        val newSeed = Random.Default.nextLong()
+        mShuffleSeed = Random.Default.nextLong()
 
-        logD("Shuffling queue with seed $newSeed")
+        logD("Shuffling queue with seed $mShuffleSeed")
 
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
 
-        mShuffleSeed = newSeed
-
-        mQueue.shuffle(Random(newSeed))
+        mQueue.shuffle(Random(mShuffleSeed))
         mIndex = 0
 
         // If specified, make the current song the first member of the queue.

@@ -2,6 +2,7 @@ package org.oxycblt.auxio.music.processing
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
@@ -16,7 +17,8 @@ import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toNamedGenre
 
 /**
- * Object that loads music from the filesystem.
+ * Class that loads/constructs [Genre]s, [Album]s, and [Song] objects from the filesystem
+ * Artists are constructed in [MusicSorter], as they are only really containers for [Album]s
  */
 class MusicLoader(private val app: Application) {
     var genres = mutableListOf<Genre>()
@@ -117,9 +119,13 @@ class MusicLoader(private val app: Application) {
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getString(nameIndex) ?: albumPlaceholder
-                val artistName = cursor.getString(artistIdIndex) ?: artistPlaceholder
+                var artistName = cursor.getString(artistIdIndex) ?: artistPlaceholder
                 val year = cursor.getInt(yearIndex)
                 val coverUri = id.toAlbumArtURI()
+
+                if (artistName == MediaStore.UNKNOWN_STRING) {
+                    artistName = artistPlaceholder
+                }
 
                 albums.add(
                     Album(
@@ -192,9 +198,7 @@ class MusicLoader(private val app: Application) {
         for (genre in genres) {
             val songGenreCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
-                arrayOf(
-                    Genres.Members._ID
-                ),
+                arrayOf(Genres.Members._ID),
                 null, null, null
             )
 

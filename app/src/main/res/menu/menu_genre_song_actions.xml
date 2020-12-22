@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_queue_add"
+        android:icon="@drawable/ic_queue_add"
+        android:title="@string/label_queue_add" />
+    <item
+        android:id="@+id/action_play_artist"
+        android:icon="@drawable/ic_artist"
+        android:title="@string/label_play_artist" />
+    <item
+        android:id="@+id/action_play_album"
+        android:icon="@drawable/ic_album"
+        android:title="@string/label_play_album" />
+</menu>

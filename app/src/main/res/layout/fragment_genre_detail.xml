@@ -29,7 +29,7 @@
             style="@style/Toolbar.Style.Icon"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:menu="@menu/menu_detail"
+            app:menu="@menu/menu_songs"
             app:title="@string/label_library" />
 
         <androidx.core.widget.NestedScrollView
@@ -71,28 +71,28 @@
                     tools:text="Genre Name" />
 
                 <TextView
-                    android:id="@+id/genre_counts"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_medium"
-                    android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="?android:attr/textColorSecondary"
-                    app:genreCounts="@{genre}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_name"
-                    tools:text="2 Artists, 4 Albums" />
-
-                <TextView
                     android:id="@+id/genre_song_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_medium"
-                    android:text="@{@plurals/format_song_count(genre.songs.size, genre.songs.size)}"
+                    android:textAppearance="?android:attr/textAppearanceListItem"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:text="@{@plurals/format_song_count(genre.songs.size(), genre.songs.size())}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/genre_name"
+                    tools:text="80 Songs" />
+
+                <TextView
+                    android:id="@+id/genre_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_medium"
+                    android:text="@{genre.totalDuration}"
                     android:textAppearance="?android:attr/textAppearanceListItem"
                     android:textColor="?android:attr/textColorSecondary"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_counts"
-                    tools:text="80 Songs" />
+                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count"
+                    tools:text="16:16" />
 
                 <TextView
                     android:id="@+id/genre_song_header"
@@ -100,7 +100,7 @@
                     android:layout_marginTop="@dimen/padding_medium"
                     android:text="@string/label_songs"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_song_count" />
+                    app:layout_constraintTop_toBottomOf="@+id/genre_duration" />
 
                 <ImageButton
                     android:id="@+id/genre_sort_button"

@@ -38,12 +38,12 @@
         <TextView
             android:id="@+id/genre_count"
             style="@style/ItemText.Secondary"
-            app:altGenreCounts="@{genre}"
+            android:text="@{@plurals/format_song_count(genre.songs.size(), genre.songs.size())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_image"
             app:layout_constraintTop_toBottomOf="@+id/genre_name"
-            tools:text="4 Albums, 40 Songs" />
+            tools:text="40 Songs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

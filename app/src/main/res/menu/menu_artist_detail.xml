@@ -7,8 +7,8 @@
         android:title="@string/label_shuffle"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_play"
+        android:id="@+id/action_play_albums"
         android:icon="@drawable/ic_play"
-        android:title="@string/label_play"
+        android:title="@string/label_play_albums"
         app:showAsAction="never" />
 </menu>

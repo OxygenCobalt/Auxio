@@ -106,37 +106,6 @@ fun Int.toYear(context: Context): String {
 // --- BINDING ADAPTERS ---
 
 /**
- * Bind the artist + album counts for a genre
- */
-@BindingAdapter("genreCounts")
-fun TextView.bindGenreCounts(genre: Genre) {
-    val artists = context.resources.getQuantityString(
-        R.plurals.format_artist_count, genre.artistCount, genre.artistCount
-    )
-    val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, genre.albumCount, genre.albumCount
-    )
-
-    text = context.getString(R.string.format_double_counts, artists, albums)
-}
-
-/**
- * Bind the album + song counts for a genre
- */
-@BindingAdapter("altGenreCounts")
-fun TextView.bindAltGenreCounts(genre: Genre) {
-    val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, genre.albumCount, genre.albumCount
-    )
-
-    val songs = context.resources.getQuantityString(
-        R.plurals.format_song_count, genre.songs.size, genre.songs.size
-    )
-
-    text = context.getString(R.string.format_double_counts, albums, songs)
-}
-
-/**
  * Bind the most prominent artist genre
  */
 @BindingAdapter("artistGenre")
