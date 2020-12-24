@@ -5,12 +5,15 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Looper
+import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.logD
 
 /**
  * A SQLite database for managing the persistent playback state and queue.
  * Yes, I know androidx has Room which supposedly makes database creation easier, but it also
  * has a crippling bug where it will endlessly allocate rows even if you clear the entire db, so...
+ * TODO: Turn queue loading info flow
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :
@@ -53,9 +56,9 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
-        command.append("${PlaybackState.COLUMN_SONG_ID} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_SONG_NAME} STRING NOT NULL,")
         command.append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
-        command.append("${PlaybackState.COLUMN_PARENT_ID} LONG NOT NULL,")
+        command.append("${PlaybackState.COLUMN_PARENT_NAME} STRING NOT NULL,")
         command.append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
         command.append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
         command.append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
@@ -70,8 +73,8 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
-        command.append("${QueueItem.COLUMN_SONG_ID} LONG NOT NULL,")
-        command.append("${QueueItem.COLUMN_ALBUM_ID} LONG NOT NULL,")
+        command.append("${QueueItem.COLUMN_SONG_NAME} LONG NOT NULL,")
+        command.append("${QueueItem.COLUMN_ALBUM_NAME} LONG NOT NULL,")
         command.append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
@@ -83,6 +86,8 @@ class PlaybackStateDatabase(context: Context) :
      * Clear the previously written [PlaybackState] and write a new one.
      */
     fun writeState(state: PlaybackState) {
+        assertBackgroundThread()
+
         val database = writableDatabase
         database.beginTransaction()
 
@@ -101,9 +106,9 @@ class PlaybackStateDatabase(context: Context) :
             val stateData = ContentValues(9)
 
             stateData.put(PlaybackState.COLUMN_ID, state.id)
-            stateData.put(PlaybackState.COLUMN_SONG_ID, state.songId)
+            stateData.put(PlaybackState.COLUMN_SONG_NAME, state.songName)
             stateData.put(PlaybackState.COLUMN_POSITION, state.position)
-            stateData.put(PlaybackState.COLUMN_PARENT_ID, state.parentId)
+            stateData.put(PlaybackState.COLUMN_PARENT_NAME, state.parentName)
             stateData.put(PlaybackState.COLUMN_INDEX, state.index)
             stateData.put(PlaybackState.COLUMN_MODE, state.mode)
             stateData.put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
@@ -124,6 +129,8 @@ class PlaybackStateDatabase(context: Context) :
      * @return The stored [PlaybackState], null if there isn't one.
      */
     fun readState(): PlaybackState? {
+        assertBackgroundThread()
+
         val database = writableDatabase
 
         var state: PlaybackState? = null
@@ -140,9 +147,9 @@ class PlaybackStateDatabase(context: Context) :
                 // Don't bother if the cursor [and therefore database] has nothing in it.
                 if (cursor.count == 0) return@use
 
-                val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_ID)
+                val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_NAME)
                 val positionIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
-                val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_ID)
+                val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_NAME)
                 val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
                 val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
                 val isShufflingIndex =
@@ -155,9 +162,9 @@ class PlaybackStateDatabase(context: Context) :
                 cursor.moveToFirst()
 
                 state = PlaybackState(
-                    songId = cursor.getLong(songIndex),
+                    songName = cursor.getStringOrNull(songIndex) ?: "",
                     position = cursor.getLong(positionIndex),
-                    parentId = cursor.getLong(parentIndex),
+                    parentName = cursor.getStringOrNull(parentIndex) ?: "",
                     index = cursor.getInt(indexIndex),
                     mode = cursor.getInt(modeIndex),
                     isShuffling = cursor.getInt(isShufflingIndex) == 1,
@@ -175,6 +182,8 @@ class PlaybackStateDatabase(context: Context) :
      * @param queue The list of [QueueItem]s to be written.
      */
     fun writeQueue(queue: List<QueueItem>) {
+        assertBackgroundThread()
+
         val database = readableDatabase
         database.beginTransaction()
 
@@ -204,8 +213,8 @@ class PlaybackStateDatabase(context: Context) :
                     i++
 
                     itemData.put(QueueItem.COLUMN_ID, item.id)
-                    itemData.put(QueueItem.COLUMN_SONG_ID, item.songId)
-                    itemData.put(QueueItem.COLUMN_ALBUM_ID, item.albumId)
+                    itemData.put(QueueItem.COLUMN_SONG_NAME, item.songName)
+                    itemData.put(QueueItem.COLUMN_ALBUM_NAME, item.albumName)
                     itemData.put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
 
                     database.insert(TABLE_NAME_QUEUE, null, itemData)
@@ -229,6 +238,8 @@ class PlaybackStateDatabase(context: Context) :
      * @return A list of any stored [QueueItem]s.
      */
     fun readQueue(): List<QueueItem> {
+        assertBackgroundThread()
+
         val database = readableDatabase
 
         val queueItems = mutableListOf<QueueItem>()
@@ -244,18 +255,18 @@ class PlaybackStateDatabase(context: Context) :
                 if (cursor.count == 0) return@use
 
                 val idIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ID)
-                val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_ID)
-                val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_ID)
+                val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_NAME)
+                val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_NAME)
                 val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_IS_USER_QUEUE)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    val songId = cursor.getLong(songIdIndex)
-                    val albumId = cursor.getLong(albumIdIndex)
+                    val songName = cursor.getStringOrNull(songIdIndex) ?: ""
+                    val albumName = cursor.getStringOrNull(albumIdIndex) ?: ""
                     val isUserQueue = cursor.getInt(isUserQueueIndex) == 1
 
                     queueItems.add(
-                        QueueItem(id, songId, albumId, isUserQueue)
+                        QueueItem(id, songName, albumName, isUserQueue)
                     )
                 }
             }
@@ -264,8 +275,14 @@ class PlaybackStateDatabase(context: Context) :
         }
     }
 
+    private fun assertBackgroundThread() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            error("Not on a background thread.")
+        }
+    }
+
     companion object {
-        const val DB_VERSION = 1
+        const val DB_VERSION = 2
         const val DB_NAME = "auxio_state_database"
 
         const val TABLE_NAME_STATE = "playback_state_table"

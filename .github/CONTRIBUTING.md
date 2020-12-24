@@ -26,8 +26,8 @@ Please keep in mind when requesting a feature:
 - **Will it be accepted?** Read the [Accepted Additions and Requests](../info/ADDITIONS.md) in order to see the likelihood that your request will be implemented.
 
 If you do make a request, provide the following:
-- What kind of addition is this? (A Full Feature? A new customization option? A UI Change?)
 - What is it that you want?
+- Is it related to some problem? If so, describe why.
 - Why do you think it will benefit everyone's usage of the app?
 
 If you have the knowledge, you can also implement the feature yourself and create a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), but its recommended that **you create an issue beforehand to give me a heads up.**

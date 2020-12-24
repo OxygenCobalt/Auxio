@@ -123,6 +123,7 @@ class MusicLoader(private val app: Application) {
                 val year = cursor.getInt(yearIndex)
                 val coverUri = id.toAlbumArtURI()
 
+                // Correct any artist names to a nicer "Unknown Artist" label
                 if (artistName == MediaStore.UNKNOWN_STRING) {
                     artistName = artistPlaceholder
                 }

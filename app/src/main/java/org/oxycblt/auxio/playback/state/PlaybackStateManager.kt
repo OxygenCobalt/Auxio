@@ -667,15 +667,15 @@ class PlaybackStateManager private constructor() {
      * @return A [PlaybackState] reflecting the current state.
      */
     private fun packToPlaybackState(): PlaybackState {
-        val songId = mSong?.id ?: -1L
-        val parentId = mParent?.id ?: -1L
+        val songName = mSong?.name ?: ""
+        val parentName = mParent?.name ?: ""
         val intMode = mMode.toInt()
         val intLoopMode = mLoopMode.toInt()
 
         return PlaybackState(
-            songId = songId,
+            songName = songName,
             position = mPosition,
-            parentId = parentId,
+            parentName = parentName,
             index = mIndex,
             mode = intMode,
             isShuffling = mIsShuffling,
@@ -694,12 +694,12 @@ class PlaybackStateManager private constructor() {
         var queueItemId = 0L
 
         mUserQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.id, it.albumId, true))
+            unified.add(QueueItem(queueItemId, it.name, it.album.name, true))
             queueItemId++
         }
 
         mQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.id, it.albumId, false))
+            unified.add(QueueItem(queueItemId, it.name, it.album.name, false))
             queueItemId++
         }
 
@@ -714,9 +714,9 @@ class PlaybackStateManager private constructor() {
         val musicStore = MusicStore.getInstance()
 
         // Turn the simplified information from PlaybackState into values that can be used
-        mSong = musicStore.songs.find { it.id == playbackState.songId }
+        mSong = musicStore.songs.find { it.name == playbackState.songName }
         mPosition = playbackState.position
-        mParent = musicStore.parents.find { it.id == playbackState.parentId }
+        mParent = musicStore.parents.find { it.name == playbackState.parentName }
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
@@ -739,18 +739,19 @@ class PlaybackStateManager private constructor() {
 
         queueItems.forEach { item ->
             // Traverse albums and then album songs instead of just the songs, as its faster.
-            musicStore.albums.find { it.id == item.albumId }
-                ?.songs?.find { it.id == item.songId }?.let {
-                if (item.isUserQueue) {
-                    mUserQueue.add(it)
-                } else {
-                    mQueue.add(it)
+            musicStore.albums.find { it.name == item.albumName }
+                ?.songs?.find { it.name == item.songName }?.let {
+                    if (item.isUserQueue) {
+                        mUserQueue.add(it)
+                    } else {
+                        mQueue.add(it)
+                    }
                 }
-            }
         }
 
         // When done, get a more accurate index to prevent issues with queue songs that were saved
         // to the db but are now deleted when the restore occurred.
+        // Not done if in user queue because that could result in a bad index being created.
         if (!mIsInUserQueue) {
             mSong?.let {
                 val index = mQueue.indexOf(it)

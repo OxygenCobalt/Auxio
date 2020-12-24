@@ -8,9 +8,9 @@ import org.oxycblt.auxio.music.BaseModel
 /**
  * A [RecyclerView.ViewHolder] that streamlines a lot of the common things across all viewholders.
  * @param T The datatype, inheriting [BaseModel] for this ViewHolder.
- * @property baseBinding Basic [ViewDataBinding] required to set up click listeners & sizing.
- * @property doOnClick Function that specifies what to do when an item is clicked. Specify null if you want no action to occur.
- * @property doOnLongClick Function that specifies what to do when an item is long clicked. Specify null if you want no action to occur.
+ * @param baseBinding Basic [ViewDataBinding] required to set up click listeners & sizing.
+ * @param doOnClick Function that specifies what to do when an item is clicked. Specify null if you want no action to occur.
+ * @param doOnLongClick Function that specifies what to do when an item is long clicked. Specify null if you want no action to occur.
  * @author OxygenCobalt
  */
 abstract class BaseViewHolder<T : BaseModel>(

@@ -7,8 +7,9 @@ assignees: ''
 
 ---
 
-#### Describe the bug/crash
+#### Describe the bug/crash:
 <!-- A clear and concise description of what the bug or crash is. -->
+
 #### Steps To Reproduce the bug/crash:
 <!--
 1. Go to X
