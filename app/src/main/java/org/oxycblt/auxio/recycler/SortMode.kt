@@ -4,8 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -23,21 +23,21 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     NUMERIC_DOWN(R.drawable.ic_sort_numeric_down);
 
     /**
-     * Get a sorted list of artists for a SortMode. Only supports alphabetic sorting.
-     * @param artists An unsorted list of artists.
+     * Get a sorted list of genres for a SortMode. Only supports alphabetic sorting.
+     * @param genres An unsorted list of artists.
      * @return The sorted list of artists.
      */
-    fun getSortedArtistList(artists: List<Artist>): List<Artist> {
+    fun getSortedGenreList(genres: List<Genre>): List<Genre> {
         return when (this) {
-            ALPHA_UP -> artists.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+            ALPHA_UP -> genres.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.displayName }
             )
 
-            ALPHA_DOWN -> artists.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+            ALPHA_DOWN -> genres.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.displayName }
             )
 
-            else -> artists
+            else -> genres
         }
     }
 

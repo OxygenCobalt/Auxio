@@ -28,7 +28,7 @@ sealed class BaseModel {
  */
 data class Song(
     override val id: Long = -1,
-    override var name: String,
+    override val name: String,
     val albumId: Long = -1,
     val track: Int = -1,
     val duration: Long = 0,
@@ -48,8 +48,6 @@ data class Song(
     }
 
     fun applyGenre(genre: Genre) {
-        check(mGenre == null) { "Genre is already applied" }
-
         mGenre = genre
     }
 
@@ -123,7 +121,7 @@ data class Album(
  */
 data class Artist(
     override val id: Long = -1,
-    override var name: String,
+    override val name: String,
     val albums: List<Album>
 ) : BaseModel() {
     init {
@@ -152,14 +150,23 @@ data class Artist(
 /**
  * The data object for a genre. Inherits [BaseModel]
  * @property songs   The list of all [Song]s in this genre.
+ * @property displayName A name that can be displayed without it showing up as an integer. ***USE THIS INSTEAD OF [name]!!!!***
  * @author OxygenCobalt
  */
 data class Genre(
     override val id: Long = -1,
-    override var name: String,
+    override val name: String,
 ) : BaseModel() {
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
+
+    val displayName: String by lazy {
+        if (name.contains(Regex("[0123456789)]"))) {
+            name.toNamedGenre() ?: name
+        } else {
+            name
+        }
+    }
 
     val totalDuration: String by lazy {
         var seconds: Long = 0
@@ -182,6 +189,6 @@ data class Genre(
  */
 data class Header(
     override val id: Long = -1,
-    override var name: String = "",
+    override val name: String = "",
     val isAction: Boolean = false
 ) : BaseModel()

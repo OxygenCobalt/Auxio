@@ -160,9 +160,22 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     /**
      * Shortcut function for updating the library data with the current [SortMode]/[DisplayMode]
      */
+    @Suppress("UNCHECKED_CAST")
     private fun updateLibraryData() {
-        mLibraryData.value = mSortMode.value!!.getSortedBaseModelList(
-            musicStore.getListForDisplayMode(mDisplayMode)
-        )
+        mLibraryData.value = when (mDisplayMode) {
+            DisplayMode.SHOW_GENRES -> {
+                mSortMode.value!!.getSortedGenreList(musicStore.genres)
+            }
+
+            DisplayMode.SHOW_ARTISTS -> {
+                mSortMode.value!!.getSortedBaseModelList(musicStore.artists)
+            }
+
+            DisplayMode.SHOW_ALBUMS -> {
+                mSortMode.value!!.getSortedAlbumList(musicStore.albums)
+            }
+
+            else -> error("Unsupported Library DisplayMode $mDisplayMode")
+        }
     }
 }

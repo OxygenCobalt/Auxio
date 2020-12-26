@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/genre_name"
             style="@style/ItemText.Primary"
-            android:text="@{genre.name}"
+            android:text="@{genre.displayName}"
             app:layout_constraintBottom_toTopOf="@+id/genre_count"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_image"

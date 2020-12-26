@@ -14,7 +14,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
-import org.oxycblt.auxio.music.toNamedGenre
 
 /**
  * Class that loads/constructs [Genre]s, [Album]s, and [Song] objects from the filesystem
@@ -69,19 +68,9 @@ class MusicLoader(private val app: Application) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                var name = cursor.getStringOrNull(nameIndex) ?: genrePlaceholder
+                val name = cursor.getStringOrNull(nameIndex) ?: genrePlaceholder
 
-                // If a genre is still in an old int-based format [Android formats it as "(INT)"],
-                // convert that to the corresponding ID3 genre.
-                if (name.contains(Regex("[0123456789)]"))) {
-                    name = name.toNamedGenre() ?: genrePlaceholder
-                }
-
-                genres.add(
-                    Genre(
-                        id, name
-                    )
-                )
+                genres.add(Genre(id, name))
             }
 
             cursor.close()
@@ -207,9 +196,9 @@ class MusicLoader(private val app: Application) {
                 val idIndex = cursor.getColumnIndexOrThrow(Genres.Members._ID)
 
                 while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idIndex)
+                    val songId = cursor.getLong(idIndex)
 
-                    songs.find { it.id == id }?.let {
+                    songs.find { it.id == songId }?.let {
                         genre.addSong(it)
                     }
                 }

@@ -110,7 +110,7 @@ fun Int.toYear(context: Context): String {
  */
 @BindingAdapter("artistGenre")
 fun TextView.bindArtistGenre(artist: Artist) {
-    text = artist.genre?.name ?: context.getString(R.string.placeholder_genre)
+    text = artist.genre?.displayName ?: context.getString(R.string.placeholder_genre)
 }
 
 /**

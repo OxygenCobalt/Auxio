@@ -6,7 +6,6 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.processing.MusicLoader
 import org.oxycblt.auxio.music.processing.MusicSorter
-import org.oxycblt.auxio.recycler.DisplayMode
 
 /**
  * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
@@ -27,11 +26,11 @@ class MusicStore private constructor() {
 
     /** All parent models (ex Albums, Artists) loaded by Auxio */
     val parents: MutableList<BaseModel> by lazy {
-        val parents = mutableListOf<BaseModel>()
-        parents.addAll(mGenres)
-        parents.addAll(mArtists)
-        parents.addAll(mAlbums)
-        parents
+        mutableListOf<BaseModel>().apply {
+            addAll(mGenres)
+            addAll(mArtists)
+            addAll(mAlbums)
+        }
     }
 
     var loaded = false
@@ -70,20 +69,6 @@ class MusicStore private constructor() {
             }
 
             response
-        }
-    }
-
-    /**
-     * Get a list of data for a [DisplayMode].
-     * @param displayMode The [DisplayMode] given
-     * @return A list of [BaseModel]s for that [DisplayMode]
-     */
-    fun getListForDisplayMode(displayMode: DisplayMode): List<BaseModel> {
-        return when (displayMode) {
-            DisplayMode.SHOW_GENRES -> mGenres
-            DisplayMode.SHOW_ARTISTS -> mArtists
-            DisplayMode.SHOW_ALBUMS -> mAlbums
-            DisplayMode.SHOW_SONGS -> mSongs
         }
     }
 
