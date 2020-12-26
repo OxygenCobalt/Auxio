@@ -20,9 +20,13 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Renderer
+import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -54,9 +58,7 @@ import org.oxycblt.auxio.settings.SettingsManager
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
-    private val player: SimpleExoPlayer by lazy {
-        SimpleExoPlayer.Builder(applicationContext).build()
-    }
+    private val player: SimpleExoPlayer by lazy { newPlayer() }
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -331,6 +333,20 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     // --- OTHER FUNCTIONS ---
+
+    /**
+     * Create the [SimpleExoPlayer] instance.
+     */
+    private fun newPlayer(): SimpleExoPlayer {
+        // Since Auxio is a music player, only specify an audio renderer to save battery & cache space.
+        val audioRenderer = RenderersFactory { handler, vidListener, audioListener, textOutput, metadataOutput ->
+            arrayOf<Renderer>(
+                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener)
+            )
+        }
+
+        return SimpleExoPlayer.Builder(this, audioRenderer).build()
+    }
 
     /**
      * Restore the [SimpleExoPlayer] state, if the service was destroyed while [PlaybackStateManager] persisted.
