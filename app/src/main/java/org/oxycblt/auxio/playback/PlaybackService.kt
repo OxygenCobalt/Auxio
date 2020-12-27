@@ -338,8 +338,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Create the [SimpleExoPlayer] instance.
      */
     private fun newPlayer(): SimpleExoPlayer {
-        // Since Auxio is a music player, only specify an audio renderer to save battery & cache space.
-        val audioRenderer = RenderersFactory { handler, vidListener, audioListener, textOutput, metadataOutput ->
+        // Since Auxio is a music player, only specify an audio renderer to save battery/apk size/cache size.
+        val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf<Renderer>(
                 MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener)
             )

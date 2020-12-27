@@ -1,29 +1,18 @@
 # Accepted Additions and Requests
 
-I primarily built Auxio as a response to many other music players on android that did far too much, had frustrating UI/UX flaws, or both.
+One of the reasons I built Auxio was out of frustration with other FOSS android music players, which had too many features, frustrating UI/UX flaws, or both. Therefore any additions will have to be accepted by **me** (OxygenCobalt) before they are implemented or merged.
 
-Since I want to keep this app from suffering the same fate as those others, Any requests/additions have to be accepted my **me** (OxygenCobalt) before I implement them or merge them.
+## Bug Fixes, Optimizations, Architecture Improvements, etc.
 
-All guidelines from the [Contribution Guidelines](../.github/CONTRIBUTING.md) still apply.
+These will likely be accepted as long as they do not cause too much harm to the codebase.
 
-## Bug Fixes, Optimizations, Library Updates, Formatting, Architecture Improvements, etc.
+## New Customizations/Options
 
-These will likely be accepted as long as they do not cause too much harm to the app's architecture or UX.
+While I do like adding new behavior/UI customizations, these will be looked at more closely as certain additions can cause harm to the apps UI/UX while not providing alot of benefit. These tend to be accpeted however.
 
-## New Options/Customizations
+## Feature Addtions and UI Changes
 
-These will be looked at with more scrutiny, as certain customizations may cause harm to the apps UI/UX while still not providing alot of benefits as a whole.
+These arent as likely to be accepted. As I said, I do not want Auxio to become overly bloated with features that are rarely used, therefore **I tend to only accept changes like these if I think they benefit everyone's usage of Auxio, including my own.** This does not rule out these additions, but they are not accepted as often as others.
 
-Overall I tend to accept these however if I see the benefits of adding this UI/Behavior customization.
+Feel free to fork Auxio to add your own feature set however.
 
-**Note:** I will be adding Black Mode/Custom Accents in the future. Read the [FAQ](FAQ.md) for more information.
-
-## Feature Additions and UI Changes
-
-These are far less likely to be accepted/added. As I said, I want to avoid Auxio from becoming overly bloated with features I do not use, and therefore **I only tend to accept features/UI changes that directly benefit my own usage.** If they do not, then I will reject them. This does not rule out all additions of this kind, but I am generally less likely to accept these kinds of requests/PRs.
-
-Feel free to fork Auxio to add your own features however.
-
-## A Final Note
-
-I am an extremely busy student that only programs in their free time. I also want to do things that aren't Android Dev. As a result, any additions I say I will add may take awhile. **Be patient**.

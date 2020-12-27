@@ -631,11 +631,13 @@ class PlaybackStateManager private constructor() {
     suspend fun getStateFromDatabase(context: Context) {
         logD("Getting state from DB.")
 
-        val start = System.currentTimeMillis()
+        val start: Long
 
         val state: PlaybackState?
 
         val queueItems = withContext(Dispatchers.IO) {
+            start = System.currentTimeMillis()
+
             val database = PlaybackStateDatabase.getInstance(context)
 
             state = database.readState()
