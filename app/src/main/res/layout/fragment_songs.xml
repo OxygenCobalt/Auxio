@@ -29,7 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_toolbar"
-            tools:listitem="@layout/item_basic_song" />
+            tools:listitem="@layout/item_song" />
 
         <com.reddit.indicatorfastscroll.FastScrollerView
             android:id="@+id/song_fast_scroll"

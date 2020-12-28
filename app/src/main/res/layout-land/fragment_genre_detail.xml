@@ -126,7 +126,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/genre_song_header"
                     app:spanCount="2"
                     tools:itemCount="4"
-                    tools:listitem="@layout/item_song" />
+                    tools:listitem="@layout/item_genre_song" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
