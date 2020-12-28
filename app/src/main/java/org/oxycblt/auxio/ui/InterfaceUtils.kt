@@ -37,9 +37,8 @@ fun MenuItem.applyColor(@ColorInt color: Int) {
 
 /**
  * Disable an image button.
- * @param context [Context] required to change the [ImageButton]s color.
  */
-fun ImageButton.disable(context: Context) {
+fun ImageButton.disable() {
     if (isEnabled) {
         imageTintList = ColorStateList.valueOf(
             R.color.inactive_color.toColor(context)
@@ -240,7 +239,7 @@ fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) 
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_genre_actions)
+    inflateAndShow(R.menu.menu_genre_detail)
 }
 
 /**

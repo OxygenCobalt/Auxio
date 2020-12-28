@@ -74,7 +74,7 @@ class LinearCenterScroller(target: Int) : RecyclerView.SmoothScroller() {
         return calculateDeltaToFit(top, bottom, start, end)
     }
 
-    private fun calcDyToMakeVisible(view: View): Int {
+    fun calcDyToMakeVisible(view: View): Int {
         val manager = layoutManager ?: return 0
 
         if (!manager.canScrollVertically()) return 0
@@ -116,9 +116,7 @@ class LinearCenterScroller(target: Int) : RecyclerView.SmoothScroller() {
 
         interimTargetDx = (TARGET_SEEK_SCROLL_DIST * scrollVector.x).toInt()
         interimTargetDy = (TARGET_SEEK_SCROLL_DIST * scrollVector.y).toInt()
-        // To avoid UI hiccups, trigger a smooth scroll to a distance little further than the
-        // interim target. Since we track the distance travelled in onSeekTargetStep callback, it
-        // won't actually scroll more than what we need.
+
         action.update(
             (interimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO).toInt(),
             (interimTargetDy * TARGET_SEEK_EXTRA_SCROLL_RATIO).toInt(),

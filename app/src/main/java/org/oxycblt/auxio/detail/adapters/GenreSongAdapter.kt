@@ -14,13 +14,14 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.ui.disable
 
 /**
  * An adapter for displaying the [Song]s of a genre.
  */
 class GenreSongAdapter(
-    private val lifecycleOwner: LifecycleOwner,
     private val detailModel: DetailViewModel,
+    private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -62,6 +63,10 @@ class GenreSongAdapter(
             binding.genre = data
             binding.detailModel = detailModel
             binding.lifecycleOwner = lifecycleOwner
+
+            if (data.songs.size < 2) {
+                binding.genreSortButton.disable()
+            }
         }
     }
 

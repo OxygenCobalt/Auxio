@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="artist"
+            type="org.oxycblt.auxio.music.Artist" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/artist_image"
+            android:layout_width="@dimen/size_cover_mid_huge"
+            android:layout_height="@dimen/size_cover_mid_huge"
+            android:layout_margin="@dimen/margin_medium"
+            android:contentDescription="@{@string/description_artist_image(artist.name)}"
+            app:artistImage="@{artist}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_artist" />
+
+        <TextView
+            android:id="@+id/artist_name"
+            style="@style/DetailTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:text="@{artist.name}"
+            app:layout_constraintBottom_toTopOf="@+id/artist_genre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Artist Name" />
+
+        <TextView
+            android:id="@+id/artist_genre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            app:artistGenre="@{artist}"
+            app:layout_constraintBottom_toTopOf="@+id/artist_counts"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toBottomOf="@+id/artist_name"
+            tools:text="Genre Name" />
+
+        <TextView
+            android:id="@+id/artist_counts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            app:artistCounts="@{artist}"
+            app:layout_constraintBottom_toTopOf="@+id/artist_album_header"
+            app:layout_constraintStart_toEndOf="@+id/artist_image"
+            app:layout_constraintTop_toBottomOf="@+id/artist_genre"
+            tools:text="2 Albums, 20 Songs" />
+
+        <TextView
+            android:id="@+id/artist_album_header"
+            style="@style/HeaderText"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:text="@string/label_albums"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/artist_image" />
+
+        <ImageButton
+            android:id="@+id/artist_sort_button"
+            style="@style/HeaderAction"
+            android:contentDescription="@string/description_sort_button"
+            android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
+            app:sortIcon="@{detailModel.artistSortMode}"
+            app:layout_constraintBottom_toBottomOf="@+id/artist_album_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/artist_album_header"
+            tools:src="@drawable/ic_sort_numeric_down" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

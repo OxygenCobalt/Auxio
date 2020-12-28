@@ -35,7 +35,7 @@
         android:id="@+id/artist_detail_fragment"
         android:name="org.oxycblt.auxio.detail.ArtistDetailFragment"
         android:label="ArtistDetailFragment"
-        tools:layout="@layout/fragment_artist_detail">
+        tools:layout="@layout/fragment_detail">
         <argument
             android:name="artistId"
             app:argType="long" />

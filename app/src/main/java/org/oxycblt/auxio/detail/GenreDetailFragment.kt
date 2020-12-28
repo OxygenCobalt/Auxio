@@ -49,7 +49,7 @@ class GenreDetailFragment : DetailFragment() {
         }
 
         val songAdapter = GenreSongAdapter(
-            viewLifecycleOwner, detailModel,
+            detailModel, viewLifecycleOwner,
             doOnClick = {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },

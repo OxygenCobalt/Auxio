@@ -9,13 +9,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentArtistDetailBinding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.adapters.ArtistAlbumAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setupAlbumActions
 
 /**
@@ -31,7 +31,7 @@ class ArtistDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentArtistDetailBinding.inflate(inflater)
+        val binding = FragmentDetailBinding.inflate(inflater)
 
         // If DetailViewModel isn't already storing the artist, get it from MusicStore
         // using the ID given by the navigation arguments
@@ -46,6 +46,7 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         val albumAdapter = ArtistAlbumAdapter(
+            detailModel, viewLifecycleOwner,
             doOnClick = {
                 if (!detailModel.isNavigating) {
                     detailModel.updateNavigationStatus(true)
@@ -65,11 +66,10 @@ class ArtistDetailFragment : DetailFragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
-        binding.detailModel = detailModel
-        binding.playbackModel = playbackModel
-        binding.artist = detailModel.currentArtist.value!!
 
-        binding.artistToolbar.apply {
+        binding.detailToolbar.apply {
+            inflateMenu(R.menu.menu_artist_detail)
+
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
@@ -98,12 +98,7 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
-        // Disable the sort button if there is only one album [Or less]
-        if (detailModel.currentArtist.value!!.albums.size < 2) {
-            binding.artistSortButton.disable(requireContext())
-        }
-
-        binding.artistAlbumRecycler.apply {
+        binding.detailRecycler.apply {
             adapter = albumAdapter
             setHasFixedSize(true)
         }
@@ -113,13 +108,11 @@ class ArtistDetailFragment : DetailFragment() {
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
-            // Update the current sort icon
-            binding.artistSortButton.setImageResource(mode.iconRes)
+            val data = mutableListOf<BaseModel>(detailModel.currentArtist.value!!).also {
+                it.addAll(mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums))
+            }
 
-            // Then update the sort mode of the album adapter.
-            albumAdapter.submitList(
-                mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums)
-            )
+            albumAdapter.submitList(data)
         }
 
         playbackModel.navToItem.observe(viewLifecycleOwner) {

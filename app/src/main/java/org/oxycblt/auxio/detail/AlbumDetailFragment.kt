@@ -108,7 +108,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         // Don't enable the sort button if there's only one song [or less]
         if (detailModel.currentAlbum.value!!.songs.size < 2) {
-            binding.albumSortButton.disable(requireContext())
+            binding.albumSortButton.disable()
         }
 
         // If this fragment was created in order to nav to an item, then snap scroll to that item.
