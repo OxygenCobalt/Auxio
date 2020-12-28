@@ -5,9 +5,12 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.recycler.SortMode
 
 /**
  * List of ID3 genres + Winamp extensions, each index corresponds to their int value.
@@ -165,4 +168,13 @@ fun TextView.bindAlbumInfo(album: Album) {
 @BindingAdapter("albumYear")
 fun TextView.bindAlbumYear(album: Album) {
     text = album.year.toYear(context)
+}
+
+/**
+ * Bind the [SortMode] icon for an ImageButton.
+ */
+@BindingAdapter("sortIcon")
+fun ImageButton.bindSortIcon(data: SortMode) {
+    logD("YOU STUPID FUCKING RETARD JUST FUNCITON")
+    setImageResource(data.iconRes)
 }

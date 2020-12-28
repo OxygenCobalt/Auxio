@@ -71,7 +71,7 @@
         android:id="@+id/genre_detail_fragment"
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
         android:label="GenreDetailFragment"
-        tools:layout="@layout/fragment_genre_detail">
+        tools:layout="@layout/fragment_detail">
         <action
             android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment"

@@ -240,7 +240,7 @@ fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) 
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_artist_detail)
+    inflateAndShow(R.menu.menu_genre_actions)
 }
 
 /**
@@ -265,11 +265,6 @@ fun PopupMenu.setupGenreSongActions(context: Context, song: Song, playbackModel:
 
             R.id.action_play_album -> {
                 playbackModel.playSong(song, PlaybackMode.IN_ALBUM)
-                true
-            }
-
-            R.id.action_play_all_songs -> {
-                playbackModel.playSong(song, PlaybackMode.ALL_SONGS)
                 true
             }
 

@@ -8,14 +8,16 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentGenreDetailBinding
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.adapters.GenreSongAdapter
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupGenreSongActions
 
 /**
@@ -32,7 +34,7 @@ class GenreDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentGenreDetailBinding.inflate(inflater)
+        val binding = FragmentDetailBinding.inflate(inflater)
 
         // If DetailViewModel isn't already storing the genre, get it from MusicStore
         // using the ID given by the navigation arguments
@@ -47,6 +49,7 @@ class GenreDetailFragment : DetailFragment() {
         }
 
         val songAdapter = GenreSongAdapter(
+            viewLifecycleOwner, detailModel,
             doOnClick = {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
@@ -60,10 +63,9 @@ class GenreDetailFragment : DetailFragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
-        binding.detailModel = detailModel
-        binding.genre = detailModel.currentGenre.value
 
-        binding.genreToolbar.apply {
+        binding.detailToolbar.apply {
+            inflateMenu(R.menu.menu_songs)
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
@@ -84,13 +86,19 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
-        if (detailModel.currentGenre.value!!.songs.size < 2) {
-            binding.genreSortButton.disable(requireContext())
-        }
-
-        binding.genreSongRecycler.apply {
+        binding.detailRecycler.apply {
             adapter = songAdapter
             setHasFixedSize(true)
+
+            if (isLandscape(resources)) {
+                layoutManager = GridLayoutManager(requireContext(), 2).also {
+                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0) 2 else 1
+                        }
+                    }
+                }
+            }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -98,13 +106,11 @@ class GenreDetailFragment : DetailFragment() {
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
-            // Update the current sort icon
-            binding.genreSortButton.setImageResource(mode.iconRes)
+            val data = mutableListOf<BaseModel>(detailModel.currentGenre.value!!).also {
+                it.addAll(mode.getSortedSongList(detailModel.currentGenre.value!!.songs))
+            }
 
-            // Then update the sort mode of the artist adapter.
-            songAdapter.submitList(
-                mode.getSortedSongList(detailModel.currentGenre.value!!.songs)
-            )
+            songAdapter.submitList(data)
         }
 
         logD("Fragment created.")

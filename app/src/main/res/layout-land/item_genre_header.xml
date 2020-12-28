@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="genre"
+            type="org.oxycblt.auxio.music.Genre" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/genre_image"
+            android:layout_width="@dimen/size_cover_mid_huge"
+            android:layout_height="@dimen/size_cover_mid_huge"
+            android:layout_margin="@dimen/margin_medium"
+            android:contentDescription="@{@string/description_genre_image(genre.name)}"
+            app:genreImage="@{genre}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_genre" />
+
+        <TextView
+            android:id="@+id/genre_name"
+            style="@style/DetailTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:text="@{genre.displayName}"
+            app:layout_constraintBottom_toTopOf="@+id/genre_song_count"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/genre_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Genre Name" />
+
+        <TextView
+            android:id="@+id/genre_song_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="@{@plurals/format_song_count(genre.songs.size(), genre.songs.size())}"
+            app:layout_constraintBottom_toTopOf="@+id/genre_duration"
+            app:layout_constraintStart_toEndOf="@+id/genre_image"
+            app:layout_constraintTop_toBottomOf="@+id/genre_name"
+            tools:text="2 Artists, 4 Albums" />
+
+        <TextView
+            android:id="@+id/genre_duration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:text="@{genre.totalDuration}"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/genre_song_header"
+            app:layout_constraintStart_toEndOf="@+id/genre_image"
+            app:layout_constraintTop_toBottomOf="@+id/genre_song_count"
+            tools:text="16:16" />
+
+        <TextView
+            android:id="@+id/genre_song_header"
+            style="@style/HeaderText"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:text="@string/label_songs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genre_image" />
+
+        <ImageButton
+            android:id="@+id/genre_sort_button"
+            style="@style/HeaderAction"
+            android:contentDescription="@string/description_sort_button"
+            android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
+            app:layout_constraintBottom_toBottomOf="@+id/genre_song_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:sortIcon="@{detailModel.genreSortMode}"
+            app:layout_constraintTop_toTopOf="@+id/genre_song_header"
+            tools:src="@drawable/ic_sort_alpha_down" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
