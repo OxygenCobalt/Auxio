@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
@@ -16,8 +17,9 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.recycler.LinearCenterScroller
+import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.ui.createToast
+import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
 /**
@@ -89,6 +91,16 @@ class AlbumDetailFragment : DetailFragment() {
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setHasFixedSize(true)
+
+            if (isLandscape(resources)) {
+                layoutManager = GridLayoutManager(requireContext(), 2).also {
+                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0) 2 else 1
+                        }
+                    }
+                }
+            }
         }
 
         // If this fragment was created in order to nav to an item, then snap scroll to that item.
@@ -152,13 +164,12 @@ class AlbumDetailFragment : DetailFragment() {
         // Calculate where the item for the currently played song is, and scroll to there
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
             detailModel.currentAlbum.value!!.songs
-        ).indexOf(playbackModel.song.value)
+        ).indexOf(playbackModel.song.value).inc()
 
-        if (pos != -1) {
-            // TODO: Re-add snap scrolling.
+        if (pos != 0) {
             binding.detailRecycler.post {
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    LinearCenterScroller(pos)
+                    CenterSmoothScroller(requireContext(), pos)
                 )
             }
 
