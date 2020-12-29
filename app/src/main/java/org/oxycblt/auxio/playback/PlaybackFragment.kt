@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.accent
@@ -27,12 +28,13 @@ import org.oxycblt.auxio.ui.toColor
  */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate) {
         // Marquee must be disabled on destroy to prevent memory leaks
         binding.playbackSong.isSelected = false
     }
 
-    // Colors/Icons
+    // Colors
     private val accentColor: ColorStateList by lazy {
         ColorStateList.valueOf(accent.first.toColor(requireContext()))
     }
@@ -64,6 +66,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.playbackModel = playbackModel
+        binding.detailModel = detailModel
         binding.song = playbackModel.song.value!!
 
         binding.playbackToolbar.apply {
@@ -84,7 +87,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee of song title work
         binding.playbackSong.isSelected = true
-
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
@@ -171,7 +173,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.navToItem.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 findNavController().navigateUp()
             }

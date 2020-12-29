@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
@@ -19,7 +17,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
 /**
@@ -88,27 +85,7 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        binding.detailRecycler.apply {
-            adapter = detailAdapter
-            setHasFixedSize(true)
-
-            if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), 2).also {
-                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2 else 1
-                        }
-                    }
-                }
-            }
-        }
-
-        // If this fragment was created in order to nav to an item, then snap scroll to that item.
-        playbackModel.navToItem.value?.let {
-            if (it is Song) {
-                scrollToPlayingItem(binding, smooth = false)
-            }
-        }
+        setupRecycler(detailAdapter)
 
         // -- VIEWMODEL SETUP ---
 
@@ -126,7 +103,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         detailModel.navToParent.observe(viewLifecycleOwner) {
             if (it) {
-                if (!args.enableParentNav) {
+                if (args.fromArtist) {
                     findNavController().navigateUp()
                 } else {
                     findNavController().navigate(
@@ -135,17 +112,19 @@ class AlbumDetailFragment : DetailFragment() {
                         )
                     )
                 }
+
+                detailModel.doneWithNavToParent()
             }
         }
 
-        playbackModel.navToItem.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it is Song) {
-                    scrollToPlayingItem(binding, smooth = true)
+                    scrollToPlayingItem()
                 }
 
                 if (it is Album && it.id == detailModel.currentAlbum.value!!.id) {
-                    playbackModel.doneWithNavToItem()
+                    detailModel.doneWithNavToItem()
                 }
             }
         }
@@ -157,23 +136,21 @@ class AlbumDetailFragment : DetailFragment() {
 
     /**
      * Calculate the position and and scroll to a currently playing item.
-     * @param binding The binding required
-     * @param smooth  Whether to scroll smoothly or not, true for yes, false for no.
      */
-    private fun scrollToPlayingItem(binding: FragmentDetailBinding, smooth: Boolean) {
+    private fun scrollToPlayingItem() {
         // Calculate where the item for the currently played song is, and scroll to there
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
             detailModel.currentAlbum.value!!.songs
-        ).indexOf(playbackModel.song.value).inc()
+        ).indexOf(playbackModel.song.value)
 
-        if (pos != 0) {
+        if (pos != -1) {
             binding.detailRecycler.post {
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos)
+                    CenterSmoothScroller(requireContext(), pos.inc())
                 )
             }
 
-            playbackModel.doneWithNavToItem()
+            detailModel.doneWithNavToItem()
         }
     }
 }

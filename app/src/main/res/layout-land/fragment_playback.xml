@@ -13,6 +13,10 @@
         <variable
             name="playbackModel"
             type="org.oxycblt.auxio.playback.PlaybackViewModel" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
     </data>
 
 
@@ -70,7 +74,7 @@
                 android:ellipsize="marquee"
                 android:fontFamily="@font/inter_semibold"
                 android:marqueeRepeatLimit="marquee_forever"
-                android:onClick="@{() -> playbackModel.navToItem(playbackModel.song)}"
+                android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
                 android:singleLine="true"
                 android:text="@{song.name}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
@@ -85,7 +89,7 @@
             android:layout_marginStart="@dimen/margin_mid_large"
             android:layout_marginEnd="@dimen/margin_mid_large"
             android:ellipsize="end"
-            android:onClick="@{() -> playbackModel.navToItem(playbackModel.song.album.artist)}"
+            android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
             android:singleLine="true"
             android:text="@{song.album.artist.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -103,7 +107,7 @@
             android:layout_marginStart="@dimen/margin_mid_large"
             android:layout_marginEnd="@dimen/margin_mid_large"
             android:ellipsize="end"
-            android:onClick="@{() -> playbackModel.navToItem(playbackModel.song.album)}"
+            android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:singleLine="true"
             android:text="@{song.album.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"

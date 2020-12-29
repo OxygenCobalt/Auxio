@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupAlbumActions
 
 /**
@@ -48,7 +46,7 @@ class ArtistDetailFragment : DetailFragment() {
                     detailModel.updateNavigationStatus(true)
 
                     findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(it.id, false)
+                        ArtistDetailFragmentDirections.actionShowAlbum(it.id, true)
                     )
                 }
             },
@@ -86,20 +84,7 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
-        binding.detailRecycler.apply {
-            adapter = detailAdapter
-            setHasFixedSize(true)
-
-            if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), 2).also {
-                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2 else 1
-                        }
-                    }
-                }
-            }
-        }
+        setupRecycler(detailAdapter)
 
         // --- VIEWMODEL SETUP ---
 
@@ -113,9 +98,9 @@ class ArtistDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        playbackModel.navToItem.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null && it is Artist) {
-                playbackModel.doneWithNavToItem()
+                detailModel.doneWithNavToItem()
             }
         }
 

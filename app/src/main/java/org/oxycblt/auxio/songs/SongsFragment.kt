@@ -16,6 +16,7 @@ import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -33,6 +34,7 @@ import kotlin.math.ceil
  */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     // Lazy init the text size so that it doesn't have to be calculated every time.
     private val indicatorTextSize: Float by lazy {
@@ -57,7 +59,7 @@ class SongsFragment : Fragment() {
             doOnClick = { playbackModel.playSong(it, settingsManager.songPlaybackMode) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupSongActions(
-                    requireContext(), data, playbackModel
+                    requireContext(), data, playbackModel, detailModel
                 )
             }
         )

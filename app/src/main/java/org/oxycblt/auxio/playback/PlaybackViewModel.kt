@@ -44,7 +44,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // Other
     private val mIsSeeking = MutableLiveData(false)
-    private val mNavToItem = MutableLiveData<BaseModel?>()
     private var mCanAnimate = false
 
     /** The current song. */
@@ -66,7 +65,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
-    val navToItem: LiveData<BaseModel?> get() = mNavToItem
     val canAnimate: Boolean get() = mCanAnimate
 
     /** The position as a duration string. */
@@ -333,16 +331,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** Set whether the seeking indicator should be highlighted */
     fun setSeekingStatus(value: Boolean) {
         mIsSeeking.value = value
-    }
-
-    /** Navigate to an item, whether a song/album/artist */
-    fun navToItem(item: BaseModel) {
-        mNavToItem.value = item
-    }
-
-    /** Mark that the navigation process is done. */
-    fun doneWithNavToItem() {
-        mNavToItem.value = null
     }
 
     /** Enable animation on CompactPlaybackFragment */

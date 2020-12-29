@@ -196,7 +196,7 @@ class PlaybackStateManager private constructor() {
     fun playParentModel(baseModel: BaseModel, shuffled: Boolean) {
         if (baseModel is Song || baseModel is Header) {
             // This should never occur.
-            logE("playParentModel does not support ${baseModel::class.simpleName}.")
+            logE("playParentModel is not meant to play ${baseModel::class.simpleName}.")
 
             return
         }
@@ -575,7 +575,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Set the [LoopMode]
-     * @param value The [LoopMode] to be used
+     * @param mode The [LoopMode] to be used
      */
     fun setLoopMode(mode: LoopMode) {
         mLoopMode = mode

@@ -24,14 +24,13 @@ object NotificationUtils {
     const val NOTIFICATION_ID = 0xA0A0
     const val REQUEST_CODE = 0xA0C0
 
-    // Strings for each action, version name is applied so that broadcasts will only reach
-    // one instance of Auxio.
-    const val ACTION_LOOP = "ACTION_AUXIO_LOOP_" + BuildConfig.VERSION_NAME
-    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE_" + BuildConfig.VERSION_NAME
-    const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV_" + BuildConfig.VERSION_NAME
-    const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE_" + BuildConfig.VERSION_NAME
-    const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT_" + BuildConfig.VERSION_NAME
-    const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.VERSION_NAME
+    // The build type is applied to each action so that broadcasts will not conflict with debug/release builds.
+    const val ACTION_LOOP = "ACTION_AUXIO_LOOP_" + BuildConfig.BUILD_TYPE
+    const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE_" + BuildConfig.BUILD_TYPE
+    const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV_" + BuildConfig.BUILD_TYPE
+    const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE_" + BuildConfig.BUILD_TYPE
+    const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT_" + BuildConfig.BUILD_TYPE
+    const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.BUILD_TYPE
 }
 
 /**
@@ -44,7 +43,7 @@ fun NotificationManager.createMediaNotification(
     context: Context,
     mediaSession: MediaSessionCompat
 ): NotificationCompat.Builder {
-    // Create a notification channel if required
+    // Create a notification channel if requireds
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
             NotificationUtils.CHANNEL_ID,

@@ -7,8 +7,13 @@ import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
 /**
@@ -53,6 +58,26 @@ abstract class DetailFragment : Fragment() {
 
             setOnMenuItemClickListener {
                 onMenuClick(it.itemId)
+            }
+        }
+    }
+
+    /**
+     * Shortcut method for recyclerview setup
+     */
+    protected fun setupRecycler(detailAdapter: ListAdapter<BaseModel, RecyclerView.ViewHolder>) {
+        binding.detailRecycler.apply {
+            adapter = detailAdapter
+            setHasFixedSize(true)
+
+            if (isLandscape(resources)) {
+                layoutManager = GridLayoutManager(requireContext(), 2).also {
+                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (position == 0) 2 else 1
+                        }
+                    }
+                }
             }
         }
     }

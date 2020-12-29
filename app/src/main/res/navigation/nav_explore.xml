@@ -57,7 +57,7 @@
             android:name="albumId"
             app:argType="long" />
         <argument
-            android:name="enableParentNav"
+            android:name="fromArtist"
             app:argType="boolean" />
         <action
             android:id="@+id/action_show_parent_artist"
@@ -72,16 +72,23 @@
         android:name="org.oxycblt.auxio.detail.GenreDetailFragment"
         android:label="GenreDetailFragment"
         tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="genreId"
+            app:argType="long" />
         <action
-            android:id="@+id/action_show_artist"
+            android:id="@+id/action_go_artist"
             app:destination="@id/artist_detail_fragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <argument
-            android:name="genreId"
-            app:argType="long" />
+        <action
+            android:id="@+id/action_go_album"
+            app:destination="@id/album_detail_fragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/songs_fragment"

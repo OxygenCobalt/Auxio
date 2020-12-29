@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.GenreDetailAdapter
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupGenreSongActions
 
 /**
@@ -47,7 +48,7 @@ class GenreDetailFragment : DetailFragment() {
             },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupGenreSongActions(
-                    requireContext(), data, playbackModel
+                    requireContext(), data, playbackModel, detailModel
                 )
             }
         )
@@ -71,20 +72,7 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
-        binding.detailRecycler.apply {
-            adapter = detailAdapter
-            setHasFixedSize(true)
-
-            if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), 2).also {
-                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2 else 1
-                        }
-                    }
-                }
-            }
-        }
+        setupRecycler(detailAdapter)
 
         // --- VIEWMODEL SETUP ---
 
@@ -96,6 +84,22 @@ class GenreDetailFragment : DetailFragment() {
             }
 
             detailAdapter.submitList(data)
+        }
+
+        detailModel.navToChild.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it is Artist) {
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionGoArtist(it.id)
+                    )
+                } else if (it is Album) {
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionGoAlbum(it.id, false)
+                    )
+                }
+
+                detailModel.doneWithNavToChild()
+            }
         }
 
         logD("Fragment created.")

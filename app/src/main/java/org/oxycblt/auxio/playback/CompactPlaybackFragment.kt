@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.isLandscape
@@ -26,6 +27,7 @@ import org.oxycblt.auxio.ui.memberBinding
  */
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val binding: FragmentCompactPlaybackBinding by memberBinding(
         FragmentCompactPlaybackBinding::inflate
     )
@@ -57,7 +59,7 @@ class CompactPlaybackFragment : Fragment() {
             }
 
             setOnLongClickListener {
-                playbackModel.navToItem(playbackModel.song.value!!)
+                detailModel.navToItem(playbackModel.song.value!!)
                 true
             }
         }

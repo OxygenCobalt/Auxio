@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
 
@@ -26,17 +27,24 @@ class DetailViewModel : ViewModel() {
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
 
     // Current music models being shown
-    private val mCurrentGenre = MutableLiveData<Genre>()
-    val currentGenre: LiveData<Genre> get() = mCurrentGenre
+    private val mCurrentGenre = MutableLiveData<Genre?>()
+    val currentGenre: LiveData<Genre?> get() = mCurrentGenre
 
-    private val mCurrentArtist = MutableLiveData<Artist>()
-    val currentArtist: LiveData<Artist> get() = mCurrentArtist
+    private val mCurrentArtist = MutableLiveData<Artist?>()
+    val currentArtist: LiveData<Artist?> get() = mCurrentArtist
 
-    private val mCurrentAlbum = MutableLiveData<Album>()
-    val currentAlbum: LiveData<Album> get() = mCurrentAlbum
+    private val mCurrentAlbum = MutableLiveData<Album?>()
+    val currentAlbum: LiveData<Album?> get() = mCurrentAlbum
+
+    // Navigation flags
+    private val mNavToItem = MutableLiveData<BaseModel?>()
+    val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
     private val mNavToParent = MutableLiveData<Boolean>()
     val navToParent: LiveData<Boolean> get() = mNavToParent
+
+    private val mNavToChild = MutableLiveData<BaseModel?>()
+    val navToChild: LiveData<BaseModel?> get() = mNavToChild
 
     /**
      * Update the current navigation status
@@ -96,13 +104,32 @@ class DetailViewModel : ViewModel() {
         mCurrentAlbum.value = album
     }
 
+    /** Navigate to an item, whether a song/album/artist */
+    fun navToItem(item: BaseModel) {
+        mNavToItem.value = item
+    }
+
+    /** Mark that the navigation process is done. */
+    fun doneWithNavToItem() {
+        mNavToItem.value = null
+    }
+
     /** Mark that parent navigation should occur */
-    fun doNavToParent() {
+    fun navToParent() {
         mNavToParent.value = true
     }
 
     /** Mark that the UI is done with the parent navigation */
     fun doneWithNavToParent() {
         mNavToParent.value = false
+    }
+
+    /** Navigate to some child item (Primarily used by GenreDetailFragment) */
+    fun navToChild(child: BaseModel) {
+        mNavToChild.value = child
+    }
+
+    fun doneWithNavToChild() {
+        mNavToChild.value = null
     }
 }

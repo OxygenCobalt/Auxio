@@ -22,7 +22,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * Apply a text color to a [MenuItem]
@@ -79,10 +78,14 @@ fun Spanned.render(): Spanned {
  * @param context [Context] required
  * @param song [Song] The menu should correspond to
  * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
+ * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
  */
-fun PopupMenu.setupSongActions(context: Context, song: Song, playbackModel: PlaybackViewModel) {
-    inflateAndShow(R.menu.menu_song_actions)
-
+fun PopupMenu.setupSongActions(
+    context: Context,
+    song: Song,
+    playbackModel: PlaybackViewModel,
+    detailModel: DetailViewModel
+) {
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -91,18 +94,13 @@ fun PopupMenu.setupSongActions(context: Context, song: Song, playbackModel: Play
                 true
             }
 
-            R.id.action_play_artist -> {
-                playbackModel.playSong(song, PlaybackMode.IN_ARTIST)
+            R.id.action_go_artist -> {
+                detailModel.navToItem(song.album.artist)
                 true
             }
 
-            R.id.action_play_album -> {
-                playbackModel.playSong(song, PlaybackMode.IN_ALBUM)
-                true
-            }
-
-            R.id.action_play_all_songs -> {
-                playbackModel.playSong(song, PlaybackMode.ALL_SONGS)
+            R.id.action_go_album -> {
+                detailModel.navToItem(song.album)
                 true
             }
 
@@ -110,18 +108,7 @@ fun PopupMenu.setupSongActions(context: Context, song: Song, playbackModel: Play
         }
     }
 
-    val settingsManager = SettingsManager.getInstance()
-
-    // Find the action that is redundant from the menu and hide it.
-    val idToRemove = when (settingsManager.songPlaybackMode) {
-        PlaybackMode.ALL_SONGS -> R.id.action_play_all_songs
-        PlaybackMode.IN_ARTIST -> R.id.action_play_artist
-        PlaybackMode.IN_ALBUM -> R.id.action_play_album
-
-        else -> -1
-    }
-
-    menu.findItem(idToRemove)?.isVisible = false
+    inflateAndShow(R.menu.menu_song_actions)
 }
 
 /**
@@ -148,7 +135,7 @@ fun PopupMenu.setupAlbumSongActions(
             }
 
             R.id.action_go_artist -> {
-                detailModel.doNavToParent()
+                detailModel.navToParent()
                 true
             }
 
@@ -243,12 +230,19 @@ fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) 
 }
 
 /**
- * Show actions for a song in a genre.
+ * Show actions for a [Genre] song. Mostly identical to [setupSongActions] aside from a different
+ * flag being used for navigation.
  * @param context [Context] required
- * @param song [Song] the menu should correspond to
- * @param playbackModel [PlaybackViewModel] to dispatch actions to
+ * @param song [Song] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
+ * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
  */
-fun PopupMenu.setupGenreSongActions(context: Context, song: Song, playbackModel: PlaybackViewModel) {
+fun PopupMenu.setupGenreSongActions(
+    context: Context,
+    song: Song,
+    playbackModel: PlaybackViewModel,
+    detailModel: DetailViewModel
+) {
     setOnMenuItemClickListener {
         when (it.itemId) {
             R.id.action_queue_add -> {
@@ -257,20 +251,21 @@ fun PopupMenu.setupGenreSongActions(context: Context, song: Song, playbackModel:
                 true
             }
 
-            R.id.action_play_artist -> {
-                playbackModel.playSong(song, PlaybackMode.IN_ARTIST)
+            R.id.action_go_artist -> {
+                detailModel.navToChild(song.album.artist)
                 true
             }
 
-            R.id.action_play_album -> {
-                playbackModel.playSong(song, PlaybackMode.IN_ALBUM)
+            R.id.action_go_album -> {
+                detailModel.navToChild(song.album)
                 true
             }
 
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_genre_song_actions)
+
+    inflateAndShow(R.menu.menu_song_actions)
 }
 
 /**

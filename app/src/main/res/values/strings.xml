@@ -19,17 +19,17 @@
 
     <string name="label_all_songs">All Songs</string>
     <string name="label_songs">Songs</string>
-
     <string name="label_playback">Now Playing</string>
 
     <string name="label_play">Play</string>
     <string name="label_shuffle">Shuffle</string>
     <string name="label_play_all_songs">Play from all songs</string>
-    <string name="label_play_album">Play from album</string>
     <string name="label_play_artist">Play from artist</string>
+    <string name="label_play_album">Play from album</string>
+
     <string name="label_go_artist">Go to artist</string>
+    <string name="label_go_album">Go to album</string>
     <string name="label_play_albums">Play albums</string>
-    <string name="label_shuffle_albums">Shuffle albums</string>
 
     <string name="label_queue">Queue</string>
     <string name="label_queue_add">Add to queue</string>
@@ -57,8 +57,6 @@
     <string name="setting_accent">Accent</string>
     <string name="setting_accent_unknown">Unknown Accent</string>
 
-    <string name="setting_edge">Edge-To-Edge</string>
-    <string name="setting_edge_desc">Enable edge-to-edge</string>
     <string name="setting_display">Display</string>
 
     <string name="setting_lib_display">Library Items</string>
@@ -127,7 +125,6 @@
     <string name="description_shuffle_off">Turn shuffle off</string>
     <string name="description_change_loop">Change Repeat Mode</string>
     <string name="description_auxio_icon">Auxio icon</string>
-    <string name="description_code">Code</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>
@@ -172,8 +169,4 @@
         <item quantity="other">%s Albums</item>
     </plurals>
 
-    <plurals name="format_artist_count">
-        <item quantity="one">%s Artist</item>
-        <item quantity="other">%s Artists</item>
-    </plurals>
 </resources>

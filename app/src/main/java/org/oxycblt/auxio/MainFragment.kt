@@ -90,7 +90,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        playbackModel.navToItem.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 // If the current destination isn't even LibraryFragment, then navigate there first
                 if (binding.navBar.selectedItemId != R.id.library_fragment) {

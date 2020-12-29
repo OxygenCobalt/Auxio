@@ -17,6 +17,7 @@ import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.library.adapters.LibraryAdapter
 import org.oxycblt.auxio.library.adapters.SearchAdapter
 import org.oxycblt.auxio.logD
@@ -46,6 +47,7 @@ import org.oxycblt.auxio.ui.setupSongActions
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private val libraryModel: LibraryViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -167,15 +169,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        playbackModel.navToItem.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 libraryModel.updateNavigationStatus(false)
 
-                if (it is Song || it is Album) {
-                    onItemSelection(playbackModel.song.value!!.album)
-                } else {
-                    onItemSelection(it)
-                }
+                onItemSelection(it)
             }
         }
 
@@ -207,7 +205,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         val menu = PopupMenu(requireContext(), view)
 
         when (data) {
-            is Song -> menu.setupSongActions(requireContext(), data, playbackModel)
+            is Song -> menu.setupSongActions(requireContext(), data, playbackModel, detailModel)
             is Album -> menu.setupAlbumActions(requireContext(), data, playbackModel)
             is Artist -> menu.setupArtistActions(data, playbackModel)
             is Genre -> menu.setupGenreActions(data, playbackModel)
@@ -240,7 +238,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 when (baseModel) {
                     is Genre -> LibraryFragmentDirections.actionShowGenre(baseModel.id)
                     is Artist -> LibraryFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id, true)
+                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id, false)
 
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.
