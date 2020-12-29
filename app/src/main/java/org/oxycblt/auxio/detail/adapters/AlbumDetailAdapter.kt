@@ -79,7 +79,7 @@ class AlbumDetailAdapter(
     }
 
     companion object {
-        const val ALBUM_HEADER_ITEM_TYPE = 0xA024
-        const val ALBUM_SONG_ITEM_TYPE = 0xA025
+        const val ALBUM_HEADER_ITEM_TYPE = 0xA007
+        const val ALBUM_SONG_ITEM_TYPE = 0xA008
     }
 }

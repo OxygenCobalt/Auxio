@@ -83,7 +83,7 @@ class GenreDetailAdapter(
     }
 
     companion object {
-        const val GENRE_HEADER_ITEM_TYPE = 0xA020
-        const val GENRE_SONG_ITEM_TYPE = 0xA021
+        const val GENRE_HEADER_ITEM_TYPE = 0xA00B
+        const val GENRE_SONG_ITEM_TYPE = 0xA00C
     }
 }

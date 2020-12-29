@@ -44,7 +44,7 @@ class QueueAdapter(
             else
                 HeaderViewHolder.ITEM_TYPE
         else
-            QUEUE_ITEM_TYPE
+            QUEUE_SONG_ITEM_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -55,7 +55,7 @@ class QueueAdapter(
                 parent.context, ItemActionHeaderBinding.inflate(LayoutInflater.from(parent.context))
             )
 
-            QUEUE_ITEM_TYPE -> QueueSongViewHolder(
+            QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
             )
 
@@ -182,7 +182,7 @@ class QueueAdapter(
     }
 
     companion object {
-        const val QUEUE_ITEM_TYPE = 0xA015
-        const val USER_QUEUE_HEADER_ITEM_TYPE = 0xA016
+        const val QUEUE_SONG_ITEM_TYPE = 0xA005
+        const val USER_QUEUE_HEADER_ITEM_TYPE = 0xA006
     }
 }
