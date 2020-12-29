@@ -174,8 +174,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
             DisplayMode.SHOW_ALBUMS -> {
                 mSortMode.value!!.getSortedAlbumList(musicStore.albums)
             }
-
-            else -> error("Unsupported Library DisplayMode $mDisplayMode")
         }
     }
 }

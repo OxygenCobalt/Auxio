@@ -241,11 +241,11 @@ class PlaybackStateManager private constructor() {
      * @param song The song to play
      * @param dontPlay (Optional, defaults to false) whether to not set [isPlaying] to true.
      */
-    private fun updatePlayback(song: Song, dontPlay: Boolean = false) {
+    private fun updatePlayback(song: Song) {
         mSong = song
         mPosition = 0
 
-        if (!mIsPlaying && !dontPlay) {
+        if (!mIsPlaying) {
             setPlayingStatus(true)
         }
 
@@ -341,8 +341,14 @@ class PlaybackStateManager private constructor() {
                 mIndex = 0
                 forceQueueUpdate()
 
-                updatePlayback(mQueue[0], dontPlay = true)
+                // The whole point here is making the playback pause and loop, so duplicate
+                // the updatePlayback code instead of using it with a useless arg tacked on.
+                mSong = mQueue[0]
+                mPosition = 0
+
                 setPlayingStatus(false)
+
+                mIsInUserQueue = false
             }
 
             SettingsManager.EntryValues.AT_END_LOOP -> {

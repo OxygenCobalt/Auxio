@@ -11,6 +11,7 @@
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_mid_large">24dp</dimen>
     <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_insane">128dp</dimen>
 
     <!-- Height Namespace | Height for UI elements -->
     <dimen name="height_compact_progress">2dp</dimen>

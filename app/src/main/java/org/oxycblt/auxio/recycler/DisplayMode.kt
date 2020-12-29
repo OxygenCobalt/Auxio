@@ -10,7 +10,7 @@ import org.oxycblt.auxio.R
 enum class DisplayMode(@DrawableRes val iconRes: Int) {
     SHOW_GENRES(R.drawable.ic_genre),
     SHOW_ARTISTS(R.drawable.ic_artist),
-    SHOW_ALBUMS(R.drawable.ic_album),
+    SHOW_ALBUMS(R.drawable.ic_album);
 
     /**
      * Make a slice of all the values that this DisplayMode covers.

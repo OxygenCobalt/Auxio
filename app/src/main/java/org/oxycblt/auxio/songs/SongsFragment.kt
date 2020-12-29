@@ -22,6 +22,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.setupSongActions
 import org.oxycblt.auxio.ui.toColor
@@ -81,8 +82,10 @@ class SongsFragment : Fragment() {
             setHasFixedSize(true)
 
             if (isLandscape(resources)) {
+                val spans = getLandscapeSpans(resources)
+
                 layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).also {
-                    it.spanCount = 3
+                    it.spanCount = spans
                 }
             }
 
@@ -151,7 +154,7 @@ class SongsFragment : Fragment() {
                 var isGood = true
 
                 if (concatInterval == -1) {
-                    // If the screen size is too small to contain all the entries, truncate entries
+                    // If the scroller size is too small to contain all the entries, truncate entries
                     // so that the fast scroller entries fit.
                     val maxEntries = (height / (indicatorTextSize + textPadding))
 

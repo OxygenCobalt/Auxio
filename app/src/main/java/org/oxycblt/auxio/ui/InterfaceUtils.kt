@@ -56,6 +56,14 @@ fun isLandscape(resources: Resources): Boolean {
 }
 
 /**
+ * Get the span count for most RecyclerViews when in landscape mode.
+ * @return 3 if landscape mode is tablet, 2 if landscape mode is phone
+ */
+fun getLandscapeSpans(resources: Resources): Int {
+    return if (resources.configuration.screenLayout == Configuration.SCREENLAYOUT_SIZE_LARGE) 3 else 2
+}
+
+/**
  * Create a [Toast] from a [String]
  * @param context [Context] required to create the toast
  */

@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.applyColor
+import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.setupAlbumActions
@@ -129,12 +130,13 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             setHasFixedSize(true)
 
             if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).apply {
-                    spanCount = 3
+                val spans = getLandscapeSpans(resources)
+
+                layoutManager = GridLayoutManager(requireContext(), spans).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
                             return if (binding.libraryRecycler.adapter == searchAdapter) {
-                                if (searchAdapter.currentList[position] is Header) 3 else 1
+                                if (searchAdapter.currentList[position] is Header) spans else 1
                             } else 1
                         }
                     }
@@ -173,7 +175,11 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             if (it != null) {
                 libraryModel.updateNavigationStatus(false)
 
-                onItemSelection(it)
+                if (it is Song) {
+                    onItemSelection(it.album)
+                } else {
+                    onItemSelection(it)
+                }
             }
         }
 
