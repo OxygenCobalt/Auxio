@@ -14,9 +14,9 @@
             style="@style/Toolbar.Style.Icon"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:title="@string/label_library"
             app:contentInsetStartWithNavigation="0dp"
-            tools:menu="@menu/menu_artist_detail"/>
+            app:title="@string/label_library"
+            tools:menu="@menu/menu_artist_actions" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detail_recycler"

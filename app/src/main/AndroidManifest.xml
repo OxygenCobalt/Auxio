@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="org.oxycblt.auxio">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <queries  />
+    <queries />
 
     <application
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:allowBackup="true"
-        android:theme="@style/Theme.Base"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@style/Theme.Base">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance"
             android:icon="@mipmap/ic_launcher"
+            android:launchMode="singleInstance"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:windowSoftInputMode="adjustPan">
 
@@ -32,12 +31,12 @@
         </activity>
         <service
             android:name=".playback.PlaybackService"
+            android:description="@string/label_service_playback"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="false"
-            android:enabled="true"
-            android:description="@string/label_service_playback"
             android:stopWithTask="false" />
     </application>
 </manifest>

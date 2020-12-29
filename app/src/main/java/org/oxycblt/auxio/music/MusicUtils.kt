@@ -9,7 +9,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.recycler.SortMode
 
 /**
@@ -174,7 +173,6 @@ fun TextView.bindAlbumYear(album: Album) {
  * Bind the [SortMode] icon for an ImageButton.
  */
 @BindingAdapter("sortIcon")
-fun ImageButton.bindSortIcon(data: SortMode) {
-    logD("YOU STUPID FUCKING RETARD JUST FUNCITON")
-    setImageResource(data.iconRes)
+fun ImageButton.bindSortIcon(mode: SortMode) {
+    setImageResource(mode.iconRes)
 }

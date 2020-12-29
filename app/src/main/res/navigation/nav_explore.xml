@@ -52,7 +52,7 @@
         android:id="@+id/album_detail_fragment"
         android:name="org.oxycblt.auxio.detail.AlbumDetailFragment"
         android:label="AlbumDetailFragment"
-        tools:layout="@layout/fragment_album_detail">
+        tools:layout="@layout/fragment_detail">
         <argument
             android:name="albumId"
             app:argType="long" />

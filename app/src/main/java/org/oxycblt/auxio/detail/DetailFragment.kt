@@ -3,20 +3,26 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.memberBinding
 
 /**
- * A Base [Fragment] implementing a [OnBackPressedCallback] so that Auxio will navigate upwards
- * instead of out of the app if a Detail Fragment is currently open. Also carries the
- * multi-navigation fix.
- * TODO: Migrate to a more powerful/efficient CoordinatorLayout instead of NestedScrollView
+ * A Base [Fragment] implementing the base features shared across all detail fragments.
  * TODO: Add custom artist images
+ * TODO: Add playing item highlighting
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {
     protected val detailModel: DetailViewModel by activityViewModels()
+    protected val playbackModel: PlaybackViewModel by activityViewModels()
+    protected val binding: FragmentDetailBinding by memberBinding(
+        FragmentDetailBinding::inflate
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -34,6 +40,25 @@ abstract class DetailFragment : Fragment() {
         callback.isEnabled = false
     }
 
+    /**
+     * Shortcut method for doing setup of the detail toolbar.
+     */
+    protected fun setupToolbar(@MenuRes menu: Int, onMenuClick: (id: Int) -> Boolean) {
+        binding.detailToolbar.apply {
+            inflateMenu(menu)
+
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            setOnMenuItemClickListener {
+                onMenuClick(it.itemId)
+            }
+        }
+    }
+
+    // Override the back button so that going back will only exit the detail fragments instead of
+    // the entire app.
     private val callback = object : OnBackPressedCallback(false) {
 
         override fun handleOnBackPressed() {

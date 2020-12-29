@@ -6,90 +6,94 @@
     <data>
 
         <variable
-            name="genre"
-            type="org.oxycblt.auxio.music.Genre" />
-
-        <variable
             name="detailModel"
             type="org.oxycblt.auxio.detail.DetailViewModel" />
 
+        <variable
+            name="album"
+            type="org.oxycblt.auxio.music.Album" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <ImageView
-            android:id="@+id/genre_image"
+            android:id="@+id/album_cover"
             android:layout_width="@dimen/size_cover_mid_huge"
             android:layout_height="@dimen/size_cover_mid_huge"
-            android:layout_margin="@dimen/margin_medium"
-            android:contentDescription="@{@string/description_genre_image(genre.name)}"
-            app:genreImage="@{genre}"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:contentDescription="@{@string/description_album_cover(album.name)}"
+            app:coverArt="@{album}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_genre" />
+            tools:src="@drawable/ic_album" />
 
         <TextView
-            android:id="@+id/genre_name"
+            android:id="@+id/album_name"
             style="@style/DetailTitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:text="@{genre.displayName}"
-            app:layout_constraintBottom_toTopOf="@+id/genre_song_count"
+            android:text="@{album.name}"
+            app:layout_constraintBottom_toTopOf="@+id/album_artist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/genre_image"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Genre Name" />
+            tools:text="Album Name" />
 
         <TextView
-            android:id="@+id/genre_song_count"
+            android:id="@+id/album_artist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
-            android:text="@{@plurals/format_song_count(genre.songs.size(), genre.songs.size())}"
+            android:background="@drawable/ui_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> detailModel.doNavToParent()}"
+            android:text="@{album.artist.name}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintBottom_toTopOf="@+id/genre_duration"
-            app:layout_constraintStart_toEndOf="@+id/genre_image"
-            app:layout_constraintTop_toBottomOf="@+id/genre_name"
-            tools:text="2 Artists, 4 Albums" />
+            app:layout_constraintBottom_toTopOf="@+id/album_details"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/album_name"
+            tools:text="Artist Name" />
 
         <TextView
-            android:id="@+id/genre_duration"
+            android:id="@+id/album_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
-            android:text="@{genre.totalDuration}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintBottom_toTopOf="@+id/genre_song_header"
-            app:layout_constraintStart_toEndOf="@+id/genre_image"
-            app:layout_constraintTop_toBottomOf="@+id/genre_song_count"
-            tools:text="16:16" />
+            app:albumDetails="@{album}"
+            app:layout_constraintBottom_toTopOf="@+id/album_song_header"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/album_artist"
+            tools:text="2020 / 10 Songs / 16:16" />
 
         <TextView
-            android:id="@+id/genre_song_header"
+            android:id="@+id/album_song_header"
             style="@style/HeaderText"
             android:layout_marginTop="@dimen/margin_medium"
             android:text="@string/label_songs"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genre_image" />
+            app:layout_constraintTop_toBottomOf="@+id/album_cover" />
 
         <ImageButton
-            android:id="@+id/genre_sort_button"
+            android:id="@+id/album_sort_button"
             style="@style/HeaderAction"
             android:contentDescription="@string/description_sort_button"
-            android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
-            app:layout_constraintBottom_toBottomOf="@+id/genre_song_header"
+            android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
+            app:layout_constraintBottom_toBottomOf="@+id/album_song_header"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/genre_song_header"
-            app:sortIcon="@{detailModel.genreSortMode}"
-            tools:src="@drawable/ic_sort_alpha_down" />
-
+            app:layout_constraintTop_toTopOf="@+id/album_song_header"
+            app:sortIcon="@{detailModel.albumSortMode}"
+            tools:src="@drawable/ic_sort_numeric_down" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

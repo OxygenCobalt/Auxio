@@ -19,7 +19,7 @@ import org.oxycblt.auxio.ui.disable
 /**
  * An adapter for displaying the [Album]s of an artist.
  */
-class ArtistAlbumAdapter(
+class ArtistDetailAdapter(
     private val detailModel: DetailViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Album) -> Unit,

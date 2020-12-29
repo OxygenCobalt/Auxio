@@ -196,7 +196,7 @@ fun PopupMenu.setupAlbumActions(
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_album_detail)
+    inflateAndShow(R.menu.menu_album_actions)
 }
 
 /**
@@ -220,7 +220,7 @@ fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewMode
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_artist_detail)
+    inflateAndShow(R.menu.menu_artist_actions)
 }
 
 /**
@@ -239,7 +239,7 @@ fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) 
             else -> false
         }
     }
-    inflateAndShow(R.menu.menu_genre_detail)
+    inflateAndShow(R.menu.menu_genre_actions)
 }
 
 /**

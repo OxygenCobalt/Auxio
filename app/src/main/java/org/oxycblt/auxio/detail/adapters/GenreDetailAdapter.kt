@@ -19,7 +19,7 @@ import org.oxycblt.auxio.ui.disable
 /**
  * An adapter for displaying the [Song]s of a genre.
  */
-class GenreSongAdapter(
+class GenreDetailAdapter(
     private val detailModel: DetailViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Song) -> Unit,
