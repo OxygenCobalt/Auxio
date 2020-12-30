@@ -368,6 +368,7 @@ class PlaybackStateManager private constructor() {
                 forceQueueUpdate()
 
                 mSong = null
+                mParent = null
             }
         }
     }

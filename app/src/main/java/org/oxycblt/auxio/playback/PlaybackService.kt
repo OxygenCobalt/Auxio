@@ -438,9 +438,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * @param reason (Debug) The reason for this call.
      */
     private fun startForegroundOrNotify(reason: String) {
-        // Don't start the foreground if the playback hasn't started yet AND if the playback hasn't
-        // been restored
-        if (playbackManager.hasPlayed && playbackManager.isRestored) {
+        // Don't start the foreground if:
+        //     - The playback hasnt even started
+        //     - The playback hasnt been restored
+        //     - There is nothing to play
+        if (playbackManager.hasPlayed && playbackManager.isRestored && playbackManager.song != null) {
             logD("Starting foreground/notifying because of $reason")
 
             if (!isForeground) {

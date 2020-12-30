@@ -134,7 +134,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
-                playbackModel.parent.value!!.id == detailModel.currentAlbum.value!!.id
+                playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
             ) {
                 detailAdapter.setCurrentSong(song)
 

@@ -10,9 +10,12 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.ui.setupAlbumActions
 
 /**
@@ -101,6 +104,39 @@ class ArtistDetailFragment : DetailFragment() {
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null && it is Artist) {
                 detailModel.doneWithNavToItem()
+            }
+        }
+
+        // --- PLAYBACKVIEWMODEL SETUP ---
+
+        playbackModel.parent.observe(viewLifecycleOwner) { parent ->
+            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM && parent is Album?) {
+                detailAdapter.setCurrentAlbum(parent)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
+
+                if (parent != null) {
+                    // Use existing data instead of having to re-sort it.
+                    val pos = detailAdapter.currentList.indexOfFirst {
+                        it.name == parent.name
+                    }
+
+                    // Check if the ViewHolder if this album is visible, and highlight it if so.
+                    binding.detailRecycler.layoutManager?.findViewByPosition(pos)?.let { child ->
+                        binding.detailRecycler.getChildViewHolder(child)?.let {
+                            lastHolder = it as Highlightable
+
+                            lastHolder?.setHighlighted(true)
+                        }
+                    }
+                }
+            } else {
+                // Clear the viewholders if the mode isn't IN_ALBUM
+                detailAdapter.setCurrentAlbum(null)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
             }
         }
 
