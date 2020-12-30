@@ -16,6 +16,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
+import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.setupAlbumSongActions
 
@@ -87,7 +88,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         setupRecycler(detailAdapter)
 
-        // -- VIEWMODEL SETUP ---
+        // -- DETAILVIEWMODEL SETUP ---
 
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
@@ -126,6 +127,51 @@ class AlbumDetailFragment : DetailFragment() {
                 if (it is Album && it.id == detailModel.currentAlbum.value!!.id) {
                     detailModel.doneWithNavToItem()
                 }
+            }
+        }
+
+        // --- PLAYBACKVIEWMODEL SETUP ---
+
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
+                playbackModel.parent.value!!.id == detailModel.currentAlbum.value!!.id
+            ) {
+                detailAdapter.setCurrentSong(song)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
+
+                if (song != null) {
+                    // Use existing data instead of having to re-sort it.
+                    val pos = detailAdapter.currentList.indexOfFirst {
+                        it.name == song.name
+                    }
+
+                    // Check if the ViewHolder for this song is visible, if it is then highlight it.
+                    // If the ViewHolder is not visible, then the adapter should take care of it if it does become visible.
+                    binding.detailRecycler.layoutManager?.findViewByPosition(pos)?.let { child ->
+                        binding.detailRecycler.getChildViewHolder(child)?.let {
+                            lastHolder = it as Highlightable
+
+                            lastHolder?.setHighlighted(true)
+                        }
+                    }
+                }
+            } else {
+                // Clear the viewholders if the mode isn't ALL_SONGS
+                detailAdapter.setCurrentSong(null)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
+            }
+        }
+
+        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
+            if (it) {
+                // Remove any highlighted ViewHolders if the playback is in the user queue.
+                detailAdapter.setCurrentSong(null)
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
             }
         }
 

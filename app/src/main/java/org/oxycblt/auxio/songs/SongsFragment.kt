@@ -20,7 +20,6 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getLandscapeSpans
@@ -70,8 +69,6 @@ class SongsFragment : Fragment() {
             }
         )
 
-        var lastHolder: Highlightable? = null
-
         // --- UI SETUP ---
 
         binding.songToolbar.apply {
@@ -105,48 +102,6 @@ class SongsFragment : Fragment() {
         }
 
         // --- VIEWMODEL SETUP ---
-
-        /*
-        Unused, not needed for SongsFragment
-        TODO: Move this code over to AlbumDetailFragment
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.mode.value == PlaybackMode.ALL_SONGS) {
-                songAdapter.setCurrentSong(song)
-
-                lastHolder?.setHighlighted(false)
-                lastHolder = null
-
-                if (song != null) {
-                    val pos = musicStore.songs.indexOfFirst { it.id == song.id }
-
-                    // Check if the ViewHolder for this song is visible, if it is then highlight it.
-                    // If it isn't, SongsAdapter will take care of it when it is visible.
-                    binding.songRecycler.layoutManager?.findViewByPosition(pos)?.let { child ->
-                        binding.songRecycler.getChildViewHolder(child)?.let {
-                            lastHolder = it as Highlightable
-
-                            lastHolder?.setHighlighted(true)
-                        }
-                    }
-                }
-            } else {
-                // Clear the viewholders if the mode isnt ALL_SONGS
-                songAdapter.setCurrentSong(null)
-
-                lastHolder?.setHighlighted(false)
-                lastHolder = null
-            }
-        }
-
-        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
-            if (it) {
-                // Remove any highlighted ViewHolders if the playback is in the user queue.
-                songAdapter.setCurrentSong(null)
-                lastHolder?.setHighlighted(false)
-                lastHolder = null
-            }
-        }
-         */
 
         setupFastScroller(binding)
 

@@ -78,10 +78,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 if (it.itemId != R.id.action_search) {
                     libraryModel.updateSortMode(it.itemId)
                 } else {
-                    // Do whatever this is in order to make the SearchView focusable.
-                    (it.actionView as SearchView).isIconified = false
-
-                    // Then also do a basic animation
+                    // Then also do a basic animation on the enter transition. Not done on exit
+                    // because that causes issues with the SearchView.
                     TransitionManager.beginDelayedTransition(
                         binding.libraryToolbar, Fade()
                     )
@@ -98,14 +96,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                 searchView.queryHint = getString(R.string.hint_search_library)
                 searchView.maxWidth = Int.MAX_VALUE
                 searchView.setOnQueryTextListener(this@LibraryFragment)
-                searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                    item.isVisible = !hasFocus
-                }
 
                 item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = searchAdapter
                         setGroupVisible(R.id.group_sorting, false)
+                        item.isVisible = false
 
                         libraryModel.resetQuery()
 
@@ -115,6 +111,7 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = libraryAdapter
                         setGroupVisible(R.id.group_sorting, true)
+                        item.isVisible = true
 
                         libraryModel.resetQuery()
 

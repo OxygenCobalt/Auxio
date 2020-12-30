@@ -13,8 +13,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
+import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
  * An adapter for displaying the details and [Song]s of an [Album]
@@ -25,6 +28,10 @@ class AlbumDetailAdapter(
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+
+    private var currentSong: Song? = null
+    private var lastHolder: Highlightable? = null
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Album -> ALBUM_HEADER_ITEM_TYPE
@@ -51,6 +58,30 @@ class AlbumDetailAdapter(
             is Album -> (holder as AlbumHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
         }
+
+        if (currentSong != null && position > 0) {
+            if (getItem(position).id == currentSong?.id) {
+                // Reset the last ViewHolder before assigning the new, correct one to be highlighted
+                lastHolder?.setHighlighted(false)
+                lastHolder = (holder as Highlightable)
+                holder.setHighlighted(true)
+            } else {
+                (holder as Highlightable).setHighlighted(false)
+            }
+        }
+    }
+
+    /**
+     * Update the current song that this adapter should be watching for to highlight.
+     * @param song The [Song] to highlight if found, null to clear any highlighted ViewHolders
+     */
+    fun setCurrentSong(song: Song?) {
+        // Clear out the last ViewHolder as a song update usually signifies that this current
+        // ViewHolder is likely invalid.
+        lastHolder?.setHighlighted(false)
+        lastHolder = null
+
+        currentSong = song
     }
 
     inner class AlbumHeaderViewHolder(
@@ -70,11 +101,24 @@ class AlbumDetailAdapter(
 
     inner class AlbumSongViewHolder(
         private val binding: ItemAlbumSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
+    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+        private val normalTextColor = binding.songName.currentTextColor
+        private val inactiveTextColor = binding.songTrack.currentTextColor
+
         override fun onBind(data: Song) {
             binding.song = data
 
             binding.songName.requestLayout()
+        }
+
+        override fun setHighlighted(isHighlighted: Boolean) {
+            if (isHighlighted) {
+                binding.songName.setTextColorResource(accent.first)
+                binding.songTrack.setTextColorResource(accent.first)
+            } else {
+                binding.songName.setTextColor(normalTextColor)
+                binding.songTrack.setTextColor(inactiveTextColor)
+            }
         }
     }
 
