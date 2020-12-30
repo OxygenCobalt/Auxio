@@ -175,6 +175,7 @@
         <item name="bottomSheetStyle">@style/Theme.BottomSheetHeightFix</item>
     </style>
 
+    <!-- Fix to make the bottomsheet go to full height instantly. -->
     <style name="Theme.BottomSheetHeightFix" parent="Widget.Design.BottomSheet.Modal">
         <item name="behavior_peekHeight">500dp</item>
     </style>

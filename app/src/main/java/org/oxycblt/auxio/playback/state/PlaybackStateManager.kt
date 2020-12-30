@@ -86,6 +86,10 @@ class PlaybackStateManager private constructor() {
             callbacks.forEach { it.onLoopUpdate(value) }
         }
     private var mIsInUserQueue = false
+        set(value) {
+            field = value
+            callbacks.forEach { it.onInUserQueueUpdate(value) }
+        }
     private var mIsRestored = false
     private var mHasPlayed = false
     private var mShuffleSeed = -1L
@@ -114,6 +118,8 @@ class PlaybackStateManager private constructor() {
     val isRestored: Boolean get() = mIsRestored
     /** Whether this instance has started playing or not */
     val hasPlayed: Boolean get() = mHasPlayed
+    /** Whether playback is in the user queue or not */
+    val isInUserQueue: Boolean get() = mIsInUserQueue
 
     private val settingsManager = SettingsManager.getInstance()
 
@@ -239,17 +245,16 @@ class PlaybackStateManager private constructor() {
     /**
      * Shortcut function for updating what song is being played. ***USE THIS INSTEAD OF WRITING OUT ALL THE CODE YOURSELF!!!***
      * @param song The song to play
-     * @param dontPlay (Optional, defaults to false) whether to not set [isPlaying] to true.
      */
     private fun updatePlayback(song: Song) {
+        mIsInUserQueue = false
+
         mSong = song
         mPosition = 0
 
         if (!mIsPlaying) {
             setPlayingStatus(true)
         }
-
-        mIsInUserQueue = false
     }
 
     /**
@@ -846,6 +851,7 @@ class PlaybackStateManager private constructor() {
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(mode: LoopMode) {}
         fun onSeekConfirm(position: Long) {}
+        fun onInUserQueueUpdate(isInUserQueue: Boolean) {}
         fun onRestoreFinish() {}
     }
 

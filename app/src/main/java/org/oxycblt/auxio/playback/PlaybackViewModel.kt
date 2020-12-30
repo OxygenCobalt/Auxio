@@ -42,6 +42,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsShuffling = MutableLiveData(false)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
 
+    private val mIsInUserQueue = MutableLiveData(false)
+
     // Other
     private val mIsSeeking = MutableLiveData(false)
     private var mCanAnimate = false
@@ -59,6 +61,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
     /** The current [PlaybackMode] that also determines the queue */
     val mode: LiveData<PlaybackMode> get() = mMode
+
+    val isInUserQueue: LiveData<Boolean> = mIsInUserQueue
 
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
@@ -389,5 +393,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onLoopUpdate(mode: LoopMode) {
         mLoopMode.value = mode
+    }
+
+    override fun onInUserQueueUpdate(isInUserQueue: Boolean) {
+        mIsInUserQueue.value = isInUserQueue
     }
 }

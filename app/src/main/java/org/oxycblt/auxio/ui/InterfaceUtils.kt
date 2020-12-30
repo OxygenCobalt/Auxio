@@ -9,8 +9,11 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.HtmlCompat
@@ -79,6 +82,20 @@ fun Spanned.render(): Spanned {
     return HtmlCompat.fromHtml(
         this.toString(), HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS
     )
+}
+
+/**
+ * Set a [TextView] text color, without having to resolve the resource.
+ */
+fun TextView.setTextColorResource(@ColorRes color: Int) {
+    setTextColor(color.toColor(context))
+}
+
+/**
+ * Set a [TextView] text color, using an attr resource
+ */
+fun TextView.setTextColorAttr(@AttrRes attr: Int) {
+    setTextColor(resolveAttr(context, attr))
 }
 
 /**

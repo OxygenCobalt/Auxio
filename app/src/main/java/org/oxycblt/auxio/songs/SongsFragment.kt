@@ -20,6 +20,8 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getLandscapeSpans
@@ -57,13 +59,17 @@ class SongsFragment : Fragment() {
 
         val songAdapter = SongsAdapter(
             musicStore.songs,
-            doOnClick = { playbackModel.playSong(it, settingsManager.songPlaybackMode) },
+            doOnClick = {
+                playbackModel.playSong(it, settingsManager.songPlaybackMode)
+            },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupSongActions(
                     requireContext(), data, playbackModel, detailModel
                 )
             }
         )
+
+        var lastHolder: Highlightable? = null
 
         // --- UI SETUP ---
 
@@ -94,6 +100,40 @@ class SongsFragment : Fragment() {
                     binding.songFastScroll.visibility = View.GONE
                     binding.songFastScrollThumb.visibility = View.GONE
                 }
+            }
+        }
+
+        // --- VIEWMODEL SETUP ---
+
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (playbackModel.mode.value == PlaybackMode.ALL_SONGS) {
+                logD(playbackModel.isInUserQueue.toString())
+                songAdapter.setCurrentSong(song)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
+
+                if (song != null) {
+                    val pos = musicStore.songs.indexOfFirst { it.id == song.id }
+
+                    // Check if the ViewHolder for this song is visible, if it is then highlight it.
+                    // If it isn't, SongsAdapter will take care of it when it is visible.
+                    binding.songRecycler.layoutManager?.findViewByPosition(pos)?.let { child ->
+                        binding.songRecycler.getChildViewHolder(child)?.let {
+                            lastHolder = it as Highlightable
+
+                            lastHolder?.setHighlighted(true)
+                        }
+                    }
+                }
+            }
+        }
+
+        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
+            if (it) {
+                songAdapter.setCurrentSong(null)
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
             }
         }
 

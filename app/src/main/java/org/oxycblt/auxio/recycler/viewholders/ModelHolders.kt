@@ -13,11 +13,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder.Companion.from
-import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder.Companion.from
-import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder.Companion.from
-import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder.Companion.from
-import org.oxycblt.auxio.recycler.viewholders.SongViewHolder.Companion.from
 
 /*
  * A table of all ViewHolder codes. Please add to these so that all viewholder codes are unique.
