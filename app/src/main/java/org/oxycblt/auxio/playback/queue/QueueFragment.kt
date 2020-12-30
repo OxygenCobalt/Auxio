@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -106,13 +107,7 @@ class QueueFragment : Fragment() {
         val queue = mutableListOf<BaseModel>()
 
         if (playbackModel.userQueue.value!!.isNotEmpty()) {
-            queue.add(
-                Header(
-                    id = 0,
-                    name = getString(R.string.label_next_user_queue),
-                    isAction = true
-                )
-            )
+            queue.add(Header(id = 0, name = getString(R.string.label_next_user_queue), isAction = true))
             queue.addAll(playbackModel.userQueue.value!!)
         }
 
@@ -120,13 +115,7 @@ class QueueFragment : Fragment() {
             queue.add(
                 Header(
                     id = 1,
-                    name = getString(
-                        R.string.format_next_from,
-                        if (playbackModel.mode.value == PlaybackMode.ALL_SONGS)
-                            getString(R.string.label_all_songs)
-                        else
-                            playbackModel.parent.value!!.name
-                    ),
+                    name = getString(R.string.format_next_from, getParentName()),
                     isAction = false
                 )
             )
@@ -134,5 +123,18 @@ class QueueFragment : Fragment() {
         }
 
         return queue
+    }
+
+    private fun getParentName(): String {
+        return if (playbackModel.mode.value == PlaybackMode.ALL_SONGS) {
+            getString(R.string.label_all_songs)
+        } else {
+            if (playbackModel.parent.value is Genre) {
+                // Since t
+                (playbackModel.parent.value as Genre).displayName
+            } else {
+                playbackModel.parent.value!!.name
+            }
+        }
     }
 }

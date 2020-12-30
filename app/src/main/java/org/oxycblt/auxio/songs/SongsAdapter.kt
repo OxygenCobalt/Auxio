@@ -23,8 +23,8 @@ class SongsAdapter(
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : RecyclerView.Adapter<SongsAdapter.SongViewHolder>() {
 
-    private var currentSong: Song? = null
-    private var lastHolder: Highlightable? = null
+/*    private var currentSong: Song? = null
+    private var lastHolder: Highlightable? = null*/
 
     override fun getItemCount(): Int = data.size
 
@@ -37,7 +37,7 @@ class SongsAdapter(
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         holder.bind(data[position])
 
-        if (currentSong != null) {
+/*        if (currentSong != null) {
             if (data[position].id == currentSong?.id) {
                 // Reset the last ViewHolder before assigning the new, correct one to be highlighted
                 lastHolder?.setHighlighted(false)
@@ -46,17 +46,17 @@ class SongsAdapter(
             } else {
                 holder.setHighlighted(false)
             }
-        }
+        }*/
     }
 
-    fun setCurrentSong(song: Song?) {
+/*    fun setCurrentSong(song: Song?) {
         // Clear out the last ViewHolder as a song update usually signifies that this current
         // ViewHolder is likely invalid.
         lastHolder?.setHighlighted(false)
         lastHolder = null
 
         currentSong = song
-    }
+    }*/
 
     inner class SongViewHolder(
         private val binding: ItemSongBinding

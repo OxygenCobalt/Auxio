@@ -28,12 +28,14 @@
         <item>@string/label_play_all_songs</item>
         <item>@string/label_play_artist</item>
         <item>@string/label_play_album</item>
+        <item>@string/label_play_genre</item>
     </array>
 
     <array name="values_song_playback_mode">
         <item>ALL_SONGS</item>
         <item>IN_ARTIST</item>
         <item>IN_ALBUM</item>
+        <item>IN_GENRE</item>
     </array>
 
     <array name="entries_at_end">

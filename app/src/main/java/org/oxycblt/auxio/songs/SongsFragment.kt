@@ -20,7 +20,6 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
@@ -33,6 +32,8 @@ import kotlin.math.ceil
 /**
  * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
  * them.
+ * TODO: Search
+ * TODO: Sorting
  * @author OxygenCobalt
  */
 class SongsFragment : Fragment() {
@@ -105,9 +106,11 @@ class SongsFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
+        /*
+        Unused, not needed for SongsFragment
+        TODO: Move this code over to AlbumDetailFragment
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.ALL_SONGS) {
-                logD(playbackModel.isInUserQueue.toString())
                 songAdapter.setCurrentSong(song)
 
                 lastHolder?.setHighlighted(false)
@@ -126,16 +129,24 @@ class SongsFragment : Fragment() {
                         }
                     }
                 }
+            } else {
+                // Clear the viewholders if the mode isnt ALL_SONGS
+                songAdapter.setCurrentSong(null)
+
+                lastHolder?.setHighlighted(false)
+                lastHolder = null
             }
         }
 
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
             if (it) {
+                // Remove any highlighted ViewHolders if the playback is in the user queue.
                 songAdapter.setCurrentSong(null)
                 lastHolder?.setHighlighted(false)
                 lastHolder = null
             }
         }
+         */
 
         setupFastScroller(binding)
 
