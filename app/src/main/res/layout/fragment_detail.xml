@@ -14,7 +14,6 @@
             style="@style/Toolbar.Style.Icon"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            app:contentInsetStartWithNavigation="0dp"
             app:title="@string/label_library"
             tools:menu="@menu/menu_artist_actions" />
 

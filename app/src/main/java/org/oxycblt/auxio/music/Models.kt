@@ -59,7 +59,7 @@ data class Song(
 
     /**
      * Apply an album to a song.
-     * @throws IllegalArgumentException When a album is already applied.
+     * @throws IllegalArgumentException When an album is already applied.
      */
     fun applyAlbum(album: Album) {
         check(mAlbum == null) { "Album is already applied" }

@@ -118,8 +118,6 @@ class PlaybackStateManager private constructor() {
     val isRestored: Boolean get() = mIsRestored
     /** Whether this instance has started playing or not */
     val hasPlayed: Boolean get() = mHasPlayed
-    /** Whether playback is in the user queue or not */
-    val isInUserQueue: Boolean get() = mIsInUserQueue
 
     private val settingsManager = SettingsManager.getInstance()
 

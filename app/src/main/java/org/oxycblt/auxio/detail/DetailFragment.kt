@@ -29,7 +29,6 @@ abstract class DetailFragment : Fragment() {
     protected val binding: FragmentDetailBinding by memberBinding(
         FragmentDetailBinding::inflate
     )
-    protected var lastHolder: Highlightable? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -45,12 +44,6 @@ abstract class DetailFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         callback.isEnabled = false
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        lastHolder = null
     }
 
     /**

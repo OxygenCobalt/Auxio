@@ -15,7 +15,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.ui.setupAlbumActions
 
 /**
@@ -111,32 +110,9 @@ class ArtistDetailFragment : DetailFragment() {
 
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM && parent is Album?) {
-                detailAdapter.setCurrentAlbum(parent)
-
-                lastHolder?.setHighlighted(false)
-                lastHolder = null
-
-                if (parent != null) {
-                    // Use existing data instead of having to re-sort it.
-                    val pos = detailAdapter.currentList.indexOfFirst {
-                        it.name == parent.name
-                    }
-
-                    // Check if the ViewHolder if this album is visible, and highlight it if so.
-                    binding.detailRecycler.layoutManager?.findViewByPosition(pos)?.let { child ->
-                        binding.detailRecycler.getChildViewHolder(child)?.let {
-                            lastHolder = it as Highlightable
-
-                            lastHolder?.setHighlighted(true)
-                        }
-                    }
-                }
+                detailAdapter.setCurrentAlbum(parent, binding.detailRecycler)
             } else {
-                // Clear the viewholders if the mode isn't IN_ALBUM
-                detailAdapter.setCurrentAlbum(null)
-
-                lastHolder?.setHighlighted(false)
-                lastHolder = null
+                detailAdapter.setCurrentAlbum(null, binding.detailRecycler)
             }
         }
 

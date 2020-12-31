@@ -130,7 +130,7 @@ class QueueFragment : Fragment() {
             getString(R.string.label_all_songs)
         } else {
             if (playbackModel.parent.value is Genre) {
-                // Since t
+                // Use display name for Genres so that numbers dont show up
                 (playbackModel.parent.value as Genre).displayName
             } else {
                 playbackModel.parent.value!!.name

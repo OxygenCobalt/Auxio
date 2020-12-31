@@ -43,7 +43,7 @@ fun NotificationManager.createMediaNotification(
     context: Context,
     mediaSession: MediaSessionCompat
 ): NotificationCompat.Builder {
-    // Create a notification channel if requireds
+    // Create a notification channel if required
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
             NotificationUtils.CHANNEL_ID,

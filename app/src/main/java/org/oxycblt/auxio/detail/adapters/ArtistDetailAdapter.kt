@@ -76,13 +76,29 @@ class ArtistDetailAdapter(
      * Update the current album that this adapter should be watching for to highlight.
      * @param album The [Album] to highlight if found, null to clear any highlighted ViewHolders
      */
-    fun setCurrentAlbum(album: Album?) {
+    fun setCurrentAlbum(album: Album?, recycler: RecyclerView) {
         // Clear out the last ViewHolder as a song update usually signifies that this current
         // ViewHolder is likely invalid.
         lastHolder?.setHighlighted(false)
         lastHolder = null
 
         currentAlbum = album
+
+        if (album != null) {
+            // Use existing data instead of having to re-sort it.
+            val pos = currentList.indexOfFirst {
+                it.name == album.name && it is Album
+            }
+
+            // Check if the ViewHolder if this album is visible, and highlight it if so.
+            recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
+                recycler.getChildViewHolder(child)?.let {
+                    lastHolder = it as Highlightable
+
+                    lastHolder?.setHighlighted(true)
+                }
+            }
+        }
     }
 
     inner class ArtistHeaderViewHolder(
