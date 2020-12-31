@@ -13,8 +13,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setTextColorResource

@@ -14,6 +14,8 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
+// TODO: Add option to ignore MediaStore
+
 /**
  * Get a bitmap for a song. onDone will be called when the bitmap is loaded.
  * **Do not use this on the UI elements, instead use the Binding Adapters.**

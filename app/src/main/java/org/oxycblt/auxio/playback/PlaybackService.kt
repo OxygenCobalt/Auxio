@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.playback
 
+import android.animation.ValueAnimator
 import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothDevice
@@ -15,7 +16,11 @@ import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
+import androidx.core.animation.addListener
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -75,7 +80,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private lateinit var notificationManager: NotificationManager
     private lateinit var notification: NotificationCompat.Builder
 
-    private var changeIsFromAudioFocus = true
+    private lateinit var audioFocusManager: AudioFocusManager
     private var isForeground = false
 
     private val serviceJob = Job()
@@ -103,12 +108,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // Set up AudioFocus/AudioAttributes
         player.setAudioAttributes(
-            audioAttributes, settingsManager.doAudioFocus
+            audioAttributes, false
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             player.experimentalSetOffloadSchedulingEnabled(true)
         }
+
+        audioFocusManager = AudioFocusManager()
 
         // --- SYSTEM RECEIVER SETUP ---
 
@@ -173,9 +180,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // Release everything that could cause a memory leak if left around
         player.release()
         mediaSession.release()
+        audioFocusManager.destroy()
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
 
+        // The service coroutines last job is to save the state to the DB, before terminating itself.
         serviceScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
             serviceJob.cancel()
@@ -187,23 +196,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     // --- PLAYER EVENT LISTENER OVERRIDES ---
 
     override fun onPlaybackStateChanged(state: Int) {
-        changeIsFromAudioFocus = false
-
         if (state == Player.STATE_ENDED) {
             playbackManager.next()
         } else if (state == Player.STATE_READY) {
             startPollingPosition()
         }
-    }
-
-    override fun onIsPlayingChanged(isPlaying: Boolean) {
-        // Only sync the playing status with PlaybackStateManager if the change occurred
-        // from an Audio Focus change. Nowhere else.
-        if (isPlaying != playbackManager.isPlaying && changeIsFromAudioFocus) {
-            playbackManager.setPlayingStatus(isPlaying)
-        }
-
-        changeIsFromAudioFocus = true
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -260,11 +257,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
-        changeIsFromAudioFocus = false
-
         if (isPlaying && !player.isPlaying) {
             player.play()
             notification.updatePlaying(this)
+            audioFocusManager.requestFocus()
             startForegroundOrNotify("Play")
 
             startPollingPosition()
@@ -276,8 +272,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onLoopUpdate(mode: LoopMode) {
-        changeIsFromAudioFocus = false
-
         when (mode) {
             LoopMode.NONE -> {
                 player.repeatMode = Player.REPEAT_MODE_OFF
@@ -300,8 +294,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onSeekConfirm(position: Long) {
-        changeIsFromAudioFocus = false
-
         player.seekTo(position)
     }
 
@@ -325,13 +317,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         notification.updateExtraAction(this, useAltAction)
 
         startForegroundOrNotify("Notif action update")
-    }
-
-    override fun onAudioFocusUpdate(doAudioFocus: Boolean) {
-        player.setAudioAttributes(
-            audioAttributes,
-            doAudioFocus
-        )
     }
 
     // --- OTHER FUNCTIONS ---
@@ -518,6 +503,76 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     /**
+     * Object that manages the AudioFocus state.
+     * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
+     */
+    inner class AudioFocusManager : AudioManager.OnAudioFocusChangeListener {
+        private val audioManager = ContextCompat.getSystemService(
+            this@PlaybackService, AudioManager::class.java
+        ) ?: error("Cannot obtain AudioManager.")
+
+        private val request = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
+            .setWillPauseWhenDucked(true)
+            .setOnAudioFocusChangeListener(this)
+            .build()
+
+        fun requestFocus() {
+            AudioManagerCompat.requestAudioFocus(audioManager, request)
+        }
+
+        fun destroy() {
+            AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
+        }
+
+        override fun onAudioFocusChange(focusChange: Int) {
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_GAIN -> onGain()
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> onDuck()
+                AudioManager.AUDIOFOCUS_LOSS, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> onLoss()
+            }
+        }
+
+        private fun onGain() {
+            if (settingsManager.doAudioFocus) {
+                if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
+                    player.volume = VOLUME_DUCK
+                    animateVolume(VOLUME_DUCK, VOLUME_FULL)
+                } else {
+                    playbackManager.setPlayingStatus(true)
+                }
+            }
+        }
+
+        private fun onLoss() {
+            if (settingsManager.doAudioFocus) {
+                playbackManager.setPlayingStatus(false)
+            }
+        }
+
+        private fun onDuck() {
+            if (settingsManager.doAudioFocus) {
+                player.volume = VOLUME_DUCK
+            }
+        }
+
+        private fun animateVolume(from: Float, to: Float) {
+            ValueAnimator().apply {
+                setFloatValues(from, to)
+                duration = DUCK_DURATION
+                addListener(
+                    onStart = { player.volume = from },
+                    onCancel = { player.volume = to },
+                    onEnd = { player.volume = to }
+                )
+                addUpdateListener {
+                    player.volume = it.animatedValue as Float
+                }
+                start()
+            }
+        }
+    }
+
+    /**
      * A [BroadcastReceiver] for receiving system events from the media notification or the headset.
      */
     private inner class SystemEventReceiver : BroadcastReceiver() {
@@ -593,5 +648,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     companion object {
         private const val DISCONNECTED = 0
         private const val CONNECTED = 1
+
+        private const val VOLUME_DUCK = 0.2f
+        private const val DUCK_DURATION = 1500L
+        private const val VOLUME_FULL = 1.0f
     }
 }

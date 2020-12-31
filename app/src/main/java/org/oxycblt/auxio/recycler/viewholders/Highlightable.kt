@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.recycler.viewholders
 
 /**
  * Interface that allows the highlighting of certain ViewHolders

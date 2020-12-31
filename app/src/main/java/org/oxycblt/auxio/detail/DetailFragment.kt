@@ -19,7 +19,6 @@ import org.oxycblt.auxio.ui.memberBinding
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
  * TODO: Add custom artist images
- * TODO: Add playing item highlighting
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {

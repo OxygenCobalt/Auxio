@@ -13,7 +13,6 @@ import org.oxycblt.auxio.logD
  * A SQLite database for managing the persistent playback state and queue.
  * Yes, I know androidx has Room which supposedly makes database creation easier, but it also
  * has a crippling bug where it will endlessly allocate rows even if you clear the entire db, so...
- * TODO: Turn queue loading info flow
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :

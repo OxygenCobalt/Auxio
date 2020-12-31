@@ -42,7 +42,7 @@ import org.oxycblt.auxio.ui.setupSongActions
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
  * search functionality.
  * FIXME: Heisenleak when navving from search
- * FIXME: Heisen on older versions
+ * FIXME: Heisenleak on older versions
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 

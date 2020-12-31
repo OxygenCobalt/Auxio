@@ -19,6 +19,7 @@ import org.oxycblt.auxio.ui.setupAlbumActions
 
 /**
  * The [DetailFragment] for an artist.
+ * TODO: Show a list of songs?
  * @author OxygenCobalt
  */
 class ArtistDetailFragment : DetailFragment() {

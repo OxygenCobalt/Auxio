@@ -10,7 +10,7 @@ import org.oxycblt.auxio.ui.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
- * TODO: Add option to play song from genre, now that its possible
+ * TODO: Add option to hide covers
  * @author OxygenCobalt
  */
 class SettingsManager private constructor(context: Context) :
@@ -165,10 +165,6 @@ class SettingsManager private constructor(context: Context) :
             Keys.KEY_LIBRARY_DISPLAY_MODE -> callbacks.forEach {
                 it.onLibDisplayModeUpdate(libraryDisplayMode)
             }
-
-            Keys.KEY_AUDIO_FOCUS -> callbacks.forEach {
-                it.onAudioFocusUpdate(doAudioFocus)
-            }
         }
     }
 
@@ -248,7 +244,7 @@ class SettingsManager private constructor(context: Context) :
     }
 
     /**
-     * An safe interface for receiving some preference updates. Use/Extend this instead of
+     * An interface for receiving some preference updates. Use/Extend this instead of
      * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
      * context.
      */
@@ -256,6 +252,5 @@ class SettingsManager private constructor(context: Context) :
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
-        fun onAudioFocusUpdate(doAudioFocus: Boolean) {}
     }
 }
