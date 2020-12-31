@@ -106,8 +106,6 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
-        // --- PLAYBACKVIEWMODEL SETUP ---
-
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM && parent is Album?) {
                 detailAdapter.setCurrentAlbum(parent, binding.detailRecycler)

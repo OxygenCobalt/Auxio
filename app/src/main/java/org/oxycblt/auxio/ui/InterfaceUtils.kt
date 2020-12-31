@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.MenuRes
@@ -89,13 +88,6 @@ fun Spanned.render(): Spanned {
  */
 fun TextView.setTextColorResource(@ColorRes color: Int) {
     setTextColor(color.toColor(context))
-}
-
-/**
- * Set a [TextView] text color, using an attr resource
- */
-fun TextView.setTextColorAttr(@AttrRes attr: Int) {
-    setTextColor(resolveAttr(context, attr))
 }
 
 /**

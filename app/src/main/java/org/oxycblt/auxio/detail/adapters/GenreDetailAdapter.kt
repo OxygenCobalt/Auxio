@@ -13,8 +13,11 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DiffCallback
+import org.oxycblt.auxio.recycler.Highlightable
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
  * An adapter for displaying the [Song]s of a genre.
@@ -25,6 +28,9 @@ class GenreDetailAdapter(
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+
+    private var currentSong: Song? = null
+    private var lastHolder: Highlightable? = null
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -54,6 +60,47 @@ class GenreDetailAdapter(
             is Genre -> (holder as GenreHeaderViewHolder).bind(item)
             is Song -> (holder as GenreSongViewHolder).bind(item)
         }
+        if (currentSong != null && position > 0) {
+            if (getItem(position).id == currentSong?.id) {
+                // Reset the last ViewHolder before assigning the new, correct one to be highlighted
+                lastHolder?.setHighlighted(false)
+                lastHolder = (holder as Highlightable)
+                holder.setHighlighted(true)
+            } else {
+                (holder as Highlightable).setHighlighted(false)
+            }
+        }
+    }
+
+    /**
+     * Update the current song that this adapter should be watching for to highlight.
+     * @param song The [Song] to highlight if found, null to clear any highlighted ViewHolders
+     */
+    fun highlightSong(song: Song?, recycler: RecyclerView) {
+        // Clear out the last ViewHolder as a song update usually signifies that this current
+        // ViewHolder is likely invalid.
+        lastHolder?.setHighlighted(false)
+        lastHolder = null
+
+        currentSong = song
+
+        if (song != null) {
+            // Use existing data instead of having to re-sort it.
+            val pos = currentList.indexOfFirst {
+                it.name == song.name && it is Song
+            }
+
+            // Check if the ViewHolder for this song is visible, if it is then highlight it.
+            // If the ViewHolder is not visible, then the adapter should take care of it if
+            // it does become visible.
+            recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
+                recycler.getChildViewHolder(child)?.let {
+                    lastHolder = it as Highlightable
+
+                    lastHolder?.setHighlighted(true)
+                }
+            }
+        }
     }
 
     inner class GenreHeaderViewHolder(
@@ -72,13 +119,22 @@ class GenreDetailAdapter(
 
     inner class GenreSongViewHolder(
         private val binding: ItemGenreSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
+    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+        private val normalTextColor = binding.songName.currentTextColor
 
         override fun onBind(data: Song) {
             binding.song = data
 
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()
+        }
+
+        override fun setHighlighted(isHighlighted: Boolean) {
+            if (isHighlighted) {
+                binding.songName.setTextColorResource(accent.first)
+            } else {
+                binding.songName.setTextColor(normalTextColor)
+            }
         }
     }
 

@@ -74,7 +74,7 @@ class GenreDetailFragment : DetailFragment() {
 
         setupRecycler(detailAdapter)
 
-        // --- VIEWMODEL SETUP ---
+        // --- DETAILVIEWMODEL SETUP ---
 
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
@@ -99,6 +99,25 @@ class GenreDetailFragment : DetailFragment() {
                 }
 
                 detailModel.doneWithNavToChild()
+            }
+        }
+
+        // --- PLAYBACKVIEWMODEL SETUP ---
+
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
+                playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id
+            ) {
+                detailAdapter.highlightSong(song, binding.detailRecycler)
+            } else {
+                // Clear the viewholders if the mode isn't ALL_SONGS
+                detailAdapter.highlightSong(null, binding.detailRecycler)
+            }
+        }
+
+        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
+            if (it) {
+                detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }
 
