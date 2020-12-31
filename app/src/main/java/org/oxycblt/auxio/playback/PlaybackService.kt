@@ -43,9 +43,9 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.coil.getBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.coil.getBitmap
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode

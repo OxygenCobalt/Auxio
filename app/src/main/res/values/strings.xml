@@ -64,6 +64,9 @@
     <string name="setting_color_notif">Colorize notification</string>]
     <string name="setting_color_desc">Show album art on notification</string>
 
+    <string name="setting_quality_covers">Ignore MediaStore covers</string>
+    <string name="setting_quality_covers_desc">Results in higher quality album covers, but causes slower loading times</string>
+
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>
     <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
@@ -73,7 +76,7 @@
     <string name="setting_playback_focus_desc">Pause when other audio plays [ex. Alarms]</string>
 
     <string name="setting_playback_plug_mgt">Headset plug management</string>
-    <string name="setting_playback_plug_mgt_desc">Play/Pause when headset connection changes</string>
+    <string name="setting_playback_plug_mgt_desc">Play/Pause when the headset connection changes</string>
 
     <string name="setting_behavior">Behavior</string>
     <string name="setting_behavior_song_playback_mode">When a song is selected</string>

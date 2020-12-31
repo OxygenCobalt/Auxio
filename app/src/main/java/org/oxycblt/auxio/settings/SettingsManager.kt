@@ -74,6 +74,12 @@ class SettingsManager private constructor(context: Context) :
         )
 
     /**
+     * Whether to ignore MediaStore covers
+     */
+    val qualityCovers: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_QUALITY_COVERS, false)
+
+    /**
      * Whether to do Audio focus.
      */
     val doAudioFocus: Boolean
@@ -207,6 +213,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
         const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
+        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"

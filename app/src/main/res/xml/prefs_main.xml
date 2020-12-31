@@ -35,6 +35,13 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
+            android:title="@string/setting_quality_covers"
+            app:summary="@string/setting_quality_covers_desc"
+            app:iconSpaceReserved="false"
+            app:key="KEY_QUALITY_COVERS"
+            app:defaultValue="false" />
+
+        <SwitchPreferenceCompat
             android:title="@string/setting_color_notif"
             app:defaultValue="true"
             app:iconSpaceReserved="false"

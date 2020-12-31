@@ -10,6 +10,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.Coil
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import org.oxycblt.auxio.BuildConfig
@@ -99,6 +100,17 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
                         setIcon(DisplayMode.valueOfOrFallback(value as String).iconRes)
+
+                        true
+                    }
+                }
+
+                SettingsManager.Keys.KEY_QUALITY_COVERS -> {
+                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                        // Clear out any cached images, before recreating the activity
+                        Coil.imageLoader(requireContext()).bitmapPool.clear()
+
+                        requireActivity().recreate()
 
                         true
                     }

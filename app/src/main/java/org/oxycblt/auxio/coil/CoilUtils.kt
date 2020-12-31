@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.coil
+package org.oxycblt.auxio.coil
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,12 +9,13 @@ import androidx.databinding.BindingAdapter
 import coil.Coil
 import coil.request.ImageRequest
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-
-// TODO: Add option to ignore MediaStore
+import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * Get a bitmap for a song. onDone will be called when the bitmap is loaded.
@@ -39,9 +40,9 @@ fun getBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
  */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(song: Song) {
-    val request = getDefaultRequest(context, this)
-        .data(song.album.coverUri)
+    val request = getDefaultRequest()
         .error(R.drawable.ic_song)
+        .doCoverSetup(context, song)
         .build()
 
     Coil.imageLoader(context).enqueue(request)
@@ -52,9 +53,9 @@ fun ImageView.bindCoverArt(song: Song) {
  */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(album: Album) {
-    val request = getDefaultRequest(context, this)
-        .data(album.coverUri)
+    val request = getDefaultRequest()
         .error(R.drawable.ic_album)
+        .doCoverSetup(context, album)
         .build()
 
     Coil.imageLoader(context).enqueue(request)
@@ -77,7 +78,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
 
         val fetcher = MosaicFetcher(context)
 
-        request = getDefaultRequest(context, this)
+        request = getDefaultRequest()
             .data(uris)
             .fetcher(fetcher)
             .error(R.drawable.ic_artist)
@@ -86,8 +87,8 @@ fun ImageView.bindArtistImage(artist: Artist) {
         // Otherwise, just get the first cover and use that
         // If the artist doesn't have any albums [Which happens], then don't even bother with that.
         if (artist.albums.isNotEmpty()) {
-            request = getDefaultRequest(context, this)
-                .data(artist.albums[0].coverUri)
+            request = getDefaultRequest()
+                .doCoverSetup(context, artist.albums[0])
                 .error(R.drawable.ic_artist)
                 .build()
         } else {
@@ -115,15 +116,15 @@ fun ImageView.bindGenreImage(genre: Genre) {
     if (genreCovers.size >= 4) {
         val fetcher = MosaicFetcher(context)
 
-        request = getDefaultRequest(context, this)
+        request = getDefaultRequest()
             .data(genreCovers.slice(0..3))
             .fetcher(fetcher)
             .error(R.drawable.ic_genre)
             .build()
     } else {
         if (genreCovers.isNotEmpty()) {
-            request = getDefaultRequest(context, this)
-                .data(genreCovers[0])
+            request = getDefaultRequest()
+                .doCoverSetup(context, genre.songs[0])
                 .error(R.drawable.ic_genre)
                 .build()
         } else {
@@ -136,13 +137,39 @@ fun ImageView.bindGenreImage(genre: Genre) {
     Coil.imageLoader(context).enqueue(request)
 }
 
+fun ImageRequest.Builder.doCoverSetup(context: Context, data: BaseModel): ImageRequest.Builder {
+    if (data is Artist || data is Genre) {
+        logE("doCoverSetup does not support ${data::class.simpleName}")
+
+        return this
+    }
+
+    if (SettingsManager.getInstance().qualityCovers) {
+        fetcher(QualityCoverFetcher(context))
+
+        if (data is Song) {
+            data(data)
+        } else if (data is Album) {
+            data(data.songs[0])
+        }
+    } else {
+        if (data is Song) {
+            data(data.album.coverUri)
+        } else if (data is Album) {
+            data(data.coverUri)
+        }
+    }
+
+    return this
+}
+
 /**
  * Get the base request used by the above functions
  * @return The base request
  */
-private fun getDefaultRequest(context: Context, imageView: ImageView): ImageRequest.Builder {
+private fun ImageView.getDefaultRequest(): ImageRequest.Builder {
     return ImageRequest.Builder(context)
         .crossfade(true)
         .placeholder(android.R.color.transparent)
-        .target(imageView)
+        .target(this)
 }

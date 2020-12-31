@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.music.coil
+package org.oxycblt.auxio.coil
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,7 +16,6 @@ import coil.fetch.SourceResult
 import coil.size.Size
 import okio.buffer
 import okio.source
-import org.oxycblt.auxio.R
 import java.io.InputStream
 
 /**
@@ -52,12 +51,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
                     dataSource = DataSource.DISK
                 )
             } else {
-                // If ALL the streams failed, then don't even bother with that.
-                DrawableResult(
-                    drawable = R.drawable.ic_song.toDrawable(),
-                    isSampled = false,
-                    dataSource = DataSource.DISK
-                )
+                error("All streams failed. Not bothering.")
             }
         }
 
