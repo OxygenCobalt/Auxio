@@ -123,19 +123,8 @@
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PREV_REWIND"
-            app:summary="@string/setting_behavior_rewind_prev_desc" />
-
-        <SeekBarPreference
-            android:defaultValue="@integer/rewind_threshold_default"
-            android:max="@integer/rewind_threshold_max"
-            android:title="@string/setting_behavior_rewind_threshold"
             app:allowDividerBelow="false"
-            app:dependency="KEY_PREV_REWIND"
-            app:iconSpaceReserved="false"
-            app:key="KEY_REWIND_THRESHOLD"
-            app:min="@integer/rewind_threshold_min"
-            app:showSeekBarValue="true"
-            app:summary="@string/setting_behavior_rewind_threshold_desc" />
+            app:summary="@string/setting_behavior_rewind_prev_desc" />
 
     </PreferenceCategory>
 

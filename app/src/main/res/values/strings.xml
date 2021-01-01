@@ -94,8 +94,6 @@
 
     <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
-    <string name="setting_behavior_rewind_threshold">Rewind threshold</string>
-    <string name="setting_behavior_rewind_threshold_desc">Progress at which a rewind should occur (seconds)</string>
 
     <!-- Debug Namespace | Debug labels -->
     <string name="debug_title">Debug</string>

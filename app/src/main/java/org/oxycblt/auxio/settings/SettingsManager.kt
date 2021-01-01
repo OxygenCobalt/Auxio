@@ -129,12 +129,6 @@ class SettingsManager private constructor(context: Context) :
         get() = sharedPrefs.getBoolean(Keys.KEY_PREV_REWIND, true)
 
     /**
-     * The threshold at which to rewind when the back button is pressed.
-     */
-    val rewindThreshold: Long
-        get() = (sharedPrefs.getInt(Keys.KEY_REWIND_THRESHOLD, 5) * 1000).toLong()
-
-    /**
      * The current [SortMode] of the library.
      */
     var librarySortMode: SortMode
@@ -236,7 +230,6 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_AT_END = "KEY_AT_END"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
-        const val KEY_REWIND_THRESHOLD = "KEY_REWIND_THRESHOLD"
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"

@@ -317,8 +317,8 @@ class PlaybackStateManager private constructor() {
      * Go to the previous song, doing any checks that are needed.
      */
     fun prev() {
-        // If enabled, rewind before skipping back if the position is past the threshold set.
-        if (settingsManager.rewindWithPrev && mPosition >= settingsManager.rewindThreshold) {
+        // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
+        if (settingsManager.rewindWithPrev && mPosition >= 3000) {
             seekTo(0)
         } else {
             // Only decrement the index if there's a song to move back to AND if we are not exiting

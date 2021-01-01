@@ -20,26 +20,26 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 
-// TODO: Stop disk caching
-
 // SettingsManager is lazy-initted to prevent it from being used before its initialized.
 val settingsManager: SettingsManager by lazy {
     SettingsManager.getInstance()
 }
 
 /**
- * Create the custom [ImageLoader] used by Auxio, which doesn't cache album art to the disk by default.
+ * Create the custom [ImageLoader] used by Auxio, which automates some convienence things.
  */
 fun createImageLoader(context: Context): ImageLoader {
     Log.d("createImageLoader", "Creating image loader.")
 
     val builder = ImageLoader.Builder(context)
         .crossfade(true)
+        .placeholder(android.R.color.transparent)
 
     // To save memory/improve speed, allow disc caching when if quality covers are enabled.
     if (settingsManager.useQualityCovers) {
         builder.diskCachePolicy(CachePolicy.ENABLED)
     } else {
+        // Otherwise disable it since the covers are already cached, really.
         builder.diskCachePolicy(CachePolicy.DISABLED)
     }
 
@@ -51,7 +51,7 @@ fun createImageLoader(context: Context): ImageLoader {
  * **Do not use this on the UI elements, instead use the Binding Adapters.**
  * @param context [Context] required
  * @param song Song to load the cover for
- * @param onDone What to do with the bitmap when the loading is finished. Bitmap will be null if loading failed/shouldnt occur.
+ * @param onDone What to do with the bitmap when the loading is finished. Bitmap will be null if loading failed/shouldn't occur.
  */
 fun getBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
     if (!settingsManager.showCovers) {
@@ -223,7 +223,5 @@ fun ImageRequest.Builder.doCoverSetup(context: Context, data: BaseModel): ImageR
  */
 private fun ImageView.getDefaultRequest(): ImageRequest.Builder {
     return ImageRequest.Builder(context)
-        .crossfade(true)
-        .placeholder(android.R.color.transparent)
         .target(this)
 }

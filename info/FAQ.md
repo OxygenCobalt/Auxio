@@ -6,7 +6,7 @@ This FAQ will be continually updated as new changes and updates are made to Auxi
 
 ## What is Auxio?
 
-Auxio is a reliable and customizable local music player that I built for myself, primarily.
+Auxio is local music player for android that I built for myself, primarily. Its meant to be simplistic and straightfoward, however still customizable to ones wants.
 
 ## Where can I download Auxio?
 
@@ -38,7 +38,7 @@ You will be able to set the accent to something less saturated when I implement 
 
 The APIs for changing system bar colors were only added in API Level 27 (Oreo MR1), meaning that edge-to-edge will not work below that version.
 
-I could possibly extend edge-to-edge support to those versions, but it would take awhile.
+I could possibly extend edge-to-edge support to earlier versions, but it would take awhile.
 
 ## Why doesnt edge-to-edge work when my phone is in landscape?
 

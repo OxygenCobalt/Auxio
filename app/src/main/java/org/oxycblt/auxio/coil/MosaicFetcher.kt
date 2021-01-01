@@ -30,7 +30,8 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     ): FetchResult {
         val streams = mutableListOf<InputStream>()
 
-        // Load the streams.
+        // Load the streams, the lower-quality MediaStore covers are used simply because using
+        // the raw ones would make loading far too long. Its not that noticable either.
         data.forEach {
             val stream: InputStream? = context.contentResolver.openInputStream(it)
 

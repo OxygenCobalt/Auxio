@@ -52,5 +52,6 @@ class QualityCoverFetcher(private val context: Context) : Fetcher<Song> {
         )
     }
 
+    // Group bitmaps by their album so that caching is more efficent
     override fun key(data: Song): String = data.album.id.toString()
 }
