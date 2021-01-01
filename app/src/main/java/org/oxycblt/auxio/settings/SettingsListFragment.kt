@@ -105,10 +105,26 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
+                SettingsManager.Keys.KEY_SHOW_COVERS -> {
+                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                        Coil.imageLoader(requireContext()).apply {
+                            bitmapPool.clear()
+                            memoryCache.clear()
+                        }
+
+                        requireActivity().recreate()
+
+                        true
+                    }
+                }
+
                 SettingsManager.Keys.KEY_QUALITY_COVERS -> {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                         // Clear out any cached images, before recreating the activity
-                        Coil.imageLoader(requireContext()).bitmapPool.clear()
+                        Coil.imageLoader(requireContext()).apply {
+                            bitmapPool.clear()
+                            memoryCache.clear()
+                        }
 
                         requireActivity().recreate()
 

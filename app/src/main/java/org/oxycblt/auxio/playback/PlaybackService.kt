@@ -319,6 +319,22 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         startForegroundOrNotify("Notif action update")
     }
 
+    override fun onShowCoverUpdate(showCovers: Boolean) {
+        playbackManager.song?.let {
+            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
+                startForegroundOrNotify("Cover update")
+            }
+        }
+    }
+
+    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
+        playbackManager.song?.let { song ->
+            notification.setMetadata(this, song, settingsManager.colorizeNotif) {
+                startForegroundOrNotify("Quality cover update")
+            }
+        }
+    }
+
     // --- OTHER FUNCTIONS ---
 
     /**

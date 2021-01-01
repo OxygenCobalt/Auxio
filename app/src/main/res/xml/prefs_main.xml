@@ -35,10 +35,18 @@
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
+            android:title="@string/setting_show_covers"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="KEY_SHOW_COVERS"
+            app:summary="@string/setting_show_covers_desc" />
+
+        <SwitchPreferenceCompat
             android:title="@string/setting_quality_covers"
             app:summary="@string/setting_quality_covers_desc"
             app:iconSpaceReserved="false"
             app:key="KEY_QUALITY_COVERS"
+            app:dependency="KEY_SHOW_COVERS"
             app:defaultValue="false" />
 
         <SwitchPreferenceCompat
@@ -46,6 +54,7 @@
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_COLOR_NOTIF"
+            app:dependency="KEY_SHOW_COVERS"
             app:summary="@string/setting_color_desc" />
 
         <SwitchPreferenceCompat

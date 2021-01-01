@@ -74,9 +74,16 @@ class SettingsManager private constructor(context: Context) :
         )
 
     /**
+     * Whether to even loading embedded covers
+     * TODO: Make the UI result of this better
+     */
+    val showCovers: Boolean
+        get() = sharedPrefs.getBoolean(Keys.KEY_SHOW_COVERS, true)
+
+    /**
      * Whether to ignore MediaStore covers
      */
-    val qualityCovers: Boolean
+    val useQualityCovers: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_QUALITY_COVERS, false)
 
     /**
@@ -171,6 +178,14 @@ class SettingsManager private constructor(context: Context) :
             Keys.KEY_LIBRARY_DISPLAY_MODE -> callbacks.forEach {
                 it.onLibDisplayModeUpdate(libraryDisplayMode)
             }
+
+            Keys.KEY_SHOW_COVERS -> callbacks.forEach {
+                it.onShowCoverUpdate(showCovers)
+            }
+
+            Keys.KEY_QUALITY_COVERS -> callbacks.forEach {
+                it.onQualityCoverUpdate(useQualityCovers)
+            }
         }
     }
 
@@ -210,10 +225,11 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_THEME = "KEY_THEME"
         const val KEY_ACCENT = "KEY_ACCENT"
         const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
+        const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
+        const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
+        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
-        const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
-        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
@@ -259,5 +275,7 @@ class SettingsManager private constructor(context: Context) :
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
+        fun onShowCoverUpdate(showCovers: Boolean) {}
+        fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
     }
 }
