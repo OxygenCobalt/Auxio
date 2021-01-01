@@ -26,24 +26,31 @@ val settingsManager: SettingsManager by lazy {
 }
 
 /**
- * Create the custom [ImageLoader] used by Auxio, which automates some convienence things.
+ * Create the custom [ImageLoader] used by Auxio. Primarily handles whether disk-caching should be done.
+ * @return A new [ImageLoader], null if the current loader already satisfies what is needed.
  */
-fun createImageLoader(context: Context): ImageLoader {
+fun createImageLoader(context: Context): ImageLoader? {
     Log.d("createImageLoader", "Creating image loader.")
 
     val builder = ImageLoader.Builder(context)
-        .crossfade(true)
-        .placeholder(android.R.color.transparent)
+    val currentLoader = Coil.imageLoader(context)
 
-    // To save memory/improve speed, allow disc caching when if quality covers are enabled.
+    // Enable disk caching if quality covers are being used so that its more efficient.
+    // Don't bother if not however, as the covers are already cached on-disk.
     if (settingsManager.useQualityCovers) {
-        builder.diskCachePolicy(CachePolicy.ENABLED)
-    } else {
-        // Otherwise disable it since the covers are already cached, really.
-        builder.diskCachePolicy(CachePolicy.DISABLED)
-    }
+        if (currentLoader.defaults.diskCachePolicy != CachePolicy.ENABLED) {
+            builder.diskCachePolicy(CachePolicy.ENABLED)
 
-    return builder.build()
+            return builder.build()
+        }
+    } else {
+        if (currentLoader.defaults.diskCachePolicy != CachePolicy.DISABLED) {
+            builder.diskCachePolicy(CachePolicy.DISABLED)
+
+            return builder.build()
+        }
+    }
+    return null
 }
 
 /**
@@ -223,5 +230,7 @@ fun ImageRequest.Builder.doCoverSetup(context: Context, data: BaseModel): ImageR
  */
 private fun ImageView.getDefaultRequest(): ImageRequest.Builder {
     return ImageRequest.Builder(context)
+        .crossfade(true)
+        .placeholder(android.R.color.transparent)
         .target(this)
 }

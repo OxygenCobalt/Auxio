@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // --- UI SETUP ---
-
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
             this, R.layout.activity_main
         )
@@ -42,7 +40,9 @@ class MainActivity : AppCompatActivity() {
             doEdgeToEdgeSetup(binding)
         }
 
-        Coil.setImageLoader(createImageLoader(applicationContext))
+        createImageLoader(applicationContext)?.let {
+            Coil.setImageLoader(it)
+        }
     }
 
     override fun onStart() {
