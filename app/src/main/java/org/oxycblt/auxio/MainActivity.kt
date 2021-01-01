@@ -8,6 +8,8 @@ import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
+import coil.Coil
+import org.oxycblt.auxio.coil.createImageLoader
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)
         }
+
+        Coil.setImageLoader(createImageLoader(applicationContext))
     }
 
     override fun onStart() {

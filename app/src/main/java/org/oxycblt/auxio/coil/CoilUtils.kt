@@ -3,10 +3,13 @@ package org.oxycblt.auxio.coil
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.Coil
+import coil.ImageLoader
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
@@ -22,6 +25,25 @@ import org.oxycblt.auxio.settings.SettingsManager
 // SettingsManager is lazy-initted to prevent it from being used before its initialized.
 val settingsManager: SettingsManager by lazy {
     SettingsManager.getInstance()
+}
+
+/**
+ * Create the custom [ImageLoader] used by Auxio, which doesn't cache album art to the disk by default.
+ */
+fun createImageLoader(context: Context): ImageLoader {
+    Log.d("createImageLoader", "Creating image loader.")
+
+    val builder = ImageLoader.Builder(context)
+        .crossfade(true)
+
+    // To save memory/improve speed, allow disc caching when if quality covers are enabled.
+    if (settingsManager.useQualityCovers) {
+        builder.diskCachePolicy(CachePolicy.ENABLED)
+    } else {
+        builder.diskCachePolicy(CachePolicy.DISABLED)
+    }
+
+    return builder.build()
 }
 
 /**
