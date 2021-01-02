@@ -10,7 +10,6 @@ import org.oxycblt.auxio.ui.ACCENTS
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
- * TODO: Add option to hide covers
  * @author OxygenCobalt
  */
 class SettingsManager private constructor(context: Context) :

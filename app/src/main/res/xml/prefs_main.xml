@@ -43,18 +43,18 @@
 
         <SwitchPreferenceCompat
             android:title="@string/setting_quality_covers"
-            app:summary="@string/setting_quality_covers_desc"
+            app:defaultValue="false"
+            app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
             app:key="KEY_QUALITY_COVERS"
-            app:dependency="KEY_SHOW_COVERS"
-            app:defaultValue="false" />
+            app:summary="@string/setting_quality_covers_desc" />
 
         <SwitchPreferenceCompat
             android:title="@string/setting_color_notif"
             app:defaultValue="true"
+            app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
             app:key="KEY_COLOR_NOTIF"
-            app:dependency="KEY_SHOW_COVERS"
             app:summary="@string/setting_color_desc" />
 
         <SwitchPreferenceCompat
@@ -120,10 +120,10 @@
 
         <SwitchPreference
             android:title="@string/setting_behavior_rewind_prev"
+            app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PREV_REWIND"
-            app:allowDividerBelow="false"
             app:summary="@string/setting_behavior_rewind_prev_desc" />
 
     </PreferenceCategory>

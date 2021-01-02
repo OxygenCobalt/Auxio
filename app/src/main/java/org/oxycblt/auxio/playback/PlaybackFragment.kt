@@ -3,7 +3,6 @@ package org.oxycblt.auxio.playback
 import android.content.res.ColorStateList
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,7 +21,6 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.toColor
-import kotlin.math.roundToInt
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -66,11 +64,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         val queueMenuItem: MenuItem
         val showCoverArt = SettingsManager.getInstance().showCovers
-
-        val paddingPixels = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 64F,
-            requireContext().resources.displayMetrics
-        ).roundToInt()
 
         // --- UI SETUP ---
 

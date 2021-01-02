@@ -31,8 +31,6 @@ import kotlin.math.ceil
 /**
  * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
  * them.
- * TODO: Search
- * TODO: Sorting
  * @author OxygenCobalt
  */
 class SongsFragment : Fragment() {
