@@ -33,9 +33,9 @@ class QualityCoverFetcher(private val context: Context) : Fetcher<Song> {
         val stream: InputStream?
         val uri: Uri
 
-        extractor.use { extractor ->
-            extractor.setDataSource(context, data.id.toURI())
-            val cover = extractor.embeddedPicture
+        extractor.use { ext ->
+            ext.setDataSource(context, data.id.toURI())
+            val cover = ext.embeddedPicture
 
             stream = if (cover != null) {
                 uri = data.id.toURI()
@@ -60,9 +60,9 @@ class QualityCoverFetcher(private val context: Context) : Fetcher<Song> {
 
         // If we are here, the extractor likely failed so instead attempt to return the compressed
         // cover instead.
-        context.contentResolver.openInputStream(data.album.coverUri)?.use { stream ->
+        context.contentResolver.openInputStream(data.album.coverUri)?.use { str ->
             return SourceResult(
-                source = stream.source().buffer(),
+                source = str.source().buffer(),
                 mimeType = context.contentResolver.getType(uri),
                 dataSource = DataSource.DISK
             )
