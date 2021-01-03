@@ -1,29 +1,34 @@
 package org.oxycblt.auxio.detail.adapters
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemGenreHeaderBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setTextColorResource
+import org.oxycblt.auxio.ui.toColor
 
 /**
  * An adapter for displaying the [Song]s of a genre.
  */
 class GenreDetailAdapter(
     private val detailModel: DetailViewModel,
+    private val playbackModel: PlaybackViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (data: Song, view: View) -> Unit
@@ -109,7 +114,25 @@ class GenreDetailAdapter(
         override fun onBind(data: Genre) {
             binding.genre = data
             binding.detailModel = detailModel
+            binding.playbackModel = playbackModel
             binding.lifecycleOwner = lifecycleOwner
+
+            // Apply the accent programmatically since I don't want to deal the with the
+            // nightmarish mess of switching out my styling to Material
+            val accent = accent.first.toColor(binding.genreShuffleButton.context)
+            val selection = ColorStateList.valueOf(
+                R.color.selection_color.toColor(binding.genreShuffleButton.context)
+            )
+
+            binding.genreShuffleButton.apply {
+                backgroundTintList = ColorStateList.valueOf(accent)
+                rippleColor = selection
+            }
+
+            binding.genrePlayButton.apply {
+                setTextColor(accent)
+                rippleColor = selection
+            }
 
             if (data.songs.size < 2) {
                 binding.genreSortButton.disable()

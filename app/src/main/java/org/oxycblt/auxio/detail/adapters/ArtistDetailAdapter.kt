@@ -1,29 +1,34 @@
 package org.oxycblt.auxio.detail.adapters
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setTextColorResource
+import org.oxycblt.auxio.ui.toColor
 
 /**
  * An adapter for displaying the [Album]s of an artist.
  */
 class ArtistDetailAdapter(
     private val detailModel: DetailViewModel,
+    private val playbackModel: PlaybackViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Album) -> Unit,
     private val doOnLongClick: (data: Album, view: View) -> Unit,
@@ -108,7 +113,25 @@ class ArtistDetailAdapter(
         override fun onBind(data: Artist) {
             binding.artist = data
             binding.detailModel = detailModel
+            binding.playbackModel = playbackModel
             binding.lifecycleOwner = lifecycleOwner
+
+            // Apply the accent programmatically since I don't want to deal the with the
+            // nightmarish mess of switching out my styling to Material
+            val accent = accent.first.toColor(binding.artistShuffleButton.context)
+            val selection = ColorStateList.valueOf(
+                R.color.selection_color.toColor(binding.artistShuffleButton.context)
+            )
+
+            binding.artistShuffleButton.apply {
+                backgroundTintList = ColorStateList.valueOf(accent)
+                rippleColor = selection
+            }
+
+            binding.artistPlayButton.apply {
+                setTextColor(accent)
+                rippleColor = selection
+            }
 
             if (data.albums.size < 2) {
                 binding.artistSortButton.disable()

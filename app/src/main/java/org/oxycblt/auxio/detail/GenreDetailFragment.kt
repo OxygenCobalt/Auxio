@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.GenreDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
@@ -42,7 +41,7 @@ class GenreDetailFragment : DetailFragment() {
         }
 
         val detailAdapter = GenreDetailAdapter(
-            detailModel, viewLifecycleOwner,
+            detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
@@ -57,21 +56,7 @@ class GenreDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = this
 
-        setupToolbar(R.menu.menu_genre_actions) {
-            when (it) {
-                R.id.action_shuffle -> {
-                    playbackModel.playGenre(
-                        detailModel.currentGenre.value!!,
-                        true
-                    )
-
-                    true
-                }
-
-                else -> false
-            }
-        }
-
+        setupToolbar()
         setupRecycler(detailAdapter)
 
         // --- DETAILVIEWMODEL SETUP ---

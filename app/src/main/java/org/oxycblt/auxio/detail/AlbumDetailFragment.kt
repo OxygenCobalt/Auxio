@@ -44,7 +44,7 @@ class AlbumDetailFragment : DetailFragment() {
         }
 
         val detailAdapter = AlbumDetailAdapter(
-            detailModel, viewLifecycleOwner,
+            detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
             doOnLongClick = { data, view ->
                 PopupMenu(requireContext(), view).setupAlbumSongActions(
@@ -57,23 +57,8 @@ class AlbumDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = this
 
-        setupToolbar(R.menu.menu_album_actions) {
+        setupToolbar(R.menu.menu_album_detail) {
             when (it) {
-                R.id.action_shuffle -> {
-                    playbackModel.playAlbum(
-                        detailModel.currentAlbum.value!!, true
-                    )
-
-                    true
-                }
-                R.id.action_play -> {
-                    playbackModel.playAlbum(
-                        detailModel.currentAlbum.value!!, false
-                    )
-
-                    true
-                }
-
                 R.id.action_queue_add -> {
                     playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
                     getString(R.string.label_queue_added).createToast(requireContext())

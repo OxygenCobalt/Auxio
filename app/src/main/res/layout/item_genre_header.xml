@@ -14,6 +14,10 @@
             name="detailModel"
             type="org.oxycblt.auxio.detail.DetailViewModel" />
 
+        <variable
+            name="playbackModel"
+            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,13 +75,34 @@
             app:layout_constraintTop_toBottomOf="@+id/genre_song_count"
             tools:text="16:16" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/genre_play_button"
+            style="@style/Widget.MaterialComponents.Button.Unimportant"
+            android:onClick="@{() -> playbackModel.playGenre(genre, false)}"
+            android:text="@string/label_play"
+            app:layout_constraintEnd_toStartOf="@+id/genre_shuffle_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/genre_duration"
+            tools:textColor="@color/blue" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/genre_shuffle_button"
+            style="@style/Widget.MaterialComponents.Button.Highlighted"
+            android:onClick="@{() -> playbackModel.playGenre(genre, true)}"
+            android:text="@string/label_shuffle"
+            app:layout_constraintBottom_toBottomOf="@+id/genre_play_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/genre_play_button"
+            app:layout_constraintTop_toTopOf="@+id/genre_play_button"
+            tools:backgroundTint="@color/blue" />
+
         <TextView
             android:id="@+id/genre_song_header"
             style="@style/HeaderText"
-            android:layout_marginTop="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/margin_small"
             android:text="@string/label_songs"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/genre_duration" />
+            app:layout_constraintTop_toBottomOf="@+id/genre_play_button" />
 
         <ImageButton
             android:id="@+id/genre_sort_button"

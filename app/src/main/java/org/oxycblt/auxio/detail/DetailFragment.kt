@@ -47,16 +47,23 @@ abstract class DetailFragment : Fragment() {
     /**
      * Shortcut method for doing setup of the detail toolbar.
      */
-    protected fun setupToolbar(@MenuRes menu: Int, onMenuClick: (id: Int) -> Boolean) {
+    protected fun setupToolbar(
+        @MenuRes menu: Int = -1,
+        onMenuClick: ((id: Int) -> Boolean)? = null
+    ) {
         binding.detailToolbar.apply {
-            inflateMenu(menu)
+            if (menu != -1) {
+                inflateMenu(menu)
+            }
 
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
 
-            setOnMenuItemClickListener {
-                onMenuClick(it.itemId)
+            onMenuClick?.let {
+                setOnMenuItemClickListener {
+                    it(it.itemId)
+                }
             }
         }
     }

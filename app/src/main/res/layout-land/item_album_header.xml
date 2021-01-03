@@ -6,12 +6,16 @@
     <data>
 
         <variable
+            name="album"
+            type="org.oxycblt.auxio.music.Album" />
+
+        <variable
             name="detailModel"
             type="org.oxycblt.auxio.detail.DetailViewModel" />
 
         <variable
-            name="album"
-            type="org.oxycblt.auxio.music.Album" />
+            name="playbackModel"
+            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/album_cover"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Album Name" />
 
@@ -72,18 +76,40 @@
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
             app:albumDetails="@{album}"
-            app:layout_constraintBottom_toTopOf="@+id/album_song_header"
+            app:layout_constraintBottom_toBottomOf="@+id/album_cover"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/album_artist"
             tools:text="2020 / 10 Songs / 16:16" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/album_play_button"
+            style="@style/Widget.MaterialComponents.Button.Unimportant"
+            android:onClick="@{() -> playbackModel.playAlbum(album, false)}"
+            android:text="@string/label_play"
+            app:layout_constraintEnd_toStartOf="@+id/album_shuffle_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/album_cover"
+            tools:textColor="@color/blue" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/album_shuffle_button"
+            style="@style/Widget.MaterialComponents.Button.Highlighted"
+            android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
+            android:text="@string/label_shuffle"
+            app:layout_constraintBottom_toBottomOf="@+id/album_play_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_play_button"
+            app:layout_constraintTop_toTopOf="@+id/album_play_button"
+            tools:backgroundTint="@color/blue" />
+
         <TextView
             android:id="@+id/album_song_header"
             style="@style/HeaderText"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="8dp"
             android:text="@string/label_songs"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/album_cover" />
+            app:layout_constraintTop_toBottomOf="@+id/album_play_button" />
 
         <ImageButton
             android:id="@+id/album_sort_button"

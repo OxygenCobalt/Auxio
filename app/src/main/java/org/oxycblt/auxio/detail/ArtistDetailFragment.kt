@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
@@ -43,7 +42,7 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         val detailAdapter = ArtistDetailAdapter(
-            detailModel, viewLifecycleOwner,
+            detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = {
                 if (!detailModel.isNavigating) {
                     detailModel.updateNavigationStatus(true)
@@ -64,29 +63,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = this
 
-        setupToolbar(R.menu.menu_artist_actions) {
-            when (it) {
-                R.id.action_shuffle -> {
-                    playbackModel.playArtist(
-                        detailModel.currentArtist.value!!,
-                        true
-                    )
-
-                    true
-                }
-
-                R.id.action_play_albums -> {
-                    playbackModel.playArtist(
-                        detailModel.currentArtist.value!!, false
-                    )
-
-                    true
-                }
-
-                else -> false
-            }
-        }
-
+        setupToolbar()
         setupRecycler(detailAdapter)
 
         // --- VIEWMODEL SETUP ---
