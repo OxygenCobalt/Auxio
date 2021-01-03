@@ -13,6 +13,7 @@
     <string name="label_albums">Albums</string>
     <string name="label_search">Search</string>
 
+    <string name="label_sort">Sort</string>
     <string name="label_sort_none">Default</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>

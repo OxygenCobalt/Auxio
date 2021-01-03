@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,6 +28,7 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
@@ -37,6 +37,7 @@ import org.oxycblt.auxio.ui.setupAlbumActions
 import org.oxycblt.auxio.ui.setupArtistActions
 import org.oxycblt.auxio.ui.setupGenreActions
 import org.oxycblt.auxio.ui.setupSongActions
+import org.oxycblt.auxio.ui.toColor
 
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
@@ -57,51 +58,45 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(
-            doOnClick = this::onItemSelection,
-            doOnLongClick = this::showActionsForItem
-        )
+        val libraryAdapter = LibraryAdapter(::onItemSelection, ::showActionsForItem)
+        val searchAdapter = SearchAdapter(::onItemSelection, ::showActionsForItem)
 
-        val searchAdapter = SearchAdapter(
-            doOnClick = this::onItemSelection,
-            doOnLongClick = this::showActionsForItem
-        )
+        val sortAction = binding.libraryToolbar.menu.findItem(R.id.submenu_sorting)
 
         // --- UI SETUP ---
 
         binding.libraryToolbar.apply {
-            overflowIcon = ContextCompat.getDrawable(
-                requireContext(), R.drawable.ic_sort_none
-            )
-
             setOnMenuItemClickListener {
-                if (it.itemId != R.id.action_search) {
-                    libraryModel.updateSortMode(it.itemId)
-                } else {
-                    // Then also do a basic animation on the enter transition. Not done on exit
-                    // because that causes issues with the SearchView.
-                    TransitionManager.beginDelayedTransition(
-                        binding.libraryToolbar, Fade()
-                    )
-                    it.expandActionView()
+                when (it.itemId) {
+                    R.id.action_search -> {
+                        TransitionManager.beginDelayedTransition(
+                            binding.libraryToolbar, Fade()
+                        )
+                        it.expandActionView()
+                    }
+
+                    R.id.submenu_sorting -> {
+                    }
+
+                    else -> libraryModel.updateSortMode(it.itemId)
                 }
 
                 true
             }
 
             menu.apply {
-                val item = findItem(R.id.action_search)
-                val searchView = item.actionView as SearchView
+                val searchAction = findItem(R.id.action_search)
+                val searchView = searchAction.actionView as SearchView
 
                 searchView.queryHint = getString(R.string.hint_search_library)
                 searchView.maxWidth = Int.MAX_VALUE
                 searchView.setOnQueryTextListener(this@LibraryFragment)
 
-                item.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = searchAdapter
-                        setGroupVisible(R.id.group_sorting, false)
                         item.isVisible = false
+                        sortAction.isVisible = false
 
                         libraryModel.resetQuery()
 
@@ -110,8 +105,8 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
                     override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                         binding.libraryRecycler.adapter = libraryAdapter
-                        setGroupVisible(R.id.group_sorting, true)
                         item.isVisible = true
+                        sortAction.isVisible = true
 
                         libraryModel.resetQuery()
 
@@ -157,10 +152,13 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
-            // Then update the menu item in the toolbar to reflect the new mode
-            binding.libraryToolbar.menu.forEach {
-                if (it.itemId == libraryModel.sortMode.value!!.toMenuId()) {
-                    it.applyColor(resolveAttr(requireContext(), R.attr.colorPrimary))
+            val modeId = mode.toMenuId()
+
+            // Highlight the item instead of using a checkable since the checkables just...wont
+            // respond to any attempts to make them checked or not.
+            sortAction.subMenu.forEach {
+                if (it.itemId == modeId) {
+                    it.applyColor(accent.first.toColor(requireContext()))
                 } else {
                     it.applyColor(resolveAttr(requireContext(), android.R.attr.textColorPrimary))
                 }

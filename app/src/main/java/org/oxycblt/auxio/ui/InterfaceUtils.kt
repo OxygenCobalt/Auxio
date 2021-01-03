@@ -235,6 +235,11 @@ fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewMode
 fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) {
     setOnMenuItemClickListener {
         when (it.itemId) {
+            R.id.action_play -> {
+                playbackModel.playGenre(genre, true)
+                true
+            }
+
             R.id.action_shuffle -> {
                 playbackModel.playGenre(genre, true)
                 true
