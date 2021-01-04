@@ -14,7 +14,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.setupAlbumActions
+import org.oxycblt.auxio.ui.setupArtistAlbumActions
 
 /**
  * The [DetailFragment] for an artist.
@@ -53,7 +53,7 @@ class ArtistDetailFragment : DetailFragment() {
                 }
             },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupAlbumActions(
+                PopupMenu(requireContext(), view).setupArtistAlbumActions(
                     requireContext(), data, playbackModel
                 )
             }

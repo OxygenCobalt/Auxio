@@ -188,21 +188,16 @@ fun PopupMenu.setupAlbumSongActions(
  * @param context [Context] required
  * @param album [Album] The menu should correspond to
  * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
+ * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
  */
 fun PopupMenu.setupAlbumActions(
     context: Context,
     album: Album,
-    playbackModel: PlaybackViewModel
+    playbackModel: PlaybackViewModel,
+    detailModel: DetailViewModel
 ) {
     setOnMenuItemClickListener {
         when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(album)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
             R.id.action_play -> {
                 playbackModel.playAlbum(album, false)
                 true
@@ -213,10 +208,55 @@ fun PopupMenu.setupAlbumActions(
                 true
             }
 
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(album)
+                context.getString(R.string.label_queue_added).createToast(context)
+
+                true
+            }
+
+            R.id.action_go_artist -> {
+                detailModel.navToItem(album.artist)
+
+                true
+            }
+
             else -> false
         }
     }
     inflateAndShow(R.menu.menu_album_actions)
+}
+
+/**
+ * Show actions for an [Album] in the artist detail fragment
+ * @param context [Context] required
+ * @param album [Album] The menu should correspond to
+ * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
+ */
+fun PopupMenu.setupArtistAlbumActions(context: Context, album: Album, playbackModel: PlaybackViewModel) {
+    setOnMenuItemClickListener {
+        when (it.itemId) {
+            R.id.action_play -> {
+                playbackModel.playAlbum(album, false)
+                true
+            }
+
+            R.id.action_shuffle -> {
+                playbackModel.playAlbum(album, true)
+                true
+            }
+
+            R.id.action_queue_add -> {
+                playbackModel.addToUserQueue(album)
+                context.getString(R.string.label_queue_added).createToast(context)
+
+                true
+            }
+
+            else -> false
+        }
+    }
+    inflateAndShow(R.menu.menu_artist_album_actions)
 }
 
 /**

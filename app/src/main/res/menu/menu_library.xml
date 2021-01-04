@@ -12,8 +12,9 @@
         tools:ignore="AlwaysShowAction" />
 
     <!--
-    Has to be always since android mangles this action when I make it invisible and then visible again
-    I hate this platform so much
+    This action has to be always shown since android mangles this action when I make it invisible
+    and then visible again.
+    I hate this platform so much.
     -->
     <item
         android:id="@+id/submenu_sorting"
