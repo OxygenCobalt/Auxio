@@ -16,6 +16,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.HtmlCompat
+import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
@@ -88,6 +89,21 @@ fun Spanned.render(): Spanned {
  */
 fun TextView.setTextColorResource(@ColorRes color: Int) {
     setTextColor(color.toColor(context))
+}
+
+/**
+ * Apply accents to a [MaterialButton]
+ * @param highlighted Whether the MaterialButton has an "Unimportant" style or not.
+ * Required because you cant determine a style of a view before 29
+ */
+fun MaterialButton.applyAccents(highlighted: Boolean) {
+    val accent = accent.first.toColor(context)
+
+    if (highlighted) {
+        backgroundTintList = ColorStateList.valueOf(accent)
+    } else {
+        setTextColor(accent)
+    }
 }
 
 /**

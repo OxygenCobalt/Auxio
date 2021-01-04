@@ -4,28 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.GenreDetailFragment">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/detail_toolbar"
-            style="@style/Toolbar.Style.Icon"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
-            app:title="@string/label_library"
-            tools:menu="@menu/menu_artist_actions" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:liftOnScroll="true">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/detail_toolbar"
+                style="@style/Toolbar.Style.Icon"
+                android:background="?android:attr/windowBackground"
+                android:elevation="@dimen/elevation_normal" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detail_recycler"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genre_song_header"
             tools:listitem="@layout/item_artist_header" />
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

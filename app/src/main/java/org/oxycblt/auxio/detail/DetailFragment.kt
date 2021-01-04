@@ -85,6 +85,16 @@ abstract class DetailFragment : Fragment() {
                     }
                 }
             }
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    overScrollMode = if (computeVerticalScrollOffset() == 0) {
+                        View.OVER_SCROLL_NEVER
+                    } else {
+                        View.OVER_SCROLL_IF_CONTENT_SCROLLS
+                    }
+                }
+            })
         }
     }
 
