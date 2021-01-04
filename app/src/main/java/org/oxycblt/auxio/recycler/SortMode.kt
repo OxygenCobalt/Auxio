@@ -11,6 +11,7 @@ import org.oxycblt.auxio.music.Song
 /**
  * An enum for the current sorting mode. Contains helper functions to sort lists based
  * off the given sorting mode.
+ * TODO: Improve sorting by separating UP/DOWN from what should be sorted (Names, Tracks, etc)
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
  */
@@ -80,6 +81,28 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
 
             NUMERIC_UP -> songs.sortedWith(compareByDescending { it.track })
             NUMERIC_DOWN -> songs.sortedWith(compareBy { it.track })
+
+            else -> songs
+        }
+    }
+
+    /**
+     * Get a sorted list of songs with regards to an artist.
+     * @param songs An unsorted list of songs
+     * @return The sorted list of songs
+     */
+    fun getSortedArtistSongList(songs: List<Song>): List<Song> {
+        return when (this) {
+            ALPHA_UP -> songs.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            ALPHA_DOWN -> songs.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            NUMERIC_UP -> songs.sortedWith(compareBy { it.album.year })
+            NUMERIC_DOWN -> songs.sortedWith(compareByDescending { it.album.year })
 
             else -> songs
         }

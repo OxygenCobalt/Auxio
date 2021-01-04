@@ -21,7 +21,8 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
  * @param activity [AppCompatActivity] required as both a context and ViewModelStore owner.
  * @param anchor [View] This should be centered around
  * @param data [BaseModel] this menu corresponds to
- * @param flag Any extra flags to accompany the data. See [Companion] for more details.
+ * @param flag Any extra flags to accompany the data.
+ * See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST] and [FLAG_IN_GENRE] for more details.
  */
 class ActionMenu(
     activity: AppCompatActivity,
@@ -84,11 +85,13 @@ class ActionMenu(
         }
     }
 
+    /**
+     * Determine what to do when a MenuItem is clicked.
+     */
     private fun onMenuClick(@IdRes id: Int) {
         when (id) {
             R.id.action_play -> {
                 when (data) {
-                    is Song -> playbackModel.playSong(data, getPlaybackModeFromFlag())
                     is Album -> playbackModel.playAlbum(data, false)
                     is Artist -> playbackModel.playArtist(data, false)
                     is Genre -> playbackModel.playGenre(data, false)
@@ -114,21 +117,17 @@ class ActionMenu(
             }
 
             R.id.action_queue_add -> {
-                val success = when (data) {
+                when (data) {
                     is Song -> {
                         playbackModel.addToUserQueue(data)
-                        true
+                        context.getString(R.string.label_queue_added).createToast(context)
                     }
                     is Album -> {
                         playbackModel.addToUserQueue(data)
-                        true
+                        context.getString(R.string.label_queue_added).createToast(context)
                     }
 
-                    else -> false
-                }
-
-                if (success) {
-                    context.getString(R.string.label_queue_added).createToast(context)
+                    else -> {}
                 }
             }
 
@@ -153,17 +152,6 @@ class ActionMenu(
             FLAG_NONE -> detailModel.navToItem(parent)
             FLAG_IN_ALBUM -> detailModel.navToParent()
             FLAG_IN_GENRE -> detailModel.navToChild(parent)
-        }
-    }
-
-    private fun getPlaybackModeFromFlag(): PlaybackMode {
-        return when (flag) {
-            FLAG_NONE -> PlaybackMode.ALL_SONGS
-            FLAG_IN_ALBUM -> PlaybackMode.IN_ALBUM
-            FLAG_IN_ARTIST -> PlaybackMode.IN_ARTIST
-            FLAG_IN_GENRE -> PlaybackMode.IN_GENRE
-
-            else -> PlaybackMode.ALL_SONGS
         }
     }
 

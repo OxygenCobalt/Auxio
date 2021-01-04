@@ -137,19 +137,27 @@ class AlbumDetailFragment : DetailFragment() {
     }
 
     /**
-     * Calculate the position and and scroll to a currently playing item.
+     * Scroll to the currently playing item.
      */
     private fun scrollToPlayingItem() {
-        // Calculate where the item for the currently played song is, and scroll to there
+        // Calculate where the item for the currently played song is, -1 if it isnt here
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
             detailModel.currentAlbum.value!!.songs
         ).indexOf(playbackModel.song.value)
 
         if (pos != -1) {
             binding.detailRecycler.post {
+                // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
                     CenterSmoothScroller(requireContext(), pos.inc())
                 )
+
+                // If the recyclerview can scroll, its certain that it will have to scroll to
+                // correctly center the playing item, so make sure that the Toolbar is lifted in
+                // that case.
+                if (binding.detailRecycler.computeVerticalScrollRange() > binding.detailRecycler.height) {
+                    binding.detailAppbar.isLifted = true
+                }
             }
 
             detailModel.doneWithNavToItem()

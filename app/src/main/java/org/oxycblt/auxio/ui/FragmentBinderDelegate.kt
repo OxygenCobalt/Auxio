@@ -16,7 +16,7 @@ import kotlin.reflect.KProperty
  * A delegate that creates a binding that can be used as a member variable without nullability or
  * memory leaks.
  * @param bindingFactory The ViewBinding inflation method that should be used
- * @param onDestroy      Any code that should be run when the binding is destroyed.
+ * @param onDestroy      Any code that should be run when the binding is destroyed
  */
 fun <T : ViewBinding> Fragment.memberBinding(
     bindingFactory: (LayoutInflater) -> T,

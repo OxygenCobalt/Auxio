@@ -27,6 +27,7 @@ import kotlin.random.Random
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
+ * // TODO: Sort queues
  */
 class PlaybackStateManager private constructor() {
     // Playback
@@ -675,7 +676,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Back the current state into a [PlaybackState] to be saved.
+     * Pack the current state into a [PlaybackState] to be saved.
      * @return A [PlaybackState] reflecting the current state.
      */
     private fun packToPlaybackState(): PlaybackState {
@@ -694,28 +695,6 @@ class PlaybackStateManager private constructor() {
             loopMode = intLoopMode,
             inUserQueue = mIsInUserQueue
         )
-    }
-
-    /**
-     * Pack the queue into a list of [QueueItem]s to be saved.
-     * @return A list of packed queue items.
-     */
-    private fun packQueue(): List<QueueItem> {
-        val unified = mutableListOf<QueueItem>()
-
-        var queueItemId = 0L
-
-        mUserQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.name, it.album.name, true))
-            queueItemId++
-        }
-
-        mQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.name, it.album.name, false))
-            queueItemId++
-        }
-
-        return unified
     }
 
     /**
@@ -740,6 +719,28 @@ class PlaybackStateManager private constructor() {
             it.onModeUpdate(mMode)
             it.onRestoreFinish()
         }
+    }
+
+    /**
+     * Pack the queue into a list of [QueueItem]s to be saved.
+     * @return A list of packed queue items.
+     */
+    private fun packQueue(): List<QueueItem> {
+        val unified = mutableListOf<QueueItem>()
+
+        var queueItemId = 0L
+
+        mUserQueue.forEach {
+            unified.add(QueueItem(queueItemId, it.name, it.album.name, true))
+            queueItemId++
+        }
+
+        mQueue.forEach {
+            unified.add(QueueItem(queueItemId, it.name, it.album.name, false))
+            queueItemId++
+        }
+
+        return unified
     }
 
     /**
@@ -810,20 +811,14 @@ class PlaybackStateManager private constructor() {
      * Create an ordered queue based on an [Album].
      */
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
-        return album.songs.sortedBy { it.track }.toMutableList()
+        return SortMode.NUMERIC_DOWN.getSortedSongList(album.songs).toMutableList()
     }
 
     /**
      * Create an ordered queue based on an [Artist].
      */
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
-        val final = mutableListOf<Song>()
-
-        artist.albums.sortedByDescending { it.year }.forEach { album ->
-            final.addAll(album.songs.sortedBy { it.track })
-        }
-
-        return final
+        return SortMode.NUMERIC_DOWN.getSortedArtistSongList(artist.songs).toMutableList()
     }
 
     /**

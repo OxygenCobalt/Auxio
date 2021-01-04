@@ -13,19 +13,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
 
 /**
  * Apply a text color to a [MenuItem]
@@ -116,6 +108,6 @@ fun Fragment.requireCompatActivity(): AppCompatActivity {
     if (activity is AppCompatActivity) {
         return activity
     } else {
-        error("Required activity to be AppCompatActivity, however it wasn't.")
+        error("Required AppCompatActivity, got ${activity::class.simpleName} instead.")
     }
 }
