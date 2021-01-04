@@ -7,7 +7,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,10 +20,11 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
-import org.oxycblt.auxio.ui.setupSongActions
+import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.toColor
 import kotlin.math.ceil
 
@@ -61,9 +61,7 @@ class SongsFragment : Fragment() {
                 playbackModel.playSong(it, settingsManager.songPlaybackMode)
             },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupSongActions(
-                    requireContext(), data, playbackModel, detailModel
-                )
+                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
             }
         )
 

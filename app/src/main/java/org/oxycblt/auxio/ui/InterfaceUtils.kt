@@ -14,8 +14,10 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -24,7 +26,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
 
 /**
  * Apply a text color to a [MenuItem]
@@ -107,250 +108,14 @@ fun MaterialButton.applyAccents(highlighted: Boolean) {
 }
 
 /**
- * Show actions for a song item, such as the ones found in [org.oxycblt.auxio.songs.SongsFragment]
- * @param context [Context] required
- * @param song [Song] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
+ * Require an [AppCompatActivity]
  */
-fun PopupMenu.setupSongActions(
-    context: Context,
-    song: Song,
-    playbackModel: PlaybackViewModel,
-    detailModel: DetailViewModel
-) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(song)
-                context.getString(R.string.label_queue_added).createToast(context)
-                true
-            }
+fun Fragment.requireCompatActivity(): AppCompatActivity {
+    val activity = requireActivity()
 
-            R.id.action_go_artist -> {
-                detailModel.navToItem(song.album.artist)
-                true
-            }
-
-            R.id.action_go_album -> {
-                detailModel.navToItem(song.album)
-                true
-            }
-
-            else -> false
-        }
+    if (activity is AppCompatActivity) {
+        return activity
+    } else {
+        error("Required activity to be AppCompatActivity, however it wasn't.")
     }
-
-    inflateAndShow(R.menu.menu_song_actions)
-}
-
-/**
- * Show actions for a album song item, such as the ones found in
- * [org.oxycblt.auxio.detail.AlbumDetailFragment]
- * @param context [Context] required
- * @param song [Song] The menu should correspond to
- * @param detailModel The [DetailViewModel] the menu should dispatch some actions to.
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupAlbumSongActions(
-    context: Context,
-    song: Song,
-    detailModel: DetailViewModel,
-    playbackModel: PlaybackViewModel
-) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(song)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
-            R.id.action_go_artist -> {
-                detailModel.navToParent()
-                true
-            }
-
-            R.id.action_play_artist -> {
-                playbackModel.playSong(song, PlaybackMode.IN_ARTIST)
-                true
-            }
-
-            else -> false
-        }
-    }
-    inflateAndShow(R.menu.menu_album_song_actions)
-}
-
-/**
- * Show actions for an [Album].
- * @param context [Context] required
- * @param album [Album] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupAlbumActions(
-    context: Context,
-    album: Album,
-    playbackModel: PlaybackViewModel,
-    detailModel: DetailViewModel
-) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_play -> {
-                playbackModel.playAlbum(album, false)
-                true
-            }
-
-            R.id.action_shuffle -> {
-                playbackModel.playAlbum(album, true)
-                true
-            }
-
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(album)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
-            R.id.action_go_artist -> {
-                detailModel.navToItem(album.artist)
-
-                true
-            }
-
-            else -> false
-        }
-    }
-    inflateAndShow(R.menu.menu_album_actions)
-}
-
-/**
- * Show actions for an [Album] in the artist detail fragment
- * @param context [Context] required
- * @param album [Album] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupArtistAlbumActions(context: Context, album: Album, playbackModel: PlaybackViewModel) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_play -> {
-                playbackModel.playAlbum(album, false)
-                true
-            }
-
-            R.id.action_shuffle -> {
-                playbackModel.playAlbum(album, true)
-                true
-            }
-
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(album)
-                context.getString(R.string.label_queue_added).createToast(context)
-
-                true
-            }
-
-            else -> false
-        }
-    }
-    inflateAndShow(R.menu.menu_artist_album_actions)
-}
-
-/**
- * Show actions for an [Artist].
- * @param artist The [Artist] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupArtistActions(artist: Artist, playbackModel: PlaybackViewModel) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_play -> {
-                playbackModel.playArtist(artist, false)
-                true
-            }
-
-            R.id.action_shuffle -> {
-                playbackModel.playArtist(artist, true)
-                true
-            }
-
-            else -> false
-        }
-    }
-    inflateAndShow(R.menu.menu_artist_actions)
-}
-
-/**
- * Show actions for a [Genre].
- * @param genre The [Genre] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupGenreActions(genre: Genre, playbackModel: PlaybackViewModel) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_play -> {
-                playbackModel.playGenre(genre, true)
-                true
-            }
-
-            R.id.action_shuffle -> {
-                playbackModel.playGenre(genre, true)
-                true
-            }
-
-            else -> false
-        }
-    }
-    inflateAndShow(R.menu.menu_genre_actions)
-}
-
-/**
- * Show actions for a [Genre] song. Mostly identical to [setupSongActions] aside from a different
- * flag being used for navigation.
- * @param context [Context] required
- * @param song [Song] The menu should correspond to
- * @param playbackModel The [PlaybackViewModel] the menu should dispatch actions to.
- * @param detailModel The [DetailViewModel] the menu should dispatch actions to.
- */
-fun PopupMenu.setupGenreSongActions(
-    context: Context,
-    song: Song,
-    playbackModel: PlaybackViewModel,
-    detailModel: DetailViewModel
-) {
-    setOnMenuItemClickListener {
-        when (it.itemId) {
-            R.id.action_queue_add -> {
-                playbackModel.addToUserQueue(song)
-                context.getString(R.string.label_queue_added).createToast(context)
-                true
-            }
-
-            R.id.action_go_artist -> {
-                detailModel.navToChild(song.album.artist)
-                true
-            }
-
-            R.id.action_go_album -> {
-                detailModel.navToChild(song.album)
-                true
-            }
-
-            else -> false
-        }
-    }
-
-    inflateAndShow(R.menu.menu_song_actions)
-}
-
-/**
- * Shortcut method that inflates a menu and shows the action menu.
- * @param menuRes the menu that should be shown.
- */
-private fun PopupMenu.inflateAndShow(@MenuRes menuRes: Int) {
-    inflate(menuRes)
-    show()
 }

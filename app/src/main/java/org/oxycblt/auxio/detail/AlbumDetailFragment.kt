@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
@@ -16,8 +15,9 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
+import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.setupAlbumSongActions
+import org.oxycblt.auxio.ui.requireCompatActivity
 
 /**
  * The [DetailFragment] for an album.
@@ -47,9 +47,7 @@ class AlbumDetailFragment : DetailFragment() {
             detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupAlbumSongActions(
-                    requireContext(), data, detailModel, playbackModel
-                )
+                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_ALBUM)
             }
         )
 

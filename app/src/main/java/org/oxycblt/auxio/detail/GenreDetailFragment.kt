@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.detail.adapters.GenreDetailAdapter
@@ -14,7 +13,8 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.setupGenreSongActions
+import org.oxycblt.auxio.ui.ActionMenu
+import org.oxycblt.auxio.ui.requireCompatActivity
 
 /**
  * The [DetailFragment] for a genre.
@@ -46,9 +46,7 @@ class GenreDetailFragment : DetailFragment() {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
             doOnLongClick = { data, view ->
-                PopupMenu(requireContext(), view).setupGenreSongActions(
-                    requireContext(), data, playbackModel, detailModel
-                )
+                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_GENRE)
             }
         )
 

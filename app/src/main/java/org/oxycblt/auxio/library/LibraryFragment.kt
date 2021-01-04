@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
@@ -28,15 +27,13 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.resolveAttr
-import org.oxycblt.auxio.ui.setupAlbumActions
-import org.oxycblt.auxio.ui.setupArtistActions
-import org.oxycblt.auxio.ui.setupGenreActions
-import org.oxycblt.auxio.ui.setupSongActions
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -197,22 +194,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     /**
-     * Show the [PopupMenu] actions for an item.
+     * Show the [ActionMenu] actions for an item.
      * @param data The model that the actions should correspond to
      * @param view The anchor view the menu should be bound to.
      */
     private fun showActionsForItem(data: BaseModel, view: View) {
-        val menu = PopupMenu(requireContext(), view)
-
-        when (data) {
-            is Song -> menu.setupSongActions(requireContext(), data, playbackModel, detailModel)
-            is Album -> menu.setupAlbumActions(requireContext(), data, playbackModel, detailModel)
-            is Artist -> menu.setupArtistActions(data, playbackModel)
-            is Genre -> menu.setupGenreActions(data, playbackModel)
-
-            else -> {
-            }
-        }
+        ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
     }
 
     /**
