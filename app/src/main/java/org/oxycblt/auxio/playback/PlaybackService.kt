@@ -532,6 +532,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             .setOnAudioFocusChangeListener(this)
             .build()
 
+        private var pauseWasFromAudioFocus = false
+
         fun requestFocus() {
             AudioManagerCompat.requestAudioFocus(audioManager, request)
         }
@@ -553,14 +555,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
                     player.volume = VOLUME_DUCK
                     animateVolume(VOLUME_DUCK, VOLUME_FULL)
-                } else {
+                } else if (pauseWasFromAudioFocus) {
                     playbackManager.setPlayingStatus(true)
                 }
+
+                pauseWasFromAudioFocus = false
             }
         }
 
         private fun onLoss() {
-            if (settingsManager.doAudioFocus) {
+            if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
+                pauseWasFromAudioFocus = true
                 playbackManager.setPlayingStatus(false)
             }
         }
