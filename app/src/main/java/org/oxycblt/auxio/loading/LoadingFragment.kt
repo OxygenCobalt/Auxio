@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
@@ -23,7 +23,8 @@ import org.oxycblt.auxio.music.processing.MusicLoader
  * @author OxygenCobalt
  */
 class LoadingFragment : Fragment(R.layout.fragment_loading) {
-    private val loadingModel: LoadingViewModel by activityViewModels {
+    // LoadingViewModel is scoped to this fragment only
+    private val loadingModel: LoadingViewModel by viewModels {
         LoadingViewModel.Factory(requireActivity().application)
     }
 

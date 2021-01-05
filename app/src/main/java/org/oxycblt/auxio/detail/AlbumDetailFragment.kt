@@ -86,9 +86,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         detailModel.navToParent.observe(viewLifecycleOwner) {
             if (it) {
-                if (args.fromArtist) {
-                    findNavController().navigateUp()
-                } else {
+                if (!args.fromArtist) {
                     findNavController().navigate(
                         AlbumDetailFragmentDirections.actionShowParentArtist(
                             detailModel.currentAlbum.value!!.artist.id

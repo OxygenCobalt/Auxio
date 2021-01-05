@@ -17,12 +17,13 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 
 /**
- * A wrapper around [PopupMenu] that automates a ton of things across all the menus in Auxio
+ * A wrapper around [PopupMenu] that automates the menu creation for nearly every datatype in Auxio.
  * @param activity [AppCompatActivity] required as both a context and ViewModelStore owner.
  * @param anchor [View] This should be centered around
  * @param data [BaseModel] this menu corresponds to
- * @param flag Any extra flags to accompany the data.
+ * @param flag (Optional, defaults to [FLAG_NONE]) Any extra flags to accompany the data.
  * See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST] and [FLAG_IN_GENRE] for more details.
+ * @throws IllegalArgumentException When there is no menu for this specific datatype/flag
  */
 class ActionMenu(
     activity: AppCompatActivity,
@@ -32,6 +33,7 @@ class ActionMenu(
 ) : PopupMenu(activity, anchor) {
     private val context = activity.applicationContext
 
+    // Get viewmodels using the activity as the store owner
     private val detailModel: DetailViewModel by lazy {
         ViewModelProvider(activity).get(DetailViewModel::class.java)
     }
@@ -43,7 +45,9 @@ class ActionMenu(
     init {
         val menuRes = determineMenu()
 
-        check(menuRes != -1) { "There is no menu associated with this configuration." }
+        check(menuRes != -1) {
+            "There is no menu associated with datatype ${data::class.simpleName} and flag $flag"
+        }
 
         inflate(menuRes)
         setOnMenuItemClickListener {
@@ -158,11 +162,11 @@ class ActionMenu(
     companion object {
         /** No Flags **/
         const val FLAG_NONE = -1
-        /** Flag for when an item is accessed from an artist **/
+        /** Flag for when a menu is opened from an artist (See [org.oxycblt.auxio.detail.ArtistDetailFragment]) **/
         const val FLAG_IN_ARTIST = 0
-        /** Flag for when an item is accessed from an album **/
+        /** Flag for when a menu is opened from an album (See [org.oxycblt.auxio.detail.AlbumDetailFragment]) **/
         const val FLAG_IN_ALBUM = 1
-        /** Flag or when an item is accessed from a genre **/
+        /** Flag for when a menu is opened from a genre (See [org.oxycblt.auxio.detail.GenreDetailFragment]) **/
         const val FLAG_IN_GENRE = 2
     }
 }

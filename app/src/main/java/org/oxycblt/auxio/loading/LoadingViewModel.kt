@@ -86,7 +86,7 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
      * Factory for [LoadingViewModel] instances.
      */
     class Factory(private val application: Application) : ViewModelProvider.Factory {
-        @Suppress("unchecked_cast")
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LoadingViewModel::class.java)) {
                 return LoadingViewModel(application) as T

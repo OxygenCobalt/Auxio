@@ -12,6 +12,7 @@ import org.oxycblt.auxio.recycler.SortMode
 /**
  * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
  * [SortMode] they are currently on.
+ * TODO: Preserve previous backstack when doing playing item navigation
  */
 class DetailViewModel : ViewModel() {
     private var mIsNavigating = false
