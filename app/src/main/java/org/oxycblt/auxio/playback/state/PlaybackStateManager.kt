@@ -93,7 +93,6 @@ class PlaybackStateManager private constructor() {
         }
     private var mIsRestored = false
     private var mHasPlayed = false
-    private var mShuffleSeed = -1L
 
     /** The currently playing song. Null if there isn't one */
     val song: Song? get() = mSong
@@ -121,6 +120,7 @@ class PlaybackStateManager private constructor() {
     val hasPlayed: Boolean get() = mHasPlayed
 
     private val settingsManager = SettingsManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
 
     // --- CALLBACKS ---
 
@@ -151,44 +151,59 @@ class PlaybackStateManager private constructor() {
     fun playSong(song: Song, mode: PlaybackMode) {
         logD("Updating song to ${song.name} and mode to $mode")
 
-        val musicStore = MusicStore.getInstance()
+        val shouldShuffle = settingsManager.keepShuffle && mIsShuffling
 
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
                 mParent = null
-                mQueue = musicStore.songs.toMutableList()
+
+                mQueue = if (shouldShuffle) {
+                    musicStore.songs.toMutableList()
+                } else {
+                    genShuffle(musicStore.songs.toMutableList(), false)
+                }
             }
 
             PlaybackMode.IN_GENRE -> {
-                mParent = song.genre
-                mQueue = orderSongsInGenre(song.genre!!)
+                if (song.genre != null) {
+                    mParent = song.genre
+                    mQueue = if (shouldShuffle) {
+                        genShuffle(song.genre!!.songs.toMutableList(), false)
+                    } else {
+                        orderSongsInGenre(song.genre!!)
+                    }
+                } else {
+                    // I really don't know what to do if the song doesn't have a genre, so just
+                    // ignore it.
+                    logE("Song doesn't have a genre. Not playing.")
+                    return
+                }
             }
 
             PlaybackMode.IN_ARTIST -> {
                 mParent = song.album.artist
-                mQueue = orderSongsInArtist(song.album.artist)
+                mQueue = if (shouldShuffle) {
+                    genShuffle(song.album.artist.songs.toMutableList(), false)
+                } else {
+                    orderSongsInArtist(song.album.artist)
+                }
             }
 
             PlaybackMode.IN_ALBUM -> {
                 mParent = song.album
-                mQueue = orderSongsInAlbum(song.album)
+                mQueue = if (shouldShuffle) {
+                    genShuffle(song.album.songs.toMutableList(), false)
+                } else {
+                    orderSongsInAlbum(song.album)
+                }
             }
         }
 
         mMode = mode
+        mIsShuffling = shouldShuffle
 
         resetLoopMode()
         updatePlayback(song)
-
-        if (settingsManager.keepShuffle) {
-            if (mIsShuffling) {
-                genShuffle(true)
-            } else {
-                resetShuffle()
-            }
-        } else {
-            setShuffleStatus(false)
-        }
 
         mIndex = mQueue.indexOf(song)
     }
@@ -214,15 +229,30 @@ class PlaybackStateManager private constructor() {
 
         when (baseModel) {
             is Album -> {
-                mQueue = orderSongsInAlbum(baseModel)
+                mQueue = if (mIsShuffling) {
+                    genShuffle(baseModel.songs.toMutableList(), false)
+                } else {
+                    orderSongsInAlbum(baseModel)
+                }
+
                 mMode = PlaybackMode.IN_ALBUM
             }
             is Artist -> {
-                mQueue = orderSongsInArtist(baseModel)
+                mQueue = if (mIsShuffling) {
+                    genShuffle(baseModel.songs.toMutableList(), false)
+                } else {
+                    orderSongsInArtist(baseModel)
+                }
+
                 mMode = PlaybackMode.IN_ARTIST
             }
             is Genre -> {
-                mQueue = orderSongsInGenre(baseModel)
+                mQueue = if (mIsShuffling) {
+                    genShuffle(baseModel.songs.toMutableList(), false)
+                } else {
+                    orderSongsInGenre(baseModel)
+                }
+
                 mMode = PlaybackMode.IN_GENRE
             }
 
@@ -233,12 +263,6 @@ class PlaybackStateManager private constructor() {
         resetLoopMode()
 
         updatePlayback(mQueue[0])
-
-        if (mIsShuffling) {
-            genShuffle(false)
-        } else {
-            resetShuffle()
-        }
     }
 
     /**
@@ -504,38 +528,44 @@ class PlaybackStateManager private constructor() {
         val musicStore = MusicStore.getInstance()
 
         mIsShuffling = true
-        mQueue = musicStore.songs.toMutableList()
+        mQueue = genShuffle(musicStore.songs.toMutableList(), false)
         mMode = PlaybackMode.ALL_SONGS
         mIndex = 0
 
-        genShuffle(false)
         updatePlayback(mQueue[0])
     }
 
     /**
      * Generate a new shuffled queue.
+     * @param queueToShuffle The queue to shuffle
      * @param keepSong Whether to keep the currently playing song or to dispose of it
-     * @param useLastSong (Optional, defaults to false) Whether to use the previous song for the index calculations caused by the above parameter.
+     * @param useLastSong (Optional, defaults to false) Whether to use the last song in the queue instead of the current one
+     * @return A new shuffled queue
      */
-    private fun genShuffle(keepSong: Boolean, useLastSong: Boolean = false) {
-        mShuffleSeed = Random.Default.nextLong()
+    private fun genShuffle(
+        queueToShuffle: MutableList<Song>,
+        keepSong: Boolean,
+        useLastSong: Boolean = false
+    ): MutableList<Song> {
+        val newSeed = Random.Default.nextLong()
 
-        logD("Shuffling queue with seed $mShuffleSeed")
+        val lastSong =
 
-        val lastSong = if (useLastSong) mQueue[mIndex] else mSong
+            logD("Shuffling queue with seed $newSeed")
 
-        mQueue.shuffle(Random(mShuffleSeed))
+        queueToShuffle.shuffle(Random(newSeed))
         mIndex = 0
 
         // If specified, make the current song the first member of the queue.
         if (keepSong) {
-            moveQueueItems(mQueue.indexOf(lastSong), 0)
+            val song = queueToShuffle.removeAt(queueToShuffle.indexOf(mSong))
+            queueToShuffle.add(0, song)
         } else {
             // Otherwise, just start from the zeroth position in the queue.
             mSong = mQueue[0]
         }
 
-        forceQueueUpdate()
+        return queueToShuffle
     }
 
     /**
@@ -543,11 +573,14 @@ class PlaybackStateManager private constructor() {
      * @param useLastSong (Optional, defaults to false) Whether to use the previous song for the index calculations.
      */
     private fun resetShuffle(useLastSong: Boolean = false) {
-        mShuffleSeed = -1L
-
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
 
-        setupOrderedQueue()
+        mQueue = when (mMode) {
+            PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
+            PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
+            PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
+            PlaybackMode.ALL_SONGS -> MusicStore.getInstance().songs.toMutableList()
+        }
 
         mIndex = mQueue.indexOf(lastSong)
 
@@ -578,7 +611,11 @@ class PlaybackStateManager private constructor() {
         mIsShuffling = value
 
         if (mIsShuffling) {
-            genShuffle(true, mIsInUserQueue)
+            mQueue = genShuffle(
+                mQueue,
+                keepSong = true,
+                useLastSong = mIsInUserQueue
+            )
         } else {
             resetShuffle(mIsInUserQueue)
         }
@@ -794,18 +831,6 @@ class PlaybackStateManager private constructor() {
     }
 
     // --- ORDERING FUNCTIONS ---
-
-    /**
-     * Set up an ordered queue.
-     */
-    private fun setupOrderedQueue() {
-        mQueue = when (mMode) {
-            PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
-            PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
-            PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
-            PlaybackMode.ALL_SONGS -> MusicStore.getInstance().songs.toMutableList()
-        }
-    }
 
     /**
      * Create an ordered queue based on an [Album].
