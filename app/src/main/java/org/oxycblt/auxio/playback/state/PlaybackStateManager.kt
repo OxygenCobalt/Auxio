@@ -549,20 +549,20 @@ class PlaybackStateManager private constructor() {
     ): MutableList<Song> {
         val newSeed = Random.Default.nextLong()
 
-        val lastSong =
+        val lastSong = if (useLastSong) mQueue[0] else mSong
 
-            logD("Shuffling queue with seed $newSeed")
+        logD("Shuffling queue with seed $newSeed")
 
         queueToShuffle.shuffle(Random(newSeed))
         mIndex = 0
 
         // If specified, make the current song the first member of the queue.
         if (keepSong) {
-            val song = queueToShuffle.removeAt(queueToShuffle.indexOf(mSong))
+            val song = queueToShuffle.removeAt(queueToShuffle.indexOf(lastSong))
             queueToShuffle.add(0, song)
         } else {
             // Otherwise, just start from the zeroth position in the queue.
-            mSong = mQueue[0]
+            mSong = queueToShuffle[0]
         }
 
         return queueToShuffle

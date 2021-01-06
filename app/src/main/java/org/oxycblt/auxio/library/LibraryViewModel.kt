@@ -95,13 +95,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
                 combined.addAll(albums)
             }
 
-            val songs = musicStore.songs.filter { it.name.contains(query, true) }
-
-            if (songs.isNotEmpty()) {
-                combined.add(Header(name = context.getString(R.string.label_songs)))
-                combined.addAll(songs)
-            }
-
             mSearchResults.value = combined
         }
     }

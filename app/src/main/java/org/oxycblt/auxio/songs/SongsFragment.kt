@@ -5,19 +5,23 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ActionMenu
@@ -33,9 +37,10 @@ import kotlin.math.ceil
  * them.
  * @author OxygenCobalt
  */
-class SongsFragment : Fragment() {
+class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
+    private val songsModel: SongsViewModel by activityViewModels()
+    private val settingsManager = SettingsManager.getInstance()
 
     // Lazy init the text size so that it doesn't have to be calculated every time.
     private val indicatorTextSize: Float by lazy {
@@ -53,27 +58,64 @@ class SongsFragment : Fragment() {
         val binding = FragmentSongsBinding.inflate(inflater)
 
         val musicStore = MusicStore.getInstance()
-        val settingsManager = SettingsManager.getInstance()
-
-        val songAdapter = SongsAdapter(
-            musicStore.songs,
-            doOnClick = {
-                playbackModel.playSong(it, settingsManager.songPlaybackMode)
-            },
-            doOnLongClick = { data, view ->
-                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
-            }
-        )
+        val songAdapter = SongsAdapter(musicStore.songs, ::playSong, ::showSongMenu)
+        val searchAdapter = SongSearchAdapter(::playSong, ::showSongMenu)
 
         // --- UI SETUP ---
 
         binding.songToolbar.apply {
             setOnMenuItemClickListener {
-                if (it.itemId == R.id.action_shuffle) {
-                    playbackModel.shuffleAll()
+                when (it.itemId) {
+                    R.id.action_search -> {
+                        TransitionManager.beginDelayedTransition(this, Fade())
+                        it.expandActionView()
+                    }
 
-                    true
-                } else false
+                    R.id.action_shuffle -> {
+                        playbackModel.shuffleAll()
+                    }
+                }
+
+                true
+            }
+
+            menu.apply {
+                val searchAction = findItem(R.id.action_search)
+                val shuffleAction = findItem(R.id.action_shuffle)
+                val searchView = searchAction.actionView as SearchView
+
+                searchView.queryHint = getString(R.string.hint_search_songs)
+                searchView.maxWidth = Int.MAX_VALUE
+                searchView.setOnQueryTextListener(this@SongsFragment)
+
+                searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                        binding.songRecycler.adapter = searchAdapter
+                        searchAction.isVisible = false
+                        shuffleAction.isVisible = false
+
+                        binding.songFastScroll.visibility = View.INVISIBLE
+                        binding.songFastScroll.isActivated = false
+                        binding.songFastScrollThumb.visibility = View.INVISIBLE
+
+                        songsModel.resetQuery()
+
+                        return true
+                    }
+
+                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                        songsModel.resetQuery()
+
+                        binding.songRecycler.adapter = songAdapter
+                        searchAction.isVisible = true
+                        shuffleAction.isVisible = true
+
+                        binding.songFastScroll.visibility = View.VISIBLE
+                        binding.songFastScrollThumb.visibility = View.VISIBLE
+
+                        return true
+                    }
+                })
             }
         }
 
@@ -86,6 +128,12 @@ class SongsFragment : Fragment() {
 
                 layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).also {
                     it.spanCount = spans
+                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return if (binding.songRecycler.adapter == searchAdapter && position == 0)
+                                2 else 1
+                        }
+                    }
                 }
             }
 
@@ -97,14 +145,30 @@ class SongsFragment : Fragment() {
             }
         }
 
+        setupFastScroller(binding)
+
         // --- VIEWMODEL SETUP ---
 
-        setupFastScroller(binding)
+        songsModel.searchResults.observe(viewLifecycleOwner) {
+            if (binding.songRecycler.adapter == searchAdapter) {
+                searchAdapter.submitList(it) {
+                    binding.songRecycler.scrollToPosition(0)
+                }
+            }
+        }
 
         logD("Fragment created.")
 
         return binding.root
     }
+
+    override fun onQueryTextChange(newText: String): Boolean {
+        songsModel.doSearch(newText, requireContext())
+
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean = false
 
     /**
      * Go through the fast scroller setup process.
@@ -201,5 +265,13 @@ class SongsFragment : Fragment() {
         binding.songFastScrollThumb.apply {
             setupWithFastScroller(binding.songFastScroll)
         }
+    }
+
+    private fun playSong(song: Song) {
+        playbackModel.playSong(song, settingsManager.songPlaybackMode)
+    }
+
+    private fun showSongMenu(song: Song, view: View) {
+        ActionMenu(requireCompatActivity(), view, song, ActionMenu.FLAG_NONE)
     }
 }
