@@ -161,6 +161,12 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        requireView().rootView.clearFocus()
+
+        super.onDestroyView()
+    }
+
     override fun onQueryTextChange(newText: String): Boolean {
         songsModel.doSearch(newText, requireContext())
 

@@ -19,14 +19,13 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.library.adapters.LibraryAdapter
 import org.oxycblt.auxio.library.adapters.SearchAdapter
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.applyColor
@@ -39,15 +38,10 @@ import org.oxycblt.auxio.ui.toColor
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
  * search functionality.
- * FIXME: Heisenleak when navving from search
- * FIXME: Heisenleak on older versions
- * TODO: Filtering
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
-
     private val libraryModel: LibraryViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -213,6 +207,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         libraryModel.updateNavigationStatus(false)
     }
 
+    override fun onDestroyView() {
+        requireView().rootView.clearFocus()
+
+        super.onDestroyView()
+    }
+
     override fun onQueryTextSubmit(query: String): Boolean = false
 
     override fun onQueryTextChange(query: String): Boolean {
@@ -235,14 +235,12 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
      * @param baseModel The data things should be done with
      */
     private fun onItemSelection(baseModel: BaseModel) {
-        // If the item is a song [That was selected through search], then update the playback
-        // to that song instead of doing any navigation
         if (baseModel is Song) {
-            val settingsManager = SettingsManager.getInstance()
-
-            playbackModel.playSong(baseModel, settingsManager.songPlaybackMode)
+            logE("onItemSelection does not support song")
             return
         }
+
+        requireView().rootView.clearFocus()
 
         if (!libraryModel.isNavigating) {
             libraryModel.updateNavigationStatus(true)

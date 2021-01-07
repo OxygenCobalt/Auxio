@@ -26,7 +26,6 @@ import org.oxycblt.auxio.ui.toColor
 
 /**
  * The primary "Home" [Fragment] for Auxio.
- * TODO: Dedicated search tab
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

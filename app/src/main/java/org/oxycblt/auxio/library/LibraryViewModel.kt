@@ -156,6 +156,9 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         return data
     }
 
+    /**
+     * Update the current filtering mode.
+     */
     fun updateFilterMode(@IdRes itemId: Int) {
         val mode = when (itemId) {
             R.id.option_filter_all -> DisplayMode.SHOW_ALL
@@ -172,6 +175,9 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
+    /**
+     * Reset the query.
+     */
     fun resetQuery() {
         mSearchResults.value = listOf()
     }
