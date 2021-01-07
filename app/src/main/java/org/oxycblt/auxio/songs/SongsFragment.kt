@@ -126,9 +126,8 @@ class SongsFragment : Fragment(), SearchView.OnQueryTextListener {
             if (isLandscape(resources)) {
                 val spans = getLandscapeSpans(resources)
 
-                layoutManager = GridLayoutManager(requireContext(), GridLayoutManager.VERTICAL).also {
-                    it.spanCount = spans
-                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                layoutManager = GridLayoutManager(requireContext(), spans).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
                             return if (binding.songRecycler.adapter == searchAdapter && position == 0)
                                 2 else 1

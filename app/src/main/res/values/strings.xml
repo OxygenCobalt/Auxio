@@ -174,5 +174,4 @@
         <item quantity="one">%s Album</item>
         <item quantity="other">%s Albums</item>
     </plurals>
-
 </resources>

@@ -34,17 +34,16 @@ class SongsViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val songs = mutableListOf<BaseModel>().also {
-                it.addAll(musicStore.songs.filter { it.name.contains(query, true) }.toMutableList())
+            val songs = mutableListOf<BaseModel>().also { list ->
+                list.addAll(
+                    musicStore.songs.filter {
+                        it.name.contains(query, true)
+                    }.toMutableList()
+                )
             }
 
             if (songs.isNotEmpty()) {
-                songs.add(
-                    0,
-                    Header(
-                        name = context.getString(R.string.label_songs)
-                    )
-                )
+                songs.add(0, Header(id = 0, name = context.getString(R.string.label_songs)))
             }
 
             mSearchResults.value = songs

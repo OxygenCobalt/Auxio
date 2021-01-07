@@ -41,6 +41,8 @@ import org.oxycblt.auxio.ui.toColor
  * search functionality.
  * FIXME: Heisenleak when navving from search
  * FIXME: Heisenleak on older versions
+ * TODO: Filtering & Search order upgrades
+ * TODO: Show result counts?
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 

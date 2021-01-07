@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.ui.getPlural
 
 /**
  * List of ID3 genres + Winamp extensions, each index corresponds to their int value.
@@ -120,12 +121,8 @@ fun TextView.bindArtistGenre(artist: Artist) {
  */
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
-    val albums = context.resources.getQuantityString(
-        R.plurals.format_album_count, artist.albums.size, artist.albums.size
-    )
-    val songs = context.resources.getQuantityString(
-        R.plurals.format_song_count, artist.songs.size, artist.songs.size
-    )
+    val albums = context.getPlural(R.plurals.format_album_count, artist.albums.size)
+    val songs = context.getPlural(R.plurals.format_song_count, artist.songs.size)
 
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
@@ -138,10 +135,7 @@ fun TextView.bindAllAlbumDetails(album: Album) {
     text = context.getString(
         R.string.format_double_info,
         album.year.toYear(context),
-        context.resources.getQuantityString(
-            R.plurals.format_song_count,
-            album.songs.size, album.songs.size
-        ),
+        context.getPlural(R.plurals.format_song_count, album.songs.size),
         album.totalDuration
     )
 }
@@ -154,10 +148,7 @@ fun TextView.bindAlbumInfo(album: Album) {
     text = context.getString(
         R.string.format_info,
         album.artist.name,
-        context.resources.getQuantityString(
-            R.plurals.format_song_count,
-            album.songs.size, album.songs.size
-        )
+        context.getPlural(R.plurals.format_song_count, album.songs.size),
     )
 }
 

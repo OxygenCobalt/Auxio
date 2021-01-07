@@ -61,42 +61,78 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
             return
         }
 
-        // Search MusicStore for all the items [Artists, Albums, Songs] that contain
-        // the query, and update the LiveData with those items. This is done on a separate
-        // thread as it can be a very long operation for large music libraries.
         viewModelScope.launch {
             val combined = mutableListOf<BaseModel>()
-            val children = mDisplayMode.getChildren()
 
-            // If the Library DisplayMode supports it, include artists / genres in the search.
-            if (children.contains(DisplayMode.SHOW_GENRES)) {
-                val genres = musicStore.genres.filter { it.name.contains(query, true) }
-
-                if (genres.isNotEmpty()) {
-                    combined.add(Header(name = context.getString(R.string.label_genres)))
-                    combined.addAll(genres)
+            // Searching is done in a different order depending on which items are being shown
+            // E.G If albums are being shown, then they will be the first items on the list.
+            when (mDisplayMode) {
+                DisplayMode.SHOW_GENRES -> {
+                    searchForGenres(combined, query, context)
+                    searchForArtists(combined, query, context)
+                    searchForAlbums(combined, query, context)
                 }
-            }
 
-            if (children.contains(DisplayMode.SHOW_ARTISTS)) {
-                val artists = musicStore.artists.filter { it.name.contains(query, true) }
-
-                if (artists.isNotEmpty()) {
-                    combined.add(Header(name = context.getString(R.string.label_artists)))
-                    combined.addAll(artists)
+                DisplayMode.SHOW_ARTISTS -> {
+                    searchForArtists(combined, query, context) -
+                        searchForAlbums(combined, query, context)
+                    searchForGenres(combined, query, context)
                 }
-            }
 
-            // Albums & Songs are always included.
-            val albums = musicStore.albums.filter { it.name.contains(query, true) }
-
-            if (albums.isNotEmpty()) {
-                combined.add(Header(name = context.getString(R.string.label_albums)))
-                combined.addAll(albums)
+                DisplayMode.SHOW_ALBUMS -> {
+                    searchForAlbums(combined, query, context)
+                    searchForArtists(combined, query, context)
+                    searchForGenres(combined, query, context)
+                }
             }
 
             mSearchResults.value = combined
         }
+    }
+
+    private fun searchForGenres(
+        data: MutableList<BaseModel>,
+        query: String,
+        context: Context
+    ): MutableList<BaseModel> {
+        val genres = musicStore.genres.filter { it.name.contains(query, true) }
+
+        if (genres.isNotEmpty()) {
+            data.add(Header(id = 0, name = context.getString(R.string.label_genres)))
+            data.addAll(genres)
+        }
+
+        return data
+    }
+
+    private fun searchForArtists(
+        data: MutableList<BaseModel>,
+        query: String,
+        context: Context
+    ): MutableList<BaseModel> {
+        val artists = musicStore.artists.filter { it.name.contains(query, true) }
+
+        if (artists.isNotEmpty()) {
+            data.add(Header(id = 1, name = context.getString(R.string.label_artists)))
+            data.addAll(artists)
+        }
+
+        return data
+    }
+
+    private fun searchForAlbums(
+        data: MutableList<BaseModel>,
+        query: String,
+        context: Context
+    ): MutableList<BaseModel> {
+        val albums = musicStore.albums.filter { it.name.contains(query, true) }
+
+        if (albums.isNotEmpty()) {
+            data.add(Header(id = 2, name = context.getString(R.string.label_albums)))
+            data.addAll(albums)
+        }
+
+        return data
     }
 
     fun resetQuery() {

@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
@@ -110,4 +111,14 @@ fun Fragment.requireCompatActivity(): AppCompatActivity {
     } else {
         error("Required AppCompatActivity, got ${activity::class.simpleName} instead.")
     }
+}
+
+/**
+ * Convenience method for getting a plural.
+ * @param pluralsRes Resource for the plural
+ * @param value Int value for the plural.
+ * @return The formatted string requested
+ */
+fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
+    return resources.getQuantityString(pluralsRes, value, value)
 }
