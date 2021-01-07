@@ -11,7 +11,10 @@
     <string name="label_genres">Genres</string>
     <string name="label_artists">Artists</string>
     <string name="label_albums">Albums</string>
+
     <string name="label_search">Search</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_filter_all">All</string>
 
     <string name="label_sort">Sort</string>
     <string name="label_sort_none">Default</string>
@@ -69,7 +72,9 @@
     <string name="setting_show_covers_desc">Turn off to save memory usage</string>
 
     <string name="setting_quality_covers">Ignore MediaStore covers</string>
-    <string name="setting_quality_covers_desc">Results in higher quality album covers, but causes slower loading and higher memory usage</string>
+    <string name="setting_quality_covers_desc">
+        Results in higher quality album covers, but causes slower loading and higher memory usage
+    </string>
 
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>

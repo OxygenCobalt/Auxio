@@ -22,15 +22,21 @@ import org.oxycblt.auxio.settings.SettingsManager
  */
 class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
-    private val mLibraryData = MutableLiveData(listOf<BaseModel>())
-    private val mSearchResults = MutableLiveData(listOf<BaseModel>())
-    private var mDisplayMode = DisplayMode.SHOW_ARTISTS
-    private var mIsNavigating = false
-
     val sortMode: LiveData<SortMode> get() = mSortMode
+
+    private val mLibraryData = MutableLiveData(listOf<BaseModel>())
     val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
+
+    private val mFilterMode = MutableLiveData(DisplayMode.SHOW_ALL)
+    val filterMode: LiveData<DisplayMode> get() = mFilterMode
+
+    private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
+
+    private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
+
+    private var mDisplayMode = DisplayMode.SHOW_ARTISTS
 
     private val settingsManager = SettingsManager.getInstance()
     private val musicStore = MusicStore.getInstance()
@@ -41,6 +47,7 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         // Set up the display/sort modes
         mDisplayMode = settingsManager.libraryDisplayMode
         mSortMode.value = settingsManager.librarySortMode
+        mFilterMode.value = settingsManager.libraryFilterMode
 
         updateLibraryData()
     }
@@ -74,8 +81,8 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
                 }
 
                 DisplayMode.SHOW_ARTISTS -> {
-                    searchForArtists(combined, query, context) -
-                        searchForAlbums(combined, query, context)
+                    searchForArtists(combined, query, context)
+                    searchForAlbums(combined, query, context)
                     searchForGenres(combined, query, context)
                 }
 
@@ -84,6 +91,8 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
                     searchForArtists(combined, query, context)
                     searchForGenres(combined, query, context)
                 }
+
+                else -> {}
             }
 
             mSearchResults.value = combined
@@ -95,11 +104,15 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         query: String,
         context: Context
     ): MutableList<BaseModel> {
-        val genres = musicStore.genres.filter { it.name.contains(query, true) }
+        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
+            mFilterMode.value == DisplayMode.SHOW_GENRES
+        ) {
+            val genres = musicStore.genres.filter { it.name.contains(query, true) }
 
-        if (genres.isNotEmpty()) {
-            data.add(Header(id = 0, name = context.getString(R.string.label_genres)))
-            data.addAll(genres)
+            if (genres.isNotEmpty()) {
+                data.add(Header(id = 0, name = context.getString(R.string.label_genres)))
+                data.addAll(genres)
+            }
         }
 
         return data
@@ -110,11 +123,15 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         query: String,
         context: Context
     ): MutableList<BaseModel> {
-        val artists = musicStore.artists.filter { it.name.contains(query, true) }
+        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
+            mFilterMode.value == DisplayMode.SHOW_ARTISTS
+        ) {
+            val artists = musicStore.artists.filter { it.name.contains(query, true) }
 
-        if (artists.isNotEmpty()) {
-            data.add(Header(id = 1, name = context.getString(R.string.label_artists)))
-            data.addAll(artists)
+            if (artists.isNotEmpty()) {
+                data.add(Header(id = 1, name = context.getString(R.string.label_artists)))
+                data.addAll(artists)
+            }
         }
 
         return data
@@ -125,14 +142,34 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         query: String,
         context: Context
     ): MutableList<BaseModel> {
-        val albums = musicStore.albums.filter { it.name.contains(query, true) }
+        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
+            mFilterMode.value == DisplayMode.SHOW_ALBUMS
+        ) {
+            val albums = musicStore.albums.filter { it.name.contains(query, true) }
 
-        if (albums.isNotEmpty()) {
-            data.add(Header(id = 2, name = context.getString(R.string.label_albums)))
-            data.addAll(albums)
+            if (albums.isNotEmpty()) {
+                data.add(Header(id = 2, name = context.getString(R.string.label_albums)))
+                data.addAll(albums)
+            }
         }
 
         return data
+    }
+
+    fun updateFilterMode(@IdRes itemId: Int) {
+        val mode = when (itemId) {
+            R.id.option_filter_all -> DisplayMode.SHOW_ALL
+            R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
+            R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
+            R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
+
+            else -> DisplayMode.SHOW_ALL
+        }
+
+        if (mFilterMode.value != mode) {
+            mFilterMode.value = mode
+            settingsManager.libraryFilterMode = mode
+        }
     }
 
     fun resetQuery() {
@@ -203,6 +240,8 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
             DisplayMode.SHOW_ALBUMS -> {
                 mSortMode.value!!.getSortedAlbumList(musicStore.albums)
             }
+
+            else -> error("DisplayMode $mDisplayMode is unsupported.")
         }
     }
 }

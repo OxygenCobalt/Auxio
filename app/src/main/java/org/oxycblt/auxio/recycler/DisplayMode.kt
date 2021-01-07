@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.recycler
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
 
 /**
@@ -8,20 +9,22 @@ import org.oxycblt.auxio.R
  * @author OxygenCobalt
  */
 enum class DisplayMode(@DrawableRes val iconRes: Int) {
+    SHOW_ALL(R.drawable.ic_sort_none),
     SHOW_GENRES(R.drawable.ic_genre),
     SHOW_ARTISTS(R.drawable.ic_artist),
     SHOW_ALBUMS(R.drawable.ic_album);
 
     /**
-     * Make a slice of all the values that this DisplayMode covers.
-     *
-     * ex. SHOW_ARTISTS would return SHOW_ARTISTS, SHOW_ALBUMS, and SHOW_SONGS
-     * @return The values that this DisplayMode covers.
+     * Get a menu action for this show mode. Corresponds to filter actions.
      */
-    fun getChildren(): List<DisplayMode> {
-        val vals = values()
-
-        return vals.slice(vals.indexOf(this) until vals.size)
+    @IdRes
+    fun toMenuId(): Int {
+        return when (this) {
+            SHOW_ALL -> (R.id.option_filter_all)
+            SHOW_ALBUMS -> (R.id.option_filter_albums)
+            SHOW_ARTISTS -> (R.id.option_filter_artists)
+            SHOW_GENRES -> (R.id.option_filter_genres)
+        }
     }
 
     companion object {

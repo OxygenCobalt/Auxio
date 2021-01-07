@@ -41,8 +41,7 @@ import org.oxycblt.auxio.ui.toColor
  * search functionality.
  * FIXME: Heisenleak when navving from search
  * FIXME: Heisenleak on older versions
- * TODO: Filtering & Search order upgrades
- * TODO: Show result counts?
+ * TODO: Filtering
  */
 class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -61,10 +60,46 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
         val searchAdapter = SearchAdapter(::onItemSelection, ::showActionsForItem)
 
         val sortAction = binding.libraryToolbar.menu.findItem(R.id.submenu_sorting)
+        val filterAction = binding.libraryToolbar.menu.findItem(R.id.submenu_filtering)
+        val searchView: SearchView
 
         // --- UI SETUP ---
 
         binding.libraryToolbar.apply {
+            menu.apply {
+                val searchAction = findItem(R.id.action_search)
+                searchView = searchAction.actionView as SearchView
+
+                searchView.queryHint = getString(R.string.hint_search_library)
+                searchView.maxWidth = Int.MAX_VALUE
+                searchView.setOnQueryTextListener(this@LibraryFragment)
+
+                searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                        binding.libraryRecycler.adapter = searchAdapter
+
+                        searchAction.isVisible = false
+                        sortAction.isVisible = false
+                        filterAction.isVisible = true
+
+                        libraryModel.resetQuery()
+
+                        return true
+                    }
+
+                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                        binding.libraryRecycler.adapter = libraryAdapter
+
+                        searchAction.isVisible = true
+                        sortAction.isVisible = true
+                        filterAction.isVisible = false
+
+                        libraryModel.resetQuery()
+
+                        return true
+                    }
+                })
+            }
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_search -> {
@@ -74,44 +109,21 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
                         it.expandActionView()
                     }
 
-                    R.id.submenu_sorting -> {
-                    }
+                    R.id.submenu_sorting -> {}
 
-                    else -> libraryModel.updateSortMode(it.itemId)
+                    R.id.submenu_filtering -> {}
+
+                    else -> {
+                        if (sortAction.isVisible) {
+                            libraryModel.updateSortMode(it.itemId)
+                        } else if (filterAction.isVisible) {
+                            libraryModel.updateFilterMode(it.itemId)
+                            libraryModel.doSearch(searchView.query.toString(), requireContext())
+                        }
+                    }
                 }
 
                 true
-            }
-
-            menu.apply {
-                val searchAction = findItem(R.id.action_search)
-                val searchView = searchAction.actionView as SearchView
-
-                searchView.queryHint = getString(R.string.hint_search_library)
-                searchView.maxWidth = Int.MAX_VALUE
-                searchView.setOnQueryTextListener(this@LibraryFragment)
-
-                searchAction.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                        binding.libraryRecycler.adapter = searchAdapter
-                        item.isVisible = false
-                        sortAction.isVisible = false
-
-                        libraryModel.resetQuery()
-
-                        return true
-                    }
-
-                    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                        binding.libraryRecycler.adapter = libraryAdapter
-                        item.isVisible = true
-                        sortAction.isVisible = true
-
-                        libraryModel.resetQuery()
-
-                        return true
-                    }
-                })
             }
         }
 
@@ -156,6 +168,20 @@ class LibraryFragment : Fragment(), SearchView.OnQueryTextListener {
             // Highlight the item instead of using a checkable since the checkables just...wont
             // respond to any attempts to make them checked or not.
             sortAction.subMenu.forEach {
+                if (it.itemId == modeId) {
+                    it.applyColor(accent.first.toColor(requireContext()))
+                } else {
+                    it.applyColor(resolveAttr(requireContext(), android.R.attr.textColorPrimary))
+                }
+            }
+        }
+
+        libraryModel.filterMode.observe(viewLifecycleOwner) { mode ->
+            logD("Updating filter mode to $mode")
+
+            val modeId = mode.toMenuId()
+
+            filterAction.subMenu.forEach {
                 if (it.itemId == modeId) {
                     it.applyColor(accent.first.toColor(requireContext()))
                 } else {

@@ -12,8 +12,8 @@
         tools:ignore="AlwaysShowAction" />
 
     <!--
-    This action has to be always shown since android mangles this action when I make it invisible
-    and then visible again.
+    This action has to be always shown since otherwise android mangles this action when I make '
+    it invisible and then visible again.
     I hate this platform so much.
     -->
     <item
@@ -35,6 +35,34 @@
                     android:id="@+id/option_sort_alpha_up"
                     android:contentDescription="@string/description_sort_alpha_up"
                     android:title="@string/label_sort_alpha_up" />
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/submenu_filtering"
+        android:title="@string/label_filter"
+        android:icon="@drawable/ic_filter"
+        android:visible="false"
+        app:showAsAction="always">
+        <menu>
+            <group android:id="@+id/group_filtering">
+                <item
+                    android:id="@+id/option_filter_all"
+                    android:title="@string/label_filter_all"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_albums"
+                    android:title="@string/label_albums"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_artists"
+                    android:title="@string/label_artists"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_genres"
+                    android:title="@string/label_genres"
+                    app:showAsAction="never" />
             </group>
         </menu>
     </item>
