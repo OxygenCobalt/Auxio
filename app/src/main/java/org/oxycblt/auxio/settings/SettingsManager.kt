@@ -119,7 +119,7 @@ class SettingsManager private constructor(context: Context) :
      * Whether shuffle should stay on when a new song is selected.
      */
     val keepShuffle: Boolean
-        get() = sharedPrefs.getBoolean(Keys.KEY_KEEP_SHUFFLE, false)
+        get() = sharedPrefs.getBoolean(Keys.KEY_KEEP_SHUFFLE, true)
 
     /**
      * Whether to rewind when the back button is pressed.

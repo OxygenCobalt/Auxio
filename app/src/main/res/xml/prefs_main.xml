@@ -113,7 +113,7 @@
 
         <SwitchPreferenceCompat
             android:title="@string/setting_behavior_keep_shuffle"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_KEEP_SHUFFLE"
             app:summary="@string/setting_behavior_keep_shuffle_desc" />
