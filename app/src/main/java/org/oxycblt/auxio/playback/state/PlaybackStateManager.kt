@@ -161,9 +161,9 @@ class PlaybackStateManager private constructor() {
                 mParent = null
 
                 mQueue = if (shouldShuffle) {
-                    musicStore.songs.toMutableList()
-                } else {
                     genShuffle(musicStore.songs.toMutableList(), false)
+                } else {
+                    musicStore.songs.toMutableList()
                 }
             }
 
@@ -198,7 +198,6 @@ class PlaybackStateManager private constructor() {
                 } else {
                     orderSongsInAlbum(song.album)
                 }
-                mMode = mode
             }
         }
 
