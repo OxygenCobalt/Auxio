@@ -176,9 +176,8 @@ class PlaybackStateManager private constructor() {
                         orderSongsInGenre(song.genre!!)
                     }
                 } else {
-                    // I really don't know what to do if the song doesn't have a genre, so just
-                    // ignore it.
-                    logE("Song doesn't have a genre. Not playing.")
+                    // If there is no song, then just play the song from ALL_SONGS
+                    playSong(song, PlaybackMode.ALL_SONGS)
                     return
                 }
             }
@@ -199,6 +198,7 @@ class PlaybackStateManager private constructor() {
                 } else {
                     orderSongsInAlbum(song.album)
                 }
+                mMode = mode
             }
         }
 

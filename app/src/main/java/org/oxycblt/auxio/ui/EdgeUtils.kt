@@ -25,9 +25,7 @@ fun Activity.isIrregularLandscape(): Boolean {
  * Check if edge is on. Really a glorified version check.
  * @return Whether edge is on.
  */
-fun isEdgeOn(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
-}
+fun isEdgeOn(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
 
 /**
  * Check if the system bars are on the bottom.

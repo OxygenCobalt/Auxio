@@ -51,7 +51,7 @@ class QualityCoverFetcher(private val context: Context) : Fetcher<Song> {
 
             stream?.use {
                 return SourceResult(
-                    source = stream.source().buffer(),
+                    source = it.source().buffer(),
                     mimeType = context.contentResolver.getType(uri),
                     dataSource = DataSource.DISK
                 )
@@ -60,9 +60,9 @@ class QualityCoverFetcher(private val context: Context) : Fetcher<Song> {
 
         // If we are here, the extractor likely failed so instead attempt to return the compressed
         // cover instead.
-        context.contentResolver.openInputStream(data.album.coverUri)?.use { str ->
+        context.contentResolver.openInputStream(data.album.coverUri)?.use {
             return SourceResult(
-                source = str.source().buffer(),
+                source = it.source().buffer(),
                 mimeType = context.contentResolver.getType(uri),
                 dataSource = DataSource.DISK
             )

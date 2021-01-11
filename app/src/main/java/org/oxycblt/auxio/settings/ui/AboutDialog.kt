@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.net.toUri
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
@@ -18,7 +15,6 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.isLandscape
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -47,15 +43,6 @@ class AboutDialog : BottomSheetDialogFragment() {
         binding.aboutAuthor.text = getString(
             R.string.format_author, getString(R.string.label_author_oxycblt)
         )
-
-        if (isLandscape(resources)) {
-            val dialog = requireDialog() as BottomSheetDialog
-            dialog.findViewById<CoordinatorLayout>(
-                com.google.android.material.R.id.design_bottom_sheet
-            )?.let {
-                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
 
         logD("Dialog created.")
 

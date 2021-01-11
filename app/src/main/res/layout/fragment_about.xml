@@ -46,6 +46,8 @@
                 android:id="@+id/about_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small"
                 android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/app_desc"
                 android:textAlignment="center"

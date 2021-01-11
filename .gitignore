@@ -13,3 +13,4 @@ captures/
 .externalNativeBuild
 *.iml
 .cxx
+changelog

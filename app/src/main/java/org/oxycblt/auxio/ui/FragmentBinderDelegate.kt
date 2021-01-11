@@ -40,6 +40,30 @@ class FragmentBinderDelegate<T : ViewBinding>(
         }
     }
 
+    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
+        check(Looper.myLooper() == Looper.getMainLooper()) {
+            "View can only be accessed on the main thread."
+        }
+
+        val binding = fragmentBinding
+
+        // If the fragment is already initialized, then just return that.
+        if (binding != null) {
+            return binding
+        }
+
+        val lifecycle = fragment.viewLifecycleOwner.lifecycle
+
+        check(lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
+            "Fragment views are destroyed."
+        }
+
+        // Otherwise create the binding and return that.
+        return inflate(LayoutInflater.from(thisRef.requireContext())).also {
+            fragmentBinding = it
+        }
+    }
+
     private inline fun Fragment.observeOwnerThroughCreation(
         crossinline viewOwner: LifecycleOwner.() -> Unit
     ) {
@@ -54,28 +78,9 @@ class FragmentBinderDelegate<T : ViewBinding>(
         })
     }
 
-    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw IllegalThreadStateException("View can only be accessed on the main thread.")
-        }
-
-        val binding = fragmentBinding
-        if (binding != null) {
-            return binding
-        }
-
-        val lifecycle = fragment.viewLifecycleOwner.lifecycle
-
-        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            throw IllegalStateException("Fragment views are destroyed.")
-        }
-
-        return inflate(LayoutInflater.from(thisRef.requireContext())).also { fragmentBinding = it }
-    }
-
     @Suppress("UNUSED")
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun dispose() {
+    fun destroy() {
         fragmentBinding?.onDestroy()
         fragmentBinding = null
     }
