@@ -112,15 +112,12 @@ class AlbumDetailFragment : DetailFragment() {
 
         // --- PLAYBACKVIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
-                playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
-            ) {
-                detailAdapter.highlightSong(song, binding.detailRecycler)
-            } else {
-                // Clear the viewholders if the mode isn't ALL_SONGS
-                detailAdapter.highlightSong(null, binding.detailRecycler)
-            }
+        playbackModel.song.observe(viewLifecycleOwner) {
+            handlePlayingItem(detailAdapter)
+        }
+
+        playbackModel.mode.observe(viewLifecycleOwner) {
+            handlePlayingItem(detailAdapter)
         }
 
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
@@ -132,6 +129,21 @@ class AlbumDetailFragment : DetailFragment() {
         logD("Fragment created.")
 
         return binding.root
+    }
+
+    /**
+     * Handle an update to the mode or the song and determine whether to highlight a song
+     * item based off that
+     */
+    private fun handlePlayingItem(detailAdapter: AlbumDetailAdapter) {
+        if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
+            playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
+        ) {
+            detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
+        } else {
+            // Clear the viewholders if the mode isn't ALL_SONGS
+            detailAdapter.highlightSong(null, binding.detailRecycler)
+        }
     }
 
     /**
