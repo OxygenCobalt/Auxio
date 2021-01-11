@@ -154,6 +154,9 @@ class PlaybackStateManager private constructor() {
     fun playSong(song: Song, mode: PlaybackMode) {
         logD("Updating song to ${song.name} and mode to $mode")
 
+        // Song is updated immediately, as its reference is needed for the queue calculations
+        updatePlayback(song)
+
         val shouldShuffle = settingsManager.keepShuffle && mIsShuffling
 
         when (mode) {
@@ -161,7 +164,7 @@ class PlaybackStateManager private constructor() {
                 mParent = null
 
                 mQueue = if (shouldShuffle) {
-                    genShuffle(musicStore.songs.toMutableList(), false)
+                    genShuffle(musicStore.songs.toMutableList(), true)
                 } else {
                     musicStore.songs.toMutableList()
                 }
@@ -171,7 +174,7 @@ class PlaybackStateManager private constructor() {
                 if (song.genre != null) {
                     mParent = song.genre
                     mQueue = if (shouldShuffle) {
-                        genShuffle(song.genre!!.songs.toMutableList(), false)
+                        genShuffle(song.genre!!.songs.toMutableList(), true)
                     } else {
                         orderSongsInGenre(song.genre!!)
                     }
@@ -185,7 +188,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.IN_ARTIST -> {
                 mParent = song.album.artist
                 mQueue = if (shouldShuffle) {
-                    genShuffle(song.album.artist.songs.toMutableList(), false)
+                    genShuffle(song.album.artist.songs.toMutableList(), true)
                 } else {
                     orderSongsInArtist(song.album.artist)
                 }
@@ -194,7 +197,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.IN_ALBUM -> {
                 mParent = song.album
                 mQueue = if (shouldShuffle) {
-                    genShuffle(song.album.songs.toMutableList(), false)
+                    genShuffle(song.album.songs.toMutableList(), true)
                 } else {
                     orderSongsInAlbum(song.album)
                 }
@@ -205,7 +208,6 @@ class PlaybackStateManager private constructor() {
         mIsShuffling = shouldShuffle
 
         resetLoopMode()
-        updatePlayback(song)
 
         mIndex = mQueue.indexOf(song)
     }
