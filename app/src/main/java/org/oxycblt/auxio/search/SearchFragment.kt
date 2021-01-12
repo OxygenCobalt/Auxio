@@ -31,9 +31,12 @@ import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.toColor
 
-// TODO: Fix TextView memory leak
-// TODO: Add Filtering
-// TODO: Add "No Results" marker
+/**
+ * A [Fragment] that allows for the searching of the entire music library.
+ * TODO: Add "Recent Searches" & No Results indicator
+ * TODO: Filtering
+ * @author OxygenCobalt
+ */
 class SearchFragment : Fragment() {
     // SearchViewModel only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
@@ -55,6 +58,19 @@ class SearchFragment : Fragment() {
         }
 
         // --- UI SETUP --
+
+        binding.searchToolbar.apply {
+            menu.findItem(searchModel.filterMode.toId()).isChecked = true
+
+            setOnMenuItemClickListener {
+                if (it.itemId != R.id.submenu_filtering) {
+                    it.isChecked = true
+                    searchModel.updateFilterModeWithId(it.itemId, requireContext())
+
+                    true
+                } else false
+            }
+        }
 
         binding.searchTextLayout.apply {
             boxStrokeColor = accent
@@ -113,7 +129,7 @@ class SearchFragment : Fragment() {
                 invoke(this@SearchFragment, null)
             }
         } catch (e: Exception) {
-            logE("Hacky reflection leak fix failed. Oh well.")
+            logE("Hacky reflection leak fix failed.")
 
             e.printStackTrace()
         }

@@ -144,6 +144,22 @@ class SettingsManager private constructor(context: Context) :
                 .apply()
         }
 
+    /**
+     * The current filter mode of the search tab
+     */
+    var searchFilterMode: DisplayMode
+        get() = DisplayMode.valueOfOrFallback(
+            sharedPrefs.getString(
+                Keys.KEY_SEARCH_FILTER_MODE, DisplayMode.SHOW_ALL.toString()
+            ),
+            fallback = DisplayMode.SHOW_ALL
+        )
+        set(value) {
+            sharedPrefs.edit()
+                .putString(Keys.KEY_SEARCH_FILTER_MODE, value.toString())
+                .apply()
+        }
+
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
@@ -231,7 +247,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
-        const val KEY_LIBRARY_FILTER_MODE = "KEY_LIBRARY_FILTER_MODE"
+        const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
         const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
     }
 

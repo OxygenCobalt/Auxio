@@ -114,8 +114,7 @@
     <string name="error_no_browser">Could not open link.</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Search Library…</string>
-    <string name="hint_search_songs">Search Songs…</string>
+    <string name="hint_search_library">Search your library…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_album_cover">Album Cover for %s</string>
