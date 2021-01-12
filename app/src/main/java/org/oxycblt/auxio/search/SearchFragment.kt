@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -30,6 +31,9 @@ import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.toColor
 
+// TODO: Fix TextView memory leak
+// TODO: Add Filtering
+// TODO: Add "No Results" marker
 class SearchFragment : Fragment() {
     // SearchViewModel only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
@@ -80,6 +84,7 @@ class SearchFragment : Fragment() {
         }
 
         // --- VIEWMODEL SETUP ---
+
         searchModel.searchResults.observe(viewLifecycleOwner) {
             searchAdapter.submitList(it) {
                 binding.searchRecycler.scrollToPosition(0)
@@ -97,9 +102,21 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        requireView().rootView.clearFocus()
-
         super.onDestroyView()
+
+        try {
+            // Use reflection to fix a memory leak in the fragment source code that occurs
+            // from leaving an EditText focused when exiting the view.
+            // I cant believe I have to do this.
+            Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).apply {
+                isAccessible = true
+                invoke(this@SearchFragment, null)
+            }
+        } catch (e: Exception) {
+            logE("Hacky reflection leak fix failed. Oh well.")
+
+            e.printStackTrace()
+        }
     }
 
     override fun onResume() {

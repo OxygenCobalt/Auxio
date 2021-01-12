@@ -26,5 +26,6 @@
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_artist" />
+
     </LinearLayout>
 </layout>

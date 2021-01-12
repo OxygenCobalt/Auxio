@@ -89,7 +89,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     /**
      * Shortcut function for updating the library data with the current [SortMode]/[DisplayMode]
      */
-    @Suppress("UNCHECKED_CAST")
     private fun updateLibraryData() {
         mLibraryData.value = when (mDisplayMode) {
             DisplayMode.SHOW_GENRES -> {
