@@ -144,22 +144,6 @@ class SettingsManager private constructor(context: Context) :
                 .apply()
         }
 
-    /**
-     * The current [DisplayMode] of the library search filtering
-     */
-    var libraryFilterMode: DisplayMode
-        get() = DisplayMode.valueOfOrFallback(
-            sharedPrefs.getString(
-                Keys.KEY_LIBRARY_FILTER_MODE,
-                DisplayMode.SHOW_ARTISTS.toString()
-            )
-        )
-        set(value) {
-            sharedPrefs.edit()
-                .putString(Keys.KEY_LIBRARY_FILTER_MODE, value.toString())
-                .apply()
-        }
-
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()

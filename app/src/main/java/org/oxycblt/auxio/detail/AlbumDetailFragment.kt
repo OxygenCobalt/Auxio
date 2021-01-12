@@ -150,7 +150,7 @@ class AlbumDetailFragment : DetailFragment() {
      * Scroll to the currently playing item.
      */
     private fun scrollToPlayingItem() {
-        // Calculate where the item for the currently played song is, -1 if it isnt here
+        // Calculate where the item for the currently played song is
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
             detailModel.currentAlbum.value!!.songs
         ).indexOf(playbackModel.song.value)

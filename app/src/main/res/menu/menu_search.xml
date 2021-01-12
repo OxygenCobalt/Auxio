@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/submenu_filtering"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/label_filter"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group
+                android:id="@+id/group_filtering"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/option_filter_all"
+                    android:title="@string/label_filter_all"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_songs"
+                    android:title="@string/label_songs"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_albums"
+                    android:title="@string/label_albums"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_artists"
+                    android:title="@string/label_artists"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/option_filter_genres"
+                    android:title="@string/label_genres"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+    </item>
+</menu>

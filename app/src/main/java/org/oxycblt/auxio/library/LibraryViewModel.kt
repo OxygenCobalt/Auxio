@@ -1,15 +1,11 @@
 package org.oxycblt.auxio.library
 
-import android.content.Context
 import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
@@ -27,12 +23,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private val mLibraryData = MutableLiveData(listOf<BaseModel>())
     val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
 
-    private val mFilterMode = MutableLiveData(DisplayMode.SHOW_ALL)
-    val filterMode: LiveData<DisplayMode> get() = mFilterMode
-
-    private val mSearchResults = MutableLiveData(listOf<BaseModel>())
-    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
-
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
 
@@ -47,142 +37,9 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         // Set up the display/sort modes
         mDisplayMode = settingsManager.libraryDisplayMode
         mSortMode.value = settingsManager.librarySortMode
-        mFilterMode.value = settingsManager.libraryFilterMode
 
         updateLibraryData()
     }
-
-    // --- SEARCH FUNCTIONS ---
-
-    /**
-     * Perform a search of the music library, given a query.
-     * Results are pushed to [searchResults].
-     * @param query The query for this search
-     * @param context The context needed to create the header text
-     */
-    fun doSearch(query: String, context: Context) {
-        // Don't bother if the query is blank.
-        if (query == "") {
-            resetQuery()
-
-            return
-        }
-
-        viewModelScope.launch {
-            val combined = mutableListOf<BaseModel>()
-
-            // Searching is done in a different order depending on which items are being shown
-            // E.G If albums are being shown, then they will be the first items on the list.
-            when (mDisplayMode) {
-                DisplayMode.SHOW_GENRES -> {
-                    searchForGenres(combined, query, context)
-                    searchForArtists(combined, query, context)
-                    searchForAlbums(combined, query, context)
-                }
-
-                DisplayMode.SHOW_ARTISTS -> {
-                    searchForArtists(combined, query, context)
-                    searchForAlbums(combined, query, context)
-                    searchForGenres(combined, query, context)
-                }
-
-                DisplayMode.SHOW_ALBUMS -> {
-                    searchForAlbums(combined, query, context)
-                    searchForArtists(combined, query, context)
-                    searchForGenres(combined, query, context)
-                }
-
-                else -> {}
-            }
-
-            mSearchResults.value = combined
-        }
-    }
-
-    private fun searchForGenres(
-        data: MutableList<BaseModel>,
-        query: String,
-        context: Context
-    ): MutableList<BaseModel> {
-        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
-            mFilterMode.value == DisplayMode.SHOW_GENRES
-        ) {
-            val genres = musicStore.genres.filter { it.name.contains(query, true) }
-
-            if (genres.isNotEmpty()) {
-                data.add(Header(id = 0, name = context.getString(R.string.label_genres)))
-                data.addAll(genres)
-            }
-        }
-
-        return data
-    }
-
-    private fun searchForArtists(
-        data: MutableList<BaseModel>,
-        query: String,
-        context: Context
-    ): MutableList<BaseModel> {
-        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
-            mFilterMode.value == DisplayMode.SHOW_ARTISTS
-        ) {
-            val artists = musicStore.artists.filter { it.name.contains(query, true) }
-
-            if (artists.isNotEmpty()) {
-                data.add(Header(id = 1, name = context.getString(R.string.label_artists)))
-                data.addAll(artists)
-            }
-        }
-
-        return data
-    }
-
-    private fun searchForAlbums(
-        data: MutableList<BaseModel>,
-        query: String,
-        context: Context
-    ): MutableList<BaseModel> {
-        if (mFilterMode.value == DisplayMode.SHOW_ALL ||
-            mFilterMode.value == DisplayMode.SHOW_ALBUMS
-        ) {
-            val albums = musicStore.albums.filter { it.name.contains(query, true) }
-
-            if (albums.isNotEmpty()) {
-                data.add(Header(id = 2, name = context.getString(R.string.label_albums)))
-                data.addAll(albums)
-            }
-        }
-
-        return data
-    }
-
-    /**
-     * Update the current filtering mode.
-     */
-    fun updateFilterMode(@IdRes itemId: Int) {
-        val mode = when (itemId) {
-            R.id.option_filter_all -> DisplayMode.SHOW_ALL
-            R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
-            R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
-            R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
-
-            else -> DisplayMode.SHOW_ALL
-        }
-
-        if (mFilterMode.value != mode) {
-            mFilterMode.value = mode
-            settingsManager.libraryFilterMode = mode
-        }
-    }
-
-    /**
-     * Reset the query.
-     */
-    fun resetQuery() {
-        mSearchResults.value = listOf()
-    }
-
-    // --- LIBRARY FUNCTIONS ---
 
     /**
      * Update the current [SortMode] with a menu id.

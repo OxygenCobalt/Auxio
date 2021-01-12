@@ -1,38 +1,36 @@
-package org.oxycblt.auxio.library.adapters
+package org.oxycblt.auxio.library
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
-import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
-import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 /**
- * A Multi-ViewHolder adapter that displays the results of a search query.
+ * An adapter for displaying library items.
  * @author OxygenCobalt
  */
-class SearchAdapter(
+class LibraryAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,
     private val doOnLongClick: (data: BaseModel, view: View) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var data = listOf<BaseModel>()
+
+    override fun getItemCount(): Int = data.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        return when (data[position]) {
             is Genre -> GenreViewHolder.ITEM_TYPE
             is Artist -> ArtistViewHolder.ITEM_TYPE
             is Album -> AlbumViewHolder.ITEM_TYPE
-            is Song -> SongViewHolder.ITEM_TYPE
-            is Header -> HeaderViewHolder.ITEM_TYPE
+
+            else -> -1
         }
     }
 
@@ -50,23 +48,25 @@ class SearchAdapter(
                 parent.context, doOnClick, doOnLongClick
             )
 
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
-            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-
-            else -> error("Someone messed with the ViewHolder item types.")
+            else -> error("Invalid viewholder item type.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
+        when (val item = data[position]) {
             is Genre -> (holder as GenreViewHolder).bind(item)
             is Artist -> (holder as ArtistViewHolder).bind(item)
             is Album -> (holder as AlbumViewHolder).bind(item)
-            is Song -> (holder as SongViewHolder).bind(item)
-            is Header -> (holder as HeaderViewHolder).bind(item)
         }
+    }
+
+    /**
+     * Update the data directly. [notifyDataSetChanged] will be called
+     * @param newData The new data to be used
+     */
+    fun updateData(newData: List<BaseModel>) {
+        data = newData
+
+        notifyDataSetChanged()
     }
 }

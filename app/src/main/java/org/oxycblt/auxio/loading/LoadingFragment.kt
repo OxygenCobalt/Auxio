@@ -32,16 +32,7 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // If the music was already loaded, then don't do it again.
-        if (MusicStore.getInstance().loaded) {
-            findNavController().navigate(
-                LoadingFragmentDirections.actionToMain()
-            )
-
-            return null
-        }
-
+    ): View {
         val binding = FragmentLoadingBinding.inflate(inflater)
 
         // Set up the permission launcher, as its disallowed outside of onCreate.
@@ -116,6 +107,15 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         logD("Fragment created.")
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // If the music was already loaded, then don't do it again.
+        if (MusicStore.getInstance().loaded) {
+            findNavController().navigate(
+                LoadingFragmentDirections.actionToMain()
+            )
+        }
     }
 
     // Check for two things:
