@@ -13,7 +13,8 @@
         android:title="@string/label_sort"
         app:showAsAction="always">
         <menu>
-            <group android:id="@+id/group_sorting">
+            <group android:id="@+id/group_sorting"
+                android:checkableBehavior="single">
                 <item
                     android:id="@+id/option_sort_none"
                     android:contentDescription="@string/description_sort_none"

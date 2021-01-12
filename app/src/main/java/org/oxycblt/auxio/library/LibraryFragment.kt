@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -20,13 +19,9 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.applyColor
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.requireCompatActivity
-import org.oxycblt.auxio.ui.resolveAttr
-import org.oxycblt.auxio.ui.toColor
 
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
@@ -47,16 +42,17 @@ class LibraryFragment : Fragment() {
             ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
         }
 
-        val sortAction = binding.libraryToolbar.menu.findItem(R.id.submenu_sorting)
-
         // --- UI SETUP ---
 
         binding.libraryToolbar.apply {
+            menu.findItem(libraryModel.sortMode.toMenuId()).isChecked = true
+
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.submenu_sorting -> {}
 
                     else -> {
+                        it.isChecked = true
                         libraryModel.updateSortMode(it.itemId)
                     }
                 }
@@ -78,22 +74,6 @@ class LibraryFragment : Fragment() {
 
         libraryModel.libraryData.observe(viewLifecycleOwner) {
             libraryAdapter.updateData(it)
-        }
-
-        libraryModel.sortMode.observe(viewLifecycleOwner) { mode ->
-            logD("Updating sort mode to $mode")
-
-            val modeId = mode.toMenuId()
-
-            // Highlight the item instead of using a checkable since the checkables just...wont
-            // respond to any attempts to make them checked or not.
-            sortAction.subMenu.forEach {
-                if (it.itemId == modeId) {
-                    it.applyColor(accent.first.toColor(requireContext()))
-                } else {
-                    it.applyColor(resolveAttr(requireContext(), android.R.attr.textColorPrimary))
-                }
-            }
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {

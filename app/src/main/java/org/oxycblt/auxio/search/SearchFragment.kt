@@ -34,7 +34,6 @@ import org.oxycblt.auxio.ui.toColor
 /**
  * A [Fragment] that allows for the searching of the entire music library.
  * TODO: Add "Recent Searches" & No Results indicator
- * TODO: Filtering
  * @author OxygenCobalt
  */
 class SearchFragment : Fragment() {

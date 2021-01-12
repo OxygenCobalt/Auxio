@@ -17,14 +17,14 @@ import org.oxycblt.auxio.settings.SettingsManager
  * @author OxygenCobalt
  */
 class LibraryViewModel : ViewModel(), SettingsManager.Callback {
-    private val mSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
-    val sortMode: LiveData<SortMode> get() = mSortMode
-
     private val mLibraryData = MutableLiveData(listOf<BaseModel>())
     val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
 
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
+
+    private var mSortMode = SortMode.ALPHA_DOWN
+    val sortMode: SortMode get() = mSortMode
 
     private var mDisplayMode = DisplayMode.SHOW_ARTISTS
 
@@ -36,7 +36,7 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
         // Set up the display/sort modes
         mDisplayMode = settingsManager.libraryDisplayMode
-        mSortMode.value = settingsManager.librarySortMode
+        mSortMode = settingsManager.librarySortMode
 
         updateLibraryData()
     }
@@ -54,8 +54,8 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
             else -> SortMode.NONE
         }
 
-        if (mode != mSortMode.value) {
-            mSortMode.value = mode
+        if (mode != mSortMode) {
+            mSortMode = mode
             settingsManager.librarySortMode = mode
 
             updateLibraryData()
@@ -92,15 +92,15 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private fun updateLibraryData() {
         mLibraryData.value = when (mDisplayMode) {
             DisplayMode.SHOW_GENRES -> {
-                mSortMode.value!!.getSortedGenreList(musicStore.genres)
+                mSortMode.getSortedGenreList(musicStore.genres)
             }
 
             DisplayMode.SHOW_ARTISTS -> {
-                mSortMode.value!!.getSortedBaseModelList(musicStore.artists)
+                mSortMode.getSortedBaseModelList(musicStore.artists)
             }
 
             DisplayMode.SHOW_ALBUMS -> {
-                mSortMode.value!!.getSortedAlbumList(musicStore.albums)
+                mSortMode.getSortedAlbumList(musicStore.albums)
             }
 
             else -> error("DisplayMode $mDisplayMode is unsupported.")
