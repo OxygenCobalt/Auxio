@@ -137,25 +137,17 @@ class ActionMenu(
 
             R.id.action_go_album -> {
                 if (data is Song) {
-                    determineWhereToNavWithSong(data.album)
+                    detailModel.navToItem(data.album)
                 }
             }
 
             R.id.action_go_artist -> {
                 if (data is Song) {
-                    determineWhereToNavWithSong(data.album.artist)
+                    detailModel.navToItem(data.album.artist)
                 } else if (data is Album) {
                     detailModel.navToItem(data.artist)
                 }
             }
-        }
-    }
-
-    private fun determineWhereToNavWithSong(parent: BaseModel) {
-        when (flag) {
-            FLAG_NONE -> detailModel.navToItem(parent)
-            FLAG_IN_ALBUM -> detailModel.navToParent()
-            FLAG_IN_GENRE -> detailModel.navToChild(parent)
         }
     }
 

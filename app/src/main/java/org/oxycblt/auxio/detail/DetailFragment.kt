@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
@@ -42,6 +43,12 @@ abstract class DetailFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         callback.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        fixAnimationInfoMemoryLeak()
     }
 
     /**

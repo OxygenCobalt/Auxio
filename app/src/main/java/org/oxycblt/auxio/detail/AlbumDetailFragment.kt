@@ -10,6 +10,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
@@ -82,28 +83,41 @@ class AlbumDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        detailModel.doneWithNavToParent()
-
-        detailModel.navToParent.observe(viewLifecycleOwner) {
-            if (it) {
-                findNavController().navigate(
-                    AlbumDetailFragmentDirections.actionShowParentArtist(
-                        detailModel.currentAlbum.value!!.artist.id
-                    )
-                )
-
-                detailModel.doneWithNavToParent()
-            }
-        }
-
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (it is Song) {
-                    scrollToPlayingItem()
-                }
+                logD(it.name)
+                when (it) {
+                    is Song -> {
+                        if (detailModel.currentAlbum.value!!.id == it.album.id) {
+                            scrollToItem(it.id)
 
-                if (it is Album && it.id == detailModel.currentAlbum.value!!.id) {
-                    detailModel.doneWithNavToItem()
+                            detailModel.doneWithNavToItem()
+                        } else {
+                            findNavController().navigate(
+                                AlbumDetailFragmentDirections.actionShowAlbum(it.album.id)
+                            )
+                        }
+                    }
+
+                    is Album -> {
+                        if (detailModel.currentAlbum.value!!.id == it.id) {
+                            binding.detailRecycler.scrollToPosition(0)
+                            detailModel.doneWithNavToItem()
+                        } else {
+                            findNavController().navigate(
+                                AlbumDetailFragmentDirections.actionShowAlbum(it.id)
+                            )
+                        }
+                    }
+
+                    is Artist -> {
+                        logD("Hello?")
+                        findNavController().navigate(
+                            AlbumDetailFragmentDirections.actionShowArtist(it.id)
+                        )
+                    }
+
+                    else -> {}
                 }
             }
         }
@@ -144,14 +158,11 @@ class AlbumDetailFragment : DetailFragment() {
         }
     }
 
-    /**
-     * Scroll to the currently playing item.
-     */
-    private fun scrollToPlayingItem() {
+    private fun scrollToItem(id: Long) {
         // Calculate where the item for the currently played song is
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
             detailModel.currentAlbum.value!!.songs
-        ).indexOf(playbackModel.song.value)
+        ).indexOfFirst { it.id == id }
 
         if (pos != -1) {
             binding.detailRecycler.post {
@@ -167,8 +178,6 @@ class AlbumDetailFragment : DetailFragment() {
                     binding.detailAppbar.isLifted = true
                 }
             }
-
-            detailModel.doneWithNavToItem()
         }
     }
 }

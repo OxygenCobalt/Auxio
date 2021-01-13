@@ -12,6 +12,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.requireCompatActivity
@@ -77,8 +78,22 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null && it is Artist) {
-                detailModel.doneWithNavToItem()
+            if (it != null) {
+                if (it is Artist) {
+                    if (it.id == detailModel.currentArtist.value!!.id) {
+                        detailModel.doneWithNavToItem()
+                    } else {
+                        findNavController().navigate(
+                            ArtistDetailFragmentDirections.actionShowArtist(it.id)
+                        )
+                    }
+                } else {
+                    val albumId = if (it is Song) it.album.id else it.id
+
+                    findNavController().navigate(
+                        ArtistDetailFragmentDirections.actionShowAlbum(albumId)
+                    )
+                }
             }
         }
 

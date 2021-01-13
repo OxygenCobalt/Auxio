@@ -36,15 +36,9 @@ class DetailViewModel : ViewModel() {
     private val mCurrentAlbum = MutableLiveData<Album?>()
     val currentAlbum: LiveData<Album?> get() = mCurrentAlbum
 
-    // Navigation flags
+    // Primary navigation flag.
     private val mNavToItem = MutableLiveData<BaseModel?>()
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
-
-    private val mNavToParent = MutableLiveData<Boolean>()
-    val navToParent: LiveData<Boolean> get() = mNavToParent
-
-    private val mNavToChild = MutableLiveData<BaseModel?>()
-    val navToChild: LiveData<BaseModel?> get() = mNavToChild
 
     /**
      * Update the current navigation status
@@ -112,24 +106,5 @@ class DetailViewModel : ViewModel() {
     /** Mark that the navigation process is done. */
     fun doneWithNavToItem() {
         mNavToItem.value = null
-    }
-
-    /** Mark that parent navigation should occur */
-    fun navToParent() {
-        mNavToParent.value = true
-    }
-
-    /** Mark that the UI is done with the parent navigation */
-    fun doneWithNavToParent() {
-        mNavToParent.value = false
-    }
-
-    /** Navigate to some child item (Primarily used by GenreDetailFragment) */
-    fun navToChild(child: BaseModel) {
-        mNavToChild.value = child
-    }
-
-    fun doneWithNavToChild() {
-        mNavToChild.value = null
     }
 }

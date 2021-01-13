@@ -59,7 +59,7 @@
             android:background="@drawable/ui_ripple"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{() -> detailModel.navToParent()}"
+            android:onClick="@{() -> detailModel.navToItem(album.artist)}"
             android:text="@{album.artist.name}"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"

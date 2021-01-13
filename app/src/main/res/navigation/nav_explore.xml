@@ -40,11 +40,17 @@
             android:name="artistId"
             app:argType="long" />
         <action
+            android:id="@+id/action_show_artist"
+            app:destination="@id/artist_detail_fragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
             android:id="@+id/action_show_album"
             app:destination="@id/album_detail_fragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:launchSingleTop="true"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
@@ -57,8 +63,15 @@
             android:name="albumId"
             app:argType="long" />
         <action
-            android:id="@+id/action_show_parent_artist"
+            android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_show_album"
+            app:destination="@id/album_detail_fragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -73,14 +86,14 @@
             android:name="genreId"
             app:argType="long" />
         <action
-            android:id="@+id/action_go_artist"
+            android:id="@+id/action_show_artist"
             app:destination="@id/artist_detail_fragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_go_album"
+            android:id="@+id/action_show_album"
             app:destination="@id/album_detail_fragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -92,11 +105,6 @@
         android:name="org.oxycblt.auxio.songs.SongsFragment"
         android:label="fragment_songs"
         tools:layout="@layout/fragment_songs" />
-    <fragment
-        android:id="@+id/settings_fragment"
-        android:name="org.oxycblt.auxio.settings.SettingsFragment"
-        android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/search_fragment"
         android:name="org.oxycblt.auxio.search.SearchFragment"
@@ -124,4 +132,9 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="org.oxycblt.auxio.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

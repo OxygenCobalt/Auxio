@@ -14,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -26,6 +26,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.requireCompatActivity
@@ -40,6 +41,7 @@ class SearchFragment : Fragment() {
     // SearchViewModel only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,25 +115,27 @@ class SearchFragment : Fragment() {
             }
         }
 
+        detailModel.navToItem.observe(viewLifecycleOwner) {
+            if (it != null) {
+                findNavController().navigate(
+                    when (it) {
+                        is Song -> SearchFragmentDirections.actionShowAlbum(it.album.id)
+                        is Album -> SearchFragmentDirections.actionShowAlbum(it.id)
+                        is Artist -> SearchFragmentDirections.actionShowArtist(it.id)
+
+                        else -> return@observe
+                    }
+                )
+            }
+        }
+
         return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        try {
-            // Use reflection to fix a memory leak in the fragment source code that occurs
-            // from leaving an EditText focused when exiting the view.
-            // I cant believe I have to do this.
-            Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).apply {
-                isAccessible = true
-                invoke(this@SearchFragment, null)
-            }
-        } catch (e: Exception) {
-            logE("Hacky reflection leak fix failed.")
-
-            e.printStackTrace()
-        }
+        fixAnimationInfoMemoryLeak()
     }
 
     override fun onResume() {

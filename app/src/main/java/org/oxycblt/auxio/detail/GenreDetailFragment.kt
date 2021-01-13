@@ -12,6 +12,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.requireCompatActivity
@@ -69,19 +70,23 @@ class GenreDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        detailModel.navToChild.observe(viewLifecycleOwner) {
+        detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (it is Artist) {
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionGoArtist(it.id)
+                when (it) {
+                    is Artist -> findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowArtist(it.id)
                     )
-                } else if (it is Album) {
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionGoAlbum(it.id)
-                    )
-                }
 
-                detailModel.doneWithNavToChild()
+                    is Album -> findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowAlbum(it.id)
+                    )
+
+                    is Song -> findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowAlbum(it.album.id)
+                    )
+
+                    else -> {}
+                }
             }
         }
 

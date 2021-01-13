@@ -9,6 +9,7 @@ import android.graphics.Point
 import android.os.Build
 import android.text.Spanned
 import android.util.DisplayMetrics
+import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logE
 
 // --- VIEW CONFIGURATION ---
 
@@ -139,6 +141,7 @@ fun Activity.isIrregularLandscape(): Boolean {
  * Check if the system bars are on the bottom.
  * @return If the system bars are on the bottom, false if no.
  */
+@Suppress("DEPRECATION")
 private fun isSystemBarOnBottom(activity: Activity): Boolean {
     val realPoint = Point()
     val metrics = DisplayMetrics()
@@ -169,4 +172,22 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
     val canMove = (width != height && config.smallestScreenWidthDp < 600)
 
     return (!canMove || width < height)
+}
+
+// --- HACKY NIGHTMARES ---
+
+/**
+ * Use R E F L E C T I O N to fix a memory leak where mAnimationInfo will keep a reference to
+ * its focused view.
+ * I can't believe I have to do this.
+ */
+fun Fragment.fixAnimationInfoMemoryLeak() {
+    try {
+        Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).let {
+            it.isAccessible = true
+            it.invoke(this, null)
+        }
+    } catch (e: Exception) {
+        logE("mAnimationInfo leak fix failed.")
+    }
 }

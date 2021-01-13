@@ -14,8 +14,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -95,12 +93,10 @@ class MainFragment : Fragment() {
             if (it != null && navController != null) {
                 val curDest = navController.currentDestination?.id
 
-                val isOk = when (it) {
-                    is Song -> (detailModel.currentAlbum.value?.id == it.album.id) magic (curDest != R.id.album_detail_fragment)
-                    is Album -> (detailModel.currentAlbum.value?.id == it.id) magic (curDest != R.id.album_detail_fragment)
-                    is Artist -> (detailModel.currentArtist.value?.id == it.id) magic (curDest != R.id.artist_detail_fragment)
+                var isOk = false
 
-                    else -> false
+                if (curDest == R.id.songs_fragment || curDest == R.id.settings_fragment) {
+                    isOk = true
                 }
 
                 if (isOk) {
@@ -114,17 +110,6 @@ class MainFragment : Fragment() {
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    /**
-     * Magic boolean logic that gets navigation working.
-     * true true -> true |
-     * true false -> false |
-     * false true -> true |
-     * false false -> false |
-     */
-    private infix fun Boolean.magic(other: Boolean): Boolean {
-        return if (!this && !other) false else !(this && !other)
     }
 
     /**
