@@ -77,7 +77,7 @@ class GenreDetailFragment : DetailFragment() {
                     )
                 } else if (it is Album) {
                     findNavController().navigate(
-                        GenreDetailFragmentDirections.actionGoAlbum(it.id, false)
+                        GenreDetailFragmentDirections.actionGoAlbum(it.id)
                     )
                 }
 

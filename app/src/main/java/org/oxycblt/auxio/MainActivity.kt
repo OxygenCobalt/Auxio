@@ -20,6 +20,7 @@ import org.oxycblt.auxio.ui.isEdgeOn
  * The single [AppCompatActivity] for Auxio.
  */
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -48,7 +48,7 @@ class ArtistDetailFragment : DetailFragment() {
                     detailModel.updateNavigationStatus(true)
 
                     findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(it.id, true)
+                        ArtistDetailFragmentDirections.actionShowAlbum(it.id)
                     )
                 }
             },

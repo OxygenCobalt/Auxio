@@ -26,6 +26,7 @@ import org.oxycblt.auxio.ui.toColor
 
 /**
  * The primary "Home" [Fragment] for Auxio.
+ * TODO: Make navigation stack instead of artificially rerouting to LibraryFragment
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -91,18 +92,19 @@ class MainFragment : Fragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                // If the current destination isn't even LibraryFragment, then navigate there first
-                if (binding.navBar.selectedItemId != R.id.library_fragment) {
+            if (it != null && navController != null) {
+                val curDest = navController.currentDestination?.id
+
+                val isOk = when (it) {
+                    is Song -> (detailModel.currentAlbum.value?.id == it.album.id) magic (curDest != R.id.album_detail_fragment)
+                    is Album -> (detailModel.currentAlbum.value?.id == it.id) magic (curDest != R.id.album_detail_fragment)
+                    is Artist -> (detailModel.currentArtist.value?.id == it.id) magic (curDest != R.id.artist_detail_fragment)
+
+                    else -> false
+                }
+
+                if (isOk) {
                     binding.navBar.selectedItemId = R.id.library_fragment
-                } else {
-                    // If the user currently is in library, check if its valid to navigate to the
-                    // item in question.
-                    if ((it is Album || it is Song) && shouldGoToAlbum(navController!!)) {
-                        binding.navBar.selectedItemId = R.id.library_fragment
-                    } else if (it is Artist && shouldGoToArtist(navController!!)) {
-                        binding.navBar.selectedItemId = R.id.library_fragment
-                    }
                 }
             }
         }
@@ -115,29 +117,14 @@ class MainFragment : Fragment() {
     }
 
     /**
-     * Whether its okay to navigate to the album detail fragment when the playing song/album needs to
-     * be navigated to
+     * Magic boolean logic that gets navigation working.
+     * true true -> true |
+     * true false -> false |
+     * false true -> true |
+     * false false -> false |
      */
-    private fun shouldGoToAlbum(controller: NavController): Boolean {
-        return (
-            controller.currentDestination!!.id == R.id.album_detail_fragment &&
-                detailModel.currentAlbum.value?.id != playbackModel.song.value!!.album.id
-            ) ||
-            controller.currentDestination!!.id == R.id.artist_detail_fragment ||
-            controller.currentDestination!!.id == R.id.genre_detail_fragment
-    }
-
-    /**
-     * Whether its okay to go to the artist detail fragment when the current playing artist
-     * is selected.
-     */
-    private fun shouldGoToArtist(controller: NavController): Boolean {
-        return (
-            controller.currentDestination!!.id == R.id.artist_detail_fragment &&
-                detailModel.currentArtist.value?.id != playbackModel.song.value!!.album.artist.id
-            ) ||
-            controller.currentDestination!!.id == R.id.album_detail_fragment ||
-            controller.currentDestination!!.id == R.id.genre_detail_fragment
+    private infix fun Boolean.magic(other: Boolean): Boolean {
+        return if (!this && !other) false else !(this && !other)
     }
 
     /**

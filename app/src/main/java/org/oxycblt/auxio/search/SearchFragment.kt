@@ -163,7 +163,7 @@ class SearchFragment : Fragment() {
                 when (baseModel) {
                     is Genre -> SearchFragmentDirections.actionShowGenre(baseModel.id)
                     is Artist -> SearchFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> SearchFragmentDirections.actionShowAlbum(baseModel.id, false)
+                    is Album -> SearchFragmentDirections.actionShowAlbum(baseModel.id)
 
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.

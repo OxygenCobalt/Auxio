@@ -120,7 +120,7 @@ class LibraryFragment : Fragment() {
                 when (baseModel) {
                     is Genre -> LibraryFragmentDirections.actionShowGenre(baseModel.id)
                     is Artist -> LibraryFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id, false)
+                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id)
 
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.
