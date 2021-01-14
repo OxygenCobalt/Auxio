@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import coil.Coil
-import org.oxycblt.auxio.coil.createImageLoader
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
@@ -28,9 +26,7 @@ class MainActivity : AppCompatActivity() {
             this, R.layout.activity_main
         )
 
-        val settingsManager = SettingsManager.init(applicationContext)
-
-        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+        val settingsManager = SettingsManager.getInstance()
 
         accent = settingsManager.accent
 
@@ -39,10 +35,6 @@ class MainActivity : AppCompatActivity() {
 
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)
-        }
-
-        createImageLoader(applicationContext)?.let {
-            Coil.setImageLoader(it)
         }
     }
 

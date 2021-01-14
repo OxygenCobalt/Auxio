@@ -3,13 +3,10 @@ package org.oxycblt.auxio.coil
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.Coil
-import coil.ImageLoader
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
@@ -23,34 +20,6 @@ import org.oxycblt.auxio.settings.SettingsManager
 // SettingsManager is lazy-initted to prevent it from being used before its initialized.
 val settingsManager: SettingsManager by lazy {
     SettingsManager.getInstance()
-}
-
-/**
- * Create the custom [ImageLoader] used by Auxio. Primarily handles whether disk-caching should be done.
- * @return A new [ImageLoader], null if the current loader already satisfies what is needed.
- */
-fun createImageLoader(context: Context): ImageLoader? {
-    Log.d("createImageLoader", "Creating image loader.")
-
-    val builder = ImageLoader.Builder(context)
-    val currentLoader = Coil.imageLoader(context)
-
-    // Enable disk caching if quality covers are being used so that its more efficient.
-    // Don't bother if not however, as the covers are already cached on-disk.
-    if (settingsManager.useQualityCovers) {
-        if (currentLoader.defaults.diskCachePolicy != CachePolicy.ENABLED) {
-            builder.diskCachePolicy(CachePolicy.ENABLED)
-
-            return builder.build()
-        }
-    } else {
-        if (currentLoader.defaults.diskCachePolicy != CachePolicy.DISABLED) {
-            builder.diskCachePolicy(CachePolicy.DISABLED)
-
-            return builder.build()
-        }
-    }
-    return null
 }
 
 /**

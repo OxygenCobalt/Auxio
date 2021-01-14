@@ -93,13 +93,9 @@ class MainFragment : Fragment() {
             if (it != null && navController != null) {
                 val curDest = navController.currentDestination?.id
 
-                var isOk = false
-
+                // SongsFragment and SettingsFragment have no navigation pathways, so correct
+                // them to the library tab instead.
                 if (curDest == R.id.songs_fragment || curDest == R.id.settings_fragment) {
-                    isOk = true
-                }
-
-                if (isOk) {
                     binding.navBar.selectedItemId = R.id.library_fragment
                 }
             }

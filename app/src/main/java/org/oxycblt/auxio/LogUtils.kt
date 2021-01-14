@@ -3,7 +3,7 @@ package org.oxycblt.auxio
 import android.util.Log
 
 // Shortcut functions for logging.
-// Yes, I know timber exists but it does too much.
+// Yes, I know timber exists but this does what I need.
 
 /**
  * Shortcut method for logging a debug statement, handles debug builds and anonymous objects

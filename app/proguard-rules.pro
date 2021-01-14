@@ -22,4 +22,5 @@
 
 -dontobfuscate
 
+-keep class org.oxycblt.auxio.AuxioApp
 -keep class org.oxycblt.auxio.settings.SettingsListFragment
