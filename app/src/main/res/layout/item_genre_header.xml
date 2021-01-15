@@ -30,6 +30,8 @@
             android:layout_height="@dimen/size_cover_huge"
             android:layout_marginTop="@dimen/margin_medium"
             android:contentDescription="@{@string/description_genre_image(genre.name)}"
+            android:outlineProvider="bounds"
+            android:elevation="@dimen/elevation_normal"
             app:genreImage="@{genre}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

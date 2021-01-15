@@ -7,7 +7,6 @@ import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import coil.Coil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager

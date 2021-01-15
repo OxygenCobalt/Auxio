@@ -24,7 +24,6 @@ import org.oxycblt.auxio.ui.toColor
 
 /**
  * The primary "Home" [Fragment] for Auxio.
- * TODO: Make navigation stack instead of artificially rerouting to LibraryFragment
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

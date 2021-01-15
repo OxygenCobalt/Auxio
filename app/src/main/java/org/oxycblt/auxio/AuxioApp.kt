@@ -13,13 +13,16 @@ class AuxioApp : Application(), ImageLoaderFactory {
         super.onCreate()
 
         // Init SettingsManager here so that there aren't any race conditions
-        // [e,g Service starts/gets SettingsManager before activity can init SettingsManager]
+        // [e.g Service gets SettingsManager before activity can init SettingsManager]
         val settingsManager = SettingsManager.init(applicationContext)
 
         AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
     }
 
     override fun newImageLoader(): ImageLoader {
+        // Don't cache images on-disk [The covers are already on-disk]
+        // Crossfade by default
+        // Use a transparent placeholder
         return ImageLoader.Builder(applicationContext)
             .diskCachePolicy(CachePolicy.DISABLED)
             .crossfade(true)

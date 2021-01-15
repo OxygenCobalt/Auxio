@@ -198,8 +198,5 @@ fun ImageRequest.Builder.doCoverSetup(context: Context, data: BaseModel): ImageR
  * @return The base request
  */
 private fun ImageView.getDefaultRequest(): ImageRequest.Builder {
-    return ImageRequest.Builder(context)
-        .crossfade(true)
-        .placeholder(android.R.color.transparent)
-        .target(this)
+    return ImageRequest.Builder(context).target(this)
 }
