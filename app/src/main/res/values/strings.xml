@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Auxio</string>
-    <string name="app_desc">A sensible and customizable music player for android.</string>
+    <!-- Info namespace | App labels -->
+    <string name="info_app_name">Auxio</string>
+    <string name="info_app_desc">A sensible and customizable music player for android.</string>
+    <string name="info_channel_name">Music Playback</string>
+    <string name="info_service_desc">The music playback service for Auxio.</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
@@ -39,10 +42,7 @@
     <string name="label_queue_add">Add to queue</string>
     <string name="label_queue_added">Added to queue</string>
     <string name="label_next_user_queue">Next in Queue</string>
-
-    <string name="label_channel">Music Playback</string>
-    <string name="label_service_playback">The music playback service for Auxio.</string>
-
+    
     <string name="label_about">About</string>
     <string name="label_version">Version</string>
     <string name="label_code">View on Github</string>

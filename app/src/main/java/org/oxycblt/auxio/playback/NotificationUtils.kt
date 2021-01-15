@@ -14,6 +14,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.getBitmap
+import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -47,7 +49,7 @@ fun NotificationManager.createMediaNotification(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
             NotificationUtils.CHANNEL_ID,
-            context.getString(R.string.label_channel),
+            context.getString(R.string.info_channel_name),
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
@@ -155,7 +157,14 @@ fun NotificationCompat.Builder.updateMode(context: Context) {
         if (playbackManager.mode == PlaybackMode.ALL_SONGS) {
             setSubText(context.getString(R.string.label_all_songs))
         } else {
-            setSubText(playbackManager.parent!!.name)
+            val parent = playbackManager.parent
+
+            if (parent != null) {
+                setSubText(if (parent is Genre) parent.displayName else parent.name)
+            } else {
+                logE("Parent was null when it shouldnt have been.")
+                setSubText("")
+            }
         }
     }
 }

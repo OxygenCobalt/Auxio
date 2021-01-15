@@ -128,10 +128,6 @@ class AlbumDetailFragment : DetailFragment() {
             handlePlayingItem(detailAdapter)
         }
 
-        playbackModel.mode.observe(viewLifecycleOwner) {
-            handlePlayingItem(detailAdapter)
-        }
-
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
             if (it) {
                 detailAdapter.highlightSong(null, binding.detailRecycler)

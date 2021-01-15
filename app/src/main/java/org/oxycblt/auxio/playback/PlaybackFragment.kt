@@ -111,7 +111,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        // TODO: Add binding adapters for these
         playbackModel.isShuffling.observe(viewLifecycleOwner) {
             // Highlight the shuffle button if Playback is shuffled, and revert it if not.
             if (it) {

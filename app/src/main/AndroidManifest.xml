@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/info_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Base">
@@ -32,7 +32,7 @@
         </activity>
         <service
             android:name=".playback.PlaybackService"
-            android:description="@string/label_service_playback"
+            android:description="@string/info_service_desc"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"
