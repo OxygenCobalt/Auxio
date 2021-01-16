@@ -17,7 +17,7 @@ import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
  */
 class LibraryAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,
-    private val doOnLongClick: (data: BaseModel, view: View) -> Unit
+    private val doOnLongClick: (view: View, data: BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var data = listOf<BaseModel>()

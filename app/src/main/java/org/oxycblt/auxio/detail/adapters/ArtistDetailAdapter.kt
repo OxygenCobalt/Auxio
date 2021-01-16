@@ -29,7 +29,7 @@ class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Album) -> Unit,
-    private val doOnLongClick: (data: Album, view: View) -> Unit,
+    private val doOnLongClick: (view: View, data: Album) -> Unit,
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentAlbum: Album? = null
     private var lastHolder: Highlightable? = null

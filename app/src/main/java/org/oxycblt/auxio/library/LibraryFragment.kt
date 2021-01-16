@@ -38,7 +38,7 @@ class LibraryFragment : Fragment() {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(::onItemSelection) { data, view ->
+        val libraryAdapter = LibraryAdapter(::onItemSelection) { view, data ->
             ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
         }
 

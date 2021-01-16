@@ -23,7 +23,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
@@ -54,7 +53,7 @@ class SearchFragment : Fragment() {
         // styling to Material given all the second-and-third-order effects it has.
         val accent = accent.first.toColor(requireContext())
 
-        val searchAdapter = SearchAdapter(::onItemSelection) { data, view ->
+        val searchAdapter = SearchAdapter(::onItemSelection) { view, data ->
             ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
         }
 
@@ -146,12 +145,11 @@ class SearchFragment : Fragment() {
 
     /**
      * Navigate to an item, or play it, depending on what the given item is.
-     * @param baseModel The data things should be done with
+     * @param baseModel The data the action should be done with
      */
     private fun onItemSelection(baseModel: BaseModel) {
         if (baseModel is Song) {
-            val settingsManager = SettingsManager.getInstance()
-            playbackModel.playSong(baseModel, settingsManager.songPlaybackMode)
+            playbackModel.playSong(baseModel)
 
             return
         }

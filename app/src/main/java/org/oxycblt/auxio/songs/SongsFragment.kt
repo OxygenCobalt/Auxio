@@ -17,9 +17,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getLandscapeSpans
@@ -35,7 +33,6 @@ import kotlin.math.ceil
  */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val settingsManager = SettingsManager.getInstance()
 
     // Lazy init the text size so that it doesn't have to be calculated every time.
     private val indicatorTextSize: Float by lazy {
@@ -53,7 +50,9 @@ class SongsFragment : Fragment() {
         val binding = FragmentSongsBinding.inflate(inflater)
 
         val musicStore = MusicStore.getInstance()
-        val songAdapter = SongsAdapter(musicStore.songs, ::playSong, ::showSongMenu)
+        val songAdapter = SongsAdapter(musicStore.songs, playbackModel::playSong) { view, data ->
+            ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
+        }
 
         // --- UI SETUP ---
 
@@ -193,13 +192,5 @@ class SongsFragment : Fragment() {
         binding.songFastScrollThumb.apply {
             setupWithFastScroller(binding.songFastScroll)
         }
-    }
-
-    private fun playSong(song: Song) {
-        playbackModel.playSong(song, settingsManager.songPlaybackMode)
-    }
-
-    private fun showSongMenu(song: Song, view: View) {
-        ActionMenu(requireCompatActivity(), view, song, ActionMenu.FLAG_NONE)
     }
 }

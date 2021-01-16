@@ -23,7 +23,7 @@ import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
  */
 class SearchAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,
-    private val doOnLongClick: (data: BaseModel, view: View) -> Unit
+    private val doOnLongClick: (view: View, data: BaseModel) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
 
     override fun getItemViewType(position: Int): Int {

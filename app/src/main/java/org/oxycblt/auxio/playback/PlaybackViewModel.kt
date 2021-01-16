@@ -20,6 +20,7 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -87,6 +88,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
     init {
         playbackManager.addCallback(this)
@@ -105,9 +107,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /**
      * Play a song.
      * @param song The song to be played
-     * @param mode The [PlaybackMode] for it to be played in.
+     * @param mode The [PlaybackMode] for it to be played in. Defaults to the preferred song playback mode if not specified.
      */
-    fun playSong(song: Song, mode: PlaybackMode) {
+    fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
         playbackManager.playSong(song, mode)
     }
 

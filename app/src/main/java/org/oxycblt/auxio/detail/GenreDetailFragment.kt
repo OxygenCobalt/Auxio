@@ -46,7 +46,7 @@ class GenreDetailFragment : DetailFragment() {
             doOnClick = {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
-            doOnLongClick = { data, view ->
+            doOnLongClick = { view, data ->
                 ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_GENRE)
             }
         )

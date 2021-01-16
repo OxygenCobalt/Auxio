@@ -29,7 +29,7 @@ class AlbumDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Song) -> Unit,
-    private val doOnLongClick: (data: Song, view: View) -> Unit
+    private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
 
     private var currentSong: Song? = null

@@ -54,7 +54,7 @@ class ArtistDetailFragment : DetailFragment() {
                     )
                 }
             },
-            doOnLongClick = { data, view ->
+            doOnLongClick = { view, data ->
                 ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_ARTIST)
             }
         )

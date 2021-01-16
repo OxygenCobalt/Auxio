@@ -47,7 +47,7 @@ class AlbumDetailFragment : DetailFragment() {
         val detailAdapter = AlbumDetailAdapter(
             detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
-            doOnLongClick = { data, view ->
+            doOnLongClick = { view, data ->
                 ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_ALBUM)
             }
         )

@@ -16,7 +16,7 @@ import org.oxycblt.auxio.music.BaseModel
 abstract class BaseViewHolder<T : BaseModel>(
     private val baseBinding: ViewDataBinding,
     private val doOnClick: ((data: T) -> Unit)?,
-    private val doOnLongClick: ((data: T, view: View) -> Unit)?
+    private val doOnLongClick: ((view: View, data: T) -> Unit)?
 ) : RecyclerView.ViewHolder(baseBinding.root) {
     init {
         // Force the layout to *actually* be the screen width
@@ -39,7 +39,7 @@ abstract class BaseViewHolder<T : BaseModel>(
 
         doOnLongClick?.let { onLongClick ->
             baseBinding.root.setOnLongClickListener {
-                onLongClick(data, baseBinding.root)
+                onLongClick(baseBinding.root, data)
 
                 true
             }

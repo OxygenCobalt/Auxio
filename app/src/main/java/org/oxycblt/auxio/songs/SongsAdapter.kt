@@ -15,7 +15,7 @@ import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 class SongsAdapter(
     private val data: List<Song>,
     private val doOnClick: (data: Song) -> Unit,
-    private val doOnLongClick: (data: Song, view: View) -> Unit
+    private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : RecyclerView.Adapter<SongViewHolder>() {
 
     override fun getItemCount(): Int = data.size
