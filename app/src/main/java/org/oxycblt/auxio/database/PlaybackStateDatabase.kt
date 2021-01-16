@@ -55,14 +55,14 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
-        command.append("${PlaybackState.COLUMN_SONG_NAME} STRING NOT NULL,")
-        command.append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
-        command.append("${PlaybackState.COLUMN_PARENT_NAME} STRING NOT NULL,")
-        command.append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
-        command.append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
-        command.append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
-        command.append("${PlaybackState.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
-        command.append("${PlaybackState.COLUMN_IN_USER_QUEUE} BOOLEAN NOT NULL)")
+            .append("${PlaybackState.COLUMN_SONG_NAME} STRING NOT NULL,")
+            .append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
+            .append("${PlaybackState.COLUMN_PARENT_NAME} STRING NOT NULL,")
+            .append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
+            .append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
+            .append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
+            .append("${PlaybackState.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
+            .append("${PlaybackState.COLUMN_IN_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
     }
@@ -72,9 +72,9 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
-        command.append("${QueueItem.COLUMN_SONG_NAME} LONG NOT NULL,")
-        command.append("${QueueItem.COLUMN_ALBUM_NAME} LONG NOT NULL,")
-        command.append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
+            .append("${QueueItem.COLUMN_SONG_NAME} LONG NOT NULL,")
+            .append("${QueueItem.COLUMN_ALBUM_NAME} LONG NOT NULL,")
+            .append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
     }

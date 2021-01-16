@@ -76,6 +76,7 @@ class AlbumDetailFragment : DetailFragment() {
         detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
+            // Detail header data is included
             val data = mutableListOf<BaseModel>(detailModel.currentAlbum.value!!).also {
                 it.addAll(mode.getSortedSongList(detailModel.currentAlbum.value!!.songs))
             }
@@ -85,8 +86,9 @@ class AlbumDetailFragment : DetailFragment() {
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
-                logD(it.name)
                 when (it) {
+                    // Songs should be scrolled to if the album matches, or a new detail
+                    // fragment should be launched otherwise.
                     is Song -> {
                         if (detailModel.currentAlbum.value!!.id == it.album.id) {
                             scrollToItem(it.id)
@@ -99,6 +101,8 @@ class AlbumDetailFragment : DetailFragment() {
                         }
                     }
 
+                    // If the album matches, no need to do anything. Otherwise launch a new
+                    // detail fragment.
                     is Album -> {
                         if (detailModel.currentAlbum.value!!.id == it.id) {
                             binding.detailRecycler.scrollToPosition(0)
@@ -110,8 +114,8 @@ class AlbumDetailFragment : DetailFragment() {
                         }
                     }
 
+                    // Always launch a new ArtistDetailFragment.
                     is Artist -> {
-                        logD("Hello?")
                         findNavController().navigate(
                             AlbumDetailFragmentDirections.actionShowArtist(it.id)
                         )
@@ -125,7 +129,14 @@ class AlbumDetailFragment : DetailFragment() {
         // --- PLAYBACKVIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) {
-            handlePlayingItem(detailAdapter)
+            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
+                playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
+            ) {
+                detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
+            } else {
+                // Clear the viewholders if the mode isn't ALL_SONGS
+                detailAdapter.highlightSong(null, binding.detailRecycler)
+            }
         }
 
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
@@ -137,21 +148,6 @@ class AlbumDetailFragment : DetailFragment() {
         logD("Fragment created.")
 
         return binding.root
-    }
-
-    /**
-     * Handle an update to the mode or the song and determine whether to highlight a song
-     * item based off that
-     */
-    private fun handlePlayingItem(detailAdapter: AlbumDetailAdapter) {
-        if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
-            playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
-        ) {
-            detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
-        } else {
-            // Clear the viewholders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null, binding.detailRecycler)
-        }
     }
 
     private fun scrollToItem(id: Long) {

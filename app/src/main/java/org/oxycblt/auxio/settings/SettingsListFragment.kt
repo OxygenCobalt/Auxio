@@ -63,9 +63,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun handlePreference(it: Preference) {
-        it.apply {
-            when (it.key) {
+    private fun handlePreference(pref: Preference) {
+        pref.apply {
+            when (key) {
                 SettingsManager.Keys.KEY_THEME -> {
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
 

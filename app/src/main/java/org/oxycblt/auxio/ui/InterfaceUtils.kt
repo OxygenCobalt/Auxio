@@ -94,7 +94,7 @@ fun Fragment.requireCompatActivity(): AppCompatActivity {
 }
 
 /**
- * "Render" a [Spanned] using [HtmlCompat].
+ * "Render" a [Spanned] using [HtmlCompat]. (As in making text bolded and whatnot).
  * @return A [Spanned] that actually works.
  */
 fun Spanned.render(): Spanned {

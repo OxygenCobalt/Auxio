@@ -101,11 +101,11 @@ class LibraryFragment : Fragment() {
 
     /**
      * Navigate to an item
-     * @param baseModel The data things should be done with
+     * @param baseModel The item that should be navigated to.
      */
     private fun onItemSelection(baseModel: BaseModel) {
         if (baseModel is Song) {
-            logE("onItemSelection does not support song")
+            logE("onItemSelection does not support songs")
             return
         }
 

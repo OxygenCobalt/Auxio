@@ -9,10 +9,8 @@ import androidx.databinding.BindingAdapter
 import coil.Coil
 import coil.request.ImageRequest
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
@@ -167,27 +165,31 @@ fun ImageView.bindGenreImage(genre: Genre) {
     Coil.imageLoader(context).enqueue(request)
 }
 
-fun ImageRequest.Builder.doCoverSetup(context: Context, data: BaseModel): ImageRequest.Builder {
-    if (data is Artist || data is Genre) {
-        logE("doCoverSetup does not support ${data::class.simpleName}")
-
-        return this
-    }
-
+/**
+ * Determine if a high quality or low-quality cover needs to be loaded for a specific [Album]
+ * @return The same builder that this is applied to
+ */
+private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Album): ImageRequest.Builder {
     if (settingsManager.useQualityCovers) {
         fetcher(QualityCoverFetcher(context))
-
-        if (data is Song) {
-            data(data)
-        } else if (data is Album) {
-            data(data.songs[0])
-        }
+        data(data.songs[0])
     } else {
-        if (data is Song) {
-            data(data.album.coverUri)
-        } else if (data is Album) {
-            data(data.coverUri)
-        }
+        data(data.coverUri)
+    }
+
+    return this
+}
+
+/**
+ * Determine if a high quality or low-quality cover needs to be loaded for a specific [Song]
+ * @return The same builder that this is applied to
+ */
+private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Song): ImageRequest.Builder {
+    if (settingsManager.useQualityCovers) {
+        fetcher(QualityCoverFetcher(context))
+        data(data)
+    } else {
+        data(data.album.coverUri)
     }
 
     return this

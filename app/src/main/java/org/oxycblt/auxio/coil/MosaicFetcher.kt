@@ -16,10 +16,12 @@ import coil.fetch.SourceResult
 import coil.size.Size
 import okio.buffer
 import okio.source
+import java.io.Closeable
 import java.io.InputStream
 
 /**
  * A [Fetcher] that takes multiple cover uris and turns them into a 2x2 mosaic image.
+ * @author OxygenCobalt
  */
 class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     override suspend fun fetch(
@@ -30,8 +32,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
     ): FetchResult {
         val streams = mutableListOf<InputStream>()
 
-        // Load the streams, the lower-quality MediaStore covers are used simply because using
-        // the raw ones would make loading far too long. Its not that noticeable either.
+        // Load MediaStore streams
         data.forEach {
             val stream: InputStream? = context.contentResolver.openInputStream(it)
 
@@ -69,7 +70,9 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
 
         // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
         // and place it on a corner of the canvas.
-        for (stream in streams) {
+        streams.useForEach { stream ->
+            if (y == MOSAIC_BITMAP_SIZE) return@useForEach
+
             val bitmap = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeStream(stream),
                 MOSAIC_BITMAP_INCREMENT,
@@ -84,21 +87,24 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
             if (x == MOSAIC_BITMAP_SIZE) {
                 x = 0
                 y += MOSAIC_BITMAP_INCREMENT
-
-                if (y == MOSAIC_BITMAP_SIZE) {
-                    break
-                }
             }
         }
-
-        // Close all the streams when done.
-        streams.forEach { it.close() }
 
         return DrawableResult(
             drawable = finalBitmap.toDrawable(context.resources),
             isSampled = false,
             dataSource = DataSource.DISK
         )
+    }
+
+    /**
+     * Iterate through a list of [Closeable]s, running [use] on each.
+     * @param action What to do for each [Closeable]
+     */
+    private fun <T : Closeable, R> List<T>.useForEach(action: (T) -> R) {
+        forEach {
+            it.use(action)
+        }
     }
 
     override fun key(data: List<Uri>): String = data.toString()

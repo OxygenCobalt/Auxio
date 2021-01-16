@@ -46,7 +46,6 @@ class CompactPlaybackFragment : Fragment() {
         // Put a placeholder song in the binding & hide the playback fragment initially.
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
-
         if (playbackModel.song.value == null && isLandscape) {
             hideAll(binding)
         }

@@ -63,6 +63,7 @@ class GenreDetailFragment : DetailFragment() {
         detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
+            // Detail header data is included
             val data = mutableListOf<BaseModel>(detailModel.currentGenre.value!!).also {
                 it.addAll(mode.getSortedSongList(detailModel.currentGenre.value!!.songs))
             }
@@ -73,6 +74,7 @@ class GenreDetailFragment : DetailFragment() {
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 when (it) {
+                    // All items will launch new detail fragments.
                     is Artist -> findNavController().navigate(
                         GenreDetailFragmentDirections.actionShowArtist(it.id)
                     )
@@ -93,7 +95,14 @@ class GenreDetailFragment : DetailFragment() {
         // --- PLAYBACKVIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) {
-            handlePlayingItem(detailAdapter)
+            if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
+                playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id
+            ) {
+                detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
+            } else {
+                // Clear the viewholders if the mode isn't ALL_SONGS
+                detailAdapter.highlightSong(null, binding.detailRecycler)
+            }
         }
 
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
@@ -105,20 +114,5 @@ class GenreDetailFragment : DetailFragment() {
         logD("Fragment created.")
 
         return binding.root
-    }
-
-    /**
-     * Handle an update to the mode or the song and determine whether to highlight a song
-     * item based off that
-     */
-    private fun handlePlayingItem(detailAdapter: GenreDetailAdapter) {
-        if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
-            playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id
-        ) {
-            detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
-        } else {
-            // Clear the viewholders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null, binding.detailRecycler)
-        }
     }
 }

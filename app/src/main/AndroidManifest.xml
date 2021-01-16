@@ -9,7 +9,7 @@
     <queries />
 
     <application
-        android:name="org.oxycblt.auxio.AuxioApp"
+        android:name=".AuxioApp"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"

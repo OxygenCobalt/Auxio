@@ -93,7 +93,7 @@
     <string name="setting_behavior_at_end">When a playlist ends</string>
     <string name="setting_behavior_end_loop">Loop</string>
     <string name="setting_behavior_end_stop">Stop</string>
-    <string name="setting_behavior_end_loop_pause">Loop &amp; Pause</string>
+    <string name="setting_behavior_end_loop_pause">Loop and Pause</string>
 
     <string name="setting_behavior_keep_shuffle">Remember shuffle</string>
     <string name="setting_behavior_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
@@ -108,10 +108,10 @@
     <string name="debug_state_saved">State saved</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">No music found.</string>
-    <string name="error_music_load_failed">Music loading failed.</string>
-    <string name="error_no_perms">Permissions to read storage are needed.</string>
-    <string name="error_no_browser">Could not open link.</string>
+    <string name="error_no_music">No music found</string>
+    <string name="error_music_load_failed">Music loading failed</string>
+    <string name="error_no_perms">Permissions to read storage are needed</string>
+    <string name="error_no_browser">Could not open link</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>

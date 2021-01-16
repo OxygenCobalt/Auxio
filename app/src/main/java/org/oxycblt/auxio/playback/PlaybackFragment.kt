@@ -30,8 +30,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate) {
-        // Marquee must be disabled on destroy to prevent memory leaks
-        binding.playbackSong.isSelected = false
+        // Marquee must be disabled on destruction to prevent memory leaks
+        playbackSong.isSelected = false
     }
 
     // Colors

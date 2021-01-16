@@ -11,6 +11,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -70,6 +71,7 @@ class ArtistDetailFragment : DetailFragment() {
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
+            // Header detail data is always included
             val data = mutableListOf<BaseModel>(detailModel.currentArtist.value!!).also {
                 it.addAll(mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums))
             }
@@ -79,15 +81,18 @@ class ArtistDetailFragment : DetailFragment() {
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
+                // If the artist matches, no need to do anything, otherwise launch a new detail
                 if (it is Artist) {
                     if (it.id == detailModel.currentArtist.value!!.id) {
+                        binding.detailRecycler.scrollToPosition(0)
                         detailModel.doneWithNavToItem()
                     } else {
                         findNavController().navigate(
                             ArtistDetailFragmentDirections.actionShowArtist(it.id)
                         )
                     }
-                } else {
+                } else if (it !is Genre) {
+                    // Determine the album id of the song or album, and then launch it otherwise
                     val albumId = if (it is Song) it.album.id else it.id
 
                     findNavController().navigate(
@@ -97,6 +102,7 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
+        // Highlight albums if they are being played
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM && parent is Album?) {
                 detailAdapter.setCurrentAlbum(parent, binding.detailRecycler)

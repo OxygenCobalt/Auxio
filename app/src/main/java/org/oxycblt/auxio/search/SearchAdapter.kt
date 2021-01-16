@@ -56,7 +56,7 @@ class SearchAdapter(
 
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            else -> error("Someone messed with the ViewHolder item types.")
+            else -> error("Invalid viewholder item type.")
         }
     }
 

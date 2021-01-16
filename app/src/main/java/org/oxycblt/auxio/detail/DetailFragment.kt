@@ -83,6 +83,7 @@ abstract class DetailFragment : Fragment() {
             adapter = detailAdapter
             setHasFixedSize(true)
 
+            // Set up a grid if the mode is landscape
             if (isLandscape(resources)) {
                 layoutManager = GridLayoutManager(requireContext(), 2).also {
                     it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -93,6 +94,8 @@ abstract class DetailFragment : Fragment() {
                 }
             }
 
+            // Since there is no elevation when the scroll position is zero, dont show
+            // the overscroll indicator.
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     overScrollMode = if (computeVerticalScrollOffset() == 0) {
