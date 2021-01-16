@@ -8,13 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.SettingsManager
 
@@ -97,16 +93,6 @@ class SearchViewModel : ViewModel() {
         val filtered = filter { it.name.contains(value, ignoreCase = true) }
 
         return if (filtered.isNotEmpty()) filtered else null
-    }
-
-    private fun List<BaseModel>.filterByDisplayMode(mode: DisplayMode): List<BaseModel> {
-        return when (mode) {
-            DisplayMode.SHOW_ALL -> this
-            DisplayMode.SHOW_SONGS -> filterIsInstance<Song>()
-            DisplayMode.SHOW_ALBUMS -> filterIsInstance<Album>()
-            DisplayMode.SHOW_ARTISTS -> filterIsInstance<Artist>()
-            DisplayMode.SHOW_GENRES -> filterIsInstance<Genre>()
-        }
     }
 
     /**

@@ -501,7 +501,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
                 // Rewind if the key is rewind
                 KeyEvent.KEYCODE_MEDIA_REWIND -> {
-                    player.seekTo(0)
+                    playbackManager.rewind()
                     true
                 }
 

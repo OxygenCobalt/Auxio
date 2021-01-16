@@ -3,8 +3,6 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.content.res.Resources
 import android.text.Spanned
-import android.util.TypedValue
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -94,29 +92,6 @@ fun Int.toColor(context: Context): Int {
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)
     }
-}
-
-/**
- * Resolve an attribute into a color.
- * @param context [Context] required
- * @param attr The Resource ID for the attribute
- * @return The resolved color for that attribute. Black if the process failed.
- */
-@ColorInt
-fun resolveAttr(context: Context, @AttrRes attr: Int): Int {
-    // Convert the attribute into its color
-    val resolvedAttr = TypedValue().apply {
-        context.theme.resolveAttribute(attr, this, true)
-    }
-
-    // Then convert it to a proper color
-    val color = if (resolvedAttr.resourceId != 0) {
-        resolvedAttr.resourceId
-    } else {
-        resolvedAttr.data
-    }
-
-    return color.toColor(context)
 }
 
 /**

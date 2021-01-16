@@ -322,7 +322,7 @@ class PlaybackStateManager private constructor() {
     fun prev() {
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
         if (settingsManager.rewindWithPrev && mPosition >= 3000) {
-            seekTo(0)
+            rewind()
         } else {
             // Only decrement the index if there's a song to move back to AND if we are not exiting
             // the user queue.
@@ -591,6 +591,11 @@ class PlaybackStateManager private constructor() {
         } else {
             resetShuffle(mIsInUserQueue)
         }
+    }
+
+    fun rewind() {
+        seekTo(0)
+        setPlayingStatus(true)
     }
 
     /**
