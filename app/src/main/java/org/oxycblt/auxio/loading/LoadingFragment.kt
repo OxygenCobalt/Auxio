@@ -20,6 +20,7 @@ import org.oxycblt.auxio.music.processing.MusicLoader
 /**
  * An intermediary [Fragment] that asks for the READ_EXTERNAL_STORAGE permission and runs
  * the music loading process in the background.
+ * FIXME: Leak that occurs when skipping load
  * @author OxygenCobalt
  */
 class LoadingFragment : Fragment(R.layout.fragment_loading) {

@@ -133,6 +133,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // Set up callback for system events
         systemReceiver = SystemEventReceiver()
+
         IntentFilter().apply {
             addAction(NotificationUtils.ACTION_LOOP)
             addAction(NotificationUtils.ACTION_SHUFFLE)

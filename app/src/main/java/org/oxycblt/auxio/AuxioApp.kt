@@ -1,7 +1,6 @@
 package org.oxycblt.auxio
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
@@ -14,9 +13,7 @@ class AuxioApp : Application(), ImageLoaderFactory {
 
         // Init SettingsManager here so that there aren't any race conditions
         // [e.g Service gets SettingsManager before activity can init SettingsManager]
-        val settingsManager = SettingsManager.init(applicationContext)
-
-        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+        SettingsManager.init(applicationContext)
     }
 
     override fun newImageLoader(): ImageLoader {

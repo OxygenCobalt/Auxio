@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         val settingsManager = SettingsManager.getInstance()
+
+        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
 
         accent = settingsManager.accent
 
