@@ -75,26 +75,21 @@ class MainFragment : Fragment() {
             if (isTablet(resources) && !isLandscape(resources)) {
                 labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
             }
-        }
 
-        binding.navBar.itemIconTintList = navTints
-        binding.navBar.itemTextColor = navTints
-
-        navController?.let { controller ->
-            binding.navBar.setOnNavigationItemSelectedListener {
-                navigateWithItem(controller, it)
+            navController?.let { controller ->
+                binding.navBar.setOnNavigationItemSelectedListener {
+                    navigateWithItem(controller, it)
+                }
             }
         }
 
         // --- VIEWMODEL SETUP ---
 
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
-        if (!isLandscape(resources)) {
-            handleCompactPlaybackVisibility(binding, playbackModel.song.value)
+        handleCompactPlaybackVisibility(binding, playbackModel.song.value)
 
-            playbackModel.song.observe(viewLifecycleOwner) {
-                handleCompactPlaybackVisibility(binding, it)
-            }
+        playbackModel.song.observe(viewLifecycleOwner) {
+            handleCompactPlaybackVisibility(binding, it)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
@@ -148,7 +143,9 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            binding.compactPlayback.visibility = View.GONE
+            binding.compactPlayback.visibility = if (isLandscape(resources))
+                View.INVISIBLE else View.GONE
+
             playbackModel.disableAnimation()
         } else {
             binding.compactPlayback.visibility = View.VISIBLE

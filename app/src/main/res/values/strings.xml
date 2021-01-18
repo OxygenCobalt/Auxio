@@ -42,7 +42,7 @@
     <string name="label_queue_add">Add to queue</string>
     <string name="label_queue_added">Added to queue</string>
     <string name="label_next_user_queue">Next in Queue</string>
-    
+
     <string name="label_about">About</string>
     <string name="label_version">Version</string>
     <string name="label_code">View on Github</string>

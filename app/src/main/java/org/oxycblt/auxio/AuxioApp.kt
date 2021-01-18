@@ -12,7 +12,7 @@ class AuxioApp : Application(), ImageLoaderFactory {
         super.onCreate()
 
         // Init SettingsManager here so that there aren't any race conditions
-        // [e.g Service gets SettingsManager before activity can init SettingsManager]
+        // [e.g PlaybackService gets SettingsManager before activity can init SettingsManager]
         SettingsManager.init(applicationContext)
     }
 
