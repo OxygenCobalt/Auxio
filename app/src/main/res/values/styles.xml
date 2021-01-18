@@ -214,4 +214,27 @@
         <item name="android:textColor">@color/background</item>
         <item name="cornerRadius">0dp</item>
     </style>
+
+    <!-- Style for an unbounded button -->
+    <style name="Widget.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">@dimen/size_play_pause_compact</item>
+        <item name="android:layout_height">@dimen/size_play_pause_compact</item>
+        <item name="android:background">@drawable/ui_unbounded_ripple</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/padding_microscopic</item>
+    </style>
+
+    <!-- Style for the play/pause circle button -->
+    <style name="PlayPause">
+        <item name="android:layout_height">@dimen/size_play_pause</item>
+        <item name="android:layout_width">@dimen/size_play_pause</item>
+        <item name="android:background">@drawable/ui_circular_button</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:tint">?android:attr/windowBackground</item>
+        <item name="android:layout_marginStart">@dimen/margin_large</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_large</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
 </resources>

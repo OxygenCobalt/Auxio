@@ -72,7 +72,7 @@ class MainFragment : Fragment() {
             itemIconTintList = navTints
             itemTextColor = navTints
 
-            if (isTablet(resources)) {
+            if (isTablet(resources) && !isLandscape(resources)) {
                 labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
             }
         }
