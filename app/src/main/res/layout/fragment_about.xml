@@ -93,7 +93,7 @@
                     android:id="@+id/about_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/margin_medium"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintBottom_toBottomOf="@+id/about_version_icon"
                     app:layout_constraintStart_toEndOf="@+id/about_version_icon"

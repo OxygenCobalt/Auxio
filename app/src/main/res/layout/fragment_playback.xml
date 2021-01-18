@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_large"
             android:layout_marginEnd="@dimen/margin_mid_large"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:ellipsize="end"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:singleLine="true"
