@@ -16,7 +16,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setTextColorResource
@@ -137,7 +137,7 @@ class ArtistDetailAdapter(
 
         override fun setHighlighted(isHighlighted: Boolean) {
             if (isHighlighted) {
-                binding.albumName.setTextColorResource(accent.first)
+                binding.albumName.setTextColorResource(Accent.get().color)
             } else {
                 binding.albumName.setTextColor(normalTextColor)
             }

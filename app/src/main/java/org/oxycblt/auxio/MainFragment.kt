@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -17,8 +18,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.getTransparentAccent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.toColor
 
@@ -45,10 +45,8 @@ class MainFragment : Fragment() {
             return null
         }
 
-        val colorActive = accent.first.toColor(requireContext())
-        val colorInactive = getTransparentAccent(
-            requireContext(), accent.first, 150
-        )
+        val colorActive = Accent.get().color.toColor(requireContext())
+        val colorInactive = ColorUtils.setAlphaComponent(colorActive, 150)
 
         // Set up the tints for the navigation icons + text
         val navTints = ColorStateList(

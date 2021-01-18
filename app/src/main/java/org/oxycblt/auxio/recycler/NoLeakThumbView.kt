@@ -22,7 +22,7 @@ import androidx.dynamicanimation.animation.SpringForce
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -40,7 +40,7 @@ class NoLeakThumbView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr),
     FastScrollerView.ItemIndicatorSelectedCallback {
 
-    private val thumbColor = ColorStateList.valueOf(accent.first.toColor(context))
+    private val thumbColor = Accent.get().getStateList(context)
     private val iconColor = R.color.background.toColor(context)
     private val textAppearanceRes = R.style.TextAppearance_ThumbIndicator
     private val textColor = R.color.background.toColor(context)

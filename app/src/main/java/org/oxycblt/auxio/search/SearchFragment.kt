@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.toColor
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,8 +22,8 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
@@ -51,7 +50,7 @@ class SearchFragment : Fragment() {
 
         // Apply the accents manually. Not going through the mess of converting my app's
         // styling to Material given all the second-and-third-order effects it has.
-        val accent = accent.first.toColor(requireContext())
+        val accent = Accent.get().color.toColor(requireContext())
 
         val searchAdapter = SearchAdapter(::onItemSelection) { view, data ->
             ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)

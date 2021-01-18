@@ -7,8 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.accent
-import org.oxycblt.auxio.ui.getAccentItemSummary
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -17,7 +16,7 @@ import org.oxycblt.auxio.ui.toColor
  * @param doOnAccentConfirm What to do when an accent is confirmed.
  */
 class AccentAdapter(
-    private val doOnAccentConfirm: (accent: Pair<Int, Int>) -> Unit
+    private val doOnAccentConfirm: (accent: Accent) -> Unit
 ) : RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
     override fun getItemCount(): Int = ACCENTS.size
 
@@ -33,31 +32,25 @@ class AccentAdapter(
         private val binding: ItemAccentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(accentData: Pair<Int, Int>) {
+        fun bind(accent: Accent) {
             binding.accent.apply {
-                contentDescription = getAccentItemSummary(context, accentData)
+                contentDescription = accent.getDetailedSummary(context)
 
                 setOnClickListener {
-                    doOnAccentConfirm(accentData)
+                    doOnAccentConfirm(accent)
                 }
 
-                imageTintList = if (accentData.first == accent.first) {
+                imageTintList = if (accent == Accent.get()) {
                     isEnabled = false
 
-                    ColorStateList.valueOf(
-                        R.color.background.toColor(context)
-                    )
+                    ColorStateList.valueOf(R.color.background.toColor(context))
                 } else {
                     isEnabled = true
 
-                    ColorStateList.valueOf(
-                        android.R.color.transparent.toColor(context)
-                    )
+                    ColorStateList.valueOf(android.R.color.transparent.toColor(context))
                 }
 
-                backgroundTintList = ColorStateList.valueOf(
-                    accentData.first.toColor(context)
-                )
+                backgroundTintList = accent.getStateList(context)
             }
         }
     }

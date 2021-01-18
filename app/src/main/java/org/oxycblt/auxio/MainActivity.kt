@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isEdgeOn
 
 /**
@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
 
-        accent = settingsManager.accent
+        val accent = Accent.set(settingsManager.accent)
 
         // Apply the theme
-        setTheme(accent.second)
+        setTheme(accent.theme)
 
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)

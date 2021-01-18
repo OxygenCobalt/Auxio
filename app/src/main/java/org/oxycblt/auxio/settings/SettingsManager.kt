@@ -7,6 +7,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.ACCENTS
+import org.oxycblt.auxio.ui.Accent
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -31,12 +32,10 @@ class SettingsManager private constructor(context: Context) :
     /**
      * The current accent.
      */
-    var accent: Pair<Int, Int>
+    var accent: Accent
         get() {
-            val accentIndex = sharedPrefs.getInt(Keys.KEY_ACCENT, 5)
-
             // Accent is stored as an index [to be efficient], so retrieve it when done.
-            return ACCENTS[accentIndex]
+            return ACCENTS[sharedPrefs.getInt(Keys.KEY_ACCENT, 5)]
         }
         set(value) {
             val accentIndex = ACCENTS.indexOf(value)
@@ -200,14 +199,14 @@ class SettingsManager private constructor(context: Context) :
 
     companion object {
         @Volatile
-        private lateinit var INSTANCE: SettingsManager
+        private var INSTANCE: SettingsManager? = null
 
         /**
          * Init the single instance of [SettingsManager]. Done so that every object
          * can have access to it regardless of if it has a context.
          */
         fun init(context: Context): SettingsManager {
-            if (!::INSTANCE.isInitialized) {
+            if (INSTANCE == null) {
                 synchronized(this) {
                     INSTANCE = SettingsManager(context)
                 }
@@ -220,10 +219,13 @@ class SettingsManager private constructor(context: Context) :
          * Get the single instance of [SettingsManager].
          */
         fun getInstance(): SettingsManager {
-            check(::INSTANCE.isInitialized) {
-                "SettingsManager must be initialized with init() before getting its instance."
+            val instance = INSTANCE
+
+            if (instance != null) {
+                return instance
             }
-            return INSTANCE
+
+            error("SettingsManager must be initialized with init() before getting its instance.")
         }
     }
 

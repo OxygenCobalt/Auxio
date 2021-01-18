@@ -17,7 +17,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.toColor
 
@@ -36,7 +36,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     // Colors
     private val accentColor: ColorStateList by lazy {
-        ColorStateList.valueOf(accent.first.toColor(requireContext()))
+        Accent.get().getStateList(requireContext())
     }
 
     private val controlColor: ColorStateList by lazy {

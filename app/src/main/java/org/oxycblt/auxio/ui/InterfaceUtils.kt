@@ -14,9 +14,11 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
@@ -51,7 +53,7 @@ fun TextView.setTextColorResource(@ColorRes color: Int) {
  * Required because you cant determine a style of a view before API 29
  */
 fun MaterialButton.applyAccents(highlighted: Boolean) {
-    val accent = accent.first.toColor(context)
+    val accent = Accent.get().color.toColor(context)
 
     if (highlighted) {
         backgroundTintList = ColorStateList.valueOf(accent)
@@ -101,6 +103,23 @@ fun Spanned.render(): Spanned {
     return HtmlCompat.fromHtml(
         this.toString(), HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS
     )
+}
+
+/**
+ * Resolve a color.
+ * @param context [Context] required
+ * @return The resolved color, black if the resolving process failed.
+ */
+@ColorInt
+fun Int.toColor(context: Context): Int {
+    return try {
+        ContextCompat.getColor(context, this)
+    } catch (e: Resources.NotFoundException) {
+        logE("Attempted color load failed.")
+
+        // Default to the emergency color [Black] if the loading fails.
+        ContextCompat.getColor(context, android.R.color.black)
+    }
 }
 
 // --- CONFIGURATION ---
@@ -177,8 +196,9 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
 // --- HACKY NIGHTMARES ---
 
 /**
- * Use R E F L E C T I O N to fix a memory leak where mAnimationInfo will keep a reference to
+ * Use ***R E F L E C T I O N*** to fix a memory leak where mAnimationInfo will keep a reference to
  * its focused view.
+ *
  * I can't believe I have to do this.
  */
 fun Fragment.fixAnimationInfoMemoryLeak() {

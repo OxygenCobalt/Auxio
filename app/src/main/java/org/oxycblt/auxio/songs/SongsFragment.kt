@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.songs
 
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -18,12 +17,11 @@ import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.accent
 import org.oxycblt.auxio.ui.getLandscapeSpans
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.requireCompatActivity
-import org.oxycblt.auxio.ui.toColor
 import kotlin.math.ceil
 
 /**
@@ -109,7 +107,7 @@ class SongsFragment : Fragment() {
 
             // API 22 and below don't support the state color, so just use the accent.
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                textColor = ColorStateList.valueOf(accent.first.toColor(requireContext()))
+                textColor = Accent.get().getStateList(requireContext())
             }
 
             setupWithRecyclerView(

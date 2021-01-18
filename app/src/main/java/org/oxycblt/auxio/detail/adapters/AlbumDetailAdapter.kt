@@ -16,7 +16,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.setTextColorResource
@@ -138,8 +138,10 @@ class AlbumDetailAdapter(
 
         override fun setHighlighted(isHighlighted: Boolean) {
             if (isHighlighted) {
-                binding.songName.setTextColorResource(accent.first)
-                binding.songTrack.setTextColorResource(accent.first)
+                val accent = Accent.get()
+
+                binding.songName.setTextColorResource(accent.color)
+                binding.songTrack.setTextColorResource(accent.color)
             } else {
                 binding.songName.setTextColor(normalTextColor)
                 binding.songTrack.setTextColor(inactiveTextColor)

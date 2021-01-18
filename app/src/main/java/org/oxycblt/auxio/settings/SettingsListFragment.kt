@@ -20,9 +20,8 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.ui.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.accent
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.getDetailedAccentSummary
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -84,7 +83,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                         true
                     }
 
-                    summary = getDetailedAccentSummary(requireActivity(), accent)
+                    summary = Accent.get().getDetailedSummary(context)
                 }
 
                 SettingsManager.Keys.KEY_EDGE_TO_EDGE -> {
@@ -153,7 +152,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             // This is why I hate using third party libraries.
             val recycler = RecyclerView(requireContext()).apply {
                 adapter = AccentAdapter {
-                    if (it.first != accent.first) {
+                    if (it != Accent.get()) {
                         SettingsManager.getInstance().accent = it
 
                         requireActivity().recreate()
@@ -169,7 +168,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                     (layoutManager as LinearLayoutManager)
                         .scrollToPositionWithOffset(
-                            ACCENTS.indexOf(accent),
+                            ACCENTS.indexOf(Accent.get()),
                             (width / 2) - childWidth
                         )
                 }
