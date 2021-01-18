@@ -19,8 +19,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.getLandscapeSpans
-import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.requireCompatActivity
 import kotlin.math.ceil
 
@@ -70,8 +69,10 @@ class SongsFragment : Fragment() {
             adapter = songAdapter
             setHasFixedSize(true)
 
-            if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), getLandscapeSpans(resources))
+            val spans = context.getSpans()
+
+            if (spans != 1) {
+                layoutManager = GridLayoutManager(requireContext(), spans)
             }
 
             post {

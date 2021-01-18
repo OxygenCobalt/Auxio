@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="album"
+            type="org.oxycblt.auxio.music.Album" />
+
+        <variable
+            name="detailModel"
+            type="org.oxycblt.auxio.detail.DetailViewModel" />
+
+        <variable
+            name="playbackModel"
+            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <ImageView
+            android:id="@+id/album_cover"
+            android:layout_width="@dimen/size_cover_mid_huge"
+            android:layout_height="@dimen/size_cover_mid_huge"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:outlineProvider="bounds"
+            android:elevation="@dimen/elevation_normal"
+            android:contentDescription="@{@string/description_album_cover(album.name)}"
+            app:coverArt="@{album}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_album" />
+
+        <TextView
+            android:id="@+id/album_name"
+            style="@style/DetailTitleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:text="@{album.name}"
+            app:layout_constraintBottom_toTopOf="@+id/album_artist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toTopOf="@+id/album_cover"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Album Name" />
+
+        <TextView
+            android:id="@+id/album_artist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:background="@drawable/ui_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> detailModel.navToItem(album.artist)}"
+            android:text="@{album.artist.name}"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintBottom_toTopOf="@+id/album_details"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/album_name"
+            tools:text="Artist Name" />
+
+        <TextView
+            android:id="@+id/album_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary"
+            app:albumDetails="@{album}"
+            app:layout_constraintBottom_toBottomOf="@+id/album_cover"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/album_artist"
+            tools:text="2020 / 10 Songs / 16:16" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/album_play_button"
+            style="@style/Widget.MaterialComponents.Button.Unimportant"
+            android:onClick="@{() -> playbackModel.playAlbum(album, false)}"
+            android:text="@string/label_play"
+            app:layout_constraintEnd_toStartOf="@+id/album_shuffle_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/album_cover"
+            tools:textColor="@color/blue" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/album_shuffle_button"
+            style="@style/Widget.MaterialComponents.Button.Highlighted"
+            android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
+            android:text="@string/label_shuffle"
+            app:layout_constraintBottom_toBottomOf="@+id/album_play_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_play_button"
+            app:layout_constraintTop_toTopOf="@+id/album_play_button"
+            tools:backgroundTint="@color/blue" />
+
+        <TextView
+            android:id="@+id/album_song_header"
+            style="@style/HeaderText"
+            android:layout_marginTop="8dp"
+            android:text="@string/label_songs"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/album_play_button" />
+
+        <ImageButton
+            android:id="@+id/album_sort_button"
+            style="@style/HeaderAction"
+            android:contentDescription="@string/description_sort_button"
+            android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
+            app:layout_constraintBottom_toBottomOf="@+id/album_song_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/album_song_header"
+            app:sortIcon="@{detailModel.albumSortMode}"
+            tools:src="@drawable/ic_sort_numeric_down" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- An "Unimportant" material button, used for the "Play" button -->
+    <style name="Widget.MaterialComponents.Button.Unimportant" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:textSize">@dimen/text_size_play_button_large</item>
+        <item name="android:theme">@style/Theme.MaterialComponents</item>
+        <item name="strokeColor">@color/divider_color</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="rippleColor">@color/selection_color</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="textAllCaps">false</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <!-- An highlighted material button, used for the "Shuffle" button -->
+    <style name="Widget.MaterialComponents.Button.Highlighted" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_small</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:theme">@style/Theme.MaterialComponents</item>
+        <item name="android:textSize">@dimen/text_size_play_button_large</item>
+        <item name="rippleColor">@color/selection_color</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/background</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+</resources>

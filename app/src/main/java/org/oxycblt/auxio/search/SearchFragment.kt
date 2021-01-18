@@ -25,8 +25,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
-import org.oxycblt.auxio.ui.getLandscapeSpans
-import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.toColor
 
@@ -85,10 +84,9 @@ class SearchFragment : Fragment() {
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
+            val spans = context.getSpans()
 
-            if (isLandscape(resources)) {
-                val spans = getLandscapeSpans(resources)
-
+            if (spans != -1) {
                 layoutManager = GridLayoutManager(requireContext(), spans).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int =

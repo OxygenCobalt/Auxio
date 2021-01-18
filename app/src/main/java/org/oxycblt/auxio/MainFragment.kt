@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
@@ -20,6 +21,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.isTablet
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -65,6 +67,15 @@ class MainFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
+
+        binding.navBar.apply {
+            itemIconTintList = navTints
+            itemTextColor = navTints
+
+            if (isTablet(resources)) {
+                labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+            }
+        }
 
         binding.navBar.itemIconTintList = navTints
         binding.navBar.itemTextColor = navTints

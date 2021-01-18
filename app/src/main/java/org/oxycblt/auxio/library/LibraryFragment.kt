@@ -19,8 +19,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.getLandscapeSpans
-import org.oxycblt.auxio.ui.isLandscape
+import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.requireCompatActivity
 
 /**
@@ -64,9 +63,10 @@ class LibraryFragment : Fragment() {
         binding.libraryRecycler.apply {
             adapter = libraryAdapter
             setHasFixedSize(true)
+            val spans = context.getSpans()
 
-            if (isLandscape(resources)) {
-                layoutManager = GridLayoutManager(requireContext(), getLandscapeSpans(resources))
+            if (spans != 1) {
+                layoutManager = GridLayoutManager(requireContext(), spans)
             }
         }
 

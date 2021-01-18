@@ -139,11 +139,24 @@ fun isLandscape(resources: Resources): Boolean {
 }
 
 /**
- * Get the span count for most RecyclerViews when in landscape mode.
- * @return 3 if landscape mode is tablet, 2 if landscape mode is phone
+ * Determine if we are in tablet mode or not
  */
-fun getLandscapeSpans(resources: Resources): Int {
-    return if (resources.configuration.screenLayout == Configuration.SCREENLAYOUT_SIZE_LARGE) 3 else 2
+fun isTablet(resources: Resources): Boolean {
+    val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+
+    return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE ||
+        layout == Configuration.SCREENLAYOUT_SIZE_LARGE
+}
+
+/**
+ * Get the span count for most RecyclerViews
+ */
+fun Context.getSpans(): Int {
+    return if (isLandscape(resources)) {
+        if (isTablet(resources)) 3 else 2
+    } else {
+        if (isTablet(resources)) 2 else 1
+    }
 }
 
 /**
