@@ -110,7 +110,9 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onStart() {
+        super.onStart()
+
         // If the music was already loaded, then don't do it again.
         if (MusicStore.getInstance().loaded) {
             findNavController().navigate(
