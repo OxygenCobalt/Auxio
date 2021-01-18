@@ -101,8 +101,24 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
                 compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
             )
 
-            NUMERIC_UP -> songs.sortedWith(compareBy { it.album.year })
-            NUMERIC_DOWN -> songs.sortedWith(compareByDescending { it.album.year })
+            NUMERIC_UP -> {
+                val list = mutableListOf<Song>()
+
+                songs.groupBy { it.album }.toSortedMap(compareBy { it.year }).values.forEach {
+                    list.addAll(it.sortedWith(compareBy { it.track }))
+                }
+
+                list
+            }
+            NUMERIC_DOWN -> {
+                val list = mutableListOf<Song>()
+
+                songs.groupBy { it.album }.toSortedMap(compareByDescending { it.year }).values.forEach {
+                    list.addAll(it.sortedWith(compareBy { it.track }))
+                }
+
+                list
+            }
 
             else -> songs
         }

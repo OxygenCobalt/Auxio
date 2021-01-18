@@ -279,12 +279,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     fun invertPlayingStatus() {
         enableAnimation()
 
-        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+        playbackManager.setPlaying(!playbackManager.isPlaying)
     }
 
-    /** Flip the shuffle status, e.g from on to off */
+    /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
     fun invertShuffleStatus() {
-        playbackManager.setShuffleStatus(!playbackManager.isShuffling)
+        playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
     }
 
     /** Increment the loop status, e.g from off to loop once */

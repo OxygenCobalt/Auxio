@@ -101,7 +101,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
      * Iterate through a list of [Closeable]s, running [use] on each.
      * @param action What to do for each [Closeable]
      */
-    private fun <T : Closeable, R> List<T>.useForEach(action: (T) -> R) {
+    private fun <T : Closeable> List<T>.useForEach(action: (T) -> Unit) {
         forEach {
             it.use(action)
         }

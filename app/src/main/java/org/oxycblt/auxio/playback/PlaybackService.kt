@@ -38,9 +38,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.coil.getBitmap
@@ -484,7 +484,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 // Play/Pause if any of the keys are play/pause
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
-                    playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                    playbackManager.setPlaying(!playbackManager.isPlaying)
                     true
                 }
 
@@ -557,7 +557,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     player.volume = VOLUME_DUCK
                     animateVolume(VOLUME_DUCK, VOLUME_FULL)
                 } else if (pauseWasFromAudioFocus) {
-                    playbackManager.setPlayingStatus(true)
+                    playbackManager.setPlaying(true)
                 }
 
                 pauseWasFromAudioFocus = false
@@ -567,7 +567,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         private fun onLoss() {
             if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
                 pauseWasFromAudioFocus = true
-                playbackManager.setPlayingStatus(false)
+                playbackManager.setPlaying(false)
             }
         }
 
@@ -606,10 +606,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     NotificationUtils.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
                     NotificationUtils.ACTION_SHUFFLE ->
-                        playbackManager.setShuffleStatus(!playbackManager.isShuffling)
+                        playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
                     NotificationUtils.ACTION_PLAY_PAUSE -> {
-                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                        playbackManager.setPlaying(!playbackManager.isPlaying)
                     }
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
                     NotificationUtils.ACTION_EXIT -> stop()
@@ -643,7 +643,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device connected, resuming...")
 
-                playbackManager.setPlayingStatus(true)
+                playbackManager.setPlaying(true)
             }
         }
 
@@ -654,7 +654,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device disconnected, pausing...")
 
-                playbackManager.setPlayingStatus(false)
+                playbackManager.setPlaying(false)
             }
         }
 
@@ -662,7 +662,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
          * Stop if the X button was clicked from the notification
          */
         private fun stop() {
-            playbackManager.setPlayingStatus(false)
+            playbackManager.setPlaying(false)
             stopForegroundAndNotification()
         }
     }

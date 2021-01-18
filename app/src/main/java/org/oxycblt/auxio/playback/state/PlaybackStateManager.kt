@@ -153,8 +153,6 @@ class PlaybackStateManager private constructor() {
     fun playSong(song: Song, mode: PlaybackMode) {
         logD("Updating song to ${song.name} and mode to $mode")
 
-        val shouldShuffle = settingsManager.keepShuffle && mIsShuffling
-
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
                 mParent = null
@@ -190,7 +188,9 @@ class PlaybackStateManager private constructor() {
 
         resetLoopMode()
         updatePlayback(song)
-        setShuffleStatus(shouldShuffle)
+
+        // Depending on the configuration, keep the shuffle mode on.
+        setShuffling(settingsManager.keepShuffle && mIsShuffling, keepSong = true)
 
         mIndex = mQueue.indexOf(song)
     }
@@ -212,19 +212,18 @@ class PlaybackStateManager private constructor() {
 
         mParent = baseModel
         mIndex = 0
-        mIsShuffling = shuffled
 
         when (baseModel) {
             is Album -> {
-                mQueue = orderSongsInAlbum(baseModel)
+                mQueue = baseModel.songs.toMutableList()
                 mMode = PlaybackMode.IN_ALBUM
             }
             is Artist -> {
-                mQueue = orderSongsInArtist(baseModel)
+                mQueue = baseModel.songs.toMutableList()
                 mMode = PlaybackMode.IN_ARTIST
             }
             is Genre -> {
-                mQueue = orderSongsInGenre(baseModel)
+                mQueue = baseModel.songs.toMutableList()
                 mMode = PlaybackMode.IN_GENRE
             }
 
@@ -233,14 +232,8 @@ class PlaybackStateManager private constructor() {
         }
 
         resetLoopMode()
-
+        setShuffling(shuffled, keepSong = false)
         updatePlayback(mQueue[0])
-
-        if (mIsShuffling) {
-            genShuffle(false)
-        } else {
-            resetShuffle()
-        }
     }
 
     /**
@@ -254,7 +247,7 @@ class PlaybackStateManager private constructor() {
         mPosition = 0
 
         if (!mIsPlaying) {
-            setPlayingStatus(true)
+            setPlaying(true)
         }
     }
 
@@ -352,7 +345,7 @@ class PlaybackStateManager private constructor() {
                 mSong = mQueue[0]
                 mPosition = 0
 
-                setPlayingStatus(false)
+                setPlaying(false)
 
                 mIsInUserQueue = false
             }
@@ -503,25 +496,37 @@ class PlaybackStateManager private constructor() {
      * Shuffle all songs.
      */
     fun shuffleAll() {
-        mIsShuffling = true
         mMode = PlaybackMode.ALL_SONGS
-        mIndex = 0
         mQueue = musicStore.songs.toMutableList()
 
-        genShuffle(false)
-
+        setShuffling(true, keepSong = false)
         updatePlayback(mQueue[0])
     }
 
     /**
+     * Set the shuffle status. Updates the queue accordingly
+     * @param value Whether the queue should be shuffled or not.
+     * @param keepSong Whether the current song should be kept as the queue is shuffled/unshuffled
+     */
+    fun setShuffling(value: Boolean, keepSong: Boolean) {
+        mIsShuffling = value
+
+        if (mIsShuffling) {
+            genShuffle(keepSong, mIsInUserQueue)
+        } else {
+            resetShuffle(keepSong, mIsInUserQueue)
+        }
+    }
+
+    /**
      * Generate a new shuffled queue.
-     * @param keepSong Whether to keep the currently playing song or to dispose of it
-     * @param useLastSong (Optional, defaults to false) Whether to use the last song in the queue instead of the current one
+     * @param keepSong Whether the current song should be kept as the queue is shuffled
+     * @param useLastSong Whether to use the last song in the queue instead of the current one
      * @return A new shuffled queue
      */
     private fun genShuffle(
         keepSong: Boolean,
-        useLastSong: Boolean = false
+        useLastSong: Boolean
     ) {
         val lastSong = if (useLastSong) mQueue[0] else mSong
 
@@ -543,9 +548,13 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Reset the queue to its normal, ordered state.
-     * @param useLastSong (Optional, defaults to false) Whether to use the previous song for the index calculations.
+     * @param keepSong Whether the current song should be kept as the queue is unshuffled
+     * @param useLastSong Whether to use the previous song for the index calculations.
      */
-    private fun resetShuffle(useLastSong: Boolean = false) {
+    private fun resetShuffle(
+        keepSong: Boolean,
+        useLastSong: Boolean
+    ) {
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
 
         mQueue = when (mMode) {
@@ -555,7 +564,9 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
         }
 
-        mIndex = mQueue.indexOf(lastSong)
+        if (keepSong) {
+            mIndex = mQueue.indexOf(lastSong)
+        }
 
         forceQueueUpdate()
     }
@@ -566,7 +577,7 @@ class PlaybackStateManager private constructor() {
      * Set the current playing status
      * @param value Whether the playback should be playing or paused.
      */
-    fun setPlayingStatus(value: Boolean) {
+    fun setPlaying(value: Boolean) {
         if (mIsPlaying != value) {
             if (value) {
                 mHasPlayed = true
@@ -577,25 +588,11 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Set the shuffle status. Updates the queue accordingly
-     * @param value Whether the queue should be shuffled or not.
+     * Rewind to the beginning of a song.
      */
-    fun setShuffleStatus(value: Boolean) {
-        mIsShuffling = value
-
-        if (mIsShuffling) {
-            genShuffle(
-                keepSong = true,
-                useLastSong = mIsInUserQueue
-            )
-        } else {
-            resetShuffle(mIsInUserQueue)
-        }
-    }
-
     fun rewind() {
         seekTo(0)
-        setPlayingStatus(true)
+        setPlaying(true)
     }
 
     /**
@@ -607,13 +604,6 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Reset the has played status as if this instance is fresh.
-     */
-    fun resetHasPlayedStatus() {
-        mHasPlayed = false
-    }
-
-    /**
      * Reset the current [LoopMode], if needed.
      * Use this instead of duplicating the code manually.
      */
@@ -622,6 +612,13 @@ class PlaybackStateManager private constructor() {
         if (mLoopMode == LoopMode.ONCE) {
             mLoopMode = LoopMode.NONE
         }
+    }
+
+    /**
+     * Reset the has played status as if this instance is fresh.
+     */
+    fun resetHasPlayedStatus() {
+        mHasPlayed = false
     }
 
     // --- PERSISTENCE FUNCTIONS ---
