@@ -76,6 +76,7 @@ class SongsFragment : Fragment() {
             }
 
             post {
+                // Disable fast scrolling if there is nothing to scroll
                 if (computeVerticalScrollRange() < height) {
                     binding.songFastScroll.visibility = View.GONE
                     binding.songFastScrollThumb.visibility = View.GONE

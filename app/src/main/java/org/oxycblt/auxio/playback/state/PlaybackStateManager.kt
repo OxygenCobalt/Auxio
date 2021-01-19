@@ -232,6 +232,9 @@ class PlaybackStateManager private constructor() {
 
         resetLoopMode()
         setShuffling(shuffled, keepSong = false)
+
+        logD(mQueue[0].name)
+
         updatePlayback(mQueue[0])
     }
 
@@ -253,6 +256,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Update the current position. Will not notify any listeners of a seek event, that's what [seekTo] is for.
      * @param position The new position in millis.
+     * @see seekTo
      */
     fun setPosition(position: Long) {
         mSong?.let {

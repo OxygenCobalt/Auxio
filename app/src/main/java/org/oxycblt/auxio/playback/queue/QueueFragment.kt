@@ -66,6 +66,7 @@ class QueueFragment : Fragment() {
                     insets
                 }
             } else {
+                // Dont even bother w/edge-to-edge if the navigation bar is on the side
                 binding.root.fitsSystemWindows = true
             }
         }

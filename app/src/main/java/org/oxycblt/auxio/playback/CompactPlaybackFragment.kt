@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -15,6 +16,7 @@ import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
 /**
@@ -57,6 +59,10 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
+        if (playbackModel.song.value == null) {
+            setInvisible(true)
+        }
+
         // --- VIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) {
@@ -65,6 +71,9 @@ class CompactPlaybackFragment : Fragment() {
 
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
+                setInvisible(false)
+            } else {
+                setInvisible(true)
             }
         }
 
@@ -111,5 +120,21 @@ class CompactPlaybackFragment : Fragment() {
                 playbackModel.enableAnimation()
             }
         }
+    }
+
+    /**
+     * Set this fragment to be invisible, if needed. Only runs in landscape mode.
+     */
+    private fun setInvisible(invisible: Boolean) {
+        // Does not run in landscape
+        if (!isLandscape(resources)) return
+
+        val visibility = if (invisible) View.INVISIBLE else View.VISIBLE
+
+        binding.playbackLayout.children.forEach {
+            it.visibility = visibility
+        }
+
+        binding.root.isEnabled = !invisible
     }
 }

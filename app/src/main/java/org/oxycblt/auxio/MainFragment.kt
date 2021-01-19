@@ -150,8 +150,9 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            binding.compactPlayback.visibility = if (isLandscape(resources))
-                View.INVISIBLE else View.GONE
+            if (!isLandscape(resources)) {
+                binding.compactPlayback.visibility = View.GONE
+            }
 
             playbackModel.disableAnimation()
         } else {

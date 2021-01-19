@@ -238,13 +238,13 @@
         <item name="android:padding">@dimen/padding_play_pause</item>
     </style>
 
-        <style name="Widget.Design.BottomNavigationView" parent="">
-    <item name="elevation">@dimen/design_bottom_navigation_elevation</item>
-    <item name="enforceTextAppearance">false</item>
-    <item name="enforceMaterialTheme">false</item>
-    <item name="itemBackground">?attr/selectableItemBackgroundBorderless</item>
-    <item name="itemHorizontalTranslationEnabled">true</item>
-    <item name="itemIconSize">@dimen/design_bottom_navigation_icon_size</item>
-    <item name="labelVisibilityMode">auto</item>
-  </style>
+    <style name="Widget.Design.BottomNavigationView" parent="">
+        <item name="elevation">@dimen/design_bottom_navigation_elevation</item>
+        <item name="enforceTextAppearance">false</item>
+        <item name="enforceMaterialTheme">false</item>
+        <item name="itemBackground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="itemHorizontalTranslationEnabled">true</item>
+        <item name="itemIconSize">@dimen/design_bottom_navigation_icon_size</item>
+        <item name="labelVisibilityMode">auto</item>
+    </style>
 </resources>
