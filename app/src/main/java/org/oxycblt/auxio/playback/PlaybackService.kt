@@ -31,7 +31,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -222,6 +224,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        logD(isPlaying.toString())
+    }
+
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
@@ -347,7 +353,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             )
         }
 
+        val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
+
         return SimpleExoPlayer.Builder(this, audioRenderer)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
             .build()
     }
 
@@ -479,7 +488,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 // Play/Pause if any of the keys are play/pause
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
-                    playbackManager.setPlaying(!playbackManager.isPlaying)
+                    playbackManager.setPlayingStatus(!playbackManager.isPlaying)
                     true
                 }
 
@@ -552,7 +561,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     player.volume = VOLUME_DUCK
                     animateVolume(VOLUME_DUCK, VOLUME_FULL)
                 } else if (pauseWasFromAudioFocus) {
-                    playbackManager.setPlaying(true)
+                    playbackManager.setPlayingStatus(true)
                 }
 
                 pauseWasFromAudioFocus = false
@@ -562,7 +571,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         private fun onLoss() {
             if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
                 pauseWasFromAudioFocus = true
-                playbackManager.setPlaying(false)
+                playbackManager.setPlayingStatus(false)
             }
         }
 
@@ -604,7 +613,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                         playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
                     NotificationUtils.ACTION_PLAY_PAUSE -> {
-                        playbackManager.setPlaying(!playbackManager.isPlaying)
+                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
                     }
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
                     NotificationUtils.ACTION_EXIT -> stop()
@@ -638,7 +647,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device connected, resuming...")
 
-                playbackManager.setPlaying(true)
+                playbackManager.setPlayingStatus(true)
             }
         }
 
@@ -649,7 +658,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device disconnected, pausing...")
 
-                playbackManager.setPlaying(false)
+                playbackManager.setPlayingStatus(false)
             }
         }
 
@@ -657,7 +666,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
          * Stop if the X button was clicked from the notification
          */
         private fun stop() {
-            playbackManager.setPlaying(false)
+            playbackManager.setPlayingStatus(false)
             stopForegroundAndNotification()
         }
     }

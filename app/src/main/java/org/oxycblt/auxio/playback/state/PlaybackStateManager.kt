@@ -246,7 +246,7 @@ class PlaybackStateManager private constructor() {
         mPosition = 0
 
         if (!mIsPlaying) {
-            setPlaying(true)
+            setPlayingStatus(true)
         }
     }
 
@@ -344,7 +344,7 @@ class PlaybackStateManager private constructor() {
                 mSong = mQueue[0]
                 mPosition = 0
 
-                setPlaying(false)
+                setPlayingStatus(false)
 
                 mIsInUserQueue = false
             }
@@ -576,7 +576,7 @@ class PlaybackStateManager private constructor() {
      * Set the current playing status
      * @param value Whether the playback should be playing or paused.
      */
-    fun setPlaying(value: Boolean) {
+    fun setPlayingStatus(value: Boolean) {
         if (mIsPlaying != value) {
             if (value) {
                 mHasPlayed = true
@@ -591,7 +591,7 @@ class PlaybackStateManager private constructor() {
      */
     fun rewind() {
         seekTo(0)
-        setPlaying(true)
+        setPlayingStatus(true)
     }
 
     /**

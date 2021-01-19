@@ -281,7 +281,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     fun invertPlayingStatus() {
         enableAnimation()
 
-        playbackManager.setPlaying(!playbackManager.isPlaying)
+        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
     }
 
     /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
