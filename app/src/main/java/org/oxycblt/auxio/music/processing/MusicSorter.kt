@@ -2,7 +2,6 @@ package org.oxycblt.auxio.music.processing
 
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**

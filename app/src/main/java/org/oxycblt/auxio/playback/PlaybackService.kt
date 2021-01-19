@@ -224,10 +224,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
     }
 
-    override fun onIsPlayingChanged(isPlaying: Boolean) {
-        logD(isPlaying.toString())
-    }
-
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
