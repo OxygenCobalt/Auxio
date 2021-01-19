@@ -53,7 +53,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 - Improved genre/artist/album UIs
 - Dedicated search tab
-- Swipe-to-next-track function
+- Swipe-to-next-track function [Maybe]
 - Artist Images
 - Black theme
 - Custom accents

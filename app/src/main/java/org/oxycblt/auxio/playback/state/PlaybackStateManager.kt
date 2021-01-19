@@ -22,14 +22,13 @@ import org.oxycblt.auxio.settings.SettingsManager
  * Master class (and possible god object) for the playback state.
  *
  * This should ***NOT*** be used outside of the playback module.
- * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel].
- * - If you want to use the playback state with the ExoPlayer instance or system-side things,
- * use [org.oxycblt.auxio.playback.PlaybackService].
+ * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
+ * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.PlaybackService].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
- * @author OxygenCobalt
  *
- * TODO: Sort queues
+ * TODO: Queues should reflect sort mode
+ * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
     // Playback

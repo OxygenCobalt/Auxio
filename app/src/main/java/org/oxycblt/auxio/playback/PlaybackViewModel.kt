@@ -24,6 +24,9 @@ import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
+ *
+ * **PLEASE Use this instead of [PlaybackStateManager], UI's are extremely volatile and this provides
+ * an interface that properly sanitizes input and abstracts functions unlike the master class.**
  * @author OxygenCobalt
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
@@ -42,7 +45,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsPlaying = MutableLiveData(false)
     private val mIsShuffling = MutableLiveData(false)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
-
     private val mIsInUserQueue = MutableLiveData(false)
 
     // Other

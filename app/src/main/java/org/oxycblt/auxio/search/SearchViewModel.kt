@@ -51,28 +51,28 @@ class SearchViewModel : ViewModel() {
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_ARTISTS)) {
                 musicStore.artists.filterByOrNull(query)?.let {
-                    results.add(Header(id = -1, name = context.getString(R.string.label_artists)))
+                    results.add(Header(id = -2, name = context.getString(R.string.label_artists)))
                     results.addAll(it)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_ALBUMS)) {
                 musicStore.albums.filterByOrNull(query)?.let {
-                    results.add(Header(id = -2, name = context.getString(R.string.label_albums)))
+                    results.add(Header(id = -3, name = context.getString(R.string.label_albums)))
                     results.addAll(it)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_GENRES)) {
                 musicStore.genres.filterByOrNull(query)?.let {
-                    results.add(Header(id = -3, name = context.getString(R.string.label_genres)))
+                    results.add(Header(id = -4, name = context.getString(R.string.label_genres)))
                     results.addAll(it)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_SONGS)) {
                 musicStore.songs.filterByOrNull(query)?.let {
-                    results.add(Header(id = -4, name = context.getString(R.string.label_songs)))
+                    results.add(Header(id = -5, name = context.getString(R.string.label_songs)))
                     results.addAll(it)
                 }
             }
