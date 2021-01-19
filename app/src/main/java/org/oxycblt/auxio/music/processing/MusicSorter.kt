@@ -2,6 +2,7 @@ package org.oxycblt.auxio.music.processing
 
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -9,7 +10,7 @@ import org.oxycblt.auxio.music.Song
  */
 class MusicSorter(
     val songs: MutableList<Song>,
-    val albums: MutableList<Album>
+    val albums: MutableList<Album>,
 ) {
     val artists = mutableListOf<Artist>()
 
@@ -30,7 +31,14 @@ class MusicSorter(
 
         groupedAlbums.forEach {
             artists.add(
-                Artist(id = artists.size.toLong(), name = it.key, albums = it.value)
+                // Min value is deliberately used to prevent conflicts with the MediaStore
+                // album & artist IDs. Shouldnt conflict with other negative IDs unless there
+                // are ~2.147 billion artists.
+                Artist(
+                    id = (artists.size + Int.MIN_VALUE).toLong(),
+                    name = it.key,
+                    albums = it.value
+                )
             )
         }
     }

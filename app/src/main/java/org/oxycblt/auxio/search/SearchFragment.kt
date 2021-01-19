@@ -125,6 +125,8 @@ class SearchFragment : Fragment() {
             }
         }
 
+        logD("Fragment created.")
+
         return binding.root
     }
 

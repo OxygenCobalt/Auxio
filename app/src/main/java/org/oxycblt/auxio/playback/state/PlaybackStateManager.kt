@@ -232,9 +232,6 @@ class PlaybackStateManager private constructor() {
 
         resetLoopMode()
         setShuffling(shuffled, keepSong = false)
-
-        logD(mQueue[0].name)
-
         updatePlayback(mQueue[0])
     }
 
