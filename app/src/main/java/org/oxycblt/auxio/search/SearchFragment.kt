@@ -24,10 +24,11 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
+import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.requireCompatActivity
 import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.ui.toStateList
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
@@ -73,9 +74,7 @@ class SearchFragment : Fragment() {
         binding.searchTextLayout.apply {
             boxStrokeColor = accent
             hintTextColor = ColorStateList.valueOf(accent)
-            setEndIconTintList(
-                ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
-            )
+            setEndIconTintList(R.color.control_color.toStateList(context))
         }
 
         binding.searchEditText.addTextChangedListener {
@@ -133,7 +132,7 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        fixAnimationInfoMemoryLeak()
+        fixAnimInfoLeak()
     }
 
     override fun onResume() {

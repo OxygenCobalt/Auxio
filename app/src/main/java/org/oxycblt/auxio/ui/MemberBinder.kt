@@ -2,32 +2,31 @@ package org.oxycblt.auxio.ui
 
 import android.os.Looper
 import android.view.LayoutInflater
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
  * A delegate that creates a binding that can be used as a member variable without nullability or
  * memory leaks.
- * @param bindingFactory The ViewBinding inflation method that should be used
- * @param onDestroy      Any code that should be run when the binding is destroyed
+ * @param inflate The ViewBinding inflation method that should be used
  */
-fun <T : ViewBinding> Fragment.memberBinding(
-    bindingFactory: (LayoutInflater) -> T,
+fun <T : ViewDataBinding> Fragment.memberBinding(
+    inflate: (LayoutInflater) -> T,
     onDestroy: T.() -> Unit = {}
-) = FragmentBinderDelegate(this, bindingFactory, onDestroy)
+) = MemberBinder(this, inflate, onDestroy)
 
 /**
  * The delegate for the [memberBinding] shortcut function.
  * Adapted from KAHelpers (https://github.com/FunkyMuse/KAHelpers/tree/master/viewbinding)
  */
-class FragmentBinderDelegate<T : ViewBinding>(
+class MemberBinder<T : ViewDataBinding>(
     private val fragment: Fragment,
     private val inflate: (LayoutInflater) -> T,
     private val onDestroy: T.() -> Unit
@@ -36,7 +35,7 @@ class FragmentBinderDelegate<T : ViewBinding>(
 
     init {
         fragment.observeOwnerThroughCreation {
-            lifecycle.addObserver(this@FragmentBinderDelegate)
+            lifecycle.addObserver(this@MemberBinder)
         }
     }
 

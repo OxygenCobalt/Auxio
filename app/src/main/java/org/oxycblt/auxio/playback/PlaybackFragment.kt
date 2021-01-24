@@ -19,7 +19,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.memberBinding
-import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.ui.toStateList
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -29,8 +29,7 @@ import org.oxycblt.auxio.ui.toColor
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val binding: FragmentPlaybackBinding by memberBinding(FragmentPlaybackBinding::inflate) {
-        // Marquee must be disabled on destruction to prevent memory leaks
+    private val binding by memberBinding(FragmentPlaybackBinding::inflate) {
         playbackSong.isSelected = false
     }
 
@@ -40,7 +39,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
     private val controlColor: ColorStateList by lazy {
-        ColorStateList.valueOf(R.color.control_color.toColor(requireContext()))
+        R.color.control_color.toStateList(requireContext())
     }
 
     override fun onCreateView(
@@ -49,6 +48,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         savedInstanceState: Bundle?
     ): View {
         // TODO: Add a swipe-to-next-track function using a ViewPager
+        //  Would require writing my own variant though to avoid index updates
 
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
 

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
+import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
@@ -25,9 +25,7 @@ import org.oxycblt.auxio.ui.memberBinding
 abstract class DetailFragment : Fragment() {
     protected val detailModel: DetailViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
-    protected val binding: FragmentDetailBinding by memberBinding(
-        FragmentDetailBinding::inflate
-    )
+    protected val binding by memberBinding(FragmentDetailBinding::inflate)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -48,7 +46,7 @@ abstract class DetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        fixAnimationInfoMemoryLeak()
+        fixAnimInfoLeak()
     }
 
     /**

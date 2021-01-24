@@ -59,9 +59,7 @@ class QueueFragment : Fragment() {
                         insets.systemWindowInsetTop
                     }
 
-                    (parent as View).updatePadding(
-                        top = top
-                    )
+                    (parent as View).updatePadding(top = top)
 
                     insets
                 }
@@ -77,7 +75,7 @@ class QueueFragment : Fragment() {
             helper.attachToRecyclerView(this)
         }
 
-        // --- VIEWMODEL SETUP ---
+        // --- VIEWMODEL SETUP ----
 
         playbackModel.userQueue.observe(viewLifecycleOwner) {
             if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {

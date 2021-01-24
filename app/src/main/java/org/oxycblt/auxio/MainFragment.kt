@@ -20,7 +20,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.fixAnimationInfoMemoryLeak
+import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.isTablet
 import org.oxycblt.auxio.ui.toColor
@@ -115,7 +115,7 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        fixAnimationInfoMemoryLeak()
+        fixAnimInfoLeak()
     }
 
     /**

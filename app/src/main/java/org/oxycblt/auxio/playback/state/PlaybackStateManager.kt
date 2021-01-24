@@ -187,11 +187,7 @@ class PlaybackStateManager private constructor() {
 
         resetLoopMode()
         updatePlayback(song)
-
-        // Depending on the configuration, keep the shuffle mode on.
         setShuffling(settingsManager.keepShuffle && mIsShuffling, keepSong = true)
-
-        mIndex = mQueue.indexOf(song)
     }
 
     /**
@@ -246,7 +242,7 @@ class PlaybackStateManager private constructor() {
         mPosition = 0
 
         if (!mIsPlaying) {
-            setPlayingStatus(true)
+            setPlaying(true)
         }
     }
 
@@ -265,14 +261,15 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * **Seek** to a position, this calls [PlaybackStateManager.Callback.onSeekConfirm] to notify
+     * **Seek** to a position, this calls [PlaybackStateManager.Callback.onSeek] to notify
      * elements that rely on that.
      * @param position The position to seek to in millis.
+     * @see setPosition
      */
     fun seekTo(position: Long) {
         mPosition = position
 
-        callbacks.forEach { it.onSeekConfirm(position) }
+        callbacks.forEach { it.onSeek(position) }
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -340,13 +337,9 @@ class PlaybackStateManager private constructor() {
                 mIndex = 0
                 forceQueueUpdate()
 
-                // The whole point here is making the playback pause and loop, so duplicate
-                // the updatePlayback code instead of using it with a useless arg tacked on.
                 mSong = mQueue[0]
                 mPosition = 0
-
-                setPlayingStatus(false)
-
+                setPlaying(false)
                 mIsInUserQueue = false
             }
 
@@ -505,11 +498,11 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Set the shuffle status. Updates the queue accordingly
-     * @param value Whether the queue should be shuffled or not.
+     * @param shuffling Whether the queue should be shuffled or not.
      * @param keepSong Whether the current song should be kept as the queue is shuffled/unshuffled
      */
-    fun setShuffling(value: Boolean, keepSong: Boolean) {
-        mIsShuffling = value
+    fun setShuffling(shuffling: Boolean, keepSong: Boolean) {
+        mIsShuffling = shuffling
 
         if (mIsShuffling) {
             genShuffle(keepSong, mIsInUserQueue)
@@ -524,10 +517,7 @@ class PlaybackStateManager private constructor() {
      * @param useLastSong Whether to use the last song in the queue instead of the current one
      * @return A new shuffled queue
      */
-    private fun genShuffle(
-        keepSong: Boolean,
-        useLastSong: Boolean
-    ) {
+    private fun genShuffle(keepSong: Boolean, useLastSong: Boolean) {
         val lastSong = if (useLastSong) mQueue[0] else mSong
 
         logD("Shuffling queue")
@@ -551,10 +541,7 @@ class PlaybackStateManager private constructor() {
      * @param keepSong Whether the current song should be kept as the queue is unshuffled
      * @param useLastSong Whether to use the previous song for the index calculations.
      */
-    private fun resetShuffle(
-        keepSong: Boolean,
-        useLastSong: Boolean
-    ) {
+    private fun resetShuffle(keepSong: Boolean, useLastSong: Boolean) {
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
 
         mQueue = when (mMode) {
@@ -575,15 +562,15 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Set the current playing status
-     * @param value Whether the playback should be playing or paused.
+     * @param playing Whether the playback should be playing or paused.
      */
-    fun setPlayingStatus(value: Boolean) {
-        if (mIsPlaying != value) {
-            if (value) {
+    fun setPlaying(playing: Boolean) {
+        if (mIsPlaying != playing) {
+            if (playing) {
                 mHasPlayed = true
             }
 
-            mIsPlaying = value
+            mIsPlaying = playing
         }
     }
 
@@ -592,7 +579,7 @@ class PlaybackStateManager private constructor() {
      */
     fun rewind() {
         seekTo(0)
-        setPlayingStatus(true)
+        setPlaying(true)
     }
 
     /**
@@ -724,7 +711,7 @@ class PlaybackStateManager private constructor() {
         mIndex = playbackState.index
 
         callbacks.forEach {
-            it.onSeekConfirm(mPosition)
+            it.onSeek(mPosition)
             it.onModeUpdate(mMode)
             it.onRestoreFinish()
         }
@@ -839,7 +826,7 @@ class PlaybackStateManager private constructor() {
         fun onPlayingUpdate(isPlaying: Boolean) {}
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(mode: LoopMode) {}
-        fun onSeekConfirm(position: Long) {}
+        fun onSeek(position: Long) {}
         fun onInUserQueueUpdate(isInUserQueue: Boolean) {}
         fun onRestoreFinish() {}
     }

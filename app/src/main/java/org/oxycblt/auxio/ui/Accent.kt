@@ -53,9 +53,7 @@ data class Accent(
     /**
      * Get a [ColorStateList] of the accent
      */
-    fun getStateList(context: Context): ColorStateList {
-        return ColorStateList.valueOf(color.toColor(context))
-    }
+    fun getStateList(context: Context): ColorStateList = color.toStateList(context)
 
     /**
      * Get the name (in bold) and the hex value of a accent.

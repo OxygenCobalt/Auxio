@@ -55,7 +55,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     // Kotlin
-    //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

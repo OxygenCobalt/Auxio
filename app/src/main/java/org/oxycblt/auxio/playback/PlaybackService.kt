@@ -240,7 +240,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             uploadMetadataToSession(it)
 
             notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify("Song")
+                startForegroundOrNotify()
             }
 
             return
@@ -254,7 +254,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onModeUpdate(mode: PlaybackMode) {
         notification.updateMode(this)
 
-        startForegroundOrNotify("Mode")
+        startForegroundOrNotify()
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
@@ -262,13 +262,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             player.play()
             notification.updatePlaying(this)
             audioFocusManager.requestFocus()
-            startForegroundOrNotify("Play")
+            startForegroundOrNotify()
 
             startPollingPosition()
         } else {
             player.pause()
             notification.updatePlaying(this)
-            startForegroundOrNotify("Pause")
+            startForegroundOrNotify()
         }
     }
 
@@ -283,18 +283,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         notification.updateExtraAction(this, settingsManager.useAltNotifAction)
-        startForegroundOrNotify("Loop")
+        startForegroundOrNotify()
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
             notification.updateExtraAction(this, settingsManager.useAltNotifAction)
 
-            startForegroundOrNotify("Shuffle update")
+            startForegroundOrNotify()
         }
     }
 
-    override fun onSeekConfirm(position: Long) {
+    override fun onSeek(position: Long) {
         player.seekTo(position)
     }
 
@@ -309,7 +309,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let {
             notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify("Colorize update")
+                startForegroundOrNotify()
             }
         }
     }
@@ -317,13 +317,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onNotifActionUpdate(useAltAction: Boolean) {
         notification.updateExtraAction(this, useAltAction)
 
-        startForegroundOrNotify("Notif action update")
+        startForegroundOrNotify()
     }
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let {
             notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify("Cover update")
+                startForegroundOrNotify()
             }
         }
     }
@@ -331,7 +331,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(this, song, settingsManager.colorizeNotif) {
-                startForegroundOrNotify("Quality cover update")
+                startForegroundOrNotify()
             }
         }
     }
@@ -388,7 +388,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         playbackManager.song?.let {
             notification.setMetadata(this, it, settingsManager.colorizeNotif) {
                 if (playbackManager.isPlaying) {
-                    startForegroundOrNotify("Restore")
+                    startForegroundOrNotify()
                 } else {
                     stopForegroundAndNotification()
                 }
@@ -437,15 +437,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     /**
      * Bring the service into the foreground and show the notification, or refresh the notification.
-     * @param reason (Debug) The reason for this call.
      */
-    private fun startForegroundOrNotify(reason: String) {
+    private fun startForegroundOrNotify() {
         // Don't start foreground if:
         //     - The playback hasnt even started
         //     - The playback hasnt been restored
         //     - There is nothing to play
         if (playbackManager.hasPlayed && playbackManager.isRestored && playbackManager.song != null) {
-            logD("Starting foreground/notifying because of $reason")
+            logD("Starting foreground/notifying")
 
             if (!isForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -484,7 +483,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 // Play/Pause if any of the keys are play/pause
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
                 KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
-                    playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                    playbackManager.setPlaying(!playbackManager.isPlaying)
                     true
                 }
 
@@ -554,10 +553,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         private fun onGain() {
             if (settingsManager.doAudioFocus) {
                 if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
-                    player.volume = VOLUME_DUCK
-                    animateVolume(VOLUME_DUCK, VOLUME_FULL)
+                    unduck()
                 } else if (pauseWasFromAudioFocus) {
-                    playbackManager.setPlayingStatus(true)
+                    playbackManager.setPlaying(true)
                 }
 
                 pauseWasFromAudioFocus = false
@@ -567,7 +565,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         private fun onLoss() {
             if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
                 pauseWasFromAudioFocus = true
-                playbackManager.setPlayingStatus(false)
+                playbackManager.setPlaying(false)
             }
         }
 
@@ -577,14 +575,16 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
-        private fun animateVolume(from: Float, to: Float) {
+        private fun unduck() {
+            player.volume = VOLUME_DUCK
+
             ValueAnimator().apply {
-                setFloatValues(from, to)
+                setFloatValues(VOLUME_DUCK, VOLUME_FULL)
                 duration = DUCK_DURATION
                 addListener(
-                    onStart = { player.volume = from },
-                    onCancel = { player.volume = to },
-                    onEnd = { player.volume = to }
+                    onStart = { player.volume = VOLUME_DUCK },
+                    onCancel = { player.volume = VOLUME_FULL },
+                    onEnd = { player.volume = VOLUME_FULL }
                 )
                 addUpdateListener {
                     player.volume = it.animatedValue as Float
@@ -609,7 +609,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                         playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
                     NotificationUtils.ACTION_PLAY_PAUSE -> {
-                        playbackManager.setPlayingStatus(!playbackManager.isPlaying)
+                        playbackManager.setPlaying(!playbackManager.isPlaying)
                     }
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
                     NotificationUtils.ACTION_EXIT -> stop()
@@ -643,7 +643,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device connected, resuming...")
 
-                playbackManager.setPlayingStatus(true)
+                playbackManager.setPlaying(true)
             }
         }
 
@@ -654,7 +654,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device disconnected, pausing...")
 
-                playbackManager.setPlayingStatus(false)
+                playbackManager.setPlaying(false)
             }
         }
 
@@ -662,7 +662,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
          * Stop if the X button was clicked from the notification
          */
         private fun stop() {
-            playbackManager.setPlayingStatus(false)
+            playbackManager.setPlaying(false)
             stopForegroundAndNotification()
         }
     }

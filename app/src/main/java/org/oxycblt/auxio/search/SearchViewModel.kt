@@ -37,6 +37,11 @@ class SearchViewModel : ViewModel() {
         mFilterMode = settingsManager.searchFilterMode
     }
 
+    /**
+     * Perform a search of the music library. Will push results to [searchResults].
+     * @param query The query to use
+     * @param context [Context] required to create the headers
+     */
     fun doSearch(query: String, context: Context) {
         mLastQuery = query
 

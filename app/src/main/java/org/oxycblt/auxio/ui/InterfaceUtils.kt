@@ -83,7 +83,8 @@ fun String.createToast(context: Context) {
 }
 
 /**
- * Require an [AppCompatActivity]
+ * Ensure that a not-null [AppCompatActivity] will be returned.
+ * @throws IllegalStateException When there is no activity or if the activity is null
  */
 fun Fragment.requireCompatActivity(): AppCompatActivity {
     val activity = requireActivity()
@@ -121,6 +122,13 @@ fun Int.toColor(context: Context): Int {
         ContextCompat.getColor(context, android.R.color.black)
     }
 }
+
+/**
+ * Resolve a color and turn it into a [ColorStateList]
+ * @param context [Context] required
+ * @return The resolved color as a [ColorStateList]
+ */
+fun Int.toStateList(context: Context): ColorStateList = ColorStateList.valueOf(toColor(context))
 
 // --- CONFIGURATION ---
 
@@ -209,16 +217,14 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
 // --- HACKY NIGHTMARES ---
 
 /**
- * Use ***R E F L E C T I O N*** to fix a memory leak where mAnimationInfo will keep a reference to
- * its focused view.
- *
- * I can't believe I have to do this.
+ * Use reflection to fix a memory leak in the [Fragment] source code where the focused view will
+ * never be cleared. I can't believe I have to do this.
  */
-fun Fragment.fixAnimationInfoMemoryLeak() {
+fun Fragment.fixAnimInfoLeak() {
     try {
-        Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).let {
-            it.isAccessible = true
-            it.invoke(this, null)
+        Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).apply {
+            isAccessible = true
+            invoke(this@fixAnimInfoLeak, null)
         }
     } catch (e: Exception) {
         logE("mAnimationInfo leak fix failed.")

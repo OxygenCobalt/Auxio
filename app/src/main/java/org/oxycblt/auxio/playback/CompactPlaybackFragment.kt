@@ -29,9 +29,7 @@ import org.oxycblt.auxio.ui.memberBinding
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val binding: FragmentCompactPlaybackBinding by memberBinding(
-        FragmentCompactPlaybackBinding::inflate
-    )
+    private val binding by memberBinding(FragmentCompactPlaybackBinding::inflate)
 
     override fun onCreateView(
         inflater: LayoutInflater,
