@@ -16,7 +16,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 
 // SettingsManager is lazy-initted to prevent it from being used before its initialized.
-val settingsManager: SettingsManager by lazy {
+private val settingsManager: SettingsManager by lazy {
     SettingsManager.getInstance()
 }
 

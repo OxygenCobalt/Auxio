@@ -246,32 +246,6 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    /**
-     * Update the current position. Will not notify any listeners of a seek event, that's what [seekTo] is for.
-     * @param position The new position in millis.
-     * @see seekTo
-     */
-    fun setPosition(position: Long) {
-        mSong?.let {
-            // Don't accept any bugged positions that are over the duration of the song.
-            if (position <= it.duration) {
-                mPosition = position
-            }
-        }
-    }
-
-    /**
-     * **Seek** to a position, this calls [PlaybackStateManager.Callback.onSeek] to notify
-     * elements that rely on that.
-     * @param position The position to seek to in millis.
-     * @see setPosition
-     */
-    fun seekTo(position: Long) {
-        mPosition = position
-
-        callbacks.forEach { it.onSeek(position) }
-    }
-
     // --- QUEUE FUNCTIONS ---
 
     /**
@@ -572,6 +546,32 @@ class PlaybackStateManager private constructor() {
 
             mIsPlaying = playing
         }
+    }
+
+    /**
+     * Update the current position. Will not notify any listeners of a seek event, that's what [seekTo] is for.
+     * @param position The new position in millis.
+     * @see seekTo
+     */
+    fun setPosition(position: Long) {
+        mSong?.let {
+            // Don't accept any bugged positions that are over the duration of the song.
+            if (position <= it.duration) {
+                mPosition = position
+            }
+        }
+    }
+
+    /**
+     * **Seek** to a position, this calls [PlaybackStateManager.Callback.onSeek] to notify
+     * elements that rely on that.
+     * @param position The position to seek to in millis.
+     * @see setPosition
+     */
+    fun seekTo(position: Long) {
+        mPosition = position
+
+        callbacks.forEach { it.onSeek(position) }
     }
 
     /**

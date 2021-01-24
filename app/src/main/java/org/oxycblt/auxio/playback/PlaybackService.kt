@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.playback
 
-import android.animation.ValueAnimator
 import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothDevice
@@ -16,11 +15,7 @@ import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
-import androidx.core.animation.addListener
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
-import androidx.media.AudioFocusRequestCompat
-import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -60,8 +55,8 @@ import org.oxycblt.auxio.settings.SettingsManager
  * - Audio Focus
  * - Headset management
  *
- * This service relies on [PlaybackStateManager.Callback], so therefore there's no need to bind
- * to it to deliver commands.
+ * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
+ * so therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -72,7 +67,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var systemReceiver: SystemEventReceiver
-    private val audioAttributes = AudioAttributes.Builder()
+    private val playerAttributes = AudioAttributes.Builder()
         .setUsage(C.USAGE_MEDIA)
         .setContentType(C.CONTENT_TYPE_MUSIC)
         .build()
@@ -80,7 +75,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private lateinit var notificationManager: NotificationManager
     private lateinit var notification: NotificationCompat.Builder
 
-    private lateinit var audioFocusManager: AudioFocusManager
+    private lateinit var audioReactor: AudioReactor
     private var isForeground = false
 
     private val serviceJob = Job()
@@ -104,18 +99,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // --- PLAYER SETUP ---
 
-        player.addListener(this)
-
-        // Set up AudioFocus/AudioAttributes
-        player.setAudioAttributes(
-            audioAttributes, false
-        )
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            player.experimentalSetOffloadSchedulingEnabled(true)
+        player.apply {
+            addListener(this@PlaybackService)
+            setAudioAttributes(playerAttributes, false)
         }
 
-        audioFocusManager = AudioFocusManager()
+        audioReactor = AudioReactor(this, player)
 
         // --- SYSTEM RECEIVER SETUP ---
 
@@ -153,13 +142,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // --- NOTIFICATION SETUP ---
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         notification = notificationManager.createMediaNotification(this, mediaSession)
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
         playbackManager.resetHasPlayedStatus()
-
         playbackManager.addCallback(this)
 
         if (playbackManager.song != null || playbackManager.isRestored) {
@@ -181,7 +168,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // Release everything that could cause a memory leak if left around
         player.release()
         mediaSession.release()
-        audioFocusManager.destroy()
+        audioReactor.destroy()
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
 
@@ -261,7 +248,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         if (isPlaying && !player.isPlaying) {
             player.play()
             notification.updatePlaying(this)
-            audioFocusManager.requestFocus()
+            audioReactor.requestFocus()
             startForegroundOrNotify()
 
             startPollingPosition()
@@ -296,12 +283,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     override fun onSeek(position: Long) {
         player.seekTo(position)
-    }
-
-    override fun onRestoreFinish() {
-        logD("Restore done")
-
-        restorePlayer()
     }
 
     // --- SETTINGSMANAGER OVERRIDES ---
@@ -519,85 +500,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     /**
-     * Object that manages the AudioFocus state.
-     * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
-     */
-    inner class AudioFocusManager : AudioManager.OnAudioFocusChangeListener {
-        private val audioManager = ContextCompat.getSystemService(
-            this@PlaybackService, AudioManager::class.java
-        ) ?: error("Cannot obtain AudioManager.")
-
-        private val request = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
-            .setWillPauseWhenDucked(true)
-            .setOnAudioFocusChangeListener(this)
-            .build()
-
-        private var pauseWasFromAudioFocus = false
-
-        fun requestFocus() {
-            AudioManagerCompat.requestAudioFocus(audioManager, request)
-        }
-
-        fun destroy() {
-            AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
-        }
-
-        override fun onAudioFocusChange(focusChange: Int) {
-            when (focusChange) {
-                AudioManager.AUDIOFOCUS_GAIN -> onGain()
-                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> onDuck()
-                AudioManager.AUDIOFOCUS_LOSS, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> onLoss()
-            }
-        }
-
-        private fun onGain() {
-            if (settingsManager.doAudioFocus) {
-                if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
-                    unduck()
-                } else if (pauseWasFromAudioFocus) {
-                    playbackManager.setPlaying(true)
-                }
-
-                pauseWasFromAudioFocus = false
-            }
-        }
-
-        private fun onLoss() {
-            if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
-                pauseWasFromAudioFocus = true
-                playbackManager.setPlaying(false)
-            }
-        }
-
-        private fun onDuck() {
-            if (settingsManager.doAudioFocus) {
-                player.volume = VOLUME_DUCK
-            }
-        }
-
-        private fun unduck() {
-            player.volume = VOLUME_DUCK
-
-            ValueAnimator().apply {
-                setFloatValues(VOLUME_DUCK, VOLUME_FULL)
-                duration = DUCK_DURATION
-                addListener(
-                    onStart = { player.volume = VOLUME_DUCK },
-                    onCancel = { player.volume = VOLUME_FULL },
-                    onEnd = { player.volume = VOLUME_FULL }
-                )
-                addUpdateListener {
-                    player.volume = it.animatedValue as Float
-                }
-                start()
-            }
-        }
-    }
-
-    /**
      * A [BroadcastReceiver] for receiving system events from the media notification or the headset.
      */
-    private inner class SystemEventReceiver : BroadcastReceiver() {
+    inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
 
@@ -605,12 +510,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 when (it) {
                     NotificationUtils.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
+
                     NotificationUtils.ACTION_SHUFFLE ->
                         playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
+
                     NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
-                    NotificationUtils.ACTION_PLAY_PAUSE -> {
+
+                    NotificationUtils.ACTION_PLAY_PAUSE ->
                         playbackManager.setPlaying(!playbackManager.isPlaying)
-                    }
+
                     NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
                     NotificationUtils.ACTION_EXIT -> stop()
 
@@ -670,9 +578,5 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     companion object {
         private const val DISCONNECTED = 0
         private const val CONNECTED = 1
-
-        private const val VOLUME_DUCK = 0.2f
-        private const val DUCK_DURATION = 1500L
-        private const val VOLUME_FULL = 1.0f
     }
 }
