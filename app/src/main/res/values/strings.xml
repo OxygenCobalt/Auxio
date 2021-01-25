@@ -71,7 +71,7 @@
     <string name="setting_show_covers_desc">Turn off to save memory usage</string>
 
     <string name="setting_quality_covers">Ignore MediaStore covers</string>
-    <string name="setting_quality_covers_desc">Increases the quality of the album covers but results in longer loading times</string>
+    <string name="setting_quality_covers_desc">Increases the quality of the album covers, but results in longer loading times and memory usage</string>
 
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>
@@ -113,7 +113,7 @@
     <string name="description_genre_image">Genre Image for %s</string>
     <string name="description_track_number">Track %s</string>
     <string name="description_error">Error</string>
-    <string name="description_sort_button">Change Sorting Mode</string>
+    <string name="description_sort_button">Change Sorting</string>
     <string name="description_sort_none">Default Sort Order</string>
     <string name="description_sort_alpha_down">Sort from A to Z</string>
     <string name="description_sort_alpha_up">Sort from Z to A</string>

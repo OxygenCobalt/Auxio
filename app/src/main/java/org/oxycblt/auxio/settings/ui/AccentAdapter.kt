@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.settings.ui
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +7,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.ui.toStateList
 
 /**
  * An adapter that displays the list of all possible accents, and highlights the current one.
@@ -43,11 +42,11 @@ class AccentAdapter(
                 imageTintList = if (accent == Accent.get()) {
                     isEnabled = false
 
-                    ColorStateList.valueOf(R.color.background.toColor(context))
+                    R.color.background.toStateList(context)
                 } else {
                     isEnabled = true
 
-                    ColorStateList.valueOf(android.R.color.transparent.toColor(context))
+                    android.R.color.transparent.toStateList(context)
                 }
 
                 backgroundTintList = accent.getStateList(context)
