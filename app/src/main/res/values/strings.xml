@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_name">Auxio</string>
-    <string name="info_app_desc">A sensible and customizable music player for android.</string>
+    <string name="info_app_desc">A sensible and customizable music player for Android</string>
     <string name="info_channel_name">Music Playback</string>
-    <string name="info_service_desc">The music playback service for Auxio.</string>
+    <string name="info_service_desc">The music playback service for Auxio</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
@@ -14,6 +13,8 @@
     <string name="label_genres">Genres</string>
     <string name="label_artists">Artists</string>
     <string name="label_albums">Albums</string>
+    <string name="label_songs">Songs</string>
+    <string name="label_all_songs">All Songs</string>
 
     <string name="label_search">Search</string>
     <string name="label_filter">Filter</string>
@@ -23,16 +24,13 @@
     <string name="label_sort_none">Default</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
-
-    <string name="label_all_songs">All Songs</string>
-    <string name="label_songs">Songs</string>
     <string name="label_playback">Now Playing</string>
 
     <string name="label_play">Play</string>
     <string name="label_shuffle">Shuffle</string>
     <string name="label_play_all_songs">Play from all songs</string>
-    <string name="label_play_artist">Play from artist</string>
     <string name="label_play_album">Play from album</string>
+    <string name="label_play_artist">Play from artist</string>
     <string name="label_play_genre">Play from genre</string>
 
     <string name="label_go_artist">Go to artist</string>
@@ -48,6 +46,7 @@
     <string name="label_code">View on Github</string>
     <string name="label_licenses">Licenses</string>
     <string name="label_faq">FAQ</string>
+    <string name="label_author">Developed by OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Settings</string>
@@ -72,9 +71,7 @@
     <string name="setting_show_covers_desc">Turn off to save memory usage</string>
 
     <string name="setting_quality_covers">Ignore MediaStore covers</string>
-    <string name="setting_quality_covers_desc">
-        Results in higher quality album covers, but causes slower loading and higher memory usage
-    </string>
+    <string name="setting_quality_covers_desc">Increases the quality of the album covers but results in longer loading times</string>
 
     <string name="setting_use_alt_action">Use alternate notification action</string>
     <string name="setting_use_alt_loop">Prefer repeat mode action</string>
@@ -101,16 +98,10 @@
     <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
 
-    <!-- Debug Namespace | Debug labels -->
-    <string name="debug_title">Debug</string>
-    <string name="debug_state_save">Save playback state</string>
-    <string name="debug_state_save_desc">Force save the current playback state</string>
-    <string name="debug_state_saved">State saved</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found</string>
     <string name="error_music_load_failed">Music loading failed</string>
-    <string name="error_no_perms">Permissions to read storage are needed</string>
+    <string name="error_no_perms">Auxio needs permission to read your music library</string>
     <string name="error_no_browser">Could not open link</string>
 
     <!-- Hint Namespace | EditText Hints -->
@@ -168,7 +159,6 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Next From: %s</string>
     <string name="format_songs_loaded">Songs Loaded: %s</string>
-    <string name="format_author">Created by %s</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%s Song</item>

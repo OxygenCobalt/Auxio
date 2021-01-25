@@ -170,7 +170,7 @@
                 app:drawableLeftCompat="@drawable/ic_author"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/about_song_count"
-                tools:text="Created by OxygenCobalt" />
+                android:text="@string/label_author" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

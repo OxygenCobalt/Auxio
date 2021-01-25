@@ -181,38 +181,36 @@
         <item name="behavior_peekHeight">500dp</item>
     </style>
 
-    <!-- An "Unimportant" material button, used for the "Play" button -->
-    <style name="Widget.MaterialComponents.Button.Unimportant" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <!-- Base style for the material buttons -->
+    <style name="Widget.MaterialComponents.Button.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/margin_small</item>
-        <item name="android:layout_marginStart">@dimen/margin_medium</item>
-        <item name="android:layout_marginEnd">@dimen/margin_small</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:theme">@style/Theme.MaterialComponents</item>
-        <item name="strokeColor">@color/divider_color</item>
-        <item name="strokeWidth">@dimen/width_play_stroke</item>
         <item name="rippleColor">@color/selection_color</item>
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="textAllCaps">false</item>
         <item name="cornerRadius">0dp</item>
     </style>
 
+    <!-- An "Unimportant" material button, used for the "Play" button -->
+    <style name="Widget.MaterialComponents.Button.Unimportant" parent="@style/Widget.MaterialComponents.Button.Base">
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_small</item>
+        <item name="strokeColor">@color/divider_color</item>
+        <item name="strokeWidth">@dimen/width_play_stroke</item>
+    </style>
+
     <!-- An highlighted material button, used for the "Shuffle" button -->
-    <style name="Widget.MaterialComponents.Button.Highlighted" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
+    <style name="Widget.MaterialComponents.Button.Highlighted" parent="@style/Widget.MaterialComponents.Button.Base">
         <item name="android:layout_marginStart">@dimen/margin_small</item>
         <item name="android:layout_marginEnd">@dimen/margin_medium</item>
-        <item name="android:theme">@style/Theme.MaterialComponents</item>
         <item name="rippleColor">@color/selection_color</item>
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="textAllCaps">false</item>
         <item name="android:textColor">@color/background</item>
-        <item name="cornerRadius">0dp</item>
     </style>
 
     <!-- Style for an unbounded button -->
@@ -236,15 +234,5 @@
         <item name="android:layout_marginEnd">@dimen/margin_large</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/padding_play_pause</item>
-    </style>
-
-    <style name="Widget.Design.BottomNavigationView" parent="">
-        <item name="elevation">@dimen/design_bottom_navigation_elevation</item>
-        <item name="enforceTextAppearance">false</item>
-        <item name="enforceMaterialTheme">false</item>
-        <item name="itemBackground">?attr/selectableItemBackgroundBorderless</item>
-        <item name="itemHorizontalTranslationEnabled">true</item>
-        <item name="itemIconSize">@dimen/design_bottom_navigation_icon_size</item>
-        <item name="labelVisibilityMode">auto</item>
     </style>
 </resources>

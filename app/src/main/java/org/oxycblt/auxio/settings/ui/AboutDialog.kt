@@ -36,12 +36,8 @@ class AboutDialog : BottomSheetDialogFragment() {
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
-
         binding.aboutSongCount.text = getString(
             R.string.format_songs_loaded, musicStore.songs.size.toString()
-        )
-        binding.aboutAuthor.text = getString(
-            R.string.format_author, getString(R.string.label_author_oxycblt)
         )
 
         logD("Dialog created.")
