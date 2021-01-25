@@ -78,7 +78,7 @@
     <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
 
     <string name="setting_playback">Audio</string>
-    <string name="setting_playback_audio_focus">Audio focus</string>
+    <string name="setting_playback_audio_focus">Audio Focus</string>
     <string name="setting_playback_focus_desc">Pause when other audio plays [ex. Alarms]</string>
 
     <string name="setting_playback_plug_mgt">Headset plug management</string>
@@ -113,7 +113,7 @@
     <string name="description_genre_image">Genre Image for %s</string>
     <string name="description_track_number">Track %s</string>
     <string name="description_error">Error</string>
-    <string name="description_sort_button">Change Sorting</string>
+    <string name="description_sort_button">Change Sort Order</string>
     <string name="description_sort_none">Default Sort Order</string>
     <string name="description_sort_alpha_down">Sort from A to Z</string>
     <string name="description_sort_alpha_up">Sort from Z to A</string>

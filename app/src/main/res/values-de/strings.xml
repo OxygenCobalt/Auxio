@@ -31,7 +31,7 @@
     <string name="label_licenses">Lizenzen</string>
     <string name="label_faq">FAQ</string>
     <string name="setting_title">Einstellungen</string>
-    <string name="setting_ui">Erscheinungsbild</string>
+    <string name="setting_ui">Aussehen</string>
     <string name="setting_theme">Theme</string>
     <string name="setting_theme_auto">Automatisch</string>
     <string name="setting_theme_day">Hell</string>
@@ -46,7 +46,7 @@
     <string name="setting_playback_plug_mgt">Kopfhöreranschluss</string>
     <string name="setting_behavior_end_loop">Weiderholen</string>
     <string name="setting_behavior_end_stop">Halten</string>
-    p<string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
+    <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
     <string name="setting_quality_covers">MediaStore Cover ignorieren</string>
     <string name="setting_playback">Audio</string>
     <string name="setting_behavior">Verhalten</string>
@@ -119,8 +119,8 @@
     <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
     <string name="setting_color_desc">Zeigen Albumcover an der Benachrichtigung</string>
     <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch die Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
-    <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springt</string>
-    <string name="info_app_desc">Ein einfaches und flexibeles Musik-Player für Android</string>
+    <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
+    <string name="info_app_desc">Ein einfacher und flexibeler Musik-Player für Android</string>
     <plurals name="format_song_count">
         <item quantity="one">%s Lied</item>
         <item quantity="other">%s Lieder</item>
