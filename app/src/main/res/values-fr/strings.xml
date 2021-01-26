@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="label_grant">Accorder</string>
     <string name="label_retry">Réessayer</string>
     <string name="label_library">Bibliothèque</string>
@@ -52,7 +51,7 @@
     <string name="color_label_blue">Bleu</string>
     <string name="color_label_light_blue">Bleu Clair</string>
     <string name="color_label_green">Vert</string>
-    <string name="color_label_light_green">"Vert Clair "</string>
+    <string name="color_label_light_green">Vert Clair</string>
     <string name="color_label_lime">Vert Citron</string>
     <string name="color_label_yellow">Jaune</string>
     <string name="color_label_amber">Ambre</string>

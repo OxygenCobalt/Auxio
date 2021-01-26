@@ -63,6 +63,7 @@
         <item name="android:textSize">@dimen/text_size_detail_header_max</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:textAlignment">viewStart</item>
 
         <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
         <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
@@ -125,6 +126,7 @@
 
     <!-- Base style for any item text -->
     <style name="ItemText">
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">end</item>
@@ -156,6 +158,7 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:background">@drawable/ui_header_dividers</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
     <!-- Style for an action header -->

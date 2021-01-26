@@ -119,7 +119,7 @@
             android:contentDescription="@string/description_sort_button"
             android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
             app:layout_constraintBottom_toBottomOf="@+id/album_song_header"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/album_song_header"
             app:layout_constraintTop_toTopOf="@+id/album_song_header"
             app:sortIcon="@{detailModel.albumSortMode}"
             tools:src="@drawable/ic_sort_numeric_down" />
