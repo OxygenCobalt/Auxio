@@ -9,7 +9,7 @@
     <string name="label_songs">Canciones</string>
     <string name="setting_playback">Audio</string>
     <string name="setting_playback_audio_focus">Enfoque de audio</string>
-    <string name="label_all_songs">Todo Canciones</string>
+    <string name="label_all_songs">Canciones</string>
     <string name="label_search">Buscar</string>
     <string name="label_filter">Filtro</string>
     <string name="label_filter_all">Todo</string>
@@ -79,4 +79,6 @@
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbumes</item>
     </plurals>
+    <string name="hint_search_library">Busca en tu biblioteca…</string>
+    <string name="setting_playback_plug_mgt">Conexión de auriculares</string>
 </resources>

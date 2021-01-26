@@ -20,7 +20,7 @@
     <string name="label_go_album">Aller à l\'album</string>
     <string name="label_go_artist">Aller à l\'artiste</string>
     <string name="label_next_user_queue">Suivant</string>
-    <string name="label_queue">File</string>
+    <string name="label_queue">File d\\\'attente</string>
     <string name="label_about">À propos</string>
     <string name="label_version">Version</string>
     <string name="label_code">Voir sur GitHub</string>
@@ -40,9 +40,9 @@
     <string name="setting_theme_auto">Automatique</string>
     <string name="setting_behavior_end_stop">Arrêter</string>
     <string name="setting_behavior_end_loop">Continuer</string>
-    <string name="setting_behavior_end_loop_pause">Continuer et Arrêter</string>
+    <string name="setting_behavior_end_loop_pause">Continuer et Pause</string>
     <string name="description_error">L’erreur</string>
-    <string name="description_clear_user_queue">Effacer la file</string>
+    <string name="description_clear_user_queue">Effacer la file d\'attente</string>
     <string name="description_play">Lecture</string>
     <string name="description_pause">Pause</string>
     <string name="color_label_pink">Rose</string>
@@ -61,7 +61,7 @@
     <string name="color_label_blue_grey">Bleu Gris</string>
     <string name="color_label_neutral">Neutre</string>
     <string name="format_songs_loaded">Titres chargés: %d</string>
-    <string name="label_all_songs">Tous Titres</string>
+    <string name="label_all_songs">Titres</string>
     <string name="label_queue_add">Ajouter à la file d\'attente</string>
     <string name="setting_lib_display">Bibliothèque Objets</string>
     <string name="color_label_red">Rouge</string>
@@ -78,4 +78,6 @@
     <string name="color_label_teal">Bleu Vert</string>
     <string name="label_queue_added">Ajouté à la file d\'attente</string>
     <string name="label_author">Développé par OxygenCobalt</string>
+    <string name="setting_playback_plug_mgt">Branchement du casque</string>
+    <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
 </resources>

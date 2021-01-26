@@ -9,13 +9,13 @@
     <string name="label_albums">Albums</string>
     <string name="label_songs">Canzoni</string>
     <string name="label_filter_all">Tutto</string>
-    <string name="label_all_songs">Tutto Brani</string>
+    <string name="label_all_songs">Brani</string>
     <string name="label_search">Cerca</string>
     <string name="label_filter">Filtra</string>
-    <string name="label_sort_none">Predefiniti</string>
+    <string name="label_sort_none">Predefinito</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
-    <string name="label_sort">Ordenamiento</string>
+    <string name="label_sort">Ordine</string>
     <string name="label_playback">Schermata di riproduzione</string>
     <string name="label_play">Play</string>
     <string name="description_pause">Pausa</string>
@@ -78,4 +78,6 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Albums</item>
     </plurals>
+    <string name="hint_search_library">Cerca nella tua libreria…</string>
+    <string name="setting_playback_plug_mgt">Inserimento cuffie</string>
 </resources>
