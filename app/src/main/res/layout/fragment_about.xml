@@ -112,8 +112,9 @@
                 android:focusable="true"
                 android:padding="@dimen/padding_medium"
                 android:text="@string/label_code"
+                android:textAlignment="viewStart"
+                app:drawableStartCompat="@drawable/ic_code"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:drawableLeftCompat="@drawable/ic_code"
                 app:layout_constraintBottom_toTopOf="@+id/about_faq"
                 app:layout_constraintTop_toBottomOf="@+id/version_container" />
 
@@ -127,8 +128,9 @@
                 android:focusable="true"
                 android:padding="@dimen/padding_medium"
                 android:text="@string/label_licenses"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:drawableLeftCompat="@drawable/ic_license"
+                app:drawableStartCompat="@drawable/ic_license"
                 app:layout_constraintBottom_toTopOf="@+id/about_song_count"
                 app:layout_constraintTop_toBottomOf="@+id/about_faq" />
 
@@ -142,8 +144,9 @@
                 android:focusable="true"
                 android:padding="@dimen/padding_medium"
                 android:text="@string/label_faq"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:drawableLeftCompat="@drawable/ic_about"
+                app:drawableStartCompat="@drawable/ic_about"
                 app:layout_constraintBottom_toTopOf="@+id/about_licenses"
                 app:layout_constraintTop_toBottomOf="@+id/about_code"
                 tools:layout_editor_absoluteX="0dp" />
@@ -154,8 +157,9 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_medium"
                 android:padding="@dimen/padding_medium"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:drawableLeftCompat="@drawable/ic_song"
+                app:drawableStartCompat="@drawable/ic_song"
                 app:layout_constraintBottom_toTopOf="@+id/about_author"
                 app:layout_constraintTop_toBottomOf="@+id/about_licenses"
                 tools:text="Songs Loaded: 1616" />
@@ -166,8 +170,9 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_medium"
                 android:padding="@dimen/padding_medium"
+                android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:drawableLeftCompat="@drawable/ic_author"
+                app:drawableStartCompat="@drawable/ic_author"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/about_song_count"
                 android:text="@string/label_author" />

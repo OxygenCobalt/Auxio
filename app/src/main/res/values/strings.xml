@@ -111,7 +111,7 @@
     <string name="description_album_cover">Album Cover for %s</string>
     <string name="description_artist_image">Artist Image for %s</string>
     <string name="description_genre_image">Genre Image for %s</string>
-    <string name="description_track_number">Track %s</string>
+    <string name="description_track_number">Track %d</string>
     <string name="description_error">Error</string>
     <string name="description_sort_button">Change Sort Order</string>
     <string name="description_sort_none">Default Sort Order</string>
@@ -158,15 +158,15 @@
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Next From: %s</string>
-    <string name="format_songs_loaded">Songs Loaded: %s</string>
+    <string name="format_songs_loaded">Songs Loaded: %d</string>
 
     <plurals name="format_song_count">
-        <item quantity="one">%s Song</item>
-        <item quantity="other">%s Songs</item>
+        <item quantity="one">%d Song</item>
+        <item quantity="other">%d Songs</item>
     </plurals>
 
     <plurals name="format_album_count">
-        <item quantity="one">%s Album</item>
-        <item quantity="other">%s Albums</item>
+        <item quantity="one">%d Album</item>
+        <item quantity="other">%d Albums</item>
     </plurals>
 </resources>

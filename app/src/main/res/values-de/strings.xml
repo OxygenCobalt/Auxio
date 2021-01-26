@@ -59,7 +59,7 @@
     <string name="description_album_cover">Albumcover für %s</string>
     <string name="description_artist_image">Künstlerbild für %s</string>
     <string name="description_genre_image">Genrebild für %s</string>
-    <string name="description_track_number">Titel %s</string>
+    <string name="description_track_number">Titel %d</string>
     <string name="description_error">Fehler</string>
     <string name="placeholder_no_date">Kein Datum</string>
     <string name="color_label_red">Rot</string>
@@ -88,7 +88,7 @@
     <string name="placeholder_genre">Unbekanntes Genre</string>
     <string name="placeholder_artist">Unbekannter Künstler</string>
     <string name="placeholder_album">Unbekanntes Album</string>
-    <string name="format_songs_loaded">Lieden geladen: %s</string>
+    <string name="format_songs_loaded">Lieden geladen: %d</string>
     <string name="label_author">Entwickelt von OxygenCobalt</string>
     <string name="description_play">Abspielen</string>
     <string name="description_pause">Pausieren</string>
@@ -122,12 +122,12 @@
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="info_app_desc">Ein einfacher und flexibeler Musik-Player für Android</string>
     <plurals name="format_song_count">
-        <item quantity="one">%s Lied</item>
-        <item quantity="other">%s Lieder</item>
+        <item quantity="one">%d Lied</item>
+        <item quantity="other">%d Lieder</item>
     </plurals>
 
     <plurals name="format_album_count">
-        <item quantity="one">%s Album</item>
-        <item quantity="other">%s Alben</item>
+        <item quantity="one">%d Album</item>
+        <item quantity="other">%d Alben</item>
     </plurals>
 </resources>

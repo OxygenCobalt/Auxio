@@ -60,12 +60,12 @@
     <string name="color_label_grey">Gris</string>
     <string name="color_label_blue_grey">Bleu Gris</string>
     <string name="color_label_neutral">Neutre</string>
-    <string name="format_songs_loaded">Titres chargés: %s</string>
+    <string name="format_songs_loaded">Titres chargés: %d</string>
     <string name="label_all_songs">Tous Titres</string>
     <string name="label_queue_add">Ajouter à la file d\'attente</string>
     <string name="setting_lib_display">Bibliothèque Objets</string>
     <string name="color_label_red">Rouge</string>
-    <string name="description_track_number">Morceau %s</string>
+    <string name="description_track_number">Morceau %d</string>
     <plurals name="format_song_count">
         <item quantity="one">%s Titre</item>
         <item quantity="other">%s Titres</item>

@@ -63,18 +63,18 @@
     <string name="color_label_grey">Gris</string>
     <string name="color_label_blue_grey">Azul Gris</string>
     <string name="color_label_neutral">Neutro</string>
-    <string name="format_songs_loaded">Canciones cargado: %s</string>
+    <string name="format_songs_loaded">Canciones encontradas: %d</string>
     <string name="description_error">Error</string>
-    <string name="description_track_number">Pista %s</string>
+    <string name="description_track_number">Pista %d</string>
     <string name="error_no_music">No se encontró música</string>
 
     <plurals name="format_song_count">
-        <item quantity="one">%s Canción</item>
-        <item quantity="other">%s Canciones</item>
+        <item quantity="one">%d Canción</item>
+        <item quantity="other">%d Canciones</item>
     </plurals>
 
     <plurals name="format_album_count">
-        <item quantity="one">%s Álbum</item>
-        <item quantity="other">%s Álbumes</item>
+        <item quantity="one">%d Álbum</item>
+        <item quantity="other">%d Álbumes</item>
     </plurals>
 </resources>
