@@ -23,7 +23,7 @@
     <string name="label_go_album">Zum Album gehen</string>
     <string name="label_queue">Warteschlange</string>
     <string name="label_queue_add">Zur Warteschlange hinzufügen</string>
-    <string name="label_queue_added">Hat der Warteschlange hinzugefügt</string>
+    <string name="label_queue_added">der Warteschlange hinzugefügt</string>
     <string name="label_next_user_queue">Nächsten im Warteschlange</string>
     <string name="label_about">Über</string>
     <string name="label_version">Version</string>

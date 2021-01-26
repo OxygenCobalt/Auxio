@@ -20,7 +20,7 @@
     <string name="label_go_album">Aller à l\'album</string>
     <string name="label_go_artist">Aller à l\'artiste</string>
     <string name="label_next_user_queue">Suivant</string>
-    <string name="label_queue">File de lecture</string>
+    <string name="label_queue">File</string>
     <string name="label_about">À propos</string>
     <string name="label_version">Version</string>
     <string name="label_code">Voir sur GitHub</string>
@@ -42,7 +42,7 @@
     <string name="setting_behavior_end_loop">Continuer</string>
     <string name="setting_behavior_end_loop_pause">Continuer et Arrêter</string>
     <string name="description_error">L’erreur</string>
-    <string name="description_clear_user_queue">Effacer la file de lecture</string>
+    <string name="description_clear_user_queue">Effacer la file</string>
     <string name="description_play">Lecture</string>
     <string name="description_pause">Pause</string>
     <string name="color_label_pink">Rose</string>
@@ -77,4 +77,5 @@
     </plurals>
     <string name="color_label_teal">Bleu Vert</string>
     <string name="label_queue_added">Ajouté à la file d\'attente</string>
+    <string name="label_author">Développé par OxygenCobalt</string>
 </resources>

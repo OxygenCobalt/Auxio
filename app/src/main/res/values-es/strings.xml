@@ -22,9 +22,9 @@
     <string name="label_shuffle">Aleatorio</string>
     <string name="label_go_artist">Ir al artista</string>
     <string name="label_go_album">Ir al álbum</string>
-    <string name="label_queue_add">Agregar a la cola de reproducción</string>
-    <string name="label_queue">Cola de reproducción</string>
-    <string name="label_queue_added">Agregada a la cola de reproducción</string>
+    <string name="label_queue_add">Agregar a la cola</string>
+    <string name="label_queue">Cola</string>
+    <string name="label_queue_added">Agregada a la cola</string>
     <string name="label_next_user_queue">A continuación</string>
     <string name="label_about">Acerca de</string>
     <string name="label_version">Versión</string>
@@ -67,6 +67,8 @@
     <string name="description_error">Error</string>
     <string name="description_track_number">Pista %d</string>
     <string name="error_no_music">No se encontró música</string>
+    <string name="setting_behavior_keep_shuffle">Recordar aleatorio</string>
+    <string name="label_author">Desarrollado por OxygenCobalt</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%d Canción</item>
