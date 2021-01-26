@@ -18,9 +18,9 @@
     <string name="label_playback">Aktuelle Wiedergabe</string>
     <string name="label_play">Abspielen</string>
     <string name="label_shuffle">Zufällig</string>
-    <string name="label_play_artist">vom Künstler abspielen</string>
-    <string name="label_go_artist">zum Künstler gehen</string>
-    <string name="label_go_album">zum Album gehen</string>
+    <string name="label_play_artist">Vom Künstler abspielen</string>
+    <string name="label_go_artist">Zum Künstler gehen</string>
+    <string name="label_go_album">Zum Album gehen</string>
     <string name="label_queue">Warteschlange</string>
     <string name="label_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="label_queue_added">Hat der Warteschlange hinzugefügt</string>
@@ -110,9 +110,9 @@
     <string name="description_sort_alpha_down">von A bis Z sortieren</string>
     <string name="description_sort_alpha_up">von Z bis A sortieren</string>
     <string name="error_no_music">Keine Musik gefunden</string>
-    <string name="label_play_all_songs">Abspielen von alle Lieder</string>
-    <string name="label_play_album">Abspielen vom Album</string>
-    <string name="label_play_genre">Abspielen vom Genre</string>
+    <string name="label_play_all_songs">Von alle Lieder abspielen</string>
+    <string name="label_play_album">Vom Album abspielen</string>
+    <string name="label_play_genre">Vom Genre abspielen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
     <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
     <string name="setting_behavior_keep_shuffle_desc">Lassen Zufällig an, wenn ein neues Lied anspielen</string>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_retry">Reintentar</string>
+    <string name="label_grant">Otorgar</string>
+    <string name="label_library">Biblioteca</string>
+    <string name="label_genres">Géneros</string>
+    <string name="label_artists">Artistas</string>
+    <string name="label_albums">Álbumes</string>
+    <string name="label_songs">Canciones</string>
+    <string name="setting_playback">Audio</string>
+    <string name="setting_playback_audio_focus">Enfoque de audio</string>
+    <string name="label_all_songs">Todo Canciones</string>
+    <string name="label_search">Buscar</string>
+    <string name="label_filter">Filtro</string>
+    <string name="label_filter_all">Todo</string>
+    <string name="label_sort">Ordenamiento</string>
+    <string name="label_sort_none">Predefinido</string>
+    <string name="label_sort_alpha_down">A-Z</string>
+    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_playback">Reproducción actual</string>
+    <string name="label_play">Reproducir</string>
+    <string name="label_shuffle">Aleatorio</string>
+    <string name="label_go_artist">Ir al artista</string>
+    <string name="label_go_album">Ir al álbum</string>
+    <string name="label_queue_add">Agregar a la cola de reproducción</string>
+    <string name="label_queue">Cola de reproducción</string>
+    <string name="label_queue_added">Agregada a la cola de reproducción</string>
+    <string name="label_next_user_queue">A continuación</string>
+    <string name="label_about">Acerca de</string>
+    <string name="label_version">Versión</string>
+    <string name="label_code">Ver en GitHub</string>
+    <string name="label_licenses">Licencias</string>
+    <string name="label_faq">FAQ</string>
+    <string name="setting_title">Preferencias</string>
+    <string name="setting_ui">Apariencia</string>
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_auto">Automático</string>
+    <string name="setting_theme_day">Claro</string>
+    <string name="setting_theme_night">Oscuro</string>
+    <string name="setting_accent">Color secundario</string>
+    <string name="setting_color_notif">Ajustar color de notificación</string>
+    <string name="setting_behavior">Funcionamiento</string>
+    <string name="setting_behavior_end_stop">Detener</string>
+    <string name="setting_behavior_end_loop">Continuar</string>
+    <string name="setting_behavior_end_loop_pause">Continuar y Pausar</string>
+    <string name="description_pause">Pausar</string>
+    <string name="description_play">Reproducir</string>
+    <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
+    <string name="color_label_red">Rojo</string>
+    <string name="color_label_pink">Rosa</string>
+    <string name="color_label_purple">Morado</string>
+    <string name="color_label_indigo">Añil</string>
+    <string name="color_label_blue">Azul</string>
+    <string name="color_label_light_blue">Azul Claro</string>
+    <string name="color_label_teal">Azul Verde</string>
+    <string name="color_label_green">Verde</string>
+    <string name="color_label_light_green">Verde Claro</string>
+    <string name="color_label_lime">"Verde Amarillo "</string>
+    <string name="color_label_yellow">Amarillo</string>
+    <string name="color_label_amber">Ambar</string>
+    <string name="color_label_orange">Naranja</string>
+    <string name="color_label_brown">Marrón</string>
+    <string name="color_label_grey">Gris</string>
+    <string name="color_label_blue_grey">Azul Gris</string>
+    <string name="color_label_neutral">Neutro</string>
+    <string name="format_songs_loaded">Canciones cargado: %s</string>
+    <string name="description_error">Error</string>
+    <string name="description_track_number">Pista %s</string>
+    <string name="error_no_music">No se encontró música</string>
+
+    <plurals name="format_song_count">
+        <item quantity="one">%s Canción</item>
+        <item quantity="other">%s Canciones</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%s Álbum</item>
+        <item quantity="other">%s Álbumes</item>
+    </plurals>
+</resources>
