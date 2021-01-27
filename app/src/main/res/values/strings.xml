@@ -158,7 +158,7 @@
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Next From: %s</string>
-    <string name="format_songs_loaded">Songs Loaded: %d</string>
+    <string name="format_songs_loaded">Songs loaded: %d</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%d Song</item>
