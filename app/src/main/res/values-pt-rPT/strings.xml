@@ -76,4 +76,5 @@
         <item quantity="other">%d Álbuns</item>
     </plurals>
     <string name="setting_quality_covers">Ignorar capas Media Store</string>
+    <string name="label_faq">FAQ</string>
 </resources>

@@ -39,7 +39,7 @@
     <string name="setting_theme_auto">Automatico</string>
     <string name="setting_theme_day">Chiaro</string>
     <string name="setting_theme_night">Scuro</string>
-    <string name="setting_accent">Colore secondario</string>
+    <string name="setting_accent">Accento</string>
     <string name="setting_color_notif">Colora notifica</string>
     <string name="setting_playback_audio_focus">Focus audio</string>
     <string name="setting_behavior">Comportamento</string>

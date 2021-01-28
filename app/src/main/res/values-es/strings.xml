@@ -37,7 +37,7 @@
     <string name="setting_theme_auto">Automático</string>
     <string name="setting_theme_day">Claro</string>
     <string name="setting_theme_night">Oscuro</string>
-    <string name="setting_accent">Color secundario</string>
+    <string name="setting_accent">Acento</string>
     <string name="setting_color_notif">Ajustar color de notificación</string>
     <string name="setting_behavior">Funcionamiento</string>
     <string name="setting_behavior_end_stop">Detener</string>

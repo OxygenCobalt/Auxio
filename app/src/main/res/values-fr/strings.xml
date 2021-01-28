@@ -31,7 +31,7 @@
     <string name="setting_theme_day">Clair</string>
     <string name="setting_theme_night">Sombre</string>
     <string name="setting_theme">Thème</string>
-    <string name="setting_accent">Couleur secondaire</string>
+    <string name="setting_accent">Couleur d\'accentuation</string>
     <string name="setting_color_notif">Notification colorée</string>
     <string name="setting_playback">Audio</string>
     <string name="setting_playback_audio_focus">Audio Focus</string>

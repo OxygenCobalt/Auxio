@@ -30,11 +30,11 @@
     <string name="label_code">Открыть на GitHub</string>
     <string name="label_licenses">Лицензии</string>
     <string name="setting_title">Настройки</string>
-    <string name="setting_ui">Вид экрана воспроизведения</string>
+    <string name="setting_ui">Внешний Вид</string>
     <string name="setting_theme">Тема</string>
     <string name="setting_theme_night">Темная</string>
     <string name="setting_theme_day">Светлая</string>
-    <string name="setting_accent">Цвет акцента</string>
+    <string name="setting_accent">Акцент</string>
     <string name="setting_theme_auto">Автоматически</string>
     <string name="setting_color_notif">Цветное уведомление</string>
     <string name="setting_playback">Аудио</string>
@@ -76,4 +76,5 @@
         <item quantity="other">%d Альбомы</item>
     </plurals>
     <string name="setting_quality_covers">Игнорировать хранилище обложек альбомов</string>
+    <string name="label_faq">FAQ</string>
 </resources>
