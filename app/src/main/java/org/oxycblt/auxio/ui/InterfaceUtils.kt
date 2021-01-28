@@ -25,6 +25,8 @@ import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 
+// A Variety of shortcut, convenience, hacks, and extension functions used across Auxio.
+
 // --- VIEW CONFIGURATION ---
 
 /**
@@ -48,17 +50,17 @@ fun TextView.setTextColorResource(@ColorRes color: Int) {
 }
 
 /**
- * Apply accents to a [MaterialButton]
+ * Apply accents to a [MaterialButton] manually.
+ * Yes, I could change my theming to Material but that would have so many second-and-third order
+ * effects that I *really* dont want to deal with it. This hack works.
  * @param highlighted Whether the MaterialButton has an "Unimportant" style or not.
  * Required because you cant determine a style of a view before API 29
  */
 fun MaterialButton.applyAccents(highlighted: Boolean) {
-    val accent = Accent.get().color.toColor(context)
-
     if (highlighted) {
-        backgroundTintList = ColorStateList.valueOf(accent)
+        backgroundTintList = Accent.get().color.toStateList(context)
     } else {
-        setTextColor(accent)
+        setTextColor(Accent.get().color.toColor(context))
     }
 }
 
@@ -84,7 +86,7 @@ fun String.createToast(context: Context) {
 
 /**
  * Ensure that a not-null [AppCompatActivity] will be returned.
- * @throws IllegalStateException When there is no activity or if the activity is null
+ * @throws IllegalStateException When there is no [AppCompatActivity] or if the activity is null
  */
 fun Fragment.requireCompatActivity(): AppCompatActivity {
     val activity = requireActivity()
@@ -127,6 +129,7 @@ fun Int.toColor(context: Context): Int {
  * Resolve a color and turn it into a [ColorStateList]
  * @param context [Context] required
  * @return The resolved color as a [ColorStateList]
+ * @see toColor
  */
 fun Int.toStateList(context: Context): ColorStateList = ColorStateList.valueOf(toColor(context))
 

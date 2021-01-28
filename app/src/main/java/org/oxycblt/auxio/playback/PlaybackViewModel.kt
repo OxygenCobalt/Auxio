@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
@@ -21,6 +22,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.createToast
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -315,6 +317,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     fun save(context: Context) {
         viewModelScope.launch {
             playbackManager.saveStateToDatabase(context)
+
+            context.getString(R.string.debug_state_saved).createToast(context)
         }
     }
 

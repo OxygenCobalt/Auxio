@@ -56,4 +56,18 @@
     <string name="color_label_grey">Γκρί</string>
     <string name="color_label_blue_grey">Γαλάζιος Γκρί</string>
     <string name="format_songs_loaded">Τραγούδια φορτώθηκε: %d</string>
+    <plurals name="format_song_count">
+        <item quantity="one">%d Τραγούδι</item>
+        <item quantity="other">%d Τραγούδια</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%d Άλμπουμ</item>
+        <item quantity="other">%d Άλμπουμ</item>
+    </plurals>
+    <string name="setting_behavior_end_stop">Διακοπή</string>
+    <string name="label_sort_alpha_down">Α-Ω</string>
+    <string name="label_sort_alpha_up">Ω-Α</string>
+    <string name="label_sort_none">Προεπιλεγμένη</string>
+    <string name="setting_quality_covers">Παράληψη των Media Store εξωφύλλων</string>
 </resources>

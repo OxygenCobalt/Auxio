@@ -38,7 +38,7 @@ class MusicLoader(private val app: Application) {
             return Response.FAILED
         }
 
-        if (songs.size == 0) {
+        if (songs.isEmpty()) {
             return Response.NO_MUSIC
         }
 

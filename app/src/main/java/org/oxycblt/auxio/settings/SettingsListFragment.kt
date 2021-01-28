@@ -21,7 +21,6 @@ import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.ui.AccentAdapter
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.createToast
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -134,7 +133,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.Keys.KEY_DEBUG_SAVE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.save(requireContext())
-                        getString(R.string.debug_state_saved).createToast(requireContext())
 
                         true
                     }

@@ -80,4 +80,5 @@
     </plurals>
     <string name="hint_search_library">Cerca nella tua libreria…</string>
     <string name="setting_playback_plug_mgt">Inserimento cuffie</string>
+    <string name="setting_quality_covers">Ignora le copertine del Media Store</string>
 </resources>

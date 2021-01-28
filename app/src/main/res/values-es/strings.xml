@@ -81,4 +81,5 @@
     </plurals>
     <string name="hint_search_library">Busca en tu biblioteca…</string>
     <string name="setting_playback_plug_mgt">Conexión de auriculares</string>
+    <string name="setting_quality_covers">Ignorar imágenes de la librería del sistema</string>
 </resources>

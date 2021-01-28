@@ -63,7 +63,7 @@
     <string name="format_songs_loaded">Titres chargés: %d</string>
     <string name="label_all_songs">Titres</string>
     <string name="label_queue_add">Ajouter à la file d\'attente</string>
-    <string name="setting_lib_display">Bibliothèque Objets</string>
+    <string name="setting_lib_display">Objets Bibliothèque</string>
     <string name="color_label_red">Rouge</string>
     <string name="description_track_number">Morceau %d</string>
     <plurals name="format_song_count">
@@ -80,4 +80,5 @@
     <string name="label_author">Développé par OxygenCobalt</string>
     <string name="setting_playback_plug_mgt">Branchement du casque</string>
     <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
+    <string name="setting_quality_covers">Ignorer le stockage des pochettes</string>
 </resources>

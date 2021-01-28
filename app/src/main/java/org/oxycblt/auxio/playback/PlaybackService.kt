@@ -502,7 +502,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     /**
      * A [BroadcastReceiver] for receiving system events from the media notification or the headset.
      */
-    inner class SystemEventReceiver : BroadcastReceiver() {
+    private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
 

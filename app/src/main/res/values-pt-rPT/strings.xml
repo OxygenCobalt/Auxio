@@ -61,6 +61,11 @@
     <string name="color_label_brown">Moreno</string>
     <string name="color_label_grey">Grisalho</string>
     <string name="color_label_blue_grey">Azul-grisalho</string>
+    <string name="format_songs_loaded">Músicas carregado: %d</string>
+    <string name="label_about">Sobre</string>
+    <string name="label_version">Versão</string>
+    <string name="label_code">Ver no GitHub</string>
+    <string name="label_licenses">Licenças</string>
     <plurals name="format_song_count">
         <item quantity="one">%d Música</item>
         <item quantity="other">%d Músicas</item>
@@ -70,5 +75,5 @@
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbuns</item>
     </plurals>
-    <string name="format_songs_loaded">Músicas carregado: %d</string>
+    <string name="setting_quality_covers">Ignorar capas Media Store</string>
 </resources>
