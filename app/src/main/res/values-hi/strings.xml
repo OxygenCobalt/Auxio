@@ -39,4 +39,14 @@
     <string name="description_error">त्रुटी</string>
     <string name="description_play">चलाएं</string>
     <string name="description_pause">रोकें</string>
+    <plurals name="format_song_count">
+        <item quantity="one">%d गीत</item>
+        <item quantity="other">%d गीत</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%d एल्बम</item>
+        <item quantity="other">%d एल्बम</item>
+    </plurals>
+    <string name="hint_search_library">संग्रह में खोजें</string>
 </resources>
