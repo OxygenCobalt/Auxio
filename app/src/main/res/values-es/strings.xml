@@ -1,51 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Reintentar</string>
     <string name="label_grant">Otorgar</string>
+
     <string name="label_library">Biblioteca</string>
     <string name="label_genres">Géneros</string>
     <string name="label_artists">Artistas</string>
     <string name="label_albums">Álbumes</string>
     <string name="label_songs">Canciones</string>
-    <string name="setting_playback">Audio</string>
-    <string name="setting_playback_audio_focus">Enfoque de audio</string>
-    <string name="label_all_songs">Canciones</string>
+    <string name="label_all_songs">Canciones Todos</string>
+
     <string name="label_search">Buscar</string>
     <string name="label_filter">Filtro</string>
     <string name="label_filter_all">Todo</string>
+
     <string name="label_sort">Ordenamiento</string>
     <string name="label_sort_none">Predefinido</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
-    <string name="label_playback">Reproducción actual</string>
+
     <string name="label_play">Reproducir</string>
     <string name="label_shuffle">Aleatorio</string>
-    <string name="label_go_artist">Ir al artista</string>
-    <string name="label_go_album">Ir al álbum</string>
-    <string name="label_queue_add">Agregar a la cola</string>
+    <string name="label_playback">Reproducción actual</string>
+
     <string name="label_queue">Cola</string>
+    <string name="label_queue_add">Agregar a la cola</string>
     <string name="label_queue_added">Agregada a la cola</string>
     <string name="label_next_user_queue">A continuación</string>
+
+    <string name="label_go_artist">Ir al artista</string>
+    <string name="label_go_album">Ir al álbum</string>
+
     <string name="label_about">Acerca de</string>
     <string name="label_version">Versión</string>
     <string name="label_code">Ver en GitHub</string>
-    <string name="label_licenses">Licencias</string>
     <string name="label_faq">FAQ</string>
+    <string name="label_licenses">Licencias</string>
+    <string name="label_author">Desarrollado por OxygenCobalt</string>
+
+    <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Preferencias</string>
+
     <string name="setting_ui">Apariencia</string>
     <string name="setting_theme">Tema</string>
     <string name="setting_theme_auto">Automático</string>
     <string name="setting_theme_day">Claro</string>
     <string name="setting_theme_night">Oscuro</string>
     <string name="setting_accent">Acento</string>
+
     <string name="setting_color_notif">Ajustar color de notificación</string>
+    <string name="setting_quality_covers">Ignorar imágenes de la librería del sistema</string>
+
+    <string name="setting_audio">Audio</string>
+    <string name="setting_audio_focus">Enfoque de audio</string>
+    <string name="setting_audio_plug_mgt">Conexión de auriculares</string>
+
     <string name="setting_behavior">Funcionamiento</string>
     <string name="setting_behavior_end_stop">Detener</string>
     <string name="setting_behavior_end_loop">Continuar</string>
     <string name="setting_behavior_end_loop_pause">Continuar y Pausar</string>
+    <string name="setting_behavior_keep_shuffle">Recordar aleatorio</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">No se encontró música</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Pista %d</string>
+    <string name="description_error">Error</string>
+    <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
     <string name="description_pause">Pausar</string>
     <string name="description_play">Reproducir</string>
-    <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Busca en tu biblioteca…</string>
+
+    <!-- Color Label namespace | Accent names -->
     <string name="color_label_red">Rojo</string>
     <string name="color_label_pink">Rosa</string>
     <string name="color_label_purple">Morado</string>
@@ -63,12 +93,9 @@
     <string name="color_label_grey">Gris</string>
     <string name="color_label_blue_grey">Azul Gris</string>
     <string name="color_label_neutral">Neutro</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Canciones encontradas: %d</string>
-    <string name="description_error">Error</string>
-    <string name="description_track_number">Pista %d</string>
-    <string name="error_no_music">No se encontró música</string>
-    <string name="setting_behavior_keep_shuffle">Recordar aleatorio</string>
-    <string name="label_author">Desarrollado por OxygenCobalt</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%d Canción</item>
@@ -79,7 +106,4 @@
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbumes</item>
     </plurals>
-    <string name="hint_search_library">Busca en tu biblioteca…</string>
-    <string name="setting_playback_plug_mgt">Conexión de auriculares</string>
-    <string name="setting_quality_covers">Ignorar imágenes de la librería del sistema</string>
 </resources>

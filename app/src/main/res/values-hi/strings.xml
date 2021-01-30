@@ -1,44 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">फिर से कोशिश करे</string>
     <string name="label_grant">अनुदान</string>
+
     <string name="label_artists">कलाकार</string>
     <string name="label_library">पुस्तकालय</string>
     <string name="label_albums">एल्बम</string>
     <string name="label_songs">गीत</string>
     <string name="label_all_songs">गीत</string>
+
     <string name="label_filter">छलनी</string>
     <string name="label_search">खोजें</string>
     <string name="label_filter_all">सारे</string>
+
     <string name="label_sort">क्रमबद्ध</string>
     <string name="label_sort_none">डिफ़ॉल्ट</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
+
     <string name="label_play">चलाएं</string>
     <string name="label_shuffle">शफ़ल</string>
+
     <string name="label_go_artist">कलाकार पर जाएं</string>
     <string name="label_go_album">एल्बम पर जाएं</string>
+
     <string name="label_queue">पंक्ति</string>
     <string name="label_queue_add">क़तार में जोड़ें</string>
     <string name="label_queue_added">कतार में जोड़ा गया</string>
+
     <string name="label_about">इसके बारे में</string>
     <string name="label_code">GitHub में देखें</string>
-    <string name="label_licenses">लाइसेंस</string>
     <string name="label_faq">FAQ</string>
+    <string name="label_licenses">लाइसेंस</string>
+
+    <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">सेटिंग्स</string>
+
     <string name="setting_theme">थीम</string>
     <string name="setting_theme_auto">सफ़ेद</string>
     <string name="setting_theme_day">गहरा</string>
     <string name="setting_theme_night">स्वचलित</string>
     <string name="setting_accent">एक्सेंट</string>
+
     <string name="setting_color_notif">अधिसूचना को रंग दें</string>
-    <string name="setting_playback">ऑडियो</string>
+
+    <string name="setting_audio">ऑडियो</string>
+    <string name="setting_audio_focus">ऑडियो फोकस</string>
+    <string name="setting_audio_plug_mgt">हेडसेट प्लग</string>
+
     <string name="setting_behavior">चाल चलन</string>
     <string name="setting_behavior_end_loop">जारी</string>
     <string name="setting_behavior_end_stop">बंद</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">कोई संगीत नहीं मिला</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
     <string name="description_error">त्रुटी</string>
     <string name="description_play">चलाएं</string>
     <string name="description_pause">रोकें</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">संग्रह में खोजें</string>
+
+    <!-- Color Label namespace | Accent names -->
+
+    <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="format_song_count">
         <item quantity="one">%d गीत</item>
         <item quantity="other">%d गीत</item>
@@ -48,5 +76,4 @@
         <item quantity="one">%d एल्बम</item>
         <item quantity="other">%d एल्बम</item>
     </plurals>
-    <string name="hint_search_library">संग्रह में खोजें</string>
 </resources>

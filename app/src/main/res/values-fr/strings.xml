@@ -1,55 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_grant">Accorder</string>
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Réessayer</string>
+    <string name="label_grant">Accorder</string>
+
     <string name="label_library">Bibliothèque</string>
     <string name="label_genres">Genres</string>
     <string name="label_artists">Artistes</string>
     <string name="label_albums">Albums</string>
     <string name="label_songs">Titres</string>
+    <string name="label_all_songs">Titres Tous</string>
+
     <string name="label_search">Rechercher</string>
     <string name="label_filter">Filtre</string>
     <string name="label_filter_all">Tout</string>
+
     <string name="label_sort">Ordre de tri</string>
     <string name="label_sort_none">Défaut</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
-    <string name="label_playback">Lecture en cours</string>
+
     <string name="label_play">Lecture</string>
     <string name="label_shuffle">Aléatoire</string>
+    <string name="label_playback">Lecture en cours</string>
+
+    <string name="label_queue">File d\'attente</string>
+    <string name="label_queue_add">Ajouter à la file d\'attente</string>
+    <string name="label_queue_added">Ajouté à la file d\'attente</string>
+    <string name="label_next_user_queue">Suivant</string>
+
     <string name="label_go_album">Aller à l\'album</string>
     <string name="label_go_artist">Aller à l\'artiste</string>
-    <string name="label_next_user_queue">Suivant</string>
-    <string name="label_queue">File d\\\'attente</string>
+
     <string name="label_about">À propos</string>
     <string name="label_version">Version</string>
     <string name="label_code">Voir sur GitHub</string>
-    <string name="label_licenses">Licences</string>
     <string name="label_faq">FAQ</string>
+    <string name="label_licenses">Licences</string>
+    <string name="label_author">Développé par OxygenCobalt</string>
+
+    <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Paramètres</string>
+
     <string name="setting_ui">Apparence</string>
+    <string name="setting_theme">Thème</string>
+    <string name="setting_theme_auto">Automatique</string>
     <string name="setting_theme_day">Clair</string>
     <string name="setting_theme_night">Sombre</string>
-    <string name="setting_theme">Thème</string>
     <string name="setting_accent">Couleur d\'accentuation</string>
+
+    <string name="setting_lib_display">Objets Bibliothèque</string>
     <string name="setting_color_notif">Notification colorée</string>
-    <string name="setting_playback">Audio</string>
-    <string name="setting_playback_audio_focus">Audio Focus</string>
+    <string name="setting_quality_covers">Ignorer le stockage des pochettes</string>
+
+    <string name="setting_audio">Audio</string>
+    <string name="setting_audio_focus">Audio Focus</string>
+    <string name="setting_audio_plug_mgt">Branchement du casque</string>
+
     <string name="setting_behavior">Comportement</string>
-    <string name="error_no_music">Pas de musique trouvée</string>
-    <string name="setting_theme_auto">Automatique</string>
     <string name="setting_behavior_end_stop">Arrêter</string>
     <string name="setting_behavior_end_loop">Continuer</string>
     <string name="setting_behavior_end_loop_pause">Continuer et Pause</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Pas de musique trouvée</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Morceau %d</string>
     <string name="description_error">L’erreur</string>
     <string name="description_clear_user_queue">Effacer la file d\'attente</string>
     <string name="description_play">Lecture</string>
     <string name="description_pause">Pause</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="color_label_red">Rouge</string>
     <string name="color_label_pink">Rose</string>
-    <string name="color_label_purple">"Violet "</string>
+    <string name="color_label_purple">Violet</string>
     <string name="color_label_indigo">Indigo</string>
     <string name="color_label_blue">Bleu</string>
     <string name="color_label_light_blue">Bleu Clair</string>
+    <string name="color_label_teal">Bleu Vert</string>
     <string name="color_label_green">Vert</string>
     <string name="color_label_light_green">Vert Clair</string>
     <string name="color_label_lime">Vert Citron</string>
@@ -60,12 +93,10 @@
     <string name="color_label_grey">Gris</string>
     <string name="color_label_blue_grey">Bleu Gris</string>
     <string name="color_label_neutral">Neutre</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Titres chargés: %d</string>
-    <string name="label_all_songs">Titres</string>
-    <string name="label_queue_add">Ajouter à la file d\'attente</string>
-    <string name="setting_lib_display">Objets Bibliothèque</string>
-    <string name="color_label_red">Rouge</string>
-    <string name="description_track_number">Morceau %d</string>
+
     <plurals name="format_song_count">
         <item quantity="one">%s Titre</item>
         <item quantity="other">%s Titres</item>
@@ -75,10 +106,4 @@
         <item quantity="one">%s Album</item>
         <item quantity="other">%s Albums</item>
     </plurals>
-    <string name="color_label_teal">Bleu Vert</string>
-    <string name="label_queue_added">Ajouté à la file d\'attente</string>
-    <string name="label_author">Développé par OxygenCobalt</string>
-    <string name="setting_playback_plug_mgt">Branchement du casque</string>
-    <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
-    <string name="setting_quality_covers">Ignorer le stockage des pochettes</string>
 </resources>

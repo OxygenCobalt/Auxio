@@ -1,36 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">Ein einfacher und flexibeler Musik-Player für Android</string>
+    <string name="info_channel_name">Musikwiedergabe</string>
+    <string name="info_service_desc">der Musikwiedergabe-Service von Auxio</string>
+
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Wieder Versuchen</string>
     <string name="label_grant">Gewähren</string>
+
     <string name="label_library">Bibliothek</string>
     <string name="label_genres">Genres</string>
     <string name="label_artists">Künstler</string>
     <string name="label_albums">Alben</string>
     <string name="label_songs">Lieder</string>
     <string name="label_all_songs">Alle Lieder</string>
+
     <string name="label_search">Suchen</string>
     <string name="label_filter">Filtern</string>
     <string name="label_filter_all">Alles</string>
+
     <string name="label_sort">Sortierung</string>
     <string name="label_sort_none">Standard</string>
     <string name="label_sort_alpha_down">A-Z</string>
     <string name="label_sort_alpha_up">Z-A</string>
-    <string name="label_playback">Aktuelle Wiedergabe</string>
+
     <string name="label_play">Abspielen</string>
     <string name="label_shuffle">Zufällig</string>
+    <string name="label_play_all_songs">Von alle Lieder abspielen</string>
+    <string name="label_play_album">Vom Album abspielen</string>
     <string name="label_play_artist">Vom Künstler abspielen</string>
-    <string name="label_go_artist">Zum Künstler gehen</string>
-    <string name="label_go_album">Zum Album gehen</string>
+    <string name="label_play_genre">Vom Genre abspielen</string>
+    <string name="label_playback">Aktuelle Wiedergabe</string>
+
     <string name="label_queue">Warteschlange</string>
     <string name="label_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="label_queue_added">Der Warteschlange hinzugefügt</string>
     <string name="label_next_user_queue">Nächsten im Warteschlange</string>
+
+    <string name="label_go_artist">Zum Künstler gehen</string>
+    <string name="label_go_album">Zum Album gehen</string>
+
     <string name="label_about">Über</string>
     <string name="label_version">Version</string>
     <string name="label_code">Auf GitHub ansehen</string>
-    <string name="label_licenses">Lizenzen</string>
     <string name="label_faq">FAQ</string>
+    <string name="label_licenses">Lizenzen</string>
+    <string name="label_author">Entwickelt von OxygenCobalt</string>
+
+    <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Einstellungen</string>
+
     <string name="setting_ui">Aussehen</string>
     <string name="setting_theme">Theme</string>
     <string name="setting_theme_auto">Automatisch</string>
@@ -38,30 +58,73 @@
     <string name="setting_theme_night">Dunkel</string>
     <string name="setting_accent">Akzentfarbe</string>
     <string name="setting_accent_unknown">Unbekannte Akzentfarbe</string>
+
     <string name="setting_display">Anzeige</string>
     <string name="setting_lib_display">Musikbibliothek-Items</string>
     <string name="setting_color_notif">Benachrichtigung farblich anpassen</string>
+    <string name="setting_color_desc">Albumcover am Benachrichtigung zeigen</string>
     <string name="setting_show_covers">Albumcover anzeigen</string>
-    <string name="setting_playback_audio_focus">Audiofokus</string>
-    <string name="setting_playback_plug_mgt">Kopfhöreranschluss</string>
-    <string name="setting_behavior_end_loop">Weiderholen</string>
-    <string name="setting_behavior_end_stop">Halten</string>
-    <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
+    <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
     <string name="setting_quality_covers">MediaStore Cover ignorieren</string>
-    <string name="setting_playback">Audio</string>
+    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch die Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
+    <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
+    <string name="setting_use_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
+    <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
+
+    <string name="setting_audio">Audio</string>
+    <string name="setting_audio_focus">Audiofokus</string>
+    <string name="setting_audio_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Alarme]</string>
+    <string name="setting_audio_plug_mgt">Kopfhöreranschluss</string>
+    <string name="setting_audio_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
+
     <string name="setting_behavior">Verhalten</string>
     <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt hat</string>
     <string name="setting_behavior_at_end">Wenn eine Abspielliste zu Ende ist</string>
+    <string name="setting_behavior_end_loop">Weiderholen</string>
+    <string name="setting_behavior_end_stop">Halten</string>
+    <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
     <string name="setting_behavior_keep_shuffle">Shuffle-Einstellung merken</string>
+    <string name="setting_behavior_keep_shuffle_desc">Lassen Zufällig an, wenn ein neues Lied anspielen</string>
+    <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
+    <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Keine Musik gefunden</string>
     <string name="error_music_load_failed">Laden die Musik fehlgeschlagen</string>
+    <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
     <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
+
+    <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
     <string name="description_album_cover">Albumcover für %s</string>
     <string name="description_artist_image">Künstlerbild für %s</string>
     <string name="description_genre_image">Genrebild für %s</string>
     <string name="description_track_number">Titel %d</string>
     <string name="description_error">Fehler</string>
+    <string name="description_sort_button">Reihenfolge ändern</string>
+    <string name="description_sort_none">Standard Reihenfolge</string>
+    <string name="description_sort_alpha_down">von A bis Z sortieren</string>
+    <string name="description_sort_alpha_up">von Z bis A sortieren</string>
+    <string name="description_clear_user_queue">Warteschlange entleeren</string>
+    <string name="description_play">Abspielen</string>
+    <string name="description_pause">Pausieren</string>
+    <string name="description_skip_prev">Zu letzter Lied springen</string>
+    <string name="description_skip_next">Zu nächster Lied springen</string>
+    <string name="description_shuffle_on">Zufällig anschalten</string>
+    <string name="description_shuffle_off">Zufällig ausschalten</string>
+    <string name="description_change_loop">Art die Wiederholung ändern</string>
+    <string name="description_auxio_icon">Auxio-Icon</string>
+    <string name="description_search_clear">Suchanfrage Löschen</string>
+
+    <!-- Placeholder Namespace | Placeholder values -->
+    <string name="placeholder_genre">Unbekanntes Genre</string>
+    <string name="placeholder_artist">Unbekannter Künstler</string>
+    <string name="placeholder_album">Unbekanntes Album</string>
     <string name="placeholder_no_date">Kein Datum</string>
+
+    <!-- Color Label namespace | Accent names -->
     <string name="color_label_red">Rot</string>
     <string name="color_label_pink">Rosa</string>
     <string name="color_label_purple">Lila</string>
@@ -82,45 +145,11 @@
     <string name="color_label_grey">Grau</string>
     <string name="color_label_blue_grey">Blaugrau</string>
     <string name="color_label_neutral">Neutral</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Nächsten von: %s</string>
-    <string name="info_channel_name">Musikwiedergabe</string>
-    <string name="info_service_desc">der Musikwiedergabe-Service von Auxio</string>
-    <string name="placeholder_genre">Unbekanntes Genre</string>
-    <string name="placeholder_artist">Unbekannter Künstler</string>
-    <string name="placeholder_album">Unbekanntes Album</string>
     <string name="format_songs_loaded">Lieder geladen: %d</string>
-    <string name="label_author">Entwickelt von OxygenCobalt</string>
-    <string name="description_play">Abspielen</string>
-    <string name="description_pause">Pausieren</string>
-    <string name="description_auxio_icon">Auxio-Icon</string>
-    <string name="description_search_clear">"Suchanfrage Löschen "</string>
-    <string name="description_change_loop">Art die Wiederholung ändern</string>
-    <string name="description_shuffle_off">Zufällig ausschalten</string>
-    <string name="description_shuffle_on">Zufällig anschalten</string>
-    <string name="description_skip_prev">Zu letzter Lied springen</string>
-    <string name="description_skip_next">Zu nächster Lied springen</string>
-    <string name="description_clear_user_queue">Warteschlange entleeren</string>
-    <string name="setting_playback_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Alarme]</string>
-    <string name="setting_playback_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
-    <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
-    <string name="description_sort_button">Reihenfolge ändern</string>
-    <string name="setting_use_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
-    <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
-    <string name="description_sort_none">Standard Reihenfolge</string>
-    <string name="description_sort_alpha_down">von A bis Z sortieren</string>
-    <string name="description_sort_alpha_up">von Z bis A sortieren</string>
-    <string name="error_no_music">Keine Musik gefunden</string>
-    <string name="label_play_all_songs">Von alle Lieder abspielen</string>
-    <string name="label_play_album">Vom Album abspielen</string>
-    <string name="label_play_genre">Vom Genre abspielen</string>
-    <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
-    <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
-    <string name="setting_behavior_keep_shuffle_desc">Lassen Zufällig an, wenn ein neues Lied anspielen</string>
-    <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
-    <string name="setting_color_desc">Albumcover am Benachrichtigung zeigen</string>
-    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch die Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
-    <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
-    <string name="info_app_desc">Ein einfacher und flexibeler Musik-Player für Android</string>
+
     <plurals name="format_song_count">
         <item quantity="one">%d Lied</item>
         <item quantity="other">%d Lieder</item>

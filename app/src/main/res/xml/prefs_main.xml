@@ -70,22 +70,22 @@
 
     <PreferenceCategory
         android:layout="@layout/item_header"
-        android:title="@string/setting_playback">
+        android:title="@string/setting_audio">
 
         <SwitchPreferenceCompat
-            android:title="@string/setting_playback_audio_focus"
+            android:title="@string/setting_audio_focus"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_AUDIO_FOCUS"
-            app:summary="@string/setting_playback_focus_desc" />
+            app:summary="@string/setting_audio_focus_desc" />
 
         <SwitchPreferenceCompat
-            android:title="@string/setting_playback_plug_mgt"
+            android:title="@string/setting_audio_plug_mgt"
             app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PLUG_MGT"
-            app:summary="@string/setting_playback_plug_mgt_desc" />
+            app:summary="@string/setting_audio_plug_mgt_desc" />
 
     </PreferenceCategory>
 
