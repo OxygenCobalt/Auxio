@@ -58,9 +58,9 @@
     <string name="setting_audio_plug_mgt">Headset-pluggen</string>
 
     <string name="setting_behavior">Gedrag</string>
+    <string name="setting_behavior_end_loop_pause">Herhalen en Pauzeren</string>
     <string name="setting_behavior_end_loop">Herhalen</string>
     <string name="setting_behavior_end_stop">Stoppen</string>
-    <string name="setting_behavior_end_loop_pause">Herhalen en Pauzeren</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Geen muziek aangetroffen</string>

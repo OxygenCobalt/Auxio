@@ -15,7 +15,6 @@
             style="@style/Toolbar.Style"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            android:theme="@style/Toolbar.Style.Search"
             app:menu="@menu/menu_library"
             app:title="@string/label_library" />
 

@@ -57,9 +57,9 @@
     <string name="setting_audio_plug_mgt">Conexión de auriculares</string>
 
     <string name="setting_behavior">Funcionamiento</string>
+    <string name="setting_behavior_end_loop_pause">Continuar y Pausar</string>
     <string name="setting_behavior_end_stop">Detener</string>
     <string name="setting_behavior_end_loop">Continuar</string>
-    <string name="setting_behavior_end_loop_pause">Continuar y Pausar</string>
     <string name="setting_behavior_keep_shuffle">Recordar aleatorio</string>
 
     <!-- Error Namespace | Error Labels -->

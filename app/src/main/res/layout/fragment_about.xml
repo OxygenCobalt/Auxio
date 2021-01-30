@@ -113,8 +113,8 @@
                 android:padding="@dimen/padding_medium"
                 android:text="@string/label_code"
                 android:textAlignment="viewStart"
-                app:drawableStartCompat="@drawable/ic_code"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                app:drawableStartCompat="@drawable/ic_code"
                 app:layout_constraintBottom_toTopOf="@+id/about_faq"
                 app:layout_constraintTop_toBottomOf="@+id/version_container" />
 
@@ -170,12 +170,12 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_medium"
                 android:padding="@dimen/padding_medium"
+                android:text="@string/label_author"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 app:drawableStartCompat="@drawable/ic_author"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/about_song_count"
-                android:text="@string/label_author" />
+                app:layout_constraintTop_toBottomOf="@+id/about_song_count" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

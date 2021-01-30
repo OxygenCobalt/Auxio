@@ -22,11 +22,11 @@ ExoPlayer is far more flexible than the native MediaPlayer API, which allows Aux
 
 ## Why is there no black mode?
 
-Android does not support a black mode directly, only dark and light. Therefore I have to implement the mode myself, which will take some time. **I do plan to add it however.**
+Android does not support a black mode directly, only dark and light. Therefore I have to implement the mode myself, which will take some time. I plan to add it however.
 
 ## Why cant I have a custom accent?
 
-Custom accents would require some changes to the accent system in the app, which will take some time. **I do plan to add them however.**
+Custom accents would require some changes to the accent system in the app, which will take some time. I plan to add them however.
 
 ## Why are accents lighter/less saturated in dark mode?
 
@@ -42,7 +42,7 @@ I could possibly extend edge-to-edge support to earlier versions, but it would t
 
 ## Why doesnt edge-to-edge work when my phone is in landscape?
 
-The way insets work when a *phone* (Not a tablet) is in landscape mode is somewhat broken, making it extremely hard (if not impossible) to get edge-to-edge working. Therefore its mostly disabled.
+When a *phone* [Not a tablet] is in landscape, the insets meant to make the UI fit dont work properly, therefore the feature is mostly disabled.
 
 ## How can I contribute/report issues?
 

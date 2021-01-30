@@ -57,9 +57,9 @@
     <string name="setting_audio_plug_mgt">Inserimento cuffie</string>
 
     <string name="setting_behavior">Comportamento</string>
+    <string name="setting_behavior_end_loop_pause">Continua e Pause</string>
     <string name="setting_behavior_end_loop">Continua</string>
     <string name="setting_behavior_end_stop">Ferma</string>
-    <string name="setting_behavior_end_loop_pause">Continua e Pause</string>
     <string name="setting_behavior_keep_shuffle">Ricorda casuale</string>
 
     <!-- Error Namespace | Error Labels -->

@@ -12,10 +12,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
-            style="@style/Toolbar.Style.Search"
+            style="@style/Toolbar.Style"
             android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
-            android:theme="@style/Toolbar.Style.Search"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_songs"

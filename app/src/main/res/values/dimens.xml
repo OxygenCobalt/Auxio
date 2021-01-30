@@ -46,7 +46,7 @@
     <dimen name="text_size_detail_header_max">26sp</dimen>
     <dimen name="text_size_thumb">18sp</dimen>
     <dimen name="text_size_header">19sp</dimen>
-    <dimen name="text_size_material_button">16sp</dimen>
+    <dimen name="text_size_material_button">15sp</dimen>
     <dimen name="text_size_toolbar_header">20sp</dimen>
 
     <!-- Misc -->

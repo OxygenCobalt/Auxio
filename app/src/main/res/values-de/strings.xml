@@ -66,7 +66,7 @@
     <string name="setting_show_covers">Albumcover anzeigen</string>
     <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
     <string name="setting_quality_covers">MediaStore Cover ignorieren</string>
-    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch die Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
+    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch länger Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
     <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
     <string name="setting_use_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
     <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
@@ -80,9 +80,9 @@
     <string name="setting_behavior">Verhalten</string>
     <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt hat</string>
     <string name="setting_behavior_at_end">Wenn eine Abspielliste zu Ende ist</string>
+    <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
     <string name="setting_behavior_end_loop">Weiderholen</string>
     <string name="setting_behavior_end_stop">Halten</string>
-    <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
     <string name="setting_behavior_keep_shuffle">Shuffle-Einstellung merken</string>
     <string name="setting_behavior_keep_shuffle_desc">Lassen Zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
