@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/artist_image"
-            android:layout_width="@dimen/size_cover_mid_huge"
-            android:layout_height="@dimen/size_cover_mid_huge"
+            android:layout_width="@dimen/size_cover_detail"
+            android:layout_height="@dimen/size_cover_detail"
             android:layout_margin="@dimen/margin_medium"
             android:contentDescription="@{@string/description_artist_image(artist.name)}"
             android:elevation="@dimen/elevation_normal"

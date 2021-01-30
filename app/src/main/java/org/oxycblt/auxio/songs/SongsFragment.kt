@@ -69,7 +69,7 @@ class SongsFragment : Fragment() {
             adapter = songAdapter
             setHasFixedSize(true)
 
-            val spans = context.getSpans()
+            val spans = getSpans()
 
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)

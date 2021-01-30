@@ -83,7 +83,7 @@ class SearchFragment : Fragment() {
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            val spans = context.getSpans()
+            val spans = getSpans()
 
             if (spans != -1) {
                 layoutManager = GridLayoutManager(requireContext(), spans).apply {

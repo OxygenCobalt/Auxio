@@ -31,8 +31,8 @@
     <dimen name="size_cover_compact">44dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
     <dimen name="size_cover_large">68dp</dimen>
-    <dimen name="size_cover_mid_huge">130dp</dimen>
-    <dimen name="size_cover_huge">260dp</dimen>
+    <dimen name="size_cover_detail">260dp</dimen>
+    <dimen name="size_cover_detail_land">130dp</dimen>
 
     <dimen name="size_play_pause">70dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
@@ -46,7 +46,7 @@
     <dimen name="text_size_detail_header_max">26sp</dimen>
     <dimen name="text_size_thumb">18sp</dimen>
     <dimen name="text_size_header">19sp</dimen>
-    <dimen name="text_size_material_button">15sp</dimen>
+    <dimen name="text_size_material_button">16sp</dimen>
     <dimen name="text_size_toolbar_header">20sp</dimen>
 
     <!-- Misc -->

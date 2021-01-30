@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
@@ -162,7 +163,7 @@ fun isTablet(resources: Resources): Boolean {
 /**
  * Get the span count for most RecyclerViews
  */
-fun Context.getSpans(): Int {
+fun RecyclerView.getSpans(): Int {
     return if (isLandscape(resources)) {
         if (isTablet(resources)) 3 else 2
     } else {
