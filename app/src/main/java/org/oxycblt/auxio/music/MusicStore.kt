@@ -25,8 +25,8 @@ class MusicStore private constructor() {
     val songs: List<Song> get() = mSongs
 
     /** All parent models (ex Albums, Artists) loaded by Auxio */
-    val parents: MutableList<BaseModel> by lazy {
-        mutableListOf<BaseModel>().apply {
+    val parents: MutableList<Parent> by lazy {
+        mutableListOf<Parent>().apply {
             addAll(mGenres)
             addAll(mArtists)
             addAll(mAlbums)

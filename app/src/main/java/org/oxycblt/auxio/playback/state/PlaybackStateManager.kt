@@ -10,10 +10,9 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
@@ -42,7 +41,7 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onPositionUpdate(value) }
         }
-    private var mParent: BaseModel? = null
+    private var mParent: Parent? = null
         set(value) {
             field = value
             callbacks.forEach { it.onParentUpdate(value) }
@@ -98,7 +97,7 @@ class PlaybackStateManager private constructor() {
     /** The currently playing song. Null if there isn't one */
     val song: Song? get() = mSong
     /** The parent the queue is based on, null if all_songs */
-    val parent: BaseModel? get() = mParent
+    val parent: Parent? get() = mParent
     /** The current playback progress */
     val position: Long get() = mPosition
     /** The current queue determined by [parent] and [mode] */
@@ -192,33 +191,26 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Play a parent model, e.g an artist or an album.
-     * @param baseModel The model to use
+     * @param parent The model to use
      * @param shuffled Whether to shuffle the queue or not
      */
-    fun playParentModel(baseModel: BaseModel, shuffled: Boolean) {
-        if (baseModel is Song || baseModel is Header) {
-            // This should never occur.
-            logE("playParentModel is not meant to play ${baseModel::class.simpleName}.")
+    fun playParent(parent: Parent, shuffled: Boolean) {
+        logD("Playing ${parent.name}")
 
-            return
-        }
-
-        logD("Playing ${baseModel.name}")
-
-        mParent = baseModel
+        mParent = parent
         mIndex = 0
 
-        when (baseModel) {
+        when (parent) {
             is Album -> {
-                mQueue = baseModel.songs.toMutableList()
+                mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_ALBUM
             }
             is Artist -> {
-                mQueue = baseModel.songs.toMutableList()
+                mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_ARTIST
             }
             is Genre -> {
-                mQueue = baseModel.songs.toMutableList()
+                mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_GENRE
             }
 
@@ -817,7 +809,7 @@ class PlaybackStateManager private constructor() {
      */
     interface Callback {
         fun onSongUpdate(song: Song?) {}
-        fun onParentUpdate(parent: BaseModel?) {}
+        fun onParentUpdate(parent: Parent?) {}
         fun onPositionUpdate(position: Long) {}
         fun onQueueUpdate(queue: MutableList<Song>) {}
         fun onUserQueueUpdate(userQueue: MutableList<Song>) {}

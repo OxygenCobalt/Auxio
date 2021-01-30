@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
@@ -25,8 +26,8 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
 
     /**
      * Get a sorted list of genres for a SortMode. Only supports alphabetic sorting.
-     * @param genres An unsorted list of artists.
-     * @return The sorted list of artists.
+     * @param genres An unsorted list of genres.
+     * @return The sorted list of genres.
      */
     fun getSortedGenreList(genres: List<Genre>): List<Genre> {
         return when (this) {
@@ -39,6 +40,25 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
             )
 
             else -> genres
+        }
+    }
+
+    /**
+     * Get a sorted list of artists for a SortMode. Only supports alphabetic sorting.
+     * @param artists An unsorted list of artists.
+     * @return The sorted list of artists.
+     */
+    fun getSortedArtistList(artists: List<Artist>): List<Artist> {
+        return when (this) {
+            ALPHA_UP -> artists.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            ALPHA_DOWN -> artists.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+            )
+
+            else -> artists
         }
     }
 
@@ -121,28 +141,6 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
             }
 
             else -> songs
-        }
-    }
-
-    /**
-     * Get a sorted list of BaseModels. Supports alpha + numeric sorting.
-     * @param baseModels An unsorted list of BaseModels.
-     * @return The sorted list of BaseModels.
-     */
-    fun getSortedBaseModelList(baseModels: List<BaseModel>): List<BaseModel> {
-        return when (this) {
-            ALPHA_UP -> baseModels.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
-            )
-
-            ALPHA_DOWN -> baseModels.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-            )
-
-            NUMERIC_UP -> baseModels.sortedWith(compareByDescending { it.id })
-            NUMERIC_DOWN -> baseModels.sortedWith(compareBy { it.id })
-
-            else -> baseModels
         }
     }
 

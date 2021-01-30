@@ -16,6 +16,12 @@ sealed class BaseModel {
 }
 
 /**
+ * [BaseModel] variant that denotes that this object is a parent of other data objects, such
+ * as an [Album] or [Artist]
+ */
+sealed class Parent : BaseModel()
+
+/**
  * The data object for a song. Inherits [BaseModel].
  * @property albumId  The Song's Album ID. Never use this outside of when attaching a song to its album.
  * @property track    The Song's Track number
@@ -72,7 +78,7 @@ data class Song(
 }
 
 /**
- * The data object for an album. Inherits [BaseModel].
+ * The data object for an album. Inherits [Parent].
  * @property artistName    The name of the parent artist. Do not use this outside of creating the artist from albums
  * @property coverUri      The [Uri] for the album's cover. **Load this using Coil.**
  * @property year          The year this album was released. 0 if there is none in the metadata.
@@ -87,7 +93,7 @@ data class Album(
     val artistName: String,
     val coverUri: Uri = Uri.EMPTY,
     val year: Int = 0
-) : BaseModel() {
+) : Parent() {
     private var mArtist: Artist? = null
     val artist: Artist get() {
         val artist = mArtist
@@ -123,7 +129,7 @@ data class Album(
 }
 
 /**
- * The data object for an artist. Inherits [BaseModel]
+ * The data object for an artist. Inherits [Parent]
  * @property albums The list of all [Album]s in this artist
  * @property genre  The most prominent genre for this artist
  * @property songs  The list of all [Song]s in this artist
@@ -133,7 +139,7 @@ data class Artist(
     override val id: Long = -1,
     override val name: String,
     val albums: List<Album>
-) : BaseModel() {
+) : Parent() {
     init {
         albums.forEach {
             it.applyArtist(this)
@@ -158,7 +164,7 @@ data class Artist(
 }
 
 /**
- * The data object for a genre. Inherits [BaseModel]
+ * The data object for a genre. Inherits [Parent]
  * @property songs   The list of all [Song]s in this genre.
  * @property displayName A name that can be displayed without it showing up as an integer. ***USE THIS INSTEAD OF [name]!!!!***
  * @author OxygenCobalt
@@ -166,7 +172,7 @@ data class Artist(
 data class Genre(
     override val id: Long = -1,
     override val name: String,
-) : BaseModel() {
+) : Parent() {
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 

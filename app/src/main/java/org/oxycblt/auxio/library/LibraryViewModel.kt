@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
@@ -17,8 +17,8 @@ import org.oxycblt.auxio.settings.SettingsManager
  * @author OxygenCobalt
  */
 class LibraryViewModel : ViewModel(), SettingsManager.Callback {
-    private val mLibraryData = MutableLiveData(listOf<BaseModel>())
-    val libraryData: LiveData<List<BaseModel>> get() = mLibraryData
+    private val mLibraryData = MutableLiveData(listOf<Parent>())
+    val libraryData: LiveData<List<Parent>> get() = mLibraryData
 
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
@@ -91,17 +91,11 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
      */
     private fun updateLibraryData() {
         mLibraryData.value = when (mDisplayMode) {
-            DisplayMode.SHOW_GENRES -> {
-                mSortMode.getSortedGenreList(musicStore.genres)
-            }
+            DisplayMode.SHOW_GENRES -> mSortMode.getSortedGenreList(musicStore.genres)
 
-            DisplayMode.SHOW_ARTISTS -> {
-                mSortMode.getSortedBaseModelList(musicStore.artists)
-            }
+            DisplayMode.SHOW_ARTISTS -> mSortMode.getSortedArtistList(musicStore.artists)
 
-            DisplayMode.SHOW_ALBUMS -> {
-                mSortMode.getSortedAlbumList(musicStore.albums)
-            }
+            DisplayMode.SHOW_ALBUMS -> mSortMode.getSortedAlbumList(musicStore.albums)
 
             else -> error("DisplayMode $mDisplayMode is unsupported.")
         }

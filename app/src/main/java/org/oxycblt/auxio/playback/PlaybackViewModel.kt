@@ -12,8 +12,8 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.queue.QueueAdapter
@@ -34,7 +34,7 @@ import org.oxycblt.auxio.ui.createToast
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
     private val mSong = MutableLiveData<Song?>()
-    private val mParent = MutableLiveData<BaseModel?>()
+    private val mParent = MutableLiveData<Parent?>()
     private val mPosition = MutableLiveData(0L)
 
     // Queue
@@ -56,7 +56,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The current song. */
     val song: LiveData<Song?> get() = mSong
     /** The current model that is being played from, such as an [Album] or [Artist] */
-    val parent: LiveData<BaseModel?> get() = mParent
+    val parent: LiveData<Parent?> get() = mParent
     /** The current playback position, in seconds */
     val position: LiveData<Long> get() = mPosition
 
@@ -125,7 +125,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParentModel(album, shuffled)
+        playbackManager.playParent(album, shuffled)
     }
 
     /** Play an Artist */
@@ -136,7 +136,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParentModel(artist, shuffled)
+        playbackManager.playParent(artist, shuffled)
     }
 
     /** Play a genre. */
@@ -147,7 +147,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParentModel(genre, shuffled)
+        playbackManager.playParent(genre, shuffled)
     }
 
     /** Shuffle all songs */
@@ -365,7 +365,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mSong.value = song
     }
 
-    override fun onParentUpdate(parent: BaseModel?) {
+    override fun onParentUpdate(parent: Parent?) {
         mParent.value = parent
     }
 

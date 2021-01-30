@@ -12,11 +12,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLibraryBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
@@ -81,10 +80,10 @@ class LibraryFragment : Fragment() {
             if (it != null) {
                 libraryModel.updateNavigationStatus(false)
 
-                if (it is Song) {
-                    onItemSelection(it.album)
-                } else {
+                if (it is Parent) {
                     onItemSelection(it)
+                } else if (it is Song) {
+                    onItemSelection(it.album)
                 }
             }
         }
@@ -107,34 +106,22 @@ class LibraryFragment : Fragment() {
     }
 
     /**
-     * Navigate to an item
-     * @param baseModel The item that should be navigated to.
+     * Navigate to a parent UI
+     * @param parent The parent that should be navigated with
      */
-    private fun onItemSelection(baseModel: BaseModel) {
-        if (baseModel is Song) {
-            logE("onItemSelection does not support songs")
-            return
-        }
-
+    private fun onItemSelection(parent: Parent) {
         requireView().rootView.clearFocus()
 
         if (!libraryModel.isNavigating) {
             libraryModel.updateNavigationStatus(true)
 
-            logD("Navigating to the detail fragment for ${baseModel.name}")
+            logD("Navigating to the detail fragment for ${parent.name}")
 
             findNavController().navigate(
-                when (baseModel) {
-                    is Genre -> LibraryFragmentDirections.actionShowGenre(baseModel.id)
-                    is Artist -> LibraryFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> LibraryFragmentDirections.actionShowAlbum(baseModel.id)
-
-                    // If given model wasn't valid, then reset the navigation status
-                    // and abort the navigation.
-                    else -> {
-                        libraryModel.updateNavigationStatus(false)
-                        return
-                    }
+                when (parent) {
+                    is Genre -> LibraryFragmentDirections.actionShowGenre(parent.id)
+                    is Artist -> LibraryFragmentDirections.actionShowArtist(parent.id)
+                    is Album -> LibraryFragmentDirections.actionShowAlbum(parent.id)
                 }
             )
         }
