@@ -195,7 +195,6 @@
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="textAllCaps">false</item>
         <item name="cornerRadius">0dp</item>
-        
     </style>
 
     <!-- An "Unimportant" material button, used for the "Play" button -->

@@ -14,7 +14,6 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.requireCompatActivity
 
@@ -104,7 +103,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         // Highlight albums if they are being played
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM && parent is Album?) {
+            if (parent is Album?) {
                 detailAdapter.setCurrentAlbum(parent, binding.detailRecycler)
             } else {
                 detailAdapter.setCurrentAlbum(null, binding.detailRecycler)
