@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Master parent theme based off of Theme.AppCompat.Daynight.NoActionBar [TODO: Switch to material?] -->
+    <style name="Theme.Master" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <!-- Template theme that handles edge-to-edge on other styles variants -->
+    <style name="Theme.Template" parent="Theme.Master" />
+
     <!-- Base theme -->
-    <style name="Theme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.Base" parent="Theme.Template">
         <item name="android:windowBackground">@color/background</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>

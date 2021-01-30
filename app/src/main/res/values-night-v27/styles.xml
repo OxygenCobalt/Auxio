@@ -1,30 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base theme -->
-    <style name="Theme.Base" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/background</item>
-        <item name="android:fontFamily">@font/inter</item>
-        <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
-        <item name="android:scrollbars">none</item>
-        <item name="android:windowIsFloating">false</item>
-
+    <!-- Template theme that handles edge-to-edge on other styles variants -->
+    <style name="Theme.Template" parent="Theme.Master">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/nav_color</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-
-        <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
-        <item name="colorControlNormal">@color/control_color</item>
-        <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
-        <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
-        <item name="colorControlHighlight">@color/selection_color</item>
-        <item name="colorControlActivated">?attr/colorPrimary</item>
-        <item name="cornerRadius">0dp</item>
-
-        <item name="md_background_color">@color/background</item>
-        <item name="md_corner_radius">0dp</item>
-        <item name="md_color_button_text">@color/control_color</item>
-        <item name="md_font_title">@font/inter_black</item>
     </style>
 
     <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
