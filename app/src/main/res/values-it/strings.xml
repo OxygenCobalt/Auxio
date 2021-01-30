@@ -67,10 +67,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Traccia %d</string>
-    <string name="description_error">Errore</string>
-    <string name="description_clear_user_queue">Svuota coda</string>
+
     <string name="description_play">Play</string>
     <string name="description_pause">Pausa</string>
+
+    <string name="description_clear_user_queue">Svuota coda</string>
+
+    <string name="description_error">Errore</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>

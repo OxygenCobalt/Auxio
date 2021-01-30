@@ -65,10 +65,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Трек %d</string>
-    <string name="description_error">Ошибка</string>
-    <string name="description_clear_user_queue">Очистить очередь</string>
+
     <string name="description_play">Воспроизвести</string>
     <string name="description_pause">Пауза</string>
+
+    <string name="description_clear_user_queue">Очистить очередь</string>
+
+    <string name="description_error">Ошибка</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Поиск в библиотеке…</string>

@@ -66,10 +66,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Música %d</string>
-    <string name="description_error">Error</string>
-    <string name="description_clear_user_queue">Limpar fila</string>
+
     <string name="description_play">Reproduzir</string>
     <string name="description_pause">Pausar</string>
+
+    <string name="description_clear_user_queue">Limpar fila</string>
+
+    <string name="description_error">Error</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Procurar na biblioteca…</string>

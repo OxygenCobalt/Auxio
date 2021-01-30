@@ -19,6 +19,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
+import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.requireCompatActivity
 
@@ -97,6 +98,12 @@ class LibraryFragment : Fragment() {
         super.onResume()
 
         libraryModel.updateNavigationStatus(false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        fixAnimInfoLeak()
     }
 
     /**

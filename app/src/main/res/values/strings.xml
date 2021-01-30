@@ -98,16 +98,12 @@
     <string name="hint_search_library">Search your library…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_album_cover">Album Cover for %s</string>
-    <string name="description_artist_image">Artist Image for %s</string>
-    <string name="description_genre_image">Genre Image for %s</string>
-    <string name="description_track_number">Track %d</string>
-    <string name="description_error">Error</string>
     <string name="description_sort_button">Change Sort Order</string>
     <string name="description_sort_none">Default Sort Order</string>
     <string name="description_sort_alpha_down">Sort from A to Z</string>
     <string name="description_sort_alpha_up">Sort from Z to A</string>
-    <string name="description_clear_user_queue">Clear queue</string>
+    <string name="description_track_number">Track %d</string>
+
     <string name="description_play">Play</string>
     <string name="description_pause">Pause</string>
     <string name="description_skip_next">Skip to next song</string>
@@ -115,8 +111,15 @@
     <string name="description_shuffle_on">Turn shuffle on</string>
     <string name="description_shuffle_off">Turn shuffle off</string>
     <string name="description_change_loop">Change Repeat Mode</string>
+
+    <string name="description_clear_user_queue">Clear queue</string>
+    <string name="description_clear_search">Clear search query</string>
+
+    <string name="description_error">Error</string>
     <string name="description_auxio_icon">Auxio icon</string>
-    <string name="description_search_clear">Clear search query</string>
+    <string name="description_album_cover">Album Cover for %s</string>
+    <string name="description_artist_image">Artist Image for %s</string>
+    <string name="description_genre_image">Genre Image for %s</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unknown Genre</string>

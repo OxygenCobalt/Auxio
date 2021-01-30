@@ -53,6 +53,7 @@
             android:fontFamily="@font/inter"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
+            android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/loading_retry_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

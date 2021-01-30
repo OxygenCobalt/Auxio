@@ -58,10 +58,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Κομμάτι %d</string>
-    <string name="description_error">Εμφάνιση σφάλματος</string>
-    <string name="description_clear_user_queue">Εκκαθάριση ουράς αναπαραγωγής</string>
+
     <string name="description_play">Αναπαραγωγή</string>
     <string name="description_pause">Παύση</string>
+
+    <string name="description_clear_user_queue">Εκκαθάριση ουράς αναπαραγωγής</string>
+
+    <string name="description_error">Εμφάνιση σφάλματος</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Αναζήτηση στη βιβλιοθήκη…</string>

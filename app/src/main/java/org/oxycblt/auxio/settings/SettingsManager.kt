@@ -272,7 +272,7 @@ class SettingsManager private constructor(context: Context) :
         const val AT_END_LOOP = "LOOP"
 
         /**
-         * Stop at the end. Similar to phonograph.
+         * Stop at the end. Similar to Phonograph.
          */
         const val AT_END_STOP = "STOP"
     }

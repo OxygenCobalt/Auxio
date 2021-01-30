@@ -67,10 +67,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Pista %d</string>
-    <string name="description_error">Error</string>
-    <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
+
     <string name="description_pause">Pausar</string>
     <string name="description_play">Reproducir</string>
+
+    <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
+
+    <string name="description_error">Error</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Busca en tu biblioteca…</string>

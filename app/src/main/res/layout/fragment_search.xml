@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 app:boxBackgroundMode="filled"
                 app:boxStrokeWidth="0dp"
-                app:endIconContentDescription="@string/description_search_clear"
+                app:endIconContentDescription="@string/description_clear_search"
                 app:endIconDrawable="@drawable/ic_close"
                 app:endIconMode="clear_text"
                 app:errorEnabled="false">

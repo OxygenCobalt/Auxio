@@ -67,11 +67,13 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Morceau %d</string>
-    <string name="description_error">L’erreur</string>
-    <string name="description_clear_user_queue">Effacer la file d\'attente</string>
+
     <string name="description_play">Lecture</string>
     <string name="description_pause">Pause</string>
 
+    <string name="description_clear_user_queue">Effacer la file d\'attente</string>
+
+    <string name="description_error">L’erreur</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
 

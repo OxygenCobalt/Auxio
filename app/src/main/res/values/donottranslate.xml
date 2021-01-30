@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_name">Auxio</string>
+    <string name="info_app_name" translatable="false">Auxio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_info">%1$s / %2$s</string>
-    <string name="format_double_info">%1$s / %2$s / %3$s</string>
-    <string name="format_double_counts">%1$s, %2$s</string>
-    <string name="format_accent_summary">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
+    <string name="format_info" translatable="false">%1$s / %2$s</string>
+    <string name="format_double_info" translatable="false">%1$s / %2$s / %3$s</string>
+    <string name="format_double_counts" translatable="false">%1$s, %2$s</string>
+    <string name="format_accent_summary" translatable="false">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
 
     <!-- Debug Namespace | Debug labels -->
-    <string name="debug_title">Debug</string>
-    <string name="debug_state_save">Save playback state</string>
-    <string name="debug_state_save_desc">Force save the current playback state</string>
-    <string name="debug_state_saved">State saved</string>
+    <string name="debug_title" translatable="false">Debug</string>
+    <string name="debug_state_save" translatable="false">Save playback state</string>
+    <string name="debug_state_save_desc" translatable="false">Force save the current playback state</string>
+    <string name="debug_state_saved" translatable="false">State saved</string>
 </resources>

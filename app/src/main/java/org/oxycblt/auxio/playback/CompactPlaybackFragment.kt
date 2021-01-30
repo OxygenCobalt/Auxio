@@ -109,11 +109,9 @@ class CompactPlaybackFragment : Fragment() {
             } else {
                 // Use static icons on the first firing of this observer so that the icons
                 // don't animate on startup, which looks weird.
-                if (it) {
-                    binding.playbackControls.setImageResource(R.drawable.ic_pause_large)
-                } else {
-                    binding.playbackControls.setImageResource(R.drawable.ic_play_large)
-                }
+                binding.playbackControls.setImageResource(
+                    if (it) R.drawable.ic_pause_large else R.drawable.ic_play_large
+                )
 
                 playbackModel.enableAnimation()
             }

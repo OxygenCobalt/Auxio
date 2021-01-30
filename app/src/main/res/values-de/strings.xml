@@ -98,16 +98,12 @@
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_album_cover">Albumcover für %s</string>
-    <string name="description_artist_image">Künstlerbild für %s</string>
-    <string name="description_genre_image">Genrebild für %s</string>
-    <string name="description_track_number">Titel %d</string>
-    <string name="description_error">Fehler</string>
     <string name="description_sort_button">Reihenfolge ändern</string>
     <string name="description_sort_none">Standard Reihenfolge</string>
     <string name="description_sort_alpha_down">von A bis Z sortieren</string>
     <string name="description_sort_alpha_up">von Z bis A sortieren</string>
-    <string name="description_clear_user_queue">Warteschlange entleeren</string>
+    <string name="description_track_number">Titel %d</string>
+
     <string name="description_play">Abspielen</string>
     <string name="description_pause">Pausieren</string>
     <string name="description_skip_prev">Zu letzter Lied springen</string>
@@ -115,8 +111,15 @@
     <string name="description_shuffle_on">Zufällig anschalten</string>
     <string name="description_shuffle_off">Zufällig ausschalten</string>
     <string name="description_change_loop">Art die Wiederholung ändern</string>
+
+    <string name="description_clear_search">Suchanfrage Löschen</string>
+    <string name="description_clear_user_queue">Warteschlange entleeren</string>
+
+    <string name="description_error">Fehler</string>
     <string name="description_auxio_icon">Auxio-Icon</string>
-    <string name="description_search_clear">Suchanfrage Löschen</string>
+    <string name="description_album_cover">Albumcover für %s</string>
+    <string name="description_artist_image">Künstlerbild für %s</string>
+    <string name="description_genre_image">Genrebild für %s</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="placeholder_genre">Unbekanntes Genre</string>
