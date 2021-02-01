@@ -1,0 +1,28 @@
+<b>Whats New</b>
+- The detail UIs have been redesigned to show the Play and Shuffle options front-and-center
+- The Toolbars on the detail UIs have been made more visually appealing
+- Images on the detail UIs now have a shadow applied to them
+- Albums now have a "Go to artist" option in their menu
+- Navigation has been made much for fluid and straightforward
+- Search has been moved to a dedicated tab
+- Added option to filter searches by Song, Album, Artist, and Genre
+
+<b>Whats Improved</b>
+- The sorting menu is now a dedicated menu instead of an overflow menu, improving accessibility
+- Disk-Caching with Coil is now completely turned off
+- Tablet layouts have been made more visually appealing
+- Made the icons in the Playback UI look better
+- Queues are now properly sorted when not shuffled
+
+<b>Whats Fixed</b>
+- Fixed issue where audio focus would resume after an interruption even if explicitly paused by the user
+- Fixed a crash that would occur when a song with no genre was played from its genre
+- Fixed a crash that would occur from the settings being accessed before they were created
+- Fixed an issue where the keyboard will stay visible when navigating to something
+- Fixed multiple memory leaks
+- Fixed problem where the fast scroll indicator on the Songs UI would be slightly off
+- Fixed issue where rewinding wouldn't cause the playback to start again
+- Fixed problem where the artist play action wouldn't work
+
+<b>Whats Changed</b>
+- "Remember Shuffle" is now on by default

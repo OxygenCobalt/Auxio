@@ -1,0 +1,19 @@
+Auxio is a local music player designed to be simple, straightfoward, and customizable. It has a fast, reliable UI/UX, and it is not bloated with useless features. In short, <b>It plays music.</b>
+
+Unlike other music players, Auxio is based off of <a href="https://exoplayer.dev/">Exoplayer</a>, allowing for much better listening experience compared to the native MediaPlayer API. Auxio's codebase is also designed to be extendable, allowing for the addition of features that are not included in the main app.
+
+<b>Features</b>
+
+- <a href="https://exoplayer.dev/">Exoplayer</a> based playback
+- Customizable UI & Behavior
+- Genres/Artists/Albums/Songs support
+- Simple queue system
+- Full playback persistence system
+- Edge-to-edge (Oreo+ Only)
+- Embedded covers support
+- Search Functionality
+- Audio Focus / Headset Management
+- No internet connectivity whatsoever
+- Kotlin from the ground-up
+- Modular, feature-based architecture
+- No rounded corners

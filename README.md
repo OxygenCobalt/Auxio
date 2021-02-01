@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/ic_auxio.png" width="150"></p>
+<p align="center"><img src="fastlane/metadata/android/en-US/images/icon.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
 <h4 align="center">A sensible and customizable music player for android.</h4>
 <p align="center">
@@ -14,24 +14,24 @@
 
 ## About
 
-Auxio is a local music player for android inspired by both Spotify and other FOSS music players such as [Music Player GO](https://github.com/enricocid/Music-Player-GO) and [Phonograph](https://github.com/kabouzeid/Phonograph), with a heavy emphasis on a simple, straightfoward, and customizable UI/UX.
+Auxio is a local music player designed to be simple, straightfoward, and customizable. It has a fast, reliable UI/UX, and it is not bloated with useless features. In short, **It plays music.**
 
-Unlike other music players, Auxio is based off of [ExoPlayer](https://exoplayer.dev/), allowing for much better listening experience compared to the native [MediaPlayer](https://developer.android.com/guide/topics/media/mediaplayer) API. Auxio's codebase is also designed to be extendable, allowing for the addition of features that are not included in the main app.
+Unlike other music players, Auxio is based off of [ExoPlayer](https://exoplayer.dev/), allowing for much better listening experience compared to the native MediaPlayer API. Auxio's codebase is also designed to be extendable, allowing for the addition of features that are not included in the main app.
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Screenshots
 
-[<img src="assets/shot_library_port.png" width=160>](assets/shot_library_port.png)
-[<img src="assets/shot_playback_port.png" width=160>](assets/shot_playback_port.png)
-[<img src="assets/shot_songs_port.png" width=160>](assets/shot_songs_port.png)
-[<img src="assets/shot_search_port.png" width=160>](assets/shot_search_port.png)
-[<img src="assets/shot_album_port.png" width=160>](assets/shot_album_port.png)
-[<img src="assets/shot_artist_port.png" width=160>](assets/shot_artist_port.png)
-[<img src="assets/shot_queue_port.png" width=160>](assets/shot_queue_port.png)
-[<img src="assets/shot_notif.png" width=160>](assets/shot_notif.png)
-[<img src="assets/shot_settings_port.png" width=160>](assets/shot_settings_port.png)
-[<img src="assets/shot_genre_port.png" width=160>](assets/shot_genre_port.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot8.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot8.png)
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot9.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot9.png)
 
 ## Features
 
@@ -54,12 +54,12 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Translations
 - Artist Images
 - Artist Songs
-- Swipe-to-next-track function [Maybe]
 - Black theme
 - Custom accents
 - Playlists
 - Liked songs
 - More notification actions
+- Swipe-between-tracks function (Maybe)
 - Better edge-to-edge support
 - More customization options
 - Other things, presumably
@@ -68,7 +68,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
 
-However, feature additions and Major UI changes are less likely to be accepted. See [Accepted Additions](/info/ADDITIONS.md) for more information.
+However, feature additions and major UI changes are less likely to be accepted. See [Accepted Additions](/info/ADDITIONS.md) for more information.
 
 ## License
 
