@@ -189,8 +189,6 @@ class SongsFragment : Fragment() {
             )
         }
 
-        binding.songFastScrollThumb.apply {
-            setupWithFastScroller(binding.songFastScroll)
-        }
+        binding.songFastScrollThumb.setupWithFastScroller(binding.songFastScroll)
     }
 }

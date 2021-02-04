@@ -14,7 +14,7 @@
 
 ## About
 
-Auxio is a local music player designed to be simple, straightfoward, and customizable. It has a fast, reliable UI/UX, and it is not bloated with useless features. In short, **It plays music.**
+Auxio is a local music player designed to be simple, straightfoward, and customizable. It has a fast, reliable UI/UX, and it is not bloated with useless features. In short, **It plays music.** Auxio is still configurable however, with both the UI and behavior able to be changed to ones liking.
 
 Unlike other music players, Auxio is based off of [ExoPlayer](https://exoplayer.dev/), allowing for much better listening experience compared to the native MediaPlayer API. Auxio's codebase is also designed to be extendable, allowing for the addition of features that are not included in the main app.
 
@@ -78,4 +78,4 @@ Auxio is Free Software: You can use, study share and improve it at your
 will. Specifically you can redistribute and/or modify it under the terms of the
 [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
 published by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.  
+(at your option) any later version.

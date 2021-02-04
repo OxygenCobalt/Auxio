@@ -60,7 +60,7 @@ import org.oxycblt.auxio.settings.SettingsManager
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
-    private val player: SimpleExoPlayer by lazy { newPlayer() }
+    private val player: SimpleExoPlayer by lazy(::newPlayer)
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -456,8 +456,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Handle a media button intent.
      */
     private fun handleMediaButtonEvent(event: Intent): Boolean {
-        val item = event
-            .getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
+        val item = event.getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
 
         if (item.action == KeyEvent.ACTION_DOWN) {
             return when (item.keyCode) {

@@ -53,9 +53,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 pref.isVisible = true
             }
 
-            pref.children.forEach {
-                recursivelyHandleChildren(it)
-            }
+            // If this preference is a category of its own, handle its own children
+            pref.children.forEach { recursivelyHandleChildren(it) }
         } else {
             handlePreference(pref)
         }

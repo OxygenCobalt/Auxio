@@ -26,8 +26,6 @@ import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 
-// A Variety of shortcut, convenience, hacks, and extension functions used across Auxio.
-
 // --- VIEW CONFIGURATION ---
 
 /**
@@ -35,10 +33,7 @@ import org.oxycblt.auxio.logE
  */
 fun ImageButton.disable() {
     if (isEnabled) {
-        imageTintList = ColorStateList.valueOf(
-            R.color.inactive_color.toColor(context)
-        )
-
+        imageTintList = R.color.inactive_color.toStateList(context)
         isEnabled = false
     }
 }

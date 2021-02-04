@@ -43,9 +43,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        Intent(this, PlaybackService::class.java).also {
-            startService(it)
-        }
+        // Start PlaybackService
+        startService(Intent(this, PlaybackService::class.java))
     }
 
     @Suppress("DEPRECATION")

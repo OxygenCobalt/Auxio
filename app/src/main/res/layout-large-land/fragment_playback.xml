@@ -163,6 +163,30 @@
             tools:text="16:16" />
 
         <ImageButton
+            android:id="@+id/playback_loop"
+            style="@style/Widget.Button.Unbounded"
+            android:contentDescription="@string/description_change_loop"
+            android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
+            android:src="@drawable/ic_loop"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
+            app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
+
+        <ImageButton
+            android:id="@+id/playback_skip_prev"
+            style="@style/Widget.Button.Unbounded"
+            android:layout_marginStart="@dimen/margin_large"
+            android:contentDescription="@string/description_skip_prev"
+            android:onClick="@{() -> playbackModel.skipPrev()}"
+            android:src="@drawable/ic_skip_prev"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
+            app:layout_constraintStart_toEndOf="@+id/playback_loop"
+            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
+
+        <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/PlayPause"
             android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"
@@ -186,18 +210,6 @@
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
-            android:id="@+id/playback_skip_prev"
-            style="@style/Widget.Button.Unbounded"
-            android:layout_marginStart="@dimen/margin_large"
-            android:contentDescription="@string/description_skip_prev"
-            android:onClick="@{() -> playbackModel.skipPrev()}"
-            android:src="@drawable/ic_skip_prev"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toEndOf="@+id/playback_loop"
-            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
-
-        <ImageButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
@@ -207,18 +219,6 @@
             app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />
-
-        <ImageButton
-            android:id="@+id/playback_loop"
-            style="@style/Widget.Button.Unbounded"
-            android:contentDescription="@string/description_change_loop"
-            android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
-            android:src="@drawable/ic_loop"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
-            app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
-            app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

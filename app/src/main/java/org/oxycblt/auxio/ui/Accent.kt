@@ -57,8 +57,6 @@ data class Accent(
 
     /**
      * Get the name (in bold) and the hex value of a accent.
-     * @param context [Context] required
-     * @return A rendered span with the name in bold + the hex value of the accent.
      */
     @SuppressLint("ResourceType")
     fun getDetailedSummary(context: Context): Spanned {
