@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".playback.PlaybackFragment">
 
+    <!-- FIXME: Way controls are designed can cause problems on displays 4.5 inch or smaller.
+          Need to fix it but the way I did it with the other layouts will create bad spacing here -->
+
     <data>
 
         <variable
@@ -163,26 +166,25 @@
         <ImageButton
             android:id="@+id/playback_loop"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginEnd="@dimen/margin_large"
             android:contentDescription="@string/description_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
             app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
         <ImageButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Button.Unbounded"
-            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_prev"
             android:onClick="@{() -> playbackModel.skipPrev()}"
             android:src="@drawable/ic_skip_prev"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toEndOf="@+id/playback_loop"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
@@ -191,34 +193,33 @@
             android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
-            app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
+            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
             app:layout_constraintTop_toBottomOf="@+id/playback_duration_current"
             tools:src="@drawable/ic_play_to_pause" />
+
 
         <ImageButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Button.Unbounded"
-            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_next"
             android:onClick="@{() -> playbackModel.skipNext()}"
             android:src="@drawable/ic_skip_next"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
-
 
         <ImageButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginStart="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />
 
