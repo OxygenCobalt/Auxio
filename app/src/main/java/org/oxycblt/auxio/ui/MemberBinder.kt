@@ -59,7 +59,7 @@ class MemberBinder<T : ViewDataBinding>(
         }
 
         // Otherwise create the binding and return that.
-        return inflate(LayoutInflater.from(thisRef.requireContext())).also {
+        return inflate(thisRef.requireContext().inflater).also {
             fragmentBinding = it
         }
     }

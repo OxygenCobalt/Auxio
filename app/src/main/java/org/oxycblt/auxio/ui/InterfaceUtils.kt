@@ -78,7 +78,6 @@ fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
  */
 val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
 
-
 /**
  * Create a [Toast] from a [String]
  * @param context [Context] required to create the toast

@@ -15,11 +15,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 
-// SettingsManager is lazy-initted to prevent it from being used before its initialized.
-private val settingsManager: SettingsManager by lazy {
-    SettingsManager.getInstance()
-}
-
 /**
  * Get a bitmap for a song. onDone will be called when the bitmap is loaded.
  * **Do not use this on the UI elements, instead use the Binding Adapters.**
@@ -28,7 +23,7 @@ private val settingsManager: SettingsManager by lazy {
  * @param onDone What to do with the bitmap when the loading is finished. Bitmap will be null if loading failed/shouldn't occur.
  */
 fun getBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-    if (!settingsManager.showCovers) {
+    if (!SettingsManager.getInstance().showCovers) {
         onDone(null)
 
         return
@@ -49,12 +44,12 @@ fun getBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
  */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(song: Song) {
-    if (!settingsManager.showCovers) {
+    if (!SettingsManager.getInstance().showCovers) {
         setImageResource(R.drawable.ic_song)
         return
     }
 
-    val request = getDefaultRequest()
+    val request = newRequest()
         .doCoverSetup(context, song)
         .error(R.drawable.ic_song)
         .build()
@@ -67,12 +62,12 @@ fun ImageView.bindCoverArt(song: Song) {
  */
 @BindingAdapter("coverArt")
 fun ImageView.bindCoverArt(album: Album) {
-    if (!settingsManager.showCovers) {
+    if (!SettingsManager.getInstance().showCovers) {
         setImageResource(R.drawable.ic_album)
         return
     }
 
-    val request = getDefaultRequest()
+    val request = newRequest()
         .doCoverSetup(context, album)
         .error(R.drawable.ic_album)
         .build()
@@ -85,10 +80,11 @@ fun ImageView.bindCoverArt(album: Album) {
  */
 @BindingAdapter("artistImage")
 fun ImageView.bindArtistImage(artist: Artist) {
-    if (!settingsManager.showCovers) {
+    if (!SettingsManager.getInstance().showCovers) {
         setImageResource(R.drawable.ic_artist)
         return
     }
+
     val request: ImageRequest
 
     // If there is more than one album, then create a mosaic of them.
@@ -101,7 +97,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
 
         val fetcher = MosaicFetcher(context)
 
-        request = getDefaultRequest()
+        request = newRequest()
             .data(uris)
             .fetcher(fetcher)
             .error(R.drawable.ic_artist)
@@ -110,7 +106,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
         // Otherwise, just get the first cover and use that
         // If the artist doesn't have any albums [Which happens], then don't even bother with that.
         if (artist.albums.isNotEmpty()) {
-            request = getDefaultRequest()
+            request = newRequest()
                 .doCoverSetup(context, artist.albums[0])
                 .error(R.drawable.ic_artist)
                 .build()
@@ -129,7 +125,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
  */
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre) {
-    if (!settingsManager.showCovers) {
+    if (!SettingsManager.getInstance().showCovers) {
         setImageResource(R.drawable.ic_genre)
         return
     }
@@ -137,21 +133,20 @@ fun ImageView.bindGenreImage(genre: Genre) {
     val request: ImageRequest
     val genreCovers = mutableListOf<Uri>()
 
-    genre.songs.groupBy { it.album }.forEach {
-        genreCovers.add(it.key.coverUri)
-    }
+    // Group the genre's songs by their album's cover and add them
+    genre.songs.groupBy { it.album.coverUri }.forEach { genreCovers.add(it.key) }
 
     if (genreCovers.size >= 4) {
         val fetcher = MosaicFetcher(context)
 
-        request = getDefaultRequest()
+        request = newRequest()
             .data(genreCovers.slice(0..3))
             .fetcher(fetcher)
             .error(R.drawable.ic_genre)
             .build()
     } else {
         if (genreCovers.isNotEmpty()) {
-            request = getDefaultRequest()
+            request = newRequest()
                 .doCoverSetup(context, genre.songs[0])
                 .error(R.drawable.ic_genre)
                 .build()
@@ -170,7 +165,7 @@ fun ImageView.bindGenreImage(genre: Genre) {
  * @return The same builder that this is applied to
  */
 private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Album): ImageRequest.Builder {
-    if (settingsManager.useQualityCovers) {
+    if (SettingsManager.getInstance().useQualityCovers) {
         fetcher(QualityCoverFetcher(context))
         data(data.songs[0])
     } else {
@@ -185,7 +180,7 @@ private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Album): Im
  * @return The same builder that this is applied to
  */
 private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Song): ImageRequest.Builder {
-    if (settingsManager.useQualityCovers) {
+    if (SettingsManager.getInstance().useQualityCovers) {
         fetcher(QualityCoverFetcher(context))
         data(data)
     } else {
@@ -199,6 +194,6 @@ private fun ImageRequest.Builder.doCoverSetup(context: Context, data: Song): Ima
  * Get the base request used by the above functions
  * @return The base request
  */
-private fun ImageView.getDefaultRequest(): ImageRequest.Builder {
+private fun ImageView.newRequest(): ImageRequest.Builder {
     return ImageRequest.Builder(context).target(this)
 }

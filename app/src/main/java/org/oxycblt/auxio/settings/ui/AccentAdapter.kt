@@ -1,12 +1,12 @@
 package org.oxycblt.auxio.settings.ui
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.toStateList
 
 /**
@@ -20,7 +20,7 @@ class AccentAdapter(
     override fun getItemCount(): Int = ACCENTS.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemAccentBinding.inflate(LayoutInflater.from(parent.context)))
+        return ViewHolder(ItemAccentBinding.inflate(parent.context.inflater))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

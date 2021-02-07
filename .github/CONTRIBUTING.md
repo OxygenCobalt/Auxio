@@ -31,6 +31,7 @@ If you do make a request, provide the following:
 - Why do you think it will benefit everyone's usage of the app?
 
 If you have the knowledge, you can also implement the feature yourself and create a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), but its recommended that **you create an issue beforehand to give me a heads up.**
+Its also recommended that you read about [Auxio's Architecture](../info/ARCHITECTURE.md) so that your change does not harm the codebase.
 
 ## Translations
 

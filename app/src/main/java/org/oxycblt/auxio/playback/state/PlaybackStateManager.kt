@@ -352,14 +352,14 @@ class PlaybackStateManager private constructor() {
      * @param to The destination index.
      */
     fun moveQueueItems(from: Int, to: Int): Boolean {
-        try {
-            val item = mQueue.removeAt(from)
-            mQueue.add(to, item)
-        } catch (exception: IndexOutOfBoundsException) {
+        if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
 
             return false
         }
+
+        val item = mQueue.removeAt(from)
+        mQueue.add(to, item)
 
         forceQueueUpdate()
 
@@ -411,14 +411,14 @@ class PlaybackStateManager private constructor() {
      * @param to The destination index.
      */
     fun moveUserQueueItems(from: Int, to: Int) {
-        try {
-            val item = mUserQueue.removeAt(from)
-            mUserQueue.add(to, item)
-        } catch (exception: IndexOutOfBoundsException) {
+        if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
 
             return
         }
+
+        val item = mUserQueue.removeAt(from)
+        mUserQueue.add(to, item)
 
         forceUserQueueUpdate()
     }

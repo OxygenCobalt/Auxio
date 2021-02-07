@@ -1,8 +1,6 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -19,6 +17,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
+import org.oxycblt.auxio.ui.inflater
 
 /**
  * The single adapter for both the Next Queue and the User Queue.
@@ -52,11 +51,11 @@ class QueueAdapter(
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
             USER_QUEUE_HEADER_ITEM_TYPE -> UserQueueHeaderViewHolder(
-                parent.context, ItemActionHeaderBinding.inflate(LayoutInflater.from(parent.context))
+                ItemActionHeaderBinding.inflate(parent.context.inflater)
             )
 
             QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
-                ItemQueueSongBinding.inflate(LayoutInflater.from(parent.context))
+                ItemQueueSongBinding.inflate(parent.context.inflater)
             )
 
             else -> error("Someone messed with the ViewHolder item types.")
@@ -159,11 +158,11 @@ class QueueAdapter(
      * ViewHolder for the **user queue header**. Has the clear queue button.
      */
     inner class UserQueueHeaderViewHolder(
-        context: Context, private val binding: ItemActionHeaderBinding
+        private val binding: ItemActionHeaderBinding
     ) : BaseHolder<Header>(binding) {
 
         init {
-            binding.headerButton.contentDescription = context.getString(
+            binding.headerButton.contentDescription = binding.headerButton.context.getString(
                 R.string.description_clear_user_queue
             )
         }

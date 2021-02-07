@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -56,9 +56,7 @@ class NoLeakThumbView @JvmOverloads constructor(
 
     init {
         // --- VIEW SETUP ---
-        LayoutInflater.from(context).inflate(
-            R.layout.fast_scroller_thumb_view, this, true
-        )
+        context.inflater.inflate(R.layout.fast_scroller_thumb_view, this, true)
 
         thumbView = findViewById(R.id.fast_scroller_thumb)
         textView = thumbView.findViewById(R.id.fast_scroller_thumb_text)

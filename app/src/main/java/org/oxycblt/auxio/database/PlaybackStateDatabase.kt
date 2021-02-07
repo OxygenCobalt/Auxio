@@ -24,10 +24,12 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_STATE")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_QUEUE")
+        db.apply {
+            execSQL("DROP TABLE IF EXISTS $TABLE_NAME_STATE")
+            execSQL("DROP TABLE IF EXISTS $TABLE_NAME_QUEUE")
 
-        onCreate(db)
+            onCreate(this)
+        }
     }
 
     // --- DATABASE CONSTRUCTION FUNCTIONS ---

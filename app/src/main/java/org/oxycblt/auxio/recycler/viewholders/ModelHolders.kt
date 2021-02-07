@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.recycler.viewholders
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
@@ -13,6 +12,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.inflater
 
 /*
  * A table of all ViewHolder codes. Please add to these so that all viewholder codes are unique.
@@ -59,7 +59,7 @@ class SongViewHolder private constructor(
             doOnLongClick: (view: View, data: Song) -> Unit
         ): SongViewHolder {
             return SongViewHolder(
-                ItemSongBinding.inflate(LayoutInflater.from(context)),
+                ItemSongBinding.inflate(context.inflater),
                 doOnClick, doOnLongClick
             )
         }
@@ -92,7 +92,7 @@ class AlbumViewHolder private constructor(
             doOnLongClick: (view: View, data: Album) -> Unit
         ): AlbumViewHolder {
             return AlbumViewHolder(
-                ItemAlbumBinding.inflate(LayoutInflater.from(context)),
+                ItemAlbumBinding.inflate(context.inflater),
                 doOnClick, doOnLongClick
             )
         }
@@ -125,7 +125,7 @@ class ArtistViewHolder private constructor(
             doOnLongClick: (view: View, data: Artist) -> Unit
         ): ArtistViewHolder {
             return ArtistViewHolder(
-                ItemArtistBinding.inflate(LayoutInflater.from(context)),
+                ItemArtistBinding.inflate(context.inflater),
                 doOnClick, doOnLongClick
             )
         }
@@ -158,7 +158,7 @@ class GenreViewHolder private constructor(
             doOnLongClick: (view: View, data: Genre) -> Unit
         ): GenreViewHolder {
             return GenreViewHolder(
-                ItemGenreBinding.inflate(LayoutInflater.from(context)),
+                ItemGenreBinding.inflate(context.inflater),
                 doOnClick, doOnLongClick
             )
         }
@@ -182,7 +182,7 @@ class HeaderViewHolder(private val binding: ItemHeaderBinding) : BaseHolder<Head
          */
         fun from(context: Context): HeaderViewHolder {
             return HeaderViewHolder(
-                ItemHeaderBinding.inflate(LayoutInflater.from(context))
+                ItemHeaderBinding.inflate(context.inflater)
             )
         }
     }
