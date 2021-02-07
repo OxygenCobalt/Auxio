@@ -17,7 +17,7 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 
 /**
@@ -133,7 +133,7 @@ class QueueAdapter(
      */
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
-    ) : BaseViewHolder<Song>(binding, null, null) {
+    ) : BaseHolder<Song>(binding) {
 
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {
@@ -159,9 +159,8 @@ class QueueAdapter(
      * ViewHolder for the **user queue header**. Has the clear queue button.
      */
     inner class UserQueueHeaderViewHolder(
-        context: Context,
-        private val binding: ItemActionHeaderBinding
-    ) : BaseViewHolder<Header>(binding, null, null) {
+        context: Context, private val binding: ItemActionHeaderBinding
+    ) : BaseHolder<Header>(binding) {
 
         init {
             binding.headerButton.contentDescription = context.getString(

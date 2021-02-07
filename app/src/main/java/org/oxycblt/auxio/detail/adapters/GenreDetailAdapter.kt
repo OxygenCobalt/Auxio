@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -14,11 +13,12 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
@@ -47,11 +47,11 @@ class GenreDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             GENRE_HEADER_ITEM_TYPE -> GenreHeaderViewHolder(
-                ItemGenreHeaderBinding.inflate(LayoutInflater.from(parent.context))
+                ItemGenreHeaderBinding.inflate(parent.context.inflater)
             )
 
             GENRE_SONG_ITEM_TYPE -> GenreSongViewHolder(
-                ItemGenreSongBinding.inflate(LayoutInflater.from(parent.context)),
+                ItemGenreSongBinding.inflate(parent.context.inflater),
             )
 
             else -> error("Bad viewholder item type $viewType")
@@ -108,7 +108,7 @@ class GenreDetailAdapter(
 
     inner class GenreHeaderViewHolder(
         private val binding: ItemGenreHeaderBinding
-    ) : BaseViewHolder<Genre>(binding, null, null) {
+    ) : BaseHolder<Genre>(binding) {
         override fun onBind(data: Genre) {
             binding.genre = data
             binding.detailModel = detailModel
@@ -126,7 +126,7 @@ class GenreDetailAdapter(
 
     inner class GenreSongViewHolder(
         private val binding: ItemGenreSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.songName.currentTextColor
 
         override fun onBind(data: Song) {

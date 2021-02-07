@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -14,11 +13,12 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
@@ -46,10 +46,10 @@ class AlbumDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ALBUM_HEADER_ITEM_TYPE -> AlbumHeaderViewHolder(
-                ItemAlbumHeaderBinding.inflate(LayoutInflater.from(parent.context))
+                ItemAlbumHeaderBinding.inflate(parent.context.inflater)
             )
             ALBUM_SONG_ITEM_TYPE -> AlbumSongViewHolder(
-                ItemAlbumSongBinding.inflate(LayoutInflater.from(parent.context))
+                ItemAlbumSongBinding.inflate(parent.context.inflater)
             )
 
             else -> error("Invalid ViewHolder item type $viewType")
@@ -107,7 +107,7 @@ class AlbumDetailAdapter(
 
     inner class AlbumHeaderViewHolder(
         private val binding: ItemAlbumHeaderBinding
-    ) : BaseViewHolder<Album>(binding, null, null) {
+    ) : BaseHolder<Album>(binding) {
 
         override fun onBind(data: Album) {
             binding.album = data
@@ -126,7 +126,7 @@ class AlbumDetailAdapter(
 
     inner class AlbumSongViewHolder(
         private val binding: ItemAlbumSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.songName.currentTextColor
         private val inactiveTextColor = binding.songTrack.currentTextColor
 

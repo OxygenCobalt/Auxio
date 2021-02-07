@@ -213,9 +213,6 @@ class PlaybackStateManager private constructor() {
                 mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_GENRE
             }
-
-            else -> {
-            }
         }
 
         resetLoopMode()

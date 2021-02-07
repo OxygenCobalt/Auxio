@@ -8,19 +8,19 @@ import org.oxycblt.auxio.music.BaseModel
 /**
  * A [RecyclerView.ViewHolder] that streamlines a lot of the common things across all viewholders.
  * @param T The datatype, inheriting [BaseModel] for this ViewHolder.
- * @param baseBinding Basic [ViewDataBinding] required to set up click listeners & sizing.
- * @param doOnClick Function that specifies what to do when an item is clicked. Specify null if you want no action to occur.
- * @param doOnLongClick Function that specifies what to do when an item is long clicked. Specify null if you want no action to occur.
+ * @param binding Basic [ViewDataBinding] required to set up click listeners & sizing.
+ * @param doOnClick (Optional, defaults to null) Function that specifies what to do on a click. Null if nothing should be done.
+ * @param doOnLongClick (Optional, defaults to null) Functions that specifics what to do on a long click. Null if nothing should be done.
  * @author OxygenCobalt
  */
-abstract class BaseViewHolder<T : BaseModel>(
-    private val baseBinding: ViewDataBinding,
-    private val doOnClick: ((data: T) -> Unit)?,
-    private val doOnLongClick: ((view: View, data: T) -> Unit)?
-) : RecyclerView.ViewHolder(baseBinding.root) {
+abstract class BaseHolder<T : BaseModel>(
+    private val binding: ViewDataBinding,
+    private val doOnClick: ((data: T) -> Unit)? = null,
+    private val doOnLongClick: ((view: View, data: T) -> Unit)? = null
+) : RecyclerView.ViewHolder(binding.root) {
     init {
         // Force the layout to *actually* be the screen width
-        baseBinding.root.layoutParams = RecyclerView.LayoutParams(
+        binding.root.layoutParams = RecyclerView.LayoutParams(
             RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
         )
     }
@@ -32,14 +32,14 @@ abstract class BaseViewHolder<T : BaseModel>(
      */
     fun bind(data: T) {
         doOnClick?.let { onClick ->
-            baseBinding.root.setOnClickListener {
+            binding.root.setOnClickListener {
                 onClick(data)
             }
         }
 
         doOnLongClick?.let { onLongClick ->
-            baseBinding.root.setOnLongClickListener {
-                onLongClick(baseBinding.root, data)
+            binding.root.setOnLongClickListener {
+                onLongClick(binding.root, data)
 
                 true
             }
@@ -47,12 +47,12 @@ abstract class BaseViewHolder<T : BaseModel>(
 
         onBind(data)
 
-        baseBinding.executePendingBindings()
+        binding.executePendingBindings()
     }
 
     /**
      * Function that performs binding operations unique to the inheriting viewholder.
-     * Add any specialized code to an override of this instead of [BaseViewHolder] itself.
+     * Add any specialized code to an override of this instead of [BaseHolder] itself.
      */
     protected abstract fun onBind(data: T)
 }

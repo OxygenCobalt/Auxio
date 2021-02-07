@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.detail.adapters
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -14,11 +13,12 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
@@ -46,11 +46,11 @@ class ArtistDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ARTIST_HEADER_ITEM_TYPE -> ArtistHeaderViewHolder(
-                ItemArtistHeaderBinding.inflate(LayoutInflater.from(parent.context))
+                ItemArtistHeaderBinding.inflate(parent.context.inflater)
             )
 
             ARTIST_ALBUM_ITEM_TYPE -> ArtistAlbumViewHolder(
-                ItemArtistAlbumBinding.inflate(LayoutInflater.from(parent.context))
+                ItemArtistAlbumBinding.inflate(parent.context.inflater)
             )
 
             else -> error("Invalid ViewHolder item type $viewType")
@@ -106,7 +106,7 @@ class ArtistDetailAdapter(
 
     inner class ArtistHeaderViewHolder(
         private val binding: ItemArtistHeaderBinding
-    ) : BaseViewHolder<Artist>(binding, null, null) {
+    ) : BaseHolder<Artist>(binding) {
 
         override fun onBind(data: Artist) {
             binding.artist = data
@@ -126,7 +126,7 @@ class ArtistDetailAdapter(
     // Generic ViewHolder for a detail album
     inner class ArtistAlbumViewHolder(
         private val binding: ItemArtistAlbumBinding,
-    ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.albumName.currentTextColor
 
         override fun onBind(data: Album) {
