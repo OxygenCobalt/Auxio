@@ -21,7 +21,8 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
  * Extension method for creating and showing a new [ActionMenu].
  * @param anchor [View] This should be centered around
  * @param data [BaseModel] this menu corresponds to
- * @param flag (Optional, defaults to [ActionMenu.FLAG_NONE]) Any extra flags to accompany the data. See [ActionMenu] for more details
+ * @param flag (Optional, defaults to [ActionMenu.FLAG_NONE]) Any extra flags to accompany the data.
+ * @see ActionMenu
  */
 fun Fragment.newMenu(anchor: View, data: BaseModel, flag: Int = ActionMenu.FLAG_NONE) {
     ActionMenu(requireCompatActivity(), anchor, data, flag).show()
