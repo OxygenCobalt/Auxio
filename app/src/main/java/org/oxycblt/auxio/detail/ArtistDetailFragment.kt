@@ -15,7 +15,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 
 /**
  * The [DetailFragment] for an artist.
@@ -53,9 +53,7 @@ class ArtistDetailFragment : DetailFragment() {
                     )
                 }
             },
-            doOnLongClick = { view, data ->
-                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_ARTIST)
-            }
+            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ARTIST) }
         )
 
         // --- UI SETUP ---

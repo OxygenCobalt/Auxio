@@ -57,8 +57,7 @@
     <string name="error_no_music">कोई संगीत नहीं मिला</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_play">चलाएं</string>
-    <string name="description_pause">रोकें</string>
+    <string name="description_play_pause">चलाएं/रोकें</string>
 
     <string name="description_error">त्रुटी</string>
 

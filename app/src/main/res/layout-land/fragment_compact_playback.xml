@@ -82,7 +82,7 @@
             android:layout_height="@dimen/size_play_pause_compact"
             android:layout_marginEnd="@dimen/margin_mid_small"
             android:background="@drawable/ui_unbounded_ripple"
-            android:contentDescription="@{playbackModel.isPlaying ? @string/description_pause : @string/description_play}"
+            android:contentDescription="@string/description_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             android:tint="@color/control_color"
             app:layout_constraintBottom_toBottomOf="parent"

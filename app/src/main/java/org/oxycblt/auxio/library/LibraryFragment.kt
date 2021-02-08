@@ -17,10 +17,9 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
@@ -37,9 +36,7 @@ class LibraryFragment : Fragment() {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(::onItemSelection) { view, data ->
-            ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
-        }
+        val libraryAdapter = LibraryAdapter(::onItemSelection) { view, data -> newMenu(view, data) }
 
         // --- UI SETUP ---
 
@@ -63,8 +60,8 @@ class LibraryFragment : Fragment() {
         binding.libraryRecycler.apply {
             adapter = libraryAdapter
             setHasFixedSize(true)
-            val spans = getSpans()
 
+            val spans = getSpans()
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }

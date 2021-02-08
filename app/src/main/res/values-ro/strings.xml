@@ -72,8 +72,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Melodie %d</string>
 
-    <string name="description_play">Redă</string>
-    <string name="description_pause">Pauză</string>
+    <string name="description_play_pause">Redă/Pauză</string>
 
     <string name="description_clear_user_queue">Golește lista de redare</string>
 

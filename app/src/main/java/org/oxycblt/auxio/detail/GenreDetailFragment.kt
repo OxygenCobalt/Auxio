@@ -15,7 +15,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 
 /**
  * The [DetailFragment] for a genre.
@@ -46,9 +46,7 @@ class GenreDetailFragment : DetailFragment() {
             doOnClick = {
                 playbackModel.playSong(it, PlaybackMode.IN_GENRE)
             },
-            doOnLongClick = { view, data ->
-                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_GENRE)
-            }
+            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_GENRE) }
         )
 
         // --- UI SETUP ---

@@ -4,6 +4,8 @@ This document is designed to provide a simple overview of Auxio's architecture a
 
 #### Package structure overview
 
+Auxio's package structure is mostly based around the features, and then any sub-features or components involved with that. There are some shared packages however. A diagram of the package structure is shown below:
+
 ```
 org.oxycblt.auxio  # Main UI's and logging utilities 
 ├──.coil           # Fetchers and utilities for Coil, contains binding adapters than be used in the user interface.
@@ -41,7 +43,7 @@ Ideally, UIs should only be talking to ViewModels, ViewModels should only be tal
 
 Auxio only has one activity, that being `MainActivity`. When adding a new UI, it should be added as a `Fragment` or a `RecyclerView` item depending on the situation. 
 
-Databinding should *always* be used instead of `findViewById`.  `by memberBinding` is used if the binding needs to be a member variable in order to avoid memory leaks.
+Databinding should *always* be used instead of `findViewById`. Use `by memberBinding` if the binding needs to be a member variable in order to avoid memory leaks.
 
 Usually, fragment creation is done in `onCreateView`, and organized into three parts:
 
@@ -49,7 +51,7 @@ Usually, fragment creation is done in `onCreateView`, and organized into three p
 - Set up the UI
 - Set up LiveData observers
 
-When creating a ViewHolder for a `RecyclerView`, one should use `BaseHolder` to standardize the binding process and automate some code shared across all ViewHolders.
+When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder` to standardize the binding process and automate some code shared across all ViewHolders.
 
 #### Binding Adapters
 
@@ -69,9 +71,7 @@ Auxio's playback system is somewhat unorthodox, as it avoids a lot of the built-
 PlaybackStateManager───────────────────┘
 ```
 
-`PlaybackStateManager` is the shared object that contains the master copy of the playback state, doing all operations on it. If you want to add something to the playback system, this is likely where you should add it.
-
-This object should ***NEVER*** be used in a UI, as it does not sanitize input and can cause major problems if a Volatile UI interacts with it. It's callback system is also prone to memory leaks if not cleared when done.  `PlaybackViewModel` can be used instead, as it exposes stable data and abstracted functions that UI's can use to interact with the playback state.
+`PlaybackStateManager` is the shared object that contains the master copy of the playback state, doing all operations on it. This object should ***NEVER*** be used in a UI, as it does not sanitize input and can cause major problems if a Volatile UI interacts with it. It's callback system is also prone to memory leaks if not cleared when done.  `PlaybackViewModel` can be used instead, as it exposes stable data and abstracted functions that UI's can use to interact with the playback state.
 
 `PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance and also modify the state depending on system external events, such as when a button is pressed on a headset.  It should **never** be bound to, mostly because there is no need given that `PlaybackViewModel` exposes the same data in a much safer fashion.
 
@@ -85,6 +85,10 @@ All music objects inherit `BaseModel`, which guarantees that all music has both 
 - Genres contain a list of songs, its preferred to use `displayName` with genres as that will convert the any numbered names into non-numbered names.
 
 `BaseModel` can be used as an argument type to specify that any music type, while `Parent` can be used as an argument type to only specify music objects that have child items, such as albums or artists.
+
+### Using menus
+
+Instead of directly instantiating a menu for an item yourself, you should instead use `ActionMenu` as it will automate the menu creation and click listeners immediately. 
 
 #### Using Settings
 

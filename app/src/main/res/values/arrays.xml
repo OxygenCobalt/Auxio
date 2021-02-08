@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="entires_theme">
+    <string-array name="entires_theme">
         <item>@string/setting_theme_auto</item>
         <item>@string/setting_theme_day</item>
         <item>@string/setting_theme_night</item>
-    </array>
+    </string-array>
 
-    <array name="values_theme">
+    <string-array name="values_theme" translatable="false">
         <item>AUTO</item>
         <item>LIGHT</item>
         <item>DARK</item>
-    </array>
+    </string-array>
 
-    <array name="entries_lib_display">
+    <string-array name="entries_lib_display">
         <item>@string/label_genres</item>
         <item>@string/label_artists</item>
         <item>@string/label_albums</item>
-    </array>
+    </string-array>
 
-    <array name="values_lib_display">
+    <string-array name="values_lib_display" translatable="false">
         <item>SHOW_GENRES</item>
         <item>SHOW_ARTISTS</item>
         <item>SHOW_ALBUMS</item>
-    </array>
+    </string-array>
 
     <array name="entries_song_playback_mode">
         <item>@string/label_play_all_songs</item>
@@ -31,22 +31,22 @@
         <item>@string/label_play_genre</item>
     </array>
 
-    <array name="values_song_playback_mode">
+    <string-array name="values_song_playback_mode" translatable="false">
         <item>ALL_SONGS</item>
         <item>IN_ARTIST</item>
         <item>IN_ALBUM</item>
         <item>IN_GENRE</item>
-    </array>
+    </string-array>
 
-    <array name="entries_at_end">
+    <string-array name="entries_at_end">
         <item>@string/setting_behavior_end_loop_pause</item>
         <item>@string/setting_behavior_end_loop</item>
         <item>@string/setting_behavior_end_stop</item>
-    </array>
+    </string-array>
 
-    <array name="values_at_end">
+    <string-array name="values_at_end" translatable="false">
         <item>LOOP_PAUSE</item>
         <item>LOOP</item>
         <item>STOP</item>
-    </array>
+    </string-array>
 </resources>

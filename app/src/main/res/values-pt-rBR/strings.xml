@@ -67,8 +67,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Música %d</string>
 
-    <string name="description_play">Reproduzir</string>
-    <string name="description_pause">Pausar</string>
+    <string name="description_play_pause">Reproduzir/Pausar</string>
 
     <string name="description_clear_user_queue">Limpar fila</string>
 

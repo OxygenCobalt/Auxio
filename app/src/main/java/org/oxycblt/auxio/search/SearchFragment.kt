@@ -23,10 +23,9 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.toColor
 import org.oxycblt.auxio.ui.toStateList
 
@@ -51,10 +50,7 @@ class SearchFragment : Fragment() {
         // Apply the accents manually. Not going through the mess of converting my app's
         // styling to Material given all the second-and-third-order effects it has.
         val accent = Accent.get().color.toColor(requireContext())
-
-        val searchAdapter = SearchAdapter(::onItemSelection) { view, data ->
-            ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
-        }
+        val searchAdapter = SearchAdapter(::onItemSelection) { view, data -> newMenu(view, data) }
 
         // --- UI SETUP --
 

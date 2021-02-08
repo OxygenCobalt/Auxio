@@ -68,8 +68,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Pista %d</string>
 
-    <string name="description_pause">Pausar</string>
-    <string name="description_play">Reproducir</string>
+    <string name="description_play_pause">Reproducir/Pausar</string>
 
     <string name="description_clear_user_queue">Vaciar cola de reproducción</string>
 

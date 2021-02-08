@@ -68,8 +68,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Morceau %d</string>
 
-    <string name="description_play">Lecture</string>
-    <string name="description_pause">Pause</string>
+    <string name="description_play_pause">Lecture/Pause</string>
 
     <string name="description_clear_user_queue">Effacer la file d\'attente</string>
 

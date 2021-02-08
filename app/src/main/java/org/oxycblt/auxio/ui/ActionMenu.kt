@@ -5,6 +5,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -17,19 +18,28 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
 
 /**
+ * Extension method for creating and showing a new [ActionMenu].
+ * @param anchor [View] This should be centered around
+ * @param data [BaseModel] this menu corresponds to
+ * @param flag (Optional, defaults to [ActionMenu.FLAG_NONE]) Any extra flags to accompany the data. See [ActionMenu] for more details
+ */
+fun Fragment.newMenu(anchor: View, data: BaseModel, flag: Int = ActionMenu.FLAG_NONE) {
+    ActionMenu(requireCompatActivity(), anchor, data, flag).show()
+}
+
+/**
  * A wrapper around [PopupMenu] that automates the menu creation for nearly every datatype in Auxio.
  * @param activity [AppCompatActivity] required as both a context and ViewModelStore owner.
  * @param anchor [View] This should be centered around
  * @param data [BaseModel] this menu corresponds to
- * @param flag (Optional, defaults to [FLAG_NONE]) Any extra flags to accompany the data.
- * See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST] and [FLAG_IN_GENRE] for more details.
+ * @param flag Any extra flags to accompany the data. See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST], [FLAG_IN_GENRE] for more detials.
  * @throws IllegalArgumentException When there is no menu for this specific datatype/flag
  */
 class ActionMenu(
     activity: AppCompatActivity,
     anchor: View,
     private val data: BaseModel,
-    private val flag: Int = FLAG_NONE
+    private val flag: Int
 ) : PopupMenu(activity, anchor) {
     private val context = activity.applicationContext
 
@@ -54,7 +64,6 @@ class ActionMenu(
             onMenuClick(it.itemId)
             true
         }
-        show()
     }
 
     /**

@@ -18,7 +18,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 
 /**
  * The [DetailFragment] for an album.
@@ -47,9 +47,7 @@ class AlbumDetailFragment : DetailFragment() {
         val detailAdapter = AlbumDetailAdapter(
             detailModel, playbackModel, viewLifecycleOwner,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
-            doOnLongClick = { view, data ->
-                ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_IN_ALBUM)
-            }
+            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ALBUM) }
         )
 
         // --- UI SETUP ---

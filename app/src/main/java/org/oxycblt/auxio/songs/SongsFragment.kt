@@ -18,9 +18,8 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.getSpans
-import org.oxycblt.auxio.ui.requireCompatActivity
+import org.oxycblt.auxio.ui.newMenu
 import kotlin.math.ceil
 
 /**
@@ -48,7 +47,7 @@ class SongsFragment : Fragment() {
 
         val musicStore = MusicStore.getInstance()
         val songAdapter = SongsAdapter(musicStore.songs, playbackModel::playSong) { view, data ->
-            ActionMenu(requireCompatActivity(), view, data, ActionMenu.FLAG_NONE)
+            newMenu(view, data)
         }
 
         // --- UI SETUP ---

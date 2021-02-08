@@ -104,8 +104,7 @@
     <string name="description_sort_alpha_up">Sort from Z to A</string>
     <string name="description_track_number">Track %d</string>
 
-    <string name="description_play">Play</string>
-    <string name="description_pause">Pause</string>
+    <string name="description_play_pause">Play/Pause</string>
     <string name="description_skip_next">Skip to next song</string>
     <string name="description_skip_prev">Skip to last song</string>
     <string name="description_shuffle_on">Turn shuffle on</string>

@@ -68,8 +68,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_track_number">Traccia %d</string>
 
-    <string name="description_play">Play</string>
-    <string name="description_pause">Pausa</string>
+    <string name="description_play_pause">Play/Pausa</string>
 
     <string name="description_clear_user_queue">Svuota coda</string>
 
