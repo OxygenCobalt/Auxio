@@ -57,10 +57,6 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        if (playbackModel.song.value == null) {
-            setInvisible(true)
-        }
-
         // --- VIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) {
@@ -69,9 +65,6 @@ class CompactPlaybackFragment : Fragment() {
 
                 binding.song = it
                 binding.playbackProgress.max = it.seconds.toInt()
-                setInvisible(false)
-            } else {
-                setInvisible(true)
             }
         }
 
@@ -116,21 +109,5 @@ class CompactPlaybackFragment : Fragment() {
                 playbackModel.enableAnimation()
             }
         }
-    }
-
-    /**
-     * Set this fragment to be invisible, if needed. Only runs in landscape mode.
-     */
-    private fun setInvisible(invisible: Boolean) {
-        // Does not run in landscape
-        if (!isLandscape(resources)) return
-
-        val visibility = if (invisible) View.INVISIBLE else View.VISIBLE
-
-        binding.playbackLayout.children.forEach {
-            it.visibility = visibility
-        }
-
-        binding.root.isEnabled = !invisible
     }
 }

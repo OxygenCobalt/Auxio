@@ -17,33 +17,40 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/compact_playback"
+            app:layout_constraintBottom_toTopOf="@+id/controls_container"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_explore"
             tools:layout="@layout/fragment_library" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/compact_playback"
-            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
+        <org.oxycblt.auxio.ui.SlideLinearLayout
+            android:id="@+id/controls_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_high"
-            android:outlineProvider="bounds"
-            app:layout_constraintBottom_toTopOf="@+id/nav_bar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout="@layout/fragment_compact_playback" />
+            android:animateLayoutChanges="true"
+            android:elevation="@dimen/elevation_normal"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/nav_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/menu_nav" />
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/compact_playback"
+                android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/nav_bar"
+                tools:layout="@layout/fragment_compact_playback" />
 
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/nav_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/background"
+                android:elevation="0dp"
+                app:elevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:menu="@menu/menu_nav" />
+
+        </org.oxycblt.auxio.ui.SlideLinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,5 +1,6 @@
 package org.oxycblt.auxio
 
+import android.animation.LayoutTransition
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -68,6 +70,13 @@ class MainFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
+
+        // Apply custom interpolation effects
+        // The container layout types differ in the land/port layouts so it has to be cast to their parent instead.
+        (binding.controlsContainer as ViewGroup).layoutTransition = LayoutTransition().apply {
+            setInterpolator(LayoutTransition.APPEARING, FastOutSlowInInterpolator())
+            setInterpolator(LayoutTransition.DISAPPEARING, FastOutSlowInInterpolator())
+        }
 
         binding.navBar.apply {
             itemIconTintList = navTints
@@ -150,7 +159,9 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            if (!isLandscape(resources)) {
+            if (isLandscape(resources)) {
+                binding.compactPlayback.visibility = View.INVISIBLE
+            } else {
                 binding.compactPlayback.visibility = View.GONE
             }
 
