@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +15,6 @@ import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
 /**

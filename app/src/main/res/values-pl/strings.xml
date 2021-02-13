@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">Ponów</string>
+    <string name="label_grant">Przyznaj</string>
+
+    <string name="label_library">Biblioteka</string>
+    <string name="label_genres">Gatunki</string>
+    <string name="label_artists">Wykonawcy</string>
+    <string name="label_albums">Albumy</string>
+    <string name="label_songs">Utwory</string>
+    <string name="label_all_songs">Wszystkie Utwory</string>
+
+    <string name="label_search">Szukaj</string>
+    <string name="label_filter">Filtry</string>
+    <string name="label_filter_all">Wszystkie</string>
+
+    <string name="label_sort">Sortowanie</string>
+    <string name="label_sort_none">Domyślne</string>
+    <string name="label_sort_alpha_down">А-Z</string>
+    <string name="label_sort_alpha_up">A-Z</string>
+
+    <string name="label_play">Graj</string>
+    <string name="label_shuffle">Losowo</string>
+    <string name="label_playback">Obecnie Grane</string>
+
+    <string name="label_queue">Kolejka</string>
+    <string name="label_queue_add">Dodaj do kolejki</string>
+    <string name="label_queue_added">Dodany do kolejki</string>
+    <string name="label_next_user_queue">Za chwilę zagra</string>
+
+    <string name="label_go_artist">Przejdź do wykonawcy</string>
+    <string name="label_go_album">Przejdź do albumu</string>
+
+    <string name="label_about">O aplikacji</string>
+    <string name="label_version">Wersja</string>
+    <string name="label_code">Zobacz na GitHubie</string>
+    <string name="label_faq">FAQ</string>
+    <string name="label_licenses">Licencje</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Ustawienia</string>
+
+    <string name="setting_ui">Wygląd</string>
+    <string name="setting_theme">Motyw</string>
+    <string name="setting_theme_auto">Automatyczny</string>
+    <string name="setting_theme_day">Jasny</string>
+    <string name="setting_theme_night">Ciemny</string>
+    <string name="setting_accent">Odcień koloru</string>
+
+    <string name="setting_color_notif">Pokolorowanie powiadomienia</string>
+    <string name="setting_quality_covers">Ignoruj okładki z Media Store</string>
+
+    <string name="setting_audio">Dźwięk</string>
+    <string name="setting_audio_focus">Wyciszanie otoczenia</string>
+    <string name="setting_audio_plug_mgt">Podłączanie słuchawek</string>
+
+    <string name="setting_behavior">Zachowanie</string>
+    <string name="setting_behavior_end_loop">Kontynuuj</string>
+    <string name="setting_behavior_end_stop">Zatrzymaj</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Nie znaleziono muzyki</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Ścieżka %d</string>
+
+    <string name="description_play_pause">Odtwarzanie/Pauza</string>
+
+    <string name="description_clear_user_queue">Wyczyść kolejkę</string>
+
+    <string name="description_error">Błąd</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Szukaj w bibliotece…</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="color_label_red">Czerwony</string>
+    <string name="color_label_pink">Różowy</string>
+    <string name="color_label_purple">Purpura</string>
+    <string name="color_label_indigo">Błękit Indygowy</string>
+    <string name="color_label_blue">Błękit</string>
+    <string name="color_label_light_blue">Jasnobłękit</string>
+    <string name="color_label_green">Zielony</string>
+    <string name="color_label_light_green">Jasnozielony</string>
+    <string name="color_label_lime">Żółtyzielony</string>
+    <string name="color_label_yellow">Żółty</string>
+    <string name="color_label_amber">Bursztynowy</string>
+    <string name="color_label_orange">Pomarańczowy</string>
+    <string name="color_label_brown">Brązowy</string>
+    <string name="color_label_grey">Szary</string>
+    <string name="color_label_blue_grey">Błękitszary</string>
+    <string name="color_label_neutral">Neutralny</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+    <string name="format_songs_loaded">Utwory uruchamia się: %d</string>
+
+    <plurals name="format_song_count">
+        <item quantity="one">%d Utwór</item>
+        <item quantity="few">%d Utwory</item>
+        <item quantity="many">%d Piosenek</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%d Album</item>
+        <item quantity="few">%d Albumy</item>
+        <item quantity="many">%d Albumów</item>
+    </plurals>
+</resources>

@@ -701,8 +701,6 @@ class PlaybackStateManager private constructor() {
 
         callbacks.forEach {
             it.onSeek(mPosition)
-            it.onModeUpdate(mMode)
-            it.onRestoreFinish()
         }
     }
 
@@ -817,7 +815,6 @@ class PlaybackStateManager private constructor() {
         fun onLoopUpdate(mode: LoopMode) {}
         fun onSeek(position: Long) {}
         fun onInUserQueueUpdate(isInUserQueue: Boolean) {}
-        fun onRestoreFinish() {}
     }
 
     companion object {
