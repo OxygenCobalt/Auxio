@@ -83,7 +83,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
     }
 
     /**
-     * Create the mosaic, Code adapted from Phonograph
+     * Create the mosaic image, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
     private fun drawMosaic(streams: List<InputStream>): Bitmap {
@@ -122,16 +122,13 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
     }
 
     /**
-     * Iterate through a list of [Closeable]s, running [use] on each.
-     * @param action What to do for each [Closeable]
+     * Iterate through a list of [Closeable]s, running [block] on each and closing it when done.
      */
-    private fun <T : Closeable> List<T>.useForEach(action: (T) -> Unit) {
-        forEach {
-            it.use(action)
-        }
+    private fun <T : Closeable> List<T>.useForEach(block: (T) -> Unit) {
+        forEach { it.use(block) }
     }
 
-    override fun key(data: Parent): String = data.id.toString()
+    override fun key(data: Parent): String = data.hashCode().toString()
     override fun handles(data: Parent) = data !is Album // Albums are not used here
 
     companion object {

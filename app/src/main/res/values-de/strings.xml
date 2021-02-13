@@ -3,7 +3,7 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Ein einfacher und flexibeler Musik-Player für Android.</string>
     <string name="info_channel_name">Musikwiedergabe</string>
-    <string name="info_service_desc">der Musikwiedergabe-Service von Auxio</string>
+    <string name="info_service_desc">der Musikwiedergabe-Dienst von Auxio</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Wieder Versuchen</string>
@@ -82,8 +82,8 @@
     <string name="setting_behavior_at_end">Wenn eine Abspielliste zu Ende ist</string>
     <string name="setting_behavior_end_loop_pause">Weiderholen und Pausieren</string>
     <string name="setting_behavior_end_loop">Weiderholen</string>
-    <string name="setting_behavior_end_stop">Halten</string>
-    <string name="setting_behavior_keep_shuffle">Shuffle-Einstellung merken</string>
+    <string name="setting_behavior_end_stop">Stoppen</string>
+    <string name="setting_behavior_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="setting_behavior_keep_shuffle_desc">Lassen Zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>

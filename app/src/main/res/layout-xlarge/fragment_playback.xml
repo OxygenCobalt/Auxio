@@ -30,6 +30,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
             style="@style/Toolbar.Style.Icon"
+            android:elevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_playback"
@@ -40,54 +41,44 @@
             android:id="@+id/playback_cover"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/margin_large"
+            android:layout_margin="@dimen/margin_mid_huge"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             android:elevation="@dimen/elevation_normal"
             android:outlineProvider="bounds"
             app:albumArt="@{song}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintBottom_toTopOf="@+id/playback_song"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             tools:src="@drawable/ic_song" />
 
-        <!-- TextView is wrapped in a container so that marquee doesn't break -->
-
-        <FrameLayout
-            android:id="@+id/playback_song_container"
+        <TextView
+            android:id="@+id/playback_song"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_mid_large"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_mid_huge"
+            android:layout_marginEnd="@dimen/margin_mid_huge"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/inter_semibold"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
+            android:singleLine="true"
+            android:text="@{song.name}"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintBottom_toTopOf="@+id/playback_artist"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-            app:layout_constraintVertical_chainStyle="packed">
-
-            <TextView
-                android:id="@+id/playback_song"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:ellipsize="marquee"
-                android:fontFamily="@font/inter_semibold"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
-                android:singleLine="true"
-                android:text="@{song.name}"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                tools:text="Song Name" />
-
-        </FrameLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Song Name" />
 
         <TextView
             android:id="@+id/playback_artist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_mid_large"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_mid_huge"
+            android:layout_marginEnd="@dimen/margin_mid_huge"
             android:ellipsize="end"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
             android:singleLine="true"
@@ -97,16 +88,16 @@
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_song_container"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="Artist Name" />
 
         <TextView
             android:id="@+id/playback_album"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_mid_large"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_mid_huge"
+            android:layout_marginEnd="@dimen/margin_mid_huge"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:ellipsize="end"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:singleLine="true"
@@ -116,19 +107,17 @@
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_artist"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="Album Name" />
 
         <SeekBar
             android:id="@+id/playback_seek_bar"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
             android:clickable="true"
             android:focusable="true"
-            android:paddingStart="@dimen/margin_mid_large"
-            android:paddingEnd="@dimen/margin_mid_large"
+            android:paddingStart="@dimen/margin_mid_huge"
+            android:paddingEnd="@dimen/margin_mid_huge"
             android:progressBackgroundTint="?android:attr/colorControlNormal"
             android:progressTint="?attr/colorPrimary"
             android:splitTrack="false"
@@ -136,88 +125,90 @@
             android:thumbTint="?attr/colorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/playback_duration_current"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_album"
+            app:layout_constraintStart_toStartOf="parent"
             tools:progress="70" />
 
         <TextView
             android:id="@+id/playback_duration_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_mid_large"
+            android:layout_marginStart="@dimen/margin_mid_huge"
+            android:layout_marginBottom="@dimen/margin_medium"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="11:38" />
 
         <TextView
             android:id="@+id/playback_song_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_mid_large"
+            android:layout_marginEnd="@dimen/margin_mid_huge"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:text="@{song.formattedDuration}"
+            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:text="16:16" />
 
         <ImageButton
             android:id="@+id/playback_loop"
             style="@style/Widget.Button.Unbounded"
-            android:layout_marginStart="@dimen/margin_mid_small"
+            android:layout_marginEnd="@dimen/margin_large"
             android:contentDescription="@string/description_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
         <ImageButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginEnd="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_prev"
             android:onClick="@{() -> playbackModel.skipPrev()}"
             android:src="@drawable/ic_skip_prev"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toEndOf="@+id/playback_loop"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/PlayPause"
+            android:layout_marginBottom="@dimen/margin_large"
             android:contentDescription="@string/description_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
-            app:layout_constraintTop_toBottomOf="@+id/playback_duration_current"
             tools:src="@drawable/ic_play_to_pause" />
+
 
         <ImageButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginStart="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_next"
             android:onClick="@{() -> playbackModel.skipNext()}"
             android:src="@drawable/ic_skip_next"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
         <ImageButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginStart="@dimen/margin_large"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
-            android:layout_marginEnd="@dimen/margin_mid_small"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
+            app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

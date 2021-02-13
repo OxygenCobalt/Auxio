@@ -162,13 +162,22 @@ fun isTablet(resources: Resources): Boolean {
 }
 
 /**
- * Get the span count for most RecyclerViews
+ * Determine if the tablet is XLARGE, ignoring normal tablets.
+ */
+fun isXLTablet(resources: Resources): Boolean {
+    val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
+
+    return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE
+}
+
+/**
+ * Get the span count for most RecyclerViews. These probably work right on most displays. Trust me.
  */
 fun RecyclerView.getSpans(): Int {
     return if (isLandscape(resources)) {
-        if (isTablet(resources)) 3 else 2
+        if (isXLTablet(resources)) 3 else 2
     } else {
-        if (isTablet(resources)) 2 else 1
+        if (isXLTablet(resources)) 2 else 1
     }
 }
 

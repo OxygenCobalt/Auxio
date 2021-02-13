@@ -77,5 +77,5 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         return loadMediaStoreCovers(data)
     }
 
-    override fun key(data: Album) = data.id.toString()
+    override fun key(data: Album) = data.coverUri.toString()
 }

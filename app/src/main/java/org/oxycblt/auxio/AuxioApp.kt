@@ -17,11 +17,8 @@ class AuxioApp : Application(), ImageLoaderFactory {
     }
 
     override fun newImageLoader(): ImageLoader {
-        // Don't cache images on-disk [The covers are already on-disk]
-        // Crossfade by default
-        // Use a transparent placeholder
         return ImageLoader.Builder(applicationContext)
-            .diskCachePolicy(CachePolicy.DISABLED)
+            .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
             .crossfade(true)
             .placeholder(android.R.color.transparent)
             .build()

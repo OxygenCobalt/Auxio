@@ -111,7 +111,7 @@ PlaybackStateManager───────────────────┘
 
 `PlaybackStateManager` is the shared object that contains the master copy of the playback state, doing all operations on it. This object should ***NEVER*** be used in a UI, as it does not sanitize input and can cause major problems if a Volatile UI interacts with it. It's callback system is also prone to memory leaks if not cleared when done. `PlaybackViewModel` should be used instead, as it exposes stable data and safe functions that UI's can use to interact with the playback state.
 
-`PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance and also modify the state depending on system events, such as when a button is pressed on a headset. It should **never** be bound to, mostly because there is no need given that `PlaybackViewModel` exposes the same data in a much safer fashion.
+`PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance and notification and also modify the state depending on system events, such as when a button is pressed on a headset. It should **never** be bound to, mostly because there is no need given that `PlaybackViewModel` exposes the same data in a much safer fashion.
 
 #### `.recycler`
 
