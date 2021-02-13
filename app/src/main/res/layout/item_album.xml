@@ -18,7 +18,7 @@
             android:layout_width="@dimen/size_cover_normal"
             android:layout_height="@dimen/size_cover_normal"
             android:contentDescription="@{@string/description_album_cover(album.name)}"
-            app:coverArt="@{album}"
+            app:albumArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

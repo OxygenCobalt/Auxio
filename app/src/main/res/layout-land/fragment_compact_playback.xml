@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_small"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
-            app:coverArt="@{song}"
+            app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"

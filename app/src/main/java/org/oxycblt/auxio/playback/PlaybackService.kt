@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.coil.getBitmap
+import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
@@ -392,7 +392,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
-        getBitmap(this, song) {
+        loadBitmap(this, song) {
             builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it)
             mediaSession.setMetadata(builder.build())
         }

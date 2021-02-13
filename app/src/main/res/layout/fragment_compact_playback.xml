@@ -42,7 +42,7 @@
             android:layout_height="@dimen/size_cover_compact"
             android:layout_margin="@dimen/margin_mid_small"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
-            app:coverArt="@{song}"
+            app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_progress"

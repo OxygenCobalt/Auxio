@@ -16,24 +16,43 @@ import coil.fetch.SourceResult
 import coil.size.Size
 import okio.buffer
 import okio.source
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Parent
 import java.io.Closeable
 import java.io.InputStream
 
 /**
- * A [Fetcher] that takes multiple cover uris and turns them into a 2x2 mosaic image.
+ * A [Fetcher] that takes an [Artist] or [Genre] and returns a mosaic of its albums.
  * @author OxygenCobalt
  */
-class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
+class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
     override suspend fun fetch(
         pool: BitmapPool,
-        data: List<Uri>,
+        data: Parent,
         size: Size,
         options: Options
     ): FetchResult {
+        // Get the URIs for either a genre or artist
+        val uris = mutableListOf<Uri>()
+
+        when (data) {
+            is Artist -> data.albums.forEachIndexed { index, album ->
+                if (index < 4) { uris.add(album.coverUri) }
+            }
+
+            is Genre -> data.songs.groupBy { it.album.coverUri }.keys.forEachIndexed { index, uri ->
+                if (index < 4) { uris.add(uri) }
+            }
+
+            else -> {}
+        }
+
         val streams = mutableListOf<InputStream>()
 
         // Load MediaStore streams
-        data.forEach {
+        uris.forEach {
             val stream: InputStream? = context.contentResolver.openInputStream(it)
 
             if (stream != null) {
@@ -44,26 +63,35 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         // If so many streams failed that there's not enough images to make a mosaic, then
         // just return the first cover image.
         if (streams.size < 4) {
-            streams.forEach { it.close() }
+            // Dont even bother if ALL the streams have failed.
+            check(streams.isNotEmpty()) { "All streams have failed. " }
 
-            return if (streams.isNotEmpty()) {
-                SourceResult(
-                    source = streams[0].source().buffer(),
-                    mimeType = context.contentResolver.getType(data[0]),
-                    dataSource = DataSource.DISK
-                )
-            } else {
-                error("All streams failed. Not bothering.")
-            }
+            return SourceResult(
+                source = streams[0].source().buffer(),
+                mimeType = context.contentResolver.getType(uris[0]),
+                dataSource = DataSource.DISK
+            )
         }
 
-        // Create the mosaic, code adapted from Phonograph.
-        // https://github.com/kabouzeid/Phonograph
-        val finalBitmap = Bitmap.createBitmap(
+        val bitmap = drawMosaic(streams)
+
+        return DrawableResult(
+            drawable = bitmap.toDrawable(context.resources),
+            isSampled = false,
+            dataSource = DataSource.DISK
+        )
+    }
+
+    /**
+     * Create the mosaic, Code adapted from Phonograph
+     * https://github.com/kabouzeid/Phonograph
+     */
+    private fun drawMosaic(streams: List<InputStream>): Bitmap {
+        val mosaicBitmap = Bitmap.createBitmap(
             MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.RGB_565
         )
 
-        val canvas = Canvas(finalBitmap)
+        val canvas = Canvas(mosaicBitmap)
 
         var x = 0
         var y = 0
@@ -90,11 +118,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
             }
         }
 
-        return DrawableResult(
-            drawable = finalBitmap.toDrawable(context.resources),
-            isSampled = false,
-            dataSource = DataSource.DISK
-        )
+        return mosaicBitmap
     }
 
     /**
@@ -107,7 +131,8 @@ class MosaicFetcher(private val context: Context) : Fetcher<List<Uri>> {
         }
     }
 
-    override fun key(data: List<Uri>): String = data.toString()
+    override fun key(data: Parent): String = data.id.toString()
+    override fun handles(data: Parent) = data !is Album // Albums are not used here
 
     companion object {
         private const val MOSAIC_BITMAP_SIZE = 512

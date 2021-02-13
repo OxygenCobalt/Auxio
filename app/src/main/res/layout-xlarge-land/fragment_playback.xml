@@ -46,7 +46,7 @@
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             android:elevation="@dimen/elevation_normal"
             android:outlineProvider="bounds"
-            app:coverArt="@{song}"
+            app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,7 +8,7 @@ These will likely be accepted as long as they do not cause too much harm to the 
 
 ## New Customizations/Options
 
-While I do like adding new behavior/UI customizations, these will be looked at more closely as certain additions can cause harm to the apps UI/UX while not providing alot of benefit. These tend to be accpeted however.
+While I do like adding new behavior/UI customizations, these will be looked at more closely as certain additions can cause harm to the apps UI/UX while not providing alot of benefit. These tend to be accepted however.
 
 ## Feature Addtions and UI Changes
 

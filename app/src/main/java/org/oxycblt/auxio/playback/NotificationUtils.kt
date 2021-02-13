@@ -13,7 +13,7 @@ import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.getBitmap
+import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
@@ -110,7 +110,7 @@ fun NotificationCompat.Builder.setMetadata(
     if (colorize) {
         // getBitmap() is concurrent, so only call back to the object calling this function when
         // the loading is over.
-        getBitmap(context, song) {
+        loadBitmap(context, song) {
             setLargeIcon(it)
 
             onDone()

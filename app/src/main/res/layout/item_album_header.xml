@@ -31,7 +31,7 @@
             android:contentDescription="@{@string/description_album_cover(album.name)}"
             android:elevation="@dimen/elevation_normal"
             android:outlineProvider="bounds"
-            app:coverArt="@{album}"
+            app:albumArt="@{album}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

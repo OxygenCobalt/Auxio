@@ -64,7 +64,7 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 - `app:genreImage`: Binding Adapter that will load the genre image
 - `getBitmap`: Function that will take a song and return a bitmap, this should not be used in anything UI related, that is what the binding adapters above are for.
 
-This should be enough to cover most use cases in Auxio. There are also fetchers for artist/genre images and higher quality covers, but these are not used outside of the module.
+This should be enough to cover most use cases in Auxio. There are also fetchers for artist/genre images and album covers, but these are not used outside of the module.
 
 #### `.database`
 
@@ -117,6 +117,10 @@ PlaybackStateManager───────────────────┘
 
 Shared RecyclerView utilities, often for adapters and ViewHolders. Important ones to note are `DiffCallback`, which acts as a reusable differ callback based off of `BaseModel` for `ListAdapter`s, and the shared ViewHolders for each data type, such as `SongViewHolder` or `HeaderViewHolder`.
 
+#### `.settings`
+
+The settings system is primarily based off of `SettingsManager`, a wrapper around `SharedPreferences`. This allows settings to be read/written in a much simpler/safer manner and without a context being needed. The Settings UI is largely contained in `SettingsListFragment`, while the `.ui` sub-package contains UIs related to the settings UI, such as the About Dialog.
+
 #### `.search`
 
 Package for Auxio's search functionality, `SearchViewHolder` handles the data results and filtering while `SearchFragment`/`SearchAdapter` handles the display of the results and user input.
@@ -129,5 +133,5 @@ Package for the songs UI, there is no data management here, only a user interfac
 
 Shared User Interface utilities. This is primarily made up of convenience/extension functions relating to Views, Resources, Configurations, and Contexts. It also contains some dedicated utilities, such as:
 - The Accent Management system
-- `newMenu` and `ActionMenu`, which automates menu creation for most datatypes
-- `memberBinding` and `MemberBinder`, which allows for viewbindings to be used as a member variable without memory leaks or nullability issues.
+- `newMenu` and `ActionMenu`, which automates menu creation for most data types
+- `memberBinding` and `MemberBinder`, which allows for ViewBindings to be used as a member variable without memory leaks or nullability issues.
