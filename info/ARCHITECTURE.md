@@ -59,10 +59,10 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 
 [Coil](https://github.com/coil-kt/coil) is the image loader used by Auxio. All image loading is done through these four functions/binding adapters:
 
-- `app:coverArt`: Binding Adapter that will load the cover art for a song or album
+- `app:albumArt`: Binding Adapter that will load the cover art for a song or album
 - `app:artistImage`: Binding Adapter that will load the artist image
 - `app:genreImage`: Binding Adapter that will load the genre image
-- `getBitmap`: Function that will take a song and return a bitmap, this should not be used in anything UI related, that is what the binding adapters above are for.
+- `loadBitmap`: Function that will take a song and return a bitmap, this should not be used in anything UI related, that is what the binding adapters above are for.
 
 This should be enough to cover most use cases in Auxio. There are also fetchers for artist/genre images and album covers, but these are not used outside of the module.
 
