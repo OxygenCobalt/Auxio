@@ -17,8 +17,8 @@
 
     <string name="label_sort">분류</string>
     <string name="label_sort_none">기본</string>
-    <string name="label_sort_alpha_down">А-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">오름차순</string>
+    <string name="label_sort_alpha_up">내림차순</string>
 
     <string name="label_play">재생</string>
     <string name="label_shuffle">모든 곡 랜덤 재생</string>

@@ -17,8 +17,7 @@
 
     <string name="label_sort">Classificação</string>
     <string name="label_sort_none">Padrão</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_up">Descendente</string>
 
     <string name="label_play">Reproduzir</string>
     <string name="label_shuffle">Embaralhar</string>
@@ -104,4 +103,5 @@
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbuns</item>
     </plurals>
+    <string name="label_sort_alpha_down">Ascendente</string>
 </resources>

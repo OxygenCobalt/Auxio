@@ -17,8 +17,8 @@
 
     <string name="label_sort">Sorteren</string>
     <string name="label_sort_none">Standaard</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Oplopend</string>
+    <string name="label_sort_alpha_up">Aflopend</string>
 
     <string name="label_play">Afspelen</string>
     <string name="label_shuffle">Shuffle</string>

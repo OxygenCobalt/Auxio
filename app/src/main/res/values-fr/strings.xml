@@ -15,10 +15,10 @@
     <string name="label_filter">Filtre</string>
     <string name="label_filter_all">Tout</string>
 
-    <string name="label_sort">Ordre de tri</string>
+    <string name="label_sort">Tri</string>
     <string name="label_sort_none">Défaut</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Ascendant</string>
+    <string name="label_sort_alpha_up">Descendant</string>
 
     <string name="label_play">Lecture</string>
     <string name="label_shuffle">Aléatoire</string>

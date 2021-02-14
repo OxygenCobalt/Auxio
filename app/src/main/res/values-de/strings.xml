@@ -22,8 +22,8 @@
 
     <string name="label_sort">Sortierung</string>
     <string name="label_sort_none">Standard</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Aufsteigend</string>
+    <string name="label_sort_alpha_up">Absteigend</string>
 
     <string name="label_play">Abspielen</string>
     <string name="label_shuffle">Zufällig</string>
@@ -100,8 +100,6 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_sort_button">Reihenfolge ändern</string>
     <string name="description_sort_none">Standard Reihenfolge</string>
-    <string name="description_sort_alpha_down">von A bis Z sortieren</string>
-    <string name="description_sort_alpha_up">von Z bis A sortieren</string>
     <string name="description_track_number">Titel %d</string>
 
     <string name="description_play_pause">Abspielen/Pausieren</string>

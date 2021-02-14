@@ -17,8 +17,8 @@
 
     <string name="label_sort">Ordenamiento</string>
     <string name="label_sort_none">Predefinido</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Ascendente</string>
+    <string name="label_sort_alpha_up">Descendente</string>
 
     <string name="label_play">Reproducir</string>
     <string name="label_shuffle">Aleatorio</string>

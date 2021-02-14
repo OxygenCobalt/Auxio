@@ -17,8 +17,6 @@
 
     <string name="label_sort">Σειρά Διάταξης</string>
     <string name="label_sort_none">Προεπιλεγμένη</string>
-    <string name="label_sort_alpha_down">Α-Ω</string>
-    <string name="label_sort_alpha_up">Ω-Α</string>
 
     <string name="label_play">Αναπαραγωγή</string>
     <string name="label_shuffle">Τυχαία</string>

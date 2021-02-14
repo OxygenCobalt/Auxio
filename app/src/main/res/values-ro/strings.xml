@@ -17,8 +17,8 @@
 
     <string name="label_sort">Sortare</string>
     <string name="label_sort_none">În mod implicit</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Crescător</string>
+    <string name="label_sort_alpha_up">Descrescător</string>
 
     <string name="label_play">Redă</string>
     <string name="label_shuffle">Amestecare</string>

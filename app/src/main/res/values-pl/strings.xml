@@ -17,8 +17,8 @@
 
     <string name="label_sort">Sortowanie</string>
     <string name="label_sort_none">Domyślne</string>
-    <string name="label_sort_alpha_down">А-Z</string>
-    <string name="label_sort_alpha_up">A-Z</string>
+    <string name="label_sort_alpha_down">Rosnąco</string>
+    <string name="label_sort_alpha_up">Malejąco</string>
 
     <string name="label_play">Graj</string>
     <string name="label_shuffle">Losowo</string>

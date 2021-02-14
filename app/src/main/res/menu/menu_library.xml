@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--
-    This action has to be always shown since otherwise android mangles this action when I make '
-    it invisible and then visible again.
-    I hate this platform so much.
-    -->
     <item
         android:id="@+id/submenu_sorting"
         android:icon="@drawable/ic_sort_none"
@@ -20,13 +15,11 @@
                     android:title="@string/label_sort_none" />
                 <item
                     android:id="@+id/option_sort_alpha_down"
-                    android:contentDescription="@string/description_sort_alpha_down"
                     android:title="@string/label_sort_alpha_down" />
                 <item
                     android:id="@+id/option_sort_alpha_up"
-                    android:contentDescription="@string/description_sort_alpha_up"
                     android:title="@string/label_sort_alpha_up" />
             </group>
         </menu>
-    </item>
+    </item>-
 </menu>

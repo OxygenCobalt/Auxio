@@ -15,6 +15,7 @@
     <string name="label_filter">过滤器</string>
     <string name="label_filter_all">全部</string>
 
+    <string name="label_sort">排序方式</string>
     <string name="label_sort_alpha_down">按首字符（正序）</string>
     <string name="label_sort_alpha_up">按首字符（倒序）</string>
 
@@ -69,6 +70,4 @@
     <plurals name="format_album_count">
         <item quantity="other">%d 专辑</item>
     </plurals>
-
-
 </resources>

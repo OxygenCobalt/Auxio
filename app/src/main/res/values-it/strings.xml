@@ -17,10 +17,10 @@
 
     <string name="label_sort">Ordine</string>
     <string name="label_sort_none">Predefinito</string>
-    <string name="label_sort_alpha_down">A-Z</string>
-    <string name="label_sort_alpha_up">Z-A</string>
+    <string name="label_sort_alpha_down">Ascendente</string>
+    <string name="label_sort_alpha_up">Discendente</string>
 
-    <string name="label_play">Play</string>
+    <string name="label_play">Riproduci</string>
     <string name="label_shuffle">Casuale</string>
     <string name="label_playback">Schermata di riproduzione</string>
 

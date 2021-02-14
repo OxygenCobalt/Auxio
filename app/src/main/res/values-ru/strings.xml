@@ -17,8 +17,8 @@
 
     <string name="label_sort">Сортировка</string>
     <string name="label_sort_none">По умолчанию</string>
-    <string name="label_sort_alpha_down">А-Я</string>
-    <string name="label_sort_alpha_up">Я-А</string>
+    <string name="label_sort_alpha_down">По возрастанию</string>
+    <string name="label_sort_alpha_up">По убыванию</string>
 
     <string name="label_play">Воспроизвести</string>
     <string name="label_shuffle">Перемешать</string>
