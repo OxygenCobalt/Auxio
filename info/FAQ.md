@@ -6,7 +6,7 @@ This FAQ will be continually updated as new changes and updates are made to Auxi
 
 ## What is Auxio?
 
-Auxio is local music player for android that I built for myself, primarily. Its meant to be both simplistic and straightfoward while still remaining customizable.
+Auxio is local music player for android that I built for myself, primarily. Its meant to avoid alot of the feature-bloat and frustrating UX that other FOSS music players have, while still remaining customizable.
 
 ## Where can I download Auxio?
 
