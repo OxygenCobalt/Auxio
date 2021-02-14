@@ -26,10 +26,10 @@
             android:id="@+id/controls_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="?android:attr/windowBackground"
             android:animateLayoutChanges="true"
+            android:background="?android:attr/windowBackground"
             android:elevation="@dimen/elevation_normal"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.fragment.app.FragmentContainerView

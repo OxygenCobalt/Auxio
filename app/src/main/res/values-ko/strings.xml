@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">재시도</string>
+    <string name="label_grant">허가</string>
+
+    <string name="label_library">보관함</string>
+    <string name="label_genres">장르</string>
+    <string name="label_artists">아티스트</string>
+    <string name="label_albums">앨범</string>
+    <string name="label_songs">노래</string>
+    <string name="label_all_songs">노래</string>
+
+    <string name="label_search">검색</string>
+    <string name="label_filter">필터</string>
+    <string name="label_filter_all">전부</string>
+
+    <string name="label_sort">분류</string>
+    <string name="label_sort_none">기본</string>
+    <string name="label_sort_alpha_down">А-Z</string>
+    <string name="label_sort_alpha_up">Z-A</string>
+
+    <string name="label_play">재생</string>
+    <string name="label_shuffle">모든 곡 랜덤 재생</string>
+    <string name="label_playback">지금 재생 중</string>
+
+    <string name="label_queue">대기열</string>
+    <string name="label_queue_add">대기열에 추가</string>
+    <string name="label_queue_added">가 대기열에 추가되었습니다</string>
+    <string name="label_next_user_queue">다음 곡</string>
+
+    <string name="label_go_artist">아티스트로 가기</string>
+    <string name="label_go_album">앨범으로 가기</string>
+
+    <string name="label_about">정보</string>
+    <string name="label_version">버전</string>
+    <string name="label_code">GitHub에서 보기</string>
+    <string name="label_faq">FAQ</string>
+    <string name="label_licenses">라이선스</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">설정</string>
+
+    <string name="setting_ui">스타일</string>
+    <string name="setting_theme">테마</string>
+    <string name="setting_theme_auto">자동</string>
+    <string name="setting_theme_day">밝은 테마</string>
+    <string name="setting_theme_night">어두운 테마</string>
+    <string name="setting_accent">강조</string>
+
+    <string name="setting_color_notif">색상화된 알림</string>
+    <string name="setting_quality_covers">미디어 스토어 앨범 커버 무시</string>
+
+    <string name="setting_audio">오디오</string>
+    <string name="setting_audio_focus">오디오 포커스</string>
+    <string name="setting_audio_plug_mgt">헤드셋 연결</string>
+
+    <string name="setting_behavior">동작</string>
+    <string name="setting_behavior_end_loop">계속</string>
+    <string name="setting_behavior_end_stop">중단</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">노래를 찾을 수 없습니다</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">트랙 %d</string>
+
+    <string name="description_play_pause">재생/일시 정지</string>
+
+    <string name="description_clear_user_queue">재생 대기열 비우기</string>
+
+    <string name="description_error">오류</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">저장소 검색…</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+    <string name="format_songs_loaded">찾은 노래 수: %d</string>
+
+    <plurals name="format_song_count">
+        <item quantity="other">노래</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="other">앨범</item>
+    </plurals>
+
+</resources>

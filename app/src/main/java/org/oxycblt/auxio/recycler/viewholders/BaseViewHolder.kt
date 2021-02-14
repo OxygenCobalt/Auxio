@@ -13,7 +13,7 @@ import org.oxycblt.auxio.music.BaseModel
  * @param doOnLongClick (Optional, defaults to null) Functions that specifics what to do on a long click. Null if nothing should be done.
  * @author OxygenCobalt
  */
-abstract class BaseHolder<T : BaseModel>(
+abstract class BaseViewHolder<T : BaseModel>(
     private val binding: ViewDataBinding,
     private val doOnClick: ((data: T) -> Unit)? = null,
     private val doOnLongClick: ((view: View, data: T) -> Unit)? = null
@@ -52,7 +52,7 @@ abstract class BaseHolder<T : BaseModel>(
 
     /**
      * Function that performs binding operations unique to the inheriting viewholder.
-     * Add any specialized code to an override of this instead of [BaseHolder] itself.
+     * Add any specialized code to an override of this instead of [BaseViewHolder] itself.
      */
     protected abstract fun onBind(data: T)
 }

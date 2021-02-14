@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!-- Label Namespace | Static Labels -->
+    <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Reîncearcă</string>
     <string name="label_grant">Permiteți</string>
 

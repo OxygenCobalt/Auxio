@@ -13,7 +13,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
@@ -108,7 +108,7 @@ class GenreDetailAdapter(
 
     inner class GenreHeaderViewHolder(
         private val binding: ItemGenreHeaderBinding
-    ) : BaseHolder<Genre>(binding) {
+    ) : BaseViewHolder<Genre>(binding) {
         override fun onBind(data: Genre) {
             binding.genre = data
             binding.detailModel = detailModel
@@ -126,7 +126,7 @@ class GenreDetailAdapter(
 
     inner class GenreSongViewHolder(
         private val binding: ItemGenreSongBinding,
-    ) : BaseHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.songName.currentTextColor
 
         override fun onBind(data: Song) {

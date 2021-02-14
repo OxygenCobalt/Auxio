@@ -3,6 +3,7 @@ package org.oxycblt.auxio.playback.queue
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 import org.oxycblt.auxio.ui.inflater
 
@@ -132,7 +133,7 @@ class QueueAdapter(
      */
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
-    ) : BaseHolder<Song>(binding) {
+    ) : BaseViewHolder<Song>(binding) {
 
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {
@@ -159,12 +160,13 @@ class QueueAdapter(
      */
     inner class UserQueueHeaderViewHolder(
         private val binding: ItemActionHeaderBinding
-    ) : BaseHolder<Header>(binding) {
+    ) : BaseViewHolder<Header>(binding) {
 
         init {
-            binding.headerButton.contentDescription = binding.headerButton.context.getString(
-                R.string.description_clear_user_queue
-            )
+            binding.headerButton.apply {
+                contentDescription = context.getString(R.string.description_clear_user_queue)
+                TooltipCompat.setTooltipText(this, contentDescription)
+            }
         }
 
         override fun onBind(data: Header) {

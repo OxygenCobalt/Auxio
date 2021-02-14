@@ -38,7 +38,7 @@ class SongViewHolder private constructor(
     private val binding: ItemSongBinding,
     doOnClick: (data: Song) -> Unit,
     doOnLongClick: (view: View, data: Song) -> Unit
-) : BaseHolder<Song>(binding, doOnClick, doOnLongClick) {
+) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Song) {
         binding.song = data
@@ -73,7 +73,7 @@ class AlbumViewHolder private constructor(
     private val binding: ItemAlbumBinding,
     doOnClick: (data: Album) -> Unit,
     doOnLongClick: (view: View, data: Album) -> Unit
-) : BaseHolder<Album>(binding, doOnClick, doOnLongClick) {
+) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Album) {
         binding.album = data
@@ -106,7 +106,7 @@ class ArtistViewHolder private constructor(
     private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
     doOnLongClick: (view: View, data: Artist) -> Unit
-) : BaseHolder<Artist>(binding, doOnClick, doOnLongClick) {
+) : BaseViewHolder<Artist>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Artist) {
         binding.artist = data
@@ -139,7 +139,7 @@ class GenreViewHolder private constructor(
     private val binding: ItemGenreBinding,
     doOnClick: (Genre) -> Unit,
     doOnLongClick: (view: View, data: Genre) -> Unit
-) : BaseHolder<Genre>(binding, doOnClick, doOnLongClick) {
+) : BaseViewHolder<Genre>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Genre) {
         binding.genre = data
@@ -168,7 +168,7 @@ class GenreViewHolder private constructor(
 /**
  * The Shared ViewHolder for a [Header]. Instantiation should be done with [from]
  */
-class HeaderViewHolder(private val binding: ItemHeaderBinding) : BaseHolder<Header>(binding) {
+class HeaderViewHolder(private val binding: ItemHeaderBinding) : BaseViewHolder<Header>(binding) {
 
     override fun onBind(data: Header) {
         binding.header = data

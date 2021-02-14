@@ -210,11 +210,11 @@
         <ImageButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
+            android:layout_marginEnd="@dimen/margin_mid_small"
             android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
-            android:layout_marginEnd="@dimen/margin_mid_small"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />

@@ -7,9 +7,7 @@
         android:title="@string/label_filter"
         app:showAsAction="ifRoom">
         <menu>
-            <group
-                android:id="@+id/group_filtering"
-                android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/option_filter_all"
                     android:title="@string/label_filter_all"

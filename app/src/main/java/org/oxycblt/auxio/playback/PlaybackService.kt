@@ -16,8 +16,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
-import androidx.media2.session.MediaController
-import androidx.media2.session.MediaSession
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem

@@ -1,18 +1,23 @@
 package org.oxycblt.auxio.ui
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import java.lang.reflect.Field
 
 /**
  * Hack layout that fixes an issue where disappearing views would draw over non-disappearing
- * views when animated with a stock LayoutTransition. Adapted from this StackOverflow answer:
+ * views when animated with a stock LayoutTransition. If something breaks on the playback controls
+ * or nav bar, this is probably the culprit.
+ *
+ * Adapted from this StackOverflow answer:
  * https://stackoverflow.com/a/35087229
  */
 class SlideLinearLayout @JvmOverloads constructor(
@@ -35,8 +40,14 @@ class SlideLinearLayout @JvmOverloads constructor(
     private var doDrawingTrick: Boolean = false
 
     init {
+        // Apply custom interpolation for the slide animations
+        layoutTransition.apply {
+            setInterpolator(LayoutTransition.APPEARING, FastOutSlowInInterpolator())
+            setInterpolator(LayoutTransition.DISAPPEARING, FastOutSlowInInterpolator())
+        }
+
         if (disappearingChildrenField != null) {
-            // Create a junk view and add it, which makes all the magic happen [I think??].
+            // Create a junk view and add it, which makes all the magic happen [I think].
             dumpView = View(context)
             addView(dumpView, 0, 0)
         }
@@ -54,15 +65,14 @@ class SlideLinearLayout @JvmOverloads constructor(
     override fun drawChild(canvas: Canvas?, child: View?, drawingTime: Long): Boolean {
         val children = getDisappearingChildren()
 
-        // I have no idea what this code does.
         if (doDrawingTrick && children != null) {
-            if (child == dumpView) {
+            if (child == dumpView) { // Use the dump view as a marker for when to do the trick
                 var more = false
                 children.forEach {
-                    more = more or super.drawChild(canvas, it, drawingTime)
+                    more = more or super.drawChild(canvas, it, drawingTime) // What????
                 }
                 return more
-            } else if (children.contains(child)) {
+            } else if (children.contains(child)) { // Ignore the disappearing children
                 return false
             }
         }
@@ -73,7 +83,9 @@ class SlideLinearLayout @JvmOverloads constructor(
     private fun beforeDispatchDraw(): Boolean {
         val children = getDisappearingChildren()
 
-        if (children == null || children.isEmpty() || childCount <= 1) { // Junk view included
+        // Dont do trick if there are no disappearing children or if there arent any children other
+        // than the dump view.
+        if (children == null || children.isEmpty() || childCount <= 1) {
             return false
         }
 
@@ -86,10 +98,9 @@ class SlideLinearLayout @JvmOverloads constructor(
             return disappearingChildren
         }
 
-        // If there is no list of disappearing children yet, attempt to get it.
         try {
             disappearingChildren = disappearingChildrenField.get(this) as List<View>?
-        } catch (e: IllegalAccessException) {
+        } catch (e: Exception) {
             logD("Could not get list of disappearing children.")
         }
 

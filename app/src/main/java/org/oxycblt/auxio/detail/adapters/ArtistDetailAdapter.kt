@@ -13,7 +13,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
@@ -106,7 +106,7 @@ class ArtistDetailAdapter(
 
     inner class ArtistHeaderViewHolder(
         private val binding: ItemArtistHeaderBinding
-    ) : BaseHolder<Artist>(binding) {
+    ) : BaseViewHolder<Artist>(binding) {
 
         override fun onBind(data: Artist) {
             binding.artist = data
@@ -126,7 +126,7 @@ class ArtistDetailAdapter(
     // Generic ViewHolder for a detail album
     inner class ArtistAlbumViewHolder(
         private val binding: ItemArtistAlbumBinding,
-    ) : BaseHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.albumName.currentTextColor
 
         override fun onBind(data: Album) {

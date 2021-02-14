@@ -26,21 +26,21 @@
             android:id="@+id/controls_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:animateLayoutChanges="true"
             android:background="?android:attr/windowBackground"
             android:baselineAligned="false"
-            android:animateLayoutChanges="true"
             android:elevation="@dimen/elevation_normal"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/nav_bar"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1.5"
                 android:background="@color/background"
                 android:elevation="0dp"
                 app:elevation="0dp"
-                android:layout_weight="1.5"
                 app:menu="@menu/menu_nav" />
 
             <androidx.fragment.app.FragmentContainerView

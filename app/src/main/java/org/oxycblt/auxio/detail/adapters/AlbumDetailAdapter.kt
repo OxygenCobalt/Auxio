@@ -13,7 +13,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseHolder
+import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.applyAccents
@@ -107,7 +107,7 @@ class AlbumDetailAdapter(
 
     inner class AlbumHeaderViewHolder(
         private val binding: ItemAlbumHeaderBinding
-    ) : BaseHolder<Album>(binding) {
+    ) : BaseViewHolder<Album>(binding) {
 
         override fun onBind(data: Album) {
             binding.album = data
@@ -126,7 +126,7 @@ class AlbumDetailAdapter(
 
     inner class AlbumSongViewHolder(
         private val binding: ItemAlbumSongBinding,
-    ) : BaseHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.songName.currentTextColor
         private val inactiveTextColor = binding.songTrack.currentTextColor
 
