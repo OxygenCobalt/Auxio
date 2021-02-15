@@ -47,15 +47,10 @@
     <string name="setting_theme_auto">Automatică</string>
     <string name="setting_theme_day">Clar</string>
     <string name="setting_theme_night">Întunecat</string>
-    <string name="setting_accent">Accent</string>
-    <string name="setting_accent_unknown">Unknown Accent</string>
+    <string name="setting_accent">Culoare accentuată</string>
 
     <string name="setting_color_notif">Colorează notificarea</string>
     <string name="setting_quality_covers">Ignoră coperțile Media Store</string>
-    <string name="setting_quality_covers_desc">Increases the quality of the album covers, but results in longer loading times and higher memory usage</string>
-    <string name="setting_use_alt_action">Use alternate notification action</string>
-    <string name="setting_use_alt_loop">Prefer repeat mode action</string>
-    <string name="setting_use_alt_shuffle">Prefer shuffle action</string>
 
     <string name="setting_audio">Audio</string>
     <string name="setting_audio_focus">Concentrare audio</string>

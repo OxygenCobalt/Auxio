@@ -352,7 +352,7 @@ class PlaybackStateManager private constructor() {
      * @param to The destination index.
      */
     fun moveQueueItems(from: Int, to: Int): Boolean {
-        if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
+        if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
 
             return false

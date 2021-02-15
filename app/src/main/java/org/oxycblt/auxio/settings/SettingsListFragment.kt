@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.utils.invalidateDividers
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.ui.Accent
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    val settingsManager = SettingsManager.getInstance()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,7 +95,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
 
                 SettingsManager.Keys.KEY_LIBRARY_DISPLAY_MODE -> {
-                    setIcon(SettingsManager.getInstance().libraryDisplayMode.iconRes)
+                    setIcon(settingsManager.libraryDisplayMode.iconRes)
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
                         setIcon(DisplayMode.valueOfOrFallback(value as String).iconRes)
@@ -150,13 +152,17 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             val recycler = RecyclerView(requireContext()).apply {
                 adapter = AccentAdapter {
                     if (it != Accent.get()) {
-                        SettingsManager.getInstance().accent = it
+                        settingsManager.accent = it
 
                         requireActivity().recreate()
                     }
 
                     this@show.dismiss()
                 }
+
+                layoutManager = LinearLayoutManager(
+                    requireContext(), LinearLayoutManager.HORIZONTAL, false
+                )
 
                 post {
                     // Combine the width of the recyclerview with the width of an item in order
@@ -169,15 +175,11 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             (width / 2) - childWidth
                         )
                 }
-
-                layoutManager = LinearLayoutManager(
-                    requireContext()
-                ).also { it.orientation = LinearLayoutManager.HORIZONTAL }
             }
 
             customView(view = recycler)
 
-            view.invalidateDividers(showTop = false, showBottom = false)
+            invalidateDividers(showTop = false, showBottom = false)
 
             negativeButton(android.R.string.cancel)
 
