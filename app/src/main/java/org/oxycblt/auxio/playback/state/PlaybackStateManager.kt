@@ -184,7 +184,7 @@ class PlaybackStateManager private constructor() {
 
         mMode = mode
 
-        resetLoopMode()
+        clearLoopMode()
         updatePlayback(song)
         setShuffling(settingsManager.keepShuffle && mIsShuffling, keepSong = true)
     }
@@ -215,7 +215,7 @@ class PlaybackStateManager private constructor() {
             }
         }
 
-        resetLoopMode()
+        clearLoopMode()
         setShuffling(shuffled, keepSong = false)
         updatePlayback(mQueue[0])
     }
@@ -241,7 +241,7 @@ class PlaybackStateManager private constructor() {
      * Go to the next song, along with doing all the checks that entails.
      */
     fun next() {
-        resetLoopMode()
+        clearLoopMode()
 
         // If there's anything in the user queue, go to the first song in there instead
         // of incrementing the index.
@@ -283,7 +283,7 @@ class PlaybackStateManager private constructor() {
                 mIndex = mIndex.dec()
             }
 
-            resetLoopMode()
+            clearLoopMode()
 
             updatePlayback(mQueue[mIndex])
 
@@ -583,7 +583,7 @@ class PlaybackStateManager private constructor() {
      * Reset the current [LoopMode], if needed.
      * Use this instead of duplicating the code manually.
      */
-    private fun resetLoopMode() {
+    fun clearLoopMode() {
         // Reset the loop mode from ONCE if needed.
         if (mLoopMode == LoopMode.ONCE) {
             mLoopMode = LoopMode.NONE
@@ -691,7 +691,6 @@ class PlaybackStateManager private constructor() {
     private fun unpackFromPlaybackState(playbackState: PlaybackState) {
         // Turn the simplified information from PlaybackState into values that can be used
         mSong = musicStore.songs.find { it.name == playbackState.songName }
-        mPosition = playbackState.position
         mParent = musicStore.parents.find { it.name == playbackState.parentName }
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
@@ -699,9 +698,7 @@ class PlaybackStateManager private constructor() {
         mIsInUserQueue = playbackState.inUserQueue
         mIndex = playbackState.index
 
-        callbacks.forEach {
-            it.onSeek(mPosition)
-        }
+        seekTo(playbackState.position)
     }
 
     /**

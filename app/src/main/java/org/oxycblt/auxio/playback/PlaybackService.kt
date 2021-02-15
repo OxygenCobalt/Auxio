@@ -184,24 +184,21 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     // --- PLAYER EVENT LISTENER OVERRIDES ---
 
     override fun onPlaybackStateChanged(state: Int) {
-        if (state == Player.STATE_ENDED) {
-            playbackManager.next()
-        } else if (state == Player.STATE_READY) {
-            startPollingPosition()
+        when (state) {
+            Player.STATE_READY -> startPollingPosition()
+            Player.STATE_ENDED -> playbackManager.next()
+            else -> {}
         }
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        // If the song loops while in the LOOP_ONCE mode, then stop looping after that.
-        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
-            playbackManager.loopMode == LoopMode.ONCE
-        ) {
-            playbackManager.setLoopMode(LoopMode.NONE)
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
+            playbackManager.clearLoopMode()
         }
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        // If there's any issue, just go to the next song.
+        // If there's any issue, just go to the next song. I don't really care.
         playbackManager.next()
     }
 

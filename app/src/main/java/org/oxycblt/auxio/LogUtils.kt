@@ -6,8 +6,14 @@ import android.util.Log
 // Yes, I know timber exists but this does what I need.
 
 /**
- * Shortcut method for logging a debug statement, handles debug builds and anonymous objects
- * @param msg The message to log
+ * Shortcut method for logging a non-string [obj] to debug. Should only be used for debug preferably.
+ */
+fun Any.logD(obj: Any) {
+    logD(obj.toString())
+}
+
+/**
+ * Shortcut method for logging [msg] to the debug console., handles debug builds and anonymous objects
  */
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG) {
@@ -16,8 +22,7 @@ fun Any.logD(msg: String) {
 }
 
 /**
- * Shortcut method for logging an error. Handles anonymous objects
- * @param msg The message to log
+ * Shortcut method for logging [msg] as an error to the console. Handles anonymous objects
  */
 fun Any.logE(msg: String) {
     Log.e(getName(), msg)

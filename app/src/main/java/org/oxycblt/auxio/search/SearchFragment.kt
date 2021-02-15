@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -51,6 +52,8 @@ class SearchFragment : Fragment() {
         // styling to Material given all the second-and-third-order effects it has.
         val accent = Accent.get().color.toColor(requireContext())
         val searchAdapter = SearchAdapter(::onItemSelection) { view, data -> newMenu(view, data) }
+        val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        val defaultParams = toolbarParams.scrollFlags
 
         // --- UI SETUP --
 
@@ -99,10 +102,14 @@ class SearchFragment : Fragment() {
             }
 
             if (it.isEmpty()) {
+                // If the data is empty, then the ability for the toolbar to collapse
+                // on scroll should be disabled.
                 binding.searchAppbar.setExpanded(true)
                 binding.searchRecycler.visibility = View.GONE
+                toolbarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
             } else {
                 binding.searchRecycler.visibility = View.VISIBLE
+                toolbarParams.scrollFlags = defaultParams
             }
         }
 
@@ -125,16 +132,16 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        fixAnimInfoLeak()
-    }
-
     override fun onResume() {
         super.onResume()
 
         searchModel.updateNavigationStatus(false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        fixAnimInfoLeak()
     }
 
     /**
@@ -148,6 +155,7 @@ class SearchFragment : Fragment() {
             return
         }
 
+        // Get rid of the keyboard
         requireView().rootView.clearFocus()
 
         if (!searchModel.isNavigating) {
