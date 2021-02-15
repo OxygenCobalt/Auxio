@@ -35,7 +35,7 @@
     <string name="label_about">О программе</string>
     <string name="label_version">Версия</string>
     <string name="label_code">Открыть на GitHub</string>
-    <string name="label_faq">FAQ</string>
+    <string name="label_faq">ЧаВО</string>
     <string name="label_licenses">Лицензии</string>
 
     <!-- Settings namespace | Settings-related labels -->

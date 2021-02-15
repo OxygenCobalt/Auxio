@@ -11,7 +11,6 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/option_sort_none"
-                    android:contentDescription="@string/description_sort_none"
                     android:title="@string/label_sort_none" />
                 <item
                     android:id="@+id/option_sort_alpha_down"

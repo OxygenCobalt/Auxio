@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">Újra</string>
+    <string name="label_grant">Engedélyezés</string>
+
+    <string name="label_library">Könyvtár</string>
+    <string name="label_genres">Műfajo</string>
+    <string name="label_artists">Előadók</string>
+    <string name="label_albums">Albumok</string>
+    <string name="label_songs">Dalok</string>
+    <string name="label_all_songs">Összes Dalok</string>
+
+    <string name="label_search">Keresés</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_filter_all">Összes</string>
+
+    <string name="label_sort">Összes</string>
+    <string name="label_sort_none">Alapértelmezett</string>
+    <string name="label_sort_alpha_down">Növekvő</string>
+    <string name="label_sort_alpha_up">Csökkenő</string>
+
+    <string name="label_play">Lejátszás</string>
+    <string name="label_shuffle">Keverés</string>
+    <string name="label_playback">Most Játszott</string>
+
+    <string name="label_queue">Lejátszási sor</string>
+    <string name="label_queue_add">Lejátszás sorhoz adás</string>
+    <string name="label_queue_added">Sorbaállítva</string>
+    <string name="label_next_user_queue">Lejátszási sor</string>
+
+    <string name="label_go_artist">Ugrás az előadóhoz</string>
+    <string name="label_go_album">Ugrás az albumhoz</string>
+
+    <string name="label_about">Névjegy</string>
+    <string name="label_version">Verzió</string>
+    <string name="label_code">Megtekintés GitHubon</string>
+    <string name="label_faq">GYIK</string>
+    <string name="label_licenses">Engedélyek</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Beállítások</string>
+
+    <string name="setting_ui">Megjelenés</string>
+    <string name="setting_theme">Téma</string>
+    <string name="setting_theme_auto">Automatikus</string>
+    <string name="setting_theme_day">Világos</string>
+    <string name="setting_theme_night">Sötét</string>
+    <string name="setting_accent">Kiemelés</string>
+
+    <string name="setting_color_notif">Értesítés színezése</string>
+    <string name="setting_quality_covers">A médiatár albumborítók figyelmen kívül hagyása</string>
+
+    <string name="setting_audio">Hang</string>
+    <string name="setting_audio_focus">Hangfókusz</string>
+    <string name="setting_audio_plug_mgt">Fejhallgató csatlakozó</string>
+
+    <string name="setting_behavior">Működés</string>
+    <string name="setting_behavior_end_loop">Folytatás</string>
+    <string name="setting_behavior_end_stop">Megállítás</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Nem található zene</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Keresés a könyvtárban…</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Sáv %d</string>
+
+    <string name="description_play_pause">Lejátszás/Szünet</string>
+
+    <string name="description_clear_user_queue">Lejátszási sor</string>
+
+    <string name="description_error">Hiba</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="color_label_red">Piros</string>
+    <string name="color_label_pink">Rózsaszínű</string>
+    <string name="color_label_purple">Lila</string>
+    <string name="color_label_deep_purple">Sötétlila</string>
+    <string name="color_label_indigo">Indigókék</string>
+    <string name="color_label_blue">Kék</string>
+    <string name="color_label_light_blue">Világoskék</string>
+    <string name="color_label_teal">Kékeszöld</string>
+    <string name="color_label_green">Zöld</string>
+    <string name="color_label_light_green">Világoszöld</string>
+    <string name="color_label_lime">Sárgazöld</string>
+    <string name="color_label_yellow">Sárga</string>
+    <string name="color_label_orange">Narancs</string>
+    <string name="color_label_brown">Barna</string>
+    <string name="color_label_grey">Szürke</string>
+    <string name="color_label_blue_grey">Kékszürke</string>
+    <string name="color_label_neutral">Semleges</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+    <plurals name="format_song_count">
+        <item quantity="one">%d Dal</item>
+        <item quantity="other">%d Dalok</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%d Album</item>
+        <item quantity="other">%d Albumok</item>
+    </plurals>
+</resources>

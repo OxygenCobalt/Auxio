@@ -99,7 +99,6 @@
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_sort_button">Reihenfolge ändern</string>
-    <string name="description_sort_none">Standard Reihenfolge</string>
     <string name="description_track_number">Titel %d</string>
 
     <string name="description_play_pause">Abspielen/Pausieren</string>
