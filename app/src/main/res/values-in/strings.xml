@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Info namespace | App labels -->
+
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">Ulangi</string>
+    <string name="label_grant">Izinkan</string>
+
+    <string name="label_library">Pustaka</string>
+    <string name="label_genres">Aliran</string>
+    <string name="label_artists">Artis</string>
+    <string name="label_albums">Album-album</string>
+    <string name="label_songs">Lagu</string>
+    <string name="label_all_songs">Lagu</string>
+
+    <string name="label_search">Pencarian</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_filter_all">Semua</string>
+
+    <string name="label_sort">Urutan</string>
+    <string name="label_sort_none">Bawaan</string>
+    <string name="label_sort_alpha_down">Naik</string>
+    <string name="label_sort_alpha_up">Turun</string>
+
+    <string name="label_play">Putar</string>
+    <string name="label_shuffle">Acak</string>
+    <string name="label_playback">Sedang Diputar</string>
+
+    <string name="label_queue">Antrean</string>
+    <string name="label_queue_add">Tambahkan ke antrean</string>
+    <string name="label_queue_added">Ditambahkan ke antrean</string>
+    <string name="label_next_user_queue">Berikutnya</string>
+
+    <string name="label_go_artist">Pergi ke artis</string>
+    <string name="label_go_album">Pergi ke album</string>
+
+    <string name="label_about">Tentang</string>
+    <string name="label_version">Versi</string>
+    <string name="label_code">Lihat di GitHub</string>
+    <string name="label_faq">Tanya-Jawab</string>
+    <string name="label_licenses">Lisensi pihak ketiga</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Setelan</string>
+
+    <string name="setting_ui">Tampilan</string>
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_auto">Otomatis</string>
+    <string name="setting_theme_day">Terang</string>
+    <string name="setting_theme_night">Gelap</string>
+    <string name="setting_accent">Aksen</string>
+
+    <string name="setting_color_notif">Warnai Notifikasi</string>
+    <string name="setting_quality_covers">Abaikan sampul-sampul pada Media Penyimpanan</string>
+
+    <string name="setting_audio">Audio</string>
+    <string name="setting_audio_focus">Fokus audio</string>
+
+    <string name="setting_behavior">Perilaku</string>
+    <string name="setting_behavior_end_loop">Lanjutkan</string>
+    <string name="setting_behavior_end_stop">Setop</string>
+    <string name="setting_behavior_keep_shuffle">Ingat putar acak</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Musik tidak ditemukan</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Mencari pustaka Anda…</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Trek %d</string>
+
+    <string name="description_play_pause">Putar/Jeda</string>
+
+    <string name="description_clear_user_queue">Kosongkan antrean</string>
+
+    <string name="description_error">Error</string>
+
+
+    <!-- Format Namespace | Value formatting/plurals -->
+
+    <plurals name="format_song_count">
+        <item quantity="other">%d Songs</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="other">%d Albums</item>
+    </plurals>
+</resources>
