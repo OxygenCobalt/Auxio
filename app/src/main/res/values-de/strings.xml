@@ -73,7 +73,7 @@
 
     <string name="setting_audio">Audio</string>
     <string name="setting_audio_focus">Audiofokus</string>
-    <string name="setting_audio_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Alarme]</string>
+    <string name="setting_audio_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Anrufe]</string>
     <string name="setting_audio_plug_mgt">Kopfhöreranschluss</string>
     <string name="setting_audio_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
 

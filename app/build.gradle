@@ -77,6 +77,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // Media
+    // TODO: Migrate to media2 once NewPipe implements it so I can figure out how it works
     implementation 'androidx.media:media:1.2.1'
     
     // Preferences

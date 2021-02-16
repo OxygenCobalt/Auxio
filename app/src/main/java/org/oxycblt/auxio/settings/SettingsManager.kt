@@ -73,7 +73,7 @@ class SettingsManager private constructor(context: Context) :
 
     /**
      * Whether to even loading embedded covers
-     * TODO: Make the UI result of this better
+     * TODO: Make the UI result of this better?
      */
     val showCovers: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_SHOW_COVERS, true)
