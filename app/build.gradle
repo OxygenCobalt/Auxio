@@ -11,7 +11,7 @@ android {
         applicationId "org.oxycblt.auxio"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
+        versionCode 120
         versionName "1.2.0"
 
         buildFeatures {
