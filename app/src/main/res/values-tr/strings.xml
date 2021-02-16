@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">Yeniden dene</string>
+    <string name="label_grant">İzin</string>
+
+    <string name="label_library">Kitaplık</string>
+    <string name="label_genres">Türler</string>
+    <string name="label_artists">Sanatçılar</string>
+    <string name="label_albums">Albümler</string>
+    <string name="label_songs">Şarkılar</string>
+    <string name="label_all_songs">Şarkılar</string>
+
+    <string name="label_search">Ara</string>
+    <string name="label_filter">Filtrele</string>
+    <string name="label_filter_all">Tümü</string>
+
+    <string name="label_sort">Sıralama</string>
+    <string name="label_sort_none">Varsayılan</string>
+    <string name="label_sort_alpha_down">Artan</string>
+    <string name="label_sort_alpha_up">Azalan</string>
+
+    <string name="label_play">Başlat</string>
+    <string name="label_shuffle">Karıştır</string>
+    <string name="label_playback">Şuan çalınan</string>
+
+    <string name="label_queue">Kuyruk</string>
+    <string name="label_queue_add">Kuyruğa ekle</string>
+    <string name="label_queue_added">Kuyruğa eklendi</string>
+    <string name="label_next_user_queue">Sırada olanlar</string>
+
+    <string name="label_go_artist">Sanatçıya git</string>
+    <string name="label_go_album">Albüme git</string>
+
+    <string name="label_about">Hakkında</string>
+    <string name="label_version">Sürüm</string>
+    <string name="label_code">GitHub\'da görüntüle</string>
+    <string name="label_faq">SSS</string>
+    <string name="label_licenses">Lisanslar</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Ayarlar</string>
+
+    <string name="setting_ui">Ayarlar</string>
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_auto">Otomatis</string>
+    <string name="setting_theme_day">Açık</string>
+    <string name="setting_theme_night">Koyu</string>
+    <string name="setting_accent">Ana Renk</string>
+
+    <string name="setting_color_notif">Bildirimi renklendir</string>
+    <string name="setting_quality_covers">Medya Deposu albüm kapağını yoksay</string>
+
+    <string name="setting_audio">Ses</string>
+    <string name="setting_audio_focus">Ses odaklama</string>
+
+    <string name="setting_behavior">Tercihler</string>
+    <string name="setting_behavior_end_loop">Devam et</string>
+    <string name="setting_behavior_end_stop">Dur</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">Müzik bulunamadı</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Kitaplığınız taranıyor…</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_track_number">Parça %d</string>
+
+    <string name="description_play_pause">Başlat/Durdur</string>
+
+    <string name="description_clear_user_queue">Temizle Kuyruk</string>
+
+    <string name="description_error">Error</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+
+    <plurals name="format_song_count">
+        <item quantity="one">%d Şarkı</item>
+        <item quantity="other">%d Şarkılar</item>
+    </plurals>
+
+    <plurals name="format_album_count">
+        <item quantity="one">%d Albüm</item>
+        <item quantity="other">%d Albümler</item>
+    </plurals>
+</resources>

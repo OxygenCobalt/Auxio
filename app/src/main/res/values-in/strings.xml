@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Info namespace | App labels -->
-
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Ulangi</string>
     <string name="label_grant">Izinkan</string>
@@ -9,7 +7,7 @@
     <string name="label_library">Pustaka</string>
     <string name="label_genres">Aliran</string>
     <string name="label_artists">Artis</string>
-    <string name="label_albums">Album-album</string>
+    <string name="label_albums">Album</string>
     <string name="label_songs">Lagu</string>
     <string name="label_all_songs">Lagu</string>
 
@@ -38,7 +36,7 @@
     <string name="label_version">Versi</string>
     <string name="label_code">Lihat di GitHub</string>
     <string name="label_faq">Tanya-Jawab</string>
-    <string name="label_licenses">Lisensi pihak ketiga</string>
+    <string name="label_licenses">Lisensi</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Setelan</string>
@@ -74,16 +72,15 @@
 
     <string name="description_clear_user_queue">Kosongkan antrean</string>
 
-    <string name="description_error">Error</string>
-
+    <string name="description_error">Galat</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
 
     <plurals name="format_song_count">
-        <item quantity="other">%d Songs</item>
+        <item quantity="other">%d Lagu</item>
     </plurals>
 
     <plurals name="format_album_count">
-        <item quantity="other">%d Albums</item>
+        <item quantity="other">%d Album</item>
     </plurals>
 </resources>
