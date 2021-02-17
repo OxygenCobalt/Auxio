@@ -100,7 +100,7 @@
 
     <!-- Fast scroll theme -->
     <style name="FastScrollTheme" parent="Widget.IndicatorFastScroll.FastScroller">
-        <item name="android:textColor">@color/ui_state_color</item>
+        <item name="android:textColor">@color/color_scroll_tints</item>
         <item name="android:textAppearance">@style/TextAppearance.FastScroll</item>
     </style>
 

@@ -52,7 +52,7 @@
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.SmallHeader"
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
-            app:layout_constraintEnd_toStartOf="@+id/playback_controls"
+            app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toTopOf="@+id/playback_cover"
             app:layout_constraintVertical_chainStyle="packed"
@@ -70,13 +70,13 @@
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
-            app:layout_constraintEnd_toStartOf="@+id/playback_controls"
+            app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
             tools:text="Artist Name / Album Name" />
 
-        <ImageButton
-            android:id="@+id/playback_controls"
+        <org.oxycblt.auxio.playback.PlayPauseButton
+            android:id="@+id/playback_play_pause"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="@dimen/size_play_pause_compact"
             android:layout_height="@dimen/size_play_pause_compact"
@@ -88,7 +88,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_play_to_pause" />
+            tools:src="@drawable/ic_pause_large" />
 
         <ProgressBar
             android:id="@+id/playback_progress"

@@ -55,7 +55,7 @@ data class Song(
 
     /**
      * Apply a genre to a song.
-     * @throws IllegalArgumentException When a genre is already applied.
+     * @throws IllegalStateException When a genre is already applied.
      */
     fun applyGenre(genre: Genre) {
         check(mGenre == null) { "Genre is already applied" }
@@ -65,7 +65,7 @@ data class Song(
 
     /**
      * Apply an album to a song.
-     * @throws IllegalArgumentException When an album is already applied.
+     * @throws IllegalStateException When an album is already applied.
      */
     fun applyAlbum(album: Album) {
         check(mAlbum == null) { "Album is already applied" }

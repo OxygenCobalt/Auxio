@@ -87,7 +87,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_image"
-            tools:textColor="@color/blue" />
+            tools:textColor="@color/control_color" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/artist_shuffle_button"
@@ -98,7 +98,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_play_button"
             app:layout_constraintTop_toTopOf="@+id/artist_play_button"
-            tools:backgroundTint="@color/blue" />
+            tools:backgroundTint="@color/control_color" />
 
         <TextView
             android:id="@+id/artist_album_header"

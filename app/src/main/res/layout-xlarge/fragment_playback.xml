@@ -173,7 +173,7 @@
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlayPauseButton
             android:id="@+id/playback_play_pause"
             style="@style/PlayPause"
             android:layout_marginBottom="@dimen/margin_large"
@@ -182,8 +182,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
-            tools:src="@drawable/ic_play_to_pause" />
-
+            tools:src="@drawable/ic_pause_large" />
 
         <ImageButton
             android:id="@+id/playback_skip_next"

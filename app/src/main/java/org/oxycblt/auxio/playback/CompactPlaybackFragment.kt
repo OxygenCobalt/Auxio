@@ -1,16 +1,13 @@
 package org.oxycblt.auxio.playback
 
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
@@ -77,33 +74,15 @@ class CompactPlaybackFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         playbackModel.disableAnimation()
 
-        val iconPauseToPlay = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_pause_to_play
-        ) as AnimatedVectorDrawable
-
-        val iconPlayToPause = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_play_to_pause
-        ) as AnimatedVectorDrawable
-
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (playbackModel.canAnimate) {
-                if (it) {
-                    // Animate the icon transition when the playing status switches
-                    binding.playbackControls.setImageDrawable(iconPlayToPause)
-                    iconPlayToPause.start()
-                } else {
-                    binding.playbackControls.setImageDrawable(iconPauseToPlay)
-                    iconPauseToPlay.start()
-                }
+            if (it) {
+                binding.playbackPlayPause.showPause(playbackModel.canAnimate)
+                playbackModel.enableAnimation()
             } else {
-                // Use static icons on the first firing of this observer so that the icons
-                // don't animate on startup, which looks weird.
-                binding.playbackControls.setImageResource(
-                    if (it) R.drawable.ic_pause_large else R.drawable.ic_play_large
-                )
-
+                binding.playbackPlayPause.showPlay(playbackModel.canAnimate)
                 playbackModel.enableAnimation()
             }
         }

@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.playback
 
 import android.content.res.ColorStateList
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -187,41 +186,18 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onResume() {
         super.onResume()
+
         playbackModel.disableAnimation()
-
-        val iconPauseToPlay = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_pause_to_play
-        ) as AnimatedVectorDrawable
-
-        val iconPlayToPause = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_play_to_pause
-        ) as AnimatedVectorDrawable
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
-                if (playbackModel.canAnimate) {
-                    binding.playbackPlayPause.setImageDrawable(iconPlayToPause)
-                    iconPlayToPause.start()
-                } else {
-                    // Use a static icon the first time around to fix premature animation
-                    // [Which looks weird]
-                    binding.playbackPlayPause.setImageResource(R.drawable.ic_pause_large)
-
-                    playbackModel.enableAnimation()
-                }
-
+                binding.playbackPlayPause.showPause(playbackModel.canAnimate)
                 binding.playbackPlayPause.backgroundTintList = accentColor
+                playbackModel.enableAnimation()
             } else {
-                if (playbackModel.canAnimate) {
-                    binding.playbackPlayPause.setImageDrawable(iconPauseToPlay)
-                    iconPauseToPlay.start()
-                } else {
-                    binding.playbackPlayPause.setImageResource(R.drawable.ic_play_large)
-
-                    playbackModel.enableAnimation()
-                }
-
+                binding.playbackPlayPause.showPlay(playbackModel.canAnimate)
                 binding.playbackPlayPause.backgroundTintList = controlColor
+                playbackModel.enableAnimation()
             }
         }
     }

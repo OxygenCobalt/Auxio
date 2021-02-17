@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.text.Spanned
 import android.util.DisplayMetrics
@@ -17,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -77,6 +79,13 @@ fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
  * Shortcut to get a [LayoutInflater] from a [Context]
  */
 val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
+
+/**
+ * Shortcut to get an [AnimatedVectorDrawable] from a [Context]
+ */
+fun Context.getAnimatedDrawable(@DrawableRes drawableRes: Int): AnimatedVectorDrawable {
+    return ContextCompat.getDrawable(this, drawableRes) as AnimatedVectorDrawable
+}
 
 /**
  * Create a [Toast] from a [String]

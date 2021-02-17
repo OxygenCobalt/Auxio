@@ -51,7 +51,8 @@ fun ImageView.bindGenreImage(genre: Genre) {
 }
 
 /**
- * Custom extension function similar to the stock coil load extensions, but allows for any type.
+ * Custom extension function similar to the stock coil load extensions, but handles whether
+ * to even show images and custom fetchers.
  */
 inline fun <reified T : Any> ImageView.load(
     data: T,

@@ -11,15 +11,22 @@
         android:pivotX="12"
         android:pivotY="12">
 
+        <!--
+        Dupe the layout so that animations work WHILE preventing a seam from showing on the icon
+        due to floating point precision errors.
+        IEE 754 moment
+        -->
         <path
             android:name="play_upper"
             android:fillColor="#FF000000"
-            android:pathData="M8.25,6L8.25,12L18.75,12L18.75,12Z" />
+            android:strokeColor="#00000000"
+            android:pathData="m 8.2501424,6.0001505 v 5.9996335 6.000151 L 18.749759,11.999784 Z" />
 
         <path
             android:name="play_lower"
             android:fillColor="#FF000000"
-            android:pathData="M8.25,18L8.25,12L18.75,12L18.75,12Z" />
+            android:strokeColor="#00000000"
+            android:pathData="m 8.2501424,6.0001505 v 5.9996335 6.000151 L 18.749759,11.999784 Z" />
 
     </group>
 
