@@ -1,0 +1,7 @@
+- Added full/partial translations for 20 languages
+- Improved the playback UI
+- Improved the UI on smaller tablets
+- Improved the compact controls
+- Improved the play/pause icons
+- Fixed RTL layout issues
+- Fixed issue where an album would not show up as playing if selected from the artist UI

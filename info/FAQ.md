@@ -10,11 +10,15 @@ Auxio is local music player for android that I built for myself, primarily. Its 
 
 ## Where can I download Auxio?
 
-Nowhere currently, I still need to make some changes before its ready to be put up on public-facing stores. See the [Releases](https://github.com/oxygencobalt/Auxio/releases) to download it for now. It will arrive on F-Droid eventually.
+Currently, its availble on the [IzzyOnDroid F-Droid repository](https://apt.izzysoft.de/fdroid/). I still want to make some changes and get feedback before I submit it to the mainline F-Droid repository, but it will arrive there eventually.
 
 ## Can I translate Auxio to my native language?
 
-I still need to set up Weblate, but you can open a [Pull Request](https://github.com/enricocid/Music-Player-GO/pulls) with any translations you want to be added for now.
+You can open a [Pull Request](https://github.com/oxygencobalt/Auxio/pulls) with any translations you want to be added for now. I may switch to weblate later.
+
+## How can I contribute/report issues?
+
+Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md).
 
 ## Why ExoPlayer?
 
@@ -43,10 +47,6 @@ I could possibly extend edge-to-edge support to earlier versions, but it would t
 ## Why doesnt edge-to-edge work when my phone is in landscape?
 
 When a *phone* [Not a tablet] is in landscape, the insets meant to make the UI fit dont work properly, therefore the feature is mostly disabled.
-
-## How can I contribute/report issues?
-
-Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md).
 
 ## Does this app keep/send any information about myself or my device?
 

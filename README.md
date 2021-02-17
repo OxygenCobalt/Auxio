@@ -49,9 +49,8 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Modular, feature-based architecture
 - No rounded corners
 
-## To Come in the future:
+## To possibly come in the future:
 
-- Translations
 - Artist Images
 - Artist Songs
 - Black theme
