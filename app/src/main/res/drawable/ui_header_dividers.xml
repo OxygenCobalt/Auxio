@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-Divider used by recyclerview header items
-https://stackoverflow.com/a/61157571/14143986
--->
+<?xml version="1.0" encoding="utf-8"?><!--Divider used by recyclerview header items https://stackoverflow.com/a/61157571/14143986-->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:left="-2dp"

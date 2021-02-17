@@ -1,11 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-Animated icons derived from noice
-https://github.com/ashutoshgngwr/noice/
--->
+<?xml version="1.0" encoding="utf-8"?><!--Animated icons derived from noice https://github.com/ashutoshgngwr/noice/-->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:drawable="@drawable/ic_play_large">
-
     <target android:name="play_upper">
         <aapt:attr name="android:animation">
             <set>
@@ -19,7 +15,6 @@ https://github.com/ashutoshgngwr/noice/
             </set>
         </aapt:attr>
     </target>
-
     <target android:name="play_lower">
         <aapt:attr name="android:animation">
             <set>
@@ -33,7 +28,6 @@ https://github.com/ashutoshgngwr/noice/
             </set>
         </aapt:attr>
     </target>
-
     <target android:name="play">
         <aapt:attr name="android:animation">
             <set>
@@ -47,5 +41,4 @@ https://github.com/ashutoshgngwr/noice/
             </set>
         </aapt:attr>
     </target>
-
 </animated-vector>

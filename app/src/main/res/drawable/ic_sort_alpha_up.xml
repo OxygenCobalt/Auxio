@@ -8,7 +8,6 @@
         android:fillColor="@android:color/white"
         android:pathData="M15.5 3.448h-7L12-0.008l3.5 3.456z"
         android:strokeWidth="0.139935" />
-
     <path
         android:fillColor="@android:color/white"
         android:pathData="M3.694 17.992H0.976l4.142-12h3.27l4.136 12H9.806L6.8 8.734H6.706zm-0.17-4.717h6.422v1.98H3.524zm10.313 4.717v-1.506l5.988-8.402h-6V5.992h9.188v1.505L17.018 15.9h6.006v2.092z"

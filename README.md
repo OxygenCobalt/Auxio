@@ -58,7 +58,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Playlists
 - Liked songs
 - More notification actions
-- Swipe-between-tracks function (Maybe)
+- Swipe-between-tracks function
 - Better edge-to-edge support
 - More customization options
 - Other things, presumably

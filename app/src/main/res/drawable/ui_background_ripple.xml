@@ -5,7 +5,6 @@
             <solid android:color="@color/background" />
         </shape>
     </item>
-
     <item>
         <ripple android:color="@color/selection_color">
             <item android:id="@android:id/mask">

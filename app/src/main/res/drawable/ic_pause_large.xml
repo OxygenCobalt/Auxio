@@ -10,16 +10,13 @@
         android:pivotX="12"
         android:pivotY="12"
         android:rotation="-90">
-
         <path
             android:name="play_upper"
             android:fillColor="@android:color/white"
             android:pathData="M6,7.5L6,10.5L18,10.5L18,7.5Z" />
-
         <path
             android:name="play_lower"
             android:fillColor="@android:color/white"
             android:pathData="M6,16.5L6,13.5L18,13.5L18,16.5Z" />
-
     </group>
 </vector>

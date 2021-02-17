@@ -1,12 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-Animated icons derived from noice
-https://github.com/ashutoshgngwr/noice/
-FIXME: Possible issue where a seam will appear on these icons at a certain size
--->
+<?xml version="1.0" encoding="utf-8"?><!--Animated icons derived from noice https://github.com/ashutoshgngwr/noice/ FIXME: Possible issue where a seam will appear on these icons at a certain size-->
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:drawable="@drawable/ic_pause_large">
-
     <target android:name="play_upper">
         <aapt:attr name="android:animation">
             <set>
@@ -20,7 +15,6 @@ FIXME: Possible issue where a seam will appear on these icons at a certain size
             </set>
         </aapt:attr>
     </target>
-
     <target android:name="play_lower">
         <aapt:attr name="android:animation">
             <set>
@@ -34,7 +28,6 @@ FIXME: Possible issue where a seam will appear on these icons at a certain size
             </set>
         </aapt:attr>
     </target>
-
     <target android:name="play">
         <aapt:attr name="android:animation">
             <set>
@@ -48,5 +41,4 @@ FIXME: Possible issue where a seam will appear on these icons at a certain size
             </set>
         </aapt:attr>
     </target>
-
 </animated-vector>
