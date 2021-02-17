@@ -45,12 +45,6 @@ class PlayPauseButton @JvmOverloads constructor(
         }
     }
 
-    /**
-     * Hack that fixes an issue where a seam will display on the play button on certain display
-     * sizes due to floating point precision problems (Gotta love IEEE 754)
-     * This is done by detecting when the animation has ended and then reverting this
-     * view to the normal static image. Not possible below API 23 though.
-     */
     @RequiresApi(Build.VERSION_CODES.M)
     private fun fixSeams() {
         iconPauseToPlay.registerAnimationCallback(object : Animatable2.AnimationCallback() {
@@ -58,5 +52,13 @@ class PlayPauseButton @JvmOverloads constructor(
                 setImageResource(R.drawable.ic_play_large)
             }
         })
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            iconPauseToPlay.clearAnimationCallbacks()
+        }
     }
 }

@@ -52,7 +52,7 @@ fun ImageView.bindGenreImage(genre: Genre) {
 
 /**
  * Custom extension function similar to the stock coil load extensions, but handles whether
- * to even show images and custom fetchers.
+ * to show images and custom fetchers.
  */
 inline fun <reified T : Any> ImageView.load(
     data: T,
@@ -80,9 +80,9 @@ inline fun <reified T : Any> ImageView.load(
 // --- OTHER FUNCTIONS ---
 
 /**
- * Get a bitmap for a [song]. [onDone] will be called when the bitmap is loaded.
+ * Get a bitmap for a [song]. [onDone] will be called with the loaded bitmap, or null if loading
+ * failed/shouldn't occur.
  * **This not meant for UIs, instead use the Binding Adapters.**
- * @param onDone What to do with the bitmap when the loading is finished. Bitmap will be null if loading failed/shouldn't occur.
  */
 fun loadBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
     val settingsManager = SettingsManager.getInstance()

@@ -193,12 +193,12 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             if (it) {
                 binding.playbackPlayPause.showPause(playbackModel.canAnimate)
                 binding.playbackPlayPause.backgroundTintList = accentColor
-                playbackModel.enableAnimation()
             } else {
                 binding.playbackPlayPause.showPlay(playbackModel.canAnimate)
                 binding.playbackPlayPause.backgroundTintList = controlColor
-                playbackModel.enableAnimation()
             }
+
+            playbackModel.enableAnimation()
         }
     }
 

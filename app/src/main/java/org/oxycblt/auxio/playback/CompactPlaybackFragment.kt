@@ -80,11 +80,11 @@ class CompactPlaybackFragment : Fragment() {
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             if (it) {
                 binding.playbackPlayPause.showPause(playbackModel.canAnimate)
-                playbackModel.enableAnimation()
             } else {
                 binding.playbackPlayPause.showPlay(playbackModel.canAnimate)
-                playbackModel.enableAnimation()
             }
+
+            playbackModel.enableAnimation()
         }
     }
 }
