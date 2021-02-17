@@ -20,5 +20,5 @@
                     android:title="@string/label_sort_alpha_up" />
             </group>
         </menu>
-    </item>-
+    </item>
 </menu>

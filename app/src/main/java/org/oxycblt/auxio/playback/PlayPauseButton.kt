@@ -45,6 +45,10 @@ class PlayPauseButton @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Hack that fixes an issue where a seam would display in the middle of the play button,
+     * probably as a result of floating point precision errors. Gotta love IEEE 754.
+     */
     @RequiresApi(Build.VERSION_CODES.M)
     private fun fixSeams() {
         iconPauseToPlay.registerAnimationCallback(object : Animatable2.AnimationCallback() {
