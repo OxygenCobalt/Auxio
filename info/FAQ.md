@@ -6,11 +6,11 @@ This FAQ will be continually updated as new changes and updates are made to Auxi
 
 ## What is Auxio?
 
-Auxio is local music player for android that I built for myself, primarily. Its meant to avoid alot of the feature-bloat and frustrating UX that other FOSS music players have, while still remaining customizable.
+Auxio is local music player for android that I built for myself, primarily. Its meant to avoid a lot of the feature-bloat and frustrating UX that other FOSS music players have, while still remaining customizable.
 
 ## Where can I download Auxio?
 
-Currently, its availble on the [IzzyOnDroid F-Droid repository](https://apt.izzysoft.de/fdroid/). I still want to make some changes and get feedback before I submit it to the mainline F-Droid repository, but it will arrive there eventually.
+Currently, its available on the [IzzyOnDroid F-Droid repository](https://apt.izzysoft.de/fdroid/). I still want to make some changes and get feedback before I submit it to the mainline F-Droid repository, but it will arrive there eventually.
 
 ## Can I translate Auxio to my native language?
 
@@ -44,9 +44,9 @@ The APIs for changing system bar colors were only added in API Level 27 (Oreo MR
 
 I could possibly extend edge-to-edge support to earlier versions, but it would take awhile.
 
-## Why doesnt edge-to-edge work when my phone is in landscape?
+## Why doesn't edge-to-edge work when my phone is in landscape?
 
-When a *phone* [Not a tablet] is in landscape, the insets meant to make the UI fit dont work properly, therefore the feature is mostly disabled.
+When a *phone* [Not a tablet] is in landscape, the insets meant to make the UI fit don't work properly, therefore the feature is mostly disabled.
 
 ## Does this app keep/send any information about myself or my device?
 
