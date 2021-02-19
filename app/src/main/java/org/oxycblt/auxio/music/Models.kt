@@ -55,22 +55,20 @@ data class Song(
 
     /**
      * Apply a genre to a song.
-     * @throws IllegalStateException When a genre is already applied.
      */
     fun applyGenre(genre: Genre) {
-        check(mGenre == null) { "Genre is already applied" }
-
-        mGenre = genre
+        if (mGenre == null) {
+            mGenre = genre
+        }
     }
 
     /**
      * Apply an album to a song.
-     * @throws IllegalStateException When an album is already applied.
      */
     fun applyAlbum(album: Album) {
-        check(mAlbum == null) { "Album is already applied" }
-
-        mAlbum = album
+        if (mAlbum == null) {
+            mAlbum = album
+        }
     }
 
     val seconds = duration / 1000

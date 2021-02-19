@@ -56,9 +56,7 @@ class LoadingFragment : Fragment() {
                 null -> showLoading(binding)
 
                 // Anything else is an error
-                else -> {
-                    showError(binding, response)
-                }
+                else -> showError(binding, response)
             }
         }
 
