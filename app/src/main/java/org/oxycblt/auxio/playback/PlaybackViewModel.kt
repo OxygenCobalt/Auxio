@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -13,6 +14,7 @@ import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
@@ -93,6 +95,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
+    private val musicStore = MusicStore.getInstance()
 
     init {
         playbackManager.addCallback(this)
@@ -153,6 +156,17 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** Shuffle all songs */
     fun shuffleAll() {
         playbackManager.shuffleAll()
+    }
+
+    /** Play a song using an intent */
+    fun playWithIntent(intent: Intent, context: Context) {
+        val uri = intent.data ?: return
+
+        viewModelScope.launch {
+            musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
+                playSong(song)
+            }
+        }
     }
 
     // --- POSITION FUNCTIONS ---

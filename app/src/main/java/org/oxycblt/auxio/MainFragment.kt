@@ -111,8 +111,6 @@ class MainFragment : Fragment() {
             }
         }
 
-        playbackModel.restorePlaybackIfNeeded(requireContext())
-
         logD("Fragment Created.")
 
         return binding.root
@@ -121,11 +119,17 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val intent = requireActivity().intent
+        val activity = requireActivity()
+        val intent = activity.intent
 
         if (intent != null && intent.action == Intent.ACTION_VIEW) {
-            logD("Attempting to navigate from file intent")
-            detailModel.navigateWithIntent(intent, requireActivity().application)
+            playbackModel.playWithIntent(intent, requireContext())
+
+            // Clear intent so that this does not fire again
+            // I see no consequences from doing this
+            activity.intent = null
+        } else {
+            playbackModel.restorePlaybackIfNeeded(requireContext())
         }
     }
 
