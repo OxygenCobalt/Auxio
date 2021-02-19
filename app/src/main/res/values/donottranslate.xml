@@ -8,11 +8,4 @@
     <string name="format_double_info" translatable="false">%1$s / %2$s / %3$s</string>
     <string name="format_double_counts" translatable="false">%1$s, %2$s</string>
     <string name="format_accent_summary" translatable="false">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
-
-    <!-- Debug Namespace | Debug labels -->
-    <!-- These are never shown to the user in normal use and therefore shouldnt be translated -->
-    <string name="debug_title" translatable="false">Debug</string>
-    <string name="debug_state_save" translatable="false">Save playback state</string>
-    <string name="debug_state_save_desc" translatable="false">Force save the current playback state</string>
-    <string name="debug_state_saved" translatable="false">State saved</string>
 </resources>

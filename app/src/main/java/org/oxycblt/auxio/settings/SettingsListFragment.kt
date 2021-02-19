@@ -14,7 +14,6 @@ import coil.Coil
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.utils.invalidateDividers
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -48,13 +47,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     private fun recursivelyHandleChildren(pref: Preference) {
         if (pref is PreferenceCategory) {
-            // Show the debug category if this build is a debug build
-            if (pref.title == getString(R.string.debug_title) && BuildConfig.DEBUG) {
-                logD("Showing debug category.")
-
-                pref.isVisible = true
-            }
-
             // If this preference is a category of its own, handle its own children
             pref.children.forEach { recursivelyHandleChildren(it) }
         } else {
@@ -133,7 +125,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                 SettingsManager.Keys.KEY_DEBUG_SAVE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        playbackModel.save(requireContext())
+                        playbackModel.savePlaybackState(requireContext())
 
                         true
                     }

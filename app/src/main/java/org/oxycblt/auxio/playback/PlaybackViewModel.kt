@@ -299,6 +299,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
+     * Force save the current [PlaybackStateManager] state to the database. Called by SettingsListFragment.
+     * @param context [Context] required.
+     */
+    fun savePlaybackState(context: Context) {
+        viewModelScope.launch {
+            playbackManager.saveStateToDatabase(context)
+
+            context.getString(R.string.debug_state_saved).createToast(context)
+        }
+    }
+
+    /**
      * Get [PlaybackStateManager] to restore its state from the database, if needed. Called by MainFragment.
      * @param context [Context] required.
      */
@@ -307,18 +319,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             viewModelScope.launch {
                 playbackManager.getStateFromDatabase(context)
             }
-        }
-    }
-
-    /**
-     * Force save the current [PlaybackStateManager] state to the database. Called by SettingsListFragment.
-     * @param context [Context] required.
-     */
-    fun save(context: Context) {
-        viewModelScope.launch {
-            playbackManager.saveStateToDatabase(context)
-
-            context.getString(R.string.debug_state_saved).createToast(context)
         }
     }
 

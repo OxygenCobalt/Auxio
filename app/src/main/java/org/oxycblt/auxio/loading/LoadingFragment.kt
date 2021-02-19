@@ -73,6 +73,16 @@ class LoadingFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (MusicStore.getInstance().loaded) {
+            findNavController().navigate(
+                LoadingFragmentDirections.actionToMain()
+            )
+        }
+    }
+
     // --- PERMISSIONS ---
 
     private fun noPermissions(): Boolean {

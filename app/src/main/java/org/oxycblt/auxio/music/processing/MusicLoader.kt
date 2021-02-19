@@ -62,8 +62,6 @@ class MusicLoader(private val app: Application) {
             Genres.DEFAULT_SORT_ORDER
         )
 
-        val genrePlaceholder = app.getString(R.string.placeholder_genre)
-
         // And then process those into Genre objects
         genreCursor?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(Genres._ID)
@@ -71,7 +69,7 @@ class MusicLoader(private val app: Application) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                val name = cursor.getStringOrNull(nameIndex) ?: genrePlaceholder
+                val name = cursor.getStringOrNull(nameIndex) ?: continue // No non-broken genre would be missing a name
 
                 genres.add(Genre(id, name))
             }
@@ -119,12 +117,7 @@ class MusicLoader(private val app: Application) {
                     artistName = artistPlaceholder
                 }
 
-                albums.add(
-                    Album(
-                        id = id, name = name, artistName = artistName,
-                        coverUri = coverUri, year = year
-                    )
-                )
+                albums.add(Album(id, name, artistName, coverUri, year))
             }
 
             cursor.close()
@@ -170,12 +163,7 @@ class MusicLoader(private val app: Application) {
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 
-                songs.add(
-                    Song(
-                        id, title, albumId,
-                        track, duration
-                    )
-                )
+                songs.add(Song(id, title, albumId, track, duration))
             }
 
             cursor.close()
@@ -187,6 +175,7 @@ class MusicLoader(private val app: Application) {
 
         // Then try to associate any genres with their respective songs
         // This is stupidly inefficient, but I don't have another choice really.
+        // Blame the android devs for deciding to design MediaStore this way.
         for (genre in genres) {
             val songGenreCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
@@ -206,6 +195,23 @@ class MusicLoader(private val app: Application) {
                 }
             }
         }
+
+        /*
+        // Fix that will group songs w/o genres into an unknown genre
+        // Currently disabled until it would actually benefit someone, otherwise its just
+        // a performance deadweight.
+        val songsWithoutGenres = songs.filter { it.genre == null }
+
+        if (songsWithoutGenres.isNotEmpty()) {
+            val unknownGenre = Genre(name = app.getString(R.string.placeholder_genre))
+
+            songsWithoutGenres.forEach {
+                unknownGenre.addSong(it)
+            }
+
+            genres.add(unknownGenre)
+        }
+         */
 
         logD("Song search finished with ${songs.size} found")
     }

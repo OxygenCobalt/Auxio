@@ -51,7 +51,7 @@
     <string name="setting_title">Einstellungen</string>
 
     <string name="setting_ui">Aussehen</string>
-    <string name="setting_theme">Theme</string>
+    <string name="setting_theme">Thema</string>
     <string name="setting_theme_auto">Automatisch</string>
     <string name="setting_theme_day">Hell</string>
     <string name="setting_theme_night">Dunkel</string>
@@ -59,7 +59,7 @@
     <string name="setting_accent_unknown">Unbekannte Akzentfarbe</string>
 
     <string name="setting_display">Anzeige</string>
-    <string name="setting_lib_display">Musikbibliothek-Items</string>
+    <string name="setting_lib_display">Musikbibliothekitems</string>
     <string name="setting_color_notif">Benachrichtigung farblich anpassen</string>
     <string name="setting_color_desc">Albumcover am Benachrichtigung zeigen</string>
     <string name="setting_show_covers">Albumcover anzeigen</string>
@@ -86,6 +86,8 @@
     <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
+    <string name="setting_behavior_save" >Wiedergabezustand abspeichern</string>
+    <string name="setting_behavior_save_desc">der aktuell Wiedergabezustand jetzt abspeichern</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>

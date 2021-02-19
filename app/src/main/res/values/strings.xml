@@ -42,6 +42,8 @@
     <string name="label_go_artist">Go to artist</string>
     <string name="label_go_album">Go to album</string>
 
+    <string name="debug_state_saved">State saved</string>
+
     <string name="label_about">About</string>
     <string name="label_version">Version</string>
     <string name="label_code">View on Github</string>
@@ -88,6 +90,8 @@
     <string name="setting_behavior_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
     <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
+    <string name="setting_behavior_save" >Save playback state</string>
+    <string name="setting_behavior_save_desc">Save the current playback state now</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found</string>
