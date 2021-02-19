@@ -45,7 +45,8 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 │  └──.processing  # Systems for music loading and organization
 ├──.playback       # Playback UI and systems
 │  ├──.queue       # Queue user interface
-│  └──.state       # Backend/Modes for the playback state
+│  ├──.state       # Backend/Modes for the playback state
+│  └──.system      # System-side playback [Services, ExoPlayer]
 ├──.recycler       # Shared RecyclerView utilities and modes
 │  └──.viewholders # Shared ViewHolders and ViewHolder utilities
 ├──.search         # Search UI

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
+    <string name="info_app_desc">Ein einfacher, sinnvoller Musikplayer für android.</string>
     <string name="info_channel_name">Musikwiedergabe</string>
     <string name="info_service_desc">der Musikwiedergabedienst von Auxio.</string>
 

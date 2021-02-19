@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.playback.system
 
 import android.animation.ValueAnimator
 import android.content.Context

@@ -114,7 +114,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /**
      * Play a song.
      * @param song The song to be played
-     * @param mode The [PlaybackMode] for it to be played in. Defaults to the preferred song playback mode if not specified.
+     * @param mode The [PlaybackMode] for it to be played in. Defaults to the preferred song playback mode of the user if not specified.
      */
     fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
         playbackManager.playSong(song, mode)
@@ -413,8 +413,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mIsShuffling.value = isShuffling
     }
 
-    override fun onLoopUpdate(mode: LoopMode) {
-        mLoopMode.value = mode
+    override fun onLoopUpdate(loopMode: LoopMode) {
+        mLoopMode.value = loopMode
     }
 
     override fun onInUserQueueUpdate(isInUserQueue: Boolean) {

@@ -122,6 +122,8 @@ class MainFragment : Fragment() {
         val activity = requireActivity()
         val intent = activity.intent
 
+        // If the intent of the activity is a file intent, then play it.
+        // TODO?: Add an option to view it instead of play it if this becomes too annoying
         if (intent != null && intent.action == Intent.ACTION_VIEW) {
             playbackModel.playWithIntent(intent, requireContext())
 

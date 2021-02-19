@@ -22,7 +22,7 @@ import org.oxycblt.auxio.settings.SettingsManager
  *
  * This should ***NOT*** be used outside of the playback module.
  * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
- * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.PlaybackService].
+ * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.system.PlaybackService].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  *
@@ -454,6 +454,7 @@ class PlaybackStateManager private constructor() {
     fun shuffleAll() {
         mMode = PlaybackMode.ALL_SONGS
         mQueue = musicStore.songs.toMutableList()
+        mParent = null
 
         setShuffling(true, keepSong = false)
         updatePlayback(mQueue[0])
@@ -809,7 +810,7 @@ class PlaybackStateManager private constructor() {
         fun onIndexUpdate(index: Int) {}
         fun onPlayingUpdate(isPlaying: Boolean) {}
         fun onShuffleUpdate(isShuffling: Boolean) {}
-        fun onLoopUpdate(mode: LoopMode) {}
+        fun onLoopUpdate(loopMode: LoopMode) {}
         fun onSeek(position: Long) {}
         fun onInUserQueueUpdate(isInUserQueue: Boolean) {}
     }

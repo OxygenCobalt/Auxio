@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.playback.system
 
 import android.app.NotificationManager
 import android.app.Service
@@ -15,7 +15,6 @@ import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
-import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -40,10 +39,10 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 
@@ -73,7 +72,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         .build()
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var notification: NotificationCompat.Builder
+    private lateinit var notification: PlaybackNotification
 
     private lateinit var audioReactor: AudioReactor
     private var isForeground = false
@@ -124,12 +123,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         systemReceiver = SystemEventReceiver()
 
         IntentFilter().apply {
-            addAction(NotificationUtils.ACTION_LOOP)
-            addAction(NotificationUtils.ACTION_SHUFFLE)
-            addAction(NotificationUtils.ACTION_SKIP_PREV)
-            addAction(NotificationUtils.ACTION_PLAY_PAUSE)
-            addAction(NotificationUtils.ACTION_SKIP_NEXT)
-            addAction(NotificationUtils.ACTION_EXIT)
+            addAction(PlaybackNotification.ACTION_LOOP)
+            addAction(PlaybackNotification.ACTION_SHUFFLE)
+            addAction(PlaybackNotification.ACTION_SKIP_PREV)
+            addAction(PlaybackNotification.ACTION_PLAY_PAUSE)
+            addAction(PlaybackNotification.ACTION_SKIP_NEXT)
+            addAction(PlaybackNotification.ACTION_EXIT)
 
             addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
@@ -142,7 +141,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // --- NOTIFICATION SETUP ---
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notification = notificationManager.createMediaNotification(this, mediaSession)
+        notification = PlaybackNotification.from(this, mediaSession)
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
@@ -235,8 +234,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         stopForegroundAndNotification()
     }
 
-    override fun onModeUpdate(mode: PlaybackMode) {
-        notification.updateMode(this)
+    override fun onParentUpdate(parent: Parent?) {
+        notification.setParent(this, parent)
 
         startForegroundOrNotify()
     }
@@ -244,38 +243,38 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onPlayingUpdate(isPlaying: Boolean) {
         if (isPlaying && !player.isPlaying) {
             player.play()
-            notification.updatePlaying(this)
             audioReactor.requestFocus()
-            startForegroundOrNotify()
-
             startPollingPosition()
         } else {
             player.pause()
-            notification.updatePlaying(this)
-            startForegroundOrNotify()
-        }
-    }
-
-    override fun onLoopUpdate(mode: LoopMode) {
-        when (mode) {
-            LoopMode.NONE -> {
-                player.repeatMode = Player.REPEAT_MODE_OFF
-            }
-            else -> {
-                player.repeatMode = Player.REPEAT_MODE_ONE
-            }
         }
 
-        notification.updateExtraAction(this, settingsManager.useAltNotifAction)
+        notification.setPlaying(this, isPlaying)
         startForegroundOrNotify()
     }
 
-    override fun onShuffleUpdate(isShuffling: Boolean) {
-        if (settingsManager.useAltNotifAction) {
-            notification.updateExtraAction(this, settingsManager.useAltNotifAction)
+    override fun onLoopUpdate(loopMode: LoopMode) {
+        player.repeatMode = if (loopMode == LoopMode.NONE) {
+            Player.REPEAT_MODE_OFF
+        } else {
+            Player.REPEAT_MODE_ONE
+        }
+
+        if (!settingsManager.useAltNotifAction) {
+            notification.setLoop(this, loopMode)
 
             startForegroundOrNotify()
         }
+    }
+
+    override fun onShuffleUpdate(isShuffling: Boolean) {
+        if (!settingsManager.useAltNotifAction) {
+            return
+        }
+
+        notification.setShuffle(this, isShuffling)
+
+        startForegroundOrNotify()
     }
 
     override fun onSeek(position: Long) {
@@ -293,7 +292,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onNotifActionUpdate(useAltAction: Boolean) {
-        notification.updateExtraAction(this, useAltAction)
+        if (useAltAction) {
+            notification.setShuffle(this, playbackManager.isShuffling)
+        } else {
+            notification.setLoop(this, playbackManager.loopMode)
+        }
 
         startForegroundOrNotify()
     }
@@ -359,12 +362,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Restore the notification, if the service was destroyed while [PlaybackStateManager] persisted.
      */
     private fun restoreNotification() {
-        notification.updateExtraAction(this, settingsManager.useAltNotifAction)
-        notification.updateMode(this)
-        notification.updatePlaying(this)
+        notification.setParent(this, playbackManager.parent)
+        notification.setPlaying(this, playbackManager.isPlaying)
 
-        playbackManager.song?.let {
-            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
+        if (settingsManager.useAltNotifAction) {
+            notification.setShuffle(this, playbackManager.isShuffling)
+        } else {
+            notification.setLoop(this, playbackManager.loopMode)
+        }
+
+        playbackManager.song?.let { song ->
+            notification.setMetadata(this, song, settingsManager.colorizeNotif) {
                 if (playbackManager.isPlaying) {
                     startForegroundOrNotify()
                 } else {
@@ -427,14 +435,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             if (!isForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(
-                        NotificationUtils.NOTIFICATION_ID, notification.build(),
+                        PlaybackNotification.NOTIFICATION_ID, notification.build(),
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
                     )
                 } else {
-                    startForeground(NotificationUtils.NOTIFICATION_ID, notification.build())
+                    startForeground(
+                        PlaybackNotification.NOTIFICATION_ID, notification.build()
+                    )
                 }
             } else {
-                notificationManager.notify(NotificationUtils.NOTIFICATION_ID, notification.build())
+                notificationManager.notify(
+                    PlaybackNotification.NOTIFICATION_ID, notification.build()
+                )
             }
         }
     }
@@ -444,7 +456,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      */
     private fun stopForegroundAndNotification() {
         stopForeground(true)
-        notificationManager.cancel(NotificationUtils.NOTIFICATION_ID)
+        notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
 
         isForeground = false
     }
@@ -504,19 +516,19 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             action?.let {
                 when (it) {
-                    NotificationUtils.ACTION_LOOP ->
+                    PlaybackNotification.ACTION_LOOP ->
                         playbackManager.setLoopMode(playbackManager.loopMode.increment())
 
-                    NotificationUtils.ACTION_SHUFFLE ->
+                    PlaybackNotification.ACTION_SHUFFLE ->
                         playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
 
-                    NotificationUtils.ACTION_SKIP_PREV -> playbackManager.prev()
+                    PlaybackNotification.ACTION_SKIP_PREV -> playbackManager.prev()
 
-                    NotificationUtils.ACTION_PLAY_PAUSE ->
+                    PlaybackNotification.ACTION_PLAY_PAUSE ->
                         playbackManager.setPlaying(!playbackManager.isPlaying)
 
-                    NotificationUtils.ACTION_SKIP_NEXT -> playbackManager.next()
-                    NotificationUtils.ACTION_EXIT -> stop()
+                    PlaybackNotification.ACTION_SKIP_NEXT -> playbackManager.next()
+                    PlaybackNotification.ACTION_EXIT -> stop()
 
                     BluetoothDevice.ACTION_ACL_CONNECTED -> resume()
                     BluetoothDevice.ACTION_ACL_DISCONNECTED -> pause()

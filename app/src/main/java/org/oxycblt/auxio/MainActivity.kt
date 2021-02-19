@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
-import org.oxycblt.auxio.playback.PlaybackService
+import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isEdgeOn
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        // Since the activity is set to singleTask [Given that theres only MainActivity]
+        // Since the activity is set to singleInstance [Given that there's only MainActivity]
         // We have to manually push the intent whenever we get one so that MainFragment
         // can catch any file intents
         setIntent(intent)

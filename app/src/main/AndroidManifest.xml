@@ -42,7 +42,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".playback.PlaybackService"
+            android:name=".playback.system.PlaybackService"
             android:description="@string/info_service_desc"
             android:enabled="true"
             android:exported="false"
