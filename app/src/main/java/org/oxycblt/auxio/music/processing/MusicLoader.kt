@@ -12,6 +12,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 
@@ -26,23 +27,25 @@ class MusicLoader(private val app: Application) {
 
     private val resolver = app.contentResolver
 
-    fun loadMusic(): Response {
+    fun loadMusic(): MusicStore.Response {
         try {
             loadGenres()
             loadAlbums()
             loadSongs()
         } catch (error: Exception) {
-            logE("Something went horribly wrong.")
-            error.printStackTrace()
+            val trace = error.stackTraceToString()
 
-            return Response.FAILED
+            logE("Something went horribly wrong.")
+            logE(trace)
+
+            return MusicStore.Response.FAILED
         }
 
         if (songs.isEmpty()) {
-            return Response.NO_MUSIC
+            return MusicStore.Response.NO_MUSIC
         }
 
-        return Response.SUCCESS
+        return MusicStore.Response.SUCCESS
     }
 
     private fun loadGenres() {
@@ -89,7 +92,6 @@ class MusicLoader(private val app: Application) {
                 Albums._ID, // 0
                 Albums.ALBUM, // 1
                 Albums.ARTIST, // 2
-
                 Albums.FIRST_YEAR, // 3
             ),
             null, null,
@@ -206,9 +208,5 @@ class MusicLoader(private val app: Application) {
         }
 
         logD("Song search finished with ${songs.size} found")
-    }
-
-    enum class Response {
-        SUCCESS, FAILED, NO_MUSIC
     }
 }

@@ -13,17 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.processing.MusicLoader
 
-/**
- * An intermediary [Fragment] that asks for the READ_EXTERNAL_STORAGE permission and runs
- * the music loading process in the background.
- * @author OxygenCobalt
- */
-class LoadingFragment : Fragment(R.layout.fragment_loading) {
-    // LoadingViewModel is scoped to this fragment only
+class LoadingFragment : Fragment() {
     private val loadingModel: LoadingViewModel by viewModels {
         LoadingViewModel.Factory(requireActivity().application)
     }
@@ -35,115 +27,110 @@ class LoadingFragment : Fragment(R.layout.fragment_loading) {
     ): View {
         val binding = FragmentLoadingBinding.inflate(inflater)
 
-        // Set up the permission launcher, as its disallowed outside of onCreate.
-        val permLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { granted: Boolean ->
-                // If its actually granted, restart the loading process again.
-                if (granted) {
-                    returnToLoading(binding)
-
-                    loadingModel.reload()
-                } else {
-                    showError(binding)
-
-                    binding.loadingGrantButton.visibility = View.VISIBLE
-                    binding.loadingErrorText.text = getString(R.string.error_no_perms)
-                }
-            }
+        // Build the permission launcher here as you can only do it in onCreateView/onCreate
+        val permLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission(), ::onPermResult
+        )
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = this
         binding.loadingModel = loadingModel
 
         // --- VIEWMODEL SETUP ---
 
-        loadingModel.response.observe(viewLifecycleOwner) {
-            if (it == MusicLoader.Response.SUCCESS) {
-                findNavController().navigate(
-                    LoadingFragmentDirections.actionToMain()
-                )
-            } else {
-                // If the response wasn't a success, then show the specific error message
-                // depending on which error response was given, along with a retry button
-                binding.loadingErrorText.text =
-                    if (it == MusicLoader.Response.NO_MUSIC)
-                        getString(R.string.error_no_music)
-                    else
-                        getString(R.string.error_music_load_failed)
-
-                showError(binding)
-                binding.loadingRetryButton.visibility = View.VISIBLE
-            }
-        }
-
-        loadingModel.doReload.observe(viewLifecycleOwner) {
-            if (it) {
-                returnToLoading(binding)
-                loadingModel.doneWithReload()
-            }
-        }
-
         loadingModel.doGrant.observe(viewLifecycleOwner) {
             if (it) {
                 permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                returnToLoading(binding)
                 loadingModel.doneWithGrant()
             }
         }
 
-        // Force an error screen if the permissions are denied or the prompt needs to be shown.
-        if (checkPerms()) {
-            showError(binding)
+        loadingModel.response.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                // Success should lead to Auxio navigating away from the fragment
+                MusicStore.Response.SUCCESS -> findNavController().navigate(
+                    LoadingFragmentDirections.actionToMain()
+                )
 
-            binding.loadingGrantButton.visibility = View.VISIBLE
-            binding.loadingErrorText.text = getString(R.string.error_no_perms)
-        } else {
-            loadingModel.go()
+                // Null means that the loading process is going on
+                null -> showLoading(binding)
+
+                // Anything else is an error
+                else -> {
+                    showError(binding, response)
+                }
+            }
         }
 
-        logD("Fragment created.")
+        if (noPermissions()) {
+            // MusicStore.Response.NO_PERMS isnt actually returned by MusicStore, its just
+            // a way to keep the current permission state on_hand
+            loadingModel.notifyNoPermissions()
+        }
+
+        if (loadingModel.response.value == null) {
+            loadingModel.load()
+        }
 
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
+    // --- PERMISSIONS ---
 
-        // If the music was already loaded, then don't do it again.
-        if (MusicStore.getInstance().loaded) {
-            findNavController().navigate(
-                LoadingFragmentDirections.actionToMain()
-            )
+    private fun noPermissions(): Boolean {
+        val needRationale = shouldShowRequestPermissionRationale(
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+
+        val notGranted = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_DENIED
+
+        return needRationale || notGranted
+    }
+
+    private fun onPermResult(granted: Boolean) {
+        if (granted) {
+            // If granted, its now safe to load [Which will clear the NO_PERMS response we applied
+            // earlier]
+            loadingModel.load()
         }
     }
 
-    // Check for two things:
-    // - If Auxio needs to show the rationale for getting the READ_EXTERNAL_STORAGE permission.
-    // - If Auxio straight up doesn't have the READ_EXTERNAL_STORAGE permission.
-    private fun checkPerms(): Boolean {
-        return shouldShowRequestPermissionRationale(
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) || ContextCompat.checkSelfPermission(
-            requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_DENIED
+    // --- UI DISPLAY ---
+
+    private fun showLoading(binding: FragmentLoadingBinding) {
+        binding.apply {
+            loadingCircle.visibility = View.VISIBLE
+            loadingErrorIcon.visibility = View.GONE
+            loadingErrorText.visibility = View.GONE
+            loadingRetryButton.visibility = View.GONE
+            loadingGrantButton.visibility = View.GONE
+        }
     }
 
-    // Remove the loading indicator and show the error groups
-    private fun showError(binding: FragmentLoadingBinding) {
-        binding.loadingBar.visibility = View.GONE
+    private fun showError(binding: FragmentLoadingBinding, error: MusicStore.Response) {
+        binding.loadingCircle.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE
         binding.loadingErrorText.visibility = View.VISIBLE
-    }
 
-    // Wipe views and switch back to the plain ProgressBar
-    private fun returnToLoading(binding: FragmentLoadingBinding) {
-        binding.loadingBar.visibility = View.VISIBLE
-        binding.loadingErrorText.visibility = View.GONE
-        binding.loadingErrorIcon.visibility = View.GONE
-        binding.loadingRetryButton.visibility = View.GONE
-        binding.loadingGrantButton.visibility = View.GONE
+        when (error) {
+            MusicStore.Response.NO_MUSIC -> {
+                binding.loadingRetryButton.visibility = View.VISIBLE
+                binding.loadingErrorText.text = getString(R.string.error_no_music)
+            }
+
+            MusicStore.Response.NO_PERMS -> {
+                binding.loadingGrantButton.visibility = View.VISIBLE
+                binding.loadingErrorText.text = getString(R.string.error_no_perms)
+            }
+
+            MusicStore.Response.FAILED -> {
+                binding.loadingRetryButton.visibility = View.VISIBLE
+                binding.loadingErrorText.text = getString(R.string.error_load_failed)
+            }
+
+            else -> {}
+        }
     }
 }

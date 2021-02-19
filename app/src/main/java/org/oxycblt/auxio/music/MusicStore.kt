@@ -41,7 +41,7 @@ class MusicStore private constructor() {
      * ***THIS SHOULD ONLY BE RAN FROM AN IO THREAD.***
      * @param app [Application] required to load the music.
      */
-    suspend fun load(app: Application): MusicLoader.Response {
+    suspend fun load(app: Application): Response {
         return withContext(Dispatchers.IO) {
             this@MusicStore.logD("Starting initial music load...")
 
@@ -50,7 +50,7 @@ class MusicStore private constructor() {
             val loader = MusicLoader(app)
             val response = loader.loadMusic()
 
-            if (response == MusicLoader.Response.SUCCESS) {
+            if (response == Response.SUCCESS) {
                 // If the loading succeeds, then sort the songs and update the value
                 val sorter = MusicSorter(loader.songs, loader.albums)
 
@@ -70,6 +70,10 @@ class MusicStore private constructor() {
 
             response
         }
+    }
+
+    enum class Response {
+        NO_MUSIC, NO_PERMS, FAILED, SUCCESS
     }
 
     companion object {

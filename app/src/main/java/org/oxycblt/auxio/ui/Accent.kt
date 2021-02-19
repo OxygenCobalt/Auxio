@@ -7,7 +7,7 @@ import android.text.Spanned
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
-import androidx.core.text.toSpanned
+import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.settings.SettingsManager
 import java.util.Locale
@@ -59,10 +59,10 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
         val name = context.getString(name)
         val hex = context.getString(color).toUpperCase(Locale.getDefault())
 
-        return context.getString(
-            R.string.format_accent_summary,
-            name, hex
-        ).toSpanned().render()
+        return HtmlCompat.fromHtml(
+            context.getString(R.string.format_accent_summary, name, hex),
+            HtmlCompat.FROM_HTML_MODE_COMPACT
+        )
     }
 
     companion object {
@@ -70,8 +70,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
         private var current: Accent? = null
 
         /**
-         * Get the current accent, will default to whatever is stored in [SettingsManager]
-         * if there isnt one.
+         * Get the current accent.
          * @return The current accent
          */
         fun get(): Accent {

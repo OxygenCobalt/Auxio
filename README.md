@@ -11,6 +11,7 @@
     <img alt="Minimum SDK" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
 <h4 align="center"><a href="/info/FAQ.md">FAQ</a> / <a href="/info/FORMATS.md">Formats</a> / <a href="/info/LICENSES.md">Licenses</a> / <a href="/.github/CONTRIBUTING.md">Contributing</a></h4>
+<p align="center"><a href="https://apt.izzysoft.de/fdroid/index/apk/org.oxycblt.auxio"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" width="170"></a></p>
 
 ## About
 

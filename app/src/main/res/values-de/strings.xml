@@ -89,7 +89,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>
-    <string name="error_music_load_failed">Laden die Musik fehlgeschlagen</string>
+    <string name="error_load_failed">Laden die Musik fehlgeschlagen</string>
     <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
     <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
 

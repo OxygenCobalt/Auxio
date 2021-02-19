@@ -8,6 +8,7 @@
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
     <string name="label_grant">Grant</string>
+    <string name="label_view_trace">View Error</string>
 
     <string name="label_library">Library</string>
     <string name="label_genres">Genres</string>
@@ -90,7 +91,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found</string>
-    <string name="error_music_load_failed">Music loading failed</string>
+    <string name="error_load_failed">Music loading failed</string>
     <string name="error_no_perms">Auxio needs permission to read your music library</string>
     <string name="error_no_browser">Could not open link</string>
 

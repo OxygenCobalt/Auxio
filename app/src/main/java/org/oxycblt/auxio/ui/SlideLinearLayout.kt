@@ -39,7 +39,7 @@ class SlideLinearLayout @JvmOverloads constructor(
 
     init {
         if (disappearingChildrenField != null) {
-            // Create a junk view and add it, which makes all the magic happen [I think].
+            // Create a invisible junk view and add it, which makes all the magic happen [I think].
             dumpView = View(context)
             addView(dumpView, 0, 0)
         }
@@ -58,13 +58,18 @@ class SlideLinearLayout @JvmOverloads constructor(
         val children = getDisappearingChildren()
 
         if (doDrawingTrick && children != null) {
-            if (child == dumpView) { // Use the dump view as a marker for when to do the trick
-                var more = false
+            // Use the dump view as a marker for when to do the trick
+            if (child == dumpView) {
+                // I dont even know what this does.
+                var consumed = false
+
                 children.forEach {
-                    more = more or super.drawChild(canvas, it, drawingTime) // What????
+                    consumed = consumed or super.drawChild(canvas, it, drawingTime)
                 }
-                return more
-            } else if (children.contains(child)) { // Ignore the disappearing children
+
+                return consumed
+            } else if (children.contains(child)) {
+                // Ignore the disappearing children
                 return false
             }
         }

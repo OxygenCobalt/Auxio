@@ -8,7 +8,6 @@ import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
-import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -107,16 +105,6 @@ fun Fragment.requireCompatActivity(): AppCompatActivity {
     } else {
         error("Required AppCompatActivity, got ${activity::class.simpleName} instead.")
     }
-}
-
-/**
- * "Render" a [Spanned] using [HtmlCompat]. (As in making text bolded and whatnot).
- * @return A [Spanned] that actually works.
- */
-fun Spanned.render(): Spanned {
-    return HtmlCompat.fromHtml(
-        this.toString(), HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS
-    )
 }
 
 /**

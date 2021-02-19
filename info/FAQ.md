@@ -14,7 +14,7 @@ Currently, its available on the [IzzyOnDroid F-Droid repository](https://apt.izz
 
 ## Can I translate Auxio to my native language?
 
-See the [Translations](https://github.com/OxygenCobalt/Auxio/issues/3) issue for guidance on how to create translations and submit them to the project. Any contributions are apprieciated.
+See the [Translations](https://github.com/OxygenCobalt/Auxio/issues/3) issue for guidance on how to create translations and submit them to the project. Any contributions are appreciated.
 
 ## How can I contribute/report issues?
 
