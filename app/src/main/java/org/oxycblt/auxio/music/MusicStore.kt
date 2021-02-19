@@ -1,6 +1,9 @@
 package org.oxycblt.auxio.music
 
 import android.app.Application
+import android.content.ContentResolver
+import android.net.Uri
+import android.provider.OpenableColumns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.logD
@@ -69,6 +72,20 @@ class MusicStore private constructor() {
             }
 
             response
+        }
+    }
+
+    /**
+     * Get the song for a specific URI.
+     */
+    suspend fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
+        return withContext(Dispatchers.IO) {
+            resolver.query(uri, null, null, null, null)?.use { cursor ->
+                cursor.moveToFirst()
+                val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+
+                return@withContext songs.find { it.fileName == fileName }
+            }
         }
     }
 

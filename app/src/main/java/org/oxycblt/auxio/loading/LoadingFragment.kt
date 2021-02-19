@@ -62,7 +62,7 @@ class LoadingFragment : Fragment() {
 
         if (noPermissions()) {
             // MusicStore.Response.NO_PERMS isnt actually returned by MusicStore, its just
-            // a way to keep the current permission state on_hand
+            // a way to keep the current permission state across device changes
             loadingModel.notifyNoPermissions()
         }
 

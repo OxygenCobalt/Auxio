@@ -87,7 +87,7 @@
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
     <string name="setting_behavior_save" >Wiedergabezustand abspeichern</string>
-    <string name="setting_behavior_save_desc">der aktuell Wiedergabezustand jetzt abspeichern</string>
+    <string name="setting_behavior_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>

@@ -23,6 +23,7 @@ sealed class Parent : BaseModel()
 
 /**
  * The data object for a song. Inherits [BaseModel].
+ * @property fileName The raw filename for this track
  * @property albumId  The Song's Album ID. Never use this outside of when attaching a song to its album.
  * @property track    The Song's Track number
  * @property duration The duration of the song, in millis.
@@ -35,6 +36,7 @@ sealed class Parent : BaseModel()
 data class Song(
     override val id: Long = -1,
     override val name: String,
+    val fileName: String,
     val albumId: Long = -1,
     val track: Int = -1,
     val duration: Long = 0,

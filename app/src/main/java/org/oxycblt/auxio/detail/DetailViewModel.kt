@@ -1,12 +1,17 @@
 package org.oxycblt.auxio.detail
 
+import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.recycler.SortMode
 
 /**
@@ -39,6 +44,8 @@ class DetailViewModel : ViewModel() {
     // Primary navigation flag.
     private val mNavToItem = MutableLiveData<BaseModel?>()
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
+
+    private val musicStore = MusicStore.getInstance()
 
     /**
      * Update the current navigation status
@@ -106,5 +113,14 @@ class DetailViewModel : ViewModel() {
     /** Mark that the navigation process is done. */
     fun doneWithNavToItem() {
         mNavToItem.value = null
+    }
+
+    /** Navigate to an item using a file [Intent] */
+    fun navigateWithIntent(intent: Intent, app: Application) {
+        val uri = intent.data ?: return
+
+        viewModelScope.launch {
+            mNavToItem.value = musicStore.getSongForUri(uri, app.contentResolver)
+        }
     }
 }

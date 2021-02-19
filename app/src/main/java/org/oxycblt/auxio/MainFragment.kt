@@ -1,5 +1,6 @@
 package org.oxycblt.auxio
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -115,6 +116,17 @@ class MainFragment : Fragment() {
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val intent = requireActivity().intent
+
+        if (intent != null && intent.action == Intent.ACTION_VIEW) {
+            logD("Attempting to navigate from file intent")
+            detailModel.navigateWithIntent(intent, requireActivity().application)
+        }
     }
 
     override fun onDestroyView() {

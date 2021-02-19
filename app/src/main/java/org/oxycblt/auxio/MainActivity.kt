@@ -18,7 +18,6 @@ import org.oxycblt.auxio.ui.isEdgeOn
  * The single [AppCompatActivity] for Auxio.
  */
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +44,15 @@ class MainActivity : AppCompatActivity() {
 
         // Start PlaybackService
         startService(Intent(this, PlaybackService::class.java))
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        // Since the activity is set to singleTask [Given that theres only MainActivity]
+        // We have to manually push the intent whenever we get one so that MainFragment
+        // can catch any file intents
+        setIntent(intent)
     }
 
     @Suppress("DEPRECATION")

@@ -158,12 +158,13 @@ class MusicLoader(private val app: Application) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                val title = cursor.getString(titleIndex) ?: cursor.getString(fileIndex)
+                val title = cursor.getString(titleIndex)
+                val fileName = cursor.getString(fileIndex)
                 val albumId = cursor.getLong(albumIndex)
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 
-                songs.add(Song(id, title, albumId, track, duration))
+                songs.add(Song(id, title ?: fileName, fileName, albumId, track, duration))
             }
 
             cursor.close()
