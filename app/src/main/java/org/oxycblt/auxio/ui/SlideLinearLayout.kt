@@ -1,13 +1,11 @@
 package org.oxycblt.auxio.ui
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import java.lang.reflect.Field
@@ -40,12 +38,6 @@ class SlideLinearLayout @JvmOverloads constructor(
     private var doDrawingTrick: Boolean = false
 
     init {
-        // Apply custom interpolation for the slide animations
-        layoutTransition.apply {
-            setInterpolator(LayoutTransition.APPEARING, FastOutSlowInInterpolator())
-            setInterpolator(LayoutTransition.DISAPPEARING, FastOutSlowInInterpolator())
-        }
-
         if (disappearingChildrenField != null) {
             // Create a junk view and add it, which makes all the magic happen [I think].
             dumpView = View(context)

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,8 +17,7 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/controls_container"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1"
             app:navGraph="@navigation/nav_explore"
             tools:layout="@layout/fragment_library" />
 
@@ -37,7 +36,6 @@
                 android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/nav_bar"
                 tools:layout="@layout/fragment_compact_playback" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -48,9 +46,8 @@
                 android:background="@color/background"
                 android:elevation="0dp"
                 app:elevation="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:menu="@menu/menu_nav" />
 
         </org.oxycblt.auxio.ui.SlideLinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

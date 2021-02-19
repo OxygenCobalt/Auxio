@@ -69,6 +69,11 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
+        // Speed up the slide-in effect on the controls view, solely to improve the UX
+        // and maybe hide the problem where the main view will snap-shrink before the compact
+        // view can slide.
+        (binding.controlsContainer as ViewGroup).layoutTransition.setDuration(150)
+
         binding.navBar.apply {
             itemIconTintList = navTints
             itemTextColor = navTints
@@ -150,11 +155,11 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            binding.compactPlayback.visibility =
-                if (isLandscape(resources))
-                    View.INVISIBLE
-                else
-                    View.GONE
+            binding.compactPlayback.visibility = if (isLandscape(resources)) {
+                View.INVISIBLE
+            } else {
+                View.GONE
+            }
 
             playbackModel.disableAnimation()
         } else {
