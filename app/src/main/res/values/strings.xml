@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">A sensible and customizable music player for Android.</string>
+    <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
-    <string name="info_service_desc">The music playback service for Auxio</string>
+    <string name="info_service_desc">The music playback service for Auxio.</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>

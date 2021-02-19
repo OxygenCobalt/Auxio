@@ -1,1 +1,1 @@
-A sensible and customizable music player
+A simple, rational music player

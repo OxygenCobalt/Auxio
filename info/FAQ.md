@@ -6,7 +6,7 @@ This FAQ will be continually updated as new changes and updates are made to Auxi
 
 ## What is Auxio?
 
-Auxio is local music player for android that I built for myself, primarily. Its meant to avoid a lot of the feature-bloat and frustrating UX that other FOSS music players have, while still remaining customizable.
+Auxio is local music player for android that I built for myself, primarily. Its designed to avoid a lot of the feature-bloat and frustrating UX that other FOSS music players have, while still remaining customizable to an extent.
 
 ## Where can I download Auxio?
 
@@ -14,11 +14,11 @@ Currently, its available on the [IzzyOnDroid F-Droid repository](https://apt.izz
 
 ## Can I translate Auxio to my native language?
 
-You can open a [Pull Request](https://github.com/oxygencobalt/Auxio/pulls) with any translations you want to be added for now. I may switch to weblate later.
+See the [Translations](https://github.com/OxygenCobalt/Auxio/issues/3) issue for guidance on how to create translations and submit them to the project. Any contributions are apprieciated.
 
 ## How can I contribute/report issues?
 
-Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md).
+Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls), please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md) however.
 
 ## Why ExoPlayer?
 

@@ -1,6 +1,6 @@
 <p align="center"><img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="150"></p>
 <h1 align="center"><b>Auxio</b></h1>
-<h4 align="center">A sensible and customizable music player for android.</h4>
+<h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="GitHub release" src="https://img.shields.io/static/v1?label=Tag&message=v1.3.0&color=0D5AF5">
@@ -14,9 +14,7 @@
 
 ## About
 
-Auxio is a local music player with a fast, reliable UI/UX and without any useless features. Auxio is still configurable however, with both the UI and behavior able to be changed to ones liking. 
-
-Unlike other music players, Auxio is also based off of <a href="https://exoplayer.dev/">Exoplayer</a>, allowing for much better listening experience compared to the native MediaPlayer API. Auxio's codebase is also designed to be extendable, allowing for the addition of features that are not included in the main app.
+Auxio is a local music player with a fast, reliable UI/UX without the many useless features present in other music players. Built off of <a href="https://exoplayer.dev/">Exoplayer</a>, Auxio has a much better listening experience compared to other apps that use the native MediaPlayer API. In short, **It plays music.**
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
