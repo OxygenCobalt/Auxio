@@ -126,10 +126,6 @@ class MainFragment : Fragment() {
         // TODO?: Add an option to view it instead of play it if this becomes too annoying
         if (intent != null && intent.action == Intent.ACTION_VIEW) {
             playbackModel.playWithIntent(intent, requireContext())
-
-            // Clear intent so that this does not fire again
-            // I see no consequences from doing this
-            activity.intent = null
         } else {
             playbackModel.restorePlaybackIfNeeded(requireContext())
         }

@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.playback.queue
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -96,6 +97,17 @@ class QueueFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val intent = requireActivity().intent
+
+        // If the intent of the activity is a file intent, then play it.
+        if (intent != null && intent.action == Intent.ACTION_VIEW) {
+            playbackModel.playWithIntent(intent, requireContext())
+        }
     }
 
     /**

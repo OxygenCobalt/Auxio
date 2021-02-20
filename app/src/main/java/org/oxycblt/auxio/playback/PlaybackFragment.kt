@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.playback
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -199,6 +200,13 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
 
             playbackModel.enableAnimation()
+        }
+
+        val intent = requireActivity().intent
+
+        // If the intent of the activity is a file intent, then play it.
+        if (intent != null && intent.action == Intent.ACTION_VIEW) {
+            playbackModel.playWithIntent(intent, requireContext())
         }
     }
 

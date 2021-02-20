@@ -53,6 +53,14 @@ class MainActivity : AppCompatActivity() {
         // We have to manually push the intent whenever we get one so that MainFragment
         // can catch any file intents
         setIntent(intent)
+
+        // TODO: Idea Needed
+        //  Move to all non-loading fragments
+        //  Use ext fun
+        //  Apply bool to intent to make sure it doesnt fire again???
+        //  Need it to
+        //  - Run everywhere except loading
+        //  - Dont fire after the first go
     }
 
     @Suppress("DEPRECATION")

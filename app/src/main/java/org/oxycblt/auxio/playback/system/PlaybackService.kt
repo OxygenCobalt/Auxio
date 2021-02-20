@@ -11,7 +11,6 @@ import android.content.pm.ServiceInfo
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
-import android.os.Parcelable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.KeyEvent
@@ -73,9 +72,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private var isForeground = false
 
     private val serviceJob = Job()
-    private val serviceScope = CoroutineScope(
-        serviceJob + Dispatchers.Main
-    )
+    private val serviceScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     // --- SERVICE OVERRIDES ---
 
@@ -257,13 +254,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
-        if (!settingsManager.useAltNotifAction) {
-            return
+        if (settingsManager.useAltNotifAction) {
+            notification.setShuffle(this, isShuffling)
+
+            startForegroundOrNotify()
         }
-
-        notification.setShuffle(this, isShuffling)
-
-        startForegroundOrNotify()
     }
 
     override fun onSeek(position: Long) {
@@ -312,7 +307,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Create the [SimpleExoPlayer] instance.
      */
     private fun newPlayer(): SimpleExoPlayer {
-        // Since Auxio is a music player, only specify an audio renderer to save battery/apk size/cache size.
+        // Since Auxio is a music player, only specify an audio renderer to save
+        // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
                 MediaCodecAudioRenderer(
@@ -445,9 +441,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Handle a media button intent.
      */
     private fun handleMediaButtonEvent(event: Intent): Boolean {
-        val item = event.getParcelableExtra<Parcelable>(Intent.EXTRA_KEY_EVENT) as KeyEvent
+        val item = event.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
 
-        if (item.action == KeyEvent.ACTION_DOWN) {
+        if (item != null && item.action == KeyEvent.ACTION_DOWN) {
             return when (item.keyCode) {
                 // Play/Pause if any of the keys are play/pause
                 KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
@@ -516,6 +512,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     PlaybackNotification.ACTION_EXIT -> {
                         playbackManager.setPlaying(false)
                         stopForegroundAndNotification()
+                    }
+
+                    Intent.ACTION_VIEW -> {
+                        logD("wat this works")
                     }
 
                     // --- HEADSET CASES ---
