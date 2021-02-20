@@ -186,8 +186,8 @@ class PlaybackNotification private constructor(
         const val NOTIFICATION_ID = 0xA0A0
         const val REQUEST_CODE = 0xA0C0
 
-        // Build type is added to the codes so that dual installations dont conflict
-        // with eachother.
+        // Build type is added to the codes so that dual release/debug installations dont conflict
+        // with each other.
         const val ACTION_LOOP = "ACTION_AUXIO_LOOP_" + BuildConfig.BUILD_TYPE
         const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE_" + BuildConfig.BUILD_TYPE
         const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV_" + BuildConfig.BUILD_TYPE

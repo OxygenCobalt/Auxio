@@ -19,7 +19,6 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Renderer
 import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -65,16 +64,12 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private val settingsManager = SettingsManager.getInstance()
 
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var systemReceiver: SystemEventReceiver
-    private val playerAttributes = AudioAttributes.Builder()
-        .setUsage(C.USAGE_MEDIA)
-        .setContentType(C.CONTENT_TYPE_MUSIC)
-        .build()
-
     private lateinit var notificationManager: NotificationManager
     private lateinit var notification: PlaybackNotification
 
     private lateinit var audioReactor: AudioReactor
+    private lateinit var systemReceiver: SystemEventReceiver
+
     private var isForeground = false
 
     private val serviceJob = Job()
@@ -90,7 +85,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         return START_NOT_STICKY
     }
 
-    // No binding, service is headless. Deliver updates through PlaybackStateManager/SettingsManager instead.
+    // No binding, service is headless.
+    // Deliver updates through PlaybackStateManager/SettingsManager instead.
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
@@ -98,14 +94,20 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // --- PLAYER SETUP ---
 
-        player.apply {
-            addListener(this@PlaybackService)
-            setAudioAttributes(playerAttributes, false)
-        }
+        player.addListener(this@PlaybackService)
+        player.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.CONTENT_TYPE_MUSIC)
+                .build(),
+            false
+        )
 
         audioReactor = AudioReactor(this, player)
 
         // --- SYSTEM RECEIVER SETUP ---
+
+        systemReceiver = SystemEventReceiver()
 
         // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply {
@@ -118,9 +120,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 }
             }
         }
-
-        // Set up callback for system events
-        systemReceiver = SystemEventReceiver()
 
         IntentFilter().apply {
             addAction(PlaybackNotification.ACTION_LOOP)
@@ -149,8 +148,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         playbackManager.addCallback(this)
 
         if (playbackManager.song != null || playbackManager.isRestored) {
-            restorePlayer()
-            restoreNotification()
+            restore()
         }
 
         // --- SETTINGSMANAGER SETUP ---
@@ -164,14 +162,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         stopForegroundAndNotification()
         unregisterReceiver(systemReceiver)
 
-        // Release everything that could cause a memory leak if left around
         player.release()
         mediaSession.release()
-        audioReactor.destroy()
+        audioReactor.release()
+
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
 
-        // The service coroutines last job is to save the state to the DB, before terminating itself.
+        // The service coroutines last job is to save the state to the DB, before terminating itself
         serviceScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
             serviceJob.cancel()
@@ -191,13 +189,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        // Reset the loop mode from LOOP_ONE (if it is LOOP_ONE) on each repeat
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
             playbackManager.clearLoopMode()
         }
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
-        // If there's any issue, just go to the next song. I don't really care.
+        // If there's any issue, just go to the next song.
         playbackManager.next()
     }
 
@@ -210,21 +209,15 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {
-        song?.let {
-            val item = MediaItem.fromUri(it.id.toURI())
-
-            player.setMediaItem(item)
+        if (song != null) {
+            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
             player.prepare()
 
-            if (playbackManager.isPlaying) {
-                player.play()
-            }
+            pushMetadataToSession(song)
 
-            uploadMetadataToSession(it)
-
-            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify()
-            }
+            notification.setMetadata(
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+            )
 
             return
         }
@@ -254,11 +247,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
-        player.repeatMode = if (loopMode == LoopMode.NONE) {
-            Player.REPEAT_MODE_OFF
-        } else {
-            Player.REPEAT_MODE_ONE
-        }
+        player.setLoopMode(loopMode)
 
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(this, loopMode)
@@ -284,10 +273,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     // --- SETTINGSMANAGER OVERRIDES ---
 
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
-        playbackManager.song?.let {
-            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify()
-            }
+        playbackManager.song?.let { song ->
+            notification.setMetadata(
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+            )
         }
     }
 
@@ -302,18 +291,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
-        playbackManager.song?.let {
-            notification.setMetadata(this, it, settingsManager.colorizeNotif) {
-                startForegroundOrNotify()
-            }
+        playbackManager.song?.let { song ->
+            notification.setMetadata(
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+            )
         }
     }
 
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
-            notification.setMetadata(this, song, settingsManager.colorizeNotif) {
-                startForegroundOrNotify()
-            }
+            notification.setMetadata(
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+            )
         }
     }
 
@@ -325,11 +314,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private fun newPlayer(): SimpleExoPlayer {
         // Since Auxio is a music player, only specify an audio renderer to save battery/apk size/cache size.
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
-            arrayOf<Renderer>(
-                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener)
+            arrayOf(
+                MediaCodecAudioRenderer(
+                    this, MediaCodecSelector.DEFAULT, handler, audioListener
+                )
             )
         }
 
+        // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
         val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
 
         return SimpleExoPlayer.Builder(this, audioRenderer)
@@ -338,30 +330,17 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     /**
-     * Restore the [SimpleExoPlayer] state, if the service was destroyed while [PlaybackStateManager] persisted.
+     * Fully restore the notification and playback state
      */
-    private fun restorePlayer() {
-        playbackManager.song?.let {
-            val item = MediaItem.fromUri(it.id.toURI())
-            player.setMediaItem(item)
-            player.prepare()
+    private fun restore() {
+        playbackManager.song?.let { song ->
+            notification.setMetadata(this, song, settingsManager.colorizeNotif) {}
+
+            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
             player.seekTo(playbackManager.position)
+            player.prepare()
         }
 
-        when (playbackManager.loopMode) {
-            LoopMode.NONE -> {
-                player.repeatMode = Player.REPEAT_MODE_OFF
-            }
-            else -> {
-                player.repeatMode = Player.REPEAT_MODE_ONE
-            }
-        }
-    }
-
-    /**
-     * Restore the notification, if the service was destroyed while [PlaybackStateManager] persisted.
-     */
-    private fun restoreNotification() {
         notification.setParent(this, playbackManager.parent)
         notification.setPlaying(this, playbackManager.isPlaying)
 
@@ -371,22 +350,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             notification.setLoop(this, playbackManager.loopMode)
         }
 
-        playbackManager.song?.let { song ->
-            notification.setMetadata(this, song, settingsManager.colorizeNotif) {
-                if (playbackManager.isPlaying) {
-                    startForegroundOrNotify()
-                } else {
-                    stopForegroundAndNotification()
-                }
-            }
-        }
+        player.setLoopMode(playbackManager.loopMode)
     }
 
     /**
      * Upload the song metadata to the [MediaSessionCompat], so that things such as album art
      * show up on the lock screen.
      */
-    private fun uploadMetadataToSession(song: Song) {
+    private fun pushMetadataToSession(song: Song) {
         val builder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
@@ -404,20 +375,31 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     /**
-     * Start polling the position on a co-routine.
+     * Start polling the position on a coroutine.
      */
     private fun startPollingPosition() {
-        fun pollCurrentPosition() = flow {
-            while (player.isPlaying) {
+        val pollFlow = flow {
+            while (true) {
                 emit(player.currentPosition)
-                delay(250)
+                delay(500)
             }
         }.conflate()
 
         serviceScope.launch {
-            pollCurrentPosition().takeWhile { player.isPlaying }.collect {
+            pollFlow.takeWhile { player.isPlaying }.collect {
                 playbackManager.setPosition(it)
             }
+        }
+    }
+
+    /**
+     * Shortcut to transform a [LoopMode] into a player repeat mode
+     */
+    private fun Player.setLoopMode(mode: LoopMode) {
+        repeatMode = if (mode == LoopMode.NONE) {
+            Player.REPEAT_MODE_OFF
+        } else {
+            Player.REPEAT_MODE_ALL
         }
     }
 
@@ -425,14 +407,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Bring the service into the foreground and show the notification, or refresh the notification.
      */
     private fun startForegroundOrNotify() {
-        // Don't start foreground if:
-        //     - The playback hasnt even started
-        //     - The playback hasnt been restored
-        //     - There is nothing to play
         if (playbackManager.hasPlayed && playbackManager.isRestored && playbackManager.song != null) {
             logD("Starting foreground/notifying")
 
             if (!isForeground) {
+                // Specify that this is a media service, if supported.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(
                         PlaybackNotification.NOTIFICATION_ID, notification.build(),
@@ -444,6 +423,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                     )
                 }
             } else {
+                // If we are already in foreground just update the notification
                 notificationManager.notify(
                     PlaybackNotification.NOTIFICATION_ID, notification.build()
                 )
@@ -516,36 +496,46 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
             action?.let {
                 when (it) {
-                    PlaybackNotification.ACTION_LOOP ->
-                        playbackManager.setLoopMode(playbackManager.loopMode.increment())
+                    // --- NOTIFICATION CASES ---
 
-                    PlaybackNotification.ACTION_SHUFFLE ->
-                        playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
+                    PlaybackNotification.ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
+                        !playbackManager.isPlaying
+                    )
+
+                    PlaybackNotification.ACTION_LOOP -> playbackManager.setLoopMode(
+                        playbackManager.loopMode.increment()
+                    )
+
+                    PlaybackNotification.ACTION_SHUFFLE -> playbackManager.setShuffling(
+                        !playbackManager.isShuffling, keepSong = true
+                    )
 
                     PlaybackNotification.ACTION_SKIP_PREV -> playbackManager.prev()
-
-                    PlaybackNotification.ACTION_PLAY_PAUSE ->
-                        playbackManager.setPlaying(!playbackManager.isPlaying)
-
                     PlaybackNotification.ACTION_SKIP_NEXT -> playbackManager.next()
-                    PlaybackNotification.ACTION_EXIT -> stop()
 
-                    BluetoothDevice.ACTION_ACL_CONNECTED -> resume()
-                    BluetoothDevice.ACTION_ACL_DISCONNECTED -> pause()
+                    PlaybackNotification.ACTION_EXIT -> {
+                        playbackManager.setPlaying(false)
+                        stopForegroundAndNotification()
+                    }
+
+                    // --- HEADSET CASES ---
+
+                    BluetoothDevice.ACTION_ACL_CONNECTED -> resumeFromPlug()
+                    BluetoothDevice.ACTION_ACL_DISCONNECTED -> pauseFromPlug()
 
                     AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
                         when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                            AudioManager.SCO_AUDIO_STATE_CONNECTED -> resume()
-                            AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pause()
+                            AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
+                            AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
                         }
                     }
 
-                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pause()
+                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                     Intent.ACTION_HEADSET_PLUG -> {
                         when (intent.getIntExtra("state", -1)) {
-                            CONNECTED -> resume()
-                            DISCONNECTED -> pause()
+                            CONNECTED -> resumeFromPlug()
+                            DISCONNECTED -> pauseFromPlug()
                         }
                     }
                 }
@@ -553,9 +543,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         /**
-         * Resume, as long as its allowed.
+         * Resume from a headset plug event, as long as its allowed.
          */
-        private fun resume() {
+        private fun resumeFromPlug() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device connected, resuming...")
 
@@ -564,22 +554,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         /**
-         * Pause, as long as its allowed.
+         * Pause from a headset plug, as long as its allowed.
          */
-        private fun pause() {
+        private fun pauseFromPlug() {
             if (playbackManager.song != null && settingsManager.doPlugMgt) {
                 logD("Device disconnected, pausing...")
 
                 playbackManager.setPlaying(false)
             }
-        }
-
-        /**
-         * Stop if the X button was clicked from the notification
-         */
-        private fun stop() {
-            playbackManager.setPlaying(false)
-            stopForegroundAndNotification()
         }
     }
 

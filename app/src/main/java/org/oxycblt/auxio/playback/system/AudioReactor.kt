@@ -41,10 +41,9 @@ class AudioReactor(
     }
 
     /**
-     * Destroy this object and abandon its audio focus request, should be ran on destruction to
-     * prevent memory leaks.
+     * Abandon the current focus request, functionally "Destroying it".
      */
-    fun destroy() {
+    fun release() {
         AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
     }
 
