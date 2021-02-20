@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.playback.queue
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +18,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 
@@ -102,12 +102,7 @@ class QueueFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val intent = requireActivity().intent
-
-        // If the intent of the activity is a file intent, then play it.
-        if (intent != null && intent.action == Intent.ACTION_VIEW) {
-            playbackModel.playWithIntent(intent, requireContext())
-        }
+        handleFileIntent(playbackModel)
     }
 
     /**

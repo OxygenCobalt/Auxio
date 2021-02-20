@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.playback
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.ui.toStateList
 
@@ -202,12 +202,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             playbackModel.enableAnimation()
         }
 
-        val intent = requireActivity().intent
-
-        // If the intent of the activity is a file intent, then play it.
-        if (intent != null && intent.action == Intent.ACTION_VIEW) {
-            playbackModel.playWithIntent(intent, requireContext())
-        }
+        handleFileIntent(playbackModel)
     }
 
     // --- SEEK CALLBACKS ---

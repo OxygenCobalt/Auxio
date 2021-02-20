@@ -50,17 +50,10 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
 
         // Since the activity is set to singleInstance [Given that there's only MainActivity]
-        // We have to manually push the intent whenever we get one so that MainFragment
+        // We have to manually push the intent whenever we get one so that the fragments
         // can catch any file intents
+        // FIXME: Centralize the file intent code in MainActivity, if thats even possible
         setIntent(intent)
-
-        // TODO: Idea Needed
-        //  Move to all non-loading fragments
-        //  Use ext fun
-        //  Apply bool to intent to make sure it doesnt fire again???
-        //  Need it to
-        //  - Run everywhere except loading
-        //  - Dont fire after the first go
     }
 
     @Suppress("DEPRECATION")

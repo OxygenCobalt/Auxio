@@ -213,7 +213,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             pushMetadataToSession(song)
 
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
             )
 
             return
@@ -270,7 +270,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                this, song, settingsManager.colorizeNotif, {}
             )
         }
     }
@@ -288,7 +288,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
             )
         }
     }
@@ -296,7 +296,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
             )
         }
     }
@@ -403,7 +403,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Bring the service into the foreground and show the notification, or refresh the notification.
      */
     private fun startForegroundOrNotify() {
-        if (playbackManager.hasPlayed && playbackManager.isRestored && playbackManager.song != null) {
+        if (playbackManager.hasPlayed && playbackManager.song != null) {
             logD("Starting foreground/notifying")
 
             if (!isForeground) {

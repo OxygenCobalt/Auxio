@@ -1,6 +1,5 @@
 package org.oxycblt.auxio
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +21,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
+import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.isTablet
 import org.oxycblt.auxio.ui.toColor
@@ -119,14 +119,7 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val activity = requireActivity()
-        val intent = activity.intent
-
-        // If the intent of the activity is a file intent, then play it.
-        // TODO?: Add an option to view it instead of play it if this becomes too annoying
-        if (intent != null && intent.action == Intent.ACTION_VIEW) {
-            playbackModel.playWithIntent(intent, requireContext())
-        } else {
+        if (!handleFileIntent(playbackModel)) {
             playbackModel.restorePlaybackIfNeeded(requireContext())
         }
     }

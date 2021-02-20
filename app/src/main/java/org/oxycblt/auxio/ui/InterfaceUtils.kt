@@ -2,6 +2,7 @@ package org.oxycblt.auxio.ui
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.playback.PlaybackViewModel
 
 // --- VIEW CONFIGURATION ---
 
@@ -225,7 +227,7 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
     return (!canMove || width < height)
 }
 
-// --- HACKY NIGHTMARES ---
+// --- FRAGMENT NONSENSE ---
 
 /**
  * Use reflection to fix a memory leak in the [Fragment] source code where the focused view will
@@ -240,4 +242,20 @@ fun Fragment.fixAnimInfoLeak() {
     } catch (e: Exception) {
         logE("mAnimationInfo leak fix failed.")
     }
+}
+
+/**
+ * Shortcut for handling a file intent.
+ * @return True if the file intent was pushed to [playbackModel], false if not
+ */
+fun Fragment.handleFileIntent(playbackModel: PlaybackViewModel): Boolean {
+    val intent = requireActivity().intent
+
+    if (intent != null && intent.action == Intent.ACTION_VIEW) {
+        playbackModel.playWithIntent(intent, requireContext())
+
+        return true
+    }
+
+    return false
 }
