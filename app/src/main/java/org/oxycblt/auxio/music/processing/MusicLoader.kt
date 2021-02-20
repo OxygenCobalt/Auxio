@@ -9,10 +9,9 @@ import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 
@@ -22,30 +21,16 @@ import org.oxycblt.auxio.music.toAlbumArtURI
  */
 class MusicLoader(private val app: Application) {
     var genres = mutableListOf<Genre>()
+    var artists = mutableListOf<Artist>()
     var albums = mutableListOf<Album>()
     var songs = mutableListOf<Song>()
 
     private val resolver = app.contentResolver
 
-    fun loadMusic(): MusicStore.Response {
-        try {
-            loadGenres()
-            loadAlbums()
-            loadSongs()
-        } catch (error: Exception) {
-            val trace = error.stackTraceToString()
-
-            logE("Something went horribly wrong.")
-            logE(trace)
-
-            return MusicStore.Response.FAILED
-        }
-
-        if (songs.isEmpty()) {
-            return MusicStore.Response.NO_MUSIC
-        }
-
-        return MusicStore.Response.SUCCESS
+    fun loadMusic() {
+        loadGenres()
+        loadAlbums()
+        loadSongs()
     }
 
     private fun loadGenres() {
@@ -173,46 +158,6 @@ class MusicLoader(private val app: Application) {
         songs = songs.distinctBy {
             it.name to it.albumId to it.track to it.duration
         }.toMutableList()
-
-        // Then try to associate any genres with their respective songs
-        // This is stupidly inefficient, but I don't have another choice really.
-        // Blame the android devs for deciding to design MediaStore this way.
-        for (genre in genres) {
-            val songGenreCursor = resolver.query(
-                Genres.Members.getContentUri("external", genre.id),
-                arrayOf(Genres.Members._ID),
-                null, null, null
-            )
-
-            songGenreCursor?.use { cursor ->
-                val idIndex = cursor.getColumnIndexOrThrow(Genres.Members._ID)
-
-                while (cursor.moveToNext()) {
-                    val songId = cursor.getLong(idIndex)
-
-                    songs.find { it.id == songId }?.let {
-                        genre.addSong(it)
-                    }
-                }
-            }
-        }
-
-        /*
-        // Fix that will group songs w/o genres into an unknown genre
-        // Currently disabled until it would actually benefit someone, otherwise its just
-        // a performance deadweight.
-        val songsWithoutGenres = songs.filter { it.genre == null }
-
-        if (songsWithoutGenres.isNotEmpty()) {
-            val unknownGenre = Genre(name = app.getString(R.string.placeholder_genre))
-
-            songsWithoutGenres.forEach {
-                unknownGenre.addSong(it)
-            }
-
-            genres.add(unknownGenre)
-        }
-         */
 
         logD("Song search finished with ${songs.size} found")
     }

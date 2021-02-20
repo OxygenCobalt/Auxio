@@ -45,31 +45,17 @@ data class Song(
     private var mGenre: Genre? = null
 
     val genre: Genre? get() = mGenre
-    val album: Album get() {
-        val album = mAlbum
+    val album: Album get() = requireNotNull(mAlbum)
 
-        if (album != null) {
-            return album
-        } else {
-            error("Song $name must have an album")
-        }
-    }
-
-    /**
-     * Apply a genre to a song.
-     */
-    fun applyGenre(genre: Genre) {
-        if (mGenre == null) {
-            mGenre = genre
-        }
-    }
-
-    /**
-     * Apply an album to a song.
-     */
-    fun applyAlbum(album: Album) {
+    fun linkAlbum(album: Album) {
         if (mAlbum == null) {
             mAlbum = album
+        }
+    }
+
+    fun linkGenre(genre: Genre) {
+        if (mGenre == null) {
+            mGenre = genre
         }
     }
 
@@ -95,36 +81,22 @@ data class Album(
     val year: Int = 0
 ) : Parent() {
     private var mArtist: Artist? = null
-    val artist: Artist get() {
-        val artist = mArtist
-
-        if (artist != null) {
-            return artist
-        } else {
-            error("Album $name must have an artist")
-        }
-    }
+    val artist: Artist get() = requireNotNull(mArtist)
 
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val totalDuration: String by lazy {
-        var seconds: Long = 0
-        songs.forEach {
-            seconds += it.seconds
-        }
-        seconds.toDuration()
-    }
+    val totalDuration: String get() = songs.sumOf { it.seconds }.toDuration()
 
-    fun applySongs(songs: List<Song>) {
-        songs.forEach {
-            it.applyAlbum(this)
-            mSongs.add(it)
-        }
-    }
-
-    fun applyArtist(artist: Artist) {
+    fun linkArtist(artist: Artist) {
         mArtist = artist
+    }
+
+    fun linkSongs(songs: List<Song>) {
+        for (song in songs) {
+            song.linkAlbum(this)
+            mSongs.add(song)
+        }
     }
 }
 
@@ -141,25 +113,17 @@ data class Artist(
     val albums: List<Album>
 ) : Parent() {
     init {
-        albums.forEach {
-            it.applyArtist(this)
+        albums.forEach { album ->
+            album.linkArtist(this)
         }
     }
 
     val genre: Genre? by lazy {
-        val groupedGenres = songs.groupBy { it.genre }
-
-        groupedGenres.keys.maxByOrNull { key ->
-            groupedGenres[key]?.size ?: 0
-        }
+        songs.map { it.genre }.maxByOrNull { it?.songs?.size ?: 0 }
     }
 
     val songs: List<Song> by lazy {
-        val songs = mutableListOf<Song>()
-        albums.forEach {
-            songs.addAll(it.songs)
-        }
-        songs
+        albums.flatMap { it.songs }
     }
 }
 
@@ -184,17 +148,12 @@ data class Genre(
         }
     }
 
-    val totalDuration: String by lazy {
-        var seconds: Long = 0
-        songs.forEach {
-            seconds += it.seconds
-        }
-        seconds.toDuration()
-    }
+    val totalDuration: String get() =
+        songs.sumOf { it.seconds }.toDuration()
 
-    fun addSong(song: Song) {
+    fun linkSong(song: Song) {
         mSongs.add(song)
-        song.applyGenre(this)
+        song.linkGenre(this)
     }
 }
 

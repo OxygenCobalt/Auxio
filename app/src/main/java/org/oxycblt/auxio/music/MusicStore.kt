@@ -7,8 +7,10 @@ import android.provider.OpenableColumns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.music.processing.MusicLinker
 import org.oxycblt.auxio.music.processing.MusicLoader
-import org.oxycblt.auxio.music.processing.MusicSorter
+import java.lang.Exception
 
 /**
  * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
@@ -50,28 +52,35 @@ class MusicStore private constructor() {
 
             val start = System.currentTimeMillis()
 
-            val loader = MusicLoader(app)
-            val response = loader.loadMusic()
+            try {
+                val loader = MusicLoader(app)
+                loader.loadMusic()
 
-            if (response == Response.SUCCESS) {
-                // If the loading succeeds, then sort the songs and update the value
-                val sorter = MusicSorter(loader.songs, loader.albums)
+                if (loader.songs.isEmpty()) {
+                    return@withContext Response.NO_MUSIC
+                }
 
-                sorter.sort()
+                val linker = MusicLinker(app, loader.songs, loader.albums, loader.genres)
+                linker.link()
 
-                mSongs = sorter.songs.toList()
-                mAlbums = sorter.albums.toList()
-                mArtists = sorter.artists.toList()
-                mGenres = loader.genres.toList()
-
-                val elapsed = System.currentTimeMillis() - start
-
-                this@MusicStore.logD("Music load completed successfully in ${elapsed}ms.")
+                mSongs = linker.songs.toList()
+                mAlbums = linker.albums.toList()
+                mArtists = linker.artists.toList()
+                mGenres = linker.genres.toList()
 
                 loaded = true
+
+                this@MusicStore.logD(
+                    "Music load completed successfully in ${System.currentTimeMillis() - start}ms."
+                )
+            } catch (e: Exception) {
+                logE("Something went horribly wrong.")
+                logE(e.stackTraceToString())
+
+                return@withContext Response.FAILED
             }
 
-            response
+            return@withContext Response.SUCCESS
         }
     }
 
