@@ -8,7 +8,6 @@
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Retry</string>
     <string name="label_grant">Grant</string>
-    <string name="label_view_trace">View Error</string>
 
     <string name="label_library">Library</string>
     <string name="label_genres">Genres</string>

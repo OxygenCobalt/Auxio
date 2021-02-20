@@ -10,18 +10,16 @@ import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 
 /**
  * Class that loads/constructs [Genre]s, [Album]s, and [Song] objects from the filesystem
- * Artists are constructed in [MusicSorter], as they are only really containers for [Album]s
+ * Artists are constructed in [MusicLinker], as they are only really containers for [Album]s
  */
 class MusicLoader(private val app: Application) {
     var genres = mutableListOf<Genre>()
-    var artists = mutableListOf<Artist>()
     var albums = mutableListOf<Album>()
     var songs = mutableListOf<Song>()
 

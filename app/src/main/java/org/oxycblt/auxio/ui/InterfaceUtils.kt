@@ -18,9 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -107,7 +105,7 @@ fun Int.toStateList(context: Context) = ColorStateList.valueOf(toColor(context))
 /**
  * Resolve a drawable resource into a [Drawable]
  */
-fun Int.toDrawable(context: Context)  = ContextCompat.getDrawable(context, this)
+fun Int.toDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 
 /**
  * Resolve a drawable resource into an [AnimatedVectorDrawable]

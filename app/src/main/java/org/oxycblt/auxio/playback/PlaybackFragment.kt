@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -186,12 +185,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         playbackModel.disableAnimation()
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.playbackPlayPause.showPause(playbackModel.canAnimate)
-                binding.playbackPlayPause.backgroundTintList = accentColor
-            } else {
-                binding.playbackPlayPause.showPlay(playbackModel.canAnimate)
-                binding.playbackPlayPause.backgroundTintList = controlColor
+            binding.playbackPlayPause.apply {
+                backgroundTintList = if (it) accentColor else controlColor
+                setPlaying(it, playbackModel.canAnimate)
             }
 
             playbackModel.enableAnimation()

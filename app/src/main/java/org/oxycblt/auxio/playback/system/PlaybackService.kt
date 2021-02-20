@@ -514,10 +514,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                         stopForegroundAndNotification()
                     }
 
-                    Intent.ACTION_VIEW -> {
-                        logD("wat this works")
-                    }
-
                     // --- HEADSET CASES ---
 
                     BluetoothDevice.ACTION_ACL_CONNECTED -> resumeFromPlug()

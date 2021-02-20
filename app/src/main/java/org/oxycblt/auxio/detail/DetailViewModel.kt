@@ -7,7 +7,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.recycler.SortMode
 
 /**
@@ -40,8 +39,6 @@ class DetailViewModel : ViewModel() {
     // Primary navigation flag.
     private val mNavToItem = MutableLiveData<BaseModel?>()
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
-
-    private val musicStore = MusicStore.getInstance()
 
     /**
      * Update the current navigation status

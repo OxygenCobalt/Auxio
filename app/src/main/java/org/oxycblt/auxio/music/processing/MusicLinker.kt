@@ -77,8 +77,9 @@ class MusicLinker(
          * no, why would ANYONE do that? Instead, I have to manually iterate through each genre, get
          * A LIST OF SONGS FROM THEM, and then waste CPU cycles REPEATEDLY ITERATING through the
          * songs list to LINK EACH SONG WITH THEIR GENRE. Why is it this way? Nobody knows! Now this
-         * quirk is immortalized and has to be replicated in all future iterations of the API!
-         * Yay! I hate this platform so much.
+         * quirk is immortalized and has to be replicated in all future iterations of this API! Yay!
+         *
+         * I hate this platform so much.
          */
         genres.forEach { genre ->
             val songCursor = resolver.query(

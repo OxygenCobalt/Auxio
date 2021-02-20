@@ -27,21 +27,21 @@ class PlayPauseButton @JvmOverloads constructor(
         }
     }
 
-    fun showPlay(animated: Boolean) {
-        if (animated) {
-            setImageDrawable(iconPauseToPlay)
-            iconPauseToPlay.start()
+    fun setPlaying(isPlaying: Boolean, animate: Boolean) {
+        if (isPlaying) {
+            if (animate) {
+                setImageDrawable(iconPlayToPause)
+                iconPlayToPause.start()
+            } else {
+                setImageResource(R.drawable.ic_pause_large)
+            }
         } else {
-            setImageResource(R.drawable.ic_play_large)
-        }
-    }
-
-    fun showPause(animated: Boolean) {
-        if (animated) {
-            setImageDrawable(iconPlayToPause)
-            iconPlayToPause.start()
-        } else {
-            setImageResource(R.drawable.ic_pause_large)
+            if (animate) {
+                setImageDrawable(iconPauseToPlay)
+                iconPauseToPlay.start()
+            } else {
+                setImageResource(R.drawable.ic_play_large)
+            }
         }
     }
 
