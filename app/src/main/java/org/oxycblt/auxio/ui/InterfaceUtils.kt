@@ -2,12 +2,12 @@ package org.oxycblt.auxio.ui
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
-import org.oxycblt.auxio.playback.PlaybackViewModel
 
 // --- VIEW CONFIGURATION ---
 
@@ -66,6 +65,11 @@ fun MaterialButton.applyAccents(highlighted: Boolean) {
 // --- CONVENIENCE ---
 
 /**
+ * Shortcut to get a [LayoutInflater] from a [Context]
+ */
+val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
+
+/**
  * Convenience method for getting a plural.
  * @param pluralsRes Resource for the plural
  * @param value Int value for the plural.
@@ -73,40 +77,6 @@ fun MaterialButton.applyAccents(highlighted: Boolean) {
  */
 fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
     return resources.getQuantityString(pluralsRes, value, value)
-}
-
-/**
- * Shortcut to get a [LayoutInflater] from a [Context]
- */
-val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
-
-/**
- * Shortcut to get an [AnimatedVectorDrawable] from a [Context]
- */
-fun Context.getAnimatedDrawable(@DrawableRes drawableRes: Int): AnimatedVectorDrawable {
-    return ContextCompat.getDrawable(this, drawableRes) as AnimatedVectorDrawable
-}
-
-/**
- * Create a [Toast] from a [String]
- * @param context [Context] required to create the toast
- */
-fun String.createToast(context: Context) {
-    Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
-}
-
-/**
- * Ensure that a not-null [AppCompatActivity] will be returned.
- * @throws IllegalStateException When there is no [AppCompatActivity] or if the activity is null
- */
-fun Fragment.requireCompatActivity(): AppCompatActivity {
-    val activity = requireActivity()
-
-    if (activity is AppCompatActivity) {
-        return activity
-    } else {
-        error("Required AppCompatActivity, got ${activity::class.simpleName} instead.")
-    }
 }
 
 /**
@@ -132,7 +102,26 @@ fun Int.toColor(context: Context): Int {
  * @return The resolved color as a [ColorStateList]
  * @see toColor
  */
-fun Int.toStateList(context: Context): ColorStateList = ColorStateList.valueOf(toColor(context))
+fun Int.toStateList(context: Context) = ColorStateList.valueOf(toColor(context))
+
+/**
+ * Resolve a drawable resource into a [Drawable]
+ */
+fun Int.toDrawable(context: Context)  = ContextCompat.getDrawable(context, this)
+
+/**
+ * Resolve a drawable resource into an [AnimatedVectorDrawable]
+ * @see toDrawable
+ */
+fun Int.toAnimDrawable(context: Context) = toDrawable(context) as AnimatedVectorDrawable
+
+/**
+ * Create a [Toast] from a [String]
+ * @param context [Context] required to create the toast
+ */
+fun String.createToast(context: Context) {
+    Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
+}
 
 // --- CONFIGURATION ---
 
@@ -242,20 +231,4 @@ fun Fragment.fixAnimInfoLeak() {
     } catch (e: Exception) {
         logE("mAnimationInfo leak fix failed.")
     }
-}
-
-/**
- * Shortcut for handling a file intent.
- * @return True if the file intent was pushed to [playbackModel], false if not
- */
-fun Fragment.handleFileIntent(playbackModel: PlaybackViewModel): Boolean {
-    val intent = requireActivity().intent
-
-    if (intent != null && intent.action == Intent.ACTION_VIEW) {
-        playbackModel.playWithIntent(intent, requireContext())
-
-        return true
-    }
-
-    return false
 }

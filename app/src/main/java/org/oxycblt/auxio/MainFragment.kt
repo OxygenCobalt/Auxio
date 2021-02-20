@@ -19,9 +19,9 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.shouldHandleFileIntent
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
-import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.isTablet
 import org.oxycblt.auxio.ui.toColor
@@ -119,7 +119,14 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (!handleFileIntent(playbackModel)) {
+        // File intents chain-navigate towards PlaybackFragment
+        // Not for any express purpose, I just prefer it this way.
+        if (shouldHandleFileIntent()) {
+            findNavController().navigate(
+                MainFragmentDirections.actionGoToPlayback()
+            )
+        } else {
+            // If there is no file intent restore playback as usual
             playbackModel.restorePlaybackIfNeeded(requireContext())
         }
     }

@@ -160,18 +160,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /** Play a song using an intent */
     fun playWithIntent(intent: Intent, context: Context) {
-        val fired = intent.getBooleanExtra(KEY_INTENT_PLAY_FIRED, false)
+        val uri = intent.data ?: return
 
-        if (!fired) {
-            // Make sure any intents that are passed here never fire again
-            intent.putExtra(KEY_INTENT_PLAY_FIRED, true)
-
-            val uri = intent.data ?: return
-
-            viewModelScope.launch {
-                musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
-                    playSong(song)
-                }
+        viewModelScope.launch {
+            musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
+                playSong(song)
             }
         }
     }
@@ -426,9 +419,5 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onInUserQueueUpdate(isInUserQueue: Boolean) {
         mIsInUserQueue.value = isInUserQueue
-    }
-
-    companion object {
-        private const val KEY_INTENT_PLAY_FIRED = "KEY_PLAY_DONE"
     }
 }

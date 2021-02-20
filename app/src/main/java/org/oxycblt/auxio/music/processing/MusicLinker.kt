@@ -70,15 +70,15 @@ class MusicLinker(
         logD("Linking genres")
 
         /*
-         * Okay, I'm going to go on a bit of a tangent here, but why the hell do I have do this?
-         * In an ideal world I should just be able to write MediaStore.Media.Audio.GENRE in the
-         * original song projection and then have it fetch the genre from the database, but no,
-         * why would ANYONE do that? Instead, I have to manually PROJECT EACH GENRE, get their
-         * song ids, and then waste CPU cycles REPEATEDLY ITERATING through the songs list
-         * to LINK SONG WITH THEIR GENRE. I bet the google dev who built this busted system
-         * feels REALLY happy about the promotion they likely got from rushing out another
-         * android API that quickly rots from the basic act of existing, because now this quirk
-         * is immortalized and has to be replicated to be backwards compatible! Thanks for nothing!
+         * Okay, I'm going to go on a bit of a tangent here because this bit of code infuriates me.
+         *
+         * In an ideal world I should just be able to write MediaStore.Media.Audio.GENRE
+         * in the original song projection and then have it fetch the genre from the database, but
+         * no, why would ANYONE do that? Instead, I have to manually iterate through each genre, get
+         * A LIST OF SONGS FROM THEM, and then waste CPU cycles REPEATEDLY ITERATING through the
+         * songs list to LINK EACH SONG WITH THEIR GENRE. Why is it this way? Nobody knows! Now this
+         * quirk is immortalized and has to be replicated in all future iterations of the API!
+         * Yay! I hate this platform so much.
          */
         genres.forEach { genre ->
             val songCursor = resolver.query(

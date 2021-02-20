@@ -17,8 +17,8 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.memberBinding
+import org.oxycblt.auxio.ui.toDrawable
 import org.oxycblt.auxio.ui.toStateList
 
 /**
@@ -53,13 +53,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
-        val iconQueueActive = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_queue
-        )
-
-        val iconQueueInactive = ContextCompat.getDrawable(
-            requireContext(), R.drawable.ic_queue_inactive
-        )
+        val iconQueueActive = R.drawable.ic_queue.toDrawable(requireContext())
+        val iconQueueInactive = R.drawable.ic_queue_inactive.toDrawable(requireContext())
 
         val queueMenuItem: MenuItem
 
@@ -202,7 +197,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             playbackModel.enableAnimation()
         }
 
-        handleFileIntent(playbackModel)
+        if (shouldHandleFileIntent()) {
+            val intent = requireActivity().intent
+
+            // Ensure that this wont fire again by putting a boolean extra
+            intent.putExtra(PlaybackUtils.KEY_INTENT_FIRED, true)
+
+            playbackModel.playWithIntent(intent, requireContext())
+        }
     }
 
     // --- SEEK CALLBACKS ---

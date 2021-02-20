@@ -25,7 +25,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
  * @see ActionMenu
  */
 fun Fragment.newMenu(anchor: View, data: BaseModel, flag: Int = ActionMenu.FLAG_NONE) {
-    ActionMenu(requireCompatActivity(), anchor, data, flag).show()
+    ActionMenu(requireActivity() as AppCompatActivity, anchor, data, flag).show()
 }
 
 /**

@@ -17,8 +17,8 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.shouldHandleFileIntent
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.handleFileIntent
 import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 
@@ -102,7 +102,9 @@ class QueueFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        handleFileIntent(playbackModel)
+        if (shouldHandleFileIntent()) {
+            findNavController().navigateUp()
+        }
     }
 
     /**
