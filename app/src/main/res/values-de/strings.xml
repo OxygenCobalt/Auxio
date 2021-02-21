@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Info namespace | App labels -->
-    <string name="info_app_desc">Ein einfacher, sinnvoller Musikplayer für android.</string>
     <string name="info_channel_name">Musikwiedergabe</string>
     <string name="info_service_desc">der Musikwiedergabedienst von Auxio.</string>
 
@@ -87,7 +86,7 @@
     <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
-    <string name="setting_behavior_save" >Wiedergabezustand abspeichern</string>
+    <string name="setting_behavior_save">Wiedergabezustand abspeichern</string>
     <string name="setting_behavior_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
 
     <!-- Error Namespace | Error Labels -->

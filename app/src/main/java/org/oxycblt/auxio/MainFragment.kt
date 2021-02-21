@@ -120,8 +120,6 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        // File intents chain-navigate towards PlaybackFragment
-        // Not for any express purpose, I just prefer it this way.
         if (shouldHandleFileIntent()) {
             handleFileIntent(playbackModel)
         } else {

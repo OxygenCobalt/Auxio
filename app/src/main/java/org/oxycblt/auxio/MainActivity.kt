@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         // Since the activity is set to singleInstance [Given that there's only MainActivity]
         // We have to manually push the intent whenever we get one so that the fragments
         // can catch any file intents
+        // TODO: Improve this dumb chain system in one way or another
         setIntent(intent)
     }
 

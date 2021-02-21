@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="loadingModel"
             type="org.oxycblt.auxio.loading.LoadingViewModel" />
@@ -11,30 +12,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:animateLayoutChanges="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ProgressBar
             android:id="@+id/loading_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
-            android:layout_margin="@dimen/margin_small"
             android:paddingBottom="@dimen/padding_tiny" />
 
         <ImageView
             android:id="@+id/loading_error_icon"
             android:layout_width="@dimen/size_error_icon"
             android:layout_height="@dimen/size_error_icon"
+            android:layout_margin="@dimen/margin_small"
             android:contentDescription="@string/description_error"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
             android:src="@drawable/ic_error"
-            android:layout_margin="@dimen/margin_small"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/loading_error_text"
@@ -52,10 +53,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
+            android:onClick="@{() -> loadingModel.load()}"
             android:text="@string/label_retry"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"
-            android:onClick="@{() -> loadingModel.load()}"
             tools:visibility="visible" />
 
         <Button
@@ -64,10 +65,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
+            android:onClick="@{() -> loadingModel.grant()}"
             android:text="@string/label_grant"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"
-            android:onClick="@{() -> loadingModel.grant()}"
             tools:visibility="visible" />
 
     </LinearLayout>

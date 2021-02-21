@@ -11,8 +11,8 @@ android {
         applicationId "org.oxycblt.auxio"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2 // Code 1 officially responds to 1.2, anything higher is 1.3 onwards
-        versionName "1.3.0"
+        versionCode 3
+        versionName "1.3.1"
 
         buildFeatures {
             dataBinding true

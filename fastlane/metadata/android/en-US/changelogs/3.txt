@@ -1,0 +1,6 @@
+- Added the ability to play a song from a file
+- Fixed issue where music loading would fail
+- Fixed crash on the songs UI due to bad music loading
+- Added ability to manually save the playback state
+- Updated the animation of the compact controls to be faster
+- Optimized icons

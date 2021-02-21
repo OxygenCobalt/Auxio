@@ -311,9 +311,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
-                MediaCodecAudioRenderer(
-                    this, MediaCodecSelector.DEFAULT, handler, audioListener
-                )
+                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener)
             )
         }
 

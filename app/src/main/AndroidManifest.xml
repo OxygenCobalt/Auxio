@@ -26,11 +26,11 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <category android:name="android.intent.category.APP_MUSIC" />
-                <action android:name="android.intent.action.MUSIC_PLAYER" />
             </intent-filter>
 
             <intent-filter>
@@ -44,8 +44,6 @@
         <service
             android:name=".playback.system.PlaybackService"
             android:description="@string/info_service_desc"
-            android:enabled="true"
-            android:exported="false"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round" />
