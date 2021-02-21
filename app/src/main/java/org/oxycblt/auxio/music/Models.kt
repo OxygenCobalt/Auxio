@@ -148,8 +148,7 @@ data class Genre(
         }
     }
 
-    val totalDuration: String get() =
-        songs.sumOf { it.seconds }.toDuration()
+    val totalDuration: String get() = songs.sumOf { it.seconds }.toDuration()
 
     fun linkSong(song: Song) {
         mSongs.add(song)

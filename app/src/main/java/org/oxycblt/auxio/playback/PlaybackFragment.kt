@@ -194,12 +194,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         if (shouldHandleFileIntent()) {
-            val intent = requireActivity().intent
-
-            // Ensure that this wont fire again by putting a boolean extra
-            intent.putExtra(PlaybackUtils.KEY_INTENT_FIRED, true)
-
-            playbackModel.playWithIntent(intent, requireContext())
+            handleFileIntent(playbackModel)
         }
     }
 

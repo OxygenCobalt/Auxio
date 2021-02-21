@@ -102,6 +102,8 @@ class QueueFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        // QueueFragment shouldn't be handling file intents, as the effects it has on the recycler
+        // are really weird.
         if (shouldHandleFileIntent()) {
             findNavController().navigateUp()
         }

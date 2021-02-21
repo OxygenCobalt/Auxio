@@ -47,7 +47,7 @@ class LoadingFragment : Fragment() {
 
         loadingModel.response.observe(viewLifecycleOwner) { response ->
             when (response) {
-                // Success should lead to Auxio navigating away from the fragment
+                // Success should lead to navigation to the main fragment
                 MusicStore.Response.SUCCESS -> findNavController().navigate(
                     LoadingFragmentDirections.actionToMain()
                 )
@@ -60,7 +60,7 @@ class LoadingFragment : Fragment() {
             }
         }
 
-        if (noPermissions()) {
+        if (hasNoPermissions()) {
             // MusicStore.Response.NO_PERMS isnt actually returned by MusicStore, its just
             // a way to keep the current permission state across device changes
             loadingModel.notifyNoPermissions()
@@ -85,7 +85,7 @@ class LoadingFragment : Fragment() {
 
     // --- PERMISSIONS ---
 
-    private fun noPermissions(): Boolean {
+    private fun hasNoPermissions(): Boolean {
         val needRationale = shouldShowRequestPermissionRationale(
             Manifest.permission.READ_EXTERNAL_STORAGE
         )

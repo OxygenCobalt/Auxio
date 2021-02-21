@@ -214,7 +214,7 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
     return (!canMove || width < height)
 }
 
-// --- FRAGMENT NONSENSE ---
+// --- HACKY NIGHTMARES ---
 
 /**
  * Use reflection to fix a memory leak in the [Fragment] source code where the focused view will

@@ -329,7 +329,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * @param context [Context] required.
      */
     fun restorePlaybackIfNeeded(context: Context) {
-        if (!playbackManager.isRestored) {
+        if (!playbackManager.isRestored && playbackManager.song == null) {
             viewModelScope.launch {
                 playbackManager.getStateFromDatabase(context)
             }
