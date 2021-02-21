@@ -179,10 +179,13 @@ class SongsFragment : Fragment() {
                         indicatorCenterY: Int,
                         itemPosition: Int
                     ) {
-                        val layoutManager = binding.songRecycler.layoutManager
-                            as LinearLayoutManager
+                        binding.songRecycler.apply {
+                            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                                itemPosition, 0
+                            )
 
-                        layoutManager.scrollToPositionWithOffset(itemPosition, 0)
+                            stopScroll()
+                        }
                     }
                 }
             )
