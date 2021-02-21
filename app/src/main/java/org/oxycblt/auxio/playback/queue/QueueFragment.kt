@@ -42,6 +42,7 @@ class QueueFragment : Fragment() {
         val callback = QueueDragCallback(playbackModel)
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper, playbackModel)
+        var lastShuffle = playbackModel.isShuffling.value
 
         callback.addQueueAdapter(queueAdapter)
 
@@ -96,14 +97,22 @@ class QueueFragment : Fragment() {
             queueAdapter.submitList(createQueueData())
         }
 
+        playbackModel.isShuffling.observe(viewLifecycleOwner) {
+            if (it != lastShuffle) {
+                lastShuffle = it
+
+                binding.queueRecycler.scrollToPosition(0)
+            }
+        }
+
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
 
-        // QueueFragment shouldn't be handling file intents, as the effects it has on the recycler
-        // are really weird.
+        // QueueFragment shouldn't be handling file intents as it will cause the queue recycler
+        // to flip out
         if (shouldHandleFileIntent()) {
             findNavController().navigateUp()
         }

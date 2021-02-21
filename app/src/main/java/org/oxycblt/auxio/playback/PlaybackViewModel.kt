@@ -68,13 +68,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
     /** The current [PlaybackMode] that also determines the queue */
     val mode: LiveData<PlaybackMode> get() = mMode
-
+    /** Whether playback is originating from the user-generated queue or not  */
     val isInUserQueue: LiveData<Boolean> = mIsInUserQueue
 
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
     /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
+
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
     val canAnimate: Boolean get() = mCanAnimate
 
