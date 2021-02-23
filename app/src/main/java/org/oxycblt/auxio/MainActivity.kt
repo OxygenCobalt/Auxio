@@ -5,10 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.databinding.ActivityMainBinding
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Accent
@@ -18,6 +20,8 @@ import org.oxycblt.auxio.ui.isEdgeOn
  * The single [AppCompatActivity] for Auxio.
  */
 class MainActivity : AppCompatActivity() {
+    private val playbackModel: PlaybackViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         // Apply the theme
         setTheme(accent.theme)
 
+        // onNewIntent doesnt automatically call on startup, so call it here.
+        onNewIntent(intent)
+
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)
         }
@@ -49,36 +56,48 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        // Since the activity is set to singleInstance [Given that there's only MainActivity]
-        // We have to manually push the intent whenever we get one so that the fragments
-        // can catch any file intents
-        setIntent(intent)
-    }
+        if (intent != null) {
+            val action = intent.action
+            val isConsumed = intent.getBooleanExtra(KEY_INTENT_CONSUMED, false)
 
-    @Suppress("DEPRECATION")
-    private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
-        window?.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Do modern edge to edge [Which is really a shot in the dark tbh]
-                this@MainActivity.logD("Doing R+ edge-to-edge.")
+            if (action == Intent.ACTION_VIEW && !isConsumed) {
+                // Mark the intent as used so this does not fire again
+                intent.putExtra(KEY_INTENT_CONSUMED, true)
 
-                setDecorFitsSystemWindows(false)
-
-                binding.root.setOnApplyWindowInsetsListener { _, insets ->
-                    WindowInsets.Builder()
-                        .setInsets(
-                            WindowInsets.Type.systemBars(),
-                            insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-                        )
-                        .build()
+                intent.data?.let { fileUri ->
+                    playbackModel.playWithUri(fileUri, this)
                 }
-            } else {
-                // Do old edge-to-edge otherwise
-                this@MainActivity.logD("Doing legacy edge-to-edge.")
-
-                binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
         }
+    }
+
+    private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Do modern edge to edge, which happens to be around twice the size of the
+            // old way of doing things. Thanks android, very cool!
+            logD("Doing R+ edge-to-edge.")
+
+            window?.setDecorFitsSystemWindows(false)
+
+            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+                WindowInsets.Builder()
+                    .setInsets(
+                        WindowInsets.Type.systemBars(),
+                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+                    )
+                    .build()
+            }
+        } else {
+            // Do old edge-to-edge otherwise.
+            logD("Doing legacy edge-to-edge.")
+
+            @Suppress("DEPRECATION")
+            binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+
+    companion object {
+        private const val KEY_INTENT_CONSUMED = "KEY_FILE_INTENT_USED"
     }
 }

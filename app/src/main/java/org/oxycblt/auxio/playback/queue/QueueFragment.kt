@@ -16,7 +16,6 @@ import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.shouldHandleFileIntent
 import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 
@@ -104,16 +103,6 @@ class QueueFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // QueueFragment shouldn't be handling file intents as it will cause the queue recycler
-        // to flip out
-        if (shouldHandleFileIntent()) {
-            findNavController().navigateUp()
-        }
     }
 
     /**

@@ -38,6 +38,7 @@ class CompactPlaybackFragment : Fragment() {
         // Put a placeholder song in the binding & hide the playback fragment initially.
         binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
+        binding.executePendingBindings()
 
         binding.root.apply {
             setOnClickListener {
@@ -54,12 +55,12 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner) {
-            if (it != null) {
-                logD("Updating song display to ${it.name}")
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (song != null) {
+                logD("Updating song display to ${song.name}")
 
-                binding.song = it
-                binding.playbackProgress.max = it.seconds.toInt()
+                binding.song = song
+                binding.playbackProgress.max = song.seconds.toInt()
             }
         }
 

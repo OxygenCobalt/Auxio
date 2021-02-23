@@ -82,12 +82,12 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // --- VIEWMODEL SETUP --
 
-        playbackModel.song.observe(viewLifecycleOwner) {
-            if (it != null) {
-                logD("Updating song display to ${it.name}.")
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (song != null) {
+                logD("Updating song display to ${song.name}.")
 
-                binding.song = it
-                binding.playbackSeekBar.max = it.seconds.toInt()
+                binding.song = song
+                binding.playbackSeekBar.max = song.seconds.toInt()
             } else {
                 logD("No song is being played, leaving.")
 
@@ -181,10 +181,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
 
             playbackModel.enableAnimation()
-        }
-
-        if (shouldHandleFileIntent()) {
-            handleFileIntent(playbackModel)
         }
     }
 

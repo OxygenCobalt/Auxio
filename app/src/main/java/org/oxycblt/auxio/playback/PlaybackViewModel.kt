@@ -1,7 +1,7 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
-import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -53,6 +53,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // Other
     private val mIsSeeking = MutableLiveData(false)
+    private var mIntentUri: Uri? = null
     private var mCanAnimate = false
 
     /** The current song. */
@@ -113,9 +114,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- PLAYING FUNCTIONS ---
 
     /**
-     * Play a song.
-     * @param song The song to be played
-     * @param mode The [PlaybackMode] for it to be played in. Defaults to the preferred song playback mode of the user if not specified.
+     * Play a [song] with the [mode] specified. [mode] will default to the preferred song
+     * playback mode of the user if not specified.
      */
     fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
         playbackManager.playSong(song, mode)
@@ -154,20 +154,28 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParent(genre, shuffled)
     }
 
-    /** Shuffle all songs */
-    fun shuffleAll() {
-        playbackManager.shuffleAll()
+    /** Play using a file URI. This will not play instantly during the initial startup sequence.*/
+    fun playWithUri(uri: Uri, context: Context) {
+        // Check if everything is already running to run the URI play
+        if (playbackManager.isRestored && musicStore.loaded) {
+            playWithUriInternal(uri, context)
+        } else {
+            mIntentUri = uri
+        }
     }
 
-    /** Play a song using an intent */
-    fun playWithIntent(intent: Intent, context: Context) {
-        val uri = intent.data ?: return
-
+    /** Actually play with a given URI internally. The frontend doesn't play instantly. */
+    private fun playWithUriInternal(uri: Uri, context: Context) {
         viewModelScope.launch {
             musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
                 playSong(song)
             }
         }
+    }
+
+    /** Shuffle all songs */
+    fun shuffleAll() {
+        playbackManager.shuffleAll()
     }
 
     // --- POSITION FUNCTIONS ---
@@ -326,11 +334,19 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Get [PlaybackStateManager] to restore its state from the database, if needed. Called by MainFragment.
-     * @param context [Context] required.
+     * Handle the file last-saved file intent, or restore playback, depending on the situation.
      */
-    fun restorePlaybackIfNeeded(context: Context) {
-        if (!playbackManager.isRestored && playbackManager.song == null) {
+    fun setupPlayback(context: Context) {
+        val intentUri = mIntentUri
+
+        if (intentUri != null) {
+            // Were not going to be restoring playbackManager after this, so mark it as such.
+            playbackManager.setRestored()
+            playWithUriInternal(intentUri, context)
+
+            // Remove the uri after finishing the calls so that this does not fire again.
+            mIntentUri = null
+        } else if (!playbackManager.isRestored) {
             viewModelScope.launch {
                 playbackManager.getStateFromDatabase(context)
             }

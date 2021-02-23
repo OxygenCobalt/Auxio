@@ -598,6 +598,13 @@ class PlaybackStateManager private constructor() {
         mHasPlayed = false
     }
 
+    /**
+     * Mark this instance as restored.
+     */
+    fun setRestored() {
+        mIsRestored = true
+    }
+
     // --- PERSISTENCE FUNCTIONS ---
 
     /**

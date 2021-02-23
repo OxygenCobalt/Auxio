@@ -19,8 +19,6 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.handleFileIntent
-import org.oxycblt.auxio.playback.shouldHandleFileIntent
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.isLandscape
@@ -112,20 +110,11 @@ class MainFragment : Fragment() {
             }
         }
 
+        playbackModel.setupPlayback(requireContext())
+
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (shouldHandleFileIntent()) {
-            handleFileIntent(playbackModel)
-        } else {
-            // If there is no file intent restore playback as usual
-            playbackModel.restorePlaybackIfNeeded(requireContext())
-        }
     }
 
     override fun onDestroyView() {
