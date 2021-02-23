@@ -32,14 +32,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         playbackSong.isSelected = false
     }
 
-    // Colors
-    private val accentColor: ColorStateList by lazy {
-        Accent.get().getStateList(requireContext())
-    }
-
-    private val controlColor: ColorStateList by lazy {
-        R.color.control_color.toStateList(requireContext())
-    }
+    private lateinit var accentColor: ColorStateList
+    private lateinit var controlColor: ColorStateList
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +44,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         //  Would require writing my own variant though to avoid index updates
 
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
+        accentColor = Accent.get().getStateList(requireContext())
+        controlColor = R.color.control_color.toStateList(requireContext())
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
         val iconQueueActive = R.drawable.ic_queue.toDrawable(requireContext())
         val iconQueueInactive = R.drawable.ic_queue_inactive.toDrawable(requireContext())
 
-        val queueMenuItem: MenuItem
+        val queueItem: MenuItem
 
         // --- UI SETUP ---
 
@@ -77,7 +73,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 } else false
             }
 
-            queueMenuItem = menu.findItem(R.id.action_queue)
+            queueItem = menu.findItem(R.id.action_queue)
         }
 
         // Make marquee of song title work
@@ -100,12 +96,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) {
-            // Highlight the shuffle button if Playback is shuffled, and revert it if not.
-            if (it) {
-                binding.playbackShuffle.imageTintList = accentColor
-            } else {
-                binding.playbackShuffle.imageTintList = controlColor
-            }
+            binding.playbackShuffle.imageTintList = if (it) accentColor else controlColor
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) {
@@ -114,10 +105,12 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     binding.playbackLoop.imageTintList = controlColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
                 }
+
                 LoopMode.ONCE -> {
                     binding.playbackLoop.imageTintList = accentColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop_one)
                 }
+
                 LoopMode.INFINITE -> {
                     binding.playbackLoop.imageTintList = accentColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
@@ -128,17 +121,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.isSeeking.observe(viewLifecycleOwner) {
-            // Highlight the current duration if the user is seeking, and revert it if not.
             if (it) {
                 binding.playbackDurationCurrent.setTextColor(accentColor)
             } else {
                 binding.playbackDurationCurrent.setTextColor(normalTextColor)
             }
-        }
-
-        // Updates for the current duration TextView/SeekBar
-        playbackModel.formattedPosition.observe(viewLifecycleOwner) {
-            binding.playbackDurationCurrent.text = it
         }
 
         playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
@@ -147,24 +134,27 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
-            // Disable the option to open the queue if there's nothing in it.
-            if (it.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
-                queueMenuItem.isEnabled = false
-                queueMenuItem.icon = iconQueueInactive
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { nextQueue ->
+            val userQueue = playbackModel.userQueue.value!!
+
+            if (userQueue.isEmpty() && nextQueue.isEmpty()) {
+                queueItem.icon = iconQueueInactive
+                queueItem.isEnabled = false
             } else {
-                queueMenuItem.isEnabled = true
-                queueMenuItem.icon = iconQueueActive
+                queueItem.icon = iconQueueActive
+                queueItem.isEnabled = true
             }
         }
 
-        playbackModel.userQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
-                queueMenuItem.isEnabled = false
-                queueMenuItem.icon = iconQueueInactive
+        playbackModel.userQueue.observe(viewLifecycleOwner) { userQueue ->
+            val nextQueue = playbackModel.nextItemsInQueue.value!!
+
+            if (userQueue.isEmpty() && nextQueue.isEmpty()) {
+                queueItem.icon = iconQueueInactive
+                queueItem.isEnabled = false
             } else {
-                queueMenuItem.isEnabled = true
-                queueMenuItem.icon = iconQueueActive
+                queueItem.icon = iconQueueActive
+                queueItem.isEnabled = true
             }
         }
 

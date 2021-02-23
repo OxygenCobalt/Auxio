@@ -132,6 +132,7 @@
             android:id="@+id/playback_duration_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{playbackModel.formattedPosition}"
             android:layout_marginStart="@dimen/margin_mid_huge"
             android:layout_marginBottom="@dimen/margin_medium"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"

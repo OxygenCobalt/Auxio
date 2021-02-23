@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_medium"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:text="@{genre.displayName}"
+            android:text="@{genre.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/genre_song_count"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

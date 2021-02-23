@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.shouldHandleFileIntent
-import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.isEdgeOn
 import org.oxycblt.auxio.ui.isIrregularLandscape
 
@@ -145,15 +143,6 @@ class QueueFragment : Fragment() {
     }
 
     private fun getParentName(): String {
-        return if (playbackModel.mode.value == PlaybackMode.ALL_SONGS) {
-            getString(R.string.label_all_songs)
-        } else {
-            if (playbackModel.parent.value is Genre) {
-                // Use display name for Genres so that numbers dont show up
-                (playbackModel.parent.value as Genre).displayName
-            } else {
-                playbackModel.parent.value!!.name
-            }
-        }
+        return playbackModel.parent.value?.displayName ?: getString(R.string.label_all_songs)
     }
 }

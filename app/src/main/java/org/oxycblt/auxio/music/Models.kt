@@ -18,8 +18,11 @@ sealed class BaseModel {
 /**
  * [BaseModel] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
+ * @property displayName Name that handles the usage of [Genre.resolvedName] and the normal [BaseModel.name]
  */
-sealed class Parent : BaseModel()
+sealed class Parent : BaseModel() {
+    val displayName: String get() = if (this is Genre) resolvedName else name
+}
 
 /**
  * The data object for a song. Inherits [BaseModel].
@@ -47,6 +50,9 @@ data class Song(
     val genre: Genre? get() = mGenre
     val album: Album get() = requireNotNull(mAlbum)
 
+    val seconds = duration / 1000
+    val formattedDuration: String = seconds.toDuration()
+
     fun linkAlbum(album: Album) {
         if (mAlbum == null) {
             mAlbum = album
@@ -58,9 +64,6 @@ data class Song(
             mGenre = genre
         }
     }
-
-    val seconds = duration / 1000
-    val formattedDuration: String = seconds.toDuration()
 }
 
 /**
@@ -119,7 +122,7 @@ data class Artist(
     }
 
     val genre: Genre? by lazy {
-        songs.map { it.genre }.maxByOrNull { it?.songs?.size ?: 0 }
+        songs.groupBy { it.genre }.entries.maxByOrNull { it.value.size }?.key
     }
 
     val songs: List<Song> by lazy {
@@ -130,23 +133,23 @@ data class Artist(
 /**
  * The data object for a genre. Inherits [Parent]
  * @property songs   The list of all [Song]s in this genre.
- * @property displayName A name that can be displayed without it showing up as an integer. ***USE THIS INSTEAD OF [name]!!!!***
+ * @property resolvedName A name that has been resolved from its int-genre form to its named form.
  * @author OxygenCobalt
  */
 data class Genre(
     override val id: Long = -1,
     override val name: String,
 ) : Parent() {
-    private val mSongs = mutableListOf<Song>()
-    val songs: List<Song> get() = mSongs
-
-    val displayName: String by lazy {
+    val resolvedName: String by lazy {
         if (name.contains(Regex("[0123456789)]"))) {
             name.toNamedGenre() ?: name
         } else {
             name
         }
     }
+
+    private val mSongs = mutableListOf<Song>()
+    val songs: List<Song> get() = mSongs
 
     val totalDuration: String get() = songs.sumOf { it.seconds }.toDuration()
 

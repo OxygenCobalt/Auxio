@@ -197,6 +197,57 @@ class SettingsManager private constructor(context: Context) :
         }
     }
 
+    /** SharedPreferences keys. */
+    object Keys {
+        const val KEY_THEME = "KEY_THEME"
+        const val KEY_ACCENT = "KEY_ACCENT"
+        const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
+        const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
+        const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
+        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
+        const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
+        const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
+        const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
+        const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
+        const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
+        const val KEY_AT_END = "KEY_AT_END"
+        const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
+        const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
+
+        const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
+        const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
+        const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
+    }
+
+    /** Values for some settings entries that cant be enums/ints.*/
+    object EntryValues {
+        const val THEME_AUTO = "AUTO"
+        const val THEME_LIGHT = "LIGHT"
+        const val THEME_DARK = "DARK"
+
+        /** Pause and loop at the end. Similar to Spotify. */
+        const val AT_END_LOOP_PAUSE = "LOOP_PAUSE"
+
+        /** Loop at the end. Similar to Music Player GO. */
+        const val AT_END_LOOP = "LOOP"
+
+        /** Stop at the end. */
+        const val AT_END_STOP = "STOP"
+    }
+
+    /**
+     * An interface for receiving some preference updates. Use/Extend this instead of
+     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
+     * context.
+     */
+    interface Callback {
+        fun onColorizeNotifUpdate(doColorize: Boolean) {}
+        fun onNotifActionUpdate(useAltAction: Boolean) {}
+        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
+        fun onShowCoverUpdate(showCovers: Boolean) {}
+        fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: SettingsManager? = null
@@ -227,66 +278,5 @@ class SettingsManager private constructor(context: Context) :
 
             error("SettingsManager must be initialized with init() before getting its instance.")
         }
-    }
-
-    /**
-     * SharedPreferences keys.
-     */
-    object Keys {
-        const val KEY_THEME = "KEY_THEME"
-        const val KEY_ACCENT = "KEY_ACCENT"
-        const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
-        const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
-        const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
-        const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
-        const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
-        const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
-        const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
-        const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
-        const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
-        const val KEY_AT_END = "KEY_AT_END"
-        const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
-        const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
-
-        const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
-        const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
-        const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
-    }
-
-    /**
-     * Values for some settings entries that cant be enums/ints.
-     */
-    object EntryValues {
-        const val THEME_AUTO = "AUTO"
-        const val THEME_LIGHT = "LIGHT"
-        const val THEME_DARK = "DARK"
-
-        /**
-         * Pause and loop at the end. Similar to Spotify.
-         */
-        const val AT_END_LOOP_PAUSE = "LOOP_PAUSE"
-
-        /**
-         * Loop at the end. Similar to Music Player GO.
-         */
-        const val AT_END_LOOP = "LOOP"
-
-        /**
-         * Stop at the end. Similar to Phonograph.
-         */
-        const val AT_END_STOP = "STOP"
-    }
-
-    /**
-     * An interface for receiving some preference updates. Use/Extend this instead of
-     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
-     * context.
-     */
-    interface Callback {
-        fun onColorizeNotifUpdate(doColorize: Boolean) {}
-        fun onNotifActionUpdate(useAltAction: Boolean) {}
-        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
-        fun onShowCoverUpdate(showCovers: Boolean) {}
-        fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
     }
 }

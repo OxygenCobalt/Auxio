@@ -96,6 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_compact_progress"
             android:clickable="false"
+            android:progress="@{playbackModel.positionAsProgress}"
             android:progressBackgroundTint="?attr/colorControlNormal"
             android:progressTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"

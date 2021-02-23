@@ -412,9 +412,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
                     )
                 } else {
-                    startForeground(
-                        PlaybackNotification.NOTIFICATION_ID, notification.build()
-                    )
+                    startForeground(PlaybackNotification.NOTIFICATION_ID, notification.build())
                 }
             } else {
                 // If we are already in foreground just update the notification
@@ -486,51 +484,45 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      */
     private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
+            when (intent.action) {
+                PlaybackNotification.ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
+                    !playbackManager.isPlaying
+                )
 
-            action?.let {
-                when (it) {
-                    // --- NOTIFICATION CASES ---
+                PlaybackNotification.ACTION_LOOP -> playbackManager.setLoopMode(
+                    playbackManager.loopMode.increment()
+                )
 
-                    PlaybackNotification.ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
-                        !playbackManager.isPlaying
-                    )
+                PlaybackNotification.ACTION_SHUFFLE -> playbackManager.setShuffling(
+                    !playbackManager.isShuffling, keepSong = true
+                )
 
-                    PlaybackNotification.ACTION_LOOP -> playbackManager.setLoopMode(
-                        playbackManager.loopMode.increment()
-                    )
+                PlaybackNotification.ACTION_SKIP_PREV -> playbackManager.prev()
+                PlaybackNotification.ACTION_SKIP_NEXT -> playbackManager.next()
 
-                    PlaybackNotification.ACTION_SHUFFLE -> playbackManager.setShuffling(
-                        !playbackManager.isShuffling, keepSong = true
-                    )
+                PlaybackNotification.ACTION_EXIT -> {
+                    playbackManager.setPlaying(false)
+                    stopForegroundAndNotification()
+                }
 
-                    PlaybackNotification.ACTION_SKIP_PREV -> playbackManager.prev()
-                    PlaybackNotification.ACTION_SKIP_NEXT -> playbackManager.next()
+                // --- HEADSET CASES ---
 
-                    PlaybackNotification.ACTION_EXIT -> {
-                        playbackManager.setPlaying(false)
-                        stopForegroundAndNotification()
+                BluetoothDevice.ACTION_ACL_CONNECTED -> resumeFromPlug()
+                BluetoothDevice.ACTION_ACL_DISCONNECTED -> pauseFromPlug()
+
+                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
+                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
+                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
+                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
                     }
+                }
 
-                    // --- HEADSET CASES ---
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
-                    BluetoothDevice.ACTION_ACL_CONNECTED -> resumeFromPlug()
-                    BluetoothDevice.ACTION_ACL_DISCONNECTED -> pauseFromPlug()
-
-                    AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
-                        when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                            AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
-                            AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
-                        }
-                    }
-
-                    AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
-
-                    Intent.ACTION_HEADSET_PLUG -> {
-                        when (intent.getIntExtra("state", -1)) {
-                            CONNECTED -> resumeFromPlug()
-                            DISCONNECTED -> pauseFromPlug()
-                        }
+                Intent.ACTION_HEADSET_PLUG -> {
+                    when (intent.getIntExtra("state", -1)) {
+                        CONNECTED -> resumeFromPlug()
+                        DISCONNECTED -> pauseFromPlug()
                     }
                 }
             }

@@ -31,11 +31,11 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedGenreList(genres: List<Genre>): List<Genre> {
         return when (this) {
             ALPHA_UP -> genres.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.displayName }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.resolvedName }
             )
 
             ALPHA_DOWN -> genres.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.displayName }
+                compareBy(String.CASE_INSENSITIVE_ORDER) { it.resolvedName }
             )
 
             else -> genres

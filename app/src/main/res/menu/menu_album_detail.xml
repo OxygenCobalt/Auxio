@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_queue_add"
-        android:icon="@drawable/ic_queue_add"
         android:title="@string/label_queue_add"
         app:showAsAction="never" />
 </menu>

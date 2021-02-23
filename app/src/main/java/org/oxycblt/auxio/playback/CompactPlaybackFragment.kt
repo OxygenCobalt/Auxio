@@ -63,10 +63,6 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
-            binding.playbackProgress.progress = it
-        }
-
         logD("Fragment Created")
 
         return binding.root

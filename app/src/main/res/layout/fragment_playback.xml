@@ -134,6 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_mid_large"
             android:layout_marginBottom="@dimen/margin_medium"
+            android:text="@{playbackModel.formattedPosition}"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="11:38" />

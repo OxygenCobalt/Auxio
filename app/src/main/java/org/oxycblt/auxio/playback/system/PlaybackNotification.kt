@@ -14,7 +14,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
@@ -119,17 +118,8 @@ class PlaybackNotification private constructor(
             return
         }
 
-        if (parent == null) {
-            // A blank parent always means that the mode is ALL_SONGS
-            setSubText(context.getString(R.string.label_all_songs))
-        } else {
-            if (parent is Genre) {
-                // Use display name for genre
-                setSubText(parent.displayName)
-            } else {
-                setSubText(parent.name)
-            }
-        }
+        // A blank parent always means that the mode is ALL_SONGS
+        setSubText(parent?.displayName ?: context.getString(R.string.label_all_songs))
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---
