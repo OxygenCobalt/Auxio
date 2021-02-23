@@ -12,7 +12,6 @@ import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.memberBinding
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -24,13 +23,14 @@ import org.oxycblt.auxio.ui.memberBinding
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val binding by memberBinding(FragmentCompactPlaybackBinding::inflate)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentCompactPlaybackBinding.inflate(inflater)
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -55,6 +55,8 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
+        playbackModel.disableAnimation()
+
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
                 logD("Updating song display to ${song.name}")
@@ -64,20 +66,14 @@ class CompactPlaybackFragment : Fragment() {
             }
         }
 
-        logD("Fragment Created")
-
-        return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        playbackModel.disableAnimation()
-
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             binding.playbackPlayPause.setPlaying(it, playbackModel.canAnimate)
 
             playbackModel.enableAnimation()
         }
+
+        logD("Fragment Created")
+
+        return binding.root
     }
 }

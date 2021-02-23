@@ -32,7 +32,6 @@ import org.oxycblt.auxio.ui.toStateList
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
- * TODO: Add "Recent Searches" & No Results indicator
  * @author OxygenCobalt
  */
 class SearchFragment : Fragment() {

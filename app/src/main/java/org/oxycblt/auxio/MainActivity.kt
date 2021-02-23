@@ -56,6 +56,8 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
+        // If this intent is a valid view intent that has not been used already, give it
+        // to PlaybackViewModel to be used later.
         if (intent != null) {
             val action = intent.action
             val isConsumed = intent.getBooleanExtra(KEY_INTENT_CONSUMED, false)

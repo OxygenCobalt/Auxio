@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.playback
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -32,9 +31,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         playbackSong.isSelected = false
     }
 
-    private lateinit var accentColor: ColorStateList
-    private lateinit var controlColor: ColorStateList
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,8 +40,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         //  Would require writing my own variant though to avoid index updates
 
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
-        accentColor = Accent.get().getStateList(requireContext())
-        controlColor = R.color.control_color.toStateList(requireContext())
+        val accentColor = Accent.get().getStateList(requireContext())
+        val controlColor = R.color.control_color.toStateList(requireContext())
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
         val iconQueueActive = R.drawable.ic_queue.toDrawable(requireContext())
@@ -81,6 +77,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
+
+        playbackModel.disableAnimation()
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
@@ -158,6 +156,15 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
+        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+            binding.playbackPlayPause.apply {
+                backgroundTintList = if (it) accentColor else controlColor
+                setPlaying(it, playbackModel.canAnimate)
+            }
+
+            playbackModel.enableAnimation()
+        }
+
         detailModel.navToItem.observe(viewLifecycleOwner) {
             if (it != null) {
                 findNavController().navigateUp()
@@ -167,21 +174,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        playbackModel.disableAnimation()
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
-            binding.playbackPlayPause.apply {
-                backgroundTintList = if (it) accentColor else controlColor
-                setPlaying(it, playbackModel.canAnimate)
-            }
-
-            playbackModel.enableAnimation()
-        }
     }
 
     // --- SEEK CALLBACKS ---
