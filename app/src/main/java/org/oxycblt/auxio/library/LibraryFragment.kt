@@ -24,6 +24,7 @@ import org.oxycblt.auxio.ui.newMenu
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
  * search functionality.
+ * @author OxygenCobalt
  */
 class LibraryFragment : Fragment() {
     private val libraryModel: LibraryViewModel by activityViewModels()
@@ -36,7 +37,7 @@ class LibraryFragment : Fragment() {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(::onItemSelection) { view, data -> newMenu(view, data) }
+        val libraryAdapter = LibraryAdapter(::navToDetail) { view, data -> newMenu(view, data) }
 
         // --- UI SETUP ---
 
@@ -78,9 +79,9 @@ class LibraryFragment : Fragment() {
                 libraryModel.updateNavigationStatus(false)
 
                 if (it is Parent) {
-                    onItemSelection(it)
+                    navToDetail(it)
                 } else if (it is Song) {
-                    onItemSelection(it.album)
+                    navToDetail(it.album)
                 }
             }
         }
@@ -103,10 +104,9 @@ class LibraryFragment : Fragment() {
     }
 
     /**
-     * Navigate to a parent UI
-     * @param parent The parent that should be navigated with
+     * Navigate to the detail UI for a [parent].
      */
-    private fun onItemSelection(parent: Parent) {
+    private fun navToDetail(parent: Parent) {
         requireView().rootView.clearFocus()
 
         if (!libraryModel.isNavigating) {

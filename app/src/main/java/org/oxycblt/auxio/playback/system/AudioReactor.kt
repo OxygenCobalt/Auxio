@@ -14,6 +14,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 /**
  * Object that manages the AudioFocus state.
  * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
+ * @author OxygenCobalt
  */
 class AudioReactor(
     context: Context,

@@ -20,6 +20,7 @@ import java.io.InputStream
 /**
  * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
  * quality covers or not.
+ * @author OxygenCobalt
  */
 class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
     private val settingsManager = SettingsManager.getInstance()

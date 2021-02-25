@@ -59,8 +59,7 @@ class LibraryAdapter(
     }
 
     /**
-     * Update the data directly. [notifyDataSetChanged] will be called
-     * @param newData The new data to be used
+     * Update the data with [newData]. [notifyDataSetChanged] will be called.
      */
     fun updateData(newData: List<Parent>) {
         data = newData

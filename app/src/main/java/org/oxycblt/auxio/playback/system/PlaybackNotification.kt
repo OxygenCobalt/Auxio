@@ -10,6 +10,7 @@ import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
+import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
@@ -18,7 +19,6 @@ import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import androidx.media.app.NotificationCompat as MediaNotificationCompat
 
 /**
  * The unified notification for [PlaybackService]. This is not self-sufficient, updates have
@@ -51,7 +51,7 @@ class PlaybackNotification private constructor(
         addAction(buildAction(context, ACTION_EXIT, R.drawable.ic_exit))
 
         setStyle(
-            MediaNotificationCompat.MediaStyle()
+            MediaStyle()
                 .setMediaSession(mediaToken)
                 .setShowActionsInCompactView(1, 2, 3)
         )
@@ -186,7 +186,7 @@ class PlaybackNotification private constructor(
         const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.BUILD_TYPE
 
         /**
-         * Build a new instance of [PlaybackNotification].
+         * Build a new instance of [PlaybackNotification] from a [context] and [mediaSession]
          */
         fun from(context: Context, mediaSession: MediaSessionCompat): PlaybackNotification {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

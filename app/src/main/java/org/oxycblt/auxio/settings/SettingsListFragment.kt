@@ -45,6 +45,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.prefs_main, rootKey)
     }
 
+    /**
+     * Recursively call [handlePreference] on a preference.
+     */
     private fun recursivelyHandleChildren(pref: Preference) {
         if (pref is PreferenceCategory) {
             // If this preference is a category of its own, handle its own children
@@ -54,6 +57,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
     }
 
+    /**
+     * Handle a preference, doing any specific actions on it.
+     */
     private fun handlePreference(pref: Preference) {
         pref.apply {
             when (key) {
@@ -134,6 +140,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
     }
 
+    /**
+     * Show the accent dialog to the user
+     */
     private fun showAccentDialog() {
         MaterialDialog(requireActivity()).show {
             title(R.string.setting_accent)

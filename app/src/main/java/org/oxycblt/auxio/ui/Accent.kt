@@ -44,6 +44,7 @@ val ACCENTS = arrayOf(
  * @property color The color resource for this accent
  * @property theme The theme resource for this accent
  * @property name  The name of this accent
+ * @author OxygenCobalt
  */
 data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes val name: Int) {
     /**

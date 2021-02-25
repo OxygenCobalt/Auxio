@@ -19,7 +19,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 // --- BINDING ADAPTERS ---
 
 /**
- * Bind the album art for a [Song].
+ * Bind the album art for a [song].
  */
 @BindingAdapter("albumArt")
 fun ImageView.bindAlbumArt(song: Song) {
@@ -27,7 +27,7 @@ fun ImageView.bindAlbumArt(song: Song) {
 }
 
 /**
- * Bind the album art for an [Album].
+ * Bind the album art for an [album].
  */
 @BindingAdapter("albumArt")
 fun ImageView.bindAlbumArt(album: Album) {
@@ -35,7 +35,7 @@ fun ImageView.bindAlbumArt(album: Album) {
 }
 
 /**
- * Bind the image for an [Artist]
+ * Bind the image for an [artist]
  */
 @BindingAdapter("artistImage")
 fun ImageView.bindArtistImage(artist: Artist) {
@@ -43,7 +43,7 @@ fun ImageView.bindArtistImage(artist: Artist) {
 }
 
 /**
- * Bind the image for a [Genre]
+ * Bind the image for a [genre]
  */
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre) {

@@ -20,13 +20,13 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     private val mLibraryData = MutableLiveData(listOf<Parent>())
     val libraryData: LiveData<List<Parent>> get() = mLibraryData
 
-    private var mIsNavigating = false
-    val isNavigating: Boolean get() = mIsNavigating
-
     private var mSortMode = SortMode.ALPHA_DOWN
     val sortMode: SortMode get() = mSortMode
 
     private var mDisplayMode = DisplayMode.SHOW_ARTISTS
+
+    private var mIsNavigating = false
+    val isNavigating: Boolean get() = mIsNavigating
 
     private val settingsManager = SettingsManager.getInstance()
     private val musicStore = MusicStore.getInstance()
@@ -42,8 +42,7 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     }
 
     /**
-     * Update the current [SortMode] with a menu id.
-     * @param itemId The id of the menu item selected.
+     * Update the current [SortMode] using an menu [itemId].
      */
     fun updateSortMode(@IdRes itemId: Int) {
         val mode = when (itemId) {
@@ -64,27 +63,10 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
     /**
      * Update the current navigation status
-     * @param value Whether LibraryFragment is navigating or not
      */
-    fun updateNavigationStatus(value: Boolean) {
-        mIsNavigating = value
+    fun updateNavigationStatus(isNavigating: Boolean) {
+        mIsNavigating = isNavigating
     }
-
-    // --- OVERRIDES ---
-
-    override fun onCleared() {
-        super.onCleared()
-
-        settingsManager.removeCallback(this)
-    }
-
-    override fun onLibDisplayModeUpdate(displayMode: DisplayMode) {
-        mDisplayMode = displayMode
-
-        updateLibraryData()
-    }
-
-    // --- UTILS ---
 
     /**
      * Shortcut function for updating the library data with the current [SortMode]/[DisplayMode]
@@ -99,5 +81,19 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
 
             else -> error("DisplayMode $mDisplayMode is unsupported.")
         }
+    }
+
+    // --- OVERRIDES ---
+
+    override fun onCleared() {
+        super.onCleared()
+
+        settingsManager.removeCallback(this)
+    }
+
+    override fun onLibDisplayModeUpdate(displayMode: DisplayMode) {
+        mDisplayMode = displayMode
+
+        updateLibraryData()
     }
 }

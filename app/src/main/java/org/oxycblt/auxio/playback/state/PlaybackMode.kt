@@ -1,6 +1,9 @@
 package org.oxycblt.auxio.playback.state
 
-// Enum that instructs how the queue should be constructed
+/**
+ * Enum that indicates how the queue should be constructed.
+ * @author OxygenCobalt
+ */
 enum class PlaybackMode {
     /** Construct the queue from the genre's songs */
     IN_GENRE,
@@ -31,7 +34,7 @@ enum class PlaybackMode {
         const val CONSTANT_ALL_SONGS = 0xA043
 
         /**
-         * Get a [PlaybackMode] for an int constant
+         * Get a [PlaybackMode] for an int [constant]
          * @return The mode, null if there isnt one for this.
          */
         fun fromInt(constant: Int): PlaybackMode? {

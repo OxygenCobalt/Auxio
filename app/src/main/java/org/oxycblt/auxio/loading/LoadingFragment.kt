@@ -15,6 +15,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.music.MusicStore
 
+/**
+ * Fragment that handles what to display during the loading process.
+ * @author OxygenCobalt
+ */
 class LoadingFragment : Fragment() {
     private val loadingModel: LoadingViewModel by viewModels {
         LoadingViewModel.Factory(requireActivity().application)
@@ -85,6 +89,9 @@ class LoadingFragment : Fragment() {
 
     // --- PERMISSIONS ---
 
+    /**
+     * Check if Auxio has the permissions to load music
+     */
     private fun hasNoPermissions(): Boolean {
         val needRationale = shouldShowRequestPermissionRationale(
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -107,16 +114,24 @@ class LoadingFragment : Fragment() {
 
     // --- UI DISPLAY ---
 
+    /**
+     * Hide all error elements and return to the loading view
+     */
     private fun showLoading(binding: FragmentLoadingBinding) {
         binding.apply {
-            loadingCircle.visibility = View.VISIBLE
             loadingErrorIcon.visibility = View.GONE
             loadingErrorText.visibility = View.GONE
             loadingRetryButton.visibility = View.GONE
             loadingGrantButton.visibility = View.GONE
+            loadingCircle.visibility = View.VISIBLE
         }
     }
 
+    /**
+     * Show an error prompt.
+     * @param error The [MusicStore.Response] that this error corresponds to. Ignores
+     * [MusicStore.Response.SUCCESS]
+     */
     private fun showError(binding: FragmentLoadingBinding, error: MusicStore.Response) {
         binding.loadingCircle.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE

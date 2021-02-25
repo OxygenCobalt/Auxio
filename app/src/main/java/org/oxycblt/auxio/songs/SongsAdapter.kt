@@ -11,6 +11,7 @@ import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
  * @param data List of [Song]s to be shown
  * @param doOnClick What to do on a click action
  * @param doOnLongClick What to do on a long click action
+ * @author OxygenCobalt
  */
 class SongsAdapter(
     private val data: List<Song>,

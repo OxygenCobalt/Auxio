@@ -9,17 +9,25 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.MusicStore
 
+/**
+ * ViewModel responsible for the loading UI and beginning the loading process overall.
+ * @author OxygenCobalt
+ */
 class LoadingViewModel(private val app: Application) : ViewModel() {
     private val mResponse = MutableLiveData<MusicStore.Response?>(null)
-    val response: LiveData<MusicStore.Response?> = mResponse
-
     private val mDoGrant = MutableLiveData(false)
+
+    /** The last response from [MusicStore]. Null if the loading process is occurring. */
+    val response: LiveData<MusicStore.Response?> = mResponse
     val doGrant: LiveData<Boolean> = mDoGrant
 
     private var isBusy = false
 
     private val musicStore = MusicStore.getInstance()
 
+    /**
+     * Begin the music loading process. The response is pushed to [response]
+     */
     fun load() {
         // Dont start a new load if the last one hasnt finished
         if (isBusy) return
@@ -33,14 +41,23 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
         }
     }
 
+    /**
+     * Show the grant prompt.
+     */
     fun grant() {
         mDoGrant.value = true
     }
 
+    /**
+     * Mark that the grant prompt is now shown.
+     */
     fun doneWithGrant() {
         mDoGrant.value = false
     }
 
+    /**
+     * Notify this viewmodel that there are no permissions
+     */
     fun notifyNoPermissions() {
         mResponse.value = MusicStore.Response.NO_PERMS
     }

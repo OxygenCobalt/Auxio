@@ -51,6 +51,8 @@ abstract class DetailFragment : Fragment() {
 
     /**
      * Shortcut method for doing setup of the detail toolbar.
+     * @param menu Menu resource to use
+     * @param onMenuClick (Optional) a click listener for that menu
      */
     protected fun setupToolbar(
         @MenuRes menu: Int = -1,

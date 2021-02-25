@@ -23,6 +23,7 @@ import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
  * An adapter for displaying the details and [Song]s of an [Album]
+ * @author OxygenCobalt
  */
 class AlbumDetailAdapter(
     private val detailModel: DetailViewModel,
@@ -75,8 +76,8 @@ class AlbumDetailAdapter(
     }
 
     /**
-     * Update the current song that this adapter should be watching for to highlight.
-     * @param song The [Song] to highlight if found, null to clear any highlighted ViewHolders
+     * Update the [song] that this adapter should highlight
+     * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
         // Clear out the last ViewHolder as a song update usually signifies that this current

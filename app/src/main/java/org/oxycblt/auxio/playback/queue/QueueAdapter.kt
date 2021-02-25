@@ -38,13 +38,15 @@ class QueueAdapter(
     override fun getItemViewType(position: Int): Int {
         val item = data[position]
 
-        return if (item is Header)
-            if (item.isAction)
+        return if (item is Header) {
+            if (item.isAction) {
                 USER_QUEUE_HEADER_ITEM_TYPE
-            else
+            } else {
                 HeaderViewHolder.ITEM_TYPE
-        else
+            }
+        } else {
             QUEUE_SONG_ITEM_TYPE
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -80,7 +82,8 @@ class QueueAdapter(
     }
 
     /**
-     * Submit data using [AsyncListDiffer]. **Only use this if you have no idea what changes occurred to the data**
+     * Submit data using [AsyncListDiffer].
+     * **Only use this if you have no idea what changes occurred to the data**
      */
     fun submitList(newData: MutableList<BaseModel>) {
         if (data != newData) {
@@ -91,7 +94,8 @@ class QueueAdapter(
     }
 
     /**
-     * Move Items. Used since [submitList] will cause QueueAdapter to freak-out here.
+     * Move Items.
+     * Used since [submitList] will cause QueueAdapter to freak-out here.
      */
     fun moveItems(adapterFrom: Int, adapterTo: Int) {
         val item = data.removeAt(adapterFrom)
@@ -101,17 +105,20 @@ class QueueAdapter(
     }
 
     /**
-     * Remove an item. Used since [submitList] will cause QueueAdapter to freak-out here.
+     * Remove an item.
+     * Used since [submitList] will cause QueueAdapter to freak-out here.
      */
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
         /*
-         * Check for two things:
-         * If the data from the next queue is now entirely empty [Signified by a header at the end]
-         * Or if the data from the last queue is now entirely empty [Signified by there being
-         * 2 headers with no items in between]
-         * If so, remove the header and the removed item in a range. Otherwise just remove the item.
+         * If the data from the next queue is now entirely empty [Signified by a header at the
+         * end, remove the next queue header as notify as such.
+         *
+         * If the user queue is empty [Signified by there being two headers at the beginning with
+         * nothing in between], then remove the user queue header and notify as such.
+         *
+         * Otherwise just remove the item as usual.
          */
         if (data[data.lastIndex] is Header) {
             val lastIndex = data.lastIndex

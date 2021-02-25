@@ -76,6 +76,7 @@ class SearchFragment : Fragment() {
         }
 
         binding.searchEditText.addTextChangedListener {
+            // Run the search with the updated text as the query
             searchModel.doSearch(it?.toString() ?: "", requireContext())
         }
 
@@ -144,29 +145,29 @@ class SearchFragment : Fragment() {
     }
 
     /**
-     * Navigate to an item, or play it, depending on what the given item is.
-     * @param baseModel The data the action should be done with
+     * Function that handles when an [item] is selected.
+     * Handles all datatypes that are selectable.
      */
-    private fun onItemSelection(baseModel: BaseModel) {
-        if (baseModel is Song) {
-            playbackModel.playSong(baseModel)
+    private fun onItemSelection(item: BaseModel) {
+        if (item is Song) {
+            playbackModel.playSong(item)
 
             return
         }
 
-        // Get rid of the keyboard
+        // Get rid of the keyboard if we are navigating
         requireView().rootView.clearFocus()
 
         if (!searchModel.isNavigating) {
             searchModel.updateNavigationStatus(true)
 
-            logD("Navigating to the detail fragment for ${baseModel.name}")
+            logD("Navigating to the detail fragment for ${item.name}")
 
             findNavController().navigate(
-                when (baseModel) {
-                    is Genre -> SearchFragmentDirections.actionShowGenre(baseModel.id)
-                    is Artist -> SearchFragmentDirections.actionShowArtist(baseModel.id)
-                    is Album -> SearchFragmentDirections.actionShowAlbum(baseModel.id)
+                when (item) {
+                    is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
+                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
 
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.

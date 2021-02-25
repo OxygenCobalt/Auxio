@@ -17,6 +17,7 @@ import org.oxycblt.auxio.music.toAlbumArtURI
 /**
  * Class that loads/constructs [Genre]s, [Album]s, and [Song] objects from the filesystem
  * Artists are constructed in [MusicLinker], as they are only really containers for [Album]s
+ * @author OxygenCobalt
  */
 class MusicLoader(private val app: Application) {
     var genres = mutableListOf<Genre>()
@@ -25,6 +26,9 @@ class MusicLoader(private val app: Application) {
 
     private val resolver = app.contentResolver
 
+    /**
+     * Begin the loading process. Resulting models are pushed to [genres], [albums], and [songs].
+     */
     fun loadMusic() {
         loadGenres()
         loadAlbums()

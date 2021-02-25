@@ -18,23 +18,25 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.canScroll
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
 import kotlin.math.ceil
 
 /**
- * A [Fragment] that shows a list of all songs on the device. Contains options to search/shuffle
- * them.
+ * A [Fragment] that shows a list of all songs on the device.
+ * Contains options to search/shuffle them.
  * @author OxygenCobalt
  */
 class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val musicStore = MusicStore.getInstance()
 
     // Lazy init the text size so that it doesn't have to be calculated every time.
     private val indicatorTextSize: Float by lazy {
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP, 14F,
-            requireContext().resources.displayMetrics
+            resources.displayMetrics
         )
     }
 
@@ -44,8 +46,6 @@ class SongsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentSongsBinding.inflate(inflater)
-
-        val musicStore = MusicStore.getInstance()
         val songAdapter = SongsAdapter(musicStore.songs, playbackModel::playSong) { view, data ->
             newMenu(view, data)
         }
@@ -54,13 +54,12 @@ class SongsFragment : Fragment() {
 
         binding.songToolbar.apply {
             setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.action_shuffle -> {
-                        playbackModel.shuffleAll()
-                    }
+                if (it.itemId == R.id.action_shuffle) {
+                    playbackModel.shuffleAll()
+                    true
                 }
 
-                true
+                false
             }
         }
 
@@ -76,7 +75,7 @@ class SongsFragment : Fragment() {
 
             post {
                 // Disable fast scrolling if there is nothing to scroll
-                if (computeVerticalScrollRange() < height) {
+                if (!canScroll()) {
                     binding.songFastScroll.visibility = View.GONE
                     binding.songFastScrollThumb.visibility = View.GONE
                 }
@@ -101,8 +100,6 @@ class SongsFragment : Fragment() {
      * @param binding Binding required
      */
     private fun setupFastScroller(binding: FragmentSongsBinding) {
-        val musicStore = MusicStore.getInstance()
-
         binding.songFastScroll.apply {
             var concatInterval = -1
 
@@ -172,25 +169,27 @@ class SongsFragment : Fragment() {
 
             useDefaultScroller = false
 
-            itemIndicatorSelectedCallbacks.add(
-                object : FastScrollerView.ItemIndicatorSelectedCallback {
-                    override fun onItemIndicatorSelected(
-                        indicator: FastScrollItemIndicator,
-                        indicatorCenterY: Int,
-                        itemPosition: Int
-                    ) {
-                        binding.songRecycler.apply {
-                            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                                itemPosition, 0
-                            )
+            addIndicatorCallback { pos ->
+                binding.songRecycler.apply {
+                    (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
 
-                            stopScroll()
-                        }
-                    }
+                    stopScroll()
                 }
-            )
+            }
         }
 
         binding.songFastScrollThumb.setupWithFastScroller(binding.songFastScroll)
+    }
+
+    private fun FastScrollerView.addIndicatorCallback(callback: (pos: Int) -> Unit) {
+        itemIndicatorSelectedCallbacks.add(
+            object : FastScrollerView.ItemIndicatorSelectedCallback {
+                override fun onItemIndicatorSelected(
+                    indicator: FastScrollItemIndicator,
+                    indicatorCenterY: Int,
+                    itemPosition: Int
+                ) = callback(itemPosition)
+            }
+        )
     }
 }

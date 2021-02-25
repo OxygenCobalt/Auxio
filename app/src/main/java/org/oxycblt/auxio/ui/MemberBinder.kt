@@ -26,6 +26,7 @@ fun <T : ViewDataBinding> Fragment.memberBinding(
 /**
  * The delegate for the [memberBinding] shortcut function.
  * Adapted from KAHelpers (https://github.com/FunkyMuse/KAHelpers/tree/master/viewbinding)
+ * @author OxygenCobalt
  */
 class MemberBinder<T : ViewDataBinding>(
     private val fragment: Fragment,

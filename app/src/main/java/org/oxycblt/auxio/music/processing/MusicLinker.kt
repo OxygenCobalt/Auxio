@@ -10,7 +10,9 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
- * Object that links music data to one-another,
+ * Object that links music data, such as grouping songs into their albums & genres and creating
+ * artists out of the albums.
+ * @author OxygenCobalt
  */
 class MusicLinker(
     private val context: Context,
@@ -21,6 +23,10 @@ class MusicLinker(
     private val resolver = context.contentResolver
     val artists = mutableListOf<Artist>()
 
+    /**
+     * Begin the linking process.
+     * Modified models are pushed to [songs], [albums], [artists], and [genres]
+     */
     fun link() {
         linkAlbums()
         linkArtists()

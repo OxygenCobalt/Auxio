@@ -168,6 +168,11 @@ fun RecyclerView.getSpans(): Int {
 }
 
 /**
+ * Returns whether a recyclerview can scroll.
+ */
+fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
+
+/**
  * Check if we are in the "Irregular" landscape mode (e.g landscape, but nav bar is on the sides)
  * Used to disable most of edge-to-edge if that's the case, as I cant get it to work on this mode.
  * @return True if we are in the irregular landscape mode, false if not.

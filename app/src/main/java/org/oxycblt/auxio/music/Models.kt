@@ -8,7 +8,6 @@ import android.net.Uri
  * The base data object for all music.
  * @property id The ID that is assigned to this object
  * @property name The name of this object (Such as a song title)
- * @author OxygenCobalt
  */
 sealed class BaseModel {
     abstract val id: Long
@@ -34,7 +33,6 @@ sealed class Parent : BaseModel() {
  * @property genre    The Song's [Genre]
  * @property seconds  The Song's duration in seconds
  * @property formattedDuration The Song's duration as a duration string.
- * @author OxygenCobalt
  */
 data class Song(
     override val id: Long = -1,
@@ -74,7 +72,6 @@ data class Song(
  * @property artist        The Album's parent [Artist]. use this instead of [artistName]
  * @property songs         The Album's child [Song]s.
  * @property totalDuration The combined duration of all of the album's child songs, formatted.
- * @author OxygenCobalt
  */
 data class Album(
     override val id: Long = -1,
@@ -108,7 +105,6 @@ data class Album(
  * @property albums The list of all [Album]s in this artist
  * @property genre  The most prominent genre for this artist
  * @property songs  The list of all [Song]s in this artist
- * @author OxygenCobalt
  */
 data class Artist(
     override val id: Long = -1,
@@ -134,14 +130,13 @@ data class Artist(
  * The data object for a genre. Inherits [Parent]
  * @property songs   The list of all [Song]s in this genre.
  * @property resolvedName A name that has been resolved from its int-genre form to its named form.
- * @author OxygenCobalt
  */
 data class Genre(
     override val id: Long = -1,
     override val name: String,
 ) : Parent() {
     val resolvedName: String by lazy {
-        if (name.contains(Regex("[0123456789)]"))) {
+        if (name.contains(Regex("([1-9])"))) {
             name.toNamedGenre() ?: name
         } else {
             name
@@ -162,7 +157,6 @@ data class Genre(
 /**
  * A data object used solely for the "Header" UI element. Inherits [BaseModel].
  * @property isAction Value that marks whether this header should have an action attached to it.
- * @author OxygenCobalt
  */
 data class Header(
     override val id: Long = -1,

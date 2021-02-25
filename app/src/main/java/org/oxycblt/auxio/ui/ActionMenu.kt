@@ -34,7 +34,8 @@ fun Fragment.newMenu(anchor: View, data: BaseModel, flag: Int = ActionMenu.FLAG_
  * @param anchor [View] This should be centered around
  * @param data [BaseModel] this menu corresponds to
  * @param flag Any extra flags to accompany the data. See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST], [FLAG_IN_GENRE] for more details.
- * @throws IllegalArgumentException When there is no menu for this specific datatype/flag
+ * @throws IllegalStateException When there is no menu for this specific datatype/flag
+ * @author OxygenCobalt
  */
 class ActionMenu(
     activity: AppCompatActivity,

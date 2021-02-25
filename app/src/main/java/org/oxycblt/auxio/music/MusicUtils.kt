@@ -60,25 +60,17 @@ fun String.toNamedGenre(): String? {
 }
 
 /**
- * Convert a song id to its URI
- * @return The [Uri] for this song/
+ * Convert an id to its corresponding URI
  */
 fun Long.toURI(): Uri {
-    return ContentUris.withAppendedId(
-        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-        this
-    )
+    return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
 }
 
 /**
- * Get the URI for an album's cover art.
- * @return The [Uri] for the album's cover art/
+ * Get the URI for an album's cover art, corresponds to MediaStore.
  */
 fun Long.toAlbumArtURI(): Uri {
-    return ContentUris.withAppendedId(
-        Uri.parse("content://media/external/audio/albumart"),
-        this
-    )
+    return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), this)
 }
 
 /**

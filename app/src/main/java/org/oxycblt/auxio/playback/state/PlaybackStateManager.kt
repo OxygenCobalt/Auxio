@@ -144,8 +144,7 @@ class PlaybackStateManager private constructor() {
     // --- PLAYING FUNCTIONS ---
 
     /**
-     * Play a song.
-     * @param song The song to be played
+     * Play a [song].
      * @param mode The [PlaybackMode] to construct the queue off of.
      */
     fun playSong(song: Song, mode: PlaybackMode) {
@@ -190,9 +189,8 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Play a parent model, e.g an artist or an album.
-     * @param parent The model to use
-     * @param shuffled Whether to shuffle the queue or not
+     * Play a [parent], such as an artist or album.
+     * @param shuffled Whether the queue is shuffled or not
      */
     fun playParent(parent: Parent, shuffled: Boolean) {
         logD("Playing ${parent.name}")
@@ -221,8 +219,19 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Shortcut function for updating what song is being played. ***USE THIS INSTEAD OF WRITING OUT ALL THE CODE YOURSELF!!!***
-     * @param song The song to play
+     * Shuffle all songs.
+     */
+    fun shuffleAll() {
+        mMode = PlaybackMode.ALL_SONGS
+        mQueue = musicStore.songs.toMutableList()
+        mParent = null
+
+        setShuffling(true, keepSong = false)
+        updatePlayback(mQueue[0])
+    }
+
+    /**
+     * Update the playback to a new [song], doing all the required logic.
      */
     private fun updatePlayback(song: Song) {
         mIsInUserQueue = false
@@ -326,8 +335,7 @@ class PlaybackStateManager private constructor() {
     // --- QUEUE EDITING FUNCTIONS ---
 
     /**
-     * Remove a queue item at a QUEUE index. Will log an error if the index is out of bounds
-     * @param index The index at which the item should be removed.
+     * Remove a queue item at [index]. Will ignore invalid indexes.
      */
     fun removeQueueItem(index: Int): Boolean {
         logD("Removing item ${mQueue[index].name}.")
@@ -346,10 +354,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Move a queue item from a QUEUE INDEX to a QUEUE INDEX. Will log an error if one of the indices
-     * is out of bounds.
-     * @param from The starting item's index
-     * @param to The destination index.
+     * Move a queue item at [from] to a position at [to]. Will ignore invalid indexes.
      */
     fun moveQueueItems(from: Int, to: Int): Boolean {
         if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
@@ -367,8 +372,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Add a song to the user queue.
-     * @param song The song to add
+     * Add a [song] to the user queue.
      */
     fun addToUserQueue(song: Song) {
         mUserQueue.add(song)
@@ -377,8 +381,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Add a list of songs to the user queue.
-     * @param songs The songs to add.
+     * Add a list of [songs] to the user queue.
      */
     fun addToUserQueue(songs: List<Song>) {
         mUserQueue.addAll(songs)
@@ -387,8 +390,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Remove a USER QUEUE item at a USER QUEUE index. Will log an error if the index is out of bounds.
-     * @param index The index at which the item should be removed.
+     * Remove a USER queue item at [index]. Will ignore invalid indexes.
      */
     fun removeUserQueueItem(index: Int) {
         logD("Removing item ${mUserQueue[index].name}.")
@@ -405,10 +407,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Move a USER QUEUE item from a USER QUEUE index to another USER QUEUE index. Will log an error if one of the indices
-     * is out of bounds.
-     * @param from The starting item's index
-     * @param to The destination index.
+     * Move a USER queue item at [from] to a position at [to]. Will ignore invalid indexes.
      */
     fun moveUserQueueItems(from: Int, to: Int) {
         if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
@@ -449,24 +448,11 @@ class PlaybackStateManager private constructor() {
     // --- SHUFFLE FUNCTIONS ---
 
     /**
-     * Shuffle all songs.
-     */
-    fun shuffleAll() {
-        mMode = PlaybackMode.ALL_SONGS
-        mQueue = musicStore.songs.toMutableList()
-        mParent = null
-
-        setShuffling(true, keepSong = false)
-        updatePlayback(mQueue[0])
-    }
-
-    /**
-     * Set the shuffle status. Updates the queue accordingly
-     * @param shuffling Whether the queue should be shuffled or not.
+     * Set whether this instance is [shuffled]. Updates the queue accordingly
      * @param keepSong Whether the current song should be kept as the queue is shuffled/unshuffled
      */
-    fun setShuffling(shuffling: Boolean, keepSong: Boolean) {
-        mIsShuffling = shuffling
+    fun setShuffling(shuffled: Boolean, keepSong: Boolean) {
+        mIsShuffling = shuffled
 
         if (mIsShuffling) {
             genShuffle(keepSong, mIsInUserQueue)
@@ -525,8 +511,7 @@ class PlaybackStateManager private constructor() {
     // --- STATE FUNCTIONS ---
 
     /**
-     * Set the current playing status
-     * @param playing Whether the playback should be playing or paused.
+     * Set whether this instance is currently [playing].
      */
     fun setPlaying(playing: Boolean) {
         if (mIsPlaying != playing) {
@@ -539,7 +524,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Update the current position. Will not notify any listeners of a seek event, that's what [seekTo] is for.
+     * Update the current [position]. Will not notify listeners of a seek event.
      * @param position The new position in millis.
      * @see seekTo
      */
@@ -553,10 +538,9 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * **Seek** to a position, this calls [PlaybackStateManager.Callback.onSeek] to notify
+     * **Seek** to a [position], this calls [PlaybackStateManager.Callback.onSeek] to notify
      * elements that rely on that.
      * @param position The position to seek to in millis.
-     * @see setPosition
      */
     fun seekTo(position: Long) {
         mPosition = position
@@ -573,15 +557,14 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Set the [LoopMode]
-     * @param mode The [LoopMode] to be used
+     * Set the [LoopMode] to [mode].
      */
     fun setLoopMode(mode: LoopMode) {
         mLoopMode = mode
     }
 
     /**
-     * Reset the current [LoopMode], if needed.
+     * Reset the current [LoopMode] from [LoopMode.ONCE], if needed.
      * Use this instead of duplicating the code manually.
      */
     fun clearLoopMode() {
@@ -614,45 +597,42 @@ class PlaybackStateManager private constructor() {
     suspend fun saveStateToDatabase(context: Context) {
         logD("Saving state to DB.")
 
-        val start = System.currentTimeMillis()
-
+        // Pack the entire state and save it to the database.
         withContext(Dispatchers.IO) {
-            val playbackState = packToPlaybackState()
-            val queueItems = packQueue()
+            val start = System.currentTimeMillis()
 
             val database = PlaybackStateDatabase.getInstance(context)
-            database.writeState(playbackState)
-            database.writeQueue(queueItems)
+
+            database.writeState(packToPlaybackState())
+            database.writeQueue(packQueue())
+
+            this@PlaybackStateManager.logD(
+                "Save finished in ${System.currentTimeMillis() - start}ms"
+            )
         }
-
-        val time = System.currentTimeMillis() - start
-
-        logD("Save finished in ${time}ms")
     }
 
     /**
      * Restore the state from the database
      * @param context [Context] required.
      */
-    suspend fun getStateFromDatabase(context: Context) {
+    suspend fun restoreFromDatabase(context: Context) {
         logD("Getting state from DB.")
 
-        val start: Long
-
+        val now: Long
         val state: PlaybackState?
 
+        // The coroutine call is locked at queueItems so that this function does not
+        // go ahead until EVERYTHING is read.
         val queueItems = withContext(Dispatchers.IO) {
-            start = System.currentTimeMillis()
+            now = System.currentTimeMillis()
 
             val database = PlaybackStateDatabase.getInstance(context)
-
             state = database.readState()
             database.readQueue()
         }
 
-        val loadTime = System.currentTimeMillis() - start
-
-        logD("Load finished in ${loadTime}ms")
+        // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
         state?.let {
             logD("Valid playback state $it")
@@ -663,11 +643,9 @@ class PlaybackStateManager private constructor() {
             doParentSanityCheck()
         }
 
-        val time = System.currentTimeMillis() - start
+        logD("Restore finished in ${System.currentTimeMillis() - now}ms")
 
-        logD("Restore finished in ${time}ms")
-
-        mIsRestored = true
+        setRestored()
     }
 
     /**
@@ -693,8 +671,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Unpack the state from a [PlaybackState]
-     * @param playbackState The state to unpack.
+     * Unpack a [playbackState] into this instance.
      */
     private fun unpackFromPlaybackState(playbackState: PlaybackState) {
         // Turn the simplified information from PlaybackState into values that can be used

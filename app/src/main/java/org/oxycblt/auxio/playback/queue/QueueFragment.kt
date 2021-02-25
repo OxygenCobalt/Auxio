@@ -22,8 +22,6 @@ import org.oxycblt.auxio.ui.isIrregularLandscape
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
  * edit them as well.
- *
- * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
  * @author OxygenCobalt
  */
 class QueueFragment : Fragment() {

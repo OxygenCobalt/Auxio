@@ -11,7 +11,6 @@ import org.oxycblt.auxio.music.Song
 /**
  * An enum for the current sorting mode. Contains helper functions to sort lists based
  * off the given sorting mode.
- * TODO: Improve sorting by separating UP/DOWN from what should be sorted (Names, Tracks, etc)
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
  */

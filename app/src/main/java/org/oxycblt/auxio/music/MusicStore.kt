@@ -38,12 +38,12 @@ class MusicStore private constructor() {
         }
     }
 
+    /** Marker for whether the music loading process has successfully completed. */
     var loaded = false
         private set
 
     /**
-     * Load/Sort the entire music library.
-     * ***THIS SHOULD ONLY BE RAN FROM AN IO THREAD.***
+     * Load/Sort the entire music library. Should always be ran on a coroutine.
      * @param app [Application] required to load the music.
      */
     suspend fun load(app: Application): Response {
@@ -68,8 +68,6 @@ class MusicStore private constructor() {
                 mArtists = linker.artists.toList()
                 mGenres = linker.genres.toList()
 
-                loaded = true
-
                 this@MusicStore.logD(
                     "Music load completed successfully in ${System.currentTimeMillis() - start}ms."
                 )
@@ -80,12 +78,15 @@ class MusicStore private constructor() {
                 return@withContext Response.FAILED
             }
 
+            loaded = true
+
             return@withContext Response.SUCCESS
         }
     }
 
     /**
-     * Get the song for a specific URI.
+     * Get the song for a file [uri].
+     * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
     suspend fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
         return withContext(Dispatchers.IO) {
@@ -98,6 +99,9 @@ class MusicStore private constructor() {
         }
     }
 
+    /**
+     * Responses that [MusicStore] sends back when a [load] call completes.
+     */
     enum class Response {
         NO_MUSIC, NO_PERMS, FAILED, SUCCESS
     }

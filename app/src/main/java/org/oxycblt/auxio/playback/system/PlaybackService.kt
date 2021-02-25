@@ -49,7 +49,6 @@ import org.oxycblt.auxio.settings.SettingsManager
  * - The single [SimpleExoPlayer] instance.
  * - The [MediaSessionCompat]
  * - The Media Notification
- * - Audio Focus
  * - Headset management
  *
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
@@ -485,6 +484,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private inner class SystemEventReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
+
+                // --- NOTIFICATION CASES ---
+
                 PlaybackNotification.ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
                     !playbackManager.isPlaying
                 )

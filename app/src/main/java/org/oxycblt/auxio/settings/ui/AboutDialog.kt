@@ -46,7 +46,8 @@ class AboutDialog : BottomSheetDialogFragment() {
     }
 
     /**
-     * Go through the process of opening one of the about links in a browser.
+     * Go through the process of opening a [link] in a browser. Only supports the links
+     * in [AboutDialog.Companion.LINKS].
      */
     private fun openLinkInBrowser(link: String) {
         check(link in LINKS) { "Invalid link." }
@@ -83,9 +84,9 @@ class AboutDialog : BottomSheetDialogFragment() {
             }
         } catch (e: Exception) {
             logE("Browser intent launching failed [Probably android's fault]")
-            e.printStackTrace()
+            logE(e.stackTraceToString())
 
-            // Sometimes people have """""Browsers""""" on their phone according to android,
+            // Sometimes people have """Browsers""" on their phone according to android,
             // but they actually don't so here's a fallback for that.
             getString(R.string.error_no_browser).createToast(requireContext())
         }

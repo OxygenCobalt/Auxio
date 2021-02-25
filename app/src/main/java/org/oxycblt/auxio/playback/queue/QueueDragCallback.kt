@@ -11,7 +11,6 @@ import kotlin.math.sign
 /**
  * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
  * and [QueueAdapter] simultaneously.
- * @param playbackModel The [PlaybackViewModel] required to dispatch updates to.
  * @author OxygenCobalt
  */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
@@ -58,7 +57,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return playbackModel.moveQueueAdapterItems(
+        return playbackModel.moveQueueDataItems(
             viewHolder.adapterPosition,
             target.adapterPosition,
             queueAdapter
@@ -66,7 +65,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueAdapterItem(viewHolder.adapterPosition, queueAdapter)
+        playbackModel.removeQueueDataItem(viewHolder.adapterPosition, queueAdapter)
     }
 
     /**

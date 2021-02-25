@@ -17,6 +17,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.ui.ActionMenu
+import org.oxycblt.auxio.ui.canScroll
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.newMenu
 
@@ -83,44 +84,42 @@ class AlbumDetailFragment : DetailFragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                when (it) {
-                    // Songs should be scrolled to if the album matches, or a new detail
-                    // fragment should be launched otherwise.
-                    is Song -> {
-                        if (detailModel.currentAlbum.value!!.id == it.album.id) {
-                            scrollToItem(it.id)
+            when (it) {
+                // Songs should be scrolled to if the album matches, or a new detail
+                // fragment should be launched otherwise.
+                is Song -> {
+                    if (detailModel.currentAlbum.value!!.id == it.album.id) {
+                        scrollToItem(it.id)
 
-                            detailModel.doneWithNavToItem()
-                        } else {
-                            findNavController().navigate(
-                                AlbumDetailFragmentDirections.actionShowAlbum(it.album.id)
-                            )
-                        }
-                    }
-
-                    // If the album matches, no need to do anything. Otherwise launch a new
-                    // detail fragment.
-                    is Album -> {
-                        if (detailModel.currentAlbum.value!!.id == it.id) {
-                            binding.detailRecycler.scrollToPosition(0)
-                            detailModel.doneWithNavToItem()
-                        } else {
-                            findNavController().navigate(
-                                AlbumDetailFragmentDirections.actionShowAlbum(it.id)
-                            )
-                        }
-                    }
-
-                    // Always launch a new ArtistDetailFragment.
-                    is Artist -> {
+                        detailModel.doneWithNavToItem()
+                    } else {
                         findNavController().navigate(
-                            AlbumDetailFragmentDirections.actionShowArtist(it.id)
+                            AlbumDetailFragmentDirections.actionShowAlbum(it.album.id)
                         )
                     }
-
-                    else -> {}
                 }
+
+                // If the album matches, no need to do anything. Otherwise launch a new
+                // detail fragment.
+                is Album -> {
+                    if (detailModel.currentAlbum.value!!.id == it.id) {
+                        binding.detailRecycler.scrollToPosition(0)
+                        detailModel.doneWithNavToItem()
+                    } else {
+                        findNavController().navigate(
+                            AlbumDetailFragmentDirections.actionShowAlbum(it.id)
+                        )
+                    }
+                }
+
+                // Always launch a new ArtistDetailFragment.
+                is Artist -> {
+                    findNavController().navigate(
+                        AlbumDetailFragmentDirections.actionShowArtist(it.id)
+                    )
+                }
+
+                else -> {}
             }
         }
 
@@ -148,6 +147,9 @@ class AlbumDetailFragment : DetailFragment() {
         return binding.root
     }
 
+    /**
+     * Scroll to an song using its [id].
+     */
     private fun scrollToItem(id: Long) {
         // Calculate where the item for the currently played song is
         val pos = detailModel.albumSortMode.value!!.getSortedSongList(
@@ -164,9 +166,7 @@ class AlbumDetailFragment : DetailFragment() {
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in
                 // that case.
-                if (binding.detailRecycler.computeVerticalScrollRange() > binding.detailRecycler.height) {
-                    binding.detailAppbar.isLifted = true
-                }
+                binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
         }
     }

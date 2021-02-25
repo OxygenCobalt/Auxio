@@ -70,23 +70,21 @@ class GenreDetailFragment : DetailFragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                when (it) {
-                    // All items will launch new detail fragments.
-                    is Artist -> findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowArtist(it.id)
-                    )
+            when (it) {
+                // All items will launch new detail fragments.
+                is Artist -> findNavController().navigate(
+                    GenreDetailFragmentDirections.actionShowArtist(it.id)
+                )
 
-                    is Album -> findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowAlbum(it.id)
-                    )
+                is Album -> findNavController().navigate(
+                    GenreDetailFragmentDirections.actionShowAlbum(it.id)
+                )
 
-                    is Song -> findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowAlbum(it.album.id)
-                    )
+                is Song -> findNavController().navigate(
+                    GenreDetailFragmentDirections.actionShowAlbum(it.album.id)
+                )
 
-                    else -> {}
-                }
+                else -> {}
             }
         }
 

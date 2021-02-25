@@ -2,6 +2,7 @@ package org.oxycblt.auxio.playback.state
 
 /**
  * Enum that determines the playback repeat mode.
+ * @author OxygenCobalt
  */
 enum class LoopMode {
     NONE, ONCE, INFINITE;
@@ -35,7 +36,7 @@ enum class LoopMode {
         const val CONSTANT_INFINITE = 0xA052
 
         /**
-         * Convert an int constant into a LoopMode
+         * Convert an int [constant] into a LoopMode
          * @return The corresponding LoopMode. Null if it corresponds to nothing.
          */
         fun fromInt(constant: Int): LoopMode? {

@@ -17,6 +17,7 @@ import java.lang.reflect.Field
  *
  * Adapted from this StackOverflow answer:
  * https://stackoverflow.com/a/35087229
+ * @author OxygenCobalt
  */
 class SlideLinearLayout @JvmOverloads constructor(
     context: Context,

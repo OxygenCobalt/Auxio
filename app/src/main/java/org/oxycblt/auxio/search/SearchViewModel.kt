@@ -20,15 +20,14 @@ import org.oxycblt.auxio.settings.SettingsManager
  */
 class SearchViewModel : ViewModel() {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
-    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
-
+    private var mIsNavigating = false
     private var mFilterMode = DisplayMode.SHOW_ALL
-    val filterMode: DisplayMode get() = mFilterMode
-
     private var mLastQuery = ""
 
-    private var mIsNavigating = false
+    /** Current search results from the last [doSearch] call. */
+    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
     val isNavigating: Boolean get() = mIsNavigating
+    val filterMode: DisplayMode get() = mFilterMode
 
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -38,9 +37,8 @@ class SearchViewModel : ViewModel() {
     }
 
     /**
-     * Perform a search of the music library. Will push results to [searchResults].
-     * @param query The query to use
-     * @param context [Context] required to create the headers
+     * Use [query] to perform a search of the music library.
+     * Will push results to [searchResults].
      */
     fun doSearch(query: String, context: Context) {
         mLastQuery = query
@@ -86,6 +84,10 @@ class SearchViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Update the current filter mode with a menu [id].
+     * New value will be pushed to [filterMode].
+     */
     fun updateFilterModeWithId(@IdRes id: Int, context: Context) {
         mFilterMode = DisplayMode.fromId(id)
 
@@ -94,6 +96,10 @@ class SearchViewModel : ViewModel() {
         doSearch(mLastQuery, context)
     }
 
+    /**
+     * Shortcut that will run a ignoreCase filter on a list and only return
+     * a value if the resulting list is empty.
+     */
     private fun List<BaseModel>.filterByOrNull(value: String): List<BaseModel>? {
         val filtered = filter { it.name.contains(value, ignoreCase = true) }
 
@@ -101,10 +107,9 @@ class SearchViewModel : ViewModel() {
     }
 
     /**
-     * Update the current navigation status
-     * @param value Whether LibraryFragment is navigating or not
+     * Update the current navigation status to [isNavigating]
      */
-    fun updateNavigationStatus(value: Boolean) {
-        mIsNavigating = value
+    fun updateNavigationStatus(isNavigating: Boolean) {
+        mIsNavigating = isNavigating
     }
 }

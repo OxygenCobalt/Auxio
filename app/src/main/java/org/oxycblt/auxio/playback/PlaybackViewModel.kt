@@ -121,7 +121,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playSong(song, mode)
     }
 
-    /** Play an album.*/
+    /**
+     * Play an [album].
+     * @param shuffled Whether to shuffle the new queue
+     */
     fun playAlbum(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
             logE("Album is empty, Not playing.")
@@ -132,7 +135,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParent(album, shuffled)
     }
 
-    /** Play an Artist */
+    /**
+     * Play an [artist].
+     * @param shuffled Whether to shuffle the new queue
+     */
     fun playArtist(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
             logE("Artist is empty, Not playing.")
@@ -143,7 +149,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParent(artist, shuffled)
     }
 
-    /** Play a genre. */
+    /**
+     * Play a [genre].
+     * @param shuffled Whether to shuffle the new queue
+     */
     fun playGenre(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
             logE("Genre is empty, Not playing.")
@@ -154,7 +163,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.playParent(genre, shuffled)
     }
 
-    /** Play using a file URI. This will not play instantly during the initial startup sequence.*/
+    /**
+     * Play using a file [uri].
+     * This will not play instantly during the initial startup sequence.
+     */
     fun playWithUri(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
         if (playbackManager.isRestored && musicStore.loaded) {
@@ -164,7 +176,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    /** Actually play with a given URI internally. The frontend doesn't play instantly. */
+    /**
+     * Play with a file URI.
+     * This is called after [playWithUri] once its deemed safe to do so.
+     */
     private fun playWithUriInternal(uri: Uri, context: Context) {
         viewModelScope.launch {
             musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
@@ -173,14 +188,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    /** Shuffle all songs */
+    /**
+     * Shuffle all songs
+     */
     fun shuffleAll() {
         playbackManager.shuffleAll()
     }
 
     // --- POSITION FUNCTIONS ---
 
-    /** Update the position and push it to [PlaybackStateManager] */
+    /**
+     * Update the position and push it to [PlaybackStateManager]
+     */
     fun setPosition(progress: Int) {
         playbackManager.seekTo((progress * 1000).toLong())
     }
@@ -196,22 +215,25 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // --- QUEUE FUNCTIONS ---
 
-    /** Skip to the next song. */
+    /**
+     * Skip to the next song.
+     */
     fun skipNext() {
         playbackManager.next()
     }
 
-    /** Skip to the previous song */
+    /**
+     * Skip to the previous song.
+     */
     fun skipPrev() {
         playbackManager.prev()
     }
 
     /**
-     * Remove a queue OR user queue item, given a QueueAdapter index.
-     * @param adapterIndex The [QueueAdapter] index to remove
-     * @param queueAdapter The [QueueAdapter] itself to push changes to when successful.
+     * Remove an item at [adapterIndex], being a non-header data index.
+     * @param queueAdapter [QueueAdapter] instance to push changes to when successful.
      */
-    fun removeQueueAdapterItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
+    fun removeQueueDataItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
         var index = adapterIndex.dec()
 
         // If the item is in the user queue, then remove it from there after accounting for the header.
@@ -234,12 +256,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Move queue OR user queue items, given QueueAdapter indices.
-     * @param adapterFrom The [QueueAdapter] index that needs to be moved
-     * @param adapterTo The destination [QueueAdapter] index.
-     * @param queueAdapter the [QueueAdapter] to push changes to when successful.
+     * Move a queue OR user queue item from [adapterFrom] to [adapterTo], as long as both
+     * indices are non-header data indices.
+     * @param queueAdapter [QueueAdapter] instance to push changes to when successful.
      */
-    fun moveQueueAdapterItems(
+    fun moveQueueDataItems(
         adapterFrom: Int,
         adapterTo: Int,
         queueAdapter: QueueAdapter
@@ -283,38 +304,50 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         return true
     }
 
-    /** Add a [Song] to the user queue.*/
+    /**
+     * Add a [Song] to the user queue.
+     */
     fun addToUserQueue(song: Song) {
         playbackManager.addToUserQueue(song)
     }
 
-    /** Add an [Album] to the user queue */
+    /**
+     * Add an [Album] to the user queue
+     */
     fun addToUserQueue(album: Album) {
         val songs = SortMode.NUMERIC_DOWN.getSortedSongList(album.songs)
 
         playbackManager.addToUserQueue(songs)
     }
 
-    /** Clear the user queue entirely */
+    /**
+     * Clear the user queue entirely
+     */
     fun clearUserQueue() {
         playbackManager.clearUserQueue()
     }
 
     // --- STATUS FUNCTIONS ---
 
-    /** Flip the playing status, e.g from playing to paused */
+    /**
+     * Flip the playing status, e.g from playing to paused
+     */
     fun invertPlayingStatus() {
         enableAnimation()
 
         playbackManager.setPlaying(!playbackManager.isPlaying)
     }
 
-    /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
+    /**
+     * Flip the shuffle status, e.g from on to off. Will keep song by default.
+     */
     fun invertShuffleStatus() {
         playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
     }
 
-    /** Increment the loop status, e.g from off to loop once */
+    /**
+     * Increment the loop status, e.g from off to loop once
+     */
     fun incrementLoopStatus() {
         playbackManager.setLoopMode(playbackManager.loopMode.increment())
     }
@@ -322,8 +355,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
-     * Force save the current [PlaybackStateManager] state to the database. Called by SettingsListFragment.
-     * @param context [Context] required.
+     * Force save the current [PlaybackStateManager] state to the database.
+     * Called by SettingsListFragment.
      */
     fun savePlaybackState(context: Context) {
         viewModelScope.launch {
@@ -334,7 +367,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Handle the file last-saved file intent, or restore playback, depending on the situation.
+     * Restore playback on startup. This can do one of two things:
+     * - Play a file intent that was given by MainActivity in [playWithUri]
+     * - Restore the last playback state if there is no active file intent.
      */
     fun setupPlayback(context: Context) {
         val intentUri = mIntentUri
@@ -347,13 +382,17 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             // Remove the uri after finishing the calls so that this does not fire again.
             mIntentUri = null
         } else if (!playbackManager.isRestored) {
+            // Otherwise just restore
             viewModelScope.launch {
-                playbackManager.getStateFromDatabase(context)
+                playbackManager.restoreFromDatabase(context)
             }
         }
     }
 
-    /** Attempt to restore the current playback state from an existing [PlaybackStateManager] instance */
+    /**
+     * Attempt to restore the current playback state from an existing
+     * [PlaybackStateManager] instance.
+     */
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state.")
 
@@ -371,17 +410,23 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // --- OTHER FUNCTIONS ---
 
-    /** Set whether the seeking indicator should be highlighted */
-    fun setSeekingStatus(value: Boolean) {
-        mIsSeeking.value = value
+    /**
+     * Set whether the seeking indicator should be highlighted
+     */
+    fun setSeekingStatus(isSeeking: Boolean) {
+        mIsSeeking.value = isSeeking
     }
 
-    /** Enable animation on CompactPlaybackFragment */
+    /**
+     * Enable animation on CompactPlaybackFragment
+     */
     fun enableAnimation() {
         mCanAnimate = true
     }
 
-    /** Disable animation on CompactPlaybackFragment */
+    /**
+     * Disable animation on CompactPlaybackFragment
+     */
     fun disableAnimation() {
         mCanAnimate = false
     }

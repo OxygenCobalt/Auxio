@@ -12,6 +12,7 @@ import org.oxycblt.auxio.ui.toAnimDrawable
 
 /**
  * Custom [AppCompatImageButton] that handles the animated play/pause icons.
+ * @author OxygenCobalt
  */
 class PlayPauseButton @JvmOverloads constructor(
     context: Context,
@@ -27,6 +28,10 @@ class PlayPauseButton @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Update the play/pause icon to reflect [isPlaying]
+     * @param animate Whether the icon change should be animated or not.
+     */
     fun setPlaying(isPlaying: Boolean, animate: Boolean) {
         if (isPlaying) {
             if (animate) {

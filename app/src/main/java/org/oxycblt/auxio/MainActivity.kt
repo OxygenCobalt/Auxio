@@ -60,11 +60,11 @@ class MainActivity : AppCompatActivity() {
         // to PlaybackViewModel to be used later.
         if (intent != null) {
             val action = intent.action
-            val isConsumed = intent.getBooleanExtra(KEY_INTENT_CONSUMED, false)
+            val isConsumed = intent.getBooleanExtra(KEY_INTENT_USED, false)
 
             if (action == Intent.ACTION_VIEW && !isConsumed) {
                 // Mark the intent as used so this does not fire again
-                intent.putExtra(KEY_INTENT_CONSUMED, true)
+                intent.putExtra(KEY_INTENT_USED, true)
 
                 intent.data?.let { fileUri ->
                     playbackModel.playWithUri(fileUri, this)
@@ -100,6 +100,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val KEY_INTENT_CONSUMED = "KEY_FILE_INTENT_USED"
+        private const val KEY_INTENT_USED = "KEY_FILE_INTENT_USED"
     }
 }

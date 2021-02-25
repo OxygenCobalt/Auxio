@@ -2,7 +2,6 @@ package org.oxycblt.auxio.database
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Looper
@@ -35,9 +34,7 @@ class PlaybackStateDatabase(context: Context) :
     // --- DATABASE CONSTRUCTION FUNCTIONS ---
 
     /**
-     * Create a table
-     * @param database DB to create the tables on
-     * @param tableName The name of the table to create.
+     * Create a table for this database.
      */
     private fun createTable(database: SQLiteDatabase, tableName: String) {
         val command = StringBuilder()
@@ -106,15 +103,17 @@ class PlaybackStateDatabase(context: Context) :
 
             val stateData = ContentValues(9)
 
-            stateData.put(PlaybackState.COLUMN_ID, state.id)
-            stateData.put(PlaybackState.COLUMN_SONG_NAME, state.songName)
-            stateData.put(PlaybackState.COLUMN_POSITION, state.position)
-            stateData.put(PlaybackState.COLUMN_PARENT_NAME, state.parentName)
-            stateData.put(PlaybackState.COLUMN_INDEX, state.index)
-            stateData.put(PlaybackState.COLUMN_MODE, state.mode)
-            stateData.put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
-            stateData.put(PlaybackState.COLUMN_LOOP_MODE, state.loopMode)
-            stateData.put(PlaybackState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
+            stateData.apply {
+                put(PlaybackState.COLUMN_ID, state.id)
+                put(PlaybackState.COLUMN_SONG_NAME, state.songName)
+                put(PlaybackState.COLUMN_POSITION, state.position)
+                put(PlaybackState.COLUMN_PARENT_NAME, state.parentName)
+                put(PlaybackState.COLUMN_INDEX, state.index)
+                put(PlaybackState.COLUMN_MODE, state.mode)
+                put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
+                put(PlaybackState.COLUMN_LOOP_MODE, state.loopMode)
+                put(PlaybackState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
+            }
 
             database.insert(TABLE_NAME_STATE, null, stateData)
             database.setTransactionSuccessful()
@@ -135,10 +134,9 @@ class PlaybackStateDatabase(context: Context) :
         val database = writableDatabase
 
         var state: PlaybackState? = null
-        val stateCursor: Cursor
 
         try {
-            stateCursor = database.query(
+            val stateCursor = database.query(
                 TABLE_NAME_STATE,
                 null, null, null,
                 null, null, null
@@ -179,10 +177,9 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /**
-     * Write a list of [QueueItem]s to the database, clearing the previous queue present.
-     * @param queue The list of [QueueItem]s to be written.
+     * Write a list of [queueItems] to the database, clearing the previous queue present.
      */
-    fun writeQueue(queue: List<QueueItem>) {
+    fun writeQueue(queueItems: List<QueueItem>) {
         assertBackgroundThread()
 
         val database = readableDatabase
@@ -202,21 +199,23 @@ class PlaybackStateDatabase(context: Context) :
         var position = 0
 
         // Try to write out the entirety of the queue, any failed inserts will be skipped.
-        while (position < queue.size) {
+        while (position < queueItems.size) {
             database.beginTransaction()
             var i = position
 
             try {
-                while (i < queue.size) {
-                    val item = queue[i]
+                while (i < queueItems.size) {
+                    val item = queueItems[i]
                     val itemData = ContentValues(4)
 
                     i++
 
-                    itemData.put(QueueItem.COLUMN_ID, item.id)
-                    itemData.put(QueueItem.COLUMN_SONG_NAME, item.songName)
-                    itemData.put(QueueItem.COLUMN_ALBUM_NAME, item.albumName)
-                    itemData.put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
+                    itemData.apply {
+                        put(QueueItem.COLUMN_ID, item.id)
+                        put(QueueItem.COLUMN_SONG_NAME, item.songName)
+                        put(QueueItem.COLUMN_ALBUM_NAME, item.albumName)
+                        put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
+                    }
 
                     database.insert(TABLE_NAME_QUEUE, null, itemData)
                 }
@@ -242,12 +241,10 @@ class PlaybackStateDatabase(context: Context) :
         assertBackgroundThread()
 
         val database = readableDatabase
-
         val queueItems = mutableListOf<QueueItem>()
-        val queueCursor: Cursor
 
         try {
-            queueCursor = database.query(
+            val queueCursor = database.query(
                 TABLE_NAME_QUEUE, null, null,
                 null, null, null, null
             )

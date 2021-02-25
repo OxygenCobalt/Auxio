@@ -23,15 +23,11 @@ class SettingsManager private constructor(context: Context) :
 
     // --- VALUES ---
 
-    /**
-     * The current theme.
-     */
+    /** The current theme */
     val theme: Int
         get() = sharedPrefs.getString(Keys.KEY_THEME, EntryValues.THEME_AUTO)!!.toThemeInt()
 
-    /**
-     * The current accent.
-     */
+    /** The current accent. */
     var accent: Accent
         get() {
             // Accent is stored as an index [to be efficient], so retrieve it when done.
@@ -47,9 +43,7 @@ class SettingsManager private constructor(context: Context) :
                 .apply()
         }
 
-    /**
-     * Whether to colorize the notification
-     */
+    /** Whether to colorize the notification */
     val colorizeNotif: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_COLORIZE_NOTIFICATION, true)
 
@@ -60,9 +54,7 @@ class SettingsManager private constructor(context: Context) :
     val useAltNotifAction: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
-    /**
-     * What to display on the library.
-     */
+    /** What to display on the library. */
     val libraryDisplayMode: DisplayMode
         get() = DisplayMode.valueOfOrFallback(
             sharedPrefs.getString(
@@ -78,27 +70,19 @@ class SettingsManager private constructor(context: Context) :
     val showCovers: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_SHOW_COVERS, true)
 
-    /**
-     * Whether to ignore MediaStore covers
-     */
+    /** Whether to ignore MediaStore covers */
     val useQualityCovers: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_QUALITY_COVERS, false)
 
-    /**
-     * Whether to do Audio focus.
-     */
+    /** Whether to do Audio focus. */
     val doAudioFocus: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_AUDIO_FOCUS, true)
 
-    /**
-     * Whether to resume/stop playback when a headset is connected/disconnected.
-     */
+    /** Whether to resume/stop playback when a headset is connected/disconnected. */
     val doPlugMgt: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_PLUG_MANAGEMENT, true)
 
-    /**
-     * What queue to create when a song is selected (ex. From All Songs or Search)
-     */
+    /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
         get() = PlaybackMode.valueOfOrFallback(
             sharedPrefs.getString(
@@ -107,28 +91,20 @@ class SettingsManager private constructor(context: Context) :
             )
         )
 
-    /**
-     * What to do at the end of a playlist.
-     */
+    /** What to do at the end of a playlist. */
     val doAtEnd: String
         get() = sharedPrefs.getString(Keys.KEY_AT_END, EntryValues.AT_END_LOOP_PAUSE)
             ?: EntryValues.AT_END_LOOP_PAUSE
 
-    /**
-     * Whether shuffle should stay on when a new song is selected.
-     */
+    /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_KEEP_SHUFFLE, true)
 
-    /**
-     * Whether to rewind when the back button is pressed.
-     */
+    /** Whether to rewind when the back button is pressed. */
     val rewindWithPrev: Boolean
         get() = sharedPrefs.getBoolean(Keys.KEY_PREV_REWIND, true)
 
-    /**
-     * The current [SortMode] of the library.
-     */
+    /** The current [SortMode] of the library. */
     var librarySortMode: SortMode
         get() = SortMode.fromInt(
             sharedPrefs.getInt(
@@ -143,9 +119,7 @@ class SettingsManager private constructor(context: Context) :
                 .apply()
         }
 
-    /**
-     * The current filter mode of the search tab
-     */
+    /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode
         get() = DisplayMode.valueOfOrFallback(
             sharedPrefs.getString(
