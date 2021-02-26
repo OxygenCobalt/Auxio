@@ -46,7 +46,6 @@ class PlayPauseButton @JvmOverloads constructor(
                 setImageDrawable(iconPauseToPlay)
                 iconPauseToPlay.start()
             } else {
-                logD("what the FUCK WHY ARENT YOU DOING THIS")
                 setImageResource(R.drawable.ic_play_large)
             }
         }
