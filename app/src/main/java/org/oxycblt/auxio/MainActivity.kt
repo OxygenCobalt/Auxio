@@ -38,9 +38,6 @@ class MainActivity : AppCompatActivity() {
         // Apply the theme
         setTheme(accent.theme)
 
-        // onNewIntent doesnt automatically call on startup, so call it here.
-        onNewIntent(intent)
-
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)
         }
@@ -51,6 +48,9 @@ class MainActivity : AppCompatActivity() {
 
         // Start PlaybackService
         startService(Intent(this, PlaybackService::class.java))
+
+        // onNewIntent doesnt automatically call on startup, so call it here.
+        onNewIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {

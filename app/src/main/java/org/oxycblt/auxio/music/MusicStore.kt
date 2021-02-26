@@ -88,15 +88,17 @@ class MusicStore private constructor() {
      * Get the song for a file [uri].
      * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
-    suspend fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        return withContext(Dispatchers.IO) {
-            resolver.query(uri, null, null, null, null)?.use { cursor ->
-                cursor.moveToFirst()
-                val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+    fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
+        resolver.query(
+            uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null
+        )?.use { cursor ->
+            cursor.moveToFirst()
+            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
 
-                return@withContext songs.find { it.fileName == fileName }
-            }
+            return songs.find { it.fileName == fileName }
         }
+
+        return null
     }
 
     /**

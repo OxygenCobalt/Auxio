@@ -181,10 +181,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * This is called after [playWithUri] once its deemed safe to do so.
      */
     private fun playWithUriInternal(uri: Uri, context: Context) {
-        viewModelScope.launch {
-            musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
-                playSong(song)
-            }
+        musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
+            playSong(song)
         }
     }
 

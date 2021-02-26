@@ -55,8 +55,6 @@ class CompactPlaybackFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        playbackModel.disableAnimation()
-
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
                 logD("Updating song display to ${song.name}")
@@ -75,5 +73,11 @@ class CompactPlaybackFragment : Fragment() {
         logD("Fragment Created")
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        playbackModel.disableAnimation()
     }
 }

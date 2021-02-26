@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.toAnimDrawable
 
 /**
@@ -45,6 +46,7 @@ class PlayPauseButton @JvmOverloads constructor(
                 setImageDrawable(iconPauseToPlay)
                 iconPauseToPlay.start()
             } else {
+                logD("what the FUCK WHY ARENT YOU DOING THIS")
                 setImageResource(R.drawable.ic_play_large)
             }
         }

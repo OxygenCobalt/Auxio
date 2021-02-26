@@ -77,9 +77,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
-
-        playbackModel.disableAnimation()
-
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
                 logD("Updating song display to ${song.name}.")
@@ -158,8 +155,13 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) {
             binding.playbackPlayPause.apply {
-                backgroundTintList = if (it) accentColor else controlColor
-                setPlaying(it, playbackModel.canAnimate)
+                if (it) {
+                    backgroundTintList = accentColor
+                    setPlaying(true, playbackModel.canAnimate)
+                } else {
+                    backgroundTintList = controlColor
+                    setPlaying(false, playbackModel.canAnimate)
+                }
             }
 
             playbackModel.enableAnimation()
@@ -174,6 +176,12 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        playbackModel.disableAnimation()
     }
 
     // --- SEEK CALLBACKS ---
