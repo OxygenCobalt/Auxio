@@ -140,7 +140,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
-        playbackManager.resetHasPlayedStatus()
+        playbackManager.setHasPlayed(playbackManager.isPlaying)
         playbackManager.addCallback(this)
 
         if (playbackManager.song != null || playbackManager.isRestored) {
@@ -150,6 +150,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         // --- SETTINGSMANAGER SETUP ---
 
         settingsManager.addCallback(this)
+
+        logD("Service created.")
     }
 
     override fun onDestroy() {
@@ -164,6 +166,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
+
+        // Pause just in case this destruction was unexpected.
+        playbackManager.setPlaying(false)
 
         // The service coroutines last job is to save the state to the DB, before terminating itself
         serviceScope.launch {
@@ -212,8 +217,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             pushMetadataToSession(song)
 
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
+
+            logD("Song Status: $song")
 
             return
         }
@@ -240,6 +247,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         notification.setPlaying(this, isPlaying)
         startForegroundOrNotify()
+
+        logD("Playing Status: $isPlaying")
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
@@ -287,7 +296,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
         }
     }
@@ -295,7 +304,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, { startForegroundOrNotify() }
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
         }
     }
@@ -326,14 +335,18 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Fully restore the notification and playback state
      */
     private fun restore() {
-        playbackManager.song?.let { song ->
-            notification.setMetadata(this, song, settingsManager.colorizeNotif) {}
+        logD("Restoring the service state")
 
-            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
-            player.seekTo(playbackManager.position)
-            player.prepare()
-        }
+        // Re-call existing callbacks with the current values to restore everything
+        onParentUpdate(playbackManager.parent)
+        onPlayingUpdate(playbackManager.isPlaying)
+        onShuffleUpdate(playbackManager.isShuffling)
+        onLoopUpdate(playbackManager.loopMode)
+        onSongUpdate(playbackManager.song)
+        onSeek(playbackManager.position)
 
+        /*
+        Old Manual restore code, restore this if the above causes bugs
         notification.setParent(this, playbackManager.parent)
         notification.setPlaying(this, playbackManager.isPlaying)
 
@@ -344,6 +357,14 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         player.setLoopMode(playbackManager.loopMode)
+
+        playbackManager.song?.let { song ->
+            notification.setMetadata(this, song, settingsManager.colorizeNotif) {}
+
+            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
+            player.seekTo(playbackManager.position)
+            player.prepare()
+        }*/
     }
 
     /**

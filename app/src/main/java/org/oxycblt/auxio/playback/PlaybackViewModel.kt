@@ -181,6 +181,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * This is called after [playWithUri] once its deemed safe to do so.
      */
     private fun playWithUriInternal(uri: Uri, context: Context) {
+        logD("Playing with uri $uri")
+
         musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
             playSong(song)
         }
@@ -373,12 +375,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         val intentUri = mIntentUri
 
         if (intentUri != null) {
-            // Were not going to be restoring playbackManager after this, so mark it as such.
-            playbackManager.setRestored()
             playWithUriInternal(intentUri, context)
-
             // Remove the uri after finishing the calls so that this does not fire again.
             mIntentUri = null
+
+            // Were not going to be restoring playbackManager after this, so mark it as such.
+            playbackManager.setRestored()
         } else if (!playbackManager.isRestored) {
             // Otherwise just restore
             viewModelScope.launch {

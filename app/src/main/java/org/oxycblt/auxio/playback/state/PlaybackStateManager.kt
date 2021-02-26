@@ -575,10 +575,10 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Reset the has played status as if this instance is fresh.
+     * Mark whether this instance has played or not
      */
-    fun resetHasPlayedStatus() {
-        mHasPlayed = false
+    fun setHasPlayed(hasPlayed: Boolean) {
+        mHasPlayed = hasPlayed
     }
 
     /**
