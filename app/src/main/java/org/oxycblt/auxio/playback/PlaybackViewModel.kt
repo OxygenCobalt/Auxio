@@ -40,8 +40,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mPosition = MutableLiveData(0L)
 
     // Queue
-    private val mQueue = MutableLiveData(mutableListOf<Song>())
-    private val mUserQueue = MutableLiveData(mutableListOf<Song>())
+    private val mQueue = MutableLiveData(listOf<Song>())
+    private val mUserQueue = MutableLiveData(listOf<Song>())
     private val mIndex = MutableLiveData(0)
     private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
@@ -64,9 +64,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val position: LiveData<Long> get() = mPosition
 
     /** The current queue determined by [mode] and [parent] */
-    val queue: LiveData<MutableList<Song>> get() = mQueue
+    val queue: LiveData<List<Song>> get() = mQueue
     /** The queue created by the user. */
-    val userQueue: LiveData<MutableList<Song>> get() = mUserQueue
+    val userQueue: LiveData<List<Song>> get() = mUserQueue
     /** The current [PlaybackMode] that also determines the queue */
     val mode: LiveData<PlaybackMode> get() = mMode
     /** Whether playback is originating from the user-generated queue or not  */
@@ -451,11 +451,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    override fun onQueueUpdate(queue: MutableList<Song>) {
+    override fun onQueueUpdate(queue: List<Song>) {
         mQueue.value = queue
     }
 
-    override fun onUserQueueUpdate(userQueue: MutableList<Song>) {
+    override fun onUserQueueUpdate(userQueue: List<Song>) {
         mUserQueue.value = userQueue
     }
 

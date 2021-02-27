@@ -100,8 +100,8 @@
 
     <!-- Fast scroll theme -->
     <style name="FastScrollTheme" parent="Widget.IndicatorFastScroll.FastScroller">
-        <item name="android:textColor">@color/color_scroll_tints</item>
         <item name="android:textAppearance">@style/TextAppearance.FastScroll</item>
+        <item name="android:textColor">@color/color_scroll_tints</item>
     </style>
 
     <!-- Fast scroll text appearance -->
@@ -112,6 +112,7 @@
     <!-- Fast scroll thumb appearance -->
     <style name="TextAppearance.ThumbIndicator" parent="TextAppearance.FastScroll">
         <item name="android:textSize">@dimen/text_size_thumb</item>
+        <item name="android:textColor">?android:attr/windowBackground</item>
     </style>
 
     <!-- Style for the general item background -->

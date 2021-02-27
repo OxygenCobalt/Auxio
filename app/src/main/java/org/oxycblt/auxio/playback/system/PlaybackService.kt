@@ -252,7 +252,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
-        player.setLoopMode(loopMode)
+        player.repeatMode = if (loopMode == LoopMode.NONE) {
+            Player.REPEAT_MODE_OFF
+        } else {
+            Player.REPEAT_MODE_ALL
+        }
 
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(this, loopMode)
@@ -344,27 +348,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         onLoopUpdate(playbackManager.loopMode)
         onSongUpdate(playbackManager.song)
         onSeek(playbackManager.position)
-
-        /*
-        Old Manual restore code, restore this if the above causes bugs
-        notification.setParent(this, playbackManager.parent)
-        notification.setPlaying(this, playbackManager.isPlaying)
-
-        if (settingsManager.useAltNotifAction) {
-            notification.setShuffle(this, playbackManager.isShuffling)
-        } else {
-            notification.setLoop(this, playbackManager.loopMode)
-        }
-
-        player.setLoopMode(playbackManager.loopMode)
-
-        playbackManager.song?.let { song ->
-            notification.setMetadata(this, song, settingsManager.colorizeNotif) {}
-
-            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
-            player.seekTo(playbackManager.position)
-            player.prepare()
-        }*/
     }
 
     /**
@@ -403,17 +386,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             pollFlow.takeWhile { player.isPlaying }.collect {
                 playbackManager.setPosition(it)
             }
-        }
-    }
-
-    /**
-     * Shortcut to transform a [LoopMode] into a player repeat mode
-     */
-    private fun Player.setLoopMode(mode: LoopMode) {
-        repeatMode = if (mode == LoopMode.NONE) {
-            Player.REPEAT_MODE_OFF
-        } else {
-            Player.REPEAT_MODE_ALL
         }
     }
 

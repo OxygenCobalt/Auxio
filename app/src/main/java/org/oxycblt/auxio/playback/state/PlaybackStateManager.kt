@@ -101,9 +101,9 @@ class PlaybackStateManager private constructor() {
     /** The current playback progress */
     val position: Long get() = mPosition
     /** The current queue determined by [parent] and [mode] */
-    val queue: MutableList<Song> get() = mQueue
+    val queue: List<Song> get() = mQueue
     /** The queue created by the user. */
-    val userQueue: MutableList<Song> get() = mUserQueue
+    val userQueue: List<Song> get() = mUserQueue
     /** The current index of the queue */
     val index: Int get() = mIndex
     /** The current [PlaybackMode] */
@@ -116,7 +116,7 @@ class PlaybackStateManager private constructor() {
     val loopMode: LoopMode get() = mLoopMode
     /** Whether this instance has already been restored */
     val isRestored: Boolean get() = mIsRestored
-    /** Whether this instance has started playing or not */
+    /** Whether playback has begun in this instance during **PlaybackService's Lifecycle.** */
     val hasPlayed: Boolean get() = mHasPlayed
 
     private val settingsManager = SettingsManager.getInstance()
@@ -788,8 +788,8 @@ class PlaybackStateManager private constructor() {
         fun onSongUpdate(song: Song?) {}
         fun onParentUpdate(parent: Parent?) {}
         fun onPositionUpdate(position: Long) {}
-        fun onQueueUpdate(queue: MutableList<Song>) {}
-        fun onUserQueueUpdate(userQueue: MutableList<Song>) {}
+        fun onQueueUpdate(queue: List<Song>) {}
+        fun onUserQueueUpdate(userQueue: List<Song>) {}
         fun onModeUpdate(mode: PlaybackMode) {}
         fun onIndexUpdate(index: Int) {}
         fun onPlayingUpdate(isPlaying: Boolean) {}

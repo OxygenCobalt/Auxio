@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
@@ -18,6 +19,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.addIndicatorCallback
 import org.oxycblt.auxio.ui.canScroll
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
@@ -57,9 +59,7 @@ class SongsFragment : Fragment() {
                 if (it.itemId == R.id.action_shuffle) {
                     playbackModel.shuffleAll()
                     true
-                }
-
-                false
+                } else false
             }
         }
 
@@ -82,114 +82,89 @@ class SongsFragment : Fragment() {
             }
         }
 
-        setupFastScroller(binding)
+        binding.songFastScroll.setup(binding.songRecycler, binding.songFastScrollThumb)
 
         logD("Fragment created.")
 
         return binding.root
     }
 
-    override fun onDestroyView() {
-        requireView().rootView.clearFocus()
-
-        super.onDestroyView()
-    }
-
     /**
-     * Go through the fast scroller setup process.
-     * @param binding Binding required
+     * Perform the (Frustratingly Long and Complicated) FastScrollerView setup.
      */
-    private fun setupFastScroller(binding: FragmentSongsBinding) {
-        binding.songFastScroll.apply {
-            var concatInterval = -1
+    private fun FastScrollerView.setup(recycler: RecyclerView, thumb: CobaltScrollThumb) {
+        var concatInterval: Int = -1
 
-            // API 22 and below don't support the state color, so just use the accent.
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                textColor = Accent.get().getStateList(requireContext())
+        // API 22 and below don't support the state color, so just use the accent.
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            textColor = Accent.get().getStateList(requireContext())
+        }
+
+        setupWithRecyclerView(
+            recycler,
+            { pos ->
+                val char = musicStore.songs[pos].name.first
+
+                // Use "#" if the character is a digit, also has the nice side-effect of
+                // truncating extra numbers.
+                if (char.isDigit()) {
+                    FastScrollItemIndicator.Text("#")
+                } else {
+                    FastScrollItemIndicator.Text(char.toString())
+                }
+            },
+            null, false
+        )
+
+        showIndicator = { _, i, total ->
+            if (concatInterval == -1) {
+                // If the scroller size is too small to contain all the entries, truncate entries
+                // so that the fast scroller entries fit.
+                val maxEntries = (height / (indicatorTextSize + textPadding))
+
+                if (total > maxEntries.toInt()) {
+                    concatInterval = ceil(total / maxEntries).toInt()
+
+                    check(concatInterval > 1) {
+                        "Needed to truncate, but concatInterval was 1 or lower anyway"
+                    }
+
+                    logD("More entries than screen space, truncating by $concatInterval.")
+                } else {
+                    concatInterval = 1
+                }
             }
 
-            setupWithRecyclerView(
-                binding.songRecycler,
-                { pos ->
-                    val item = musicStore.songs[pos]
+            // Any items that need to be truncated will be hidden
+            (i % concatInterval) == 0
+        }
 
-                    // If the item starts with "the"/"a", then actually use the character after that
-                    // as its initial. Yes, this is stupidly western-centric but the code [hopefully]
-                    // shouldn't run with other languages.
-                    val char: Char = if (item.name.length > 5 &&
-                        item.name.startsWith("the ", ignoreCase = true)
-                    ) {
-                        item.name[4].toUpperCase()
-                    } else if (item.name.length > 3 &&
-                        item.name.startsWith("a ", ignoreCase = true)
-                    ) {
-                        item.name[2].toUpperCase()
-                    } else {
-                        // If it doesn't begin with that word, then just use the first character.
-                        item.name[0].toUpperCase()
-                    }
+        addIndicatorCallback { _, _, pos ->
+            recycler.apply {
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
 
-                    // Use "#" if the character is a digit, also has the nice side-effect of
-                    // truncating extra numbers.
-                    if (char.isDigit()) {
-                        FastScrollItemIndicator.Text("#")
-                    } else {
-                        FastScrollItemIndicator.Text(char.toString())
-                    }
-                }
-            )
-
-            showIndicator = { _, i, total ->
-                var isGood = true
-
-                if (concatInterval == -1) {
-                    // If the scroller size is too small to contain all the entries, truncate entries
-                    // so that the fast scroller entries fit.
-                    val maxEntries = (height / (indicatorTextSize + textPadding))
-
-                    if (total > maxEntries.toInt()) {
-                        concatInterval = ceil(total / maxEntries).toInt()
-
-                        logD("More entries than screen space, truncating by $concatInterval.")
-
-                        check(concatInterval > 1) {
-                            "ConcatInterval was one despite truncation being needed"
-                        }
-                    } else {
-                        concatInterval = 1
-                    }
-                }
-
-                if ((i % concatInterval) != 0) {
-                    isGood = false
-                }
-
-                isGood
-            }
-
-            useDefaultScroller = false
-
-            addIndicatorCallback { pos ->
-                binding.songRecycler.apply {
-                    (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
-
-                    stopScroll()
-                }
+                stopScroll()
             }
         }
 
-        binding.songFastScrollThumb.setupWithFastScroller(binding.songFastScroll)
+        thumb.setup(this)
     }
 
-    private fun FastScrollerView.addIndicatorCallback(callback: (pos: Int) -> Unit) {
-        itemIndicatorSelectedCallbacks.add(
-            object : FastScrollerView.ItemIndicatorSelectedCallback {
-                override fun onItemIndicatorSelected(
-                    indicator: FastScrollItemIndicator,
-                    indicatorCenterY: Int,
-                    itemPosition: Int
-                ) = callback(itemPosition)
-            }
-        )
+    /**
+     * Dumb shortcut for getting the first letter in a string, while regarding certain
+     * semantics when it comes to articles.
+     */
+    private val String.first: Char get() {
+        // If the name actually starts with "The" or "A", get the character *after* that word.
+        // Yes, this is stupidly english centric but it wont run with other languages.
+        if (length > 5 && startsWith("the ", true)) {
+            return get(4).toUpperCase()
+        }
+
+        if (length > 3 && startsWith("a ", true)) {
+            return get(2).toUpperCase()
+        }
+
+        return get(0).toUpperCase()
     }
 }

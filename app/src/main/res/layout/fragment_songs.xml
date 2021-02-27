@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
 
-        <org.oxycblt.auxio.recycler.NoLeakThumbView
+        <org.oxycblt.auxio.songs.CobaltScrollThumb
             android:id="@+id/song_fast_scroll_thumb"
             android:layout_width="@dimen/width_thumb_view"
             android:layout_height="0dp"

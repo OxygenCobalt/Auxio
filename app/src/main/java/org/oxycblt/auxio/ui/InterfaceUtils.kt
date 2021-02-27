@@ -23,6 +23,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.reddit.indicatorfastscroll.FastScrollItemIndicator
+import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 
@@ -119,6 +121,22 @@ fun Int.toAnimDrawable(context: Context) = toDrawable(context) as AnimatedVector
  */
 fun String.createToast(context: Context) {
     Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
+}
+
+/**
+ * Shortcut that allows me to add a indicator callback to [FastScrollerView] without
+ * the nightmarish boilerplate that entails.
+ */
+fun FastScrollerView.addIndicatorCallback(
+    callback: (indicator: FastScrollItemIndicator, centerY: Int, pos: Int) -> Unit
+) {
+    itemIndicatorSelectedCallbacks += object : FastScrollerView.ItemIndicatorSelectedCallback {
+        override fun onItemIndicatorSelected(
+            indicator: FastScrollItemIndicator,
+            indicatorCenterY: Int,
+            itemPosition: Int
+        ) = callback(indicator, indicatorCenterY, itemPosition)
+    }
 }
 
 // --- CONFIGURATION ---
