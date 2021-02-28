@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.toAnimDrawable
 
 /**
