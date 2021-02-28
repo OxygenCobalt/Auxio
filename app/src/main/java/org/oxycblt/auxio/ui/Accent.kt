@@ -30,13 +30,11 @@ val ACCENTS = arrayOf(
     Accent(R.color.light_green, R.style.Theme_LightGreen, R.string.color_label_light_green),
     Accent(R.color.lime, R.style.Theme_Lime, R.string.color_label_lime),
     Accent(R.color.yellow, R.style.Theme_Yellow, R.string.color_label_yellow),
-    Accent(R.color.amber, R.style.Theme_Amber, R.string.color_label_amber),
     Accent(R.color.orange, R.style.Theme_Orange, R.string.color_label_orange),
     Accent(R.color.deep_orange, R.style.Theme_DeepOrange, R.string.color_label_deep_orange),
     Accent(R.color.brown, R.style.Theme_Brown, R.string.color_label_brown),
     Accent(R.color.grey, R.style.Theme_Gray, R.string.color_label_grey),
     Accent(R.color.blue_grey, R.style.Theme_BlueGrey, R.string.color_label_blue_grey),
-    Accent(R.color.control_color, R.style.Theme_Neutral, R.string.color_label_neutral)
 )
 
 /**

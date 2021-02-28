@@ -2,7 +2,9 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.recycler.SortMode
@@ -30,7 +32,21 @@ class SettingsManager private constructor(context: Context) :
     /** The current accent. */
     var accent: Accent
         get() {
-            // Accent is stored as an index [to be efficient], so retrieve it when done.
+            if (sharedPrefs.contains(Keys.KEY_ACCENT_OLD)) {
+                logD("Migrating from old accent to new accent.")
+
+                val newAccent = handleAccentCompat(
+                    sharedPrefs.getInt(Keys.KEY_ACCENT_OLD, 5)
+                )
+
+                // When converted, write them to the new accent pref and delete the old one.
+                sharedPrefs.edit {
+                    putInt(Keys.KEY_ACCENT, newAccent)
+                    remove(Keys.KEY_ACCENT_OLD)
+                    apply()
+                }
+            }
+
             return ACCENTS[sharedPrefs.getInt(Keys.KEY_ACCENT, 5)]
         }
         set(value) {
@@ -171,10 +187,37 @@ class SettingsManager private constructor(context: Context) :
         }
     }
 
-    /** SharedPreferences keys. */
+    /**
+     * Convert the old accent format of <1.3.1 to the accent format of 1.3.2-Onwards,
+     * where many accents were changed or removed.
+     */
+    private fun handleAccentCompat(oldAccent: Int): Int {
+        var newAccent = oldAccent
+
+        // Correct any accents over yellow to their correct positions
+        if (oldAccent > 12) {
+            newAccent--
+        }
+
+        // Correct neutral accents to the closest accent [Grey]
+        if (newAccent == 18) {
+            newAccent = 16
+        }
+
+        // If there are still any issues with indices, just correct them so a crash doesnt occur.
+        if (newAccent > ACCENTS.lastIndex) {
+            newAccent = ACCENTS.lastIndex
+        }
+
+        return newAccent
+    }
+
+    /**
+     * SharedPreferences keys.
+     */
     object Keys {
         const val KEY_THEME = "KEY_THEME"
-        const val KEY_ACCENT = "KEY_ACCENT"
+        const val KEY_ACCENT = "KEY_ACCENT2"
         const val KEY_EDGE_TO_EDGE = "KEY_EDGE"
         const val KEY_LIBRARY_DISPLAY_MODE = "KEY_LIBRARY_DISPLAY_MODE"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
@@ -191,9 +234,13 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
         const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
+
+        const val KEY_ACCENT_OLD = "KEY_ACCENT"
     }
 
-    /** Values for some settings entries that cant be enums/ints.*/
+    /**
+     * Values for some settings entries that arent important enough to recieve an enum.
+     */
     object EntryValues {
         const val THEME_AUTO = "AUTO"
         const val THEME_LIGHT = "LIGHT"

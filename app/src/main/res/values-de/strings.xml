@@ -138,13 +138,11 @@
     <string name="color_label_light_green">Hellgrün</string>
     <string name="color_label_lime">Lindgrün</string>
     <string name="color_label_yellow">Gelb</string>
-    <string name="color_label_amber">Bernsteingelb</string>
     <string name="color_label_orange">Orange</string>
     <string name="color_label_deep_orange">Tieforange</string>
     <string name="color_label_brown">Braun</string>
     <string name="color_label_grey">Grau</string>
     <string name="color_label_blue_grey">Blaugrau</string>
-    <string name="color_label_neutral">Neutral</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Nächsten von: %s</string>

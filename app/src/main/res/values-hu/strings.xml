@@ -91,7 +91,6 @@
     <string name="color_label_brown">Barna</string>
     <string name="color_label_grey">Szürke</string>
     <string name="color_label_blue_grey">Kékszürke</string>
-    <string name="color_label_neutral">Semleges</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="format_song_count">

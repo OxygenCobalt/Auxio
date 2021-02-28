@@ -89,12 +89,10 @@
     <string name="color_label_light_green">Verde Chiaro</string>
     <string name="color_label_lime">Verde Giallo</string>
     <string name="color_label_yellow">Giallo</string>
-    <string name="color_label_amber">Ambra</string>
     <string name="color_label_orange">Arancio</string>
     <string name="color_label_brown">Bruno</string>
     <string name="color_label_grey">Grigio</string>
     <string name="color_label_blue_grey">Azzurro Grigio</string>
-    <string name="color_label_neutral">Neutrale</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Brani caricate: %d</string>

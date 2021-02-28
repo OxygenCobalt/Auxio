@@ -75,7 +75,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
-                SettingsManager.Keys.KEY_ACCENT -> {
+                SettingsManager.Keys.KEY_ACCENT_OLD -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         showAccentDialog()
                         true

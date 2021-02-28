@@ -68,11 +68,6 @@
         <item name="colorSecondary">@color/yellow</item>
     </style>
 
-    <style name="Theme.Amber" parent="Theme.Base">
-        <item name="colorPrimary">@color/amber</item>
-        <item name="colorSecondary">@color/amber</item>
-    </style>
-
     <style name="Theme.Orange" parent="Theme.Base">
         <item name="colorPrimary">@color/orange</item>
         <item name="colorSecondary">@color/orange</item>

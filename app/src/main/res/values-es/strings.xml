@@ -89,12 +89,10 @@
     <string name="color_label_light_green">Verde Claro</string>
     <string name="color_label_lime">Verde Amarillo</string>
     <string name="color_label_yellow">Amarillo</string>
-    <string name="color_label_amber">Ambar</string>
     <string name="color_label_orange">Naranja</string>
     <string name="color_label_brown">Marrón</string>
     <string name="color_label_grey">Gris</string>
     <string name="color_label_blue_grey">Azul Gris</string>
-    <string name="color_label_neutral">Neutro</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Canciones encontradas: %d</string>

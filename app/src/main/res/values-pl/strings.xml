@@ -85,12 +85,10 @@
     <string name="color_label_light_green">Jasnozielony</string>
     <string name="color_label_lime">Żółtyzielony</string>
     <string name="color_label_yellow">Żółty</string>
-    <string name="color_label_amber">Bursztynowy</string>
     <string name="color_label_orange">Pomarańczowy</string>
     <string name="color_label_brown">Brązowy</string>
     <string name="color_label_grey">Szary</string>
     <string name="color_label_blue_grey">Błękitszary</string>
-    <string name="color_label_neutral">Neutralny</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Utwory uruchamia się: %d</string>

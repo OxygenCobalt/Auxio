@@ -22,12 +22,11 @@
     <color name="teal">#009688</color>
     <color name="green">#4caf50</color>
     <color name="light_green">#8bc34a</color>
-    <color name="lime">#cddc39</color>
-    <color name="yellow">#f1ca00</color>
-    <color name="amber">#ffc107</color>
-    <color name="orange">#ff9800</color>
+    <color name="lime">#B7C534</color>
+    <color name="yellow">#E4AC00</color>
+    <color name="orange">#E68A01</color>
     <color name="deep_orange">#ff5722</color>
     <color name="brown">#795548</color>
-    <color name="grey">#9e9e9e</color>
+    <color name="grey">#808080</color>
     <color name="blue_grey">#607d8b</color>
 </resources>

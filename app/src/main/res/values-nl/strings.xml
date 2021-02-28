@@ -95,7 +95,6 @@
     <string name="color_label_brown">Bruin</string>
     <string name="color_label_grey">Grijis</string>
     <string name="color_label_blue_grey">Blauwgrijis</string>
-    <string name="color_label_neutral">Neutraal</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_songs_loaded">Nummers geladen: %d</string>
