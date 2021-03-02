@@ -396,7 +396,7 @@ class PlaybackStateManager private constructor() {
         logD("Removing item ${mUserQueue[index].name}.")
 
         if (index > mUserQueue.size || index < 0) {
-            logE("Index is out of bounds, did not remove queue item.")
+            logE("Index is out of bounds, did not remove user queue item.")
 
             return
         }
@@ -411,7 +411,7 @@ class PlaybackStateManager private constructor() {
      */
     fun moveUserQueueItems(from: Int, to: Int) {
         if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
-            logE("Indices were out of bounds, did not move queue item")
+            logE("Indices were out of bounds, did not move user queue item")
 
             return
         }
@@ -713,16 +713,18 @@ class PlaybackStateManager private constructor() {
      * @param queueItems The list of [QueueItem]s to unpack.
      */
     private fun unpackQueue(queueItems: List<QueueItem>) {
+        // When unpacking, first traverse albums and then traverse album songs to reduce
+        // the amount of useless comparisons in large queues.
         queueItems.forEach { item ->
-            // Traverse albums and then album songs instead of just the songs, as its faster.
-            musicStore.albums.find { it.name == item.albumName }
-                ?.songs?.find { it.name == item.songName }?.let {
-                    if (item.isUserQueue) {
-                        mUserQueue.add(it)
-                    } else {
-                        mQueue.add(it)
-                    }
+            musicStore.albums.find { it.name == item.albumName }?.songs?.find {
+                it.name == item.songName
+            }?.let {
+                if (item.isUserQueue) {
+                    mUserQueue.add(it)
+                } else {
+                    mQueue.add(it)
                 }
+            }
         }
 
         // When done, get a more accurate index to prevent issues with queue songs that were saved

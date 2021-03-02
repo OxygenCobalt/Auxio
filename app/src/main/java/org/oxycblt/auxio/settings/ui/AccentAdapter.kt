@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.settings.ui
 
 import android.view.ViewGroup
+import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
@@ -33,11 +34,7 @@ class AccentAdapter(
 
         fun bind(accent: Accent) {
             binding.accent.apply {
-                contentDescription = accent.getDetailedSummary(context)
-
-                setOnClickListener {
-                    doOnAccentConfirm(accent)
-                }
+                contentDescription = context.getString(accent.name)
 
                 imageTintList = if (accent == Accent.get()) {
                     isEnabled = false
@@ -50,6 +47,12 @@ class AccentAdapter(
                 }
 
                 backgroundTintList = accent.getStateList(context)
+
+                TooltipCompat.setTooltipText(this, contentDescription)
+
+                setOnClickListener {
+                    doOnAccentConfirm(accent)
+                }
             }
         }
     }
