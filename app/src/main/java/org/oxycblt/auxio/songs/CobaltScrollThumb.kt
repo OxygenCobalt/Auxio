@@ -66,7 +66,12 @@ class CobaltScrollThumb @JvmOverloads constructor(
             }
         }
 
+        isVisible = false
         isActivated = false
+
+        post {
+            isVisible = true
+        }
     }
 
     /**
