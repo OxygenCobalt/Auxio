@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -66,11 +67,11 @@ class CobaltScrollThumb @JvmOverloads constructor(
             }
         }
 
-        isVisible = false
+        visibility = View.INVISIBLE
         isActivated = false
 
         post {
-            isVisible = true
+            visibility = View.VISIBLE
         }
     }
 

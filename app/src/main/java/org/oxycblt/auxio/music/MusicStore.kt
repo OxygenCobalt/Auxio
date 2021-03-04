@@ -8,8 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
-import org.oxycblt.auxio.music.processing.MusicLinker
-import org.oxycblt.auxio.music.processing.MusicLoader
 import java.lang.Exception
 
 /**
@@ -54,19 +52,16 @@ class MusicStore private constructor() {
 
             try {
                 val loader = MusicLoader(app)
-                loader.loadMusic()
+                loader.load()
 
                 if (loader.songs.isEmpty()) {
                     return@withContext Response.NO_MUSIC
                 }
 
-                val linker = MusicLinker(app, loader.songs, loader.albums, loader.genres)
-                linker.link()
-
-                mSongs = linker.songs.toList()
-                mAlbums = linker.albums.toList()
-                mArtists = linker.artists.toList()
-                mGenres = linker.genres.toList()
+                mSongs = loader.songs
+                mAlbums = loader.albums
+                mArtists = loader.artists
+                mGenres = loader.genres
 
                 this@MusicStore.logD(
                     "Music load completed successfully in ${System.currentTimeMillis() - start}ms."
