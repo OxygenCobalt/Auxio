@@ -26,11 +26,13 @@ sealed class Parent : BaseModel() {
 /**
  * The data object for a song. Inherits [BaseModel].
  * @property fileName The raw filename for this track
- * @property albumId  The Song's Album ID. Never use this outside of when attaching a song to its album.
+ * @property albumId  The Song's Album ID.
+ * Never use this outside of when attaching a song to its album.
  * @property track    The Song's Track number
  * @property duration The duration of the song, in millis.
  * @property album    The Song's parent album. Use this instead of [albumId].
- * @property genre    The Song's [Genre]
+ * @property genre    The Song's [Genre].
+ * These are not ensured to be linked due to possible quirks in the genre loading system.
  * @property seconds  The Song's duration in seconds
  * @property formattedDuration The Song's duration as a duration string.
  */
@@ -86,7 +88,8 @@ data class Album(
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val totalDuration: String get() = songs.sumOf { it.seconds }.toDuration()
+    val totalDuration: String get() =
+        songs.sumOf { it.seconds }.toDuration()
 
     fun linkArtist(artist: Artist) {
         mArtist = artist
@@ -118,6 +121,8 @@ data class Artist(
     }
 
     val genre: Genre? by lazy {
+        // Get the genre that corresponds to the most songs in this artist, which would be
+        // the most "Prominent" genre.
         songs.groupBy { it.genre }.entries.maxByOrNull { it.value.size }?.key
     }
 
@@ -135,18 +140,15 @@ data class Genre(
     override val id: Long = -1,
     override val name: String,
 ) : Parent() {
-    val resolvedName: String by lazy {
-        if (name.contains(Regex("([1-9])"))) {
-            name.toNamedGenre() ?: name
-        } else {
-            name
-        }
-    }
-
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val totalDuration: String get() = songs.sumOf { it.seconds }.toDuration()
+    val resolvedName: String by lazy {
+        name.getGenreNameCompat() ?: name
+    }
+
+    val totalDuration: String get() =
+        songs.sumOf { it.seconds }.toDuration()
 
     fun linkSong(song: Song) {
         mSongs.add(song)

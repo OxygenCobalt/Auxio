@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import android.text.format.DateUtils
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.text.isDigitsOnly
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.recycler.SortMode
@@ -17,6 +18,7 @@ import org.oxycblt.auxio.ui.getPlural
  * There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
  */
 private val ID3_GENRES = arrayOf(
+    // ID3 Standard
     "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz",
     "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno",
     "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno",
@@ -28,6 +30,7 @@ private val ID3_GENRES = arrayOf(
     "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal",
     "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock",
 
+    // Winamp Extensions
     "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival",
     "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock",
     "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour",
@@ -37,26 +40,41 @@ private val ID3_GENRES = arrayOf(
     "Euro-House", "Dance Hall", "Goa", "Drum & Bass", "Club-House", "Hardcore", "Terror", "Indie",
     "Britpop", "Negerpunk", "Polsk Punk", "Beat", "Christian Gangsta", "Heavy Metal", "Black Metal",
     "Crossover", "Contemporary Christian", "Christian Rock", "Merengue", "Salsa", "Thrash Metal",
-    "Anime", "JPop", "Synthpop"
-)
+    "Anime", "JPop", "Synthpop",
 
-private const val PAREN_FILTER = "()"
+    // Winamp 5.6+ extensions, used by EasyTAG and friends
+    "Abstract", "Art Rock", "Baroque", "Bhangra", "Big Beat", "Breakbeat", "Chillout", "Downtempo",
+    "Dub", "EBM", "Eclectic", "Electro", "Electroclash", "Emo", "Experimental", "Garage", "Global",
+    "IDM", "Illbient", "Industro-Goth", "Jam Band", "Krautrock", "Leftfield", "Lounge", "Math Rock", // S I X T Y   F I V E
+    "New Romantic", "Nu-Breakz", "Post-Punk", "Post-Rock", "Psytrance", "Shoegaze", "Space Rock",
+    "Trop Rock", "World Music", "Neoclassical", "Audiobook", "Audio Theatre", "Neue Deutsche Welle",
+    "Podcast", "Indie Rock", "G-Funk", "Dubstep", "Garage Rock", "Psybient"
+)
 
 // --- EXTENSION FUNCTIONS ---
 
 /**
- * Convert legacy ID3 genres to their named genre
- * @return The named genre for this legacy genre.
+ * Convert legacy int-based ID3 genres to their human-readable genre
+ * @return The named genre for this legacy genre, null if there is no need to parse it or if the genre is invalid.
  */
-fun String.toNamedGenre(): String? {
-    // Strip the genres of any parentheses, and convert it to an int
-    val intGenre = this.filterNot {
-        PAREN_FILTER.indexOf(it) > -1
-    }.toInt()
+fun String.getGenreNameCompat(): String? {
+    if (isDigitsOnly()) {
+        // ID3 v1, just parse as an integer
+        return ID3_GENRES.getOrNull(toInt())
+    }
 
-    // If the conversion fails [Due to the genre using an extension that Auxio doesn't have],
-    // then return null.
-    return ID3_GENRES.getOrNull(intGenre)
+    if (startsWith('(') && endsWith(')')) {
+        // ID3 v2+, parse out the parentheses and get the integer
+        // Any genres formatted as "(CHARS)" will be ignored.
+        val genreInt = substring(1 until lastIndex).toIntOrNull()
+
+        if (genreInt != null) {
+            return ID3_GENRES.getOrNull(genreInt)
+        }
+    }
+
+    // ID3 v3+, current name is fine.
+    return null
 }
 
 /**
@@ -92,7 +110,7 @@ fun Long.toDuration(): String {
  */
 fun Int.toYear(context: Context): String {
     return if (this > 0) {
-        this.toString()
+        toString()
     } else {
         context.getString(R.string.placeholder_no_date)
     }

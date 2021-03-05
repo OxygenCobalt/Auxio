@@ -84,9 +84,7 @@ class MusicStore private constructor() {
      * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
     fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        resolver.query(
-            uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null
-        )?.use { cursor ->
+        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
             cursor.moveToFirst()
             val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
 

@@ -191,8 +191,9 @@ class MusicLoader(private val context: Context) {
             artists.add(
                 // IDs are incremented from the minimum int value so that they remain unique.
                 Artist(
-                    id = (artists.size + Int.MIN_VALUE).toLong(),
-                    name = entry.key, albums = entry.value
+                    id = (Int.MIN_VALUE + artists.size).toLong(),
+                    name = entry.key,
+                    albums = entry.value
                 )
             )
         }
