@@ -53,30 +53,30 @@ class SearchViewModel : ViewModel() {
             val results = mutableListOf<BaseModel>()
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_ARTISTS)) {
-                musicStore.artists.filterByOrNull(query)?.let {
+                musicStore.artists.filterByOrNull(query)?.let { artists ->
                     results.add(Header(id = -2, name = context.getString(R.string.label_artists)))
-                    results.addAll(it)
+                    results.addAll(artists)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_ALBUMS)) {
-                musicStore.albums.filterByOrNull(query)?.let {
+                musicStore.albums.filterByOrNull(query)?.let { albums ->
                     results.add(Header(id = -3, name = context.getString(R.string.label_albums)))
-                    results.addAll(it)
+                    results.addAll(albums)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_GENRES)) {
-                musicStore.genres.filterByOrNull(query)?.let {
+                musicStore.genres.filterByOrNull(query)?.let { genres ->
                     results.add(Header(id = -4, name = context.getString(R.string.label_genres)))
-                    results.addAll(it)
+                    results.addAll(genres)
                 }
             }
 
             if (mFilterMode.isAllOr(DisplayMode.SHOW_SONGS)) {
-                musicStore.songs.filterByOrNull(query)?.let {
+                musicStore.songs.filterByOrNull(query)?.let { songs ->
                     results.add(Header(id = -5, name = context.getString(R.string.label_songs)))
-                    results.addAll(it)
+                    results.addAll(songs)
                 }
             }
 
@@ -101,7 +101,9 @@ class SearchViewModel : ViewModel() {
      * a value if the resulting list is empty.
      */
     private fun List<BaseModel>.filterByOrNull(value: String): List<BaseModel>? {
-        val filtered = filter { it.name.contains(value, ignoreCase = true) }
+        val filtered = filter {
+            it.name.contains(value, ignoreCase = true)
+        }
 
         return if (filtered.isNotEmpty()) filtered else null
     }
@@ -109,7 +111,7 @@ class SearchViewModel : ViewModel() {
     /**
      * Update the current navigation status to [isNavigating]
      */
-    fun updateNavigationStatus(isNavigating: Boolean) {
+    fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
     }
 }

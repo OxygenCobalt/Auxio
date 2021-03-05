@@ -40,11 +40,10 @@ class SettingsManager private constructor(context: Context) :
                 )
 
                 // When converted, write them to the new accent pref and delete the old one.
-                sharedPrefs.edit {
-                    putInt(Keys.KEY_ACCENT, newAccent)
-                    remove(Keys.KEY_ACCENT_OLD)
-                    apply()
-                }
+                sharedPrefs.edit()
+                    .putInt(Keys.KEY_ACCENT, newAccent)
+                    .remove(Keys.KEY_ACCENT_OLD)
+                    .apply()
             }
 
             return ACCENTS[sharedPrefs.getInt(Keys.KEY_ACCENT, 5)]
@@ -124,8 +123,7 @@ class SettingsManager private constructor(context: Context) :
     var librarySortMode: SortMode
         get() = SortMode.fromInt(
             sharedPrefs.getInt(
-                Keys.KEY_LIBRARY_SORT_MODE,
-                SortMode.CONSTANT_ALPHA_DOWN
+                Keys.KEY_LIBRARY_SORT_MODE, SortMode.CONST_SORT_DEFAULT
             )
         ) ?: SortMode.ALPHA_DOWN
 

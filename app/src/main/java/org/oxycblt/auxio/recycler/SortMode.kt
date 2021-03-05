@@ -1,7 +1,9 @@
 package org.oxycblt.auxio.recycler
 
+import android.widget.ImageButton
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -163,20 +165,22 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
      */
     fun toInt(): Int {
         return when (this) {
-            NONE -> CONSTANT_NONE
-            ALPHA_UP -> CONSTANT_ALPHA_UP
-            ALPHA_DOWN -> CONSTANT_ALPHA_DOWN
-            NUMERIC_UP -> CONSTANT_NUMERIC_UP
-            NUMERIC_DOWN -> CONSTANT_NUMERIC_DOWN
+            NONE -> CONST_NONE
+            ALPHA_UP -> CONST_ALPHA_UP
+            ALPHA_DOWN -> CONST_ALPHA_DOWN
+            NUMERIC_UP -> CONST_NUMERIC_UP
+            NUMERIC_DOWN -> CONST_NUMERIC_DOWN
         }
     }
 
     companion object {
-        const val CONSTANT_NONE = 0xA060
-        const val CONSTANT_ALPHA_UP = 0xA061
-        const val CONSTANT_ALPHA_DOWN = 0xA062
-        const val CONSTANT_NUMERIC_UP = 0xA063
-        const val CONSTANT_NUMERIC_DOWN = 0xA065
+        private const val CONST_NONE = 0xA060
+        private const val CONST_ALPHA_UP = 0xA061
+        private const val CONST_ALPHA_DOWN = 0xA062
+        private const val CONST_NUMERIC_UP = 0xA063
+        private const val CONST_NUMERIC_DOWN = 0xA065
+
+        const val CONST_SORT_DEFAULT = CONST_ALPHA_DOWN
 
         /**
          * Get an enum for an int constant
@@ -184,14 +188,22 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
          */
         fun fromInt(value: Int): SortMode? {
             return when (value) {
-                CONSTANT_NONE -> NONE
-                CONSTANT_ALPHA_UP -> ALPHA_UP
-                CONSTANT_ALPHA_DOWN -> ALPHA_DOWN
-                CONSTANT_NUMERIC_UP -> NUMERIC_UP
-                CONSTANT_NUMERIC_DOWN -> NUMERIC_DOWN
+                CONST_NONE -> NONE
+                CONST_ALPHA_UP -> ALPHA_UP
+                CONST_ALPHA_DOWN -> ALPHA_DOWN
+                CONST_NUMERIC_UP -> NUMERIC_UP
+                CONST_NUMERIC_DOWN -> NUMERIC_DOWN
 
                 else -> null
             }
         }
     }
+}
+
+/**
+ * Bind the [SortMode] icon for an ImageButton.
+ */
+@BindingAdapter("sortIcon")
+fun ImageButton.bindSortIcon(mode: SortMode) {
+    setImageResource(mode.iconRes)
 }

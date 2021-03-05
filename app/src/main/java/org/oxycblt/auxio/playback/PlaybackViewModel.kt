@@ -380,7 +380,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             mIntentUri = null
 
             // Were not going to be restoring playbackManager after this, so mark it as such.
-            playbackManager.setRestored()
+            playbackManager.markRestored()
         } else if (!playbackManager.isRestored) {
             // Otherwise just restore
             viewModelScope.launch {

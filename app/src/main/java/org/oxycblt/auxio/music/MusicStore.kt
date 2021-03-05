@@ -46,6 +46,7 @@ class MusicStore private constructor() {
      */
     suspend fun load(app: Application): Response {
         return withContext(Dispatchers.IO) {
+            // TODO: Move this to an internal function
             this@MusicStore.logD("Starting initial music load...")
 
             val start = System.currentTimeMillis()

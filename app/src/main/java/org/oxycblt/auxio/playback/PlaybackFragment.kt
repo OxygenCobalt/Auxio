@@ -61,12 +61,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 findNavController().navigateUp()
             }
 
-            setOnMenuItemClickListener {
-                if (it.itemId == R.id.action_queue) {
+            setOnMenuItemClickListener { item ->
+                if (item.itemId == R.id.action_queue) {
                     findNavController().navigate(PlaybackFragmentDirections.actionShowQueue())
 
                     true
-                } else false
+                } else {
+                    false
+                }
             }
 
             queueItem = menu.findItem(R.id.action_queue)
@@ -90,12 +92,16 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.isShuffling.observe(viewLifecycleOwner) {
-            binding.playbackShuffle.imageTintList = if (it) accentColor else controlColor
+        playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
+            binding.playbackShuffle.imageTintList = if (isShuffling) {
+                accentColor
+            } else {
+                controlColor
+            }
         }
 
-        playbackModel.loopMode.observe(viewLifecycleOwner) {
-            when (it) {
+        playbackModel.loopMode.observe(viewLifecycleOwner) { loopMode ->
+            when (loopMode) {
                 LoopMode.NONE -> {
                     binding.playbackLoop.imageTintList = controlColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
@@ -115,17 +121,17 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.isSeeking.observe(viewLifecycleOwner) {
-            if (it) {
+        playbackModel.isSeeking.observe(viewLifecycleOwner) { isSeeking ->
+            if (isSeeking) {
                 binding.playbackDurationCurrent.setTextColor(accentColor)
             } else {
                 binding.playbackDurationCurrent.setTextColor(normalTextColor)
             }
         }
 
-        playbackModel.positionAsProgress.observe(viewLifecycleOwner) {
+        playbackModel.positionAsProgress.observe(viewLifecycleOwner) { pos ->
             if (!playbackModel.isSeeking.value!!) {
-                binding.playbackSeekBar.progress = it
+                binding.playbackSeekBar.progress = pos
             }
         }
 
@@ -153,9 +159,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.isPlaying.observe(viewLifecycleOwner) {
+        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
             binding.playbackPlayPause.apply {
-                if (it) {
+                if (isPlaying) {
                     backgroundTintList = accentColor
                     setPlaying(true, playbackModel.canAnimate)
                 } else {
@@ -167,8 +173,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             playbackModel.enableAnimation()
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            if (item != null) {
                 findNavController().navigateUp()
             }
         }

@@ -15,7 +15,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
 import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 /**
  * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
@@ -39,11 +38,13 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
     }
 
     private fun loadMediaStoreCovers(data: Album): SourceResult {
-        val stream: InputStream? = context.contentResolver.openInputStream(data.coverUri)
+        val stream = context.contentResolver.openInputStream(data.coverUri)
 
-        stream?.let { stm ->
+        if (stream != null) {
+            // Don't close the stream here as it will cause an error later from an attempted read.
+            // This stream still seems to close itself at some point, so its fine.
             return SourceResult(
-                source = stm.source().buffer(),
+                source = stream.source().buffer(),
                 mimeType = context.contentResolver.getType(data.coverUri),
                 dataSource = DataSource.DISK
             )

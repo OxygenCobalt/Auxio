@@ -90,8 +90,8 @@ class GenreDetailAdapter(
 
         if (song != null) {
             // Use existing data instead of having to re-sort it.
-            val pos = currentList.indexOfFirst {
-                it.name == song.name && it is Song
+            val pos = currentList.indexOfFirst { item ->
+                item.name == song.name && item is Song
             }
 
             // Check if the ViewHolder for this song is visible, if it is then highlight it.

@@ -64,7 +64,7 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
     /**
      * Update the current navigation status
      */
-    fun updateNavigationStatus(isNavigating: Boolean) {
+    fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
     }
 

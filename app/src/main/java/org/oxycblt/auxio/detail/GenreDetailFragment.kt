@@ -43,10 +43,12 @@ class GenreDetailFragment : DetailFragment() {
 
         val detailAdapter = GenreDetailAdapter(
             detailModel, playbackModel, viewLifecycleOwner,
-            doOnClick = {
-                playbackModel.playSong(it, PlaybackMode.IN_GENRE)
+            doOnClick = { song ->
+                playbackModel.playSong(song, PlaybackMode.IN_GENRE)
             },
-            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_GENRE) }
+            doOnLongClick = { view, data ->
+                newMenu(view, data, ActionMenu.FLAG_IN_GENRE)
+            }
         )
 
         // --- UI SETUP ---
@@ -69,19 +71,19 @@ class GenreDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            when (it) {
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            when (item) {
                 // All items will launch new detail fragments.
                 is Artist -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowArtist(it.id)
+                    GenreDetailFragmentDirections.actionShowArtist(item.id)
                 )
 
                 is Album -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowAlbum(it.id)
+                    GenreDetailFragmentDirections.actionShowAlbum(item.id)
                 )
 
                 is Song -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowAlbum(it.album.id)
+                    GenreDetailFragmentDirections.actionShowAlbum(item.album.id)
                 )
 
                 else -> {}
@@ -90,19 +92,19 @@ class GenreDetailFragment : DetailFragment() {
 
         // --- PLAYBACKVIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner) {
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
                 playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id
             ) {
-                detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
+                detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the viewholders if the mode isn't ALL_SONGS
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }
 
-        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
-            if (it) {
+        playbackModel.isInUserQueue.observe(viewLifecycleOwner) { inUserQueue ->
+            if (inUserQueue) {
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }

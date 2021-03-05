@@ -68,14 +68,13 @@ class SongsFragment : Fragment() {
             setHasFixedSize(true)
 
             val spans = getSpans()
-
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }
 
             post {
-                // Disable fast scrolling if there is nothing to scroll
                 if (!canScroll()) {
+                    // Disable fast scrolling if there is nothing to scroll
                     binding.songFastScroll.visibility = View.GONE
                     binding.songFastScrollThumb.visibility = View.GONE
                 }

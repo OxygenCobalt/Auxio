@@ -35,7 +35,7 @@ abstract class DetailFragment : Fragment() {
         super.onResume()
 
         callback.isEnabled = true
-        detailModel.updateNavigationStatus(false)
+        detailModel.setNavigating(false)
     }
 
     override fun onPause() {
@@ -56,7 +56,7 @@ abstract class DetailFragment : Fragment() {
      */
     protected fun setupToolbar(
         @MenuRes menu: Int = -1,
-        onMenuClick: ((id: Int) -> Boolean)? = null
+        onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
         binding.detailToolbar.apply {
             if (menu != -1) {
@@ -67,9 +67,9 @@ abstract class DetailFragment : Fragment() {
                 findNavController().navigateUp()
             }
 
-            onMenuClick?.let {
-                setOnMenuItemClickListener {
-                    it(it.itemId)
+            onMenuClick?.let { onClick ->
+                setOnMenuItemClickListener { item ->
+                    onClick(item.itemId)
                 }
             }
         }

@@ -55,16 +55,13 @@ class AlbumDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = this
 
-        setupToolbar(R.menu.menu_album_detail) {
-            when (it) {
-                R.id.action_queue_add -> {
-                    playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
-                    getString(R.string.label_queue_added).createToast(requireContext())
-
-                    true
-                }
-
-                else -> false
+        setupToolbar(R.menu.menu_album_detail) { itemId ->
+            if (itemId == R.id.action_queue_add) {
+                playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
+                getString(R.string.label_queue_added).createToast(requireContext())
+                true
+            } else {
+                false
             }
         }
 
@@ -83,18 +80,18 @@ class AlbumDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            when (it) {
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            when (item) {
                 // Songs should be scrolled to if the album matches, or a new detail
                 // fragment should be launched otherwise.
                 is Song -> {
-                    if (detailModel.currentAlbum.value!!.id == it.album.id) {
-                        scrollToItem(it.id)
+                    if (detailModel.currentAlbum.value!!.id == item.album.id) {
+                        scrollToItem(item.id)
 
                         detailModel.doneWithNavToItem()
                     } else {
                         findNavController().navigate(
-                            AlbumDetailFragmentDirections.actionShowAlbum(it.album.id)
+                            AlbumDetailFragmentDirections.actionShowAlbum(item.album.id)
                         )
                     }
                 }
@@ -102,12 +99,12 @@ class AlbumDetailFragment : DetailFragment() {
                 // If the album matches, no need to do anything. Otherwise launch a new
                 // detail fragment.
                 is Album -> {
-                    if (detailModel.currentAlbum.value!!.id == it.id) {
+                    if (detailModel.currentAlbum.value!!.id == item.id) {
                         binding.detailRecycler.scrollToPosition(0)
                         detailModel.doneWithNavToItem()
                     } else {
                         findNavController().navigate(
-                            AlbumDetailFragmentDirections.actionShowAlbum(it.id)
+                            AlbumDetailFragmentDirections.actionShowAlbum(item.id)
                         )
                     }
                 }
@@ -115,7 +112,7 @@ class AlbumDetailFragment : DetailFragment() {
                 // Always launch a new ArtistDetailFragment.
                 is Artist -> {
                     findNavController().navigate(
-                        AlbumDetailFragmentDirections.actionShowArtist(it.id)
+                        AlbumDetailFragmentDirections.actionShowArtist(item.id)
                     )
                 }
 
@@ -125,19 +122,19 @@ class AlbumDetailFragment : DetailFragment() {
 
         // --- PLAYBACKVIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner) {
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
                 playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
             ) {
-                detailAdapter.highlightSong(playbackModel.song.value, binding.detailRecycler)
+                detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the viewholders if the mode isn't ALL_SONGS
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }
 
-        playbackModel.isInUserQueue.observe(viewLifecycleOwner) {
-            if (it) {
+        playbackModel.isInUserQueue.observe(viewLifecycleOwner) { inUserQueue ->
+            if (inUserQueue) {
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }

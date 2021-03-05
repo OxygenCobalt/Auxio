@@ -83,8 +83,8 @@ class MainFragment : Fragment() {
             }
 
             navController?.let { controller ->
-                binding.navBar.setOnNavigationItemSelectedListener {
-                    navigateWithItem(controller, it)
+                binding.navBar.setOnNavigationItemSelectedListener { item ->
+                    navigateWithItem(controller, item)
                 }
             }
         }
@@ -94,12 +94,12 @@ class MainFragment : Fragment() {
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
         handleCompactPlaybackVisibility(binding, playbackModel.song.value)
 
-        playbackModel.song.observe(viewLifecycleOwner) {
-            handleCompactPlaybackVisibility(binding, it)
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            handleCompactPlaybackVisibility(binding, song)
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null && navController != null) {
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            if (item != null && navController != null) {
                 val curDest = navController.currentDestination?.id
 
                 // SongsFragment and SettingsFragment have no navigation pathways, so correct

@@ -47,10 +47,13 @@ class SearchFragment : Fragment() {
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater)
 
+        val searchAdapter = SearchAdapter(::onItemSelection) { view, data ->
+            newMenu(view, data)
+        }
+
         // Apply the accents manually. Not going through the mess of converting my app's
         // styling to Material given all the second-and-third-order effects it has.
         val accent = Accent.get().color.toColor(requireContext())
-        val searchAdapter = SearchAdapter(::onItemSelection) { view, data -> newMenu(view, data) }
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         val defaultParams = toolbarParams.scrollFlags
 
@@ -59,13 +62,14 @@ class SearchFragment : Fragment() {
         binding.searchToolbar.apply {
             menu.findItem(searchModel.filterMode.toId()).isChecked = true
 
-            setOnMenuItemClickListener {
-                if (it.itemId != R.id.submenu_filtering) {
-                    it.isChecked = true
-                    searchModel.updateFilterModeWithId(it.itemId, requireContext())
-
+            setOnMenuItemClickListener { item ->
+                if (item.itemId != R.id.submenu_filtering) {
+                    searchModel.updateFilterModeWithId(item.itemId, requireContext())
+                    item.isChecked = true
                     true
-                } else false
+                } else {
+                    false
+                }
             }
         }
 
@@ -75,9 +79,9 @@ class SearchFragment : Fragment() {
             setEndIconTintList(R.color.control_color.toStateList(context))
         }
 
-        binding.searchEditText.addTextChangedListener {
+        binding.searchEditText.addTextChangedListener { text ->
             // Run the search with the updated text as the query
-            searchModel.doSearch(it?.toString() ?: "", requireContext())
+            searchModel.doSearch(text?.toString() ?: "", requireContext())
         }
 
         binding.searchRecycler.apply {
@@ -96,12 +100,12 @@ class SearchFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        searchModel.searchResults.observe(viewLifecycleOwner) {
-            searchAdapter.submitList(it) {
+        searchModel.searchResults.observe(viewLifecycleOwner) { results ->
+            searchAdapter.submitList(results) {
                 binding.searchRecycler.scrollToPosition(0)
             }
 
-            if (it.isEmpty()) {
+            if (results.isEmpty()) {
                 // If the data is empty, then the ability for the toolbar to collapse
                 // on scroll should be disabled.
                 binding.searchAppbar.setExpanded(true)
@@ -113,18 +117,16 @@ class SearchFragment : Fragment() {
             }
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                findNavController().navigate(
-                    when (it) {
-                        is Song -> SearchFragmentDirections.actionShowAlbum(it.album.id)
-                        is Album -> SearchFragmentDirections.actionShowAlbum(it.id)
-                        is Artist -> SearchFragmentDirections.actionShowArtist(it.id)
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            findNavController().navigate(
+                when (item) {
+                    is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
+                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
+                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
 
-                        else -> return@observe
-                    }
-                )
-            }
+                    else -> return@observe
+                }
+            )
         }
 
         logD("Fragment created.")
@@ -135,7 +137,7 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        searchModel.updateNavigationStatus(false)
+        searchModel.setNavigating(false)
     }
 
     override fun onDestroyView() {
@@ -159,7 +161,7 @@ class SearchFragment : Fragment() {
         requireView().rootView.clearFocus()
 
         if (!searchModel.isNavigating) {
-            searchModel.updateNavigationStatus(true)
+            searchModel.setNavigating(true)
 
             logD("Navigating to the detail fragment for ${item.name}")
 
@@ -172,7 +174,7 @@ class SearchFragment : Fragment() {
                     // If given model wasn't valid, then reset the navigation status
                     // and abort the navigation.
                     else -> {
-                        searchModel.updateNavigationStatus(false)
+                        searchModel.setNavigating(false)
                         return
                     }
                 }

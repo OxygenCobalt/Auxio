@@ -90,8 +90,8 @@ class ArtistDetailAdapter(
 
         if (album != null) {
             // Use existing data instead of having to re-sort it.
-            val pos = currentList.indexOfFirst {
-                it.name == album.name && it is Album
+            val pos = currentList.indexOfFirst { item ->
+                item.name == album.name && item is Album
             }
 
             // Check if the ViewHolder if this album is visible, and highlight it if so.

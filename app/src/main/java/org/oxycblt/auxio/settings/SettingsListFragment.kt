@@ -51,7 +51,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     private fun recursivelyHandleChildren(pref: Preference) {
         if (pref is PreferenceCategory) {
             // If this preference is a category of its own, handle its own children
-            pref.children.forEach { recursivelyHandleChildren(it) }
+            pref.children.forEach { pref ->
+                recursivelyHandleChildren(pref)
+            }
         } else {
             handlePreference(pref)
         }
@@ -151,9 +153,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             // has a bug where ugly dividers will show with the RecyclerView even if you disable them.
             // This is why I hate using third party libraries.
             val recycler = RecyclerView(requireContext()).apply {
-                adapter = AccentAdapter {
-                    if (it != Accent.get()) {
-                        settingsManager.accent = it
+                adapter = AccentAdapter { accent ->
+                    if (accent != Accent.get()) {
+                        // TODO: Move this to Accent.set?
+                        settingsManager.accent = accent
 
                         requireActivity().recreate()
                     }
@@ -179,11 +182,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             }
 
             customView(view = recycler)
-
             invalidateDividers(showTop = false, showBottom = false)
-
             negativeButton(android.R.string.cancel)
-
             show()
         }
     }

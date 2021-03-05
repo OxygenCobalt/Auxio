@@ -62,8 +62,8 @@ class ActionMenu(
         }
 
         inflate(menuRes)
-        setOnMenuItemClickListener {
-            onMenuClick(it.itemId)
+        setOnMenuItemClickListener { item ->
+            onMenuClick(item.itemId)
             true
         }
     }

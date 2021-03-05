@@ -24,16 +24,16 @@ enum class LoopMode {
      */
     fun toInt(): Int {
         return when (this) {
-            NONE -> CONSTANT_NONE
-            ONCE -> CONSTANT_ONCE
-            INFINITE -> CONSTANT_INFINITE
+            NONE -> CONST_NONE
+            ONCE -> CONST_ONCE
+            INFINITE -> CONST_INFINITE
         }
     }
 
     companion object {
-        const val CONSTANT_NONE = 0xA050
-        const val CONSTANT_ONCE = 0xA051
-        const val CONSTANT_INFINITE = 0xA052
+        private const val CONST_NONE = 0xA050
+        private const val CONST_ONCE = 0xA051
+        private const val CONST_INFINITE = 0xA052
 
         /**
          * Convert an int [constant] into a LoopMode
@@ -41,9 +41,9 @@ enum class LoopMode {
          */
         fun fromInt(constant: Int): LoopMode? {
             return when (constant) {
-                CONSTANT_NONE -> NONE
-                CONSTANT_ONCE -> ONCE
-                CONSTANT_INFINITE -> INFINITE
+                CONST_NONE -> NONE
+                CONST_ONCE -> ONCE
+                CONST_INFINITE -> INFINITE
 
                 else -> null
             }

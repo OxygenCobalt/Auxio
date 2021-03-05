@@ -37,24 +37,23 @@ class LibraryFragment : Fragment() {
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
 
-        val libraryAdapter = LibraryAdapter(::navToDetail) { view, data -> newMenu(view, data) }
+        val libraryAdapter = LibraryAdapter(::navToDetail) { view, data ->
+            newMenu(view, data)
+        }
 
         // --- UI SETUP ---
 
         binding.libraryToolbar.apply {
             menu.findItem(libraryModel.sortMode.toMenuId()).isChecked = true
 
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.submenu_sorting -> {}
-
-                    else -> {
-                        it.isChecked = true
-                        libraryModel.updateSortMode(it.itemId)
-                    }
+            setOnMenuItemClickListener { item ->
+                if (item.itemId != R.id.submenu_sorting) {
+                    libraryModel.updateSortMode(item.itemId)
+                    item.isChecked = true
+                    true
+                } else {
+                    false
                 }
-
-                true
             }
         }
 
@@ -70,18 +69,18 @@ class LibraryFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        libraryModel.libraryData.observe(viewLifecycleOwner) {
-            libraryAdapter.updateData(it)
+        libraryModel.libraryData.observe(viewLifecycleOwner) { data ->
+            libraryAdapter.updateData(data)
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                libraryModel.updateNavigationStatus(false)
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            if (item != null) {
+                libraryModel.setNavigating(false)
 
-                if (it is Parent) {
-                    navToDetail(it)
-                } else if (it is Song) {
-                    navToDetail(it.album)
+                if (item is Parent) {
+                    navToDetail(item)
+                } else if (item is Song) {
+                    navToDetail(item.album)
                 }
             }
         }
@@ -94,7 +93,7 @@ class LibraryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        libraryModel.updateNavigationStatus(false)
+        libraryModel.setNavigating(false)
     }
 
     override fun onDestroyView() {
@@ -110,7 +109,7 @@ class LibraryFragment : Fragment() {
         requireView().rootView.clearFocus()
 
         if (!libraryModel.isNavigating) {
-            libraryModel.updateNavigationStatus(true)
+            libraryModel.setNavigating(true)
 
             logD("Navigating to the detail fragment for ${parent.name}")
 

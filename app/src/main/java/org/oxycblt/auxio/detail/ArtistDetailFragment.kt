@@ -11,7 +11,6 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionMenu
@@ -44,16 +43,18 @@ class ArtistDetailFragment : DetailFragment() {
 
         val detailAdapter = ArtistDetailAdapter(
             detailModel, playbackModel, viewLifecycleOwner,
-            doOnClick = {
+            doOnClick = { album ->
                 if (!detailModel.isNavigating) {
-                    detailModel.updateNavigationStatus(true)
+                    detailModel.setNavigating(true)
 
                     findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(it.id)
+                        ArtistDetailFragmentDirections.actionShowAlbum(album.id)
                     )
                 }
             },
-            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ARTIST) }
+            doOnLongClick = { view, data ->
+                newMenu(view, data, ActionMenu.FLAG_IN_ARTIST)
+            }
         )
 
         // --- UI SETUP ---
@@ -76,26 +77,28 @@ class ArtistDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) {
-            if (it != null) {
-                // If the artist matches, no need to do anything, otherwise launch a new detail
-                if (it is Artist) {
-                    if (it.id == detailModel.currentArtist.value!!.id) {
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            when (item) {
+                is Artist -> {
+                    if (item.id == detailModel.currentArtist.value!!.id) {
                         binding.detailRecycler.scrollToPosition(0)
                         detailModel.doneWithNavToItem()
                     } else {
                         findNavController().navigate(
-                            ArtistDetailFragmentDirections.actionShowArtist(it.id)
+                            ArtistDetailFragmentDirections.actionShowArtist(item.id)
                         )
                     }
-                } else if (it !is Genre) {
-                    // Determine the album id of the song or album, and then launch it otherwise
-                    val albumId = if (it is Song) it.album.id else it.id
-
-                    findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(albumId)
-                    )
                 }
+
+                is Album -> findNavController().navigate(
+                    ArtistDetailFragmentDirections.actionShowAlbum(item.id)
+                )
+
+                is Song -> findNavController().navigate(
+                    ArtistDetailFragmentDirections.actionShowAlbum(item.album.id)
+                )
+
+                else -> {}
             }
         }
 

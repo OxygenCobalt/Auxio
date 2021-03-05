@@ -49,10 +49,11 @@ class QueueFragment : Fragment() {
             }
 
             if (!requireActivity().isIrregularLandscape() && isEdgeOn()) {
-                setOnApplyWindowInsetsListener @Suppress("DEPRECATION") { _, insets ->
+                setOnApplyWindowInsetsListener { _, insets ->
                     val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         insets.getInsets(WindowInsets.Type.systemBars()).top
                     } else {
+                        @Suppress("DEPRECATION")
                         insets.systemWindowInsetTop
                     }
 
@@ -74,8 +75,8 @@ class QueueFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.userQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
+        playbackModel.userQueue.observe(viewLifecycleOwner) { userQueue ->
+            if (userQueue.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
                 findNavController().navigateUp()
 
                 return@observe
@@ -84,17 +85,17 @@ class QueueFragment : Fragment() {
             queueAdapter.submitList(createQueueData())
         }
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
-            if (it.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { nextQueue ->
+            if (nextQueue.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
                 findNavController().navigateUp()
             }
 
             queueAdapter.submitList(createQueueData())
         }
 
-        playbackModel.isShuffling.observe(viewLifecycleOwner) {
-            if (it != lastShuffle) {
-                lastShuffle = it
+        playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
+            if (isShuffling != lastShuffle) {
+                lastShuffle = isShuffling
 
                 binding.queueRecycler.scrollToPosition(0)
             }
@@ -109,21 +110,27 @@ class QueueFragment : Fragment() {
      */
     private fun createQueueData(): MutableList<BaseModel> {
         val queue = mutableListOf<BaseModel>()
+        val userQueue = playbackModel.userQueue.value!!
+        val nextQueue = playbackModel.nextItemsInQueue.value!!
 
-        if (playbackModel.userQueue.value!!.isNotEmpty()) {
-            queue.add(Header(id = -2, name = getString(R.string.label_next_user_queue), isAction = true))
-            queue.addAll(playbackModel.userQueue.value!!)
+        if (userQueue.isNotEmpty()) {
+            queue += Header(
+                id = -2,
+                name = getString(R.string.label_next_user_queue),
+                isAction = true
+            )
+
+            queue += userQueue
         }
 
-        if (playbackModel.nextItemsInQueue.value!!.isNotEmpty()) {
-            queue.add(
-                Header(
-                    id = -3,
-                    name = getString(R.string.format_next_from, getParentName()),
-                    isAction = false
-                )
+        if (nextQueue.isNotEmpty()) {
+            queue += Header(
+                id = -3,
+                name = getString(R.string.format_next_from, getParentName()),
+                isAction = false
             )
-            queue.addAll(playbackModel.nextItemsInQueue.value!!)
+
+            queue += nextQueue
         }
 
         return queue

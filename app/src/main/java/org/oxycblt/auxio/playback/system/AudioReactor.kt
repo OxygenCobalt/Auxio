@@ -93,7 +93,7 @@ class AudioReactor(
                 onEnd = { player.volume = VOLUME_FULL }
             )
             addUpdateListener {
-                player.volume = it.animatedValue as Float
+                player.volume = animatedValue as Float
             }
             start()
         }

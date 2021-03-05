@@ -5,12 +5,10 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.text.isDigitsOnly
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.getPlural
 
 /**
@@ -168,12 +166,4 @@ fun TextView.bindAlbumInfo(album: Album) {
 @BindingAdapter("albumYear")
 fun TextView.bindAlbumYear(album: Album) {
     text = album.year.toYear(context)
-}
-
-/**
- * Bind the [SortMode] icon for an ImageButton.
- */
-@BindingAdapter("sortIcon")
-fun ImageButton.bindSortIcon(mode: SortMode) {
-    setImageResource(mode.iconRes)
 }

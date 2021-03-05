@@ -196,8 +196,7 @@ fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
  * @return True if we are in the irregular landscape mode, false if not.
  */
 fun Activity.isIrregularLandscape(): Boolean {
-    return isLandscape(resources) &&
-        !isSystemBarOnBottom(this)
+    return isLandscape(resources) && !isSystemBarOnBottom(this)
 }
 
 /**

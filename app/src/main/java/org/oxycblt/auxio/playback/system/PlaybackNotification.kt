@@ -77,14 +77,12 @@ class PlaybackNotification private constructor(
         if (colorize) {
             // loadBitmap() is concurrent, so only call back to the object calling this function when
             // the loading is over.
-            loadBitmap(context, song) {
-                setLargeIcon(it)
-
+            loadBitmap(context, song) { bitmap ->
+                setLargeIcon(bitmap)
                 onDone()
             }
         } else {
             setLargeIcon(null)
-
             onDone()
         }
     }
@@ -114,9 +112,7 @@ class PlaybackNotification private constructor(
      * Apply the current [parent] to the header of the notification.
      */
     fun setParent(context: Context, parent: Parent?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return
-        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS
         setSubText(parent?.displayName ?: context.getString(R.string.label_all_songs))

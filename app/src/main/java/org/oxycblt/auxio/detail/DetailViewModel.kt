@@ -16,26 +16,27 @@ import org.oxycblt.auxio.recycler.SortMode
  */
 class DetailViewModel : ViewModel() {
     private val mCurrentGenre = MutableLiveData<Genre?>()
-    private val mCurrentArtist = MutableLiveData<Artist?>()
-    private val mCurrentAlbum = MutableLiveData<Album?>()
-
-    private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
-    private val mArtistSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
-    private val mAlbumSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
-
-    private val mNavToItem = MutableLiveData<BaseModel?>()
-    private var mIsNavigating = false
-
     val currentGenre: LiveData<Genre?> get() = mCurrentGenre
+
+    private val mCurrentArtist = MutableLiveData<Artist?>()
     val currentArtist: LiveData<Artist?> get() = mCurrentArtist
+
+    private val mCurrentAlbum = MutableLiveData<Album?>()
     val currentAlbum: LiveData<Album?> get() = mCurrentAlbum
 
+    private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
     val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
+
+    private val mArtistSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
+
+    private val mAlbumSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
     val artistSortMode: LiveData<SortMode> get() = mArtistSortMode
 
+    private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
 
+    private val mNavToItem = MutableLiveData<BaseModel?>()
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
@@ -106,7 +107,7 @@ class DetailViewModel : ViewModel() {
     /**
      * Update the current navigation status to [isNavigating]
      */
-    fun updateNavigationStatus(isNavigating: Boolean) {
+    fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
     }
 }

@@ -61,23 +61,21 @@ class QueueAdapter(
                 ItemQueueSongBinding.inflate(parent.context.inflater)
             )
 
-            else -> error("Someone messed with the ViewHolder item types.")
+            else -> error("Invalid viewholder item type $viewType.")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = data[position]) {
             is Song -> (holder as QueueSongViewHolder).bind(item)
-            is Header ->
-                if (item.isAction) {
-                    (holder as UserQueueHeaderViewHolder).bind(item)
-                } else {
-                    (holder as HeaderViewHolder).bind(item)
-                }
 
-            else -> {
-                logE("Bad data fed to QueueAdapter.")
+            is Header -> if (item.isAction) {
+                (holder as UserQueueHeaderViewHolder).bind(item)
+            } else {
+                (holder as HeaderViewHolder).bind(item)
             }
+
+            else -> logE("Bad data given to QueueAdapter.")
         }
     }
 
@@ -95,7 +93,7 @@ class QueueAdapter(
 
     /**
      * Move Items.
-     * Used since [submitList] will cause QueueAdapter to freak-out here.
+     * Used since [submitList] will cause QueueAdapter to freak out.
      */
     fun moveItems(adapterFrom: Int, adapterTo: Int) {
         val item = data.removeAt(adapterFrom)
@@ -106,7 +104,7 @@ class QueueAdapter(
 
     /**
      * Remove an item.
-     * Used since [submitList] will cause QueueAdapter to freak-out here.
+     * Used since [submitList] will cause QueueAdapter to freak out.
      */
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
@@ -154,10 +152,8 @@ class QueueAdapter(
 
                 if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                     touchHelper.startDrag(this)
-                    return@setOnTouchListener true
-                }
-
-                false
+                    true
+                } else false
             }
         }
     }

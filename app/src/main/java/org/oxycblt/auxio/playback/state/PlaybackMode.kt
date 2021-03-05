@@ -20,18 +20,18 @@ enum class PlaybackMode {
      */
     fun toInt(): Int {
         return when (this) {
-            IN_ARTIST -> CONSTANT_IN_ARTIST
-            IN_GENRE -> CONSTANT_IN_GENRE
-            IN_ALBUM -> CONSTANT_IN_ALBUM
-            ALL_SONGS -> CONSTANT_ALL_SONGS
+            IN_ARTIST -> CONST_IN_ARTIST
+            IN_GENRE -> CONST_IN_GENRE
+            IN_ALBUM -> CONST_IN_ALBUM
+            ALL_SONGS -> CONST_ALL_SONGS
         }
     }
 
     companion object {
-        const val CONSTANT_IN_ARTIST = 0xA040
-        const val CONSTANT_IN_GENRE = 0xA041
-        const val CONSTANT_IN_ALBUM = 0xA042
-        const val CONSTANT_ALL_SONGS = 0xA043
+        private const val CONST_IN_ARTIST = 0xA040
+        private const val CONST_IN_GENRE = 0xA041
+        private const val CONST_IN_ALBUM = 0xA042
+        private const val CONST_ALL_SONGS = 0xA043
 
         /**
          * Get a [PlaybackMode] for an int [constant]
@@ -39,10 +39,10 @@ enum class PlaybackMode {
          */
         fun fromInt(constant: Int): PlaybackMode? {
             return when (constant) {
-                CONSTANT_IN_ARTIST -> IN_ARTIST
-                CONSTANT_IN_ALBUM -> IN_ALBUM
-                CONSTANT_IN_GENRE -> IN_GENRE
-                CONSTANT_ALL_SONGS -> ALL_SONGS
+                CONST_IN_ARTIST -> IN_ARTIST
+                CONST_IN_ALBUM -> IN_ALBUM
+                CONST_IN_GENRE -> IN_GENRE
+                CONST_ALL_SONGS -> ALL_SONGS
 
                 else -> null
             }

@@ -185,6 +185,8 @@ class PlaybackStateManager private constructor() {
 
         clearLoopMode()
         updatePlayback(song)
+
+        // Keep shuffle on, if enabled
         setShuffling(settingsManager.keepShuffle && mIsShuffling, keepSong = true)
     }
 
@@ -203,10 +205,12 @@ class PlaybackStateManager private constructor() {
                 mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_ALBUM
             }
+
             is Artist -> {
                 mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_ARTIST
             }
+
             is Genre -> {
                 mQueue = parent.songs.toMutableList()
                 mMode = PlaybackMode.IN_GENRE
@@ -228,6 +232,8 @@ class PlaybackStateManager private constructor() {
 
         setShuffling(true, keepSong = false)
         updatePlayback(mQueue[0])
+
+        // FIXME: Add clearLoopMode here?
     }
 
     /**
@@ -293,9 +299,7 @@ class PlaybackStateManager private constructor() {
             }
 
             clearLoopMode()
-
             updatePlayback(mQueue[mIndex])
-
             forceQueueUpdate()
         }
     }
@@ -307,18 +311,18 @@ class PlaybackStateManager private constructor() {
         when (settingsManager.doAtEnd) {
             SettingsManager.EntryValues.AT_END_LOOP_PAUSE -> {
                 mIndex = 0
-                forceQueueUpdate()
-
-                mSong = mQueue[0]
                 mPosition = 0
-                setPlaying(false)
                 mIsInUserQueue = false
+                mSong = mQueue[0]
+
+                setPlaying(false)
+                forceQueueUpdate()
             }
 
             SettingsManager.EntryValues.AT_END_LOOP -> {
                 mIndex = 0
-                forceQueueUpdate()
 
+                forceQueueUpdate()
                 updatePlayback(mQueue[0])
             }
 
@@ -529,9 +533,9 @@ class PlaybackStateManager private constructor() {
      * @see seekTo
      */
     fun setPosition(position: Long) {
-        mSong?.let {
+        mSong?.let { song ->
             // Don't accept any bugged positions that are over the duration of the song.
-            if (position <= it.duration) {
+            if (position <= song.duration) {
                 mPosition = position
             }
         }
@@ -584,7 +588,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Mark this instance as restored.
      */
-    fun setRestored() {
+    fun markRestored() {
         mIsRestored = true
     }
 
@@ -620,32 +624,34 @@ class PlaybackStateManager private constructor() {
         logD("Getting state from DB.")
 
         val now: Long
-        val state: PlaybackState?
+        val playbackState: PlaybackState?
 
         // The coroutine call is locked at queueItems so that this function does not
         // go ahead until EVERYTHING is read.
+        // TODO: Improve this
         val queueItems = withContext(Dispatchers.IO) {
             now = System.currentTimeMillis()
 
             val database = PlaybackStateDatabase.getInstance(context)
-            state = database.readState()
+
+            playbackState = database.readState()
             database.readQueue()
         }
 
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
-        state?.let {
-            logD("Valid playback state $it")
-            logD("Valid queue size ${queueItems.size}")
+        if (playbackState != null) {
+            logD("Found playback state $playbackState")
+            logD("Found queue size ${queueItems.size}")
 
-            unpackFromPlaybackState(it)
+            unpackFromPlaybackState(playbackState)
             unpackQueue(queueItems)
             doParentSanityCheck()
         }
 
         logD("Restore finished in ${System.currentTimeMillis() - now}ms")
 
-        setRestored()
+        markRestored()
     }
 
     /**
@@ -653,19 +659,14 @@ class PlaybackStateManager private constructor() {
      * @return A [PlaybackState] reflecting the current state.
      */
     private fun packToPlaybackState(): PlaybackState {
-        val songName = mSong?.name ?: ""
-        val parentName = mParent?.name ?: ""
-        val intMode = mMode.toInt()
-        val intLoopMode = mLoopMode.toInt()
-
         return PlaybackState(
-            songName = songName,
+            songName = mSong?.name ?: "",
             position = mPosition,
-            parentName = parentName,
+            parentName = mParent?.name ?: "",
             index = mIndex,
-            mode = intMode,
+            mode = mMode.toInt(),
             isShuffling = mIsShuffling,
-            loopMode = intLoopMode,
+            loopMode = mLoopMode.toInt(),
             inUserQueue = mIsInUserQueue
         )
     }
@@ -695,13 +696,13 @@ class PlaybackStateManager private constructor() {
 
         var queueItemId = 0L
 
-        mUserQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.name, it.album.name, true))
+        mUserQueue.forEach { song ->
+            unified.add(QueueItem(queueItemId, song.name, song.album.name, true))
             queueItemId++
         }
 
-        mQueue.forEach {
-            unified.add(QueueItem(queueItemId, it.name, it.album.name, false))
+        mQueue.forEach { song ->
+            unified.add(QueueItem(queueItemId, song.name, song.album.name, false))
             queueItemId++
         }
 
@@ -714,15 +715,15 @@ class PlaybackStateManager private constructor() {
      */
     private fun unpackQueue(queueItems: List<QueueItem>) {
         // When unpacking, first traverse albums and then traverse album songs to reduce
-        // the amount of useless comparisons in large queues.
+        // the amount of comparisons in large queues.
         queueItems.forEach { item ->
-            musicStore.albums.find { it.name == item.albumName }?.songs?.find {
-                it.name == item.songName
-            }?.let {
+            musicStore.albums.find {
+                it.name == item.albumName
+            }?.songs?.find { it.name == item.songName }?.let { song ->
                 if (item.isUserQueue) {
-                    mUserQueue.add(it)
+                    mUserQueue.add(song)
                 } else {
-                    mQueue.add(it)
+                    mQueue.add(song)
                 }
             }
         }
@@ -731,8 +732,8 @@ class PlaybackStateManager private constructor() {
         // to the db but are now deleted when the restore occurred.
         // Not done if in user queue because that could result in a bad index being created.
         if (!mIsInUserQueue) {
-            mSong?.let {
-                val index = mQueue.indexOf(it)
+            mSong?.let { song ->
+                val index = mQueue.indexOf(song)
                 mIndex = if (index != -1) index else mIndex
             }
         }

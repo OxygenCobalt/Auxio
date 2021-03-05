@@ -64,8 +64,8 @@ class SlideLinearLayout @JvmOverloads constructor(
                 // I dont even know what this does.
                 var consumed = false
 
-                children.forEach {
-                    consumed = consumed or super.drawChild(canvas, it, drawingTime)
+                children.forEach { view ->
+                    consumed = consumed or super.drawChild(canvas, view, drawingTime)
                 }
 
                 return consumed

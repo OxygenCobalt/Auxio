@@ -42,8 +42,8 @@ class LoadingFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        loadingModel.doGrant.observe(viewLifecycleOwner) {
-            if (it) {
+        loadingModel.doGrant.observe(viewLifecycleOwner) { doGrant ->
+            if (doGrant) {
                 permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                 loadingModel.doneWithGrant()
             }
@@ -80,7 +80,9 @@ class LoadingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (MusicStore.getInstance().loaded) {
+        // Navigate away if the music has already been loaded.
+        // This causes a memory leak, but there's nothing I can do about it.
+        if (loadingModel.loaded) {
             findNavController().navigate(
                 LoadingFragmentDirections.actionToMain()
             )
@@ -106,8 +108,8 @@ class LoadingFragment : Fragment() {
 
     private fun onPermResult(granted: Boolean) {
         if (granted) {
-            // If granted, its now safe to load [Which will clear the NO_PERMS response we applied
-            // earlier]
+            // If granted, its now safe to load, which will clear the NO_PERMS response
+            // we applied earlier.
             loadingModel.load()
         }
     }

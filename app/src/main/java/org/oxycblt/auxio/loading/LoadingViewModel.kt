@@ -17,11 +17,12 @@ class LoadingViewModel(private val app: Application) : ViewModel() {
     private val mResponse = MutableLiveData<MusicStore.Response?>(null)
     private val mDoGrant = MutableLiveData(false)
 
+    private var isBusy = false
+
     /** The last response from [MusicStore]. Null if the loading process is occurring. */
     val response: LiveData<MusicStore.Response?> = mResponse
     val doGrant: LiveData<Boolean> = mDoGrant
-
-    private var isBusy = false
+    val loaded: Boolean get() = musicStore.loaded
 
     private val musicStore = MusicStore.getInstance()
 

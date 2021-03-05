@@ -282,7 +282,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, {}
+                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
         }
     }
@@ -365,8 +365,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
-        loadBitmap(this, song) {
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it)
+        loadBitmap(this, song) { bitmap ->
+            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
             mediaSession.setMetadata(builder.build())
         }
     }
@@ -383,8 +383,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }.conflate()
 
         serviceScope.launch {
-            pollFlow.takeWhile { player.isPlaying }.collect {
-                playbackManager.setPosition(it)
+            pollFlow.takeWhile { player.isPlaying }.collect { pos ->
+                playbackManager.setPosition(pos)
             }
         }
     }

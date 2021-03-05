@@ -23,11 +23,17 @@ class SettingsFragment : Fragment() {
 
         binding.settingsToolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.action_open_about) {
-                AboutDialog().show(childFragmentManager, "DIALOG")
+                AboutDialog().show(childFragmentManager, ABOUT_DIALOG_TAG)
                 true
-            } else false
+            } else {
+                false
+            }
         }
 
         return binding.root
+    }
+
+    companion object {
+        private const val ABOUT_DIALOG_TAG = "TAG_ABOUT_DIALOG"
     }
 }

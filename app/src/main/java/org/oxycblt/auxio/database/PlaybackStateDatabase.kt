@@ -132,7 +132,6 @@ class PlaybackStateDatabase(context: Context) :
         assertBackgroundThread()
 
         val database = writableDatabase
-
         var state: PlaybackState? = null
 
         try {
