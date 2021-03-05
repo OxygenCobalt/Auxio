@@ -220,8 +220,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
 
-            logD("Song Status: $song")
-
             return
         }
 

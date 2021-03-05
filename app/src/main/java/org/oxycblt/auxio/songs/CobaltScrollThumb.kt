@@ -24,8 +24,7 @@ import org.oxycblt.auxio.ui.inflater
 
 /**
  * A slimmed-down variant of [com.reddit.indicatorfastscroll.FastScrollerThumbView] designed
- * specifically for Auxio. Also fixes a memory leak that occurs from a bug fix they
- * added.
+ * specifically for Auxio. Also fixes a memory leak that occurs from a bug fix they added.
  * @author OxygenCobalt
  */
 class CobaltScrollThumb @JvmOverloads constructor(
@@ -88,16 +87,18 @@ class CobaltScrollThumb @JvmOverloads constructor(
         }
 
         @Suppress("ClickableViewAccessibility")
-        scrollView.setOnTouchListener { v, event ->
+        scrollView.setOnTouchListener { _, event ->
             scrollView.onTouchEvent(event)
             scrollView.performClick()
 
             val action = event.actionMasked
+            val actionValid = action != MotionEvent.ACTION_UP && action != MotionEvent.ACTION_CANCEL
 
-            // If we arent deselecting the scroll view, determine if we are selecting an item.
-            isActivated = if (
-                action != MotionEvent.ACTION_UP && action != MotionEvent.ACTION_CANCEL
-            ) isPointerOnItem(scrollView, event.y.toInt()) else false
+            isActivated = if (actionValid) {
+                isPointerOnItem(scrollView, event.y.toInt())
+            } else {
+                false
+            }
 
             true
         }

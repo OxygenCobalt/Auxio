@@ -9,7 +9,6 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.SettingsManager
 import java.util.Locale
 
 /**
@@ -71,6 +70,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
         /**
          * Get the current accent.
          * @return The current accent
+         * @throws IllegalStateException When the accent has not been set.
          */
         fun get(): Accent {
             val cur = current
@@ -79,11 +79,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
                 return cur
             }
 
-            synchronized(this) {
-                val newCur = SettingsManager.getInstance().accent
-                current = newCur
-                return newCur
-            }
+            error("Accent must be set before retrieving it.")
         }
 
         /**

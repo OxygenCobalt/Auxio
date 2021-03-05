@@ -28,7 +28,7 @@ class MusicStore private constructor() {
     val songs: List<Song> get() = mSongs
 
     /** All parent models (ex Albums, Artists) loaded by Auxio */
-    val parents: MutableList<Parent> by lazy {
+    val parents: List<Parent> by lazy {
         mutableListOf<Parent>().apply {
             addAll(mGenres)
             addAll(mArtists)
@@ -50,7 +50,7 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Do the internal music loading process.
+     * Do the actual music loading process internally.
      */
     private fun loadMusicInternal(context: Context): Response {
         logD("Starting initial music load...")

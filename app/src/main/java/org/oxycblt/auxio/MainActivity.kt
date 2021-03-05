@@ -30,13 +30,10 @@ class MainActivity : AppCompatActivity() {
         )
 
         val settingsManager = SettingsManager.getInstance()
+        val newAccent = Accent.set(settingsManager.accent)
 
         AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
-
-        val accent = Accent.set(settingsManager.accent)
-
-        // Apply the theme
-        setTheme(accent.theme)
+        setTheme(newAccent.theme)
 
         if (isEdgeOn()) {
             doEdgeToEdgeSetup(binding)

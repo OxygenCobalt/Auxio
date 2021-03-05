@@ -183,9 +183,7 @@ class PlaybackStateManager private constructor() {
 
         mMode = mode
 
-        clearLoopMode()
         updatePlayback(song)
-
         // Keep shuffle on, if enabled
         setShuffling(settingsManager.keepShuffle && mIsShuffling, keepSong = true)
     }
@@ -217,7 +215,6 @@ class PlaybackStateManager private constructor() {
             }
         }
 
-        clearLoopMode()
         setShuffling(shuffled, keepSong = false)
         updatePlayback(mQueue[0])
     }
@@ -232,8 +229,6 @@ class PlaybackStateManager private constructor() {
 
         setShuffling(true, keepSong = false)
         updatePlayback(mQueue[0])
-
-        // FIXME: Add clearLoopMode here?
     }
 
     /**
@@ -248,6 +243,8 @@ class PlaybackStateManager private constructor() {
         if (!mIsPlaying) {
             setPlaying(true)
         }
+
+        clearLoopMode()
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -256,8 +253,6 @@ class PlaybackStateManager private constructor() {
      * Go to the next song, along with doing all the checks that entails.
      */
     fun next() {
-        clearLoopMode()
-
         // If there's anything in the user queue, go to the first song in there instead
         // of incrementing the index.
         if (mUserQueue.isNotEmpty()) {
@@ -298,7 +293,6 @@ class PlaybackStateManager private constructor() {
                 mIndex = mIndex.dec()
             }
 
-            clearLoopMode()
             updatePlayback(mQueue[mIndex])
             forceQueueUpdate()
         }
@@ -315,6 +309,7 @@ class PlaybackStateManager private constructor() {
                 mIsInUserQueue = false
                 mSong = mQueue[0]
 
+                clearLoopMode()
                 setPlaying(false)
                 forceQueueUpdate()
             }
@@ -623,33 +618,30 @@ class PlaybackStateManager private constructor() {
     suspend fun restoreFromDatabase(context: Context) {
         logD("Getting state from DB.")
 
-        val now: Long
+        val start: Long
         val playbackState: PlaybackState?
+        val queueItems: List<QueueItem>
 
-        // The coroutine call is locked at queueItems so that this function does not
-        // go ahead until EVERYTHING is read.
-        // TODO: Improve this
-        val queueItems = withContext(Dispatchers.IO) {
-            now = System.currentTimeMillis()
+        withContext(Dispatchers.IO) {
+            start = System.currentTimeMillis()
 
             val database = PlaybackStateDatabase.getInstance(context)
 
             playbackState = database.readState()
-            database.readQueue()
+            queueItems = database.readQueue()
         }
 
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
         if (playbackState != null) {
-            logD("Found playback state $playbackState")
-            logD("Found queue size ${queueItems.size}")
+            logD("Found playback state $playbackState with queue size ${queueItems.size}")
 
             unpackFromPlaybackState(playbackState)
             unpackQueue(queueItems)
             doParentSanityCheck()
         }
 
-        logD("Restore finished in ${System.currentTimeMillis() - now}ms")
+        logD("Restore finished in ${System.currentTimeMillis() - start}ms")
 
         markRestored()
     }
@@ -717,9 +709,9 @@ class PlaybackStateManager private constructor() {
         // When unpacking, first traverse albums and then traverse album songs to reduce
         // the amount of comparisons in large queues.
         queueItems.forEach { item ->
-            musicStore.albums.find {
-                it.name == item.albumName
-            }?.songs?.find { it.name == item.songName }?.let { song ->
+            val album = musicStore.albums.find { it.name == item.albumName }
+
+            album?.songs?.find { it.name == item.songName }?.let { song ->
                 if (item.isUserQueue) {
                     mUserQueue.add(song)
                 } else {

@@ -155,7 +155,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             val recycler = RecyclerView(requireContext()).apply {
                 adapter = AccentAdapter { accent ->
                     if (accent != Accent.get()) {
-                        // TODO: Move this to Accent.set?
                         settingsManager.accent = accent
 
                         requireActivity().recreate()
