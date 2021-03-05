@@ -20,9 +20,7 @@ import org.oxycblt.auxio.music.MusicStore
  * @author OxygenCobalt
  */
 class LoadingFragment : Fragment() {
-    private val loadingModel: LoadingViewModel by viewModels {
-        LoadingViewModel.Factory(requireActivity().application)
-    }
+    private val loadingModel: LoadingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +69,7 @@ class LoadingFragment : Fragment() {
         }
 
         if (loadingModel.response.value == null) {
-            loadingModel.load()
+            loadingModel.load(requireContext())
         }
 
         return binding.root
@@ -110,7 +108,7 @@ class LoadingFragment : Fragment() {
         if (granted) {
             // If granted, its now safe to load, which will clear the NO_PERMS response
             // we applied earlier.
-            loadingModel.load()
+            loadingModel.load(requireContext())
         }
     }
 

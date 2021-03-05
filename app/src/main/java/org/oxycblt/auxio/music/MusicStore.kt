@@ -1,7 +1,7 @@
 package org.oxycblt.auxio.music
 
-import android.app.Application
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import kotlinx.coroutines.Dispatchers
@@ -42,42 +42,45 @@ class MusicStore private constructor() {
 
     /**
      * Load/Sort the entire music library. Should always be ran on a coroutine.
-     * @param app [Application] required to load the music.
      */
-    suspend fun load(app: Application): Response {
+    suspend fun load(context: Context): Response {
         return withContext(Dispatchers.IO) {
-            // TODO: Move this to an internal function
-            this@MusicStore.logD("Starting initial music load...")
+            loadMusicInternal(context)
+        }
+    }
 
+    /**
+     * Do the internal music loading process.
+     */
+    private fun loadMusicInternal(context: Context): Response {
+        logD("Starting initial music load...")
+
+        try {
             val start = System.currentTimeMillis()
 
-            try {
-                val loader = MusicLoader(app)
-                loader.load()
+            val loader = MusicLoader(context)
+            loader.load()
 
-                if (loader.songs.isEmpty()) {
-                    return@withContext Response.NO_MUSIC
-                }
-
-                mSongs = loader.songs
-                mAlbums = loader.albums
-                mArtists = loader.artists
-                mGenres = loader.genres
-
-                this@MusicStore.logD(
-                    "Music load completed successfully in ${System.currentTimeMillis() - start}ms."
-                )
-            } catch (e: Exception) {
-                logE("Something went horribly wrong.")
-                logE(e.stackTraceToString())
-
-                return@withContext Response.FAILED
+            if (loader.songs.isEmpty()) {
+                return Response.NO_MUSIC
             }
 
-            loaded = true
+            mSongs = loader.songs
+            mAlbums = loader.albums
+            mArtists = loader.artists
+            mGenres = loader.genres
 
-            return@withContext Response.SUCCESS
+            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms.")
+        } catch (e: Exception) {
+            logE("Something went horribly wrong.")
+            logE(e.stackTraceToString())
+
+            return Response.FAILED
         }
+
+        loaded = true
+
+        return Response.SUCCESS
     }
 
     /**

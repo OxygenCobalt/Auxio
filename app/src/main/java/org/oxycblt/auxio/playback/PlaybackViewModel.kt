@@ -172,6 +172,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         if (playbackManager.isRestored && musicStore.loaded) {
             playWithUriInternal(uri, context)
         } else {
+            logD("Cant play this URI right now, waiting...")
+
             mIntentUri = uri
         }
     }

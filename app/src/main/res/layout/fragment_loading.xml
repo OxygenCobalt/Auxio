@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
-            android:onClick="@{() -> loadingModel.load()}"
+            android:onClick="@{() -> loadingModel.load(context)}"
             android:text="@string/label_retry"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone"

@@ -12,8 +12,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.getPlural
 
 /**
- * List of ID3 genres + Winamp extensions, each index corresponds to their int value.
- * There are a lot more int-genre extensions as far as Im aware, but this works for most cases.
+ * A complete array of all the hardcoded genre values for ID3 <v3, contains standard genres and
+ * winamp extensions.
  */
 private val ID3_GENRES = arrayOf(
     // ID3 Standard

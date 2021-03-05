@@ -247,8 +247,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         notification.setPlaying(this, isPlaying)
         startForegroundOrNotify()
-
-        logD("Playing Status: $isPlaying")
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
