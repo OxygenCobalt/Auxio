@@ -52,8 +52,8 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
         val streams = mutableListOf<InputStream>()
 
         // Load MediaStore streams
-        uris.forEach {
-            val stream: InputStream? = context.contentResolver.openInputStream(it)
+        uris.forEach { uri ->
+            val stream: InputStream? = context.contentResolver.openInputStream(uri)
 
             if (stream != null) {
                 streams.add(stream)
@@ -88,7 +88,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
      */
     private fun drawMosaic(streams: List<InputStream>): Bitmap {
         val mosaicBitmap = Bitmap.createBitmap(
-            MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.RGB_565
+            MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.ARGB_8888
         )
 
         val canvas = Canvas(mosaicBitmap)
