@@ -54,9 +54,9 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${PlaybackState.COLUMN_SONG_NAME} STRING NOT NULL,")
+            .append("${PlaybackState.COLUMN_SONG_NAME} TEXT NOT NULL,")
             .append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
-            .append("${PlaybackState.COLUMN_PARENT_NAME} STRING NOT NULL,")
+            .append("${PlaybackState.COLUMN_PARENT_NAME} TEXT NOT NULL,")
             .append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
@@ -71,8 +71,8 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${QueueItem.COLUMN_SONG_NAME} LONG NOT NULL,")
-            .append("${QueueItem.COLUMN_ALBUM_NAME} LONG NOT NULL,")
+            .append("${QueueItem.COLUMN_SONG_NAME} TEXT NOT NULL,")
+            .append("${QueueItem.COLUMN_ALBUM_NAME} TEXT NOT NULL,")
             .append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
@@ -279,8 +279,8 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     companion object {
-        const val DB_VERSION = 2
-        const val DB_NAME = "auxio_state_database"
+        const val DB_VERSION = 3
+        const val DB_NAME = "auxio_state_database.db"
 
         const val TABLE_NAME_STATE = "playback_state_table"
         const val TABLE_NAME_QUEUE = "queue_table"
