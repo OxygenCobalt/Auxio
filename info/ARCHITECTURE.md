@@ -42,7 +42,6 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 ├──.library        # Library UI
 ├──.loading        # Loading UI
 ├──.music          # Music storage and loading
-│  └──.processing  # Systems for music loading and organization
 ├──.playback       # Playback UI and systems
 │  ├──.queue       # Queue user interface
 │  ├──.state       # Backend/Modes for the playback state

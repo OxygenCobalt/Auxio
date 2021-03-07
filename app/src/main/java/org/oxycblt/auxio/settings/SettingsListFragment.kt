@@ -48,14 +48,14 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     /**
      * Recursively call [handlePreference] on a preference.
      */
-    private fun recursivelyHandleChildren(pref: Preference) {
-        if (pref is PreferenceCategory) {
+    private fun recursivelyHandleChildren(preference: Preference) {
+        if (preference is PreferenceCategory) {
             // If this preference is a category of its own, handle its own children
-            pref.children.forEach { pref ->
+            preference.children.forEach { pref ->
                 recursivelyHandleChildren(pref)
             }
         } else {
-            handlePreference(pref)
+            handlePreference(preference)
         }
     }
 

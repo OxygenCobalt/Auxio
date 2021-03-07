@@ -53,7 +53,8 @@ private val ID3_GENRES = arrayOf(
 
 /**
  * Convert legacy int-based ID3 genres to their human-readable genre
- * @return The named genre for this legacy genre, null if there is no need to parse it or if the genre is invalid.
+ * @return The named genre for this legacy genre, null if there is no need to parse it
+ * or if the genre is invalid.
  */
 fun String.getGenreNameCompat(): String? {
     if (isDigitsOnly()) {

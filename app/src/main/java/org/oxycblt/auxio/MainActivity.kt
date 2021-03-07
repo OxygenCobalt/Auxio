@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(newAccent.theme)
 
         if (isEdgeOn()) {
-            doEdgeToEdgeSetup(binding)
+            setupEdgeToEdge(binding)
         }
     }
 
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun doEdgeToEdgeSetup(binding: ActivityMainBinding) {
+    private fun setupEdgeToEdge(binding: ActivityMainBinding) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Do modern edge to edge, which happens to be around twice the size of the
             // old way of doing things. Thanks android, very cool!

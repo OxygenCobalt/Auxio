@@ -43,28 +43,8 @@ class QueueFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.queueToolbar.apply {
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-
-            if (!requireActivity().isIrregularLandscape() && isEdgeOn()) {
-                setOnApplyWindowInsetsListener { _, insets ->
-                    val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        insets.getInsets(WindowInsets.Type.systemBars()).top
-                    } else {
-                        @Suppress("DEPRECATION")
-                        insets.systemWindowInsetTop
-                    }
-
-                    (parent as View).updatePadding(top = top)
-
-                    insets
-                }
-            } else {
-                // Dont even bother w/edge-to-edge if the navigation bar is on the side
-                binding.root.fitsSystemWindows = true
-            }
+        binding.queueToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
         binding.queueRecycler.apply {
@@ -72,6 +52,8 @@ class QueueFragment : Fragment() {
             adapter = queueAdapter
             helper.attachToRecyclerView(this)
         }
+
+        setupEdgeForQueue(binding)
 
         // --- VIEWMODEL SETUP ----
 
@@ -103,6 +85,46 @@ class QueueFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun setupEdgeForQueue(binding: FragmentQueueBinding) {
+        if (isEdgeOn() && !requireActivity().isIrregularLandscape()) {
+            binding.queueToolbar.setOnApplyWindowInsetsListener { v, insets ->
+                val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(WindowInsets.Type.systemBars()).top
+                } else {
+                    @Suppress("DEPRECATION")
+                    insets.systemWindowInsetTop
+                }
+
+                (v.parent as View).updatePadding(top = top)
+
+                insets
+            }
+
+            binding.queueRecycler.setOnApplyWindowInsetsListener { v, insets ->
+                val bottom = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(WindowInsets.Type.systemBars()).bottom
+                } else {
+                    @Suppress("DEPRECATION")
+                    insets.systemWindowInsetBottom
+                }
+
+                // Apply bottom padding to make sure that the last queue item isnt incorrectly lost,
+                // but also make sure that the added padding wont clip the child views entirely.
+                (v as ViewGroup).apply {
+                    clipToPadding = false
+                    updatePadding(bottom = bottom)
+                }
+
+                insets
+            }
+        } else {
+            // Don't even bother if we are in phone landscape or if edge-to-edge is off.
+            binding.root.fitsSystemWindows = true
+        }
+    }
+
+    // --- QUEUE DATA ---
 
     /**
      * Create the queue data that should be displayed
