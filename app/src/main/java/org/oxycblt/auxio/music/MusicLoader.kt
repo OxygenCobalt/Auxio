@@ -8,6 +8,7 @@ import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.database.BlacklistDatabase
 import org.oxycblt.auxio.logD
 
 /**
@@ -22,11 +23,16 @@ class MusicLoader(private val context: Context) {
 
     private val resolver = context.contentResolver
 
+    private var selector = "${Media.IS_MUSIC}=1"
+    private var args = arrayOf<String>()
+
     /**
      * Begin the loading process.
      * Resulting models are pushed to [genres], [artists], [albums], and [songs].
      */
     fun load() {
+        buildSelector()
+
         loadGenres()
         loadAlbums()
         loadSongs()
@@ -34,6 +40,17 @@ class MusicLoader(private val context: Context) {
         linkAlbums()
         buildArtists()
         linkGenres()
+    }
+
+    private fun buildSelector() {
+        val blacklistDatabase = BlacklistDatabase.getInstance(context)
+
+        val paths = blacklistDatabase.getPaths()
+
+        for (path in paths) {
+            selector += " AND ${Media.DATA} NOT LIKE ?"
+            args += "$path%" // Append % so that the selector properly detects children
+        }
     }
 
     private fun loadGenres() {
@@ -127,7 +144,7 @@ class MusicLoader(private val context: Context) {
                 Media.TRACK, // 4
                 Media.DURATION // 5
             ),
-            "${Media.IS_MUSIC}=1", null,
+            selector, args,
             Media.DEFAULT_SORT_ORDER
         )
 
@@ -222,7 +239,7 @@ class MusicLoader(private val context: Context) {
             val songCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(Genres.Members._ID),
-                null, null, null
+                null, null, null // Dont even bother selecting here as useless iters are less expensive than IO
             )
 
             songCursor?.use { cursor ->
