@@ -2,7 +2,6 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -71,7 +70,7 @@ class SettingsManager private constructor(context: Context) :
         get() = sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     /** What to display on the library. */
-    val libraryDisplayMode: DisplayMode
+    val libraryDisplayMode: org.oxycblt.auxio.recycler.DisplayMode
         get() = DisplayMode.valueOfOrFallback(
             sharedPrefs.getString(
                 Keys.KEY_LIBRARY_DISPLAY_MODE,
@@ -264,7 +263,7 @@ class SettingsManager private constructor(context: Context) :
     interface Callback {
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
-        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
+        fun onLibDisplayModeUpdate(displayMode: org.oxycblt.auxio.recycler.DisplayMode) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
     }

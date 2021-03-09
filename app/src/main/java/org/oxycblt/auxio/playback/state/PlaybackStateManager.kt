@@ -667,14 +667,18 @@ class PlaybackStateManager private constructor() {
      * Unpack a [playbackState] into this instance.
      */
     private fun unpackFromPlaybackState(playbackState: PlaybackState) {
-        // Turn the simplified information from PlaybackState into values that can be used
-        mSong = musicStore.songs.find { it.name == playbackState.songName }
-        mParent = musicStore.parents.find { it.name == playbackState.parentName }
+        // Turn the simplified information from PlaybackState into usable data.
+
+        // Do queue setup first
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
+        mParent = findParent(playbackState.parentName, mMode)
+        mIndex = playbackState.index
+
+        // Then set up the current state
+        mSong = musicStore.songs.find { it.name == playbackState.songName }
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
         mIsInUserQueue = playbackState.inUserQueue
-        mIndex = playbackState.index
 
         seekTo(playbackState.position)
     }
@@ -732,6 +736,19 @@ class PlaybackStateManager private constructor() {
 
         forceQueueUpdate()
         forceUserQueueUpdate()
+    }
+
+    /**
+     * Get a [Parent] from music store given a [name] and playback [mode].
+     */
+    private fun findParent(name: String, mode: PlaybackMode): Parent? {
+        return when (mode) {
+            PlaybackMode.IN_GENRE -> musicStore.genres.find { it.name == name }
+            PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.name == name }
+            PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.name == name }
+
+            else -> null
+        }
     }
 
     /**

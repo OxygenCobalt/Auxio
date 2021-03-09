@@ -27,15 +27,6 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    /** All parent models (ex Albums, Artists) loaded by Auxio */
-    val parents: List<Parent> by lazy {
-        mutableListOf<Parent>().apply {
-            addAll(mGenres)
-            addAll(mArtists)
-            addAll(mAlbums)
-        }
-    }
-
     /** Marker for whether the music loading process has successfully completed. */
     var loaded = false
         private set
@@ -88,12 +79,13 @@ class MusicStore private constructor() {
      * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
     fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
-            cursor.moveToFirst()
-            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { cursor ->
+                cursor.moveToFirst()
+                val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
 
-            return songs.find { it.fileName == fileName }
-        }
+                return songs.find { it.fileName == fileName }
+            }
 
         return null
     }
