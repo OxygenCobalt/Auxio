@@ -32,6 +32,7 @@ class SettingsManager private constructor(context: Context) :
     /** The current accent. */
     var accent: Accent
         get() {
+            @Suppress("DEPRECATION")
             if (sharedPrefs.contains(Keys.KEY_ACCENT_OLD)) {
                 logD("Migrating from old accent to new accent.")
 
@@ -233,6 +234,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
         const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
 
+        @Deprecated("Use the new KEY_ACCENT instead.")
         const val KEY_ACCENT_OLD = "KEY_ACCENT"
     }
 

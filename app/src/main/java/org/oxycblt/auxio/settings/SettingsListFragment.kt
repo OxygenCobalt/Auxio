@@ -8,18 +8,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.children
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.utils.invalidateDividers
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
-import org.oxycblt.auxio.settings.ui.AccentAdapter
-import org.oxycblt.auxio.ui.ACCENTS
+import org.oxycblt.auxio.settings.ui.AccentDialog
 import org.oxycblt.auxio.ui.Accent
 
 /**
@@ -77,9 +71,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
-                SettingsManager.Keys.KEY_ACCENT_OLD -> {
+                SettingsManager.Keys.KEY_ACCENT -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        showAccentDialog()
+                        AccentDialog().show(childFragmentManager, TAG_ACCENT_DIALOG)
                         true
                     }
 
@@ -89,7 +83,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.Keys.KEY_EDGE_TO_EDGE -> {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                         requireActivity().recreate()
-
                         true
                     }
                 }
@@ -99,7 +92,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
                         setIcon(DisplayMode.valueOfOrFallback(value as String).iconRes)
-
                         true
                     }
                 }
@@ -134,7 +126,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.Keys.KEY_DEBUG_SAVE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.savePlaybackState(requireContext())
-
                         true
                     }
                 }
@@ -142,48 +133,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
     }
 
-    /**
-     * Show the accent dialog to the user
-     */
-    private fun showAccentDialog() {
-        MaterialDialog(requireActivity()).show {
-            title(R.string.setting_accent)
-
-            // Roll my own RecyclerView since [To no surprise whatsoever] Material Dialogs
-            // has a bug where ugly dividers will show with the RecyclerView even if you disable them.
-            // This is why I hate using third party libraries.
-            val recycler = RecyclerView(requireContext()).apply {
-                adapter = AccentAdapter { accent ->
-                    if (accent != Accent.get()) {
-                        settingsManager.accent = accent
-
-                        requireActivity().recreate()
-                    }
-
-                    this@show.dismiss()
-                }
-
-                layoutManager = LinearLayoutManager(
-                    requireContext(), LinearLayoutManager.HORIZONTAL, false
-                )
-
-                post {
-                    // Combine the width of the recyclerview with the width of an item in order
-                    // to center the currently selected accent.
-                    val childWidth = getChildAt(0).width / 2
-
-                    (layoutManager as LinearLayoutManager)
-                        .scrollToPositionWithOffset(
-                            ACCENTS.indexOf(Accent.get()),
-                            (width / 2) - childWidth
-                        )
-                }
-            }
-
-            customView(view = recycler)
-            invalidateDividers(showTop = false, showBottom = false)
-            negativeButton(android.R.string.cancel)
-            show()
-        }
+    companion object {
+        const val TAG_ACCENT_DIALOG = "ACCENT_DIALOG"
     }
 }
