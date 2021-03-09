@@ -4,14 +4,12 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.os.Looper
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.logD
 
 /**
  * A SQLite database for managing the persistent playback state and queue.
- * Yes, I know androidx has Room which supposedly makes database creation easier, but it also
- * has a crippling bug where it will endlessly allocate rows even if you clear the entire db, so...
+ * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :
@@ -86,24 +84,12 @@ class PlaybackStateDatabase(context: Context) :
     fun writeState(state: PlaybackState) {
         assertBackgroundThread()
 
-        val database = writableDatabase
-        database.beginTransaction()
+        writableDatabase.execute {
+            delete(TABLE_NAME_STATE, null, null)
 
-        try {
-            database.delete(TABLE_NAME_STATE, null, null)
-            database.setTransactionSuccessful()
-        } finally {
-            database.endTransaction()
+            this@PlaybackStateDatabase.logD("Wiped state db.")
 
-            logD("Successfully wiped previous state.")
-        }
-
-        try {
-            database.beginTransaction()
-
-            val stateData = ContentValues(9)
-
-            stateData.apply {
+            val stateData = ContentValues(9).apply {
                 put(PlaybackState.COLUMN_ID, state.id)
                 put(PlaybackState.COLUMN_SONG_NAME, state.songName)
                 put(PlaybackState.COLUMN_POSITION, state.position)
@@ -115,13 +101,10 @@ class PlaybackStateDatabase(context: Context) :
                 put(PlaybackState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
             }
 
-            database.insert(TABLE_NAME_STATE, null, stateData)
-            database.setTransactionSuccessful()
-        } finally {
-            database.endTransaction()
-
-            logD("Wrote state to database.")
+            insert(TABLE_NAME_STATE, null, stateData)
         }
+
+        logD("Wrote state to database.")
     }
 
     /**
@@ -131,48 +114,37 @@ class PlaybackStateDatabase(context: Context) :
     fun readState(): PlaybackState? {
         assertBackgroundThread()
 
-        val database = writableDatabase
         var state: PlaybackState? = null
 
-        try {
-            val stateCursor = database.query(
-                TABLE_NAME_STATE,
-                null, null, null,
-                null, null, null
+        readableDatabase.queryAll(TABLE_NAME_STATE) { cursor ->
+            if (cursor.count == 0) return@queryAll
+
+            val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_NAME)
+            val posIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
+            val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_NAME)
+            val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
+            val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
+            val shuffleIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IS_SHUFFLING)
+            val loopModeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_LOOP_MODE)
+            val inUserQueueIndex = cursor.getColumnIndexOrThrow(
+                PlaybackState.COLUMN_IN_USER_QUEUE
             )
 
-            stateCursor?.use { cursor ->
-                // Don't bother if the cursor [and therefore database] has nothing in it.
-                if (cursor.count == 0) return@use
+            cursor.moveToFirst()
 
-                val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_NAME)
-                val positionIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
-                val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_NAME)
-                val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
-                val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
-                val isShufflingIndex =
-                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IS_SHUFFLING)
-                val loopModeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_LOOP_MODE)
-                val inUserQueueIndex =
-                    cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IN_USER_QUEUE)
-
-                // If there is something in it, get the first item from it, ignoring anything else.
-                cursor.moveToFirst()
-
-                state = PlaybackState(
-                    songName = cursor.getStringOrNull(songIndex) ?: "",
-                    position = cursor.getLong(positionIndex),
-                    parentName = cursor.getStringOrNull(parentIndex) ?: "",
-                    index = cursor.getInt(indexIndex),
-                    mode = cursor.getInt(modeIndex),
-                    isShuffling = cursor.getInt(isShufflingIndex) == 1,
-                    loopMode = cursor.getInt(loopModeIndex),
-                    inUserQueue = cursor.getInt(inUserQueueIndex) == 1
-                )
-            }
-        } finally {
-            return state
+            state = PlaybackState(
+                songName = cursor.getStringOrNull(songIndex) ?: "",
+                position = cursor.getLong(posIndex),
+                parentName = cursor.getStringOrNull(parentIndex) ?: "",
+                index = cursor.getInt(indexIndex),
+                mode = cursor.getInt(modeIndex),
+                isShuffling = cursor.getInt(shuffleIndex) == 1,
+                loopMode = cursor.getInt(loopModeIndex),
+                inUserQueue = cursor.getInt(inUserQueueIndex) == 1
+            )
         }
+
+        return state
     }
 
     /**
@@ -181,54 +153,41 @@ class PlaybackStateDatabase(context: Context) :
     fun writeQueue(queueItems: List<QueueItem>) {
         assertBackgroundThread()
 
-        val database = readableDatabase
-        database.beginTransaction()
+        val database = writableDatabase
 
-        try {
-            database.delete(TABLE_NAME_QUEUE, null, null)
-            database.setTransactionSuccessful()
-        } finally {
-            database.endTransaction()
-
-            logD("Successfully wiped queue.")
+        database.execute {
+            delete(TABLE_NAME_QUEUE, null, null)
         }
 
-        logD("Writing to queue.")
+        logD("Wiped queue db.")
 
         var position = 0
 
-        // Try to write out the entirety of the queue, any failed inserts will be skipped.
+        // Try to write out the entirety of the queue. Failed inserts will be skipped.
         while (position < queueItems.size) {
-            database.beginTransaction()
             var i = position
 
-            try {
+            database.execute {
                 while (i < queueItems.size) {
                     val item = queueItems[i]
-                    val itemData = ContentValues(4)
-
                     i++
 
-                    itemData.apply {
+                    val itemData = ContentValues(4).apply {
                         put(QueueItem.COLUMN_ID, item.id)
                         put(QueueItem.COLUMN_SONG_NAME, item.songName)
                         put(QueueItem.COLUMN_ALBUM_NAME, item.albumName)
                         put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
                     }
 
-                    database.insert(TABLE_NAME_QUEUE, null, itemData)
+                    insert(TABLE_NAME_QUEUE, null, itemData)
                 }
-
-                database.setTransactionSuccessful()
-            } finally {
-                database.endTransaction()
-
-                // Update the position at the end, if an insert failed at any point, then
-                // the next iteration should skip it.
-                position = i
-
-                logD("Wrote batch of $position songs.")
             }
+
+            // Update the position at the end, if an insert failed at any point, then
+            // the next iteration should skip it.
+            position = i
+
+            logD("Wrote batch of songs. Position is now at $position")
         }
     }
 
@@ -239,43 +198,27 @@ class PlaybackStateDatabase(context: Context) :
     fun readQueue(): List<QueueItem> {
         assertBackgroundThread()
 
-        val database = readableDatabase
         val queueItems = mutableListOf<QueueItem>()
 
-        try {
-            val queueCursor = database.query(
-                TABLE_NAME_QUEUE, null, null,
-                null, null, null, null
-            )
+        readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
+            if (cursor.count == 0) return@queryAll
 
-            queueCursor?.use { cursor ->
-                if (cursor.count == 0) return@use
+            val idIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ID)
+            val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_NAME)
+            val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_NAME)
+            val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_IS_USER_QUEUE)
 
-                val idIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ID)
-                val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_NAME)
-                val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_NAME)
-                val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_IS_USER_QUEUE)
-
-                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idIndex)
-                    val songName = cursor.getStringOrNull(songIdIndex) ?: ""
-                    val albumName = cursor.getStringOrNull(albumIdIndex) ?: ""
-                    val isUserQueue = cursor.getInt(isUserQueueIndex) == 1
-
-                    queueItems.add(
-                        QueueItem(id, songName, albumName, isUserQueue)
-                    )
-                }
+            while (cursor.moveToNext()) {
+                queueItems += QueueItem(
+                    id = cursor.getLong(idIndex),
+                    songName = cursor.getStringOrNull(songIdIndex) ?: "",
+                    albumName = cursor.getStringOrNull(albumIdIndex) ?: "",
+                    isUserQueue = cursor.getInt(isUserQueueIndex) == 1
+                )
             }
-        } finally {
-            return queueItems
         }
-    }
 
-    private fun assertBackgroundThread() {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            error("Not on a background thread.")
-        }
+        return queueItems
     }
 
     companion object {

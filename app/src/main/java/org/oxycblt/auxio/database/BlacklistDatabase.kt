@@ -10,8 +10,9 @@ import java.io.IOException
 
 /**
  * Database for storing blacklisted paths.
- * Note that the paths stored here will not work with MediaStore unless you append a "%" at the
- * end.
+ * Note that the paths stored here will not work with MediaStore unless you append a "%" at the end.
+ * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
+ * @author OxygenCobalt
  */
 class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -43,43 +44,29 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
             return false
         }
 
-        val database = writableDatabase
-        database.beginTransaction()
-
-        try {
+        writableDatabase.execute {
             val values = ContentValues(1)
             values.put(COLUMN_PATH, path)
 
-            database.insert(TABLE_NAME, null, values)
-            database.setTransactionSuccessful()
-        } finally {
-            database.endTransaction()
-
-            return true
+            insert(TABLE_NAME, null, values)
         }
+
+        return true
     }
 
     /**
      * Remove a [File] from this blacklist.
      */
     fun removePath(file: File) {
-        val database = writableDatabase
-        val path = file.mediaStorePath
-
-        database.beginTransaction()
-        database.delete(TABLE_NAME, "$COLUMN_PATH=?", arrayOf(path))
-        database.setTransactionSuccessful()
-        database.endTransaction()
+        writableDatabase.execute {
+            delete(TABLE_NAME, "$COLUMN_PATH=?", arrayOf(file.mediaStorePath))
+        }
     }
 
     fun getPaths(): List<String> {
         val paths = mutableListOf<String>()
 
-        val pathsCursor = readableDatabase.query(
-            TABLE_NAME, arrayOf(COLUMN_PATH), null, null, null, null, null
-        )
-
-        pathsCursor?.use { cursor ->
+        readableDatabase.queryAll(TABLE_NAME) { cursor ->
             while (cursor.moveToNext()) {
                 paths.add(cursor.getString(0))
             }
@@ -89,19 +76,11 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
     }
 
     private fun hasFile(path: String): Boolean {
-        val pathsCursor = readableDatabase.query(
-            TABLE_NAME,
-            arrayOf(COLUMN_PATH),
-            "$COLUMN_PATH=?",
-            arrayOf(path),
-            null, null, null, null
-        )
-
-        pathsCursor?.use { cursor ->
-            return cursor.moveToFirst()
+        val exists = readableDatabase.queryUse(TABLE_NAME, null, "$COLUMN_PATH=?", path) { cursor ->
+            cursor.moveToFirst()
         }
 
-        return false
+        return exists ?: false
     }
 
     private val File.mediaStorePath: String get() {
