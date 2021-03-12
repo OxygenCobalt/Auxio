@@ -24,7 +24,7 @@
         <item name="md_background_color">@color/background</item>
         <item name="md_corner_radius">0dp</item>
         <item name="md_color_button_text">@color/control_color</item>
-        <item name="md_font_title">@font/inter_black</item>
+        <item name="md_font_title">@font/inter_exbold</item>
     </style>
 
     <!-- Toolbar theme -->
@@ -51,7 +51,7 @@
 
     <!-- Toolbar Title EntryNames -->
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_black</item>
+        <item name="android:fontFamily">@font/inter_exbold</item>
         <item name="android:textSize">@dimen/text_size_toolbar_header</item>
     </style>
 
@@ -59,7 +59,7 @@
     <style name="DetailTitleText">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:fontFamily">@font/inter_black</item>
+        <item name="android:fontFamily">@font/inter_exbold</item>
         <item name="android:textSize">@dimen/text_size_detail_header_max</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
@@ -95,7 +95,7 @@
 
     <!-- Custom dialog title theme -->
     <style name="TextAppearance.Dialog.Title" parent="@android:style/TextAppearance.Material.Title">
-        <item name="android:fontFamily">@font/inter_black</item>
+        <item name="android:fontFamily">@font/inter_exbold</item>
     </style>
 
     <!-- Fast scroll theme -->
