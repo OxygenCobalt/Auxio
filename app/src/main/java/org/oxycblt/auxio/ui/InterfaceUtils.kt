@@ -27,6 +27,7 @@ import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
+import kotlin.reflect.KClass
 
 // --- VIEW CONFIGURATION ---
 
@@ -77,6 +78,19 @@ val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
  */
 fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
     return resources.getQuantityString(pluralsRes, value, value)
+}
+
+/**
+ * Convenience method for getting a system service without nullability issues.
+ * @param T The system service in question.
+ * @param serviceClass The service's kotlin class [Java class will be used in function call]
+ * @return The system service
+ * @throws IllegalStateException If the system service cannot be retrieved.
+ */
+fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
+    return checkNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
+        "System service ${serviceClass.simpleName} could not be instantiated"
+    }
 }
 
 /**
@@ -221,7 +235,7 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
             }
         }
     } else {
-        (activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager).apply {
+        (activity.getSystemServiceSafe(WindowManager::class)).apply {
             defaultDisplay.getRealSize(realPoint)
             defaultDisplay.getMetrics(metrics)
 

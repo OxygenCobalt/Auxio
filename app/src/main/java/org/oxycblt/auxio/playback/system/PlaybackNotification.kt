@@ -182,15 +182,14 @@ class PlaybackNotification private constructor(
         const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.BUILD_TYPE
 
         /**
-         * Build a new instance of [PlaybackNotification] from a [context] and [mediaSession]
+         * Build a new instance of [PlaybackNotification].
          */
-        fun from(context: Context, mediaSession: MediaSessionCompat): PlaybackNotification {
+        fun from(
+            context: Context,
+            notificationManager: NotificationManager,
+            mediaSession: MediaSessionCompat
+        ): PlaybackNotification {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Create the notification channel if required.
-                val notificationManager = context.getSystemService(
-                    Context.NOTIFICATION_SERVICE
-                ) as NotificationManager
-
                 val channel = NotificationChannel(
                     CHANNEL_ID, context.getString(R.string.info_channel_name),
                     NotificationManager.IMPORTANCE_DEFAULT
