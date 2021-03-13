@@ -32,7 +32,7 @@ class AudioReactor(
         .setOnAudioFocusChangeListener(this)
         .build()
 
-    private var pauseWasFromAudioFocus = false
+    private var pauseWasTransient = false
 
     /**
      * Request the android system for audio focus
@@ -49,36 +49,40 @@ class AudioReactor(
     }
 
     override fun onAudioFocusChange(focusChange: Int) {
+        if (!settingsManager.doAudioFocus) {
+            // Dont do audio focus if its not enabled
+            return
+        }
+
         when (focusChange) {
             AudioManager.AUDIOFOCUS_GAIN -> onGain()
+            AudioManager.AUDIOFOCUS_LOSS -> onLossPermanent()
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> onLossTransient()
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> onDuck()
-            AudioManager.AUDIOFOCUS_LOSS, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> onLoss()
         }
     }
 
     private fun onGain() {
-        if (settingsManager.doAudioFocus) {
-            if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
-                unduck()
-            } else if (pauseWasFromAudioFocus) {
-                playbackManager.setPlaying(true)
-            }
-
-            pauseWasFromAudioFocus = false
+        if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
+            unduck()
+        } else if (pauseWasTransient) {
+            // Play again if the pause was only temporary [AudioManager.AUDIOFOCUS_LOSS_TRANSIENT]
+            playbackManager.setPlaying(true)
+            pauseWasTransient = false
         }
     }
 
-    private fun onLoss() {
-        if (settingsManager.doAudioFocus && playbackManager.isPlaying) {
-            pauseWasFromAudioFocus = true
-            playbackManager.setPlaying(false)
-        }
+    private fun onLossTransient() {
+        pauseWasTransient = true
+        playbackManager.setPlaying(false)
+    }
+
+    private fun onLossPermanent() {
+        playbackManager.setPlaying(false)
     }
 
     private fun onDuck() {
-        if (settingsManager.doAudioFocus) {
-            player.volume = VOLUME_DUCK
-        }
+        player.volume = VOLUME_DUCK
     }
 
     private fun unduck() {
