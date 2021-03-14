@@ -86,8 +86,8 @@
     <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
-    <string name="setting_behavior_save">Wiedergabezustand abspeichern</string>
-    <string name="setting_behavior_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
+    <string name="setting_content_save">Wiedergabezustand abspeichern</string>
+    <string name="setting_content_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>
@@ -102,7 +102,7 @@
     <string name="description_sort_button">Reihenfolge ändern</string>
     <string name="description_track_number">Titel %d</string>
 
-    <string name="description_play_pause">Abspielen/Pausieren</string>
+    <string name="description_play_pause">Abspielen oder Pausieren</string>
     <string name="description_skip_prev">Zu letzter Lied springen</string>
     <string name="description_skip_next">Zu nächster Lied springen</string>
     <string name="description_shuffle_on">Zufällig anschalten</string>

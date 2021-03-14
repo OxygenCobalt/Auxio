@@ -126,10 +126,22 @@
             app:key="KEY_PREV_REWIND"
             app:summary="@string/setting_behavior_rewind_prev_desc" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/item_header"
+        android:title="@string/setting_content">
+
         <Preference
-            android:title="@string/setting_behavior_save"
+            android:title="@string/setting_content_save"
             app:iconSpaceReserved="false"
             app:key="KEY_SAVE_STATE"
-            app:summary="@string/setting_behavior_save_desc" />
+            app:summary="@string/setting_content_save_desc" />
+
+        <Preference
+            android:title="@string/setting_content_blacklist"
+            app:iconSpaceReserved="false"
+            app:key="KEY_BLACKLIST"
+            app:summary="@string/setting_content_blacklist_desc" />
     </PreferenceCategory>
 </PreferenceScreen>

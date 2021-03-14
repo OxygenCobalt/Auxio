@@ -25,6 +25,7 @@
         <item name="md_corner_radius">0dp</item>
         <item name="md_color_button_text">@color/control_color</item>
         <item name="md_font_title">@font/inter_exbold</item>
+        <item name="md_ripple_color">@color/selection_color</item>
     </style>
 
     <!-- Toolbar theme -->
@@ -238,5 +239,15 @@
         <item name="android:layout_marginEnd">@dimen/margin_large</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/padding_medium</item>
+    </style>
+
+    <!-- Style for dialog buttons -->
+    <style name="Widget.Button.Dialog" parent="Widget.AppCompat.Button">
+        <item name="android:layout_height">@dimen/height_dialog_button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingStart">@dimen/padding_mid_small</item>
+        <item name="android:paddingEnd">@dimen/padding_mid_small</item>
+        <item name="android:minWidth">@dimen/width_dialog_button_min</item>
+        <item name="android:background">@drawable/ui_ripple</item>
     </style>
 </resources>

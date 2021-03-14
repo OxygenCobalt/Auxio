@@ -231,7 +231,8 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH"
-        const val KEY_DEBUG_SAVE = "KEY_SAVE_STATE"
+        const val KEY_SAVE_STATE = "KEY_SAVE_STATE"
+        const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
         @Deprecated("Use the new KEY_ACCENT instead.")
         const val KEY_ACCENT_OLD = "KEY_ACCENT"

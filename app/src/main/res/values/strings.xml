@@ -50,6 +50,10 @@
     <string name="label_licenses">Licenses</string>
     <string name="label_author">Developed by OxygenCobalt</string>
 
+    <string name="label_add">Add</string>
+    <string name="label_confirm">Confirm</string>
+    <string name="label_empty_blacklist">No excluded folders</string>
+
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Settings</string>
 
@@ -89,14 +93,20 @@
     <string name="setting_behavior_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
     <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
-    <string name="setting_behavior_save">Save playback state</string>
-    <string name="setting_behavior_save_desc">Save the current playback state now</string>
+
+    <string name="setting_content">Content</string>
+    <string name="setting_content_blacklist">Excluded Folders</string>
+    <string name="setting_content_blacklist_desc">The content of excluded folders is hidden from your library</string>
+    <string name="setting_content_save">Save playback state</string>
+    <string name="setting_content_save_desc">Save the current playback state now</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found</string>
     <string name="error_load_failed">Music loading failed</string>
     <string name="error_no_perms">Auxio needs permission to read your music library</string>
     <string name="error_no_browser">Could not open link</string>
+    <string name="error_no_dirs">No subfolders</string>
+    <string name="error_folder_would_brick_app">The root folder can\'t be excluded</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>
@@ -105,7 +115,7 @@
     <string name="description_sort_button">Change Sort Order</string>
     <string name="description_track_number">Track %d</string>
 
-    <string name="description_play_pause">Play/Pause</string>
+    <string name="description_play_pause">Play or Pause</string>
     <string name="description_skip_next">Skip to next song</string>
     <string name="description_skip_prev">Skip to last song</string>
     <string name="description_shuffle_on">Turn shuffle on</string>
@@ -114,6 +124,7 @@
 
     <string name="description_clear_user_queue">Clear queue</string>
     <string name="description_clear_search">Clear search query</string>
+    <string name="description_blacklist_delete">Remove excluded directory</string>
 
     <string name="description_error">Error</string>
     <string name="description_auxio_icon">Auxio icon</string>

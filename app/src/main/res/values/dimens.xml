@@ -4,6 +4,7 @@
     <dimen name="padding_microscopic">2dp</dimen>
     <dimen name="padding_tiny">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_mid_small">12dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
 
     <!-- Margin namespace | Dimens for margin attributes -->
@@ -17,11 +18,13 @@
 
     <!-- Height Namespace | Height for UI elements -->
     <dimen name="height_compact_progress">2dp</dimen>
+    <dimen name="height_dialog_button">40dp</dimen>
 
     <!-- Width Namespace | Width for UI elements -->
     <dimen name="width_track_number">32dp</dimen>
     <dimen name="width_thumb_view">50dp</dimen>
     <dimen name="width_play_stroke">1dp</dimen>
+    <dimen name="width_dialog_button_min">64dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_error_icon">48dp</dimen>
@@ -37,6 +40,7 @@
 
     <dimen name="size_play_pause">70dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
+    <dimen name="size_clear">32dp</dimen>
 
     <dimen name="size_app_icon">60dp</dimen>
 

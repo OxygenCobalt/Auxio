@@ -105,6 +105,7 @@ dependencies {
 
     // Dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation 'com.afollestad.material-dialogs:files:3.3.0'
 
     // --- DEV ---
 

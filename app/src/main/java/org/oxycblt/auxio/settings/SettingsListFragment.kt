@@ -13,6 +13,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
+import org.oxycblt.auxio.settings.blacklist.BlacklistDialog
 import org.oxycblt.auxio.settings.ui.AccentDialog
 import org.oxycblt.auxio.ui.Accent
 
@@ -123,9 +124,16 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
-                SettingsManager.Keys.KEY_DEBUG_SAVE -> {
+                SettingsManager.Keys.KEY_SAVE_STATE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.savePlaybackState(requireContext())
+                        true
+                    }
+                }
+
+                SettingsManager.Keys.KEY_BLACKLIST -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        BlacklistDialog().show(childFragmentManager, TAG_ACCENT_DIALOG)
                         true
                     }
                 }

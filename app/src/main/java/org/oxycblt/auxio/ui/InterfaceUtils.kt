@@ -57,9 +57,9 @@ fun TextView.setTextColorResource(@ColorRes color: Int) {
  */
 fun MaterialButton.applyAccents(highlighted: Boolean) {
     if (highlighted) {
-        backgroundTintList = Accent.get().color.toStateList(context)
+        backgroundTintList = Accent.get().getStateList(context)
     } else {
-        setTextColor(Accent.get().color.toColor(context))
+        setTextColorResource(Accent.get().color)
     }
 }
 
