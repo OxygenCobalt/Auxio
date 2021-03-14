@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    
+    xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        android:theme="@style/Theme.Neutral"
+        android:orientation="vertical"
         android:paddingBottom="@dimen/margin_medium"
-        android:orientation="vertical">
+        android:theme="@style/Theme.Neutral">
 
         <TextView
             android:id="@+id/blacklist_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_exbold"
-            android:textColor="?attr/colorPrimary"
-            android:text="@string/setting_content_blacklist"
-            android:textSize="@dimen/text_size_toolbar_header"
+            android:textAlignment="viewStart"
             android:padding="@dimen/padding_medium"
+            android:text="@string/setting_content_blacklist"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/text_size_toolbar_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,19 +29,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_blacklist_entry"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/blacklist_header" />
+            app:layout_constraintTop_toBottomOf="@+id/blacklist_header"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_blacklist_entry" />
 
         <TextView
             android:id="@+id/blacklist_empty_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
-            android:textAlignment="center"
-            android:padding="16dp"
+            android:padding="@dimen/padding_medium"
             android:text="@string/label_empty_blacklist"
+            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintTop_toBottomOf="@+id/blacklist_recycler" />
@@ -65,8 +66,8 @@
         <Button
             android:id="@+id/blacklist_add"
             style="@style/Widget.Button.Dialog"
-            android:layout_marginTop="@dimen/margin_medium"
             android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_medium"
             android:text="@string/label_add"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/blacklist_empty_text" />

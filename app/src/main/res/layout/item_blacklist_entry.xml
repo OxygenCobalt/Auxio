@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/ItemSurroundings"
         android:clickable="false"
         android:focusable="false">
 
@@ -11,7 +12,10 @@
             android:id="@+id/blacklist_title"
             style="@style/ItemText.Primary"
             android:layout_marginStart="0dp"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:maxLines="@null"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/blacklist_clear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="/storage/emulated/0/directory" />
@@ -21,13 +25,11 @@
             style="@style/Widget.Button.Unbounded"
             android:layout_width="@dimen/size_clear"
             android:layout_height="@dimen/size_clear"
-            android:src="@drawable/ic_clear"
             android:contentDescription="@string/description_blacklist_delete"
+            android:src="@drawable/ic_clear"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </layout>

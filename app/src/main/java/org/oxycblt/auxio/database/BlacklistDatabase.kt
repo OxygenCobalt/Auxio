@@ -34,7 +34,9 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
      * @return Whether this file has been added to the database or not.
      */
     fun addPath(file: File): Boolean {
-        val path = file.mediaStorePath
+        assertBackgroundThread()
+
+        val path = file.canonicalPathSafe
 
         logD("Adding path $path to blacklist")
 
@@ -58,12 +60,16 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
      * Remove a [File] from this blacklist.
      */
     fun removePath(file: File) {
+        assertBackgroundThread()
+
         writableDatabase.execute {
-            delete(TABLE_NAME, "$COLUMN_PATH=?", arrayOf(file.mediaStorePath))
+            delete(TABLE_NAME, "$COLUMN_PATH=?", arrayOf(file.canonicalPathSafe))
         }
     }
 
     fun getPaths(): List<String> {
+        assertBackgroundThread()
+
         val paths = mutableListOf<String>()
 
         readableDatabase.queryAll(TABLE_NAME) { cursor ->
@@ -83,7 +89,7 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
         return exists ?: false
     }
 
-    private val File.mediaStorePath: String get() {
+    private val File.canonicalPathSafe: String get() {
         return try {
             canonicalPath
         } catch (e: IOException) {

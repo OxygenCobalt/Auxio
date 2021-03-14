@@ -70,7 +70,7 @@ class SettingsManager private constructor(context: Context) :
         get() = sharedPrefs.getBoolean(Keys.KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     /** What to display on the library. */
-    val libraryDisplayMode: org.oxycblt.auxio.recycler.DisplayMode
+    val libraryDisplayMode: DisplayMode
         get() = DisplayMode.valueOfOrFallback(
             sharedPrefs.getString(
                 Keys.KEY_LIBRARY_DISPLAY_MODE,
@@ -264,7 +264,7 @@ class SettingsManager private constructor(context: Context) :
     interface Callback {
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
-        fun onLibDisplayModeUpdate(displayMode: org.oxycblt.auxio.recycler.DisplayMode) {}
+        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
     }

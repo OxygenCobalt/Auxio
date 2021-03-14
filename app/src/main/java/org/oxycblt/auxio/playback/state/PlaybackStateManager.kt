@@ -464,7 +464,6 @@ class PlaybackStateManager private constructor() {
      * Generate a new shuffled queue.
      * @param keepSong Whether the current song should be kept as the queue is shuffled
      * @param useLastSong Whether to use the last song in the queue instead of the current one
-     * @return A new shuffled queue
      */
     private fun genShuffle(keepSong: Boolean, useLastSong: Boolean) {
         val lastSong = if (useLastSong) mQueue[0] else mSong

@@ -71,8 +71,11 @@ class AudioReactor(
     }
 
     private fun onLossTransient() {
-        pauseWasTransient = true
-        playbackManager.setPlaying(false)
+        // Since this loss is only temporary, mark it as such if we had to pause playback.
+        if (playbackManager.isPlaying) {
+            pauseWasTransient = true
+            playbackManager.setPlaying(false)
+        }
     }
 
     private fun onLossPermanent() {
