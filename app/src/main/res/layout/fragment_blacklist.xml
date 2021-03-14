@@ -28,33 +28,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            tools:itemCount="2"
+            tools:itemCount="1"
             tools:listitem="@layout/item_blacklist_entry"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/blacklist_header" />
 
         <TextView
-            android:id="@+id/blacklist_add"
-            style="@style/ItemText.Primary"
-            android:padding="@dimen/margin_medium"
+            android:id="@+id/blacklist_empty_text"
             android:layout_width="match_parent"
-            android:layout_marginStart="0dp"
-            android:text="@string/label_add"
-            android:gravity="center_vertical|start"
-            android:background="@drawable/ui_ripple"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            app:drawableStartCompat="@drawable/ic_add"
-            android:drawablePadding="@dimen/padding_medium"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:textAlignment="center"
+            android:padding="16dp"
+            android:text="@string/label_empty_blacklist"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintTop_toBottomOf="@+id/blacklist_recycler" />
 
         <Button
             android:id="@+id/blacklist_cancel"
             style="@style/Widget.Button.Dialog"
             android:layout_marginEnd="@dimen/padding_small"
-            android:layout_marginTop="@dimen/margin_medium"
             android:text="@android:string/cancel"
             app:layout_constraintEnd_toStartOf="@+id/blacklist_confirm"
-            app:layout_constraintTop_toBottomOf="@+id/blacklist_add" />
+            app:layout_constraintTop_toTopOf="@+id/blacklist_add" />
 
         <Button
             android:id="@+id/blacklist_confirm"
@@ -64,6 +61,15 @@
             app:layout_constraintBottom_toBottomOf="@+id/blacklist_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/blacklist_cancel" />
+
+        <Button
+            android:id="@+id/blacklist_add"
+            style="@style/Widget.Button.Dialog"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:text="@string/label_add"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blacklist_empty_text" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

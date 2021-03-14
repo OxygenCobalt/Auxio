@@ -8,6 +8,9 @@ class BlacklistViewModel : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())
     val paths: LiveData<MutableList<String>> get() = mPaths
 
+    var modified = false
+        private set
+
     fun addPath(path: String) {
         if (mPaths.value!!.contains(path)) {
             return

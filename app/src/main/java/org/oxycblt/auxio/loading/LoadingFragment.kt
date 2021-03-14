@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 
 /**
@@ -71,6 +72,8 @@ class LoadingFragment : Fragment() {
         if (loadingModel.response.value == null) {
             loadingModel.load(requireContext())
         }
+
+        logD("Fragment created")
 
         return binding.root
     }
