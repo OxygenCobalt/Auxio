@@ -5,6 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemBlacklistEntryBinding
 import org.oxycblt.auxio.ui.inflater
 
+/**
+ * Adapter that shows the blacklist entries and their "Clear" button.
+ * @author OxygenCobalt
+ */
 class BlacklistEntryAdapter(
     private val onClear: (String) -> Unit
 ) : RecyclerView.Adapter<BlacklistEntryAdapter.ViewHolder>() {

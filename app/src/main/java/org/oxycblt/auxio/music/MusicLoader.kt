@@ -45,7 +45,7 @@ class MusicLoader(private val context: Context) {
     private fun buildSelector() {
         val blacklistDatabase = BlacklistDatabase.getInstance(context)
 
-        val paths = blacklistDatabase.getPaths()
+        val paths = blacklistDatabase.readPaths()
 
         for (path in paths) {
             selector += " AND ${Media.DATA} NOT LIKE ?"
@@ -267,5 +267,7 @@ class MusicLoader(private val context: Context) {
 
             genres.add(unknownGenre)
         }
+
+        genres.removeAll { it.songs.isEmpty() }
     }
 }

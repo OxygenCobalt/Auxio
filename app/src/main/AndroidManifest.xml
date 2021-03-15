@@ -22,7 +22,7 @@
         <activity
             android:name=".MainActivity"
             android:icon="@mipmap/ic_launcher"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">

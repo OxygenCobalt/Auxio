@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
@@ -51,7 +52,7 @@
     <string name="label_author">Developed by OxygenCobalt</string>
 
     <string name="label_add">Add</string>
-    <string name="label_confirm">Confirm</string>
+    <string name="label_save">Save</string>
     <string name="label_empty_blacklist">No excluded folders</string>
 
     <!-- Settings namespace | Settings-related labels -->

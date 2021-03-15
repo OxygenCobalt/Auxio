@@ -5,8 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import org.oxycblt.auxio.logD
-import java.io.File
-import java.io.IOException
 
 /**
  * Database for storing blacklisted paths.
@@ -30,44 +28,31 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
     }
 
     /**
-     * Add a [File] to the the blacklist.
-     * @return Whether this file has been added to the database or not.
+     * Write a list of [paths] to the database.
      */
-    fun addPath(file: File): Boolean {
+    fun writePaths(paths: List<String>) {
         assertBackgroundThread()
 
-        val path = file.canonicalPathSafe
-
-        logD("Adding path $path to blacklist")
-
-        if (hasFile(path)) {
-            logD("Path already exists. Ignoring.")
-
-            return false
-        }
-
         writableDatabase.execute {
-            val values = ContentValues(1)
-            values.put(COLUMN_PATH, path)
+            delete(TABLE_NAME, null, null)
 
-            insert(TABLE_NAME, null, values)
+            logD("Deleted paths db")
+
+            for (path in paths) {
+                insert(
+                    TABLE_NAME, null,
+                    ContentValues(1).apply {
+                        put(COLUMN_PATH, path)
+                    }
+                )
+            }
         }
-
-        return true
     }
 
     /**
-     * Remove a [File] from this blacklist.
+     * Get the current list of paths from the database.
      */
-    fun removePath(file: File) {
-        assertBackgroundThread()
-
-        writableDatabase.execute {
-            delete(TABLE_NAME, "$COLUMN_PATH=?", arrayOf(file.canonicalPathSafe))
-        }
-    }
-
-    fun getPaths(): List<String> {
+    fun readPaths(): List<String> {
         assertBackgroundThread()
 
         val paths = mutableListOf<String>()
@@ -79,22 +64,6 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
         }
 
         return paths
-    }
-
-    private fun hasFile(path: String): Boolean {
-        val exists = readableDatabase.queryUse(TABLE_NAME, null, "$COLUMN_PATH=?", path) { cursor ->
-            cursor.moveToFirst()
-        }
-
-        return exists ?: false
-    }
-
-    private val File.canonicalPathSafe: String get() {
-        return try {
-            canonicalPath
-        } catch (e: IOException) {
-            absolutePath
-        }
     }
 
     companion object {

@@ -92,7 +92,7 @@ class SongsFragment : Fragment() {
      * Perform the (Frustratingly Long and Complicated) FastScrollerView setup.
      */
     private fun FastScrollerView.setup(recycler: RecyclerView, thumb: CobaltScrollThumb) {
-        var concatInterval: Int = -1
+        var truncateInterval: Int = -1
 
         // API 22 and below don't support the state color, so just use the accent.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
@@ -104,38 +104,36 @@ class SongsFragment : Fragment() {
             { pos ->
                 val char = musicStore.songs[pos].name.first
 
-                // Use "#" if the character is a digit, also has the nice side-effect of
-                // truncating extra numbers.
-                if (char.isDigit()) {
-                    FastScrollItemIndicator.Text("#")
-                } else {
-                    FastScrollItemIndicator.Text(char.toString())
-                }
+                FastScrollItemIndicator.Text(
+                    // Use "#" if the character is a digit, also has the nice side-effect of
+                    // truncating extra numbers.
+                    if (char.isDigit()) "#" else char.toString()
+                )
             },
             null, false
         )
 
         showIndicator = { _, i, total ->
-            if (concatInterval == -1) {
+            if (truncateInterval == -1) {
                 // If the scroller size is too small to contain all the entries, truncate entries
                 // so that the fast scroller entries fit.
                 val maxEntries = (height / (indicatorTextSize + textPadding))
 
                 if (total > maxEntries.toInt()) {
-                    concatInterval = ceil(total / maxEntries).toInt()
+                    truncateInterval = ceil(total / maxEntries).toInt()
 
-                    check(concatInterval > 1) {
-                        "Needed to truncate, but concatInterval was 1 or lower anyway"
+                    check(truncateInterval > 1) {
+                        "Needed to truncate, but truncateInterval was 1 or lower anyway"
                     }
 
-                    logD("More entries than screen space, truncating by $concatInterval.")
+                    logD("More entries than screen space, truncating by $truncateInterval.")
                 } else {
-                    concatInterval = 1
+                    truncateInterval = 1
                 }
             }
 
             // Any items that need to be truncated will be hidden
-            (i % concatInterval) == 0
+            (i % truncateInterval) == 0
         }
 
         addIndicatorCallback { _, _, pos ->
