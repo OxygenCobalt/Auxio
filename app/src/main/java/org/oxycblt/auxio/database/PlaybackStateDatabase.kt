@@ -226,8 +226,8 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     companion object {
-        const val DB_VERSION = 3
         const val DB_NAME = "auxio_state_database.db"
+        const val DB_VERSION = 3
 
         const val TABLE_NAME_STATE = "playback_state_table"
         const val TABLE_NAME_QUEUE = "queue_table"

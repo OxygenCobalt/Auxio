@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
@@ -42,7 +41,11 @@
     <string name="label_go_artist">Go to artist</string>
     <string name="label_go_album">Go to album</string>
 
-    <string name="debug_state_saved">State saved</string>
+    <string name="label_state_saved">State saved</string>
+
+    <string name="label_add">Add</string>
+    <string name="label_save">Save</string>
+    <string name="label_no_dirs">No Folders</string>
 
     <string name="label_about">About</string>
     <string name="label_version">Version</string>
@@ -50,10 +53,6 @@
     <string name="label_faq">FAQ</string>
     <string name="label_licenses">Licenses</string>
     <string name="label_author">Developed by OxygenCobalt</string>
-
-    <string name="label_add">Add</string>
-    <string name="label_save">Save</string>
-    <string name="label_empty_blacklist">No excluded folders</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="setting_title">Settings</string>
@@ -96,18 +95,17 @@
     <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
 
     <string name="setting_content">Content</string>
-    <string name="setting_content_blacklist">Excluded Folders</string>
-    <string name="setting_content_blacklist_desc">The content of excluded folders is hidden from your library</string>
     <string name="setting_content_save">Save playback state</string>
     <string name="setting_content_save_desc">Save the current playback state now</string>
+    <string name="setting_content_blacklist">Excluded Folders</string>
+    <string name="setting_content_blacklist_desc">The content of excluded folders is hidden from your library</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">No music found</string>
     <string name="error_load_failed">Music loading failed</string>
     <string name="error_no_perms">Auxio needs permission to read your music library</string>
     <string name="error_no_browser">Could not open link</string>
-    <string name="error_no_dirs">No subfolders</string>
-    <string name="error_folder_would_brick_app">The root folder can\'t be excluded</string>
+    <string name="error_brick_dir">The root folder cannot be excluded</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>

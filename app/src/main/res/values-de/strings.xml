@@ -40,6 +40,12 @@
     <string name="label_go_artist">Zum Künstler gehen</string>
     <string name="label_go_album">Zum Album gehen</string>
 
+    <string name="label_state_saved">Wiedergabezustand abgespeichert</string>
+
+    <string name="label_add">Hinzufügen</string>
+    <string name="label_save">Abspeichern</string>
+    <string name="label_no_dirs">Keine Ordner</string>
+
     <string name="label_about">Über</string>
     <string name="label_version">Version</string>
     <string name="label_code">Auf GitHub ansehen</string>
@@ -86,14 +92,19 @@
     <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
     <string name="setting_behavior_rewind_prev">Zurückspulen, bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied springen</string>
+
+    <string name="setting_content">Content</string>
     <string name="setting_content_save">Wiedergabezustand abspeichern</string>
     <string name="setting_content_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
+    <string name="setting_content_blacklist">Ausgeschlossene Ordner</string>
+    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deinen Musikbibliothek</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>
     <string name="error_load_failed">Laden die Musik fehlgeschlagen</string>
     <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
     <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
+    <string name="error_brick_dir">Das Stammverzeichnis kann nicht ausgeschlossen sein</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>
@@ -157,4 +168,5 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Alben</item>
     </plurals>
+
 </resources>

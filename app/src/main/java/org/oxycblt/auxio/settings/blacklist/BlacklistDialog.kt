@@ -99,7 +99,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
             folderChooser(
                 requireContext(),
                 initialDirectory = File(Environment.getExternalStorageDirectory().absolutePath),
-                emptyTextRes = R.string.error_no_dirs
+                emptyTextRes = R.string.label_no_dirs
             )
 
             // Once again remove the ugly dividers from the dialog, but now with an even
@@ -123,7 +123,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
             // to be excluded, as that would lead to the user being stuck at the "No Music Found"
             // screen.
             if (path == Environment.getExternalStorageDirectory().absolutePath) {
-                getString(R.string.error_folder_would_brick_app).createToast(requireContext())
+                getString(R.string.error_brick_dir).createToast(requireContext())
 
                 return
             }

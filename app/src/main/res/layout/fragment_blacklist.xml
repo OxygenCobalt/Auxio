@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_semibold"
                 android:padding="@dimen/padding_medium"
-                android:text="@string/label_empty_blacklist"
+                android:text="@string/label_no_dirs"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="?android:attr/textColorSecondary"
