@@ -63,7 +63,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
         }
 
         binding.blacklistConfirm.setOnClickListener {
-            if (blacklistModel.modified) {
+            if (blacklistModel.isModified()) {
                 saveAndRestart()
             } else {
                 dismiss()
@@ -99,7 +99,6 @@ class BlacklistDialog : BottomSheetDialogFragment() {
             folderChooser(
                 requireContext(),
                 initialDirectory = File(Environment.getExternalStorageDirectory().absolutePath),
-                waitForPositiveButton = false,
                 emptyTextRes = R.string.error_no_dirs
             )
 
@@ -135,19 +134,18 @@ class BlacklistDialog : BottomSheetDialogFragment() {
 
     private fun saveAndRestart() {
         blacklistModel.save {
-            playbackModel.savePlaybackState(requireContext(), ::reincarnate)
+            playbackModel.savePlaybackState(requireContext(), ::hardRestart)
         }
     }
 
-    private fun reincarnate() {
-        // Instead of having to do a ton of cleanup and make a ton of horrible code changes
+    private fun hardRestart() {
+        // Instead of having to do a ton of cleanup and horrible code changes
         // to restart this application non-destructively, I just restart the UI task [There is only
         // one, after all] and then kill the application using exitProcess. Works well enough.
-        val intent = Intent(requireContext().applicationContext, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        val intent = Intent(requireContext().applicationContext, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
 
-        requireContext().startActivity(intent)
+        startActivity(intent)
 
         exitProcess(0)
     }

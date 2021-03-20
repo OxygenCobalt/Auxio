@@ -21,8 +21,7 @@ class BlacklistViewModel(context: Context) : ViewModel() {
     val paths: LiveData<MutableList<String>> get() = mPaths
 
     private val blacklistDatabase = BlacklistDatabase.getInstance(context)
-    var modified = false
-        private set
+    private var dbPaths = listOf<String>()
 
     init {
         loadDatabasePaths()
@@ -33,12 +32,10 @@ class BlacklistViewModel(context: Context) : ViewModel() {
      * [save] is called.
      */
     fun addPath(path: String) {
-        if (mPaths.value!!.contains(path)) return
-
-        mPaths.value!!.add(path)
-        mPaths.value = mPaths.value
-
-        modified = true
+        if (!mPaths.value!!.contains(path)) {
+            mPaths.value!!.add(path)
+            mPaths.value = mPaths.value
+        }
     }
 
     /**
@@ -48,8 +45,6 @@ class BlacklistViewModel(context: Context) : ViewModel() {
     fun removePath(path: String) {
         mPaths.value!!.remove(path)
         mPaths.value = mPaths.value
-
-        modified = true
     }
 
     /**
@@ -58,7 +53,8 @@ class BlacklistViewModel(context: Context) : ViewModel() {
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             blacklistDatabase.writePaths(mPaths.value!!)
-            modified = false
+            dbPaths = mPaths.value!!
+
             onDone()
         }
     }
@@ -68,16 +64,18 @@ class BlacklistViewModel(context: Context) : ViewModel() {
      */
     fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
-            val paths = blacklistDatabase.readPaths().toMutableList()
+            dbPaths = blacklistDatabase.readPaths()
 
             withContext(Dispatchers.Main) {
-                // Can only change LiveData on the main thread.
-                mPaths.value = paths
+                mPaths.value = dbPaths.toMutableList()
             }
-
-            modified = false
         }
     }
+
+    /**
+     * Check if changes have been made to the viewmodel's paths.
+     */
+    fun isModified() = dbPaths != paths.value
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
