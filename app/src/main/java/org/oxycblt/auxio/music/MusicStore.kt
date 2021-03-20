@@ -75,17 +75,30 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Get the song for a file [uri].
+     * Find a song from this instance in a safe manner.
+     * Using a normal search of the songs list runs the risk of getting the *wrong* song with
+     * the same name, so the album name is used to fix the above problem.
+     * @param name The name of the song
+     * @param albumName The name of the song's album.
+     * @return The song requested, null if there isnt one.
+     */
+    fun findSong(name: String, albumName: String): Song? {
+        return albums.find { it.name == albumName }?.songs?.find { it.name == name }
+    }
+
+    /**
+     * Find a song for a [uri], this is similar to [findSong], but with some kind of content uri.
      * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
-    fun getSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-            ?.use { cursor ->
-                cursor.moveToFirst()
-                val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+    fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
+        val cur = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
 
-                return songs.find { it.fileName == fileName }
-            }
+        cur?.use { cursor ->
+            cursor.moveToFirst()
+            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+
+            return songs.find { it.fileName == fileName }
+        }
 
         return null
     }

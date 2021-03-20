@@ -53,6 +53,7 @@ class PlaybackStateDatabase(context: Context) :
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
             .append("${PlaybackState.COLUMN_SONG_NAME} TEXT NOT NULL,")
+            .append("${PlaybackState.COLUMN_SONG_ALBUM_NAME} TEXT NOT NULL,")
             .append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
             .append("${PlaybackState.COLUMN_PARENT_NAME} TEXT NOT NULL,")
             .append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
@@ -89,9 +90,10 @@ class PlaybackStateDatabase(context: Context) :
 
             this@PlaybackStateDatabase.logD("Wiped state db.")
 
-            val stateData = ContentValues(9).apply {
+            val stateData = ContentValues(10).apply {
                 put(PlaybackState.COLUMN_ID, state.id)
                 put(PlaybackState.COLUMN_SONG_NAME, state.songName)
+                put(PlaybackState.COLUMN_SONG_ALBUM_NAME, state.songAlbumName)
                 put(PlaybackState.COLUMN_POSITION, state.position)
                 put(PlaybackState.COLUMN_PARENT_NAME, state.parentName)
                 put(PlaybackState.COLUMN_INDEX, state.index)
@@ -120,6 +122,7 @@ class PlaybackStateDatabase(context: Context) :
             if (cursor.count == 0) return@queryAll
 
             val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_NAME)
+            val albumIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_ALBUM_NAME)
             val posIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
             val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_NAME)
             val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
@@ -134,6 +137,7 @@ class PlaybackStateDatabase(context: Context) :
 
             state = PlaybackState(
                 songName = cursor.getStringOrNull(songIndex) ?: "",
+                songAlbumName = cursor.getStringOrNull(albumIndex) ?: "",
                 position = cursor.getLong(posIndex),
                 parentName = cursor.getStringOrNull(parentIndex) ?: "",
                 index = cursor.getInt(indexIndex),

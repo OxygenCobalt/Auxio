@@ -15,6 +15,7 @@ package org.oxycblt.auxio.database
 data class PlaybackState(
     val id: Long = 0L,
     val songName: String = "",
+    val songAlbumName: String = "",
     val position: Long,
     val parentName: String = "",
     val index: Int,
@@ -25,7 +26,8 @@ data class PlaybackState(
 ) {
     companion object {
         const val COLUMN_ID = "state_id"
-        const val COLUMN_SONG_NAME = "song_name"
+        const val COLUMN_SONG_NAME = "cur_song_name"
+        const val COLUMN_SONG_ALBUM_NAME = "cur_song_album"
         const val COLUMN_POSITION = "position"
         const val COLUMN_PARENT_NAME = "parent_name"
         const val COLUMN_INDEX = "state_index"

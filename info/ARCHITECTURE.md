@@ -50,9 +50,10 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 │  └──.viewholders # Shared ViewHolders and ViewHolder utilities
 ├──.search         # Search UI
 ├──.settings       # Settings UI and systems
+│  ├──.blacklist   # Excluded Directories/Systems
 │  └──.ui          # Contains UI's related to the settings view, such as the about screen
 ├──.songs          # Songs UI
-├──.ui             # Shared user interface utilities
+└──.ui             # Shared user interface utilities
 ```
 
 #### `.coil`

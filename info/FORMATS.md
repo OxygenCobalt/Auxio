@@ -14,7 +14,7 @@ Here are the music formats that Auxio supports, as per the [Supported ExoPlayer 
 | MP3    | ✅ | |
 | MKA    | ✅ | |
 | OGG    | ✅ | Containing Vorbis, Opus, and FLAC |
-| WAV    | ✅ |  |
+| WAV    | ✅ | |
 | MPEG   | ✅ | |
 | AAC    | ✅ | |
 | FLAC   | ❌ | Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac) |

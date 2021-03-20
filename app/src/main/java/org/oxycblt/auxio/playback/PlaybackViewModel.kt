@@ -183,7 +183,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun playWithUriInternal(uri: Uri, context: Context) {
         logD("Playing with uri $uri")
 
-        musicStore.getSongForUri(uri, context.contentResolver)?.let { song ->
+        musicStore.findSongForUri(uri, context.contentResolver)?.let { song ->
             playSong(song)
         }
     }

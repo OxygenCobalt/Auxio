@@ -652,6 +652,7 @@ class PlaybackStateManager private constructor() {
     private fun packToPlaybackState(): PlaybackState {
         return PlaybackState(
             songName = mSong?.name ?: "",
+            songAlbumName = mSong?.album?.name ?: "",
             position = mPosition,
             parentName = mParent?.name ?: "",
             index = mIndex,
@@ -674,7 +675,7 @@ class PlaybackStateManager private constructor() {
         mIndex = playbackState.index
 
         // Then set up the current state
-        mSong = musicStore.songs.find { it.name == playbackState.songName }
+        mSong = musicStore.findSong(playbackState.songName, playbackState.songAlbumName)
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
         mIsInUserQueue = playbackState.inUserQueue
@@ -709,12 +710,8 @@ class PlaybackStateManager private constructor() {
      * @param queueItems The list of [QueueItem]s to unpack.
      */
     private fun unpackQueue(queueItems: List<QueueItem>) {
-        // When unpacking, first traverse albums and then traverse album songs to reduce
-        // the amount of comparisons in large queues.
         queueItems.forEach { item ->
-            val album = musicStore.albums.find { it.name == item.albumName }
-
-            album?.songs?.find { it.name == item.songName }?.let { song ->
+            musicStore.findSong(item.songName, item.albumName)?.let { song ->
                 if (item.isUserQueue) {
                     mUserQueue.add(song)
                 } else {

@@ -30,18 +30,6 @@ fun SQLiteDatabase.execute(commands: SQLiteDatabase.() -> Unit): Boolean {
 }
 
 /**
- * Shortcut for running a query on this database and then running [block] with the cursor returned.
- * Will not run if the cursor is null.
- */
-fun <R> SQLiteDatabase.queryUse(
-    tableName: String,
-    columns: Array<String>?,
-    selection: String?,
-    vararg args: String,
-    block: (Cursor) -> R
-) = query(tableName, columns, selection, args, null, null, null, null)?.use(block)
-
-/**
  * Shortcut for querying all items in a database and running [block] with the cursor returned.
  * Will not run if the cursor is null.
  */
