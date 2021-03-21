@@ -3,11 +3,15 @@
     package="org.oxycblt.auxio">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <queries />
 
+    <!--
+    TODO: Bite the bullet and just use SAF so you dont have to rely on a flag that is
+     probably going to be removed by Android 12/13 (Would also eliminate the dialogs dependency)
+    -->
     <application
         android:name=".AuxioApp"
         android:allowBackup="true"

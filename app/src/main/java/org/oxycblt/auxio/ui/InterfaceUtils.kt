@@ -88,7 +88,7 @@ fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
  * @throws IllegalStateException If the system service cannot be retrieved.
  */
 fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
-    return checkNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
+    return requireNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
         "System service ${serviceClass.simpleName} could not be instantiated"
     }
 }

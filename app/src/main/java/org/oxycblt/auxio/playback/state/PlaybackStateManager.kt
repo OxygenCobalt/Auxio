@@ -284,7 +284,7 @@ class PlaybackStateManager private constructor() {
      */
     fun prev() {
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (settingsManager.rewindWithPrev && mPosition >= 3000) {
+        if (settingsManager.rewindWithPrev && mPosition >= REWIND_THRESHOLD) {
             rewind()
         } else {
             // Only decrement the index if there's a song to move back to AND if we are not exiting
@@ -808,6 +808,8 @@ class PlaybackStateManager private constructor() {
     }
 
     companion object {
+        private const val REWIND_THRESHOLD = 3000L
+
         @Volatile
         private var INSTANCE: PlaybackStateManager? = null
 

@@ -9,7 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
-import android.media.audiofx.Visualizer
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -59,16 +59,18 @@ import org.oxycblt.auxio.ui.getSystemServiceSafe
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
-    private val player: SimpleExoPlayer by lazy(::newPlayer)
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
-
+    private lateinit var player: SimpleExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var notificationManager: NotificationManager
+
     private lateinit var notification: PlaybackNotification
+    private lateinit var notificationManager: NotificationManager
 
     private lateinit var audioReactor: AudioReactor
-    private lateinit var systemReceiver: SystemEventReceiver
+    private lateinit var wakeLock: PowerManager.WakeLock
+    private val systemReceiver = SystemEventReceiver()
+
+    private val playbackManager = PlaybackStateManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
     private var isForeground = false
 
@@ -92,6 +94,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
         // --- PLAYER SETUP ---
 
+        player = newPlayer()
         player.addListener(this@PlaybackService)
         player.setAudioAttributes(
             AudioAttributes.Builder()
@@ -102,10 +105,11 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         )
 
         audioReactor = AudioReactor(this, player)
+        wakeLock = getSystemServiceSafe(PowerManager::class).newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK, this::class.simpleName
+        )
 
-        // --- SYSTEM RECEIVER SETUP ---
-
-        systemReceiver = SystemEventReceiver()
+        // --- CALLBACKS ---
 
         // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply {
@@ -119,6 +123,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
             }
         }
 
+        // Then the notif/headset callbacks
         IntentFilter().apply {
             addAction(PlaybackNotification.ACTION_LOOP)
             addAction(PlaybackNotification.ACTION_SHUFFLE)
@@ -165,6 +170,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         player.release()
         mediaSession.release()
         audioReactor.release()
+        wakeLock.release()
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
@@ -185,8 +191,13 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
 
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
-            Player.STATE_READY -> startPollingPosition()
+            Player.STATE_READY -> {
+                startPollingPosition()
+                releaseWakelock()
+            }
+
             Player.STATE_ENDED -> playbackManager.next()
+
             else -> {}
         }
     }
@@ -196,6 +207,9 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
             playbackManager.clearLoopMode()
         }
+
+        // We use the wakelock to ensure that the CPU is active while music is being loaded
+        holdWakelock()
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
@@ -376,7 +390,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         val pollFlow = flow {
             while (true) {
                 emit(player.currentPosition)
-                delay(500)
+                delay(POS_POLL_INTERVAL)
             }
         }.conflate()
 
@@ -421,6 +435,26 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
 
         isForeground = false
+    }
+
+    /**
+     * Hold the wakelock for the default amount of time [25 Seconds]
+     */
+    private fun holdWakelock() {
+        logD("Holding wakelock.")
+
+        wakeLock.acquire(WAKELOCK_TIME)
+    }
+
+    /**
+     * Release the wakelock if its currently being held.
+     */
+    private fun releaseWakelock() {
+        logD("Attempting to release the wakelock.")
+
+        if (wakeLock.isHeld) {
+            wakeLock.release()
+        }
     }
 
     /**
@@ -547,5 +581,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     companion object {
         private const val DISCONNECTED = 0
         private const val CONNECTED = 1
+        private const val WAKELOCK_TIME = 25000L
+        private const val POS_POLL_INTERVAL = 500L
     }
 }
