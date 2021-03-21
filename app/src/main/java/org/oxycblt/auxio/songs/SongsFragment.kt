@@ -34,14 +34,6 @@ class SongsFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicStore = MusicStore.getInstance()
 
-    // Lazy init the text size so that it doesn't have to be calculated every time.
-    private val indicatorTextSize: Float by lazy {
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, 14F,
-            resources.displayMetrics
-        )
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,9 +82,14 @@ class SongsFragment : Fragment() {
 
     /**
      * Perform the (Frustratingly Long and Complicated) FastScrollerView setup.
+     * TODO: Roll FastScrollerView yourself and eliminate its dependency, you're already customizing it enough as it is.
      */
     private fun FastScrollerView.setup(recycler: RecyclerView, thumb: CobaltScrollThumb) {
         var truncateInterval: Int = -1
+        val indicatorTextSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, 14F,
+            resources.displayMetrics
+        )
 
         // API 22 and below don't support the state color, so just use the accent.
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {

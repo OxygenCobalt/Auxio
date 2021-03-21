@@ -54,7 +54,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.playbackModel = playbackModel
         binding.detailModel = detailModel
-        binding.song = playbackModel.song.value!!
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener {

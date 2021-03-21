@@ -34,7 +34,6 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
         size: Size,
         options: Options
     ): FetchResult {
-        options.allowRgb565
         // Get the URIs for either a genre or artist
         val uris = mutableListOf<Uri>()
 

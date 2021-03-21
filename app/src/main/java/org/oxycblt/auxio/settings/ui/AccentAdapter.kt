@@ -13,10 +13,10 @@ import org.oxycblt.auxio.ui.toStateList
 /**
  * An adapter that displays the list of all possible accents, and highlights the current one.
  * @author OxygenCobalt
- * @param doOnAccentConfirm What to do when an accent is confirmed.
+ * @param onConfirm What to do when an accent is confirmed.
  */
 class AccentAdapter(
-    private val doOnAccentConfirm: (accent: Accent) -> Unit
+    private val onConfirm: (accent: Accent) -> Unit
 ) : RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
     override fun getItemCount(): Int = ACCENTS.size
 
@@ -51,7 +51,7 @@ class AccentAdapter(
                 TooltipCompat.setTooltipText(this, contentDescription)
 
                 setOnClickListener {
-                    doOnAccentConfirm(accent)
+                    onConfirm(accent)
                 }
             }
         }

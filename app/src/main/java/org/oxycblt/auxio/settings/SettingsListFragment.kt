@@ -20,6 +20,7 @@ import org.oxycblt.auxio.ui.createToast
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
+ * TODO: Roll your own ListPreference that supports int prefs [and is a bottom sheet]
  * @author OxygenCobalt
  */
 @Suppress("UNUSED")

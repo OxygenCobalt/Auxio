@@ -30,6 +30,7 @@ fun Any.logE(msg: String) {
 
 /**
  * Get a non-nullable name, used so that logs will always show up in the console.
+ * This also applies a special "Auxio" prefix so that messages can be filtered to just from the main codebase.
  * @return The name of the object, otherwise "Anonymous Object"
  */
-private fun Any.getName(): String = this::class.simpleName ?: "Anonymous Object"
+private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"

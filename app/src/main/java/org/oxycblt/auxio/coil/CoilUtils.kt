@@ -23,15 +23,15 @@ import org.oxycblt.auxio.settings.SettingsManager
  * Bind the album art for a [song].
  */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(song: Song) {
-    load(song.album, R.drawable.ic_song, AlbumArtFetcher(context))
+fun ImageView.bindAlbumArt(song: Song?) {
+    load(song?.album, R.drawable.ic_song, AlbumArtFetcher(context))
 }
 
 /**
  * Bind the album art for an [album].
  */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(album: Album) {
+fun ImageView.bindAlbumArt(album: Album?) {
     load(album, R.drawable.ic_album, AlbumArtFetcher(context))
 }
 
@@ -39,7 +39,7 @@ fun ImageView.bindAlbumArt(album: Album) {
  * Bind the image for an [artist]
  */
 @BindingAdapter("artistImage")
-fun ImageView.bindArtistImage(artist: Artist) {
+fun ImageView.bindArtistImage(artist: Artist?) {
     load(artist, R.drawable.ic_artist, MosaicFetcher(context))
 }
 
@@ -47,20 +47,20 @@ fun ImageView.bindArtistImage(artist: Artist) {
  * Bind the image for a [genre]
  */
 @BindingAdapter("genreImage")
-fun ImageView.bindGenreImage(genre: Genre) {
+fun ImageView.bindGenreImage(genre: Genre?) {
     load(genre, R.drawable.ic_genre, MosaicFetcher(context))
 }
 
 /**
  * Custom extension function similar to the stock coil load extensions, but handles whether
  * to show images and custom fetchers.
- * @param T Any datatype that inherits [BaseModel]
+ * @param T Any datatype that inherits [BaseModel]. This can be null, but keep in mind that it will cause loading to fail.
  * @param data The data itself
  * @param error Drawable resource to use when loading failed/should not occur.
  * @param fetcher Required fetcher that uses [T] as its datatype
  */
 inline fun <reified T : BaseModel> ImageView.load(
-    data: T,
+    data: T?,
     @DrawableRes error: Int,
     fetcher: Fetcher<T>,
 ) {

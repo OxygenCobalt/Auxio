@@ -52,12 +52,15 @@ class PlayPauseButton @JvmOverloads constructor(
 
     /**
      * Hack that fixes an issue where a seam would display in the middle of the play button,
-     * probably as a result of floating point precision errors. Gotta love IEEE 754.
+     * probably as a result of floating point precision errors. Thanks IEEE 754.
      */
     @RequiresApi(Build.VERSION_CODES.M)
     private fun fixSeams() {
         iconPauseToPlay.registerAnimationCallback(object : Animatable2.AnimationCallback() {
             override fun onAnimationEnd(drawable: Drawable?) {
+                // ic_play_large is a unified vector, compared to the two paths on the
+                // animated vector. So switch to that when the animation completes to prevent the
+                // seam from displaying.
                 setImageResource(R.drawable.ic_play_large)
             }
         })

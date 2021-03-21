@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
@@ -36,17 +35,8 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentMainBinding.inflate(inflater)
-
-        // If the music was cleared while the app was closed [Likely due to Auxio being suspended
-        // in the background], then navigate back to LoadingFragment to reload the music.
-        // This may actually not happen in normal use, but its a good failsafe.
-        if (MusicStore.getInstance().songs.isEmpty()) {
-            findNavController().navigate(MainFragmentDirections.actionReturnToLoading())
-
-            return null
-        }
 
         val colorActive = Accent.get().color.toColor(requireContext())
         val colorInactive = ColorUtils.setAlphaComponent(colorActive, 150)

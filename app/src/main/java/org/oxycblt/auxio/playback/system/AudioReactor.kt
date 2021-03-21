@@ -7,6 +7,7 @@ import androidx.core.animation.addListener
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.SimpleExoPlayer
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.getSystemServiceSafe
@@ -61,9 +62,11 @@ class AudioReactor(
     }
 
     private fun onGain() {
-        if (player.volume == VOLUME_DUCK && playbackManager.isPlaying) {
+        if (player.volume == VOLUME_DUCK) {
             unduck()
         } else if (pauseWasTransient) {
+            logD("Gained focus after transient loss")
+
             // Play again if the pause was only temporary [AudioManager.AUDIOFOCUS_LOSS_TRANSIENT]
             playbackManager.setPlaying(true)
             pauseWasTransient = false
@@ -73,20 +76,28 @@ class AudioReactor(
     private fun onLossTransient() {
         // Since this loss is only temporary, mark it as such if we had to pause playback.
         if (playbackManager.isPlaying) {
-            pauseWasTransient = true
+            logD("Pausing for transient loss")
+
             playbackManager.setPlaying(false)
+            pauseWasTransient = true
         }
     }
 
     private fun onLossPermanent() {
+        logD("Pausing for permanent loss")
+
         playbackManager.setPlaying(false)
     }
 
     private fun onDuck() {
+        logD("Ducking, lowering volume")
+
         player.volume = VOLUME_DUCK
     }
 
     private fun unduck() {
+        logD("Unducking, raising volume")
+
         player.volume = VOLUME_DUCK
 
         ValueAnimator().apply {

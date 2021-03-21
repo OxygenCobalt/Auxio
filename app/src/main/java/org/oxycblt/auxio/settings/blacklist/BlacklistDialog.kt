@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentBlacklistBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.createToast
 import java.io.File
@@ -77,6 +78,8 @@ class BlacklistDialog : BottomSheetDialogFragment() {
 
             binding.blacklistEmptyText.isVisible = paths.isEmpty()
         }
+
+        logD("Dialog created.")
 
         return binding.root
     }
@@ -139,6 +142,8 @@ class BlacklistDialog : BottomSheetDialogFragment() {
     }
 
     private fun hardRestart() {
+        logD("Performing hard-restart.")
+
         // Instead of having to do a ton of cleanup and horrible code changes
         // to restart this application non-destructively, I just restart the UI task [There is only
         // one, after all] and then kill the application using exitProcess. Works well enough.

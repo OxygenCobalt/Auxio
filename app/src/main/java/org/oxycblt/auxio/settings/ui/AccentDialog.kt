@@ -13,6 +13,11 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
 
+/**
+ * Dialog responsible for showing the list of accents to select.
+ * TODO: Move this to a Bottom Sheet and eliminate the MaterialDialogs dependency
+ * @author OxygenCobalt
+ */
 class AccentDialog : DialogFragment() {
     private val settingsManager = SettingsManager.getInstance()
 

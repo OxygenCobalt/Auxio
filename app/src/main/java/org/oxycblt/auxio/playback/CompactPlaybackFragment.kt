@@ -11,7 +11,6 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.music.MusicStore
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -34,9 +33,6 @@ class CompactPlaybackFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        // Put a placeholder song in the binding & hide the playback fragment initially.
-        binding.song = MusicStore.getInstance().songs[0]
         binding.playbackModel = playbackModel
         binding.executePendingBindings()
 

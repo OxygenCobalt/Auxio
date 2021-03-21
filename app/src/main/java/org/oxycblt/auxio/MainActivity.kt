@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         if (isEdgeOn()) {
             setupEdgeToEdge(binding)
         }
+
+        logD("Activity created.")
     }
 
     override fun onStart() {
