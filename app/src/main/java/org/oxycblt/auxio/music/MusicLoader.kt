@@ -42,6 +42,7 @@ class MusicLoader(private val context: Context) {
         linkGenres()
     }
 
+    @Suppress("DEPRECATION")
     private fun buildSelector() {
         val blacklistDatabase = BlacklistDatabase.getInstance(context)
 

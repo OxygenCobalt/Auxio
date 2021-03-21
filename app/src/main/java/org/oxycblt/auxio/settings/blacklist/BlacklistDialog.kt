@@ -98,7 +98,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
 
             folderChooser(
                 requireContext(),
-                initialDirectory = File(Environment.getExternalStorageDirectory().absolutePath),
+                initialDirectory = File(getRootPath()),
                 emptyTextRes = R.string.label_no_dirs
             )
 
@@ -122,7 +122,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
             // Due to how Auxio's navigation flow works, dont allow the main root directory
             // to be excluded, as that would lead to the user being stuck at the "No Music Found"
             // screen.
-            if (path == Environment.getExternalStorageDirectory().absolutePath) {
+            if (path == getRootPath()) {
                 getString(R.string.error_brick_dir).createToast(requireContext())
 
                 return
@@ -148,5 +148,10 @@ class BlacklistDialog : BottomSheetDialogFragment() {
         startActivity(intent)
 
         exitProcess(0)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun getRootPath(): String {
+        return Environment.getExternalStorageDirectory().absolutePath
     }
 }

@@ -58,7 +58,6 @@ import org.oxycblt.auxio.ui.getSystemServiceSafe
  */
 class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
     private val player: SimpleExoPlayer by lazy(::newPlayer)
-
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
