@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager

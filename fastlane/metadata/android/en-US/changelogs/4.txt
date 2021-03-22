@@ -1,0 +1,7 @@
+- Added the ability to exclude directories from indexing
+- Accents have been redone to improve visibility/UI simplicity
+- Enabled wake lock functionality
+- Fixed issue where the artist genre would display incorrectly
+- Fixed issue where AudioFocus would begin playback spontaneously
+- Fixed issue where AudioFocus would not restore volume to 100% after ducking
+- Fixed issues with the playback restore process (Current state will be wiped on update)

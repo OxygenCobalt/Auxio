@@ -5,7 +5,8 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        jcenter() // TODO: Remove JCenter when Exoplayer migrates
+        mavenCentral()
     }
 
     dependencies {
@@ -22,6 +23,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
