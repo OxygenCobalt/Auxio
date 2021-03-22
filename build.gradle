@@ -5,8 +5,15 @@ buildscript {
 
     repositories {
         google()
-        jcenter() // TODO: Remove JCenter when Exoplayer migrates
         mavenCentral()
+
+        // TODO: Eliminate Exoplayer when it migrates to GMaven
+        jcenter {
+            content {
+                includeGroup("org.jetbrains.trove4j")
+                includeGroup("com.google.android.exoplayer")
+            }
+        }
     }
 
     dependencies {
@@ -22,8 +29,14 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
+
+        jcenter {
+            content {
+                includeGroup("org.jetbrains.trove4j")
+                includeGroup("com.google.android.exoplayer")
+            }
+        }
     }
 }
 

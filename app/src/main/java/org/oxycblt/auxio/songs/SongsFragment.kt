@@ -1,29 +1,21 @@
 package org.oxycblt.auxio.songs
 
-import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.reddit.indicatorfastscroll.FastScrollItemIndicator
-import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.addIndicatorCallback
 import org.oxycblt.auxio.ui.canScroll
+import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
-import kotlin.math.ceil
 
 /**
  * A [Fragment] that shows a list of all songs on the device.
@@ -73,75 +65,21 @@ class SongsFragment : Fragment() {
             }
         }
 
-        binding.songFastScroll.setup(binding.songRecycler, binding.songFastScrollThumb)
+        binding.songFastScroll.setup(binding.songRecycler, binding.songFastScrollThumb) { pos ->
+            val char = musicStore.songs[pos].name.first
+
+            if (char.isDigit()) '#' else char
+        }
 
         logD("Fragment created.")
 
         return binding.root
     }
 
-    /**
-     * Perform the (Frustratingly Long and Complicated) FastScrollerView setup.
-     * TODO: Roll FastScrollerView yourself and eliminate its dependency, you're already customizing it enough as it is.
-     */
-    private fun FastScrollerView.setup(recycler: RecyclerView, thumb: CobaltScrollThumb) {
-        var truncateInterval: Int = -1
-        val indicatorTextSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, 14F,
-            resources.displayMetrics
-        )
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        // API 22 and below don't support the state color, so just use the accent.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            textColor = Accent.get().getStateList(requireContext())
-        }
-
-        setupWithRecyclerView(
-            recycler,
-            { pos ->
-                val char = musicStore.songs[pos].name.first
-
-                FastScrollItemIndicator.Text(
-                    // Use "#" if the character is a digit, also has the nice side-effect of
-                    // truncating extra numbers.
-                    if (char.isDigit()) "#" else char.toString()
-                )
-            },
-            null, false
-        )
-
-        showIndicator = { _, i, total ->
-            if (truncateInterval == -1) {
-                // If the scroller size is too small to contain all the entries, truncate entries
-                // so that the fast scroller entries fit.
-                val maxEntries = (height / (indicatorTextSize + textPadding))
-
-                if (total > maxEntries.toInt()) {
-                    truncateInterval = ceil(total / maxEntries).toInt()
-
-                    check(truncateInterval > 1) {
-                        "Needed to truncate, but truncateInterval was 1 or lower anyway"
-                    }
-
-                    logD("More entries than screen space, truncating by $truncateInterval.")
-                } else {
-                    truncateInterval = 1
-                }
-            }
-
-            // Any items that need to be truncated will be hidden
-            (i % truncateInterval) == 0
-        }
-
-        addIndicatorCallback { _, _, pos ->
-            recycler.apply {
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(pos, 0)
-
-                stopScroll()
-            }
-        }
-
-        thumb.setup(this)
+        fixAnimInfoLeak()
     }
 
     /**

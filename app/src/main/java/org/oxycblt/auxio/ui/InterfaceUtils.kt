@@ -10,6 +10,7 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -23,8 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.reddit.indicatorfastscroll.FastScrollItemIndicator
-import com.reddit.indicatorfastscroll.FastScrollerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
@@ -130,27 +129,29 @@ fun Int.toDrawable(context: Context) = ContextCompat.getDrawable(context, this)
 fun Int.toAnimDrawable(context: Context) = toDrawable(context) as AnimatedVectorDrawable
 
 /**
+ * Resolve this int into a color as if it was an attribute
+ */
+fun Int.resolveAttr(context: Context): Int {
+    // Convert the attribute into its color
+    val resolvedAttr = TypedValue()
+    context.theme.resolveAttribute(this, resolvedAttr, true)
+
+    // Then convert it to a proper color
+    val color = if (resolvedAttr.resourceId != 0) {
+        resolvedAttr.resourceId
+    } else {
+        resolvedAttr.data
+    }
+
+    return color.toColor(context)
+}
+
+/**
  * Create a [Toast] from a [String]
  * @param context [Context] required to create the toast
  */
 fun String.createToast(context: Context) {
     Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
-}
-
-/**
- * Shortcut that allows me to add a indicator callback to [FastScrollerView] without
- * the nightmarish boilerplate that entails.
- */
-fun FastScrollerView.addIndicatorCallback(
-    callback: (indicator: FastScrollItemIndicator, centerY: Int, pos: Int) -> Unit
-) {
-    itemIndicatorSelectedCallbacks += object : FastScrollerView.ItemIndicatorSelectedCallback {
-        override fun onItemIndicatorSelected(
-            indicator: FastScrollItemIndicator,
-            indicatorCenterY: Int,
-            itemPosition: Int
-        ) = callback(indicator, indicatorCenterY, itemPosition)
-    }
 }
 
 // --- CONFIGURATION ---
@@ -253,8 +254,8 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
 // --- HACKY NIGHTMARES ---
 
 /**
- * Use reflection to fix a memory leak in the [Fragment] source code where the focused view will
- * never be cleared. I can't believe I have to do this.
+ * Use ***REFLECTION*** to fix a memory leak in the [Fragment] source code where the focused view
+ * will never be cleared. I can't believe I have to do this.
  */
 fun Fragment.fixAnimInfoLeak() {
     try {

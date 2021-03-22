@@ -16,7 +16,6 @@
         <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
         <item name="colorControlNormal">@color/control_color</item>
         <item name="alertDialogTheme">@style/Theme.CustomDialog</item>
-        <item name="indicatorFastScrollerStyle">@style/FastScrollTheme</item>
         <item name="colorControlHighlight">@color/selection_color</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="cornerRadius">0dp</item>
@@ -99,15 +98,10 @@
         <item name="android:fontFamily">@font/inter_exbold</item>
     </style>
 
-    <!-- Fast scroll theme -->
-    <style name="FastScrollTheme" parent="Widget.IndicatorFastScroll.FastScroller">
-        <item name="android:textAppearance">@style/TextAppearance.FastScroll</item>
-        <item name="android:textColor">@color/color_scroll_tints</item>
-    </style>
-
     <!-- Fast scroll text appearance -->
     <style name="TextAppearance.FastScroll" parent="TextAppearance.AppCompat.Body2">
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:lineSpacingExtra">@dimen/padding_tiny</item>
     </style>
 
     <!-- Fast scroll thumb appearance -->
