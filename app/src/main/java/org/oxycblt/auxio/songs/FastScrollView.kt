@@ -24,8 +24,8 @@ import kotlin.math.min
 /**
  * A view that allows for quick scrolling through a [RecyclerView] with many items. Unlike other
  * fast-scrollers, this one displays indicators instead of simply a scroll bar.
- * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, targeted towards
- * Auxio specifically. Check them out here: https://github.com/reddit/IndicatorFastScroll/
+ * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
+ * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
  * @author OxygenCobalt
  */
 class FastScrollView @JvmOverloads constructor(
@@ -172,6 +172,7 @@ class FastScrollView @JvmOverloads constructor(
         }
 
         if (touchY in (indicatorText.top until indicatorText.bottom)) {
+            // Try to roughly caculate which indicator the user is currently touching [Since the
             val textHeight = indicatorText.height / indicators.size
             val indicatorIndex = min(
                 (touchY - indicatorText.top) / textHeight, indicators.lastIndex

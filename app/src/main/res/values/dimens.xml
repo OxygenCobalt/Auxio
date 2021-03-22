@@ -40,6 +40,7 @@
 
     <dimen name="size_play_pause">70dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
+    <dimen name="size_scroll_thumb">32dp</dimen>
     <dimen name="size_clear">32dp</dimen>
 
     <dimen name="size_app_icon">60dp</dimen>
@@ -55,6 +56,7 @@
     <dimen name="text_size_toolbar_header">20sp</dimen>
 
     <!-- Misc -->
+    <dimen name="elevation_small">2dp</dimen>
     <dimen name="elevation_normal">4dp</dimen>
     <dimen name="offset_thumb">4dp</dimen>
 </resources>

@@ -20,8 +20,9 @@ import org.oxycblt.auxio.ui.inflater
 /**
  * The companion thumb for [FastScrollView]. This does not need any setup, instead pass it as an
  * argument to [FastScrollView.setup].
- * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, targeted towards
- * Auxio specifically. Check them out here: https://github.com/reddit/IndicatorFastScroll/
+ * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
+ * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
+ * TODO: Merge this view and FastScrollView? They are effectively reliant on eachother
  * @author OxygenCobalt
  */
 class FastScrollThumb @JvmOverloads constructor(
@@ -70,7 +71,7 @@ class FastScrollThumb @JvmOverloads constructor(
 
     /**
      * Make the thumb jump to a new position and update its text to the given [indicator].
-     * This is not meant for use outside of the main [FastScrollView] code, don't use it.
+     * This is not meant for use outside of the main [FastScrollView] code. Do not use it.
      */
     fun jumpTo(indicator: FastScrollView.Indicator, centerY: Int) {
         binding.thumbText.text = indicator.char.toString()

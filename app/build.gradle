@@ -53,6 +53,9 @@ afterEvaluate {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    // FIXME: A good chunk of the dependencies I use are implicit,
+    //  I may want to explicitly declare them to avoid any annoying build issues in the future.
+
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -98,10 +101,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
 
     // Dialogs
+    // TODO: Eliminate these, don't want their bloat.
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
     implementation 'com.afollestad.material-dialogs:files:3.3.0'
 
-    // --- DEV ---
+    // --- DEBUG ---
 
     // Lint
     ktlint "com.pinterest:ktlint:0.40.0"

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Animator from IndicatorFastScroll (https://github.com/reddit/IndicatorFastScroll) -->
 <layout>
     <merge xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         tools:layout_height="match_parent"
-        tools:layout_width="@dimen/fast_scroller_thumb_size"
+        tools:layout_width="@dimen/size_scroll_thumb"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <FrameLayout
             android:id="@+id/thumb_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/thumb_circle"
-            android:elevation="@dimen/fast_scroller_thumb_elevation"
-            android:stateListAnimator="@animator/fast_scroll_thumb"
+            android:background="@drawable/ui_circular_button"
+            android:elevation="@dimen/elevation_small"
+            android:stateListAnimator="@animator/animator_thumb"
             app:layout_constraintDimensionRatio="W,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
