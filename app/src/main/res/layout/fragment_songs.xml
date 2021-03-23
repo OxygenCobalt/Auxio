@@ -39,13 +39,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
 
-        <org.oxycblt.auxio.songs.FastScrollThumb
-            android:id="@+id/song_fast_scroll_thumb"
-            android:layout_width="@dimen/width_thumb_view"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/song_fast_scroll"
-            app:layout_constraintTop_toBottomOf="@+id/song_toolbar" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

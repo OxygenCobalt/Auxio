@@ -84,7 +84,7 @@ fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
  * @param T The system service in question.
  * @param serviceClass The service's kotlin class [Java class will be used in function call]
  * @return The system service
- * @throws IllegalStateException If the system service cannot be retrieved.
+ * @throws IllegalArgumentException If the system service cannot be retrieved.
  */
 fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
     return requireNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
@@ -218,7 +218,6 @@ fun Activity.isIrregularLandscape(): Boolean {
  * Check if the system bars are on the bottom.
  * @return If the system bars are on the bottom, false if no.
  */
-@Suppress("DEPRECATION")
 private fun isSystemBarOnBottom(activity: Activity): Boolean {
     val realPoint = Point()
     val metrics = DisplayMetrics()
@@ -236,6 +235,7 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
             }
         }
     } else {
+        @Suppress("DEPRECATION")
         (activity.getSystemServiceSafe(WindowManager::class)).apply {
             defaultDisplay.getRealSize(realPoint)
             defaultDisplay.getMetrics(metrics)

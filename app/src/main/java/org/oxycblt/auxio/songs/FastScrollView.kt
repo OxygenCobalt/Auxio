@@ -4,22 +4,26 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.widget.TextViewCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import androidx.dynamicanimation.animation.DynamicAnimation
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.ViewFastScrollBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.canScroll
+import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.toColor
 import kotlin.math.ceil
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * A view that allows for quick scrolling through a [RecyclerView] with many items. Unlike other
@@ -32,22 +36,23 @@ class FastScrollView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    // --- BASIC SETUP ---
+    // --- UI ---
+
+    private val binding = ViewFastScrollBinding.inflate(context.inflater, this, true)
+    private val thumbAnim: SpringAnimation
+
+    // --- RECYCLER ---
 
     private var mRecycler: RecyclerView? = null
-    private var mThumb: FastScrollThumb? = null
     private var mGetItem: ((Int) -> Char)? = null
 
     // --- INDICATORS ---
 
-    /** Representation of a single Indicator character in the view */
-    data class Indicator(val char: Char, val pos: Int)
+    private data class Indicator(val char: Char, val pos: Int)
 
     private var indicators = listOf<Indicator>()
-
-    private val indicatorText: TextView
     private val activeColor = Accent.get().color.toColor(context)
     private val inactiveColor = android.R.attr.textColorSecondary.resolveAttr(context)
 
@@ -59,34 +64,21 @@ class FastScrollView @JvmOverloads constructor(
     init {
         isFocusableInTouchMode = true
         isClickable = true
-        gravity = Gravity.CENTER
 
-        val textPadding = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 4F, resources.displayMetrics
-        )
-
-        // Making this entire view a TextView will cause distortions due to the touch calculations
-        // using a height that is not wrapped to the text.
-        indicatorText = AppCompatTextView(context).apply {
-            gravity = Gravity.CENTER
-            includeFontPadding = false
-
-            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_FastScroll)
-            setLineSpacing(textPadding, lineSpacingMultiplier)
-            setTextColor(inactiveColor)
+        thumbAnim = SpringAnimation(binding.scrollThumb, DynamicAnimation.TRANSLATION_Y).apply {
+            spring = SpringForce().also {
+                it.dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
+            }
         }
-
-        addView(indicatorText)
     }
 
     /**
      * Set up this view with a [RecyclerView] and a corresponding [FastScrollThumb].
      */
-    fun setup(recycler: RecyclerView, thumb: FastScrollThumb, getItem: (Int) -> Char) {
+    fun setup(recycler: RecyclerView, getItem: (Int) -> Char) {
         check(mRecycler == null) { "Only set up this view once." }
 
         mRecycler = recycler
-        mThumb = thumb
         mGetItem = getItem
 
         postIndicatorUpdate()
@@ -104,6 +96,9 @@ class FastScrollView @JvmOverloads constructor(
                 if (recycler.isAttachedToWindow && recycler.adapter != null) {
                     updateIndicators()
                 }
+
+                // Hide this view if there is nothing to scroll
+                isVisible = recycler.canScroll()
 
                 hasPostedItemUpdate = false
             }
@@ -140,9 +135,9 @@ class FastScrollView @JvmOverloads constructor(
             }
         }
 
-        indicatorText.apply {
-            tag = indicators
-            text = indicators.joinToString("\n") { it.char.toString() }
+        // Then set it as the unified TextView text, for efficiency purposes.
+        binding.scrollIndicatorText.text = indicators.joinToString("\n") { indicator ->
+            indicator.char.toString()
         }
     }
 
@@ -152,37 +147,38 @@ class FastScrollView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         performClick()
 
-        val success = handleTouch(event.action, event.y.toInt())
+        val success = handleTouch(event.action, event.y.roundToInt())
 
         // Depending on the results, update the visibility of the thumb and the pressed state of
         // this view.
         isPressed = success
-        mThumb?.isActivated = success
+        binding.scrollThumb.isActivated = success
 
         return success
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun handleTouch(action: Int, touchY: Int): Boolean {
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            indicatorText.setTextColor(inactiveColor)
+            binding.scrollIndicatorText.setTextColor(inactiveColor)
             lastPos = -1
 
             return false
         }
 
-        if (touchY in (indicatorText.top until indicatorText.bottom)) {
-            // Try to roughly caculate which indicator the user is currently touching [Since the
-            val textHeight = indicatorText.height / indicators.size
-            val indicatorIndex = min(
-                (touchY - indicatorText.top) / textHeight, indicators.lastIndex
-            )
+        // Try to figure out which indicator the pointer has landed on
+        if (touchY in (binding.scrollIndicatorText.top until binding.scrollIndicatorText.bottom)) {
+            // Get the touch position in regards to the TextView and the rough text height
+            val indicatorTouchY = touchY - binding.scrollIndicatorText.top
+            val textHeight = binding.scrollIndicatorText.height / indicators.size
 
-            val centerY = y.toInt() + (textHeight / 2) + (indicatorIndex * textHeight)
+            // Use that to calculate the indicator index, if the calculation is
+            // invalid just ignore it.
+            val index = min(indicatorTouchY / textHeight, indicators.lastIndex)
 
-            val touchedIndicator = indicators[indicatorIndex]
+            // Also calculate the rough center position of the indicator for the scroll thumb
+            val centerY = binding.scrollIndicatorText.y + (textHeight / 2) + (index * textHeight)
 
-            selectIndicator(touchedIndicator, centerY)
+            selectIndicator(indicators[index], centerY)
 
             return true
         }
@@ -190,20 +186,20 @@ class FastScrollView @JvmOverloads constructor(
         return false
     }
 
-    private fun selectIndicator(indicator: Indicator, indicatorCenterY: Int) {
+    private fun selectIndicator(indicator: Indicator, centerY: Float) {
         if (indicator.pos != lastPos) {
             lastPos = indicator.pos
-            indicatorText.setTextColor(activeColor)
+            binding.scrollIndicatorText.setTextColor(activeColor)
 
             // Stop any scroll momentum and snap-scroll to the position
             mRecycler?.apply {
                 stopScroll()
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                    indicator.pos, 0
-                )
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(indicator.pos, 0)
             }
 
-            mThumb?.jumpTo(indicator, indicatorCenterY)
+            // Update the thumb position/text
+            binding.scrollThumbText.text = indicator.char.toString()
+            thumbAnim.animateToFinalPosition(centerY - (binding.scrollThumb.measuredHeight / 2))
 
             performHapticFeedback(
                 if (Build.VERSION.SDK_INT >= 27) {

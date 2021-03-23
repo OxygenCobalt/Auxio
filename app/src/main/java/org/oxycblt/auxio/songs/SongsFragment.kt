@@ -12,7 +12,6 @@ import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.canScroll
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
@@ -55,17 +54,9 @@ class SongsFragment : Fragment() {
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }
-
-            post {
-                if (!canScroll()) {
-                    // Disable fast scrolling if there is nothing to scroll
-                    binding.songFastScroll.visibility = View.GONE
-                    binding.songFastScrollThumb.visibility = View.GONE
-                }
-            }
         }
 
-        binding.songFastScroll.setup(binding.songRecycler, binding.songFastScrollThumb) { pos ->
+        binding.songFastScroll.setup(binding.songRecycler) { pos ->
             val char = musicStore.songs[pos].name.first
 
             if (char.isDigit()) '#' else char

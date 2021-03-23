@@ -78,6 +78,7 @@ class MusicStore private constructor() {
      * Find a song from this instance in a safe manner.
      * Using a normal search of the songs list runs the risk of getting the *wrong* song with
      * the same name, so the album name is also used to fix the above problem.
+     * FIXME: Artist names are more unique than album names, use those
      * @param name The name of the song
      * @param albumName The name of the song's album.
      * @return The song requested, null if there isnt one.

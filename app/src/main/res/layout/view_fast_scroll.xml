@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <merge
+        tools:layout_height="match_parent"
+        tools:layout_width="match_parent"
+        tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+        <FrameLayout
+            android:id="@+id/scroll_thumb"
+            android:layout_width="@dimen/size_scroll_thumb"
+            android:layout_height="@dimen/size_scroll_thumb"
+            android:background="@drawable/ui_circle"
+            android:elevation="@dimen/elevation_small"
+            android:backgroundTint="?attr/colorPrimary"
+            android:stateListAnimator="@animator/animator_thumb"
+            app:layout_constraintEnd_toStartOf="@+id/scroll_indicator_text">
+
+            <TextView
+                android:id="@+id/scroll_thumb_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_thumb"
+                android:textColor="?android:attr/windowBackground"
+                android:fontFamily="@font/inter_semibold"
+                tools:text="A" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/scroll_indicator_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="@dimen/padding_tiny"
+            android:paddingTop="@dimen/padding_tiny"
+            android:paddingBottom="@dimen/padding_tiny"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="A\nB\n\C\nD\nE" />
+
+    </merge>
+</layout>

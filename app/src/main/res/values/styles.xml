@@ -98,18 +98,6 @@
         <item name="android:fontFamily">@font/inter_exbold</item>
     </style>
 
-    <!-- Fast scroll text appearance -->
-    <style name="TextAppearance.FastScroll" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:lineSpacingExtra">@dimen/padding_tiny</item>
-    </style>
-
-    <!-- Fast scroll thumb appearance -->
-    <style name="TextAppearance.ThumbIndicator" parent="TextAppearance.FastScroll">
-        <item name="android:textSize">@dimen/text_size_thumb</item>
-        <item name="android:textColor">?android:attr/windowBackground</item>
-    </style>
-
     <!-- Style for the general item background -->
     <style name="ItemSurroundings">
         <item name="android:layout_width">match_parent</item>

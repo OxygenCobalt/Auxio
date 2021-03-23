@@ -25,11 +25,6 @@
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_return_to_loading"
-            app:destination="@id/loading_fragment"
-            app:popUpTo="@id/main_fragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_go_to_playback"
             app:destination="@id/playback_fragment"
             app:enterAnim="@anim/anim_nav_slide_up"

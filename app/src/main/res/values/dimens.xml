@@ -40,7 +40,7 @@
 
     <dimen name="size_play_pause">70dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
-    <dimen name="size_scroll_thumb">32dp</dimen>
+    <dimen name="size_scroll_thumb">48dp</dimen>
     <dimen name="size_clear">32dp</dimen>
 
     <dimen name="size_app_icon">60dp</dimen>
