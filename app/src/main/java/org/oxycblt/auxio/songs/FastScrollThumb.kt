@@ -8,7 +8,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
-import androidx.databinding.DataBindingUtil
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -22,7 +21,6 @@ import org.oxycblt.auxio.ui.inflater
  * argument to [FastScrollView.setup].
  * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
  * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
- * TODO: Merge this view and FastScrollView? They are effectively reliant on eachother
  * @author OxygenCobalt
  */
 class FastScrollThumb @JvmOverloads constructor(
@@ -31,9 +29,7 @@ class FastScrollThumb @JvmOverloads constructor(
     defStyleAttr: Int = -1
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val thumbAnim: SpringAnimation
-    private val binding = DataBindingUtil.inflate<ViewScrollThumbBinding>(
-        context.inflater, R.layout.view_scroll_thumb, this, true
-    )
+    private val binding = ViewScrollThumbBinding.inflate(context.inflater, this, true)
 
     init {
         val accent = Accent.get().getStateList(context)

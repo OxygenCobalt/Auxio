@@ -10,7 +10,7 @@ import androidx.core.net.toUri
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentAboutBinding
+import org.oxycblt.auxio.databinding.DialogAboutBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
@@ -28,7 +28,7 @@ class AboutDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentAboutBinding.inflate(layoutInflater)
+        val binding = DialogAboutBinding.inflate(layoutInflater)
         val musicStore = MusicStore.getInstance()
 
         binding.aboutVersion.text = BuildConfig.VERSION_NAME

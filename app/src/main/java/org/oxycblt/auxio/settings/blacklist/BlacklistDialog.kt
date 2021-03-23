@@ -21,7 +21,7 @@ import com.afollestad.materialdialogs.utils.invalidateDividers
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentBlacklistBinding
+import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.createToast
@@ -46,7 +46,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentBlacklistBinding.inflate(inflater)
+        val binding = DialogBlacklistBinding.inflate(inflater)
 
         val adapter = BlacklistEntryAdapter { path ->
             blacklistModel.removePath(path)
