@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.dynamicanimation.animation.DynamicAnimation
@@ -13,7 +14,6 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewFastScrollBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.Accent
@@ -27,7 +27,7 @@ import kotlin.math.roundToInt
 
 /**
  * A view that allows for quick scrolling through a [RecyclerView] with many items. Unlike other
- * fast-scrollers, this one displays indicators instead of simply a scroll bar.
+ * fast-scrollers, this one displays indicators and a thumb instead of simply a scroll bar.
  * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
  * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
  * @author OxygenCobalt
@@ -73,7 +73,8 @@ class FastScrollView @JvmOverloads constructor(
     }
 
     /**
-     * Set up this view with a [RecyclerView] and a corresponding [FastScrollThumb].
+     * Set up this view with a [RecyclerView]. [getItem] is called when the first character
+     * of a piece of data is needed.
      */
     fun setup(recycler: RecyclerView, getItem: (Int) -> Char) {
         check(mRecycler == null) { "Only set up this view once." }
@@ -95,6 +96,7 @@ class FastScrollView @JvmOverloads constructor(
 
                 if (recycler.isAttachedToWindow && recycler.adapter != null) {
                     updateIndicators()
+                    binding.scrollIndicatorText.requestLayout()
                 }
 
                 // Hide this view if there is nothing to scroll
@@ -147,17 +149,17 @@ class FastScrollView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         performClick()
 
-        val success = handleTouch(event.action, event.y.roundToInt())
+        val success = handleTouch(event.action, event.x.roundToInt(), event.y.roundToInt())
 
         // Depending on the results, update the visibility of the thumb and the pressed state of
         // this view.
-        isPressed = success
         binding.scrollThumb.isActivated = success
+        binding.scrollIndicatorText.isPressed = success
 
         return success
     }
 
-    private fun handleTouch(action: Int, touchY: Int): Boolean {
+    private fun handleTouch(action: Int, touchX: Int, touchY: Int): Boolean {
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             binding.scrollIndicatorText.setTextColor(inactiveColor)
             lastPos = -1
@@ -166,7 +168,7 @@ class FastScrollView @JvmOverloads constructor(
         }
 
         // Try to figure out which indicator the pointer has landed on
-        if (touchY in (binding.scrollIndicatorText.top until binding.scrollIndicatorText.bottom)) {
+        if (binding.scrollIndicatorText.isBeingPressed(touchX, touchY)) {
             // Get the touch position in regards to the TextView and the rough text height
             val indicatorTouchY = touchY - binding.scrollIndicatorText.top
             val textHeight = binding.scrollIndicatorText.height / indicators.size
@@ -210,5 +212,12 @@ class FastScrollView @JvmOverloads constructor(
                 }
             )
         }
+    }
+
+    /**
+     * Returns if the pointer is currently in the view
+     */
+    private fun View.isBeingPressed(x: Int, y: Int): Boolean {
+        return (x in (left until right) && y in (top until bottom)) || isPressed
     }
 }
