@@ -169,7 +169,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         player.release()
         mediaSession.release()
         audioReactor.release()
-        wakeLock.release()
+        releaseWakelock()
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
@@ -440,8 +440,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Hold the wakelock for the default amount of time [25 Seconds]
      */
     private fun holdWakelock() {
-        logD("Holding wakelock.")
-
         wakeLock.acquire(WAKELOCK_TIME)
     }
 
@@ -449,8 +447,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
      * Release the wakelock if its currently being held.
      */
     private fun releaseWakelock() {
-        logD("Attempting to release the wakelock.")
-
         if (wakeLock.isHeld) {
             wakeLock.release()
         }
