@@ -208,7 +208,7 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
         }
 
         // We use the wakelock to ensure that the CPU is active while music is being loaded
-        holdWakelock()
+        acquireWakeLock()
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
@@ -439,8 +439,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     /**
      * Hold the wakelock for the default amount of time [25 Seconds]
      */
-    private fun holdWakelock() {
+    private fun acquireWakeLock() {
         wakeLock.acquire(WAKELOCK_TIME)
+
+        logD("Wakelock is held.")
     }
 
     /**
@@ -449,6 +451,8 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     private fun releaseWakelock() {
         if (wakeLock.isHeld) {
             wakeLock.release()
+
+            logD("Wakelock is released.")
         }
     }
 

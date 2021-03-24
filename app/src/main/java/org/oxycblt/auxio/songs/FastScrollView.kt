@@ -218,6 +218,6 @@ class FastScrollView @JvmOverloads constructor(
      * Returns if the pointer is currently in the view
      */
     private fun View.isBeingPressed(x: Int, y: Int): Boolean {
-        return (x in (left until right) && y in (top until bottom)) || isPressed
+        return y in (top until bottom)
     }
 }
