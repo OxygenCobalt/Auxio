@@ -213,7 +213,7 @@
     <style name="PlayPause">
         <item name="android:layout_height">@dimen/size_play_pause</item>
         <item name="android:layout_width">@dimen/size_play_pause</item>
-        <item name="android:background">@drawable/ui_circular_button</item>
+        <item name="android:background">@drawable/ui_circle_ripple</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
         <item name="android:tint">?android:attr/windowBackground</item>
         <item name="android:layout_marginStart">@dimen/margin_large</item>

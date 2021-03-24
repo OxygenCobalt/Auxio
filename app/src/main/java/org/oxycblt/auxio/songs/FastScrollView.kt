@@ -59,6 +59,7 @@ class FastScrollView @JvmOverloads constructor(
     // --- STATE ---
 
     private var hasPostedItemUpdate = false
+    private var wasValidTouch = false
     private var lastPos = -1
 
     init {
@@ -147,6 +148,7 @@ class FastScrollView @JvmOverloads constructor(
 
     @Suppress("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        super.onTouchEvent(event)
         performClick()
 
         val success = handleTouch(event.action, event.x.roundToInt(), event.y.roundToInt())
@@ -160,15 +162,25 @@ class FastScrollView @JvmOverloads constructor(
     }
 
     private fun handleTouch(action: Int, touchX: Int, touchY: Int): Boolean {
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-            binding.scrollIndicatorText.setTextColor(inactiveColor)
-            lastPos = -1
+        when (action) {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                binding.scrollIndicatorText.setTextColor(inactiveColor)
+                wasValidTouch = false
+                lastPos = -1
 
-            return false
+                return false
+            }
+
+            // Since this view is unified between the thumb and the indicators, we have
+            // to check if the initial pointer position was in the indicators to prevent the
+            // scroll from being triggered outside its bounds.
+            MotionEvent.ACTION_DOWN -> {
+                wasValidTouch = binding.scrollIndicatorText.contains(touchX, touchY)
+            }
         }
 
         // Try to figure out which indicator the pointer has landed on
-        if (binding.scrollIndicatorText.isBeingPressed(touchX, touchY)) {
+        if (binding.scrollIndicatorText.containsY(touchY) && wasValidTouch) {
             // Get the touch position in regards to the TextView and the rough text height
             val indicatorTouchY = touchY - binding.scrollIndicatorText.top
             val textHeight = binding.scrollIndicatorText.height / indicators.size
@@ -214,10 +226,11 @@ class FastScrollView @JvmOverloads constructor(
         }
     }
 
-    /**
-     * Returns if the pointer is currently in the view
-     */
-    private fun View.isBeingPressed(x: Int, y: Int): Boolean {
+    private fun View.contains(x: Int, y: Int): Boolean {
+        return x in (left until right) && containsY(y)
+    }
+
+    private fun View.containsY(y: Int): Boolean {
         return y in (top until bottom)
     }
 }

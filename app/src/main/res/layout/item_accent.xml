@@ -12,7 +12,7 @@
             android:id="@+id/accent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ui_circular_button"
+            android:background="@drawable/ui_circle_ripple"
             android:padding="@dimen/margin_medium"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_check"
