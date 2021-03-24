@@ -33,6 +33,7 @@ allprojects {
         jcenter {
             content {
                 includeGroup("com.google.android.exoplayer")
+                includeGroup("org.jetbrains.trove4j")
             }
         }
     }

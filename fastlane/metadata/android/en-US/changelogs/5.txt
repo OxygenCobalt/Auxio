@@ -1,0 +1,2 @@
+- Fixed crash that would prevent the playback state from being saved
+- Integrated fast-scroller completely in codebase
