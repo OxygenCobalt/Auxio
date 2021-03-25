@@ -105,7 +105,7 @@ dependencies {
     implementation "com.google.android.material:material:1.3.0"
 
     // Dialogs
-    // TODO: Eliminate these, don't want their bloat.
+    // TODO: Eliminate these, would eliminate ~100kb from the app size
     implementation "com.afollestad.material-dialogs:core:3.3.0"
     implementation "com.afollestad.material-dialogs:files:3.3.0"
 

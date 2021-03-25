@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -70,6 +71,14 @@ class FastScrollView @JvmOverloads constructor(
             spring = SpringForce().also {
                 it.dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
             }
+        }
+
+        // Prevent the disappear animation from being displayed on startup by making the thumb
+        // invisible, it will be made visible once the animation ends
+        binding.scrollThumb.visibility = View.INVISIBLE
+
+        postDelayed(200) {
+            binding.scrollThumb.visibility = View.VISIBLE
         }
     }
 

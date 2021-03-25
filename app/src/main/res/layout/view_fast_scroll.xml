@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/scroll_indicator_text"
-            android:layout_width="@dimen/width_fast_scroll"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
             android:gravity="center"
@@ -40,6 +40,7 @@
             android:lineSpacingExtra="@dimen/padding_tiny"
             android:paddingTop="@dimen/padding_tiny"
             android:paddingBottom="@dimen/padding_tiny"
+            android:minWidth="@dimen/width_fast_scroll"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
