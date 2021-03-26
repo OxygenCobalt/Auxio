@@ -12,7 +12,7 @@
             android:layout_height="match_parent"
             android:background="@color/background"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/margin_medium"
+            android:paddingBottom="@dimen/padding_small"
             android:theme="@style/Theme.Neutral">
 
             <TextView
@@ -61,7 +61,7 @@
             <Button
                 android:id="@+id/blacklist_confirm"
                 style="@style/Widget.Button.Dialog"
-                android:layout_marginEnd="@dimen/margin_medium"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:text="@string/label_save"
                 app:layout_constraintBottom_toBottomOf="@+id/blacklist_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,8 +70,8 @@
             <Button
                 android:id="@+id/blacklist_add"
                 style="@style/Widget.Button.Dialog"
-                android:layout_marginStart="@dimen/margin_medium"
-                android:layout_marginTop="@dimen/margin_medium"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/label_add"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/blacklist_empty_text" />

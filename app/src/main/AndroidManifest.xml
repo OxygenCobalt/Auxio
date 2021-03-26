@@ -8,10 +8,6 @@
 
     <queries />
 
-    <!--
-    TODO: Bite the bullet and just use SAF so you dont have to rely on a flag that is
-     probably going to be removed by Android 12/13 (Would also eliminate the dialogs dependency)
-    -->
     <application
         android:name=".AuxioApp"
         android:allowBackup="true"
@@ -21,7 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:exported="true"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.Base">
         <activity
             android:name=".MainActivity"

@@ -1,14 +1,13 @@
 package org.oxycblt.auxio.settings.accent
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.databinding.DialogAccentBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.ui.LifecycleDialog
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.inflater
@@ -18,7 +17,7 @@ import org.oxycblt.auxio.ui.toColor
  * Dialog responsible for showing the list of accents to select.
  * @author OxygenCobalt
  */
-class AccentDialog : AppCompatDialogFragment() {
+class AccentDialog : LifecycleDialog() {
     private val settingsManager = SettingsManager.getInstance()
     private var pendingAccent = Accent.get()
 
@@ -59,6 +58,8 @@ class AccentDialog : AppCompatDialogFragment() {
 
         updateAccent(binding)
 
+        logD("Dialog created.")
+
         return binding.root
     }
 
@@ -73,12 +74,6 @@ class AccentDialog : AppCompatDialogFragment() {
 
         binding.accentCancel.setTextColor(accentColor)
         binding.accentConfirm.setTextColor(accentColor)
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return MaterialAlertDialogBuilder(requireContext(), theme)
-            .setView(onCreateView(requireActivity().inflater, null, savedInstanceState))
-            .create()
     }
 
     companion object {

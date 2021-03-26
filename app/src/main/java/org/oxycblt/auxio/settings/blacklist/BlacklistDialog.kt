@@ -2,46 +2,38 @@ package org.oxycblt.auxio.settings.blacklist
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.children
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.files.folderChooser
-import com.afollestad.materialdialogs.files.selectedFolder
-import com.afollestad.materialdialogs.internal.list.DialogRecyclerView
-import com.afollestad.materialdialogs.utils.invalidateDividers
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.settings.ui.LifecycleDialog
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.toColor
-import java.io.File
 import kotlin.system.exitProcess
 
 /**
  * Dialog that manages the currently excluded directories.
  * @author OxygenCobalt
  */
-class BlacklistDialog : BottomSheetDialogFragment() {
+class BlacklistDialog : LifecycleDialog() {
     private val blacklistModel: BlacklistViewModel by viewModels {
         BlacklistViewModel.Factory(requireContext())
     }
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
-
-    override fun getTheme() = R.style.Theme_BottomSheetFix
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,13 +42,15 @@ class BlacklistDialog : BottomSheetDialogFragment() {
     ): View {
         val binding = DialogBlacklistBinding.inflate(inflater)
 
+        val launcher = registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath
+        )
+
         val accent = Accent.get().color.toColor(requireContext())
 
         val adapter = BlacklistEntryAdapter { path ->
             blacklistModel.removePath(path)
         }
-
-        requireContext().setTheme(Accent.get().theme)
 
         // --- UI SETUP ---
 
@@ -68,7 +62,8 @@ class BlacklistDialog : BottomSheetDialogFragment() {
             setTextColor(accent)
 
             setOnClickListener {
-                showFileDialog()
+                // showFileDialog()
+                launcher.launch(null)
             }
         }
 
@@ -112,48 +107,33 @@ class BlacklistDialog : BottomSheetDialogFragment() {
         blacklistModel.loadDatabasePaths()
     }
 
-    private fun showFileDialog() {
-        MaterialDialog(requireActivity()).show {
-            positiveButton(R.string.label_add) {
-                onFolderSelected()
-            }
+    private fun addDocTreePath(uri: Uri) {
+        val path = parseDocTreePath(uri)
 
-            negativeButton()
-
-            folderChooser(
-                requireContext(),
-                initialDirectory = File(getRootPath()),
-                emptyTextRes = R.string.label_no_dirs
-            )
-
-            // Once again remove the ugly dividers from the dialog, but now with an even
-            // worse solution.
-            invalidateDividers(showTop = false, showBottom = false)
-
-            val recycler = (getCustomView() as ViewGroup)
-                .children.filterIsInstance<DialogRecyclerView>().firstOrNull()
-
-            recycler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    invalidateDividers(showTop = false, showBottom = false)
-                }
-            })
+        if (path != null) {
+            blacklistModel.addPath(path)
+        } else {
+            getString(R.string.error_bad_dir).createToast(requireContext())
         }
     }
 
-    private fun MaterialDialog.onFolderSelected() {
-        selectedFolder()?.absolutePath?.let { path ->
-            // Due to how Auxio's navigation flow works, dont allow the main root directory
-            // to be excluded, as that would lead to the user being stuck at the "No Music Found"
-            // screen.
-            if (path == getRootPath()) {
-                getString(R.string.error_brick_dir).createToast(requireContext())
+    private fun parseDocTreePath(uri: Uri): String? {
+        // Turn the raw URI into a document tree URI
+        val docUri = DocumentsContract.buildDocumentUriUsingTree(
+            uri, DocumentsContract.getTreeDocumentId(uri)
+        )
 
-                return
-            }
+        // Turn it into a semi-usable path
+        val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
 
-            blacklistModel.addPath(path)
+        // We only support the main drive since that's all we can get from MediaColumns.DATA.
+        // We also check if this directory actually has multiple parts, if it isn't, then its
+        // the root directory and it shouldn't be supported.
+        if (typeAndPath[0] == "primary" && typeAndPath.size == 2) {
+            return getRootPath() + "/" + typeAndPath.last()
         }
+
+        return null
     }
 
     private fun saveAndRestart() {
@@ -163,7 +143,7 @@ class BlacklistDialog : BottomSheetDialogFragment() {
     }
 
     private fun hardRestart() {
-        logD("Performing hard-restart.")
+        logD("Performing hard restart.")
 
         // Instead of having to do a ton of cleanup and horrible code changes
         // to restart this application non-destructively, I just restart the UI task [There is only
@@ -176,6 +156,9 @@ class BlacklistDialog : BottomSheetDialogFragment() {
         exitProcess(0)
     }
 
+    /**
+     * Get *just* the root path, nothing else is really needed.
+     */
     @Suppress("DEPRECATION")
     private fun getRootPath(): String {
         return Environment.getExternalStorageDirectory().absolutePath

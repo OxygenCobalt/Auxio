@@ -38,7 +38,7 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 ├──.coil           # Fetchers and utilities for Coil, contains binding adapters than be used in the user interface.
 ├──.database       # Databases and their items for Auxio
 ├──.detail         # UIs for more album/artist/genre details
-│  └──.adapters    # RecyclerView adapters for the detail UIs, which display the header information and items
+└──.adapters    # RecyclerView adapters for the detail UIs, which display the header information and items
 ├──.library        # Library UI
 ├──.loading        # Loading UI
 ├──.music          # Music storage and loading
