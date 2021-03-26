@@ -143,5 +143,6 @@
             app:iconSpaceReserved="false"
             app:key="KEY_BLACKLIST"
             app:summary="@string/setting_content_blacklist_desc" />
+
     </PreferenceCategory>
 </PreferenceScreen>

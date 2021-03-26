@@ -13,8 +13,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
+import org.oxycblt.auxio.settings.accent.AccentDialog
 import org.oxycblt.auxio.settings.blacklist.BlacklistDialog
-import org.oxycblt.auxio.settings.ui.AccentDialog
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.createToast
 
@@ -34,6 +34,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         preferenceScreen.children.forEach {
             recursivelyHandleChildren(it)
         }
+
+        preferenceManager.onDisplayPreferenceDialogListener = this
 
         logD("Fragment created.")
     }

@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.settings.ui
+package org.oxycblt.auxio.settings
 
 import android.content.Intent
 import android.os.Bundle

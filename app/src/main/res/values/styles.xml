@@ -19,6 +19,7 @@
         <item name="colorControlHighlight">@color/selection_color</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="cornerRadius">0dp</item>
+        <item name="colorSurface">@color/background</item>
 
         <item name="md_background_color">@color/background</item>
         <item name="md_corner_radius">0dp</item>
@@ -231,5 +232,6 @@
         <item name="android:paddingEnd">@dimen/padding_mid_small</item>
         <item name="android:minWidth">@dimen/width_dialog_button_min</item>
         <item name="android:background">@drawable/ui_ripple</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 </resources>

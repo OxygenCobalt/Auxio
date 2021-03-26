@@ -24,7 +24,9 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.createToast
+import org.oxycblt.auxio.ui.toColor
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -48,26 +50,45 @@ class BlacklistDialog : BottomSheetDialogFragment() {
     ): View {
         val binding = DialogBlacklistBinding.inflate(inflater)
 
+        val accent = Accent.get().color.toColor(requireContext())
+
         val adapter = BlacklistEntryAdapter { path ->
             blacklistModel.removePath(path)
         }
 
+        requireContext().setTheme(Accent.get().theme)
+
         // --- UI SETUP ---
 
         binding.blacklistRecycler.adapter = adapter
-        binding.blacklistAdd.setOnClickListener {
-            showFileDialog()
+
+        // Dialogs don't know how to into theming, so I have to manually set the accent color
+        // to each of the buttons since the overall fragment theme is Neutral.
+        binding.blacklistAdd.apply {
+            setTextColor(accent)
+
+            setOnClickListener {
+                showFileDialog()
+            }
         }
 
-        binding.blacklistCancel.setOnClickListener {
-            dismiss()
-        }
+        binding.blacklistCancel.apply {
+            setTextColor(accent)
 
-        binding.blacklistConfirm.setOnClickListener {
-            if (blacklistModel.isModified()) {
-                saveAndRestart()
-            } else {
+            setOnClickListener {
                 dismiss()
+            }
+        }
+
+        binding.blacklistConfirm.apply {
+            setTextColor(accent)
+
+            setOnClickListener {
+                if (blacklistModel.isModified()) {
+                    saveAndRestart()
+                } else {
+                    dismiss()
+                }
             }
         }
 
