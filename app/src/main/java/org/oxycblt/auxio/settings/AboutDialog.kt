@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
@@ -53,34 +52,22 @@ class AboutDialog : BottomSheetDialogFragment() {
         check(link in LINKS) { "Invalid link." }
 
         try {
-            val tabsIntent = CustomTabsIntent.Builder()
-                .setShareState(CustomTabsIntent.SHARE_STATE_ON)
-                .setShowTitle(true)
-                .build()
-
             val uri = link.toUri()
-            val manager = requireActivity().packageManager
-            val browserCandidates = manager.queryIntentActivities(tabsIntent.intent, 0)
 
-            // If there are candidates for this link, then launch it through that.
-            if (browserCandidates.size > 0) {
-                tabsIntent.launchUrl(requireActivity(), uri)
+            val browserIntent = Intent(Intent.ACTION_VIEW, uri)
+            browserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            val fallbackCandidates = requireContext().packageManager.queryIntentActivities(
+                browserIntent, 0
+            )
+
+            // If there are candidates here, then launch those.
+            if (fallbackCandidates.size > 0) {
+                requireActivity().startActivity(browserIntent)
             } else {
-                // If there are no candidates, then fallback to another list of browsers
-
-                val browserIntent = Intent(Intent.ACTION_VIEW, uri)
-                browserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-                val fallbackCandidates = manager.queryIntentActivities(browserIntent, 0)
-
-                // If there are candidates here, then launch those.
-                if (fallbackCandidates.size > 0) {
-                    requireActivity().startActivity(browserIntent)
-                } else {
-                    // Otherwise they don't have a browser on their phone, meaning they should
-                    // just see an error.
-                    getString(R.string.error_no_browser).createToast(requireContext())
-                }
+                // Otherwise they don't have a browser on their phone, meaning they should
+                // just see an error.
+                getString(R.string.error_no_browser).createToast(requireContext())
             }
         } catch (e: Exception) {
             logE("Browser intent launching failed [Probably android's fault]")
