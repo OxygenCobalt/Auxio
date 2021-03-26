@@ -11,7 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
  * [DialogFragment] that replicates the Fragment lifecycle in regards to [AlertDialog], which
  * doesn't seem to set the view from onCreateView correctly.
  */
-abstract class LifecycleDialog() : DialogFragment() {
+abstract class LifecycleDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireActivity(), theme).create()
     }

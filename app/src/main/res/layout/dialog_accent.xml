@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/background"
-        android:paddingBottom="@dimen/padding_small"
+        android:orientation="vertical"
         android:theme="@style/Theme.Neutral">
 
         <TextView
@@ -26,32 +26,38 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/accent_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:foregroundGravity="center"
             android:overScrollMode="never"
             app:layoutManager="org.oxycblt.auxio.settings.accent.AutoGridLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
             app:layout_constraintTop_toBottomOf="@+id/accent_header"
-            tools:spanCount="6"
             tools:itemCount="18"
             tools:listitem="@layout/item_accent" />
 
-        <Button
-            android:id="@+id/accent_cancel"
-            style="@style/Widget.Button.Dialog"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:text="@android:string/cancel"
-            app:layout_constraintEnd_toStartOf="@+id/accent_confirm"
-            app:layout_constraintTop_toBottomOf="@+id/accent_recycler" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:padding="@dimen/padding_small">
 
-        <Button
-            android:id="@+id/accent_confirm"
-            style="@style/Widget.Button.Dialog"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:text="@android:string/ok"
-            app:layout_constraintBottom_toBottomOf="@+id/accent_cancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/accent_cancel" />
+            <Button
+                android:id="@+id/accent_cancel"
+                style="@style/Widget.Button.Dialog"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:text="@android:string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/accent_confirm" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                android:id="@+id/accent_confirm"
+                style="@style/Widget.Button.Dialog"
+                android:text="@android:string/ok"
+                app:layout_constraintBottom_toBottomOf="@+id/accent_cancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/accent_cancel" />
+        </LinearLayout>
+
+    </LinearLayout>
 </layout>

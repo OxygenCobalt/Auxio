@@ -105,8 +105,7 @@
     <string name="error_load_failed">Music loading failed</string>
     <string name="error_no_perms">Auxio needs permission to read your music library</string>
     <string name="error_no_browser">Could not open link</string>
-    <string name="error_brick_dir">The root folder cannot be excluded</string>
-    <string name="error_bad_dir">That directory is not supported</string>
+    <string name="error_bad_dir">This directory is not supported</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>

@@ -107,7 +107,9 @@ class BlacklistDialog : LifecycleDialog() {
         blacklistModel.loadDatabasePaths()
     }
 
-    private fun addDocTreePath(uri: Uri) {
+    private fun addDocTreePath(uri: Uri?) {
+        uri ?: return
+
         val path = parseDocTreePath(uri)
 
         if (path != null) {
@@ -126,10 +128,8 @@ class BlacklistDialog : LifecycleDialog() {
         // Turn it into a semi-usable path
         val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
 
-        // We only support the main drive since that's all we can get from MediaColumns.DATA.
-        // We also check if this directory actually has multiple parts, if it isn't, then its
-        // the root directory and it shouldn't be supported.
-        if (typeAndPath[0] == "primary" && typeAndPath.size == 2) {
+        // Only the main drive is supported, since thats all we can get from MediaColumns.DATA
+        if (typeAndPath[0] == "primary") {
             return getRootPath() + "/" + typeAndPath.last()
         }
 

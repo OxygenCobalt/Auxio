@@ -104,7 +104,6 @@
     <string name="error_load_failed">Laden die Musik fehlgeschlagen</string>
     <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
     <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
-    <string name="error_brick_dir">Das Stammverzeichnis kann nicht ausgeschlossen sein</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>

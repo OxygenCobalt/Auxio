@@ -3,52 +3,52 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.core.widget.NestedScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:orientation="vertical"
+        android:theme="@style/Theme.Neutral">
+
+        <TextView
+            android:id="@+id/blacklist_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_exbold"
+            android:padding="@dimen/padding_medium"
+            android:text="@string/setting_content_blacklist"
+            android:textAlignment="viewStart"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="@dimen/text_size_toolbar_header" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/blacklist_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_blacklist_entry" />
+
+        <TextView
+            android:id="@+id/blacklist_empty_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:padding="@dimen/padding_medium"
+            android:text="@string/label_no_dirs"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="?android:attr/textColorSecondary" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_small"
-            android:theme="@style/Theme.Neutral">
-
-            <TextView
-                android:id="@+id/blacklist_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_exbold"
-                android:padding="@dimen/padding_medium"
-                android:text="@string/setting_content_blacklist"
-                android:textAlignment="viewStart"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/text_size_toolbar_header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/blacklist_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/blacklist_header"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_blacklist_entry" />
-
-            <TextView
-                android:id="@+id/blacklist_empty_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_semibold"
-                android:padding="@dimen/padding_medium"
-                android:text="@string/label_no_dirs"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="?android:attr/textColorSecondary"
-                app:layout_constraintTop_toBottomOf="@+id/blacklist_recycler" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="@dimen/padding_small">
 
             <Button
                 android:id="@+id/blacklist_cancel"
@@ -61,7 +61,6 @@
             <Button
                 android:id="@+id/blacklist_confirm"
                 style="@style/Widget.Button.Dialog"
-                android:layout_marginEnd="@dimen/margin_small"
                 android:text="@string/label_save"
                 app:layout_constraintBottom_toBottomOf="@+id/blacklist_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,13 +69,12 @@
             <Button
                 android:id="@+id/blacklist_add"
                 style="@style/Widget.Button.Dialog"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/label_add"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/blacklist_empty_text" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
 </layout>
