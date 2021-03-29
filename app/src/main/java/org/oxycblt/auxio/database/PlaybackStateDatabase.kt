@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.getStringOrNull
+import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.logD
 
 /**
@@ -85,7 +86,7 @@ class PlaybackStateDatabase(context: Context) :
     fun writeState(state: PlaybackState) {
         assertBackgroundThread()
 
-        writableDatabase.execute {
+        writableDatabase.transaction {
             delete(TABLE_NAME_STATE, null, null)
 
             this@PlaybackStateDatabase.logD("Wiped state db.")
@@ -159,7 +160,7 @@ class PlaybackStateDatabase(context: Context) :
 
         val database = writableDatabase
 
-        database.execute {
+        database.transaction {
             delete(TABLE_NAME_QUEUE, null, null)
         }
 
@@ -171,7 +172,7 @@ class PlaybackStateDatabase(context: Context) :
         while (position < queueItems.size) {
             var i = position
 
-            database.execute {
+            database.transaction {
                 while (i < queueItems.size) {
                     val item = queueItems[i]
                     i++

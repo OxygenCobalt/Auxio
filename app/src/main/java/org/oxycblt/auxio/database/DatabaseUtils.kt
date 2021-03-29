@@ -7,29 +7,6 @@ import org.oxycblt.auxio.logE
 import java.lang.Exception
 
 /**
- * Shortcut for running a series of [commands] on an [SQLiteDatabase].
- * @return true if the transaction was successful, false if not.
- */
-fun SQLiteDatabase.execute(commands: SQLiteDatabase.() -> Unit): Boolean {
-    beginTransaction()
-
-    val success = try {
-        commands()
-        setTransactionSuccessful()
-        true
-    } catch (e: Exception) {
-        logE("An error occurred when trying to execute commands.")
-        logE(e.stackTraceToString())
-
-        false
-    }
-
-    endTransaction()
-
-    return success
-}
-
-/**
  * Shortcut for querying all items in a database and running [block] with the cursor returned.
  * Will not run if the cursor is null.
  */
