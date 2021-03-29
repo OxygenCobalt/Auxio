@@ -36,28 +36,5 @@
             tools:itemCount="18"
             tools:listitem="@layout/item_accent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="@dimen/padding_small">
-
-            <Button
-                android:id="@+id/accent_cancel"
-                style="@style/Widget.Button.Dialog"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:text="@android:string/cancel"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/accent_confirm" />
-
-            <Button
-                android:id="@+id/accent_confirm"
-                style="@style/Widget.Button.Dialog"
-                android:text="@android:string/ok"
-                app:layout_constraintBottom_toBottomOf="@+id/accent_cancel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/accent_cancel" />
-        </LinearLayout>
-
     </LinearLayout>
 </layout>

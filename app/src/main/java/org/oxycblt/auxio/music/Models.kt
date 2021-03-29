@@ -4,6 +4,9 @@ import android.net.Uri
 
 // --- MUSIC MODELS ---
 
+// TODO: Implement some kind of hash system, removing the need to redundant names but alsow without the volitility of id
+//  They need to be completely unique, however, and from whatever information I have about them.
+
 /**
  * The base data object for all music.
  * @property id The ID that is assigned to this object
@@ -51,7 +54,7 @@ data class Song(
     val album: Album get() = requireNotNull(mAlbum)
 
     val seconds = duration / 1000
-    val formattedDuration: String = seconds.toDuration()
+    val formattedDuration = seconds.toDuration()
 
     fun linkAlbum(album: Album) {
         if (mAlbum == null) {

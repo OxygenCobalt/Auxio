@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,9 +20,7 @@ import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
-import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.createToast
-import org.oxycblt.auxio.ui.toColor
 import kotlin.system.exitProcess
 
 /**
@@ -42,43 +41,30 @@ class BlacklistDialog : LifecycleDialog() {
     ): View {
         val binding = DialogBlacklistBinding.inflate(inflater)
 
-        val launcher = registerForActivityResult(
-            ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath
-        )
-
-        val accent = Accent.get().color.toColor(requireContext())
-
         val adapter = BlacklistEntryAdapter { path ->
             blacklistModel.removePath(path)
         }
+
+        val launcher = registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath
+        )
 
         // --- UI SETUP ---
 
         binding.blacklistRecycler.adapter = adapter
 
-        // Dialogs don't know how to into theming, so I have to manually set the accent color
-        // to each of the buttons since the overall fragment theme is Neutral.
-        binding.blacklistAdd.apply {
-            setTextColor(accent)
+        // Now that the dialog exists, we get the view manually when the dialog is shown
+        // and override its click-listener so that the dialog does not auto-dismiss when we
+        // click the "Add"/"Save" buttons. This prevents the dialog from disappearing in the former
+        // and the app from crashing in the latter.
+        val dialog = requireDialog() as AlertDialog
 
-            setOnClickListener {
-                // showFileDialog()
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 launcher.launch(null)
             }
-        }
 
-        binding.blacklistCancel.apply {
-            setTextColor(accent)
-
-            setOnClickListener {
-                dismiss()
-            }
-        }
-
-        binding.blacklistConfirm.apply {
-            setTextColor(accent)
-
-            setOnClickListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
                 if (blacklistModel.isModified()) {
                     saveAndRestart()
                 } else {
@@ -105,6 +91,13 @@ class BlacklistDialog : LifecycleDialog() {
 
         // If we have dismissed the dialog, then just drop any path changes.
         blacklistModel.loadDatabasePaths()
+    }
+
+    override fun onConfigDialog(builder: AlertDialog.Builder) {
+        // Dont set the click listener here, we do some custom black magic in onCreateView instead.
+        builder.setNeutralButton(R.string.label_add, null)
+        builder.setPositiveButton(R.string.label_save, null)
+        builder.setNegativeButton(android.R.string.cancel, null)
     }
 
     private fun addDocTreePath(uri: Uri?) {

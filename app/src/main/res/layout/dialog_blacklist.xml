@@ -44,37 +44,5 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="?android:attr/textColorSecondary" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:padding="@dimen/padding_small">
-
-            <Button
-                android:id="@+id/blacklist_cancel"
-                style="@style/Widget.Button.Dialog"
-                android:layout_marginEnd="@dimen/padding_small"
-                android:text="@android:string/cancel"
-                app:layout_constraintEnd_toStartOf="@+id/blacklist_confirm"
-                app:layout_constraintTop_toTopOf="@+id/blacklist_add" />
-
-            <Button
-                android:id="@+id/blacklist_confirm"
-                style="@style/Widget.Button.Dialog"
-                android:text="@string/label_save"
-                app:layout_constraintBottom_toBottomOf="@+id/blacklist_cancel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/blacklist_cancel" />
-
-            <Button
-                android:id="@+id/blacklist_add"
-                style="@style/Widget.Button.Dialog"
-                android:text="@string/label_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
 </layout>

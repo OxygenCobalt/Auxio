@@ -5,15 +5,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.oxycblt.auxio.R
 
 /**
- * [DialogFragment] that replicates the Fragment lifecycle in regards to [AlertDialog], which
- * doesn't seem to set the view from onCreateView correctly.
+ * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle
+ * override [onCreateView] and [onDestroyView], but with a proper dialog being created.
  */
 abstract class LifecycleDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return MaterialAlertDialogBuilder(requireActivity(), theme).create()
+        val builder = AlertDialog.Builder(requireActivity(), R.style.Theme_CustomDialog)
+
+        onConfigDialog(builder)
+
+        return builder.create()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -21,4 +25,6 @@ abstract class LifecycleDialog : DialogFragment() {
 
         (requireDialog() as AlertDialog).setView(view)
     }
+
+    protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
 }

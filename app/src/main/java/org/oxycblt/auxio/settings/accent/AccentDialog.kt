@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -38,25 +38,11 @@ class AccentDialog : LifecycleDialog() {
             adapter = AccentAdapter(pendingAccent) { accent ->
                 pendingAccent = accent
 
-                updateAccent(binding)
+                updateAccent()
             }
         }
 
-        binding.accentConfirm.setOnClickListener {
-            if (pendingAccent != Accent.get()) {
-                settingsManager.accent = pendingAccent
-
-                requireActivity().recreate()
-            }
-
-            dismiss()
-        }
-
-        binding.accentCancel.setOnClickListener {
-            dismiss()
-        }
-
-        updateAccent(binding)
+        updateAccent()
 
         logD("Dialog created.")
 
@@ -69,11 +55,28 @@ class AccentDialog : LifecycleDialog() {
         outState.putInt(KEY_PENDING_ACCENT, ACCENTS.indexOf(pendingAccent))
     }
 
-    private fun updateAccent(binding: DialogAccentBinding) {
+    override fun onConfigDialog(builder: AlertDialog.Builder) {
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            if (pendingAccent != Accent.get()) {
+                settingsManager.accent = pendingAccent
+
+                requireActivity().recreate()
+            }
+
+            dismiss()
+        }
+
+        // Negative button just dismisses, no need for a listener.
+        builder.setNegativeButton(android.R.string.cancel, null)
+    }
+
+    private fun updateAccent() {
         val accentColor = pendingAccent.color.toColor(requireContext())
 
-        binding.accentCancel.setTextColor(accentColor)
-        binding.accentConfirm.setTextColor(accentColor)
+        (requireDialog() as AlertDialog).apply {
+            getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(accentColor)
+            getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(accentColor)
+        }
     }
 
     companion object {

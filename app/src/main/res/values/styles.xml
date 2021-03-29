@@ -79,11 +79,10 @@
     </style>
 
     <!-- Custom Dialog EntryNames -->
-    <style name="Theme.CustomDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
-        <item name="colorBackgroundFloating">@color/background</item>
+    <style name="Theme.CustomDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:windowTitleStyle">@style/TextAppearance.Dialog.Title</item>
-        <item name="colorPrimary">@color/control_color</item>
-        <item name="colorSecondary">@color/control_color</item>
+        <item name="colorBackgroundFloating">@color/background</item>
+        <item name="buttonBarButtonStyle">@style/Widget.Button.Dialog</item>
         <item name="dialogCornerRadius">0dp</item>
         <item name="colorControlHighlight">@color/selection_color</item>
     </style>
@@ -91,6 +90,17 @@
     <!-- Custom dialog title theme -->
     <style name="TextAppearance.Dialog.Title" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:fontFamily">@font/inter_exbold</item>
+    </style>
+
+    <!-- Style for dialog buttons -->
+    <style name="Widget.Button.Dialog" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:layout_height">@dimen/height_dialog_button</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingStart">@dimen/padding_mid_small</item>
+        <item name="android:paddingEnd">@dimen/padding_mid_small</item>
+        <item name="android:minWidth">@dimen/width_dialog_button_min</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 
     <!-- Style for the general item background -->
@@ -216,16 +226,5 @@
         <item name="android:layout_marginEnd">@dimen/margin_large</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/padding_medium</item>
-    </style>
-
-    <!-- Style for dialog buttons -->
-    <style name="Widget.Button.Dialog" parent="Widget.AppCompat.Button">
-        <item name="android:layout_height">@dimen/height_dialog_button</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:paddingStart">@dimen/padding_mid_small</item>
-        <item name="android:paddingEnd">@dimen/padding_mid_small</item>
-        <item name="android:minWidth">@dimen/width_dialog_button_min</item>
-        <item name="android:background">@drawable/ui_ripple</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 </resources>
