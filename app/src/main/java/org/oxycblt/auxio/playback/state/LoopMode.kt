@@ -31,9 +31,9 @@ enum class LoopMode {
     }
 
     companion object {
-        private const val CONST_NONE = 0xA050
-        private const val CONST_ONCE = 0xA051
-        private const val CONST_INFINITE = 0xA052
+        const val CONST_NONE = 0xA100
+        const val CONST_ONCE = 0xA101
+        const val CONST_INFINITE = 0xA102
 
         /**
          * Convert an int [constant] into a LoopMode

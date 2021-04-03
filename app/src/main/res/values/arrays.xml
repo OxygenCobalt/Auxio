@@ -6,11 +6,11 @@
         <item>@string/setting_theme_night</item>
     </string-array>
 
-    <string-array name="values_theme" translatable="false">
-        <item>AUTO</item>
-        <item>LIGHT</item>
-        <item>DARK</item>
-    </string-array>
+    <integer-array name="values_theme">
+        <item>@integer/theme_auto</item>
+        <item>@integer/theme_light</item>
+        <item>@integer/theme_dark</item>
+    </integer-array>
 
     <string-array name="entries_lib_display">
         <item>@string/label_genres</item>
@@ -18,11 +18,11 @@
         <item>@string/label_albums</item>
     </string-array>
 
-    <string-array name="values_lib_display" translatable="false">
-        <item>SHOW_GENRES</item>
-        <item>SHOW_ARTISTS</item>
-        <item>SHOW_ALBUMS</item>
-    </string-array>
+    <integer-array name="values_lib_display">
+        <item>@integer/display_genre</item>
+        <item>@integer/display_artist</item>
+        <item>@integer/display_album</item>
+    </integer-array>
 
     <array name="entries_song_playback_mode">
         <item>@string/label_play_all_songs</item>
@@ -31,11 +31,11 @@
         <item>@string/label_play_genre</item>
     </array>
 
-    <string-array name="values_song_playback_mode" translatable="false">
-        <item>ALL_SONGS</item>
-        <item>IN_ARTIST</item>
-        <item>IN_ALBUM</item>
-        <item>IN_GENRE</item>
+    <string-array name="values_song_playback_mode">
+        <item>@integer/play_mode_songs</item>
+        <item>@integer/play_mode_artist</item>
+        <item>@integer/play_mode_album</item>
+        <item>@integer/play_mode_genre</item>
     </string-array>
 
     <string-array name="entries_at_end">
@@ -44,7 +44,7 @@
         <item>@string/setting_behavior_end_stop</item>
     </string-array>
 
-    <string-array name="values_at_end" translatable="false">
+    <string-array name="values_at_end">
         <item>LOOP_PAUSE</item>
         <item>LOOP</item>
         <item>STOP</item>

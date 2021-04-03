@@ -80,6 +80,7 @@ class AccentDialog : LifecycleDialog() {
     }
 
     companion object {
+        const val TAG = "TAG_ACCENT_DIALOG"
         const val KEY_PENDING_ACCENT = "AXKEY_PEND_ACCENT"
     }
 }

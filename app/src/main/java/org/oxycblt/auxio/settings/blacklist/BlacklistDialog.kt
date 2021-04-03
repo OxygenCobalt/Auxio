@@ -156,4 +156,8 @@ class BlacklistDialog : LifecycleDialog() {
     private fun getRootPath(): String {
         return Environment.getExternalStorageDirectory().absolutePath
     }
+
+    companion object {
+        const val TAG = "TAG_BLACKLIST_DIALOG"
+    }
 }

@@ -29,6 +29,57 @@ When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder`
 
 Data is often bound using Binding Adapters, which are XML attributes assigned in layout files that can automatically display data, usually written as `app:bindingAdapterName="@{data}"`. Its recommended to use these instead of duplicating code manually.
 
+#### Integers
+
+Integer representations of data/ui elements are used heavily in Auxio. 
+To prevent any strange bugs, all integer representations must be unique. A table of all current integers used are shown below:
+
+```
+0xA0XX | UI Integer Space [Required by android]
+
+0xA000 | SongViewHolder
+0xA001 | AlbumViewHolder
+0xA002 | ArtistViewHolder
+0xA003 | GenreViewHolder
+0xA004 | HeaderViewHolder
+
+0xA005 | QueueSongViewHolder
+0xA006 | UserQueueHeaderViewHolder
+
+0xA007 | AlbumHeaderViewHolder
+0xA008 | AlbumSongViewHolder
+0xA009 | ArtistHeaderViewHolder
+0xA00A | ArtistAlbumViewHolder
+0xA00B | GenreHeaderViewHolder
+0xA00C | GenreSongViewHolder
+
+0xA0A0 | Auxio notification code
+0xA0C0 | Auxio request code
+
+0xA1XX | Data Integer Space [Stored for IO efficency]
+
+0xA100 | LoopMode.NONE
+0xA101 | LoopMode.ONCE
+0xA102 | LoopMode.INFINITE
+
+0xA103 | PlaybackMode.IN_GENRE
+0xA104 | PlaybackMode.IN_ARTIST
+0xA105 | PlaybackMode.IN_ALBUM
+0xA106 | PlaybackMode.ALL_SONGS
+
+0xA107 | DisplayMode.SHOW_ALL
+0xA108 | DisplayMode.SHOW_GENRES
+0xA109 | DisplayMode.SHOW_ARTISTS
+0xA10A | DisplayMode.SHOW_ALBUMS
+0xA10B | DisplayMode.SHOW_SONGS
+
+0xA10C | SortMode.NONE 
+0xA10D | SortMode.ALPHA_UP
+0xA10E | SortMode.ALPHA_DOWN 
+0xA10F | SortMode.NUMERIC_UP
+0xA110 | SortMode.NUMERIC_DOWN
+```
+
 #### Package structure overview
 
 Auxio's package structure is mostly based around the features, and then any sub-features or components involved with that. There are some shared packages however. A diagram of the package structure is shown below:
@@ -51,7 +102,8 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 ├──.search         # Search UI
 ├──.settings       # Settings UI and systems
 │  ├──.blacklist   # Excluded Directories UI/Systems
-│  └──.ui          # Contains UI's related to the settings view, such as the about screen
+│  ├──.accent      # Accent UI + Systems
+│  └──.ui          # Settings-Related UIs
 ├──.songs          # Songs UI
 └──.ui             # Shared user interface utilities
 ```
@@ -120,7 +172,7 @@ Shared RecyclerView utilities, often for adapters and ViewHolders. Important one
 
 #### `.settings`
 
-The settings system is primarily based off of `SettingsManager`, a wrapper around `SharedPreferences`. This allows settings to be read/written in a much simpler/safer manner and without a context being needed. The Settings UI is largely contained in `SettingsListFragment`, while the `.ui` sub-package contains UIs related to the settings UI, such as the About Dialog.
+The settings system is primarily based off of `SettingsManager`, a wrapper around `SharedPreferences`. This allows settings to be read/written in a much simpler/safer manner and without a context being needed. The Settings UI is largely contained in `SettingsListFragment`, while the sub-packages contain sub-uis related to the `SettingsListFragment`, such as the custom list preference `IntListPreference` and the about dialog.
 
 #### `.search`
 

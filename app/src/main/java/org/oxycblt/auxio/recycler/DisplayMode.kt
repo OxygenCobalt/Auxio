@@ -28,7 +28,23 @@ enum class DisplayMode(@DrawableRes val iconRes: Int) {
         }
     }
 
+    fun toInt(): Int {
+        return when (this) {
+            SHOW_ALL -> CONST_SHOW_ALL
+            SHOW_GENRES -> CONST_SHOW_GENRES
+            SHOW_ARTISTS -> CONST_SHOW_ARTISTS
+            SHOW_ALBUMS -> CONST_SHOW_ALBUMS
+            SHOW_SONGS -> CONST_SHOW_SONGS
+        }
+    }
+
     companion object {
+        const val CONST_SHOW_ALL = 0xA107
+        const val CONST_SHOW_GENRES = 0xA108
+        const val CONST_SHOW_ARTISTS = 0xA109
+        const val CONST_SHOW_ALBUMS = 0xA10A
+        const val CONST_SHOW_SONGS = 0xA10B
+
         /**
          * A valueOf wrapper that will return a default value if given a null/invalid string.
          */
@@ -53,6 +69,22 @@ enum class DisplayMode(@DrawableRes val iconRes: Int) {
                 R.id.option_filter_genres -> SHOW_GENRES
 
                 else -> SHOW_ALL
+            }
+        }
+
+        /**
+         * Get an enum for an int constant
+         * @return The [DisplayMode] if the constant is valid, null otherwise.
+         */
+        fun fromInt(value: Int): DisplayMode? {
+            return when (value) {
+                CONST_SHOW_ALL -> SHOW_ALL
+                CONST_SHOW_GENRES -> SHOW_GENRES
+                CONST_SHOW_ARTISTS -> SHOW_ARTISTS
+                CONST_SHOW_ALBUMS -> SHOW_ALBUMS
+                CONST_SHOW_SONGS -> SHOW_SONGS
+
+                else -> null
             }
         }
     }

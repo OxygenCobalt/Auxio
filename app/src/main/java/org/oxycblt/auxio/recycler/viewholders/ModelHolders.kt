@@ -14,23 +14,6 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.inflater
 
-/*
- * A table of all ViewHolder codes. Please add to these so that all viewholder codes are unique.
- * SongViewHolder -> 0xA000
- * AlbumViewHolder -> 0xA001
- * ArtistViewHolder -> 0xA002
- * GenreViewHolder -> 0xA003
- * HeaderViewHolder -> 0xA004
- * QueueSongViewHolder -> 0xA005
- * UserQueueHeaderViewHolder -> 0xA006
- * AlbumHeaderViewHolder -> 0xA007
- * AlbumSongViewHolder -> 0xA008
- * ArtistHeaderViewHolder -> 0xA009
- * ArtistAlbumViewHolder -> 0xA00A
- * GenreHeaderViewHolder -> 0xA00B
- * GenreSongViewHolder -> 0xA00C
- */
-
 /**
  * The Shared ViewHolder for a [Song]. Instantiation should be done with [from].
  */

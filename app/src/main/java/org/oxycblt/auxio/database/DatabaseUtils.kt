@@ -3,8 +3,6 @@ package org.oxycblt.auxio.database
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Looper
-import org.oxycblt.auxio.logE
-import java.lang.Exception
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned.

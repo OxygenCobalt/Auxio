@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="theme_auto">-1</integer>
+    <integer name="theme_light">1</integer>
+    <integer name="theme_dark">2</integer>
+
+    <integer name="display_genre">0xA108</integer>
+    <integer name="display_artist">0xA109</integer>
+    <integer name="display_album">0xA10A</integer>
+
+    <integer name="play_mode_genre">0xA103</integer>
+    <integer name="play_mode_artist">0xA104</integer>
+    <integer name="play_mode_album">0xA105</integer>
+    <integer name="play_mode_songs">0xA106</integer>
+</resources>

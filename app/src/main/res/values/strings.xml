@@ -63,7 +63,6 @@
     <string name="setting_theme_day">Light</string>
     <string name="setting_theme_night">Dark</string>
     <string name="setting_accent">Accent</string>
-    <string name="setting_accent_unknown">Unknown Accent</string>
 
     <string name="setting_display">Display</string>
     <string name="setting_lib_display">Library Items</string>

@@ -62,7 +62,6 @@
     <string name="setting_theme_day">Hell</string>
     <string name="setting_theme_night">Dunkel</string>
     <string name="setting_accent">Akzentfarbe</string>
-    <string name="setting_accent_unknown">Unbekannte Akzentfarbe</string>
 
     <string name="setting_display">Anzeige</string>
     <string name="setting_lib_display">Musikbibliothekitems</string>
@@ -97,7 +96,7 @@
     <string name="setting_content_save">Wiedergabezustand abspeichern</string>
     <string name="setting_content_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
     <string name="setting_content_blacklist">Ausgeschlossene Ordner</string>
-    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deinen Musikbibliothek</string>
+    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>

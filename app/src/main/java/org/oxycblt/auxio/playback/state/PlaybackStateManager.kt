@@ -810,6 +810,10 @@ class PlaybackStateManager private constructor() {
     companion object {
         private const val REWIND_THRESHOLD = 3000L
 
+        const val AT_END_LOOP_PAUSE = 0
+        const val AT_END_LOOP = 1
+        const val AT_END_STOP = 2
+
         @Volatile
         private var INSTANCE: PlaybackStateManager? = null
 

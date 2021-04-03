@@ -28,10 +28,10 @@ enum class PlaybackMode {
     }
 
     companion object {
-        private const val CONST_IN_ARTIST = 0xA040
-        private const val CONST_IN_GENRE = 0xA041
-        private const val CONST_IN_ALBUM = 0xA042
-        private const val CONST_ALL_SONGS = 0xA043
+        const val CONST_IN_GENRE = 0xA103
+        const val CONST_IN_ARTIST = 0xA104
+        const val CONST_IN_ALBUM = 0xA105
+        const val CONST_ALL_SONGS = 0xA106
 
         /**
          * Get a [PlaybackMode] for an int [constant]

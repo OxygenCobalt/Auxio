@@ -174,13 +174,11 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     }
 
     companion object {
-        private const val CONST_NONE = 0xA060
-        private const val CONST_ALPHA_UP = 0xA061
-        private const val CONST_ALPHA_DOWN = 0xA062
-        private const val CONST_NUMERIC_UP = 0xA063
-        private const val CONST_NUMERIC_DOWN = 0xA065
-
-        const val CONST_SORT_DEFAULT = CONST_ALPHA_DOWN
+        const val CONST_NONE = 0xA10C
+        const val CONST_ALPHA_UP = 0xA10D
+        const val CONST_ALPHA_DOWN = 0xA10E
+        const val CONST_NUMERIC_UP = 0xA10F
+        const val CONST_NUMERIC_DOWN = 0xA110
 
         /**
          * Get an enum for an int constant

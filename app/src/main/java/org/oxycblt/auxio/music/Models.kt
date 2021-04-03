@@ -5,7 +5,7 @@ import android.net.Uri
 // --- MUSIC MODELS ---
 
 // TODO: Implement some kind of hash system, removing the need to redundant names but alsow without the volitility of id
-//  They need to be completely unique, however, and from whatever information I have about them.
+//  They need to be completely unique, however, and from whatever information I have about them on creation
 
 /**
  * The base data object for all music.

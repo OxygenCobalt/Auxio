@@ -170,7 +170,7 @@ class PlaybackNotification private constructor(
     companion object {
         const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
         const val NOTIFICATION_ID = 0xA0A0
-        const val REQUEST_CODE = 0xA0C0
+        const val REQUEST_CODE = 0xA0AA
 
         // Build type is added to the codes so that dual release/debug installations dont conflict
         // with each other.

@@ -47,7 +47,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
     /**
      * Get a [ColorStateList] of the accent
      */
-    fun getStateList(context: Context): ColorStateList = color.toStateList(context)
+    fun getStateList(context: Context) = color.toStateList(context)
 
     /**
      * Get the name (in bold) and the hex value of a accent.
