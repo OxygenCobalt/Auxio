@@ -15,12 +15,12 @@ fun handleThemeCompat(prefs: SharedPreferences): Int {
     if (prefs.contains(OldKeys.KEY_THEME)) {
         // Before the creation of IntListPreference, I used strings to represent the themes.
         // I no longer need to do this.
-        val newValue = when (prefs.getString(OldKeys.KEY_THEME, EntryValues.THEME_AUTO)) {
+        val newValue = when (prefs.getStringOrNull(OldKeys.KEY_THEME)) {
             EntryValues.THEME_AUTO -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             EntryValues.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             EntryValues.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
 
-            else -> error("Invalid theme")
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
 
         prefs.edit {
@@ -68,9 +68,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
 
 fun handleLibDisplayCompat(prefs: SharedPreferences): DisplayMode {
     if (prefs.contains(OldKeys.KEY_LIB_MODE)) {
-        val mode = handleStringDisplayMode(
-            prefs.getString(OldKeys.KEY_LIB_MODE, EntryValues.SHOW_ARTISTS),
-        ) ?: DisplayMode.SHOW_ARTISTS
+        val mode = prefs.handleOldDisplayMode(OldKeys.KEY_LIB_MODE) ?: DisplayMode.SHOW_ARTISTS
 
         prefs.edit {
             putInt(SettingsManager.KEY_LIB_DISPLAY_MODE, mode.toInt())
@@ -81,14 +79,13 @@ fun handleLibDisplayCompat(prefs: SharedPreferences): DisplayMode {
         return mode
     }
 
-    return DisplayMode.fromInt(
-        prefs.getInt(SettingsManager.KEY_LIB_DISPLAY_MODE, DisplayMode.CONST_SHOW_ARTISTS)
-    ) ?: DisplayMode.SHOW_ARTISTS
+    return prefs.getData(SettingsManager.KEY_LIB_DISPLAY_MODE, DisplayMode::fromInt)
+        ?: DisplayMode.SHOW_ARTISTS
 }
 
 fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
     if (prefs.contains(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
-        val mode = when (prefs.getString(OldKeys.KEY_SONG_PLAYBACK_MODE, EntryValues.ALL_SONGS)) {
+        val mode = when (prefs.getStringOrNull(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
             EntryValues.IN_GENRE -> PlaybackMode.IN_GENRE
             EntryValues.IN_ARTIST -> PlaybackMode.IN_ARTIST
             EntryValues.IN_ALBUM -> PlaybackMode.IN_ALBUM
@@ -106,16 +103,13 @@ fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
         return mode
     }
 
-    return PlaybackMode.fromInt(
-        prefs.getInt(SettingsManager.KEY_SONG_PLAYBACK_MODE, PlaybackMode.CONST_ALL_SONGS)
-    ) ?: PlaybackMode.ALL_SONGS
+    return prefs.getData(SettingsManager.KEY_SONG_PLAYBACK_MODE, PlaybackMode::fromInt)
+        ?: PlaybackMode.ALL_SONGS
 }
 
 fun handleSearchModeCompat(prefs: SharedPreferences): DisplayMode {
     if (prefs.contains(OldKeys.KEY_SEARCH_FILTER)) {
-        val mode = handleStringDisplayMode(
-            prefs.getString(OldKeys.KEY_SEARCH_FILTER, EntryValues.SHOW_ALL)
-        ) ?: DisplayMode.SHOW_ALL
+        val mode = prefs.handleOldDisplayMode(OldKeys.KEY_SEARCH_FILTER) ?: DisplayMode.SHOW_ALL
 
         prefs.edit {
             putInt(SettingsManager.KEY_SEARCH_FILTER_MODE, mode.toInt())
@@ -126,13 +120,12 @@ fun handleSearchModeCompat(prefs: SharedPreferences): DisplayMode {
         return mode
     }
 
-    return DisplayMode.fromInt(
-        prefs.getInt(SettingsManager.KEY_SEARCH_FILTER_MODE, DisplayMode.CONST_SHOW_ALL)
-    ) ?: DisplayMode.SHOW_ARTISTS
+    return prefs.getData(SettingsManager.KEY_SEARCH_FILTER_MODE, DisplayMode::fromInt)
+        ?: DisplayMode.SHOW_ALL
 }
 
-private fun handleStringDisplayMode(string: String?): DisplayMode? {
-    return when (string) {
+private fun SharedPreferences.handleOldDisplayMode(key: String): DisplayMode? {
+    return when (getStringOrNull(key)) {
         EntryValues.SHOW_GENRES -> DisplayMode.SHOW_GENRES
         EntryValues.SHOW_ARTISTS -> DisplayMode.SHOW_ARTISTS
         EntryValues.SHOW_ALBUMS -> DisplayMode.SHOW_ALBUMS

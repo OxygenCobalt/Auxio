@@ -102,12 +102,12 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current [SortMode] of the library. */
     var librarySortMode: SortMode
-        get() = SortMode.fromInt(
-            sharedPrefs.getInt(KEY_LIBRARY_SORT_MODE, SortMode.CONST_ALPHA_DOWN)
-        ) ?: SortMode.ALPHA_DOWN
+        get() = sharedPrefs.getData(KEY_LIB_SORT_MODE, SortMode::fromInt)
+            ?: SortMode.ALPHA_DOWN
+
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_LIBRARY_SORT_MODE, value.toInt())
+                putInt(KEY_LIB_SORT_MODE, value.toInt())
                 apply()
             }
         }
@@ -207,7 +207,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_SAVE_STATE = "KEY_SAVE_STATE"
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
-        const val KEY_LIBRARY_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
+        const val KEY_LIB_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 
         @Volatile

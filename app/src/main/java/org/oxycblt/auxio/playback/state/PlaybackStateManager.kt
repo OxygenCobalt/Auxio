@@ -27,6 +27,7 @@ import org.oxycblt.auxio.settings.SettingsManager
  * All access should be done with [PlaybackStateManager.getInstance].
  *
  * TODO: Queues should reflect sort mode
+ * TODO: Update loop mode to actually make sense [#13]
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -809,10 +810,6 @@ class PlaybackStateManager private constructor() {
 
     companion object {
         private const val REWIND_THRESHOLD = 3000L
-
-        const val AT_END_LOOP_PAUSE = 0
-        const val AT_END_LOOP = 1
-        const val AT_END_STOP = 2
 
         @Volatile
         private var INSTANCE: PlaybackStateManager? = null

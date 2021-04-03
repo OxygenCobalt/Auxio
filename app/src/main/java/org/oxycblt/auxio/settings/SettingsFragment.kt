@@ -20,14 +20,10 @@ class SettingsFragment : Fragment() {
         val binding = FragmentSettingsBinding.inflate(inflater)
 
         binding.settingsToolbar.setOnMenuItemClickListener {
-            AboutDialog().show(childFragmentManager, TAG_ABOUT_DIALOG)
+            AboutDialog().show(childFragmentManager, AboutDialog.TAG)
             true
         }
 
         return binding.root
-    }
-
-    companion object {
-        private const val TAG_ABOUT_DIALOG = "TAG_ABOUT_DIALOG"
     }
 }

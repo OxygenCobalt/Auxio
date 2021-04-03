@@ -45,21 +45,6 @@ enum class DisplayMode(@DrawableRes val iconRes: Int) {
         const val CONST_SHOW_ALBUMS = 0xA10A
         const val CONST_SHOW_SONGS = 0xA10B
 
-        /**
-         * A valueOf wrapper that will return a default value if given a null/invalid string.
-         */
-        fun valueOfOrFallback(value: String?, fallback: DisplayMode = SHOW_ARTISTS): DisplayMode {
-            if (value == null) {
-                return fallback
-            }
-
-            return try {
-                valueOf(value)
-            } catch (e: IllegalArgumentException) {
-                fallback
-            }
-        }
-
         fun fromId(@IdRes id: Int): DisplayMode {
             return when (id) {
                 R.id.option_filter_all -> SHOW_ALL

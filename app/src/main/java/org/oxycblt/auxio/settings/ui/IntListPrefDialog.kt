@@ -7,7 +7,7 @@ class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog()
         builder.setTitle(pref.title)
 
         builder.setSingleChoiceItems(pref.entries, pref.getValueIndex()) { _, index ->
-            pref.setValue(pref.values[index])
+            pref.setValueIndex(index)
 
             dismiss()
         }

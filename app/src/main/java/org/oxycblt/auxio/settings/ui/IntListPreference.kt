@@ -15,10 +15,9 @@ class IntListPreference @JvmOverloads constructor(
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
     val entries: Array<CharSequence>
     val values: IntArray
-    var currentValue: Int? = null
-        private set
 
-    private val default: Int
+    private var currentValue: Int? = null
+    private val defValue: Int
 
     init {
         val prefAttrs = context.obtainStyledAttributes(
@@ -31,7 +30,7 @@ class IntListPreference @JvmOverloads constructor(
             prefAttrs.getResourceId(R.styleable.IntListPreference_entryValues, -1)
         )
 
-        default = prefAttrs.getInt(prefR.styleable.Preference_defaultValue, Int.MIN_VALUE)
+        defValue = prefAttrs.getInt(prefR.styleable.Preference_defaultValue, Int.MIN_VALUE)
 
         prefAttrs.recycle()
 
@@ -47,7 +46,7 @@ class IntListPreference @JvmOverloads constructor(
             // If were given a default value, we need to assign it.
             setValue(defaultValue as Int)
         } else {
-            currentValue = getPersistedInt(default)
+            currentValue = getPersistedInt(defValue)
         }
     }
 
@@ -61,7 +60,14 @@ class IntListPreference @JvmOverloads constructor(
         return -1
     }
 
-    fun setValue(value: Int) {
+    /**
+     * Set a value using the index of it in [values]
+     */
+    fun setValueIndex(index: Int) {
+        setValue(values[index])
+    }
+
+    private fun setValue(value: Int) {
         if (value != currentValue) {
             currentValue = value
 

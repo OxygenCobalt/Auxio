@@ -49,8 +49,6 @@ class AboutDialog : BottomSheetDialogFragment() {
      * in [AboutDialog.Companion.LINKS].
      */
     private fun openLinkInBrowser(link: String) {
-        check(link in LINKS) { "Invalid link." }
-
         try {
             val uri = link.toUri()
 
@@ -84,6 +82,6 @@ class AboutDialog : BottomSheetDialogFragment() {
         private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/info/FAQ.md"
         private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/info/LICENSES.md"
 
-        val LINKS = arrayOf(LINK_CODEBASE, LINK_FAQ, LINK_LICENSES)
+        const val TAG = "TAG_ABOUT_DIALOG"
     }
 }

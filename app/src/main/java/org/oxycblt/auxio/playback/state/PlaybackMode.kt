@@ -48,19 +48,5 @@ enum class PlaybackMode {
             }
         }
 
-        /**
-         * Get the value of a [PlaybackMode] from a string. Returns [ALL_SONGS] as a fallback.
-         */
-        fun valueOfOrFallback(value: String?): PlaybackMode {
-            if (value == null) {
-                return ALL_SONGS
-            }
-
-            return try {
-                valueOf(value)
-            } catch (e: IllegalArgumentException) {
-                ALL_SONGS
-            }
-        }
     }
 }

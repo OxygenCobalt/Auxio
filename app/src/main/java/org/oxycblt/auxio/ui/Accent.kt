@@ -65,7 +65,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
 
     companion object {
         @Volatile
-        private var current: Accent? = null
+        private var CURRENT: Accent? = null
 
         /**
          * Get the current accent.
@@ -73,7 +73,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
          * @throws IllegalStateException When the accent has not been set.
          */
         fun get(): Accent {
-            val cur = current
+            val cur = CURRENT
 
             if (cur != null) {
                 return cur
@@ -88,7 +88,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
          */
         fun set(accent: Accent): Accent {
             synchronized(this) {
-                current = accent
+                CURRENT = accent
             }
 
             return accent

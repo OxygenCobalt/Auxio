@@ -32,8 +32,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferenceScreen.children.forEach {
-            recursivelyHandleChildren(it)
+        preferenceScreen.children.forEach { pref ->
+            recursivelyHandleChildren(pref)
         }
 
         preferenceManager.onDisplayPreferenceDialogListener = this
