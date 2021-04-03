@@ -48,8 +48,6 @@
     <string name="setting_audio_plug_mgt">हेडसेट प्लग</string>
 
     <string name="setting_behavior">चाल चलन</string>
-    <string name="setting_behavior_end_loop">जारी</string>
-    <string name="setting_behavior_end_stop">बंद</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">कोई संगीत नहीं मिला</string>

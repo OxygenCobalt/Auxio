@@ -235,17 +235,13 @@ class PlaybackStateManager private constructor() {
     /**
      * Update the playback to a new [song], doing all the required logic.
      */
-    private fun updatePlayback(song: Song) {
+    private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
         mIsInUserQueue = false
 
         mSong = song
         mPosition = 0
 
-        if (!mIsPlaying) {
-            setPlaying(true)
-        }
-
-        clearLoopMode()
+        setPlaying(shouldPlay)
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -269,13 +265,14 @@ class PlaybackStateManager private constructor() {
             // If it cant be incremented anymore, end playback or loop depending on the setting.
             if (mIndex < mQueue.lastIndex) {
                 mIndex = mIndex.inc()
+                updatePlayback(mQueue[mIndex])
             } else {
-                handlePlaylistEnd()
+                mIndex = 0
+                updatePlayback(mQueue[mIndex], shouldPlay = mLoopMode == LoopMode.ALL)
 
                 return
             }
 
-            updatePlayback(mQueue[mIndex])
             forceQueueUpdate()
         }
     }
@@ -296,39 +293,6 @@ class PlaybackStateManager private constructor() {
 
             updatePlayback(mQueue[mIndex])
             forceQueueUpdate()
-        }
-    }
-
-    /**
-     * Handle what to do at then end of a playlist.
-     */
-    private fun handlePlaylistEnd() {
-        when (settingsManager.doAtEnd) {
-            SettingsManager.EntryValues.AT_END_LOOP_PAUSE -> {
-                mIndex = 0
-                mPosition = 0
-                mIsInUserQueue = false
-                mSong = mQueue[0]
-
-                clearLoopMode()
-                setPlaying(false)
-                forceQueueUpdate()
-            }
-
-            SettingsManager.EntryValues.AT_END_LOOP -> {
-                mIndex = 0
-
-                forceQueueUpdate()
-                updatePlayback(mQueue[0])
-            }
-
-            SettingsManager.EntryValues.AT_END_STOP -> {
-                mQueue.clear()
-                forceQueueUpdate()
-
-                mSong = null
-                mParent = null
-            }
         }
     }
 
@@ -560,17 +524,6 @@ class PlaybackStateManager private constructor() {
      */
     fun setLoopMode(mode: LoopMode) {
         mLoopMode = mode
-    }
-
-    /**
-     * Reset the current [LoopMode] from [LoopMode.ONCE], if needed.
-     * Use this instead of duplicating the code manually.
-     */
-    fun clearLoopMode() {
-        // Reset the loop mode from ONCE if needed.
-        if (mLoopMode == LoopMode.ONCE) {
-            mLoopMode = LoopMode.NONE
-        }
     }
 
     /**

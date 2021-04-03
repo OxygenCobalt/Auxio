@@ -47,6 +47,5 @@ enum class PlaybackMode {
                 else -> null
             }
         }
-
     }
 }

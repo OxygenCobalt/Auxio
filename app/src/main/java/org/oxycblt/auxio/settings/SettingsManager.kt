@@ -38,6 +38,7 @@ class SettingsManager private constructor(context: Context) :
     /** The current accent. */
     var accent: Accent
         get() = handleAccentCompat(sharedPrefs)
+
         set(value) {
             val accentIndex = ACCENTS.indexOf(value)
 
@@ -87,11 +88,6 @@ class SettingsManager private constructor(context: Context) :
     val songPlaybackMode: PlaybackMode
         get() = handleSongPlayModeCompat(sharedPrefs)
 
-    /** What to do at the end of a playlist. */
-    val doAtEnd: String
-        get() = sharedPrefs.getString(KEY_AT_END, EntryValues.AT_END_LOOP_PAUSE)
-            ?: EntryValues.AT_END_LOOP_PAUSE
-
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
         get() = sharedPrefs.getBoolean(KEY_KEEP_SHUFFLE, true)
@@ -115,6 +111,7 @@ class SettingsManager private constructor(context: Context) :
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode
         get() = handleSearchModeCompat(sharedPrefs)
+
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_SEARCH_FILTER_MODE, value.toInt())
@@ -159,19 +156,6 @@ class SettingsManager private constructor(context: Context) :
             }
         }
     }
-    /**
-     * Values for some settings entries that arent important enough to recieve an enum.
-     */
-    object EntryValues {
-        /** Pause and loop at the end. Similar to Spotify. */
-        const val AT_END_LOOP_PAUSE = "LOOP_PAUSE"
-
-        /** Loop at the end. Similar to Music Player GO. */
-        const val AT_END_LOOP = "LOOP"
-
-        /** Stop at the end. */
-        const val AT_END_STOP = "STOP"
-    }
 
     /**
      * An interface for receiving some preference updates. Use/Extend this instead of
@@ -200,7 +184,6 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
 
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
-        const val KEY_AT_END = "KEY_AT_END"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
 

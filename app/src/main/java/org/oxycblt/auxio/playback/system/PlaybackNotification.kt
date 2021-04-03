@@ -135,8 +135,8 @@ class PlaybackNotification private constructor(
     ): NotificationCompat.Action {
         val drawableRes = when (loopMode) {
             LoopMode.NONE -> R.drawable.ic_loop_inactive
-            LoopMode.ONCE -> R.drawable.ic_loop_one
-            LoopMode.INFINITE -> R.drawable.ic_loop
+            LoopMode.ALL -> R.drawable.ic_loop
+            LoopMode.TRACK -> R.drawable.ic_loop_one
         }
 
         return buildAction(context, ACTION_LOOP, drawableRes)

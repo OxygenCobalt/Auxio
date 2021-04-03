@@ -5,16 +5,16 @@ package org.oxycblt.auxio.playback.state
  * @author OxygenCobalt
  */
 enum class LoopMode {
-    NONE, ONCE, INFINITE;
+    NONE, ALL, TRACK;
 
     /**
-     * Increment the LoopMode, e.g from [NONE] to [ONCE]
+     * Increment the LoopMode, e.g from [NONE] to [ALL]
      */
     fun increment(): LoopMode {
         return when (this) {
-            NONE -> ONCE
-            ONCE -> INFINITE
-            INFINITE -> NONE
+            NONE -> ALL
+            ALL -> TRACK
+            TRACK -> NONE
         }
     }
 
@@ -25,25 +25,24 @@ enum class LoopMode {
     fun toInt(): Int {
         return when (this) {
             NONE -> CONST_NONE
-            ONCE -> CONST_ONCE
-            INFINITE -> CONST_INFINITE
+            ALL -> CONST_ALL
+            TRACK -> CONST_TRACK
         }
     }
 
     companion object {
         const val CONST_NONE = 0xA100
-        const val CONST_ONCE = 0xA101
-        const val CONST_INFINITE = 0xA102
+        const val CONST_ALL = 0xA101
+        const val CONST_TRACK = 0xA102
 
         /**
-         * Convert an int [constant] into a LoopMode
-         * @return The corresponding LoopMode. Null if it corresponds to nothing.
+         * Convert an int [constant] into a LoopMode, or null if it isnt valid.
          */
         fun fromInt(constant: Int): LoopMode? {
             return when (constant) {
                 CONST_NONE -> NONE
-                CONST_ONCE -> ONCE
-                CONST_INFINITE -> INFINITE
+                CONST_ALL -> ALL
+                CONST_TRACK -> TRACK
 
                 else -> null
             }

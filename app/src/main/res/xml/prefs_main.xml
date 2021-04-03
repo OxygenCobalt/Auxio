@@ -103,15 +103,6 @@
             app:title="@string/setting_behavior_song_playback_mode"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="LOOP_PAUSE"
-            app:entries="@array/entries_at_end"
-            app:entryValues="@array/values_at_end"
-            app:iconSpaceReserved="false"
-            app:key="KEY_AT_END"
-            app:title="@string/setting_behavior_at_end"
-            app:useSimpleSummaryProvider="true" />
-
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"

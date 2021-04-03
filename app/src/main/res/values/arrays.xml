@@ -37,16 +37,4 @@
         <item>@integer/play_mode_album</item>
         <item>@integer/play_mode_genre</item>
     </string-array>
-
-    <string-array name="entries_at_end">
-        <item>@string/setting_behavior_end_loop_pause</item>
-        <item>@string/setting_behavior_end_loop</item>
-        <item>@string/setting_behavior_end_stop</item>
-    </string-array>
-
-    <string-array name="values_at_end">
-        <item>LOOP_PAUSE</item>
-        <item>LOOP</item>
-        <item>STOP</item>
-    </string-array>
 </resources>

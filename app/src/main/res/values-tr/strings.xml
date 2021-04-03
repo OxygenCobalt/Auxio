@@ -55,8 +55,6 @@
     <string name="setting_audio_focus">Ses odaklama</string>
 
     <string name="setting_behavior">Tercihler</string>
-    <string name="setting_behavior_end_loop">Devam et</string>
-    <string name="setting_behavior_end_stop">Dur</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Müzik bulunamadı</string>

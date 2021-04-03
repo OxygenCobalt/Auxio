@@ -202,11 +202,6 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        // Reset the loop mode from LOOP_ONE (if it is LOOP_ONE) on each repeat
-        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT) {
-            playbackManager.clearLoopMode()
-        }
-
         // We use the wakelock to ensure that the CPU is active while music is being loaded
         acquireWakeLock()
     }
@@ -263,10 +258,10 @@ class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Ca
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
-        player.repeatMode = if (loopMode == LoopMode.NONE) {
-            Player.REPEAT_MODE_OFF
+        player.repeatMode = if (loopMode == LoopMode.TRACK) {
+            Player.REPEAT_MODE_ONE
         } else {
-            Player.REPEAT_MODE_ALL
+            Player.REPEAT_MODE_OFF
         }
 
         if (!settingsManager.useAltNotifAction) {

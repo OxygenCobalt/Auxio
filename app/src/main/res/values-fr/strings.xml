@@ -58,9 +58,6 @@
     <string name="setting_audio_plug_mgt">Branchement du casque</string>
 
     <string name="setting_behavior">Comportement</string>
-    <string name="setting_behavior_end_loop_pause">Continuer et Pause</string>
-    <string name="setting_behavior_end_stop">Arrêter</string>
-    <string name="setting_behavior_end_loop">Continuer</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Pas de musique trouvée</string>

@@ -106,14 +106,14 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
                 }
 
-                LoopMode.ONCE -> {
-                    binding.playbackLoop.imageTintList = accentColor
-                    binding.playbackLoop.setImageResource(R.drawable.ic_loop_one)
-                }
-
-                LoopMode.INFINITE -> {
+                LoopMode.ALL -> {
                     binding.playbackLoop.imageTintList = accentColor
                     binding.playbackLoop.setImageResource(R.drawable.ic_loop)
+                }
+
+                LoopMode.TRACK -> {
+                    binding.playbackLoop.imageTintList = accentColor
+                    binding.playbackLoop.setImageResource(R.drawable.ic_loop_one)
                 }
 
                 else -> return@observe

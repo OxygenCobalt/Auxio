@@ -59,8 +59,8 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA1XX | Data Integer Space [Stored for IO efficency]
 
 0xA100 | LoopMode.NONE
-0xA101 | LoopMode.ONCE
-0xA102 | LoopMode.INFINITE
+0xA101 | LoopMode.ALL
+0xA102 | LoopMode.TRACK
 
 0xA103 | PlaybackMode.IN_GENRE
 0xA104 | PlaybackMode.IN_ARTIST

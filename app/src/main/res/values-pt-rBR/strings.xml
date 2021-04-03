@@ -56,8 +56,6 @@
     <string name="setting_audio_plug_mgt">Entrada do fone de ouvido</string>
 
     <string name="setting_behavior">Comportamento</string>
-    <string name="setting_behavior_end_loop">Continuar</string>
-    <string name="setting_behavior_end_stop">Parar</string>
     <string name="setting_behavior_keep_shuffle">Memorizar aleatorização</string>
 
     <!-- Error Namespace | Error Labels -->

@@ -56,8 +56,6 @@
     <string name="setting_audio_plug_mgt">Гарнитура</string>
 
     <string name="setting_behavior">Поведение</string>
-    <string name="setting_behavior_end_loop">Продолжить</string>
-    <string name="setting_behavior_end_stop">Стоп</string>
     <string name="setting_behavior_keep_shuffle">Запомнить перемешивание</string>
 
     <!-- Error Namespace | Error Labels -->

@@ -56,8 +56,6 @@
     <string name="setting_audio_plug_mgt">Fejhallgató csatlakozó</string>
 
     <string name="setting_behavior">Működés</string>
-    <string name="setting_behavior_end_loop">Folytatás</string>
-    <string name="setting_behavior_end_stop">Megállítás</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Nem található zene</string>

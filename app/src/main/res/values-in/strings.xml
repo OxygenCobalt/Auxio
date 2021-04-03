@@ -55,8 +55,6 @@
     <string name="setting_audio_focus">Fokus audio</string>
 
     <string name="setting_behavior">Perilaku</string>
-    <string name="setting_behavior_end_loop">Lanjutkan</string>
-    <string name="setting_behavior_end_stop">Setop</string>
     <string name="setting_behavior_keep_shuffle">Ingat putar acak</string>
 
     <!-- Error Namespace | Error Labels -->

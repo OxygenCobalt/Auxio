@@ -56,8 +56,6 @@
     <string name="setting_audio_plug_mgt">Podłączanie słuchawek</string>
 
     <string name="setting_behavior">Zachowanie</string>
-    <string name="setting_behavior_end_loop">Kontynuuj</string>
-    <string name="setting_behavior_end_stop">Zatrzymaj</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Nie znaleziono muzyki</string>

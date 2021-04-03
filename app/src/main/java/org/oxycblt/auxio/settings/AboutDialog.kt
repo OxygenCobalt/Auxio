@@ -45,8 +45,7 @@ class AboutDialog : BottomSheetDialogFragment() {
     }
 
     /**
-     * Go through the process of opening a [link] in a browser. Only supports the links
-     * in [AboutDialog.Companion.LINKS].
+     * Go through the process of opening a [link] in a browser.
      */
     private fun openLinkInBrowser(link: String) {
         try {
