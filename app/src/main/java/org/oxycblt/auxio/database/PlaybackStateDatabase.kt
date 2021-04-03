@@ -30,6 +30,10 @@ class PlaybackStateDatabase(context: Context) :
         }
     }
 
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        onUpgrade(db, newVersion, oldVersion)
+    }
+
     // --- DATABASE CONSTRUCTION FUNCTIONS ---
 
     /**

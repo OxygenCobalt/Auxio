@@ -24,8 +24,7 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        onCreate(db)
+        onUpgrade(db, newVersion, oldVersion)
     }
 
     /**
