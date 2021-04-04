@@ -9,18 +9,8 @@
         android:layout_height="wrap_content"
         android:background="@color/background"
         android:orientation="vertical"
+        android:paddingTop="@dimen/margin_medium"
         android:theme="@style/Theme.Neutral">
-
-        <TextView
-            android:id="@+id/blacklist_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_exbold"
-            android:padding="@dimen/padding_medium"
-            android:text="@string/setting_content_blacklist"
-            android:textAlignment="viewStart"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_size_toolbar_header" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/blacklist_recycler"
@@ -28,7 +18,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:overScrollMode="never"
+            android:overScrollMode="always"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="1"
             tools:listitem="@layout/item_blacklist_entry" />

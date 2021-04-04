@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.settings.blacklist
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -86,14 +85,9 @@ class BlacklistDialog : LifecycleDialog() {
         return binding.root
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-
-        // If we have dismissed the dialog, then just drop any path changes.
-        blacklistModel.loadDatabasePaths()
-    }
-
     override fun onConfigDialog(builder: AlertDialog.Builder) {
+        builder.setTitle(R.string.setting_content_blacklist)
+
         // Dont set the click listener here, we do some custom black magic in onCreateView instead.
         builder.setNeutralButton(R.string.label_add, null)
         builder.setPositiveButton(R.string.label_save, null)
@@ -101,7 +95,10 @@ class BlacklistDialog : LifecycleDialog() {
     }
 
     private fun addDocTreePath(uri: Uri?) {
-        uri ?: return
+        // A null URI means that the user left the file picker without picking a directory
+        if (uri == null) {
+            return
+        }
 
         val path = parseDocTreePath(uri)
 

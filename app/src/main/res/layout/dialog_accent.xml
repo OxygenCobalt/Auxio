@@ -3,39 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/accent_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:orientation="vertical"
-        android:theme="@style/Theme.Neutral">
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/margin_medium"
+        android:foregroundGravity="center"
+        android:overScrollMode="never"
+        app:layoutManager="org.oxycblt.auxio.settings.accent.AutoGridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
+        app:layout_constraintTop_toBottomOf="@+id/accent_header"
+        tools:itemCount="18"
+        tools:listitem="@layout/item_accent" />
 
-        <TextView
-            android:id="@+id/accent_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_exbold"
-            android:padding="@dimen/padding_medium"
-            android:text="@string/setting_accent"
-            android:paddingHorizontal="10dp"
-            android:textAlignment="viewStart"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_size_toolbar_header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/accent_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:foregroundGravity="center"
-            android:overScrollMode="never"
-            app:layoutManager="org.oxycblt.auxio.settings.accent.AutoGridLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
-            app:layout_constraintTop_toBottomOf="@+id/accent_header"
-            tools:itemCount="18"
-            tools:listitem="@layout/item_accent" />
-
-    </LinearLayout>
 </layout>

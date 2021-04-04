@@ -9,9 +9,9 @@
     <style name="Theme.Base" parent="Theme.Template">
         <item name="android:windowBackground">@color/background</item>
         <item name="android:fontFamily">@font/inter</item>
-        <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
         <item name="android:scrollbars">none</item>
         <item name="android:windowIsFloating">false</item>
+        <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
 
         <!-- Interim default values for the accents. -->
         <item name="colorPrimary">@color/design_default_color_primary</item>

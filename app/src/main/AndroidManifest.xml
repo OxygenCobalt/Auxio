@@ -45,7 +45,6 @@
         </activity>
         <service
             android:name=".playback.system.PlaybackService"
-            android:description="@string/info_service_desc"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round" />

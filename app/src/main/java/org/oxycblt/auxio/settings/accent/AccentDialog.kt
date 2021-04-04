@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.settings.SettingsManager
@@ -56,6 +57,8 @@ class AccentDialog : LifecycleDialog() {
     }
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
+        builder.setTitle(R.string.setting_accent)
+
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             if (pendingAccent != Accent.get()) {
                 settingsManager.accent = pendingAccent
