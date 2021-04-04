@@ -19,7 +19,7 @@ import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
-import org.oxycblt.auxio.ui.createToast
+import org.oxycblt.auxio.ui.showToast
 import kotlin.system.exitProcess
 
 /**
@@ -105,7 +105,7 @@ class BlacklistDialog : LifecycleDialog() {
         if (path != null) {
             blacklistModel.addPath(path)
         } else {
-            getString(R.string.error_bad_dir).createToast(requireContext())
+            requireContext().showToast(R.string.error_bad_dir)
         }
     }
 

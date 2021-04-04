@@ -18,8 +18,8 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.canScroll
-import org.oxycblt.auxio.ui.createToast
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.showToast
 
 /**
  * The [DetailFragment] for an album.
@@ -58,7 +58,7 @@ class AlbumDetailFragment : DetailFragment() {
         setupToolbar(R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {
                 playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
-                getString(R.string.label_queue_added).createToast(requireContext())
+                requireContext().showToast(R.string.label_queue_added)
                 true
             } else {
                 false

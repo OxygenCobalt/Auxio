@@ -13,6 +13,7 @@ import org.oxycblt.auxio.logD
 
 /**
  * Class that loads/constructs [Genre]s, [Artist]s, [Album]s, and [Song] objects from the filesystem
+ * TODO: Use album artist instead of artist tag.
  * @author OxygenCobalt
  */
 class MusicLoader(private val context: Context) {

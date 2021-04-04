@@ -18,7 +18,6 @@ import org.oxycblt.auxio.settings.blacklist.BlacklistDialog
 import org.oxycblt.auxio.settings.ui.IntListPrefDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.createToast
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -130,8 +129,9 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.KEY_SAVE_STATE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.savePlaybackState(requireContext()) {
-                            getString(R.string.label_state_saved).createToast(requireContext())
+                            requireContext().getString(R.string.label_state_saved)
                         }
+
                         true
                     }
                 }

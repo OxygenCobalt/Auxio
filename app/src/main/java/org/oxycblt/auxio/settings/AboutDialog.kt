@@ -1,6 +1,8 @@
 package org.oxycblt.auxio.settings
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +13,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAboutBinding
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.createToast
+import org.oxycblt.auxio.ui.showToast
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -48,32 +49,40 @@ class AboutDialog : BottomSheetDialogFragment() {
      * Go through the process of opening a [link] in a browser.
      */
     private fun openLinkInBrowser(link: String) {
-        try {
-            val uri = link.toUri()
+        val browserIntent = Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
 
-            val browserIntent = Intent(Intent.ACTION_VIEW, uri)
-            browserIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val pkgName = requireContext().packageManager.resolveActivity(
+            browserIntent, PackageManager.MATCH_DEFAULT_ONLY
+        )?.activityInfo?.packageName
 
-            val fallbackCandidates = requireContext().packageManager.queryIntentActivities(
-                browserIntent, 0
-            )
-
-            // If there are candidates here, then launch those.
-            if (fallbackCandidates.size > 0) {
-                requireActivity().startActivity(browserIntent)
+        if (pkgName != null) {
+            if (pkgName == "android") {
+                // No default browser [Must open app chooser, may not be supported
+                openAppChooser(browserIntent)
             } else {
-                // Otherwise they don't have a browser on their phone, meaning they should
-                // just see an error.
-                getString(R.string.error_no_browser).createToast(requireContext())
+                try {
+                    browserIntent.setPackage(pkgName)
+                    startActivity(browserIntent)
+                } catch (exception: ActivityNotFoundException) {
+                    // Not browser but an app chooser due to OEM garbage
+                    browserIntent.setPackage(null)
+                    openAppChooser(browserIntent)
+                }
             }
-        } catch (e: Exception) {
-            logE("Browser intent launching failed [Probably android's fault]")
-            logE(e.stackTraceToString())
-
-            // Sometimes people have """Browsers""" on their phone according to android,
-            // but they actually don't so here's a fallback for that.
-            getString(R.string.error_no_browser).createToast(requireContext())
+        } else {
+            // No app installed to open the link
+            requireContext().showToast(R.string.error_no_browser)
         }
+    }
+
+    private fun openAppChooser(intent: Intent) {
+        val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+            .putExtra(Intent.EXTRA_INTENT, intent)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        startActivity(chooserIntent)
     }
 
     companion object {

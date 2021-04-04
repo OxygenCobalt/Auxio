@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.PluralsRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -131,11 +132,10 @@ fun Int.resolveAttr(context: Context): Int {
 }
 
 /**
- * Create a [Toast] from a [String]
- * @param context [Context] required to create the toast
+ * Create a toast using the provided string resource.
  */
-fun String.createToast(context: Context) {
-    Toast.makeText(context.applicationContext, this, Toast.LENGTH_SHORT).show()
+fun Context.showToast(@StringRes str: Int) {
+    Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
 }
 
 // --- CONFIGURATION ---
@@ -220,7 +220,7 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
         }
     } else {
         @Suppress("DEPRECATION")
-        (activity.getSystemServiceSafe(WindowManager::class)).apply {
+        activity.getSystemServiceSafe(WindowManager::class).apply {
             defaultDisplay.getRealSize(realPoint)
             defaultDisplay.getMetrics(metrics)
 

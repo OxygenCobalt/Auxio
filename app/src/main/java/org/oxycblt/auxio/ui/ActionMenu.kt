@@ -135,11 +135,12 @@ class ActionMenu(
                 when (data) {
                     is Song -> {
                         playbackModel.addToUserQueue(data)
-                        context.getString(R.string.label_queue_added).createToast(context)
+                        context.showToast(R.string.label_queue_added)
                     }
+
                     is Album -> {
                         playbackModel.addToUserQueue(data)
-                        context.getString(R.string.label_queue_added).createToast(context)
+                        context.showToast(R.string.label_queue_added)
                     }
 
                     else -> {}
