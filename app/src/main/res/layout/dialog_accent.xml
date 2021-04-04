@@ -17,6 +17,7 @@
             android:fontFamily="@font/inter_exbold"
             android:padding="@dimen/padding_medium"
             android:text="@string/setting_accent"
+            android:paddingHorizontal="10dp"
             android:textAlignment="viewStart"
             android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/text_size_toolbar_header"

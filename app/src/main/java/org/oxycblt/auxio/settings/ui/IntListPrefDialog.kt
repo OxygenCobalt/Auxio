@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.settings.ui
 
 import androidx.appcompat.app.AlertDialog
+import org.oxycblt.auxio.R
 
 class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog() {
     override fun onConfigDialog(builder: AlertDialog.Builder) {

@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.search
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +22,9 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.ui.toColor
-import org.oxycblt.auxio.ui.toStateList
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
@@ -51,9 +47,6 @@ class SearchFragment : Fragment() {
             newMenu(view, data)
         }
 
-        // Apply the accents manually. Not going through the mess of converting my app's
-        // styling to Material given all the second-and-third-order effects it has.
-        val accent = Accent.get().color.toColor(requireContext())
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         val defaultParams = toolbarParams.scrollFlags
 
@@ -71,12 +64,6 @@ class SearchFragment : Fragment() {
                     false
                 }
             }
-        }
-
-        binding.searchTextLayout.apply {
-            boxStrokeColor = accent
-            hintTextColor = ColorStateList.valueOf(accent)
-            setEndIconTintList(R.color.control_color.toStateList(context))
         }
 
         binding.searchEditText.addTextChangedListener { text ->

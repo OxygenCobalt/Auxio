@@ -23,7 +23,6 @@ import androidx.annotation.PluralsRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
@@ -45,21 +44,6 @@ fun ImageButton.disable() {
  */
 fun TextView.setTextColorResource(@ColorRes color: Int) {
     setTextColor(color.toColor(context))
-}
-
-/**
- * Apply accents to a [MaterialButton] manually.
- * Yes, I could change my theming to Material but that would have so many second-and-third order
- * effects that I *really* dont want to deal with it. This hack works.
- * @param highlighted Whether the MaterialButton has an "Unimportant" style or not.
- * Required because you cant determine a style of a view before API 29
- */
-fun MaterialButton.applyAccents(highlighted: Boolean) {
-    if (highlighted) {
-        backgroundTintList = Accent.get().getStateList(context)
-    } else {
-        setTextColorResource(Accent.get().color)
-    }
 }
 
 // --- CONVENIENCE ---

@@ -24,9 +24,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/search_text_layout"
-                style="@style/Theme.MaterialComponents.DayNight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="?attr/colorPrimary"
                 app:boxBackgroundMode="filled"
                 app:boxStrokeWidth="0dp"
                 app:endIconContentDescription="@string/description_clear_search"
@@ -36,7 +37,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/search_edit_text"
-                    style="@style/Widget.AppCompat.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"

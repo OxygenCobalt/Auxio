@@ -90,19 +90,18 @@
             app:layout_constraintEnd_toStartOf="@+id/album_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/album_cover"
-            tools:textColor="@color/control_color" />
+            app:layout_constraintTop_toBottomOf="@+id/album_cover" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/album_shuffle_button"
             style="@style/Widget.MaterialComponents.Button.Highlighted"
             android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
             android:text="@string/label_shuffle"
+            android:backgroundTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/album_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_play_button"
-            app:layout_constraintTop_toTopOf="@+id/album_play_button"
-            tools:backgroundTint="@color/control_color" />
+            app:layout_constraintTop_toTopOf="@+id/album_play_button" />
 
         <TextView
             android:id="@+id/album_song_header"

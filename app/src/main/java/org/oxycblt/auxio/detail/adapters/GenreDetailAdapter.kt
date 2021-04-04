@@ -16,7 +16,6 @@ import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
@@ -115,9 +114,6 @@ class GenreDetailAdapter(
             binding.detailModel = detailModel
             binding.playbackModel = playbackModel
             binding.lifecycleOwner = lifecycleOwner
-
-            binding.genreShuffleButton.applyAccents(true)
-            binding.genrePlayButton.applyAccents(false)
 
             if (data.songs.size < 2) {
                 binding.genreSortButton.disable()

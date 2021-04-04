@@ -16,7 +16,6 @@ import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.applyAccents
 import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
@@ -114,9 +113,6 @@ class ArtistDetailAdapter(
             binding.detailModel = detailModel
             binding.playbackModel = playbackModel
             binding.lifecycleOwner = lifecycleOwner
-
-            binding.artistShuffleButton.applyAccents(true)
-            binding.artistPlayButton.applyAccents(false)
 
             if (data.albums.size < 2) {
                 binding.artistSortButton.disable()
