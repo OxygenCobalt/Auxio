@@ -1,6 +1,5 @@
 package org.oxycblt.auxio.ui
 
-import android.os.Looper
 import android.view.LayoutInflater
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -42,9 +41,7 @@ class MemberBinder<T : ViewDataBinding>(
     }
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
-        check(Looper.myLooper() == Looper.getMainLooper()) {
-            "View can only be accessed on the main thread."
-        }
+        assertMainThread()
 
         val binding = fragmentBinding
 

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.ui.assertBackgroundThread
 
 /**
  * Database for storing blacklisted paths.

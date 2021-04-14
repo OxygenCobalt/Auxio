@@ -3,8 +3,8 @@ package org.oxycblt.auxio.database
 /**
  * A database entity that stores a compressed variant of the current playback state.
  * @property id - The database key for this state
- * @property songName - The song that is currently playing
- * @property parentName - The parent that is being played from [-1 if none]
+ * @property songHash - The hash for the currently playing song
+ * @property parentHash - The hash for the currently playing parent
  * @property index - The current index in the queue.
  * @property mode - The integer form of the current [org.oxycblt.auxio.playback.state.PlaybackMode]
  * @property isShuffling - A bool for if the queue was shuffled
@@ -14,10 +14,9 @@ package org.oxycblt.auxio.database
  */
 data class PlaybackState(
     val id: Long = 0L,
-    val songName: String = "",
-    val songAlbumName: String = "",
+    val songHash: Int,
     val position: Long,
-    val parentName: String = "",
+    val parentHash: Int,
     val index: Int,
     val mode: Int,
     val isShuffling: Boolean,
@@ -26,11 +25,10 @@ data class PlaybackState(
 ) {
     companion object {
         const val COLUMN_ID = "state_id"
-        const val COLUMN_SONG_NAME = "cur_song_name"
-        const val COLUMN_SONG_ALBUM_NAME = "cur_song_album"
+        const val COLUMN_SONG_HASH = "song"
         const val COLUMN_POSITION = "position"
-        const val COLUMN_PARENT_NAME = "parent_name"
-        const val COLUMN_INDEX = "state_index"
+        const val COLUMN_PARENT_HASH = "parent"
+        const val COLUMN_INDEX = "_index"
         const val COLUMN_MODE = "mode"
         const val COLUMN_IS_SHUFFLING = "is_shuffling"
         const val COLUMN_LOOP_MODE = "loop_mode"

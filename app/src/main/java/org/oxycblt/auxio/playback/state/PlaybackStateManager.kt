@@ -27,7 +27,6 @@ import org.oxycblt.auxio.settings.SettingsManager
  * All access should be done with [PlaybackStateManager.getInstance].
  *
  * TODO: Queues should reflect sort mode
- * TODO: Update loop mode to actually make sense [#13]
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -605,10 +604,9 @@ class PlaybackStateManager private constructor() {
      */
     private fun packToPlaybackState(): PlaybackState {
         return PlaybackState(
-            songName = mSong?.name ?: "",
-            songAlbumName = mSong?.album?.name ?: "",
+            songHash = mSong?.hash ?: Int.MIN_VALUE,
             position = mPosition,
-            parentName = mParent?.name ?: "",
+            parentHash = mParent?.hash ?: Int.MIN_VALUE,
             index = mIndex,
             mode = mMode.toInt(),
             isShuffling = mIsShuffling,
@@ -625,11 +623,11 @@ class PlaybackStateManager private constructor() {
 
         // Do queue setup first
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
-        mParent = findParent(playbackState.parentName, mMode)
+        mParent = findParent(playbackState.parentHash, mMode)
         mIndex = playbackState.index
 
         // Then set up the current state
-        mSong = musicStore.findSong(playbackState.songName, playbackState.songAlbumName)
+        mSong = musicStore.songs.find { it.hash == playbackState.songHash }
         mLoopMode = LoopMode.fromInt(playbackState.loopMode) ?: LoopMode.NONE
         mIsShuffling = playbackState.isShuffling
         mIsInUserQueue = playbackState.inUserQueue
@@ -647,12 +645,12 @@ class PlaybackStateManager private constructor() {
         var queueItemId = 0L
 
         mUserQueue.forEach { song ->
-            unified.add(QueueItem(queueItemId, song.name, song.album.name, true))
+            unified.add(QueueItem(queueItemId, song.hash, song.album.hash, true))
             queueItemId++
         }
 
         mQueue.forEach { song ->
-            unified.add(QueueItem(queueItemId, song.name, song.album.name, false))
+            unified.add(QueueItem(queueItemId, song.hash, song.album.hash, false))
             queueItemId++
         }
 
@@ -664,8 +662,8 @@ class PlaybackStateManager private constructor() {
      * @param queueItems The list of [QueueItem]s to unpack.
      */
     private fun unpackQueue(queueItems: List<QueueItem>) {
-        queueItems.forEach { item ->
-            musicStore.findSong(item.songName, item.albumName)?.let { song ->
+        for (item in queueItems) {
+            musicStore.findSongFast(item.songHash, item.albumHash)?.let { song ->
                 if (item.isUserQueue) {
                     mUserQueue.add(song)
                 } else {
@@ -689,15 +687,14 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Get a [Parent] from music store given a [name] and playback [mode].
+     * Get a [Parent] from music store given a [hash] and PlaybackMode [mode].
      */
-    private fun findParent(name: String, mode: PlaybackMode): Parent? {
+    private fun findParent(hash: Int, mode: PlaybackMode): Parent? {
         return when (mode) {
-            PlaybackMode.IN_GENRE -> musicStore.genres.find { it.name == name }
-            PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.name == name }
-            PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.name == name }
-
-            else -> null
+            PlaybackMode.IN_GENRE -> musicStore.genres.find { it.hash == hash }
+            PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.hash == hash }
+            PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.hash == hash }
+            PlaybackMode.ALL_SONGS -> null
         }
     }
 

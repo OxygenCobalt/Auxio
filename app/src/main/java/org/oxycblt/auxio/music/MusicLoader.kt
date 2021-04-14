@@ -13,8 +13,12 @@ import org.oxycblt.auxio.logD
 
 /**
  * Class that loads/constructs [Genre]s, [Artist]s, [Album]s, and [Song] objects from the filesystem
- * TODO: Use album artist instead of artist tag.
  * @author OxygenCobalt
+ *
+ * FIXME: Here's a catalog of problems that I already know about with this abomination
+ *  - Does not support the album artist tag
+ *  - All loading is done at startup [Not efficent for large libraries, would require massive arch retooling to fix]
+ *  - Genre system is a bottleneck [Nothing I can do about it, MediaStore is garbage]
  */
 class MusicLoader(private val context: Context) {
     var genres = mutableListOf<Genre>()
@@ -94,9 +98,9 @@ class MusicLoader(private val context: Context) {
                 Albums._ID, // 0
                 Albums.ALBUM, // 1
                 Albums.ARTIST, // 2
-                Albums.FIRST_YEAR, // 3
+                Albums.FIRST_YEAR, // 4
             ),
-            null, null,
+            "", null,
             Albums.DEFAULT_SORT_ORDER
         )
 
@@ -106,13 +110,13 @@ class MusicLoader(private val context: Context) {
         albumCursor?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
             val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
-            val artistIdIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
+            val artistNameIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
             val yearIndex = cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getString(nameIndex) ?: albumPlaceholder
-                var artistName = cursor.getString(artistIdIndex) ?: artistPlaceholder
+                var artistName = cursor.getString(artistNameIndex) ?: artistPlaceholder
                 val year = cursor.getInt(yearIndex)
                 val coverUri = id.toAlbumArtURI()
 
@@ -144,7 +148,7 @@ class MusicLoader(private val context: Context) {
                 Media.TITLE, // 2
                 Media.ALBUM_ID, // 3
                 Media.TRACK, // 4
-                Media.DURATION // 5
+                Media.DURATION, // 5
             ),
             selector, args,
             Media.DEFAULT_SORT_ORDER

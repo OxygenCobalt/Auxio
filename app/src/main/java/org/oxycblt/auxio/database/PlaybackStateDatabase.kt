@@ -4,9 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.core.database.getStringOrNull
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.ui.assertBackgroundThread
 
 /**
  * A SQLite database for managing the persistent playback state and queue.
@@ -57,10 +57,9 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
         command.append("${PlaybackState.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${PlaybackState.COLUMN_SONG_NAME} TEXT NOT NULL,")
-            .append("${PlaybackState.COLUMN_SONG_ALBUM_NAME} TEXT NOT NULL,")
+            .append("${PlaybackState.COLUMN_SONG_HASH} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_POSITION} LONG NOT NULL,")
-            .append("${PlaybackState.COLUMN_PARENT_NAME} TEXT NOT NULL,")
+            .append("${PlaybackState.COLUMN_PARENT_HASH} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_INDEX} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_MODE} INTEGER NOT NULL,")
             .append("${PlaybackState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
@@ -75,8 +74,8 @@ class PlaybackStateDatabase(context: Context) :
      */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
         command.append("${QueueItem.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${QueueItem.COLUMN_SONG_NAME} TEXT NOT NULL,")
-            .append("${QueueItem.COLUMN_ALBUM_NAME} TEXT NOT NULL,")
+            .append("${QueueItem.COLUMN_SONG_HASH} INTEGER NOT NULL,")
+            .append("${QueueItem.COLUMN_ALBUM_HASH} INTEGER NOT NULL,")
             .append("${QueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
@@ -97,10 +96,9 @@ class PlaybackStateDatabase(context: Context) :
 
             val stateData = ContentValues(10).apply {
                 put(PlaybackState.COLUMN_ID, state.id)
-                put(PlaybackState.COLUMN_SONG_NAME, state.songName)
-                put(PlaybackState.COLUMN_SONG_ALBUM_NAME, state.songAlbumName)
+                put(PlaybackState.COLUMN_SONG_HASH, state.songHash)
                 put(PlaybackState.COLUMN_POSITION, state.position)
-                put(PlaybackState.COLUMN_PARENT_NAME, state.parentName)
+                put(PlaybackState.COLUMN_PARENT_HASH, state.parentHash)
                 put(PlaybackState.COLUMN_INDEX, state.index)
                 put(PlaybackState.COLUMN_MODE, state.mode)
                 put(PlaybackState.COLUMN_IS_SHUFFLING, state.isShuffling)
@@ -126,10 +124,9 @@ class PlaybackStateDatabase(context: Context) :
         readableDatabase.queryAll(TABLE_NAME_STATE) { cursor ->
             if (cursor.count == 0) return@queryAll
 
-            val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_NAME)
-            val albumIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_ALBUM_NAME)
+            val songIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_SONG_HASH)
             val posIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_POSITION)
-            val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_NAME)
+            val parentIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_PARENT_HASH)
             val indexIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_INDEX)
             val modeIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_MODE)
             val shuffleIndex = cursor.getColumnIndexOrThrow(PlaybackState.COLUMN_IS_SHUFFLING)
@@ -141,10 +138,9 @@ class PlaybackStateDatabase(context: Context) :
             cursor.moveToFirst()
 
             state = PlaybackState(
-                songName = cursor.getStringOrNull(songIndex) ?: "",
-                songAlbumName = cursor.getStringOrNull(albumIndex) ?: "",
+                songHash = cursor.getInt(songIndex),
                 position = cursor.getLong(posIndex),
-                parentName = cursor.getStringOrNull(parentIndex) ?: "",
+                parentHash = cursor.getInt(parentIndex),
                 index = cursor.getInt(indexIndex),
                 mode = cursor.getInt(modeIndex),
                 isShuffling = cursor.getInt(shuffleIndex) == 1,
@@ -183,8 +179,8 @@ class PlaybackStateDatabase(context: Context) :
 
                     val itemData = ContentValues(4).apply {
                         put(QueueItem.COLUMN_ID, item.id)
-                        put(QueueItem.COLUMN_SONG_NAME, item.songName)
-                        put(QueueItem.COLUMN_ALBUM_NAME, item.albumName)
+                        put(QueueItem.COLUMN_SONG_HASH, item.songHash)
+                        put(QueueItem.COLUMN_ALBUM_HASH, item.albumHash)
                         put(QueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
                     }
 
@@ -213,15 +209,15 @@ class PlaybackStateDatabase(context: Context) :
             if (cursor.count == 0) return@queryAll
 
             val idIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ID)
-            val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_NAME)
-            val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_NAME)
+            val songIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_SONG_HASH)
+            val albumIdIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_ALBUM_HASH)
             val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueItem.COLUMN_IS_USER_QUEUE)
 
             while (cursor.moveToNext()) {
                 queueItems += QueueItem(
                     id = cursor.getLong(idIndex),
-                    songName = cursor.getStringOrNull(songIdIndex) ?: "",
-                    albumName = cursor.getStringOrNull(albumIdIndex) ?: "",
+                    songHash = cursor.getInt(songIdIndex),
+                    albumHash = cursor.getInt(albumIdIndex),
                     isUserQueue = cursor.getInt(isUserQueueIndex) == 1
                 )
             }

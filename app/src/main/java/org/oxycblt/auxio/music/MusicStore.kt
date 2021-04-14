@@ -75,20 +75,14 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Find a song from this instance in a safe manner.
-     * Using a normal search of the songs list runs the risk of getting the *wrong* song with
-     * the same name, so the album name is also used to fix the above problem.
-     * FIXME: Artist names are more unique than album names, use those
-     * @param name The name of the song
-     * @param albumName The name of the song's album.
-     * @return The song requested, null if there isnt one.
+     * Find a song in a faster manner using a hash for its album as well.
      */
-    fun findSong(name: String, albumName: String): Song? {
-        return albums.find { it.name == albumName }?.songs?.find { it.name == name }
+    fun findSongFast(songHash: Int, albumHash: Int): Song? {
+        return albums.find { it.hash == albumHash }?.songs?.find { it.hash == songHash }
     }
 
     /**
-     * Find a song for a [uri], this is similar to [findSong], but with some kind of content uri.
+     * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content uri.
      * @return The corresponding [Song] for this [uri], null if there isnt one.
      */
     fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {

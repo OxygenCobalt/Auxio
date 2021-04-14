@@ -9,6 +9,7 @@ import android.graphics.Point
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -136,6 +137,24 @@ fun Int.resolveAttr(context: Context): Int {
  */
 fun Context.showToast(@StringRes str: Int) {
     Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
+}
+
+/**
+ * Assert that we are on a background thread.
+ */
+fun assertBackgroundThread() {
+    check(Looper.myLooper() != Looper.getMainLooper()) {
+        "This operation must be ran on a background thread."
+    }
+}
+
+/**
+ * Assert that we are on a foreground thread.
+ */
+fun assertMainThread() {
+    check(Looper.myLooper() == Looper.getMainLooper()) {
+        "This operation must be ran on the main thread"
+    }
 }
 
 // --- CONFIGURATION ---
