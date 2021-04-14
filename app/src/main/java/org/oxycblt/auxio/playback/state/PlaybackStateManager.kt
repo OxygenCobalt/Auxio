@@ -260,16 +260,14 @@ class PlaybackStateManager private constructor() {
 
             forceUserQueueUpdate()
         } else {
-            // Increment the index.
-            // If it cant be incremented anymore, end playback or loop depending on the setting.
+            // Increment the index, if it cannot be incremented any further, then
+            // loop and pause/resume playback depending on the setting
             if (mIndex < mQueue.lastIndex) {
                 mIndex = mIndex.inc()
                 updatePlayback(mQueue[mIndex])
             } else {
                 mIndex = 0
                 updatePlayback(mQueue[mIndex], shouldPlay = mLoopMode == LoopMode.ALL)
-
-                return
             }
 
             forceQueueUpdate()
