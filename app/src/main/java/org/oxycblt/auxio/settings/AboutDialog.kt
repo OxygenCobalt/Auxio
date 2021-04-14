@@ -59,7 +59,7 @@ class AboutDialog : BottomSheetDialogFragment() {
 
         if (pkgName != null) {
             if (pkgName == "android") {
-                // No default browser [Must open app chooser, may not be supported
+                // No default browser [Must open app chooser, may not be supported]
                 openAppChooser(browserIntent)
             } else {
                 try {

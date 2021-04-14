@@ -1,17 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = "1.4.32"
-    ext.navigation_version = "2.3.4"
+    ext.navigation_version = "2.3.5"
 
     repositories {
         google()
         mavenCentral()
-
-        jcenter {
-            content {
-                includeGroup("org.jetbrains.trove4j")
-            }
-        }
     }
 
     dependencies {
@@ -28,14 +22,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-
-        // TODO: Eliminate Exoplayer when it migrates to GMaven
-        jcenter {
-            content {
-                includeGroup("com.google.android.exoplayer")
-                includeGroup("org.jetbrains.trove4j")
-            }
-        }
     }
 }
 
