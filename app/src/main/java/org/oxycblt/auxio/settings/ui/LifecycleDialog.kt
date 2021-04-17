@@ -7,6 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.toDrawable
 
 /**
  * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle
@@ -15,6 +17,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 abstract class LifecycleDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
+
+        // Setting the background in XML will also apply it to the tooltip for some inane reason
+        // so we have to do it programmatically instead.
+        builder.background = R.color.background.toDrawable(requireContext())
 
         onConfigDialog(builder)
 

@@ -93,7 +93,6 @@
 
     <!-- Custom Dialog EntryNames -->
     <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="android:background">@color/background</item>
         <item name="android:colorControlHighlight">@color/selection_color</item>
         <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
 

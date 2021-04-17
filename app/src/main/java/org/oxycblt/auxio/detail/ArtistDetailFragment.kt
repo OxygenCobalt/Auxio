@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
@@ -60,17 +59,10 @@ class ArtistDetailFragment : DetailFragment() {
 
         // --- UI SETUP ---
 
-        val imgLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        }
-
         binding.lifecycleOwner = this
 
         setupToolbar()
         setupRecycler(detailAdapter)
-
-        binding.detailToolbar.setOnClickListener {
-            imgLauncher.launch("image/*")
-        }
 
         // --- VIEWMODEL SETUP ---
 
