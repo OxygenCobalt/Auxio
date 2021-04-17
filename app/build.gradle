@@ -106,10 +106,10 @@ dependencies {
     // --- DEBUG ---
 
     // Lint
-    ktlint "com.pinterest:ktlint:0.40.0"
+    ktlint 'com.pinterest:ktlint:0.41.0'
 
     // Memory Leak checking
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.5"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
