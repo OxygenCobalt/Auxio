@@ -33,6 +33,8 @@ class SearchAdapter(
             is Album -> AlbumViewHolder.ITEM_TYPE
             is Song -> SongViewHolder.ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
+
+            else -> -1
         }
     }
 

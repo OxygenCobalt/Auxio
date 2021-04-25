@@ -16,9 +16,10 @@ import org.oxycblt.auxio.logD
  * @author OxygenCobalt
  *
  * FIXME: Here's a catalog of problems that I already know about with this abomination
- *  - Does not support the album artist tag
  *  - All loading is done at startup [Not efficent for large libraries, would require massive arch retooling to fix]
- *  - Genre system is a bottleneck [Nothing I can do about it, MediaStore is garbage]
+ *  - Does not support the album artist tag [Nothing I can do that doesn't involve rolling my own loader]
+ *  - Genre system is a bottleneck [See Above]
+ *  Blame MediaStore, loading anything on this platform is a nightmare.
  */
 class MusicLoader(private val context: Context) {
     var genres = mutableListOf<Genre>()
@@ -100,7 +101,7 @@ class MusicLoader(private val context: Context) {
                 Albums.ARTIST, // 2
                 Albums.FIRST_YEAR, // 4
             ),
-            "", null,
+            null, null,
             Albums.DEFAULT_SORT_ORDER
         )
 

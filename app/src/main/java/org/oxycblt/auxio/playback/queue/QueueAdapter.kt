@@ -3,19 +3,18 @@ package org.oxycblt.auxio.playback.queue
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
+import org.oxycblt.auxio.recycler.viewholders.ActionHeaderViewHolder
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
 import org.oxycblt.auxio.ui.inflater
@@ -23,12 +22,10 @@ import org.oxycblt.auxio.ui.inflater
 /**
  * The single adapter for both the Next Queue and the User Queue.
  * @param touchHelper The [ItemTouchHelper] ***containing*** [QueueDragCallback] to be used
- * @param playbackModel The [PlaybackViewModel] to dispatch updates to.
  * @author OxygenCobalt
  */
 class QueueAdapter(
-    private val touchHelper: ItemTouchHelper,
-    private val playbackModel: PlaybackViewModel,
+    private val touchHelper: ItemTouchHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data = mutableListOf<BaseModel>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
@@ -38,14 +35,11 @@ class QueueAdapter(
     override fun getItemViewType(position: Int): Int {
         val item = data[position]
 
-        return if (item is Header) {
-            if (item.isAction) {
-                USER_QUEUE_HEADER_ITEM_TYPE
-            } else {
-                HeaderViewHolder.ITEM_TYPE
-            }
-        } else {
-            QUEUE_SONG_ITEM_TYPE
+        return when (item) {
+            is Header -> HeaderViewHolder.ITEM_TYPE
+            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
+            is Song -> QUEUE_SONG_ITEM_TYPE
+            else -> -1
         }
     }
 
@@ -53,7 +47,7 @@ class QueueAdapter(
         return when (viewType) {
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            USER_QUEUE_HEADER_ITEM_TYPE -> UserQueueHeaderViewHolder(
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder(
                 ItemActionHeaderBinding.inflate(parent.context.inflater)
             )
 
@@ -68,12 +62,8 @@ class QueueAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = data[position]) {
             is Song -> (holder as QueueSongViewHolder).bind(item)
-
-            is Header -> if (item.isAction) {
-                (holder as UserQueueHeaderViewHolder).bind(item)
-            } else {
-                (holder as HeaderViewHolder).bind(item)
-            }
+            is Header -> (holder as HeaderViewHolder).bind(item)
+            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
 
             else -> logE("Bad data given to QueueAdapter.")
         }
@@ -158,34 +148,7 @@ class QueueAdapter(
         }
     }
 
-    /**
-     * ViewHolder for the **user queue header**. Has the clear queue button.
-     */
-    inner class UserQueueHeaderViewHolder(
-        private val binding: ItemActionHeaderBinding
-    ) : BaseViewHolder<Header>(binding) {
-
-        init {
-            binding.headerButton.apply {
-                contentDescription = context.getString(R.string.description_clear_user_queue)
-                TooltipCompat.setTooltipText(this, contentDescription)
-            }
-        }
-
-        override fun onBind(data: Header) {
-            binding.header = data
-            binding.headerButton.apply {
-                setImageResource(R.drawable.ic_clear)
-
-                setOnClickListener {
-                    playbackModel.clearUserQueue()
-                }
-            }
-        }
-    }
-
     companion object {
         const val QUEUE_SONG_ITEM_TYPE = 0xA005
-        const val USER_QUEUE_HEADER_ITEM_TYPE = 0xA006
     }
 }
