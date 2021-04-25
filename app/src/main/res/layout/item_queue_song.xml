@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_medium">
+        android:padding="@dimen/spacing_medium">
 
         <ImageView
             android:id="@+id/album_cover"
@@ -31,7 +31,7 @@
         <TextView
             android:id="@+id/song_name"
             style="@style/ItemText.Primary"
-            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
             app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
@@ -43,8 +43,8 @@
         <TextView
             android:id="@+id/song_info"
             style="@style/ItemText.Secondary"
-            android:layout_marginStart="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
@@ -58,7 +58,7 @@
             android:layout_height="0dp"
             android:clickable="true"
             android:focusable="true"
-            android:padding="@dimen/padding_tiny"
+            android:padding="@dimen/spacing_tiny"
             android:src="@drawable/ic_handle"
             app:layout_constraintBottom_toBottomOf="@+id/song_info"
             app:layout_constraintEnd_toEndOf="parent"

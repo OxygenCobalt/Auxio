@@ -10,7 +10,7 @@
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="textAllCaps">false</item>
         <item name="cornerRadius">0dp</item>
-        <item name="android:padding">@dimen/padding_small</item>
+        <item name="android:padding">@dimen/spacing_small</item>
         <item name="android:textSize">@dimen/text_size_material_button</item>
     </style>
 </resources>

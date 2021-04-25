@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background"
         android:orientation="vertical"
-        android:paddingTop="@dimen/margin_medium"
+        android:paddingTop="@dimen/spacing_medium"
         android:theme="@style/Theme.Neutral">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
-            android:padding="@dimen/padding_medium"
+            android:padding="@dimen/spacing_medium"
             android:text="@string/label_no_dirs"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"

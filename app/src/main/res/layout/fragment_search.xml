@@ -43,7 +43,7 @@
                     android:hint="@string/hint_search_library"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:inputType="textFilter"
-                    android:padding="@dimen/padding_medium"
+                    android:padding="@dimen/spacing_medium"
                     android:textCursorDrawable="@drawable/ui_cursor" />
 
             </com.google.android.material.textfield.TextInputLayout>

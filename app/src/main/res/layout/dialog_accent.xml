@@ -7,7 +7,7 @@
         android:id="@+id/accent_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/margin_medium"
+        android:paddingTop="@dimen/spacing_medium"
         android:foregroundGravity="center"
         android:overScrollMode="never"
         app:layoutManager="org.oxycblt.auxio.settings.accent.AutoGridLayoutManager"

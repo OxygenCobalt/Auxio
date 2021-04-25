@@ -15,22 +15,22 @@
         android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/spacing_small">
 
         <ProgressBar
             android:id="@+id/loading_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_small"
+            android:layout_margin="@dimen/spacing_small"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"
-            android:paddingBottom="@dimen/padding_tiny" />
+            android:paddingBottom="@dimen/spacing_tiny" />
 
         <ImageView
             android:id="@+id/loading_error_icon"
             android:layout_width="@dimen/size_error_icon"
             android:layout_height="@dimen/size_error_icon"
-            android:layout_margin="@dimen/margin_small"
+            android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/description_error"
             android:indeterminateTint="?attr/colorPrimary"
             android:indeterminateTintMode="src_in"

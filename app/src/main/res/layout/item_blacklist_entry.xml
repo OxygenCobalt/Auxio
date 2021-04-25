@@ -12,7 +12,7 @@
             android:id="@+id/blacklist_title"
             style="@style/ItemText.Primary"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:maxLines="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/blacklist_clear"
