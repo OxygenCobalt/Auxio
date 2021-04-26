@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.ActionHeader
@@ -47,9 +46,7 @@ class QueueAdapter(
         return when (viewType) {
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder(
-                ItemActionHeaderBinding.inflate(parent.context.inflater)
-            )
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
             QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(parent.context.inflater)

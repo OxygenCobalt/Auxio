@@ -6,19 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.newMenu
 
 /**
  * The [DetailFragment] for an artist.
- * TODO: Show a list of songs?
  * @author OxygenCobalt
  */
 class ArtistDetailFragment : DetailFragment() {
@@ -42,14 +45,18 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         val detailAdapter = ArtistDetailAdapter(
-            detailModel, playbackModel, viewLifecycleOwner,
-            doOnClick = { album ->
-                if (!detailModel.isNavigating) {
-                    detailModel.setNavigating(true)
+            playbackModel,
+            doOnClick = { data ->
+                if (data is Album) {
+                    if (!detailModel.isNavigating) {
+                        detailModel.setNavigating(true)
 
-                    findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(album.id)
-                    )
+                        findNavController().navigate(
+                            ArtistDetailFragmentDirections.actionShowAlbum(data.id)
+                        )
+                    }
+                } else if (data is Song) {
+                    playbackModel.playSong(data, PlaybackMode.IN_ARTIST)
                 }
             },
             doOnLongClick = { view, data ->
@@ -57,24 +64,40 @@ class ArtistDetailFragment : DetailFragment() {
             }
         )
 
+        // We build the action header here since it's both more efficent to keep one action header
+        // and it also prevents the header from being constantly refreshed when the sort is updated.
+
+        val songsHeader = ActionHeader(
+            id = -2,
+            name = getString(R.string.label_songs),
+            icon = detailModel.artistSortMode.value!!.iconRes,
+        ) { btn ->
+            detailModel.incrementArtistSortMode()
+
+            // We'll update the icon of this header object directly so that the state persists
+            // after the viewholder is recycled.
+            icon = detailModel.artistSortMode.value!!.iconRes
+            btn.setImageResource(icon)
+        }
+
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
 
         setupToolbar()
-        setupRecycler(detailAdapter)
+        setupRecycler(detailAdapter) { pos ->
+            // If the item is an ActionHeader we need to also make the item full-width
+            pos == 0 || detailAdapter.currentList.getOrNull(pos) is ActionHeader
+        }
+
+        detailAdapter.submitList(createData(songsHeader, detailModel.artistSortMode.value!!))
 
         // --- VIEWMODEL SETUP ---
 
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
-            // Header detail data is always included
-            val data = mutableListOf<BaseModel>(detailModel.currentArtist.value!!).also {
-                it.addAll(mode.getSortedAlbumList(detailModel.currentArtist.value!!.albums))
-            }
-
-            detailAdapter.submitList(data)
+            detailAdapter.submitList(createData(songsHeader, mode))
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
@@ -105,14 +128,37 @@ class ArtistDetailFragment : DetailFragment() {
         // Highlight albums if they are being played
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
             if (parent is Album?) {
-                detailAdapter.setCurrentAlbum(parent, binding.detailRecycler)
+                detailAdapter.highlightAlbum(parent, binding.detailRecycler)
             } else {
-                detailAdapter.setCurrentAlbum(null, binding.detailRecycler)
+                detailAdapter.highlightAlbum(null, binding.detailRecycler)
+            }
+        }
+
+        // Highlight songs if they are being played
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (playbackModel.mode.value == PlaybackMode.IN_ARTIST &&
+                playbackModel.parent.value?.id == detailModel.currentArtist.value!!.id
+            ) {
+                detailAdapter.highlightSong(song, binding.detailRecycler)
+            } else {
+                // Clear the viewholders if the mode isn't ALL_SONGS
+                detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }
 
         logD("Fragment created.")
 
         return binding.root
+    }
+
+    private fun createData(songHeader: ActionHeader, mode: SortMode): MutableList<BaseModel> {
+        val artist = detailModel.currentArtist.value!!
+
+        val data = mutableListOf<BaseModel>(artist)
+        data.addAll(SortMode.NUMERIC_DOWN.getSortedAlbumList(artist.albums))
+        data.add(songHeader)
+        data.addAll(mode.getSortedArtistSongList(artist.songs))
+
+        return data
     }
 }

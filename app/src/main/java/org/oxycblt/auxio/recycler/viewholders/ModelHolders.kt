@@ -186,7 +186,7 @@ class ActionHeaderViewHolder(
             setImageResource(data.icon)
 
             setOnClickListener {
-                data.action(binding.headerButton)
+                data.action(data, binding.headerButton)
             }
         }
     }
@@ -195,11 +195,11 @@ class ActionHeaderViewHolder(
         const val ITEM_TYPE = 0xA006
 
         /**
-         * Create an instance of [HeaderViewHolder]
+         * Create an instance of [ActionHeaderViewHolder]
          */
-        fun from(context: Context): HeaderViewHolder {
-            return HeaderViewHolder(
-                ItemHeaderBinding.inflate(context.inflater)
+        fun from(context: Context): ActionHeaderViewHolder {
+            return ActionHeaderViewHolder(
+                ItemActionHeaderBinding.inflate(context.inflater)
             )
         }
     }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".recycler.viewholders.SongViewHolder">
+
+    <data>
+
+        <variable
+            name="song"
+            type="org.oxycblt.auxio.music.Song" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
+
+        <ImageView
+            android:id="@+id/album_cover"
+            android:layout_width="@dimen/size_cover_compact"
+            android:layout_height="@dimen/size_cover_compact"
+            android:contentDescription="@{@string/description_album_cover(song.name)}"
+            app:albumArt="@{song}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_song" />
+
+        <TextView
+            android:id="@+id/song_name"
+            style="@style/ItemText.Primary"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:text="@{song.name}"
+            app:layout_constraintBottom_toTopOf="@+id/song_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Song Name" />
+
+        <TextView
+            android:id="@+id/song_info"
+            style="@style/ItemText.Secondary"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:text="@{song.album.name}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/album_cover"
+            app:layout_constraintTop_toBottomOf="@+id/song_name"
+            tools:text="Album" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

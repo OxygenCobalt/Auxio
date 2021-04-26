@@ -199,12 +199,12 @@ data class Header(
 
 /**
  * A data object for a header with an action button. Inherits [BaseModel].
- * @property icon The icon ot apply for this header
+ * @property icon The icon ot apply for this header. This can be changed to reflect any change.
  * @property action The callback that will be called when the action button is clicked.
  */
 data class ActionHeader(
     override val id: Long = -1,
     override val name: String = "",
-    @DrawableRes val icon: Int,
-    val action: (button: ImageButton) -> Unit,
+    @DrawableRes var icon: Int,
+    val action: ActionHeader.(button: ImageButton) -> Unit,
 ) : BaseModel()

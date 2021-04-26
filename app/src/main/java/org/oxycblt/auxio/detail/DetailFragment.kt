@@ -8,10 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.isLandscape
@@ -78,7 +76,10 @@ abstract class DetailFragment : Fragment() {
     /**
      * Shortcut method for recyclerview setup
      */
-    protected fun setupRecycler(detailAdapter: ListAdapter<BaseModel, RecyclerView.ViewHolder>) {
+    protected fun setupRecycler(
+        detailAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
+        gridLookup: (Int) -> Boolean
+    ) {
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setHasFixedSize(true)
@@ -88,7 +89,7 @@ abstract class DetailFragment : Fragment() {
                 layoutManager = GridLayoutManager(requireContext(), 2).also {
                     it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2 else 1
+                            return if (gridLookup(position)) 2 else 1
                         }
                     }
                 }

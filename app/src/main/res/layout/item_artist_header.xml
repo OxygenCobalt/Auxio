@@ -104,17 +104,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_play_button" />
 
-        <ImageButton
-            android:id="@+id/artist_sort_button"
-            style="@style/HeaderAction"
-            android:contentDescription="@string/description_sort_button"
-            android:onClick="@{() -> detailModel.incrementArtistSortMode()}"
-            app:layout_constraintBottom_toBottomOf="@+id/artist_album_header"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/artist_album_header"
-            app:sortIcon="@{detailModel.artistSortMode}"
-            tools:src="@drawable/ic_sort_numeric_down" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

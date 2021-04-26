@@ -15,7 +15,6 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.state.PlaybackMode
 
 /**
  * Extension method for creating and showing a new [ActionMenu].
@@ -78,6 +77,7 @@ class ActionMenu(
                 when (flag) {
                     FLAG_NONE, FLAG_IN_GENRE -> R.menu.menu_song_actions
                     FLAG_IN_ALBUM -> R.menu.menu_album_song_actions
+                    FLAG_IN_ARTIST -> R.menu.menu_artist_song_actions
 
                     else -> -1
                 }
@@ -122,12 +122,6 @@ class ActionMenu(
                     is Genre -> playbackModel.playGenre(data, true)
 
                     else -> {}
-                }
-            }
-
-            R.id.action_play_artist -> {
-                if (flag == FLAG_IN_ALBUM && data is Song) {
-                    playbackModel.playSong(data, PlaybackMode.IN_ARTIST)
                 }
             }
 

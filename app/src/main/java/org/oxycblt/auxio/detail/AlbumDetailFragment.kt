@@ -65,7 +65,9 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        setupRecycler(detailAdapter)
+        setupRecycler(detailAdapter) { pos ->
+            pos == 0
+        }
 
         // -- DETAILVIEWMODEL SETUP ---
 

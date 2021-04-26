@@ -56,7 +56,9 @@ class GenreDetailFragment : DetailFragment() {
         binding.lifecycleOwner = this
 
         setupToolbar()
-        setupRecycler(detailAdapter)
+        setupRecycler(detailAdapter) { pos ->
+            pos == 0
+        }
 
         // --- DETAILVIEWMODEL SETUP ---
 
