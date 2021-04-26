@@ -186,7 +186,7 @@ class ActionHeaderViewHolder(
             setImageResource(data.icon)
 
             setOnClickListener {
-                data.action(data, binding.headerButton)
+                data.action()
             }
         }
     }

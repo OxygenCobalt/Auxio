@@ -11,10 +11,6 @@
             type="org.oxycblt.auxio.music.Artist" />
 
         <variable
-            name="detailModel"
-            type="org.oxycblt.auxio.detail.DetailViewModel" />
-
-        <variable
             name="playbackModel"
             type="org.oxycblt.auxio.playback.PlaybackViewModel" />
     </data>

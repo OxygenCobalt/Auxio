@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music
 
 import android.net.Uri
-import android.widget.ImageButton
 import androidx.annotation.DrawableRes
 
 // --- MUSIC MODELS ---
@@ -174,9 +173,8 @@ data class Genre(
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val resolvedName: String by lazy {
+    val resolvedName =
         name.getGenreNameCompat() ?: name
-    }
 
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration()
@@ -199,12 +197,12 @@ data class Header(
 
 /**
  * A data object for a header with an action button. Inherits [BaseModel].
- * @property icon The icon ot apply for this header. This can be changed to reflect any change.
+ * @property icon The icon ot apply for this header.
  * @property action The callback that will be called when the action button is clicked.
  */
 data class ActionHeader(
     override val id: Long = -1,
     override val name: String = "",
-    @DrawableRes var icon: Int,
-    val action: ActionHeader.(button: ImageButton) -> Unit,
+    @DrawableRes val icon: Int,
+    val action: () -> Unit,
 ) : BaseModel()

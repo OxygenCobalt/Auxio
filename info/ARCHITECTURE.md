@@ -50,9 +50,10 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA008 | AlbumSongViewHolder
 0xA009 | ArtistHeaderViewHolder
 0xA00A | ArtistAlbumViewHolder
-0xA00B | ArtistSongViewHolder
-0xA00C | GenreHeaderViewHolder
-0xA00D | GenreSongViewHolder
+0xA00B | ArtistSongHeaderViewHolder
+0xA00C | ArtistSongViewHolder
+0xA00D | GenreHeaderViewHolder
+0xA00E | GenreSongViewHolder
 
 0xA0A0 | Auxio notification code
 0xA0C0 | Auxio request code

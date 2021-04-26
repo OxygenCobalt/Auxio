@@ -45,7 +45,7 @@ class ArtistDetailFragment : DetailFragment() {
         }
 
         val detailAdapter = ArtistDetailAdapter(
-            playbackModel,
+            playbackModel, detailModel,
             doOnClick = { data ->
                 if (data is Album) {
                     if (!detailModel.isNavigating) {
@@ -71,14 +71,8 @@ class ArtistDetailFragment : DetailFragment() {
             id = -2,
             name = getString(R.string.label_songs),
             icon = detailModel.artistSortMode.value!!.iconRes,
-        ) { btn ->
-            detailModel.incrementArtistSortMode()
-
-            // We'll update the icon of this header object directly so that the state persists
-            // after the viewholder is recycled.
-            icon = detailModel.artistSortMode.value!!.iconRes
-            btn.setImageResource(icon)
-        }
+            action = detailModel::incrementArtistSortMode
+        )
 
         // --- UI SETUP ---
 

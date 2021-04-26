@@ -4,9 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistSongBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -15,10 +17,10 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.ActionHeaderViewHolder
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.disable
 import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
 
@@ -28,6 +30,7 @@ import org.oxycblt.auxio.ui.setTextColorResource
  */
 class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
+    private val detailModel: DetailViewModel,
     private val doOnClick: (data: BaseModel) -> Unit,
     private val doOnLongClick: (view: View, data: BaseModel) -> Unit,
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -41,7 +44,7 @@ class ArtistDetailAdapter(
         return when (getItem(position)) {
             is Artist -> ARTIST_HEADER_ITEM_TYPE
             is Album -> ARTIST_ALBUM_ITEM_TYPE
-            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
+            is ActionHeader -> ARTIST_SONG_HEADER_ITEM_TYPE
             is Song -> ARTIST_SONG_ITEM_TYPE
 
             else -> -1
@@ -58,7 +61,9 @@ class ArtistDetailAdapter(
                 ItemArtistAlbumBinding.inflate(parent.context.inflater)
             )
 
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
+            ARTIST_SONG_HEADER_ITEM_TYPE -> ArtistSongHeaderViewHolder(
+                ItemActionHeaderBinding.inflate(parent.context.inflater)
+            )
 
             ARTIST_SONG_ITEM_TYPE -> ArtistSongViewHolder(
                 ItemArtistSongBinding.inflate(parent.context.inflater)
@@ -74,7 +79,7 @@ class ArtistDetailAdapter(
         when (item) {
             is Artist -> (holder as ArtistHeaderViewHolder).bind(item)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item)
-            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
+            is ActionHeader -> (holder as ArtistSongHeaderViewHolder).bind(item)
             is Song -> (holder as ArtistSongViewHolder).bind(item)
 
             else -> {}
@@ -195,6 +200,31 @@ class ArtistDetailAdapter(
         }
     }
 
+    inner class ArtistSongHeaderViewHolder(
+        private val binding: ItemActionHeaderBinding
+    ) : BaseViewHolder<ActionHeader>(binding) {
+
+        override fun onBind(data: ActionHeader) {
+            binding.header = data
+
+            binding.headerButton.apply {
+                val sortMode = detailModel.artistSortMode
+                val artist = detailModel.currentArtist.value!!
+
+                setImageResource(sortMode.value!!.iconRes)
+
+                setOnClickListener {
+                    data.action() // Should call DetailViewModel.incrementArtistSortMode
+                    setImageResource(sortMode.value!!.iconRes)
+                }
+
+                if (artist.songs.size < 2) {
+                    disable()
+                }
+            }
+        }
+    }
+
     inner class ArtistSongViewHolder(
         private val binding: ItemArtistSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
@@ -218,6 +248,7 @@ class ArtistDetailAdapter(
     companion object {
         const val ARTIST_HEADER_ITEM_TYPE = 0xA009
         const val ARTIST_ALBUM_ITEM_TYPE = 0xA00A
-        const val ARTIST_SONG_ITEM_TYPE = 0xA00B
+        const val ARTIST_SONG_HEADER_ITEM_TYPE = 0xA00B
+        const val ARTIST_SONG_ITEM_TYPE = 0xA00C
     }
 }
