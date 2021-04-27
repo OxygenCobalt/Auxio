@@ -18,7 +18,7 @@ class DetailViewModel : ViewModel() {
     private val mCurrentGenre = MutableLiveData<Genre?>()
     val currentGenre: LiveData<Genre?> get() = mCurrentGenre
 
-    private val mCurrentArtist = MutableLiveData<Artist?>()
+    val mCurrentArtist = MutableLiveData<Artist?>()
     val currentArtist: LiveData<Artist?> get() = mCurrentArtist
 
     private val mCurrentAlbum = MutableLiveData<Album?>()

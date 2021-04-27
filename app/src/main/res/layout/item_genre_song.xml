@@ -30,7 +30,7 @@
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
-            app:layout_constraintEnd_toStartOf="@+id/duration"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -42,13 +42,13 @@
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/duration"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_name"
             tools:text="Artist / Album" />
 
         <TextView
-            android:id="@+id/duration"
+            android:id="@+id/song_duration"
             style="@style/ItemText.Secondary"
             android:ellipsize="none"
             android:gravity="end"

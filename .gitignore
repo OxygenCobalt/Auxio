@@ -3,6 +3,7 @@
 local.properties
 build/
 release/
+deps/
 
 # Studio
 .idea/

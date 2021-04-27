@@ -25,13 +25,15 @@ import org.oxycblt.auxio.ui.inflater
 import org.oxycblt.auxio.ui.setTextColorResource
 
 /**
- * An adapter for displaying the [Album]s of an artist.
+ * An adapter for displaying the [Album]s and [Song]s of an artist.
+ * This isnt the nicest implementation, but it works.
  * @author OxygenCobalt
  */
 class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val detailModel: DetailViewModel,
-    private val doOnClick: (data: BaseModel) -> Unit,
+    private val doOnClick: (data: Album) -> Unit,
+    private val doOnSongClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: BaseModel) -> Unit,
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentAlbum: Album? = null
@@ -227,7 +229,7 @@ class ArtistDetailAdapter(
 
     inner class ArtistSongViewHolder(
         private val binding: ItemArtistSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
+    ) : BaseViewHolder<Song>(binding, doOnSongClick, doOnLongClick), Highlightable {
         private val normalTextColor = binding.songName.currentTextColor
 
         override fun onBind(data: Song) {

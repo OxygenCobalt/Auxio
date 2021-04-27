@@ -28,10 +28,10 @@
         <TextView
             android:id="@+id/song_name"
             style="@style/ItemText.Primary"
-            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
+            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -40,13 +40,25 @@
         <TextView
             android:id="@+id/song_info"
             style="@style/ItemText.Secondary"
-            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.album.name}"
+            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_name"
             tools:text="Album" />
+
+        <TextView
+            android:id="@+id/song_duration"
+            style="@style/ItemText.Secondary"
+            android:ellipsize="none"
+            android:gravity="end"
+            android:text="@{song.formattedDuration}"
+            android:textAlignment="viewEnd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="16:16" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

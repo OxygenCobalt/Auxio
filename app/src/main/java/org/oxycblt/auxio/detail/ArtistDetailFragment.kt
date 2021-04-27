@@ -47,17 +47,16 @@ class ArtistDetailFragment : DetailFragment() {
         val detailAdapter = ArtistDetailAdapter(
             playbackModel, detailModel,
             doOnClick = { data ->
-                if (data is Album) {
-                    if (!detailModel.isNavigating) {
-                        detailModel.setNavigating(true)
+                if (!detailModel.isNavigating) {
+                    detailModel.setNavigating(true)
 
-                        findNavController().navigate(
-                            ArtistDetailFragmentDirections.actionShowAlbum(data.id)
-                        )
-                    }
-                } else if (data is Song) {
-                    playbackModel.playSong(data, PlaybackMode.IN_ARTIST)
+                    findNavController().navigate(
+                        ArtistDetailFragmentDirections.actionShowAlbum(data.id)
+                    )
                 }
+            },
+            doOnSongClick = { data ->
+                playbackModel.playSong(data, PlaybackMode.IN_ARTIST)
             },
             doOnLongClick = { view, data ->
                 newMenu(view, data, ActionMenu.FLAG_IN_ARTIST)
@@ -84,14 +83,19 @@ class ArtistDetailFragment : DetailFragment() {
             pos == 0 || detailAdapter.currentList.getOrNull(pos) is ActionHeader
         }
 
-        detailAdapter.submitList(createData(songsHeader, detailModel.artistSortMode.value!!))
-
         // --- VIEWMODEL SETUP ---
 
         detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
             logD("Updating sort mode to $mode")
 
-            detailAdapter.submitList(createData(songsHeader, mode))
+            val artist = detailModel.currentArtist.value!!
+
+            val data = mutableListOf<BaseModel>(artist)
+            data.addAll(SortMode.NUMERIC_DOWN.getSortedAlbumList(artist.albums))
+            data.add(songsHeader)
+            data.addAll(mode.getSortedArtistSongList(artist.songs))
+
+            detailAdapter.submitList(data)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
@@ -143,16 +147,5 @@ class ArtistDetailFragment : DetailFragment() {
         logD("Fragment created.")
 
         return binding.root
-    }
-
-    private fun createData(songHeader: ActionHeader, mode: SortMode): MutableList<BaseModel> {
-        val artist = detailModel.currentArtist.value!!
-
-        val data = mutableListOf<BaseModel>(artist)
-        data.addAll(SortMode.NUMERIC_DOWN.getSortedAlbumList(artist.albums))
-        data.add(songHeader)
-        data.addAll(mode.getSortedArtistSongList(artist.songs))
-
-        return data
     }
 }
