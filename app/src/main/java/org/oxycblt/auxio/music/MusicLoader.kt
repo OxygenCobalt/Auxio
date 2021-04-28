@@ -2,6 +2,7 @@ package org.oxycblt.auxio.music
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Genres
@@ -188,8 +189,11 @@ class MusicLoader(private val context: Context) {
         // Group up songs by their album ids and then link them with their albums
         val songsByAlbum = songs.groupBy { it.albumId }
         val unknownAlbum = Album(
+            id = -1,
             name = context.getString(R.string.placeholder_album),
-            artistName = context.getString(R.string.placeholder_artist)
+            artistName = context.getString(R.string.placeholder_artist),
+            coverUri = Uri.EMPTY,
+            year = 0
         )
 
         songsByAlbum.forEach { entry ->
@@ -266,7 +270,10 @@ class MusicLoader(private val context: Context) {
         val songsWithoutGenres = songs.filter { it.genre == null }
 
         if (songsWithoutGenres.isNotEmpty()) {
-            val unknownGenre = Genre(name = context.getString(R.string.placeholder_genre))
+            val unknownGenre = Genre(
+                id = -2,
+                name = context.getString(R.string.placeholder_genre)
+            )
 
             songsWithoutGenres.forEach { song ->
                 unknownGenre.linkSong(song)

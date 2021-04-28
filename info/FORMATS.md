@@ -6,7 +6,7 @@ Here are the music formats that Auxio supports, as per the [Supported ExoPlayer 
 
 ✅ = Supported
 
-❌ = Not supported
+👎 = Not supported well
 
 | Format | Supported | Comments |
 |--------|-----------|-----------
@@ -17,4 +17,4 @@ Here are the music formats that Auxio supports, as per the [Supported ExoPlayer 
 | WAV    | ✅ | |
 | MPEG   | ✅ | |
 | AAC    | ✅ | |
-| FLAC   | ❌ | Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac). I do plan to roll this myself eventually, but it may take awhile |
+| FLAC   | 👎 | Supported on Android 8.1 or newer. Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac) on lower versions. |

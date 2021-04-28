@@ -41,7 +41,7 @@
 
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_min">10sp</dimen>
-    <dimen name="text_size_increment">2sp</dimen>
+    <dimen name="text_size_increment">1sp</dimen>
     <dimen name="text_size_track_max">20sp</dimen>
     <dimen name="text_size_detail_header_max">26sp</dimen>
     <dimen name="text_size_thumb">18sp</dimen>

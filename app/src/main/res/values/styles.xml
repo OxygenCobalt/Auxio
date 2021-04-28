@@ -59,7 +59,7 @@
 
     <!-- Toolbar Title EntryNames -->
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_exbold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textSize">@dimen/text_size_toolbar_header</item>
     </style>
 
@@ -67,11 +67,12 @@
     <style name="DetailTitleText">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:fontFamily">@font/inter_exbold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textSize">@dimen/text_size_detail_header_max</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textAlignment">viewStart</item>
+        <item name="android:gravity">center_vertical</item>
 
         <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
         <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
@@ -118,7 +119,7 @@
 
     <!-- Custom dialog title theme -->
     <style name="Widget.TextView.Dialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:fontFamily">@font/inter_exbold</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textSize">@dimen/text_size_toolbar_header</item>
     </style>
 

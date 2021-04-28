@@ -47,12 +47,12 @@ sealed class Parent : BaseModel() {
  * @property hash     A versatile, unique(ish) hash used for databases
  */
 data class Song(
-    override val id: Long = -1,
+    override val id: Long,
     override val name: String,
     val fileName: String,
-    val albumId: Long = -1,
-    val track: Int = -1,
-    val duration: Long = 0
+    val albumId: Long,
+    val track: Int,
+    val duration: Long
 ) : BaseModel() {
     private var mAlbum: Album? = null
     private var mGenre: Genre? = null
@@ -95,11 +95,11 @@ data class Song(
  * @property totalDuration The combined duration of all of the album's child songs, formatted.
  */
 data class Album(
-    override val id: Long = -1,
+    override val id: Long,
     override val name: String,
     val artistName: String,
-    val coverUri: Uri = Uri.EMPTY,
-    val year: Int = 0
+    val coverUri: Uri,
+    val year: Int
 ) : Parent() {
     private var mArtist: Artist? = null
     val artist: Artist get() = requireNotNull(mArtist)
@@ -138,7 +138,7 @@ data class Album(
  * @property songs  The list of all [Song]s in this artist
  */
 data class Artist(
-    override val id: Long = -1,
+    override val id: Long,
     override val name: String,
     val albums: List<Album>
 ) : Parent() {
@@ -167,7 +167,7 @@ data class Artist(
  * @property resolvedName A name that has been resolved from its int-genre form to its named form.
  */
 data class Genre(
-    override val id: Long = -1,
+    override val id: Long,
     override val name: String,
 ) : Parent() {
     private val mSongs = mutableListOf<Song>()
@@ -191,8 +191,8 @@ data class Genre(
  * A data object used solely for the "Header" UI element. Inherits [BaseModel].
  */
 data class Header(
-    override val id: Long = -1,
-    override val name: String = "",
+    override val id: Long,
+    override val name: String,
 ) : BaseModel()
 
 /**
@@ -201,8 +201,8 @@ data class Header(
  * @property action The callback that will be called when the action button is clicked.
  */
 data class ActionHeader(
-    override val id: Long = -1,
-    override val name: String = "",
+    override val id: Long,
+    override val name: String,
     @DrawableRes val icon: Int,
     val action: () -> Unit,
 ) : BaseModel()
