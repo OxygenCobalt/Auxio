@@ -14,7 +14,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
 
 /**
@@ -25,8 +24,6 @@ import org.oxycblt.auxio.settings.SettingsManager
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.system.PlaybackService].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
- *
- * TODO: Queues should reflect sort mode
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -719,21 +716,21 @@ class PlaybackStateManager private constructor() {
      * Create an ordered queue based on an [Album].
      */
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
-        return SortMode.NUMERIC_DOWN.getSortedSongList(album.songs).toMutableList()
+        return settingsManager.albumSortMode.getSortedSongList(album.songs).toMutableList()
     }
 
     /**
      * Create an ordered queue based on an [Artist].
      */
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
-        return SortMode.NUMERIC_DOWN.getSortedArtistSongList(artist.songs).toMutableList()
+        return settingsManager.artistSortMode.getSortedArtistSongList(artist.songs).toMutableList()
     }
 
     /**
      * Create an ordered queue based on a [Genre].
      */
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
-        return SortMode.ALPHA_DOWN.getSortedSongList(genre.songs).toMutableList()
+        return settingsManager.genreSortMode.getSortedSongList(genre.songs).toMutableList()
     }
 
     /**

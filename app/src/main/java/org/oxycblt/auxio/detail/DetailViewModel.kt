@@ -8,6 +8,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
@@ -15,28 +16,35 @@ import org.oxycblt.auxio.recycler.SortMode
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
+    private val settingsManager = SettingsManager.getInstance()
+
+    // --- CURRENT VALUES ---
+
     private val mCurrentGenre = MutableLiveData<Genre?>()
     val currentGenre: LiveData<Genre?> get() = mCurrentGenre
 
-    val mCurrentArtist = MutableLiveData<Artist?>()
+    private val mCurrentArtist = MutableLiveData<Artist?>()
     val currentArtist: LiveData<Artist?> get() = mCurrentArtist
 
     private val mCurrentAlbum = MutableLiveData<Album?>()
     val currentAlbum: LiveData<Album?> get() = mCurrentAlbum
 
-    private val mGenreSortMode = MutableLiveData(SortMode.ALPHA_DOWN)
+    // --- SORT MODES ---
+
+    private val mGenreSortMode = MutableLiveData(settingsManager.genreSortMode)
     val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
 
-    private val mArtistSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
+    private val mArtistSortMode = MutableLiveData(settingsManager.artistSortMode)
     val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
 
-    private val mAlbumSortMode = MutableLiveData(SortMode.NUMERIC_DOWN)
+    private val mAlbumSortMode = MutableLiveData(settingsManager.albumSortMode)
     val artistSortMode: LiveData<SortMode> get() = mArtistSortMode
 
     private var mIsNavigating = false
     val isNavigating: Boolean get() = mIsNavigating
 
     private val mNavToItem = MutableLiveData<BaseModel?>()
+
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
@@ -56,19 +64,22 @@ class DetailViewModel : ViewModel() {
      * Increment the sort mode of the genre artists
      */
     fun incrementGenreSortMode() {
-        mGenreSortMode.value = when (mGenreSortMode.value) {
+        val mode = when (mGenreSortMode.value) {
             SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
             SortMode.ALPHA_UP -> SortMode.ALPHA_DOWN
 
             else -> SortMode.ALPHA_DOWN
         }
+
+        mGenreSortMode.value = mode
+        settingsManager.genreSortMode = mode
     }
 
     /**
      * Increment the sort mode of the artist albums
      */
     fun incrementArtistSortMode() {
-        mArtistSortMode.value = when (mArtistSortMode.value) {
+        val mode = when (mArtistSortMode.value) {
             SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
             SortMode.NUMERIC_UP -> SortMode.ALPHA_DOWN
             SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
@@ -76,18 +87,24 @@ class DetailViewModel : ViewModel() {
 
             else -> SortMode.NUMERIC_DOWN
         }
+
+        mArtistSortMode.value = mode
+        settingsManager.artistSortMode = mode
     }
 
     /**
      * Increment the sort mode of the album song
      */
     fun incrementAlbumSortMode() {
-        mAlbumSortMode.value = when (mAlbumSortMode.value) {
+        val mode = when (mAlbumSortMode.value) {
             SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
             SortMode.NUMERIC_UP -> SortMode.NUMERIC_DOWN
 
             else -> SortMode.NUMERIC_DOWN
         }
+
+        mAlbumSortMode.value = mode
+        settingsManager.albumSortMode = mAlbumSortMode.value!!
     }
 
     /**

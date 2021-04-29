@@ -95,12 +95,38 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current [SortMode] of the library. */
     var librarySortMode: SortMode
-        get() = sharedPrefs.getData(KEY_LIB_SORT_MODE, SortMode::fromInt)
-            ?: SortMode.ALPHA_DOWN
+        get() = sharedPrefs.getData(KEY_LIB_SORT_MODE, SortMode::fromInt) ?: SortMode.ALPHA_DOWN
 
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_LIB_SORT_MODE, value.toInt())
+                apply()
+            }
+        }
+
+    var albumSortMode: SortMode
+        get() = sharedPrefs.getData(KEY_ALBUM_SORT_MODE, SortMode::fromInt) ?: SortMode.NUMERIC_DOWN
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_ALBUM_SORT_MODE, value.toInt())
+                apply()
+            }
+        }
+
+    var artistSortMode: SortMode
+        get() = sharedPrefs.getData(KEY_ARTIST_SORT_MODE, SortMode::fromInt) ?: SortMode.NUMERIC_DOWN
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_ARTIST_SORT_MODE, value.toInt())
+                apply()
+            }
+        }
+
+    var genreSortMode: SortMode
+        get() = sharedPrefs.getData(KEY_GENRE_SORT_MODE, SortMode::fromInt) ?: SortMode.ALPHA_DOWN
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_GENRE_SORT_MODE, value.toInt())
                 apply()
             }
         }
@@ -188,6 +214,10 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
         const val KEY_LIB_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
+        const val KEY_ALBUM_SORT_MODE = "KEY_ALBUM_SORT"
+        const val KEY_ARTIST_SORT_MODE = "KEY_ARTIST_SORT"
+        const val KEY_GENRE_SORT_MODE = "KEY_GENRE_SORT"
+
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 
         @Volatile
