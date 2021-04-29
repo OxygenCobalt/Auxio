@@ -51,7 +51,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 ## To possibly come in the future:
 
 - Artist Images
-- Artist Songs
 - Black theme
 - Custom accents
 - Playlists
