@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">Een eenvoudige, rationele muziekspeler voor Android.</string>
+    <string name="info_channel_name">Muziek Afspelen</string>
+    <string name="info_service_desc">De muziekweergaveservice voor Auxio.</string>
+
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Opnieuw proberen</string>
     <string name="label_grant">Toestaan</string>
@@ -22,6 +27,10 @@
 
     <string name="label_play">Afspelen</string>
     <string name="label_shuffle">Shuffle</string>
+    <string name="label_play_all_songs">Speel van alle nummers </string>
+    <string name="label_play_album">Speel af van album </string>
+    <string name="label_play_artist">Speel van artiest </string>
+    <string name="label_play_genre">Speel vanuit genre </string>
     <string name="label_playback">Afspeelscherm</string>
 
     <string name="label_queue">Wachtrij</string>
@@ -31,6 +40,12 @@
 
     <string name="label_go_artist">Ga naar artiest</string>
     <string name="label_go_album">Ga naar album</string>
+
+    <string name="label_state_saved">Staat gered</string>
+
+    <string name="label_add">Toevoegen</string>
+    <string name="label_save">Opslaan</string>
+    <string name="label_no_dirs">Geen Mappen</string>
 
     <string name="label_about">Over</string>
     <string name="label_version">Versie</string>
@@ -49,30 +64,73 @@
     <string name="setting_theme_night">Donker</string>
     <string name="setting_accent">Accent</string>
 
+    <string name="setting_display">Scherm</string>
     <string name="setting_lib_display">Bibliotheek Items</string>
     <string name="setting_color_notif">Notificatie kleur aanpassen</string>
+    <string name="setting_color_desc">Toon album art op notification</string>
+    <string name="setting_show_covers">Toon albumhoezen</string>
+    <string name="setting_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
     <string name="setting_quality_covers">Negeer Mediaopslag illustraties</string>
+    <string name="setting_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
+    <string name="setting_use_alt_action">Gebruikt een afternatief notification action</string>
+    <string name="setting_use_alt_loop">Voorkeur aan herhaalde actie</string>
+    <string name="setting_use_alt_shuffle">Voorkeur aan shuffle actie</string>
 
     <string name="setting_audio">Audio</string>
     <string name="setting_audio_focus">Audiofocus</string>
+    <string name="setting_audio_focus_desc">Pauze wanneer andere audio speelt [ex. Gesprekken]</string>
     <string name="setting_audio_plug_mgt">Headset-pluggen</string>
+    <string name="setting_audio_plug_mgt_desc">Afspelen/Pauzeren wanneer de headsetaansluiting verandert</string>
 
     <string name="setting_behavior">Gedrag</string>
+    <string name="setting_behavior_song_playback_mode">Wanneer een liedje is geselecteerd</string>
+    <string name="setting_behavior_keep_shuffle">Onthoud shuffle</string>
+    <string name="setting_behavior_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
+    <string name="setting_behavior_rewind_prev">Terugspoelen voordat je terugspoelt</string>
+    <string name="setting_behavior_rewind_prev_desc">Terugspoelen voordat u naar het vorige nummer gaat</string>
+
+    <string name="setting_content">Inhoud</string>
+    <string name="setting_content_save">Afspeelstatus opslaan</string>
+    <string name="setting_content_save_desc">Sla de huidige afspeelstatus nu op </string>
+    <string name="setting_content_blacklist">Uitgesloten mappen </string>
+    <string name="setting_content_blacklist_desc">De inhoud van uitgesloten mappen wordt verborgen voor uw bibliotheek</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Geen muziek aangetroffen</string>
+    <string name="error_load_failed">Laden van muziek mislukt</string>
+    <string name="error_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
+    <string name="error_no_browser">Geen app kan deze link openen</string>
+    <string name="error_bad_dir">Deze map wordt niet ondersteund</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Zoek in uw bibliotheek…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_sort_button">Sorteervolgorde wijzigen</string>
     <string name="description_track_number">Nummer %d</string>
 
     <string name="description_play_pause">Afspelen/Pauzeren</string>
+    <string name="description_skip_next">Naar volgend nummer gaan</string>
+    <string name="description_skip_prev">Naar het laatste nummer gaan</string>
+    <string name="description_shuffle_on">Zet shuffle aan</string>
+    <string name="description_shuffle_off">Zet shuffle uit</string>
+    <string name="description_change_loop">Herhaalfunctie wijzigen</string>
 
-    <string name="description_clear_user_queue">Leeg wachtrij</string>
+    <string name="description_clear_user_queue">Wachtrij wissen</string>
+    <string name="description_clear_search">Zoekopdracht wissen</string>
+    <string name="description_blacklist_delete">Verwijder uitgesloten map</string>
 
     <string name="description_error">Fout</string>
+    <string name="description_auxio_icon">Auxio pictogram</string>
+    <string name="description_album_cover">Artist Image voor  %s</string>
+    <string name="description_artist_image">Artist Image voor %s</string>
+    <string name="description_genre_image">Genre Image voor %s</string>
 
-    <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Zoek in je bibliotheek…</string>
+    <!-- Placeholder Namespace | Placeholder values -->
+    <string name="placeholder_genre">Onbekend Genre</string>
+    <string name="placeholder_artist">Onbekend Artist</string>
+    <string name="placeholder_album">Onbekend Album</string>
+    <string name="placeholder_no_date">Geen datum </string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="color_label_red">Rood</string>
@@ -85,6 +143,7 @@
     <string name="color_label_teal">Blauwgroen</string>
     <string name="color_label_green">Groen</string>
     <string name="color_label_light_green">Lichtgroen</string>
+    <string name="color_label_cyan">Cyaan</string>
     <string name="color_label_lime">Geelgroen</string>
     <string name="color_label_yellow">Geel</string>
     <string name="color_label_orange">Oranje</string>
@@ -94,6 +153,7 @@
     <string name="color_label_blue_grey">Blauwgrijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
+    <string name="format_next_from">Volgende van: %s</string>
     <string name="format_songs_loaded">Nummers geladen: %d</string>
 
     <plurals name="format_song_count">
