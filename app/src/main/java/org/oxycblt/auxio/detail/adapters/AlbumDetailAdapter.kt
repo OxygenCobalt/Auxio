@@ -57,13 +57,17 @@ class AlbumDetailAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
+        val item = getItem(position)
+
+        when (item) {
             is Album -> (holder as AlbumHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
+
+            else -> {}
         }
 
         if (currentSong != null && position > 0) {
-            if (getItem(position).id == currentSong?.id) {
+            if (item.id == currentSong?.id) {
                 // Reset the last ViewHolder before assigning the new, correct one to be highlighted
                 lastHolder?.setHighlighted(false)
                 lastHolder = (holder as Highlightable)
@@ -89,7 +93,7 @@ class AlbumDetailAdapter(
         if (song != null) {
             // Use existing data instead of having to re-sort it.
             val pos = currentList.indexOfFirst { item ->
-                item.name == song.name && item is Song
+                item.id == song.id && item is Song
             }
 
             // Check if the ViewHolder for this song is visible, if it is then highlight it.

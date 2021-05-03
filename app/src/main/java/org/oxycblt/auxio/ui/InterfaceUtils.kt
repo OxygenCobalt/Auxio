@@ -18,8 +18,10 @@ import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -84,7 +86,7 @@ fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
  * @return The resolved color, black if the resolving process failed.
  */
 @ColorInt
-fun Int.toColor(context: Context): Int {
+fun @receiver:ColorRes Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)
     } catch (e: Resources.NotFoundException) {
@@ -101,23 +103,26 @@ fun Int.toColor(context: Context): Int {
  * @return The resolved color as a [ColorStateList]
  * @see toColor
  */
-fun Int.toStateList(context: Context) = ColorStateList.valueOf(toColor(context))
+fun @receiver:ColorRes Int.toStateList(context: Context) =
+    ColorStateList.valueOf(toColor(context))
 
 /**
  * Resolve a drawable resource into a [Drawable]
  */
-fun Int.toDrawable(context: Context) = ContextCompat.getDrawable(context, this)
+fun @receiver:DrawableRes Int.toDrawable(context: Context) =
+    ContextCompat.getDrawable(context, this)
 
 /**
  * Resolve a drawable resource into an [AnimatedVectorDrawable]
  * @see toDrawable
  */
-fun Int.toAnimDrawable(context: Context) = toDrawable(context) as AnimatedVectorDrawable
+fun @receiver:DrawableRes Int.toAnimDrawable(context: Context) =
+    toDrawable(context) as AnimatedVectorDrawable
 
 /**
  * Resolve this int into a color as if it was an attribute
  */
-fun Int.resolveAttr(context: Context): Int {
+fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     // Convert the attribute into its color
     val resolvedAttr = TypedValue()
     context.theme.resolveAttribute(this, resolvedAttr, true)

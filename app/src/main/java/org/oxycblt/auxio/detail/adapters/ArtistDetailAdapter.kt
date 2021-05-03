@@ -88,20 +88,17 @@ class ArtistDetailAdapter(
         }
 
         if (holder is Highlightable) {
-            when (item.id) {
-                currentAlbum?.id -> {
-                    currentAlbumHolder?.setHighlighted(false)
-                    currentAlbumHolder = holder
-                    holder.setHighlighted(true)
-                }
-
-                currentSong?.id -> {
-                    currentSongHolder?.setHighlighted(false)
-                    currentSongHolder = holder
-                    holder.setHighlighted(true)
-                }
-
-                else -> holder.setHighlighted(false)
+            // If the item corresponds to a currently playing song/album then highlight it
+            if (item.id == currentAlbum?.id && item is Album) {
+                currentAlbumHolder?.setHighlighted(false)
+                currentAlbumHolder = holder
+                holder.setHighlighted(true)
+            } else if (item.id == currentSong?.id && item is Song) {
+                currentSongHolder?.setHighlighted(false)
+                currentSongHolder = holder
+                holder.setHighlighted(true)
+            } else {
+                holder.setHighlighted(false)
             }
         }
     }
@@ -121,10 +118,8 @@ class ArtistDetailAdapter(
         if (album != null) {
             // Use existing data instead of having to re-sort it.
             val pos = currentList.indexOfFirst { item ->
-                item.name == album.name && item is Album
+                item.id == album.id && item is Album
             }
-
-            logD(pos)
 
             // Check if the ViewHolder if this album is visible, and highlight it if so.
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
@@ -153,7 +148,7 @@ class ArtistDetailAdapter(
             // Use existing data instead of having to re-sort it.
             // We also have to account for the album count when searching for the viewholder
             val pos = currentList.indexOfFirst { item ->
-                item.name == song.name && item is Song
+                item.id == song.id && item is Song
             }
 
             // Check if the ViewHolder for this song is visible, if it is then highlight it.
