@@ -28,8 +28,8 @@
         <TextView
             android:id="@+id/song_name"
             style="@style/ItemText.Primary"
-            android:text="@{song.name}"
             android:layout_marginEnd="@dimen/spacing_medium"
+            android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
             app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
@@ -40,8 +40,8 @@
         <TextView
             android:id="@+id/song_info"
             style="@style/ItemText.Secondary"
-            android:text="@{song.album.name}"
             android:layout_marginEnd="@dimen/spacing_medium"
+            android:text="@{song.album.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"

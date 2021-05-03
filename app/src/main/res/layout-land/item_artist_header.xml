@@ -87,9 +87,9 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/artist_shuffle_button"
             style="@style/Widget.MaterialComponents.Button.Highlighted"
+            android:backgroundTint="?attr/colorPrimary"
             android:onClick="@{() -> playbackModel.playArtist(artist, true)}"
             android:text="@string/label_shuffle"
-            android:backgroundTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/artist_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_play_button"

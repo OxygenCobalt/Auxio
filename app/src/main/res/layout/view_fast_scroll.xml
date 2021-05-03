@@ -13,8 +13,8 @@
             android:layout_width="@dimen/size_scroll_thumb"
             android:layout_height="@dimen/size_scroll_thumb"
             android:background="@drawable/ui_circle"
-            android:elevation="@dimen/elevation_small"
             android:backgroundTint="?attr/colorPrimary"
+            android:elevation="@dimen/elevation_small"
             android:stateListAnimator="@animator/animator_thumb"
             app:layout_constraintEnd_toStartOf="@+id/scroll_indicator_text">
 
@@ -22,10 +22,10 @@
                 android:id="@+id/scroll_thumb_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:textSize="@dimen/text_size_thumb"
-                android:textColor="?android:attr/windowBackground"
                 android:fontFamily="@font/inter_semibold"
+                android:gravity="center"
+                android:textColor="?android:attr/windowBackground"
+                android:textSize="@dimen/text_size_thumb"
                 tools:text="A" />
 
         </FrameLayout>
@@ -38,9 +38,9 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:lineSpacingExtra="@dimen/spacing_tiny"
+            android:minWidth="@dimen/width_fast_scroll"
             android:paddingTop="@dimen/spacing_tiny"
             android:paddingBottom="@dimen/spacing_tiny"
-            android:minWidth="@dimen/width_fast_scroll"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

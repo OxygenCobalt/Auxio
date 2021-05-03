@@ -10,10 +10,10 @@ import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
@@ -46,7 +46,7 @@ class ArtistDetailAdapter(
         return when (getItem(position)) {
             is Artist -> ARTIST_HEADER_ITEM_TYPE
             is Album -> ARTIST_ALBUM_ITEM_TYPE
-            is ActionHeader -> ARTIST_SONG_HEADER_ITEM_TYPE
+            is Header -> ARTIST_SONG_HEADER_ITEM_TYPE
             is Song -> ARTIST_SONG_ITEM_TYPE
 
             else -> -1
@@ -81,7 +81,7 @@ class ArtistDetailAdapter(
         when (item) {
             is Artist -> (holder as ArtistHeaderViewHolder).bind(item)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item)
-            is ActionHeader -> (holder as ArtistSongHeaderViewHolder).bind(item)
+            is Header -> (holder as ArtistSongHeaderViewHolder).bind(item)
             is Song -> (holder as ArtistSongViewHolder).bind(item)
 
             else -> {}
@@ -199,9 +199,9 @@ class ArtistDetailAdapter(
 
     inner class ArtistSongHeaderViewHolder(
         private val binding: ItemActionHeaderBinding
-    ) : BaseViewHolder<ActionHeader>(binding) {
+    ) : BaseViewHolder<Header>(binding) {
 
-        override fun onBind(data: ActionHeader) {
+        override fun onBind(data: Header) {
             binding.header = data
 
             binding.headerButton.apply {
@@ -211,7 +211,7 @@ class ArtistDetailAdapter(
                 setImageResource(sortMode.value!!.iconRes)
 
                 setOnClickListener {
-                    data.action() // Should call DetailViewModel.incrementArtistSortMode
+                    detailModel.incrementArtistSortMode()
                     setImageResource(sortMode.value!!.iconRes)
                 }
 

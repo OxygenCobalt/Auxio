@@ -9,10 +9,10 @@ import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -63,16 +63,6 @@ class ArtistDetailFragment : DetailFragment() {
             }
         )
 
-        // We build the action header here since it's both more efficent to keep one action header
-        // and it also prevents the header from being constantly refreshed when the sort is updated.
-
-        val songsHeader = ActionHeader(
-            id = -2,
-            name = getString(R.string.label_songs),
-            icon = detailModel.artistSortMode.value!!.iconRes,
-            action = detailModel::incrementArtistSortMode
-        )
-
         // --- UI SETUP ---
 
         binding.lifecycleOwner = this
@@ -80,7 +70,7 @@ class ArtistDetailFragment : DetailFragment() {
         setupToolbar()
         setupRecycler(detailAdapter) { pos ->
             // If the item is an ActionHeader we need to also make the item full-width
-            pos == 0 || detailAdapter.currentList.getOrNull(pos) is ActionHeader
+            pos == 0 || detailAdapter.currentList.getOrNull(pos) is Header
         }
 
         // --- VIEWMODEL SETUP ---
@@ -91,8 +81,17 @@ class ArtistDetailFragment : DetailFragment() {
             val artist = detailModel.currentArtist.value!!
 
             val data = mutableListOf<BaseModel>(artist)
+
             data.addAll(SortMode.NUMERIC_DOWN.getSortedAlbumList(artist.albums))
-            data.add(songsHeader)
+
+            data.add(
+                Header(
+                    id = -2,
+                    name = getString(R.string.label_songs),
+                    isAction = true
+                )
+            )
+
             data.addAll(mode.getSortedArtistSongList(artist.songs))
 
             detailAdapter.submitList(data)

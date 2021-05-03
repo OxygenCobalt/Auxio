@@ -62,7 +62,7 @@ class BlacklistViewModel(context: Context) : ViewModel() {
     /**
      * Load the paths stored in the database to this ViewModel, will erase any pending changes.
      */
-    fun loadDatabasePaths() {
+    private fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
             dbPaths = blacklistDatabase.readPaths()
 

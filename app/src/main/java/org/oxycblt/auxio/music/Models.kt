@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.music
 
 import android.net.Uri
-import androidx.annotation.DrawableRes
 
 // --- MUSIC MODELS ---
 
@@ -189,20 +188,10 @@ data class Genre(
 
 /**
  * A data object used solely for the "Header" UI element. Inherits [BaseModel].
+ * @param isAction Whether this header corresponds to an action or not
  */
 data class Header(
     override val id: Long,
     override val name: String,
-) : BaseModel()
-
-/**
- * A data object for a header with an action button. Inherits [BaseModel].
- * @property icon The icon ot apply for this header.
- * @property action The callback that will be called when the action button is clicked.
- */
-data class ActionHeader(
-    override val id: Long,
-    override val name: String,
-    @DrawableRes val icon: Int,
-    val action: () -> Unit,
+    val isAction: Boolean = false
 ) : BaseModel()

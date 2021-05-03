@@ -89,9 +89,9 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/genre_shuffle_button"
             style="@style/Widget.MaterialComponents.Button.Highlighted"
+            android:backgroundTint="?attr/colorPrimary"
             android:onClick="@{() -> playbackModel.playGenre(genre, true)}"
             android:text="@string/label_shuffle"
-            android:backgroundTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/genre_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_play_button"

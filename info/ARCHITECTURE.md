@@ -44,7 +44,7 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA004 | HeaderViewHolder
 
 0xA005 | QueueSongViewHolder
-0xA006 | ActionHeaderViewHolder
+0xA006 | UserQueueHeaderViewHolder
 
 0xA007 | AlbumHeaderViewHolder
 0xA008 | AlbumSongViewHolder

@@ -8,9 +8,9 @@
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entires_theme"
             app:entryValues="@array/values_theme"
+            app:icon="@drawable/ic_day"
             app:iconSpaceReserved="false"
             app:key="KEY_THEME2"
-            app:icon="@drawable/ic_day"
             app:title="@string/setting_theme" />
 
         <Preference

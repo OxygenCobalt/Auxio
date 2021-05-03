@@ -3,7 +3,6 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Een eenvoudige, rationele muziekspeler voor Android.</string>
     <string name="info_channel_name">Muziek Afspelen</string>
-    <string name="info_service_desc">De muziekweergaveservice voor Auxio.</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="label_retry">Opnieuw proberen</string>

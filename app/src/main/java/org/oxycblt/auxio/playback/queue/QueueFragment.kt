@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -37,7 +36,7 @@ class QueueFragment : Fragment() {
 
         val callback = QueueDragCallback(playbackModel)
         val helper = ItemTouchHelper(callback)
-        val queueAdapter = QueueAdapter(helper)
+        val queueAdapter = QueueAdapter(helper, playbackModel)
         var lastShuffle = playbackModel.isShuffling.value
 
         callback.addQueueAdapter(queueAdapter)
@@ -137,13 +136,10 @@ class QueueFragment : Fragment() {
         val nextQueue = playbackModel.nextItemsInQueue.value!!
 
         if (userQueue.isNotEmpty()) {
-            queue += ActionHeader(
+            queue += Header(
                 id = -2,
                 name = getString(R.string.label_next_user_queue),
-                icon = R.drawable.ic_clear,
-                action = {
-                    playbackModel.clearUserQueue()
-                }
+                isAction = true
             )
 
             queue += userQueue
@@ -151,7 +147,9 @@ class QueueFragment : Fragment() {
 
         if (nextQueue.isNotEmpty()) {
             queue += Header(
-                id = -3, name = getString(R.string.format_next_from, getParentName()),
+                id = -3,
+                name = getString(R.string.format_next_from, getParentName()),
+                isAction = false
             )
 
             queue += nextQueue

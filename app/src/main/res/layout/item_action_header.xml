@@ -8,7 +8,7 @@
 
         <variable
             name="header"
-            type="org.oxycblt.auxio.music.ActionHeader" />
+            type="org.oxycblt.auxio.music.Header" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

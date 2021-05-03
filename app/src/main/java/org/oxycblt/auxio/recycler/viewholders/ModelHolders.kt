@@ -2,13 +2,11 @@ package org.oxycblt.auxio.recycler.viewholders
 
 import android.content.Context
 import android.view.View
-import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -153,7 +151,9 @@ class GenreViewHolder private constructor(
 /**
  * The Shared ViewHolder for a [Header]. Instantiation should be done with [from]
  */
-class HeaderViewHolder(private val binding: ItemHeaderBinding) : BaseViewHolder<Header>(binding) {
+class HeaderViewHolder private constructor(
+    private val binding: ItemHeaderBinding
+) : BaseViewHolder<Header>(binding) {
 
     override fun onBind(data: Header) {
         binding.header = data
@@ -168,38 +168,6 @@ class HeaderViewHolder(private val binding: ItemHeaderBinding) : BaseViewHolder<
         fun from(context: Context): HeaderViewHolder {
             return HeaderViewHolder(
                 ItemHeaderBinding.inflate(context.inflater)
-            )
-        }
-    }
-}
-
-/**
- * The Shared ViewHolder for a [ActionHeader]. Instantiation should be done with [from]
- */
-class ActionHeaderViewHolder(
-    private val binding: ItemActionHeaderBinding
-) : BaseViewHolder<ActionHeader>(binding) {
-
-    override fun onBind(data: ActionHeader) {
-        binding.header = data
-        binding.headerButton.apply {
-            setImageResource(data.icon)
-
-            setOnClickListener {
-                data.action()
-            }
-        }
-    }
-
-    companion object {
-        const val ITEM_TYPE = 0xA006
-
-        /**
-         * Create an instance of [ActionHeaderViewHolder]
-         */
-        fun from(context: Context): ActionHeaderViewHolder {
-            return ActionHeaderViewHolder(
-                ItemActionHeaderBinding.inflate(context.inflater)
             )
         }
     }
