@@ -81,13 +81,13 @@ class SongsFragment : Fragment() {
         // If the name actually starts with "The" or "A", get the character *after* that word.
         // Yes, this is stupidly english centric but it wont run with other languages.
         if (length > 5 && startsWith("the ", true)) {
-            return get(4).toUpperCase()
+            return get(4).uppercaseChar()
         }
 
         if (length > 3 && startsWith("a ", true)) {
-            return get(2).toUpperCase()
+            return get(2).uppercaseChar()
         }
 
-        return get(0).toUpperCase()
+        return get(0).uppercaseChar()
     }
 }

@@ -9,7 +9,6 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
-import java.util.Locale
 
 /**
  * A list of all possible accents.
@@ -55,7 +54,7 @@ data class Accent(@ColorRes val color: Int, @StyleRes val theme: Int, @StringRes
     @SuppressLint("ResourceType")
     fun getDetailedSummary(context: Context): Spanned {
         val name = context.getString(name)
-        val hex = context.getString(color).toUpperCase(Locale.getDefault())
+        val hex = context.getString(color).uppercase()
 
         return HtmlCompat.fromHtml(
             context.getString(R.string.format_accent_summary, name, hex),
