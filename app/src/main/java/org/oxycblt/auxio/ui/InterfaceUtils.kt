@@ -13,7 +13,6 @@ import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
@@ -25,7 +24,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
@@ -257,21 +255,4 @@ private fun isSystemBarOnBottom(activity: Activity): Boolean {
     val canMove = (width != height && config.smallestScreenWidthDp < 600)
 
     return (!canMove || width < height)
-}
-
-// --- HACKY NIGHTMARES ---
-
-/**
- * Use ***REFLECTION*** to fix a memory leak in the [Fragment] source code where the focused view
- * will never be cleared. I can't believe I have to do this.
- */
-fun Fragment.fixAnimInfoLeak() {
-    try {
-        Fragment::class.java.getDeclaredMethod("setFocusedView", View::class.java).apply {
-            isAccessible = true
-            invoke(this@fixAnimInfoLeak, null)
-        }
-    } catch (e: Exception) {
-        logE("mAnimationInfo leak fix failed.")
-    }
 }

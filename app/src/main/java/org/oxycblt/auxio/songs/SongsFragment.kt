@@ -12,7 +12,6 @@ import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -65,12 +64,6 @@ class SongsFragment : Fragment() {
         logD("Fragment created.")
 
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        fixAnimInfoLeak()
     }
 
     /**

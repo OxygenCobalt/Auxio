@@ -22,7 +22,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.fixAnimInfoLeak
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -125,12 +124,6 @@ class SearchFragment : Fragment() {
         super.onResume()
 
         searchModel.setNavigating(false)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        fixAnimInfoLeak()
     }
 
     /**
