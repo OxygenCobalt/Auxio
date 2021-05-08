@@ -24,12 +24,10 @@
         <item name="cornerRadius">0dp</item>
 
         <!--
-        I have no idea why but these exact flags in this exact order give the dialogs a better
-        style. Please do not touch them.
+        These exact flags, in this exact order, in this exact formatting somehow make
+        the dialogs use the nicer material style. Please do not touch them.
         -->
-        <item name="viewInflaterClass">
-            com.google.android.material.theme.MaterialComponentsViewInflater
-        </item>
+        <item name="viewInflaterClass">com.google.android.material.theme.MaterialComponentsViewInflater</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog</item>
   </style>

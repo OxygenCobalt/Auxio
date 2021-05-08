@@ -21,16 +21,16 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Screenshots
 
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot8.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot8.png)
-[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot9.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot9.png)
+<p align="center">
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=200>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=200>
+</p>
 
 ## Features
 
