@@ -1,0 +1,9 @@
+- Artist view now shows a list of songs
+- Loop functionality now has a new, more sensible behavior
+- Restore system is now faster and more reliable [Will wipe previous state]
+- Dialogs have been revamped with a new style
+- Changed the header font to be cleaner
+- Grey accent in dark mode has been made more visible
+- The queue now reflects the current album/artist/genre sort
+- Album/artist/genre sort is now remembered when the app restarts
+- Added complete dutch translation [Courtesy of timnea]
