@@ -170,16 +170,14 @@ class PlaybackNotification private constructor(
     companion object {
         const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
         const val NOTIFICATION_ID = 0xA0A0
-        const val REQUEST_CODE = 0xA0AA
+        const val REQUEST_CODE = 0xA0C0
 
-        // Build type is added to the codes so that dual release/debug installations dont conflict
-        // with each other.
-        const val ACTION_LOOP = "ACTION_AUXIO_LOOP_" + BuildConfig.BUILD_TYPE
-        const val ACTION_SHUFFLE = "ACTION_AUXIO_SHUFFLE_" + BuildConfig.BUILD_TYPE
-        const val ACTION_SKIP_PREV = "ACTION_AUXIO_SKIP_PREV_" + BuildConfig.BUILD_TYPE
-        const val ACTION_PLAY_PAUSE = "ACTION_AUXIO_PLAY_PAUSE_" + BuildConfig.BUILD_TYPE
-        const val ACTION_SKIP_NEXT = "ACTION_AUXIO_SKIP_NEXT_" + BuildConfig.BUILD_TYPE
-        const val ACTION_EXIT = "ACTION_AUXIO_EXIT_" + BuildConfig.BUILD_TYPE
+        const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
+        const val ACTION_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+        const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
+        const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
+        const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
+        const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
 
         /**
          * Build a new instance of [PlaybackNotification].

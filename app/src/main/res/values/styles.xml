@@ -13,7 +13,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
 
-        <!-- Interim default values for the accents. -->
+        <!-- Default values for the accents. -->
         <item name="colorPrimary">@color/design_default_color_primary</item>
         <item name="colorSecondary">@color/design_default_color_primary</item>
 

@@ -99,6 +99,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val KEY_INTENT_USED = "KEY_FILE_INTENT_USED"
+        private const val KEY_INTENT_USED = BuildConfig.APPLICATION_ID + ".key.FILE_INTENT_USED"
     }
 }
