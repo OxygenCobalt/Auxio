@@ -23,6 +23,7 @@
             android:id="@+id/queue_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:overScrollMode="ifContentScrolls"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_queue_song" />
 

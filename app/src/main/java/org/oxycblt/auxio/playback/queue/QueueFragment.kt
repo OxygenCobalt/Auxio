@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -111,9 +112,10 @@ class QueueFragment : Fragment() {
 
                 // Apply bottom padding to make sure that the last queue item isnt incorrectly lost,
                 // but also make sure that the added padding wont clip the child views entirely.
-                (v as ViewGroup).apply {
+                (v as RecyclerView).apply {
                     clipToPadding = false
                     updatePadding(bottom = bottom)
+                    overScrollMode = RecyclerView.OVER_SCROLL_IF_CONTENT_SCROLLS
                 }
 
                 insets

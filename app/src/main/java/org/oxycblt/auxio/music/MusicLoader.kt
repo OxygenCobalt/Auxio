@@ -51,6 +51,7 @@ class MusicLoader(private val context: Context) {
 
     @Suppress("DEPRECATION")
     private fun buildSelector() {
+        // TODO: Upgrade this to be compatible with Android Q.
         val blacklistDatabase = BlacklistDatabase.getInstance(context)
 
         val paths = blacklistDatabase.readPaths()

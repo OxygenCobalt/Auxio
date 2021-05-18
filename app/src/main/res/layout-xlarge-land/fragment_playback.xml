@@ -189,7 +189,6 @@
         <org.oxycblt.auxio.playback.PlayPauseButton
             android:id="@+id/playback_play_pause"
             style="@style/PlayPause"
-            android:contentDescription="@string/description_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
