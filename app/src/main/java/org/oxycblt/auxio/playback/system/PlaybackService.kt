@@ -57,7 +57,7 @@ import org.oxycblt.auxio.ui.getSystemServiceSafe
  * so therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  */
-class PlaybackService : Service(), Player.EventListener, PlaybackStateManager.Callback, SettingsManager.Callback {
+class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
     private lateinit var player: SimpleExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
 
