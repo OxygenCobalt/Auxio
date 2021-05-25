@@ -24,7 +24,7 @@
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"
+        android:background="?attr/colorSurface"
         android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.Toolbar

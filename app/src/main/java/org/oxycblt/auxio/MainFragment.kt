@@ -21,6 +21,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.isTablet
+import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.toColor
 
 /**
@@ -76,6 +77,10 @@ class MainFragment : Fragment() {
                     navigateWithItem(controller, item)
                 }
             }
+
+            // BottomNavigationView is a special little snowflake and doesn't like it when
+            // we set the background in XML
+            setBackgroundColor(R.attr.colorSurface.resolveAttr(requireContext()))
         }
 
         // --- VIEWMODEL SETUP ---

@@ -11,7 +11,7 @@
     <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="bottomSheetStyle">@style/Theme.BottomSheetHeightFix</item>
     </style>

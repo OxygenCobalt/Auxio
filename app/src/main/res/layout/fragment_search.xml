@@ -11,13 +11,13 @@
             android:id="@+id/search_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background"
+            android:background="?attr/colorSurface"
             android:elevation="@dimen/elevation_normal">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_toolbar"
                 style="@style/Toolbar.Style"
-                android:elevation="@dimen/elevation_normal"
+                android:background="?attr/colorSurface"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_search"
                 app:title="@string/label_search" />
@@ -40,7 +40,7 @@
                     android:id="@+id/search_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
+                    android:background="?attr/colorSurface"
                     android:hint="@string/hint_search_library"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:inputType="textFilter"

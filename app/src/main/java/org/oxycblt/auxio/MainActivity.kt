@@ -25,15 +25,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
-            this, R.layout.activity_main
-        )
-
         val settingsManager = SettingsManager.getInstance()
         val newAccent = Accent.set(settingsManager.accent)
 
         AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
         setTheme(newAccent.theme)
+
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
+            this, R.layout.activity_main
+        )
 
         if (isEdgeOn()) {
             setupEdgeToEdge(binding)

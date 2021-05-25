@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:background="?android:attr/windowBackground"
+            android:background="?android:attr/colorBackground"
             android:baselineAligned="false"
             android:elevation="@dimen/elevation_normal"
             android:orientation="horizontal"
@@ -39,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:background="@color/background"
+                android:background="?android:attr/colorBackground"
                 android:elevation="0dp"
                 app:elevation="0dp"
                 app:menu="@menu/menu_nav" />

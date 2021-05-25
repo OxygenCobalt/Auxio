@@ -7,7 +7,8 @@
 
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Template">
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:scrollbars">none</item>
         <item name="android:windowIsFloating">false</item>
@@ -23,14 +24,18 @@
         <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="cornerRadius">0dp</item>
 
+        <item name="colorSurface">@color/background</item>
+
         <!--
         These exact flags, in this exact order, in this exact formatting somehow make
         the dialogs use the nicer material style. Please do not touch them.
         -->
-        <item name="viewInflaterClass">com.google.android.material.theme.MaterialComponentsViewInflater</item>
+        <item name="viewInflaterClass">
+            com.google.android.material.theme.MaterialComponentsViewInflater
+        </item>
         <item name="alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog</item>
-  </style>
+    </style>
 
     <!-- Toolbar theme -->
     <style name="Toolbar.Style" parent="ThemeOverlay.MaterialComponents.ActionBar">
