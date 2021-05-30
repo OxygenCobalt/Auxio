@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
@@ -60,6 +59,7 @@ import org.oxycblt.auxio.ui.getSystemServiceSafe
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
     private lateinit var player: SimpleExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var connector: PlaybackSessionConnector
 
     private lateinit var notification: PlaybackNotification
     private lateinit var notificationManager: NotificationManager
@@ -113,14 +113,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply {
             isActive = true
-
-            MediaSessionConnector(this).apply {
-                setPlayer(player)
-                setMediaButtonEventHandler { _, _, mediaButtonEvent ->
-                    handleMediaButtonEvent(mediaButtonEvent)
-                }
-            }
         }
+
+        connector = PlaybackSessionConnector(this, mediaSession)
 
         // Then the notif/headset callbacks
         IntentFilter().apply {
@@ -167,6 +162,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         unregisterReceiver(systemReceiver)
 
         player.release()
+        connector.release()
         mediaSession.release()
         audioReactor.release()
         releaseWakelock()
@@ -305,6 +301,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
+            connector.onSongUpdate(song)
+
             notification.setMetadata(
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )

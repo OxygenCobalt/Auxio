@@ -93,7 +93,6 @@ dependencies {
     // ExoPlayer
     def exoplayer_version = "2.14.0"
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 
     // Image loading
     implementation "io.coil-kt:coil:1.2.1"

@@ -40,7 +40,7 @@ class PlaybackNotification private constructor(
         setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
-        setNotificationSilent()
+        setSilent(true)
         setContentIntent(mainActivityIntent)
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
