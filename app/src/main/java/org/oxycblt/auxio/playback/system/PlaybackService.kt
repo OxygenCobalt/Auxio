@@ -204,12 +204,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         playbackManager.next()
     }
 
-    override fun onPositionDiscontinuity(reason: Int) {
-        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.setPosition(player.currentPosition)
-        }
-    }
-
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onSongUpdate(song: Song?) {

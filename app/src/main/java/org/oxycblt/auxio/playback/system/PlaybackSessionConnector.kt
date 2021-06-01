@@ -16,12 +16,7 @@ class PlaybackSessionConnector(
     private val mediaSession: MediaSessionCompat
 ) : PlaybackStateManager.Callback, MediaSessionCompat.Callback() {
     private val playbackManager = PlaybackStateManager.getInstance()
-
     private val emptyMetadata = MediaMetadataCompat.Builder().build()
-    private val state = PlaybackStateCompat.Builder()
-        .setActions(ACTIONS)
-
-    private var playerState = PlaybackStateCompat.STATE_NONE
 
     init {
         mediaSession.setCallback(this)
@@ -29,7 +24,6 @@ class PlaybackSessionConnector(
 
         onSongUpdate(playbackManager.song)
         onPlayingUpdate(playbackManager.isPlaying)
-        onPositionUpdate(playbackManager.position)
     }
 
     fun release() {
@@ -55,11 +49,7 @@ class PlaybackSessionConnector(
     }
 
     override fun onSeekTo(position: Long) {
-        // Set the state to buffering to prevent weird delays on the duration counter when seeking.
-        // And yes, STATE_PAUSED is the only state that works with this code. Because of course it is.
-        setPlayerState(PlaybackStateCompat.STATE_PAUSED)
         playbackManager.seekTo(position)
-        setPlayerState(getPlayerState())
     }
 
     override fun onRewind() {
@@ -93,9 +83,10 @@ class PlaybackSessionConnector(
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
     override fun onSongUpdate(song: Song?) {
+        invalidateSessionState()
+
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
-            setPlayerState(PlaybackStateCompat.STATE_STOPPED)
             return
         }
 
@@ -116,24 +107,36 @@ class PlaybackSessionConnector(
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
-        setPlayerState(
-            if (playbackManager.isPlaying) {
-                PlaybackStateCompat.STATE_PLAYING
-            } else {
-                PlaybackStateCompat.STATE_PAUSED
-            }
-        )
+        invalidateSessionState()
     }
 
     override fun onSeek(position: Long) {
-        updateState()
+        invalidateSessionState()
     }
 
     // --- MISC ---
 
-    private fun setPlayerState(state: Int) {
-        playerState = state
-        updateState()
+    private fun invalidateSessionState() {
+        // Position updates arrive faster when you upload STATE_PAUSED for some inane reason.
+        val state = PlaybackStateCompat.Builder()
+            .setActions(ACTIONS)
+            .setState(
+                PlaybackStateCompat.STATE_PAUSED,
+                playbackManager.position,
+                1.0f,
+                SystemClock.elapsedRealtime()
+            )
+
+        mediaSession.setPlaybackState(state.build())
+
+        state.setState(
+            getPlayerState(),
+            playbackManager.position,
+            1.0f,
+            SystemClock.elapsedRealtime()
+        )
+
+        mediaSession.setPlaybackState(state.build())
     }
 
     private fun getPlayerState(): Int {
@@ -146,11 +149,6 @@ class PlaybackSessionConnector(
         } else {
             PlaybackStateCompat.STATE_PAUSED
         }
-    }
-
-    private fun updateState() {
-        state.setState(playerState, playbackManager.position, 1.0f, SystemClock.elapsedRealtime())
-        mediaSession.setPlaybackState(state.build())
     }
 
     companion object {
