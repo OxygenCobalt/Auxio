@@ -1,18 +1,20 @@
 package org.oxycblt.auxio.playback.system
 
 import android.content.Context
+import android.content.Intent
 import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 class PlaybackSessionConnector(
     private val context: Context,
     private val mediaSession: MediaSessionCompat
-) : PlaybackStateManager.Callback {
+) : PlaybackStateManager.Callback, MediaSessionCompat.Callback() {
     private val playbackManager = PlaybackStateManager.getInstance()
 
     private val emptyMetadata = MediaMetadataCompat.Builder().build()
@@ -20,9 +22,9 @@ class PlaybackSessionConnector(
         .setActions(ACTIONS)
 
     private var playerState = PlaybackStateCompat.STATE_NONE
-    private var playerPosition = playbackManager.position
 
     init {
+        mediaSession.setCallback(this)
         playbackManager.addCallback(this)
 
         onSongUpdate(playbackManager.song)
@@ -33,6 +35,62 @@ class PlaybackSessionConnector(
     fun release() {
         playbackManager.removeCallback(this)
     }
+
+    // --- MEDIASESSION CALLBACKS ---
+
+    override fun onPlay() {
+        playbackManager.setPlaying(true)
+    }
+
+    override fun onPause() {
+        playbackManager.setPlaying(false)
+    }
+
+    override fun onSkipToNext() {
+        playbackManager.next()
+    }
+
+    override fun onSkipToPrevious() {
+        playbackManager.prev()
+    }
+
+    override fun onSeekTo(position: Long) {
+        // Set the state to buffering to prevent weird delays on the duration counter when seeking.
+        // And yes, STATE_PAUSED is the only state that works with this code. Because of course it is.
+        setPlayerState(PlaybackStateCompat.STATE_PAUSED)
+        playbackManager.seekTo(position)
+        setPlayerState(getPlayerState())
+    }
+
+    override fun onRewind() {
+        playbackManager.rewind()
+    }
+
+    override fun onSetRepeatMode(repeatMode: Int) {
+        val mode = when (repeatMode) {
+            PlaybackStateCompat.REPEAT_MODE_ALL -> LoopMode.ALL
+            PlaybackStateCompat.REPEAT_MODE_GROUP -> LoopMode.ALL
+            PlaybackStateCompat.REPEAT_MODE_ONE -> LoopMode.TRACK
+            else -> LoopMode.NONE
+        }
+
+        playbackManager.setLoopMode(mode)
+    }
+
+    override fun onSetShuffleMode(shuffleMode: Int) {
+        playbackManager.setShuffling(
+            shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
+            true
+        )
+    }
+
+    override fun onStop() {
+        // Get the service to shut down with the ACTION_EXIT intent
+        context.sendBroadcast(Intent(PlaybackNotification.ACTION_EXIT))
+    }
+
+    // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
     override fun onSongUpdate(song: Song?) {
         if (song == null) {
@@ -67,18 +125,31 @@ class PlaybackSessionConnector(
         )
     }
 
-    override fun onPositionUpdate(position: Long) {
-        playerPosition = position
+    override fun onSeek(position: Long) {
         updateState()
     }
+
+    // --- MISC ---
 
     private fun setPlayerState(state: Int) {
         playerState = state
         updateState()
     }
 
+    private fun getPlayerState(): Int {
+        if (playbackManager.song == null) {
+            return PlaybackStateCompat.STATE_STOPPED
+        }
+
+        return if (playbackManager.isPlaying) {
+            PlaybackStateCompat.STATE_PLAYING
+        } else {
+            PlaybackStateCompat.STATE_PAUSED
+        }
+    }
+
     private fun updateState() {
-        state.setState(playerState, playerPosition, 1.0f, SystemClock.elapsedRealtime())
+        state.setState(playerState, playbackManager.position, 1.0f, SystemClock.elapsedRealtime())
         mediaSession.setPlaybackState(state.build())
     }
 

@@ -28,13 +28,13 @@
 
         <!--
         These exact flags, in this exact order, in this exact formatting somehow make
-        the dialogs use the nicer material style. Please do not touch them.
+        the dialogs use the nicer material style. Please do not touch this or format it.
         -->
-        <item name="viewInflaterClass">
-            com.google.android.material.theme.MaterialComponentsViewInflater
-        </item>
+        <!-- @formatter:off -->
+        <item name="viewInflaterClass">com.google.android.material.theme.MaterialComponentsViewInflater</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog</item>
+        <!-- @formatter:on -->
     </style>
 
     <!-- Toolbar theme -->

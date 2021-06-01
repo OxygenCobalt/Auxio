@@ -12,9 +12,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.view.KeyEvent
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
@@ -35,7 +33,6 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
@@ -220,8 +217,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
             player.prepare()
 
-            pushMetadataToSession(song)
-
             notification.setMetadata(
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
@@ -355,27 +350,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     }
 
     /**
-     * Upload the song metadata to the [MediaSessionCompat], so that things such as album art
-     * show up on the lock screen.
-     */
-    private fun pushMetadataToSession(song: Song) {
-        val builder = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
-
-        loadBitmap(this, song) { bitmap ->
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
-            mediaSession.setMetadata(builder.build())
-        }
-    }
-
-    /**
      * Start polling the position on a coroutine.
      */
     private fun startPollingPosition() {
@@ -447,52 +421,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
             logD("Wakelock is released.")
         }
-    }
-
-    /**
-     * Handle a media button intent.
-     */
-    private fun handleMediaButtonEvent(event: Intent): Boolean {
-        val item = event.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
-
-        if (item != null && item.action == KeyEvent.ACTION_DOWN) {
-            return when (item.keyCode) {
-                // Play/Pause if any of the keys are play/pause
-                KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY,
-                KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, KeyEvent.KEYCODE_HEADSETHOOK -> {
-                    playbackManager.setPlaying(!playbackManager.isPlaying)
-                    true
-                }
-
-                // Go to the next song is the key is next
-                KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                    playbackManager.next()
-                    true
-                }
-
-                // Go to the previous song if the key is back
-                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                    playbackManager.prev()
-                    true
-                }
-
-                // Rewind if the key is rewind
-                KeyEvent.KEYCODE_MEDIA_REWIND -> {
-                    playbackManager.rewind()
-                    true
-                }
-
-                // Stop the service entirely if the key was stop/close
-                KeyEvent.KEYCODE_MEDIA_STOP, KeyEvent.KEYCODE_MEDIA_CLOSE -> {
-                    stopSelf()
-                    true
-                }
-
-                else -> false
-            }
-        }
-
-        return false
     }
 
     /**
