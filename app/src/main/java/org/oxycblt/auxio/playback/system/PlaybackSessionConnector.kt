@@ -6,21 +6,28 @@ import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
+/**
+ * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player],
+ * and [PlaybackStateManager]
+ */
 class PlaybackSessionConnector(
     private val context: Context,
+    private val player: Player,
     private val mediaSession: MediaSessionCompat
-) : PlaybackStateManager.Callback, MediaSessionCompat.Callback() {
+) : PlaybackStateManager.Callback, Player.Listener, MediaSessionCompat.Callback() {
     private val playbackManager = PlaybackStateManager.getInstance()
     private val emptyMetadata = MediaMetadataCompat.Builder().build()
 
     init {
         mediaSession.setCallback(this)
         playbackManager.addCallback(this)
+        player.addListener(this)
 
         onSongUpdate(playbackManager.song)
         onPlayingUpdate(playbackManager.isPlaying)
@@ -28,6 +35,7 @@ class PlaybackSessionConnector(
 
     fun release() {
         playbackManager.removeCallback(this)
+        player.removeListener(this)
     }
 
     // --- MEDIASESSION CALLBACKS ---
@@ -49,7 +57,7 @@ class PlaybackSessionConnector(
     }
 
     override fun onSeekTo(position: Long) {
-        playbackManager.seekTo(position)
+        player.seekTo(position)
     }
 
     override fun onRewind() {
@@ -83,8 +91,6 @@ class PlaybackSessionConnector(
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
     override fun onSongUpdate(song: Song?) {
-        invalidateSessionState()
-
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
             return
@@ -110,19 +116,32 @@ class PlaybackSessionConnector(
         invalidateSessionState()
     }
 
-    override fun onSeek(position: Long) {
-        invalidateSessionState()
+    // --
+
+    override fun onEvents(player: Player, events: Player.Events) {
+        if (events.containsAny(
+                Player.EVENT_POSITION_DISCONTINUITY,
+                Player.EVENT_PLAYBACK_STATE_CHANGED,
+                Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_REPEAT_MODE_CHANGED,
+                Player.EVENT_PLAYBACK_PARAMETERS_CHANGED
+            )
+        ) {
+            invalidateSessionState()
+        }
     }
 
     // --- MISC ---
 
     private fun invalidateSessionState() {
-        // Position updates arrive faster when you upload STATE_PAUSED for some inane reason.
+        // Position updates arrive faster when you upload STATE_PAUSED for some insane reason.
         val state = PlaybackStateCompat.Builder()
             .setActions(ACTIONS)
+            .setBufferedPosition(player.bufferedPosition)
             .setState(
                 PlaybackStateCompat.STATE_PAUSED,
-                playbackManager.position,
+                player.currentPosition,
                 1.0f,
                 SystemClock.elapsedRealtime()
             )
@@ -131,7 +150,7 @@ class PlaybackSessionConnector(
 
         state.setState(
             getPlayerState(),
-            playbackManager.position,
+            player.currentPosition,
             1.0f,
             SystemClock.elapsedRealtime()
         )

@@ -112,7 +112,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             isActive = true
         }
 
-        connector = PlaybackSessionConnector(this, mediaSession)
+        connector = PlaybackSessionConnector(this, player, mediaSession)
 
         // Then the notif/headset callbacks
         IntentFilter().apply {
@@ -202,6 +202,12 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onPlayerError(error: ExoPlaybackException) {
         // If there's any issue, just go to the next song.
         playbackManager.next()
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            playbackManager.setPosition(player.currentPosition)
+        }
     }
 
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---

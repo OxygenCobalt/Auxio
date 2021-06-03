@@ -234,8 +234,8 @@ class PlaybackStateManager private constructor() {
     private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
         mIsInUserQueue = false
 
-        mPosition = 0
         mSong = song
+        mPosition = 0
 
         setPlaying(shouldPlay)
     }
