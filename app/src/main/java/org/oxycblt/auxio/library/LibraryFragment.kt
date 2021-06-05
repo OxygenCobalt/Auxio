@@ -23,6 +23,7 @@ import org.oxycblt.auxio.ui.newMenu
 /**
  * A [Fragment] that shows a custom list of [Genre], [Artist], or [Album] data. Also allows for
  * search functionality.
+ * TODO: Add fast scrolling
  * @author OxygenCobalt
  */
 class LibraryFragment : Fragment() {
