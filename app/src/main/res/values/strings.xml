@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
@@ -154,6 +155,7 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="format_next_from">Next From: %s</string>
     <string name="format_songs_loaded">Songs loaded: %d</string>
+
 
     <plurals name="format_song_count">
         <item quantity="one">%d Song</item>

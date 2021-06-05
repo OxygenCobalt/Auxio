@@ -35,7 +35,7 @@
     <dimen name="size_scroll_thumb">48dp</dimen>
     <dimen name="size_clear">32dp</dimen>
 
-    <dimen name="size_app_icon">60dp</dimen>
+    <dimen name="size_app_icon">50dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_min">10sp</dimen>

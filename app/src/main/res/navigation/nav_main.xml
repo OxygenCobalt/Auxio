@@ -31,6 +31,13 @@
             app:exitAnim="@anim/anim_stationary"
             app:popEnterAnim="@anim/anim_stationary"
             app:popExitAnim="@anim/anim_nav_slide_down" />
+        <action
+            android:id="@+id/action_show_about"
+            app:destination="@id/about_fragment"
+            app:enterAnim="@anim/anim_nav_slide_up"
+            app:exitAnim="@anim/anim_stationary"
+            app:popEnterAnim="@anim/anim_stationary"
+            app:popExitAnim="@anim/anim_nav_slide_down" />
     </fragment>
     <fragment
         android:id="@+id/playback_fragment"
@@ -50,4 +57,9 @@
         android:name="org.oxycblt.auxio.playback.queue.QueueFragment"
         android:label="QueueFragment"
         tools:layout="@layout/fragment_queue" />
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="org.oxycblt.auxio.settings.AboutFragment"
+        android:label="dialog_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

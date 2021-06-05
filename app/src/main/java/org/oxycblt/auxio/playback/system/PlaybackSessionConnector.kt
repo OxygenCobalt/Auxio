@@ -116,7 +116,7 @@ class PlaybackSessionConnector(
         invalidateSessionState()
     }
 
-    // --
+    // -- EXOPLAYER CALLBACKS ---
 
     override fun onEvents(player: Player, events: Player.Events) {
         if (events.containsAny(

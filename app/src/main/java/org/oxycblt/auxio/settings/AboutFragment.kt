@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogAboutBinding
+import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.showToast
@@ -20,19 +22,20 @@ import org.oxycblt.auxio.ui.showToast
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
  * @author OxygenCobalt
  */
-class AboutDialog : BottomSheetDialogFragment() {
-    override fun getTheme() = R.style.Theme_BottomSheetFix
-
+class AboutFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = DialogAboutBinding.inflate(layoutInflater)
+        val binding = FragmentAboutBinding.inflate(layoutInflater)
         val musicStore = MusicStore.getInstance()
 
-        binding.aboutVersion.text = BuildConfig.VERSION_NAME
+        binding.aboutToolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
+        binding.aboutVersion.text = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }

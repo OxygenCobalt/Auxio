@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
 
 /**
@@ -20,7 +22,10 @@ class SettingsFragment : Fragment() {
         val binding = FragmentSettingsBinding.inflate(inflater)
 
         binding.settingsToolbar.setOnMenuItemClickListener {
-            AboutDialog().show(childFragmentManager, AboutDialog.TAG)
+            parentFragment?.parentFragment?.findNavController()?.navigate(
+                MainFragmentDirections.actionShowAbout()
+            )
+
             true
         }
 

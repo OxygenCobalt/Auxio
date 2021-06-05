@@ -5,6 +5,8 @@
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Template" parent="Theme.Master" />
 
+    <!-- Refactor styles again to move more stuff into this -->
+
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Template">
         <item name="android:windowBackground">?attr/colorSurface</item>
@@ -203,18 +205,6 @@
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
         <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
-    </style>
-
-    <!-- Bottomsheet style -->
-    <style name="Theme.BottomSheetFix" parent="@style/Theme.Design.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="bottomSheetStyle">@style/Theme.BottomSheetHeightFix</item>
-    </style>
-
-    <!-- Fix to make the bottomsheet go to full height instantly. -->
-    <style name="Theme.BottomSheetHeightFix" parent="Widget.Design.BottomSheet.Modal">
-        <item name="behavior_peekHeight">500dp</item>
     </style>
 
     <!-- Base style for the material buttons -->
