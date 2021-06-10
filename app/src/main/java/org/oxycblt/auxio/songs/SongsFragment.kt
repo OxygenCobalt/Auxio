@@ -81,6 +81,10 @@ class SongsFragment : Fragment() {
             return get(2).uppercaseChar()
         }
 
+        if (length > 4 && startsWith("an ", true)) {
+            return get(3).uppercaseChar()
+        }
+
         return get(0).uppercaseChar()
     }
 }
