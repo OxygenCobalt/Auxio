@@ -47,6 +47,12 @@
         <item name="android:background">@drawable/ui_ripple</item>
     </style>
 
+    <!-- Toolbar Title EntryNames -->
+    <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">@dimen/text_size_toolbar_header</item>
+    </style>
+
     <!-- Style for the play/pause circle button -->
     <style name="PlayPause">
         <item name="android:layout_height">@dimen/size_play_pause</item>
@@ -168,6 +174,6 @@
         <item name="rippleColor">?attr/colorControlHighlight</item>
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/background</item>
+        <item name="android:textColor">@color/surface_color</item>
     </style>
 </resources>

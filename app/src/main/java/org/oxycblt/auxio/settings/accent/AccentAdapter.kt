@@ -66,7 +66,7 @@ class AccentAdapter(
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
 
-                R.color.background.toStateList(context)
+                R.color.surface_color.toStateList(context)
             } else {
                 android.R.color.transparent.toStateList(context)
             }

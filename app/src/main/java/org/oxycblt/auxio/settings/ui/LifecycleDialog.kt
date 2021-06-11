@@ -20,7 +20,7 @@ abstract class LifecycleDialog : AppCompatDialogFragment() {
 
         // Setting the background in XML will also apply it to the tooltip for some inane reason
         // so we have to do it programmatically instead.
-        builder.background = R.color.background.toDrawable(requireContext())
+        builder.background = R.color.surface_color.toDrawable(requireContext())
 
         onConfigDialog(builder)
 

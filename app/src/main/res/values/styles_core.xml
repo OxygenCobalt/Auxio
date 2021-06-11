@@ -5,6 +5,9 @@
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Template" parent="Theme.Master" />
 
+    <!-- Redirects to the correct toolbar popup theme [Normal or Black] -->
+    <attr name="toolbarPopupTheme" format="reference" />
+
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Template">
         <item name="android:windowBackground">?attr/colorSurface</item>
@@ -24,7 +27,8 @@
         <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="cornerRadius">0dp</item>
 
-        <item name="colorSurface">@color/background</item>
+        <item name="colorSurface">@color/surface_color</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.ToolbarPopup</item>
 
         <!--
         These exact flags, in this exact order, in this exact formatting somehow make
@@ -38,7 +42,8 @@
     </style>
 
     <style name="Theme.Base.Black" parent="Theme.Base">
-        <item name="colorSurface">@color/background_black</item>
+        <item name="colorSurface">@color/surface_color_black</item>
         <item name="colorControlHighlight">@color/selection_color_black</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.ToolbarPopup.Black</item>
     </style>
 </resources>

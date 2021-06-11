@@ -8,7 +8,7 @@
         <item name="android:layout_height">?android:attr/actionBarSize</item>
         <item name="android:background">?attr/colorSurface</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
-        <item name="popupTheme">@style/AppThemeOverlay.ToolbarPopup</item>
+        <item name="popupTheme">?attr/toolbarPopupTheme</item>
 
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
         <item name="titleTextColor">?attr/colorPrimary</item>
@@ -23,18 +23,6 @@
     <!-- Toolbar sub-style with a downwards nav icon -->
     <style name="Toolbar.Style.Icon.Down" parent="Toolbar.Style">
         <item name="navigationIcon">@drawable/ic_down</item>
-    </style>
-
-    <!-- Toolbar popup menu -->
-    <style name="AppThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
-        <item name="android:colorBackground">@color/background</item>
-        <item name="colorControlHighlight">@color/selection_color</item>
-    </style>
-
-    <!-- Toolbar Title EntryNames -->
-    <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textSize">@dimen/text_size_toolbar_header</item>
     </style>
 
     <!-- Style for the general item background -->
