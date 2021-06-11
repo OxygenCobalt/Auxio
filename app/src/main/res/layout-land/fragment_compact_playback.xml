@@ -26,31 +26,18 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            android:layout_width="@dimen/size_cover_compact"
-            android:layout_height="@dimen/size_cover_compact"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_small"
+            style="@style/CompactImageView"
             android:contentDescription="@{@string/description_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_song" />
 
         <TextView
             android:id="@+id/playback_song"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:ellipsize="end"
-            android:fontFamily="@font/inter_semibold"
-            android:singleLine="true"
+            style="@style/Widget.TextView.Compact.Primary"
             android:text="@{song.name}"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.SmallHeader"
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -60,15 +47,8 @@
 
         <TextView
             android:id="@+id/playback_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:ellipsize="end"
-            android:singleLine="true"
+            style="@style/Widget.TextView.Compact.Secondary"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -77,14 +57,9 @@
 
         <org.oxycblt.auxio.playback.PlayPauseButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="@dimen/size_play_pause_compact"
-            android:layout_height="@dimen/size_play_pause_compact"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:background="@drawable/ui_unbounded_ripple"
+            style="@style/Widget.Button.Unbounded.PlayPause"
             android:contentDescription="@string/description_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
-            android:tint="@color/control_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -92,14 +67,11 @@
 
         <ProgressBar
             android:id="@+id/playback_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_compact_progress"
-            android:clickable="false"
+            style="@style/Widget.Seekbar.Compact"
             android:progress="@{playbackModel.positionAsProgress}"
-            android:progressBackgroundTint="?attr/colorControlNormal"
-            android:progressTint="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:progress="70" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

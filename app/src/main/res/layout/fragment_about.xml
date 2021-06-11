@@ -13,10 +13,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/about_toolbar"
-            style="@style/Toolbar.Style.Icon"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
-            app:navigationIcon="@drawable/ic_down"
+            style="@style/Toolbar.Style.Icon.Down"
             app:title="@string/label_about" />
 
         <com.google.android.material.card.MaterialCardView
@@ -101,22 +98,14 @@
                         app:layout_constraintBottom_toBottomOf="@+id/about_version_icon"
                         app:layout_constraintStart_toEndOf="@+id/about_version_icon"
                         app:layout_constraintTop_toBottomOf="@+id/about_version_title"
-                        tools:text="0.0.0" />
+                        tools:text="16.16.16" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/about_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ui_ripple"
-                    android:clickable="true"
-                    android:drawablePadding="@dimen/spacing_medium"
-                    android:focusable="true"
-                    android:padding="@dimen/spacing_medium"
+                    style="@style/Widget.TextView.About.Clickable"
                     android:text="@string/label_code"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     app:drawableStartCompat="@drawable/ic_code"
                     app:layout_constraintBottom_toTopOf="@+id/about_faq"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -125,16 +114,8 @@
 
                 <TextView
                     android:id="@+id/about_licenses"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ui_ripple"
-                    android:clickable="true"
-                    android:drawablePadding="@dimen/spacing_medium"
-                    android:focusable="true"
-                    android:padding="@dimen/spacing_medium"
+                    style="@style/Widget.TextView.About.Clickable"
                     android:text="@string/label_licenses"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     app:drawableStartCompat="@drawable/ic_license"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -142,16 +123,8 @@
 
                 <TextView
                     android:id="@+id/about_faq"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ui_ripple"
-                    android:clickable="true"
-                    android:drawablePadding="@dimen/spacing_medium"
-                    android:focusable="true"
-                    android:padding="@dimen/spacing_medium"
+                    style="@style/Widget.TextView.About.Clickable"
                     android:text="@string/label_faq"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     app:drawableStartCompat="@drawable/ic_about"
                     app:layout_constraintBottom_toTopOf="@+id/about_licenses"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -160,26 +133,18 @@
 
                 <TextView
                     android:id="@+id/about_song_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/spacing_medium"
-                    android:padding="@dimen/spacing_medium"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    style="@style/Widget.TextView.About"
                     android:theme="@style/Theme.Neutral"
                     app:drawableStartCompat="@drawable/ic_song"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/about_licenses"
                     tools:text="Songs Loaded: 1616" />
 
                 <TextView
                     android:id="@+id/about_author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/spacing_medium"
-                    android:padding="@dimen/spacing_medium"
+                    style="@style/Widget.TextView.About"
                     android:text="@string/label_author"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     app:drawableStartCompat="@drawable/ic_author"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

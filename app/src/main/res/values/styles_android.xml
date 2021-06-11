@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ANDROID COMPONENT-SPECIFIC STYLES. MOSTLY HACKS -->
+
+    <!-- Custom popup menu theme -->
+    <style name="Widget.CustomPopup" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/background</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <!-- Custom Dialog EntryNames -->
+    <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:colorControlHighlight">@color/selection_color</item>
+        <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
+
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.TextView.Dialog.Title</item>
+        <item name="colorBackgroundFloating">@color/background</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
+
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Button.Dialog</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Button.Dialog</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Button.Dialog.Neutral</item>
+    </style>
+
+    <!-- Baseline dialog style -->
+    <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Angular</item>
+    </style>
+
+    <!-- Dialog shape with no rounded corners -->
+    <style name="ShapeAppearance.Angular" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <!-- Custom dialog title theme -->
+    <style name="Widget.TextView.Dialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">@dimen/text_size_toolbar_header</item>
+    </style>
+
+    <!-- The style for the checked text view in the custom dialog -->
+    <style name="Widget.CheckedTextView.Dialog" parent="Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!-- Style for dialog buttons -->
+    <style name="Widget.Button.Dialog" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
+        <item name="rippleColor">@color/selection_color</item>
+        <item name="cornerRadius">0dp</item>
+    </style>
+
+    <!-- Custom button style that eliminates the weird margin that the neutral button has -->
+    <style name="Widget.Button.Dialog.Neutral" parent="Widget.Button.Dialog">
+        <item name="android:layout_marginStart">0dp</item>
+    </style>
+</resources>

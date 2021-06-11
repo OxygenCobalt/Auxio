@@ -13,8 +13,6 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/library_toolbar"
             style="@style/Toolbar.Style"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
             app:menu="@menu/menu_library"
             app:title="@string/label_library" />
 

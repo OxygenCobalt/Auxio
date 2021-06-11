@@ -25,12 +25,11 @@
 
         <ImageView
             android:id="@+id/album_cover"
+            style="@style/ElevatedImageView"
             android:layout_width="@dimen/size_cover_detail"
             android:layout_height="@dimen/size_cover_detail"
             android:layout_marginTop="@dimen/spacing_medium"
             android:contentDescription="@{@string/description_album_cover(album.name)}"
-            android:elevation="@dimen/elevation_normal"
-            android:outlineProvider="bounds"
             app:albumArt="@{album}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

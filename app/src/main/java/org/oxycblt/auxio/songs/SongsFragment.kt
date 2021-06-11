@@ -71,7 +71,7 @@ class SongsFragment : Fragment() {
      * semantics when it comes to articles.
      */
     private val String.first: Char get() {
-        // If the name actually starts with "The" or "A", get the character *after* that word.
+        // If the name actually starts with "The"/"A"/"An", get the character *after* that word.
         // Yes, this is stupidly english centric but it wont run with other languages.
         if (length > 5 && startsWith("the ", true)) {
             return get(4).uppercaseChar()

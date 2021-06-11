@@ -13,9 +13,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/queue_toolbar"
-            style="@style/Toolbar.Style.Icon"
-            android:background="?android:attr/windowBackground"
-            android:elevation="@dimen/elevation_normal"
+            style="@style/Toolbar.Style.Icon.Down"
             app:navigationIcon="@drawable/ic_down"
             app:title="@string/label_queue" />
 

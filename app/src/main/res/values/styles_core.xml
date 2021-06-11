@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Master parent theme based off of Theme.MaterialComponents.DayNight.NoActionBar.Bridge -->
+    <style name="Theme.Master" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge" />
+    <!-- Template theme that handles edge-to-edge on other styles variants -->
+    <style name="Theme.Template" parent="Theme.Master" />
+
+    <!-- Base theme -->
+    <style name="Theme.Base" parent="Theme.Template">
+        <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
+
+        <!-- Default values for the accents. -->
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorSecondary">@color/design_default_color_primary</item>
+
+        <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
+        <item name="colorControlNormal">@color/control_color</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="cornerRadius">0dp</item>
+
+        <item name="colorSurface">@color/background</item>
+
+        <!--
+        These exact flags, in this exact order, in this exact formatting somehow make
+        the dialogs use the nicer material style. Please do not touch this or format it.
+        -->
+        <!-- @formatter:off -->
+        <item name="viewInflaterClass">com.google.android.material.theme.MaterialComponentsViewInflater</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="materialAlertDialogTheme">@style/Theme.CustomDialog</item>
+        <!-- @formatter:on -->
+    </style>
+</resources>

@@ -17,9 +17,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_toolbar"
-                style="@style/Toolbar.Style.Icon"
-                android:background="?attr/colorSurface"
-                android:elevation="@dimen/elevation_normal" />
+                style="@style/Toolbar.Style.Icon" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
