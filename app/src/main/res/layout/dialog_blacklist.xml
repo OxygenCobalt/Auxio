@@ -6,10 +6,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
         android:orientation="vertical"
-        android:paddingTop="@dimen/spacing_small"
-        android:theme="@style/Theme.Neutral">
+        android:paddingTop="@dimen/spacing_small">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/blacklist_recycler"

@@ -45,5 +45,6 @@
         <item name="colorSurface">@color/surface_color_black</item>
         <item name="colorControlHighlight">@color/selection_color_black</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.ToolbarPopup.Black</item>
+        <item name="materialAlertDialogTheme">@style/Theme.CustomDialog.Black</item>
     </style>
 </resources>

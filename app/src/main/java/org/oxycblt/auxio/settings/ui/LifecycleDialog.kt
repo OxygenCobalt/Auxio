@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.resolveAttr
 import org.oxycblt.auxio.ui.toDrawable
 
 /**
@@ -20,7 +22,7 @@ abstract class LifecycleDialog : AppCompatDialogFragment() {
 
         // Setting the background in XML will also apply it to the tooltip for some inane reason
         // so we have to do it programmatically instead.
-        builder.background = R.color.surface_color.toDrawable(requireContext())
+        builder.background = R.attr.colorSurface.resolveAttr(requireContext()).toDrawable()
 
         onConfigDialog(builder)
 

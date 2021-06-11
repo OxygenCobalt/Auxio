@@ -22,14 +22,14 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 ## Screenshots
 
 <p align="center">
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=200>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot0.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot1.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot2.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot3.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot4.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot5.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot6.png" width=200>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot7.png" width=200>
 </p>
 
 ## Features
@@ -51,7 +51,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 ## To possibly come in the future:
 
 - Artist Images
-- Black theme
 - Custom accents
 - Playlists
 - Liked songs

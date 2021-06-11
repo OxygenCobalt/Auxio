@@ -9,24 +9,26 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <!-- Toolbar popup menu -->
-    <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
+    <style name="ThemeOverlay.ToolbarPopup.Base" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">?attr/colorSurface</item>
+    </style>
+
+    <!-- Toolbar popup menu -->
+    <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.ToolbarPopup.Base">
         <item name="colorControlHighlight">@color/selection_color</item>
     </style>
 
     <!-- Toolbar popup menu [Black] -->
-    <style name="ThemeOverlay.ToolbarPopup.Black" parent="ThemeOverlay.ToolbarPopup">
+    <style name="ThemeOverlay.ToolbarPopup.Black" parent="ThemeOverlay.ToolbarPopup.Base">
         <item name="colorControlHighlight">@color/selection_color_black</item>
     </style>
 
-    <!-- Custom Dialog EntryNames -->
-    <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="android:colorControlHighlight">@color/selection_color</item>
+    <!-- Base custom dialog theme. Don't try to understand this. -->
+    <style name="Theme.CustomDialog.Base" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:colorControlHighlight">?attr/colorControlHighlight</item>
         <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
 
         <item name="materialAlertDialogTitleTextStyle">@style/Widget.TextView.Dialog.Title</item>
-        <item name="colorBackgroundFloating">@color/surface_color</item>
         <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
 
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Button.Dialog</item>
@@ -34,7 +36,19 @@
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Button.Dialog.Neutral</item>
     </style>
 
-    <!-- Baseline dialog style -->
+    <!-- Normal DayNight dialog theme -->
+    <style name="Theme.CustomDialog" parent="Theme.CustomDialog.Base">
+        <item name="colorSurface">@color/surface_color</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
+    </style>
+
+    <!-- Black theme dialog theme -->
+    <style name="Theme.CustomDialog.Black" parent="Theme.CustomDialog.Base">
+        <item name="colorSurface">@color/surface_color_black</item>
+        <item name="colorControlHighlight">@color/selection_color_black</item>
+    </style>
+
+    <!-- Material-specific dialog style -->
     <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.MaterialComponents">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Angular</item>
     </style>
@@ -64,7 +78,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
-        <item name="rippleColor">@color/selection_color</item>
+        <item name="rippleColor">?android:attr/colorControlHighlight</item>
         <item name="cornerRadius">0dp</item>
     </style>
 
@@ -72,6 +86,4 @@
     <style name="Widget.Button.Dialog.Neutral" parent="Widget.Button.Dialog">
         <item name="android:layout_marginStart">0dp</item>
     </style>
-
-
 </resources>
