@@ -7,6 +7,8 @@
     <color name="control_color">#202020</color>
     <color name="nav_color">#01fafafa</color>
 
+    <color name="background_black">#000000</color>
+    <color name="selection_color_black">#343434</color>
 
     <!--
     Base color set derived from Music Player GO.

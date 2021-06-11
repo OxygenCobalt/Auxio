@@ -79,6 +79,15 @@ fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
 }
 
 /**
+ * Returns whether the current UI is in night mode or not. This will work if the theme is
+ * automatic as well.
+ */
+fun Context.isNight(): Boolean {
+    return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+        Configuration.UI_MODE_NIGHT_YES
+}
+
+/**
  * Resolve a color.
  * @param context [Context] required
  * @return The resolved color, black if the resolving process failed.

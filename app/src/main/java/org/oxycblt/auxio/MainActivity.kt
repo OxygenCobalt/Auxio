@@ -15,6 +15,7 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Accent
 import org.oxycblt.auxio.ui.isEdgeOn
+import org.oxycblt.auxio.ui.isNight
 
 /**
  * The single [AppCompatActivity] for Auxio.
@@ -25,11 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val settingsManager = SettingsManager.getInstance()
-        val newAccent = Accent.set(settingsManager.accent)
-
-        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
-        setTheme(newAccent.theme)
+        setupTheme()
 
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
             this, R.layout.activity_main
@@ -50,6 +47,22 @@ class MainActivity : AppCompatActivity() {
 
         // onNewIntent doesnt automatically call on startup, so call it here.
         onNewIntent(intent)
+    }
+
+    private fun setupTheme() {
+        // Update the current accent and theme
+        val settingsManager = SettingsManager.getInstance()
+        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+
+        val newAccent = Accent.set(settingsManager.accent)
+
+        // The black theme has a completely separate set of styles since style attributes cannot
+        // be modified at runtime.
+        if (isNight() && settingsManager.useBlackTheme) {
+            setTheme(newAccent.blackTheme)
+        } else {
+            setTheme(newAccent.theme)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

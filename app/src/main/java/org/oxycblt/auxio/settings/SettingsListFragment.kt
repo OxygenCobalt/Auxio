@@ -18,6 +18,7 @@ import org.oxycblt.auxio.settings.blacklist.BlacklistDialog
 import org.oxycblt.auxio.settings.ui.IntListPrefDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.ui.isNight
 import org.oxycblt.auxio.ui.showToast
 
 /**
@@ -78,6 +79,16 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
                         AppCompatDelegate.setDefaultNightMode(value as Int)
                         setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
+                        true
+                    }
+                }
+
+                SettingsManager.KEY_BLACK_THEME -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        if (requireContext().isNight()) {
+                            requireActivity().recreate()
+                        }
+
                         true
                     }
                 }

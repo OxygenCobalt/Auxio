@@ -32,6 +32,10 @@ class SettingsManager private constructor(context: Context) :
     val theme: Int
         get() = handleThemeCompat(sharedPrefs)
 
+    /** Whether the dark theme should be black or not */
+    val useBlackTheme: Boolean
+        get() = sharedPrefs.getBoolean(KEY_BLACK_THEME, false)
+
     /** The current accent. */
     var accent: Accent
         get() = handleAccentCompat(sharedPrefs)
@@ -195,6 +199,7 @@ class SettingsManager private constructor(context: Context) :
 
     companion object {
         const val KEY_THEME = "KEY_THEME2"
+        const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
         const val KEY_ACCENT = "KEY_ACCENT2"
 
         const val KEY_LIB_DISPLAY_MODE = "KEY_LIB_MODE"

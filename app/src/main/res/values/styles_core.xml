@@ -36,4 +36,9 @@
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog</item>
         <!-- @formatter:on -->
     </style>
+
+    <style name="Theme.Base.Black" parent="Theme.Base">
+        <item name="colorSurface">@color/background_black</item>
+        <item name="colorControlHighlight">@color/selection_color_black</item>
+    </style>
 </resources>

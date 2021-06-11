@@ -79,6 +79,7 @@
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:layout_marginBottom="@dimen/spacing_medium"
+            android:text="@{song.album.name}"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"

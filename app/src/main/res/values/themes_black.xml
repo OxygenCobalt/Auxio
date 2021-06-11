@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-    All the base themes/accents.
+    All the base themes/accents for black mode.
     -->
-    <style name="Theme.Red" parent="Theme.Base">
+    <style name="Theme.Red.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/red</item>
         <item name="colorSecondary">@color/red</item>
     </style>
 
-    <style name="Theme.Pink" parent="Theme.Base">
+    <style name="Theme.Pink.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/pink</item>
         <item name="colorSecondary">@color/pink</item>
     </style>
 
-    <style name="Theme.Purple" parent="Theme.Base">
+    <style name="Theme.Purple.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/purple</item>
         <item name="colorSecondary">@color/purple</item>
     </style>
 
-    <style name="Theme.DeepPurple" parent="Theme.Base">
+    <style name="Theme.DeepPurple.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/deep_purple</item>
         <item name="colorSecondary">@color/deep_purple</item>
     </style>
 
-    <style name="Theme.Indigo" parent="Theme.Base">
+    <style name="Theme.Indigo.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/indigo</item>
         <item name="colorSecondary">@color/indigo</item>
     </style>
 
-    <style name="Theme.Blue" parent="Theme.Base">
+    <style name="Theme.Blue.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorSecondary">@color/blue</item>
     </style>
 
-    <style name="Theme.LightBlue" parent="Theme.Base">
+    <style name="Theme.LightBlue.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/light_blue</item>
         <item name="colorSecondary">@color/light_blue</item>
     </style>
 
-    <style name="Theme.Cyan" parent="Theme.Base">
+    <style name="Theme.Cyan.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/cyan</item>
         <item name="colorSecondary">@color/cyan</item>
     </style>
 
-    <style name="Theme.Teal" parent="Theme.Base">
+    <style name="Theme.Teal.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/teal</item>
         <item name="colorSecondary">@color/teal</item>
     </style>
 
-    <style name="Theme.Green" parent="Theme.Base">
+    <style name="Theme.Green.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/green</item>
         <item name="colorSecondary">@color/green</item>
     </style>
 
-    <style name="Theme.LightGreen" parent="Theme.Base">
+    <style name="Theme.LightGreen.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/light_green</item>
         <item name="colorSecondary">@color/light_green</item>
     </style>
 
-    <style name="Theme.Lime" parent="Theme.Base">
+    <style name="Theme.Lime.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/lime</item>
         <item name="colorSecondary">@color/lime</item>
     </style>
 
-    <style name="Theme.Yellow" parent="Theme.Base">
+    <style name="Theme.Yellow.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/yellow</item>
         <item name="colorSecondary">@color/yellow</item>
     </style>
 
-    <style name="Theme.Orange" parent="Theme.Base">
+    <style name="Theme.Orange.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/orange</item>
         <item name="colorSecondary">@color/orange</item>
     </style>
 
-    <style name="Theme.DeepOrange" parent="Theme.Base">
+    <style name="Theme.DeepOrange.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/deep_orange</item>
         <item name="colorSecondary">@color/deep_orange</item>
     </style>
 
-    <style name="Theme.Brown" parent="Theme.Base">
+    <style name="Theme.Brown.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/brown</item>
         <item name="colorSecondary">@color/brown</item>
     </style>
 
-    <style name="Theme.Grey" parent="Theme.Base">
+    <style name="Theme.Grey.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/grey</item>
         <item name="colorSecondary">@color/grey</item>
     </style>
 
-    <style name="Theme.BlueGrey" parent="Theme.Base">
+    <style name="Theme.BlueGrey.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/blue_grey</item>
         <item name="colorSecondary">@color/blue_grey</item>
     </style>
 
-    <style name="Theme.Neutral" parent="Theme.Base">
+    <style name="Theme.Neutral.Black" parent="Theme.Base.Black">
         <item name="colorPrimary">@color/control_color</item>
         <item name="colorSecondary">@color/control_color</item>
     </style>
