@@ -49,6 +49,31 @@ class FastScrollView @JvmOverloads constructor(
 
     private var mRecycler: RecyclerView? = null
     private var mGetItem: ((Int) -> Char)? = null
+    private val mObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() = postIndicatorUpdate()
+
+        override fun onItemRangeChanged(
+            positionStart: Int,
+            itemCount: Int,
+            payload: Any?
+        ) = postIndicatorUpdate()
+
+        override fun onItemRangeInserted(
+            positionStart: Int,
+            itemCount: Int
+        ) = onChanged()
+
+        override fun onItemRangeMoved(
+            fromPosition: Int,
+            toPosition: Int,
+            itemCount: Int
+        ) = onChanged()
+
+        override fun onItemRangeRemoved(
+            positionStart: Int,
+            itemCount: Int
+        ) = onChanged()
+    }
 
     // --- INDICATORS ---
 
@@ -92,6 +117,8 @@ class FastScrollView @JvmOverloads constructor(
 
         mRecycler = recycler
         mGetItem = getItem
+
+        recycler.adapter?.registerAdapterDataObserver(mObserver)
 
         postIndicatorUpdate()
     }
