@@ -31,6 +31,7 @@ import kotlin.math.roundToInt
  * fast-scrollers, this one displays indicators and a thumb instead of simply a scroll bar.
  * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
  * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
+ * TODO: Make this update with data.
  * @author OxygenCobalt
  */
 class FastScrollView @JvmOverloads constructor(

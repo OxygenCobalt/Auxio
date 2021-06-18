@@ -101,7 +101,7 @@ class MusicLoader(private val context: Context) {
                 Albums._ID, // 0
                 Albums.ALBUM, // 1
                 Albums.ARTIST, // 2
-                Albums.FIRST_YEAR, // 4
+                Albums.LAST_YEAR, // 4
             ),
             null, null,
             Albums.DEFAULT_SORT_ORDER
@@ -114,7 +114,7 @@ class MusicLoader(private val context: Context) {
             val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
             val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
             val artistNameIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
-            val yearIndex = cursor.getColumnIndexOrThrow(Albums.FIRST_YEAR)
+            val yearIndex = cursor.getColumnIndexOrThrow(Albums.LAST_YEAR)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)

@@ -15,6 +15,7 @@ import org.oxycblt.auxio.music.Song
  * off the given sorting mode.
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
+ * TODO: Make SortMode use title case [skip the/a(n)]
  */
 enum class SortMode(@DrawableRes val iconRes: Int) {
     // Icons for each mode are assigned to the enums themselves
@@ -32,11 +33,15 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedGenreList(genres: List<Genre>): List<Genre> {
         return when (this) {
             ALPHA_UP -> genres.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.resolvedName }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
+                    it.resolvedName.sliceArticle()
+                }
             )
 
             ALPHA_DOWN -> genres.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.resolvedName }
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    it.resolvedName.sliceArticle()
+                }
             )
 
             else -> genres
@@ -51,11 +56,15 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedArtistList(artists: List<Artist>): List<Artist> {
         return when (this) {
             ALPHA_UP -> artists.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             ALPHA_DOWN -> artists.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             else -> artists
@@ -70,11 +79,15 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedAlbumList(albums: List<Album>): List<Album> {
         return when (this) {
             ALPHA_UP -> albums.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             ALPHA_DOWN -> albums.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             NUMERIC_UP -> albums.sortedBy { it.year }
@@ -92,11 +105,15 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedSongList(songs: List<Song>): List<Song> {
         return when (this) {
             ALPHA_UP -> songs.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             ALPHA_DOWN -> songs.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             NUMERIC_UP -> songs.sortedWith(compareByDescending { it.track })
@@ -114,11 +131,15 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     fun getSortedArtistSongList(songs: List<Song>): List<Song> {
         return when (this) {
             ALPHA_UP -> songs.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             ALPHA_DOWN -> songs.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                compareBy(String.CASE_INSENSITIVE_ORDER) {
+                    it.name.sliceArticle()
+                }
             )
 
             NUMERIC_UP -> {
@@ -130,6 +151,7 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
 
                 list
             }
+
             NUMERIC_DOWN -> {
                 val list = mutableListOf<Song>()
 
@@ -204,4 +226,25 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
 @BindingAdapter("sortIcon")
 fun ImageButton.bindSortIcon(mode: SortMode) {
     setImageResource(mode.iconRes)
+}
+
+/**
+ * Slice a string so that any preceding articles like The/A(n) are truncated.
+ * This is hilariously anglo-centric, but its mostly for MediaStore compat and hopefully
+ * shouldn't run with other languages.
+ */
+fun String.sliceArticle(): String {
+    if (length > 5 && startsWith("the ", true)) {
+        return slice(4..lastIndex)
+    }
+
+    if (length > 4 && startsWith("an ", true)) {
+        return slice(3..lastIndex)
+    }
+
+    if (length > 3 && startsWith("a ", true)) {
+        return slice(2..lastIndex)
+    }
+
+    return this
 }

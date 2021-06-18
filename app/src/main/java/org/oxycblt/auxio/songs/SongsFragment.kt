@@ -12,6 +12,7 @@ import org.oxycblt.auxio.databinding.FragmentSongsBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.recycler.sliceArticle
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -56,7 +57,8 @@ class SongsFragment : Fragment() {
         }
 
         binding.songFastScroll.setup(binding.songRecycler) { pos ->
-            val char = musicStore.songs[pos].name.first
+            // Get the first character [respecting articles]
+            val char = musicStore.songs[pos].name.sliceArticle().first().uppercaseChar()
 
             if (char.isDigit()) '#' else char
         }
@@ -64,27 +66,5 @@ class SongsFragment : Fragment() {
         logD("Fragment created.")
 
         return binding.root
-    }
-
-    /**
-     * Dumb shortcut for getting the first letter in a string, while regarding certain
-     * semantics when it comes to articles.
-     */
-    private val String.first: Char get() {
-        // If the name actually starts with "The"/"A"/"An", get the character *after* that word.
-        // Yes, this is stupidly english centric but it wont run with other languages.
-        if (length > 5 && startsWith("the ", true)) {
-            return get(4).uppercaseChar()
-        }
-
-        if (length > 3 && startsWith("a ", true)) {
-            return get(2).uppercaseChar()
-        }
-
-        if (length > 4 && startsWith("an ", true)) {
-            return get(3).uppercaseChar()
-        }
-
-        return get(0).uppercaseChar()
     }
 }
