@@ -38,6 +38,11 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
         mDisplayMode = settingsManager.libraryDisplayMode
         mSortMode = settingsManager.librarySortMode
 
+        // Handle "NONE" SortMode that was removed in 1.4.1
+        if (mSortMode == SortMode.NONE) {
+            mSortMode = SortMode.ALPHA_DOWN
+        }
+
         updateLibraryData()
     }
 
@@ -46,7 +51,6 @@ class LibraryViewModel : ViewModel(), SettingsManager.Callback {
      */
     fun updateSortMode(@IdRes itemId: Int) {
         val mode = when (itemId) {
-            R.id.option_sort_none -> SortMode.NONE
             R.id.option_sort_alpha_down -> SortMode.ALPHA_DOWN
             R.id.option_sort_alpha_up -> SortMode.ALPHA_UP
 

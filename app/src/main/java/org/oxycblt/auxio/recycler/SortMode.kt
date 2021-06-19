@@ -173,11 +173,10 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     @IdRes
     fun toMenuId(): Int {
         return when (this) {
-            NONE -> R.id.option_sort_none
             ALPHA_UP -> R.id.option_sort_alpha_up
             ALPHA_DOWN -> R.id.option_sort_alpha_down
 
-            else -> R.id.option_sort_none
+            else -> R.id.option_sort_alpha_up
         }
     }
 

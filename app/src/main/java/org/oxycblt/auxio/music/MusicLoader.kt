@@ -11,7 +11,6 @@ import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.database.BlacklistDatabase
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.recycler.SortMode
 
 /**
  * Class that loads/constructs [Genre]s, [Artist]s, [Album]s, and [Song] objects from the filesystem
@@ -227,9 +226,6 @@ class MusicLoader(private val context: Context) {
                 )
             )
         }
-
-        // Make the artist view line up with the rest of the lists by sorting it.
-        artists = SortMode.ALPHA_DOWN.getSortedArtistList(artists).toMutableList()
 
         logD("Albums successfully linked into ${artists.size} artists")
     }
