@@ -17,6 +17,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.recycler.sliceArticle
 import org.oxycblt.auxio.ui.getSpans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -65,6 +66,13 @@ class LibraryFragment : Fragment() {
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }
+        }
+
+        binding.libraryFastScroll.setup(binding.libraryRecycler) { pos ->
+            val item = libraryModel.libraryData.value!![pos]
+            val char = item.displayName.sliceArticle().first().uppercaseChar()
+
+            if (char.isDigit()) '#' else char
         }
 
         // --- VIEWMODEL SETUP ---
