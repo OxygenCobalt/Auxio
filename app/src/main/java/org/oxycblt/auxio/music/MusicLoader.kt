@@ -236,17 +236,44 @@ class MusicLoader(private val context: Context) {
         /*
          * Okay, I'm going to go on a bit of a tangent here because this bit of code infuriates me.
          *
-         * In an ideal world I should just be able to write MediaStore.Media.Audio.GENRE
-         * in the original song projection and then have it fetch the genre from the database, but
-         * no, why would ANYONE do that? Instead, I have to manually iterate through each genre, get
-         * A LIST OF SONGS FROM THEM, and then waste CPU cycles REPEATEDLY ITERATING through the
-         * songs list to LINK EACH SONG WITH THEIR GENRE. This is the bottleneck in my loader,
-         * without this code the load times drop from ~130ms to ~60ms, but of course I have to do
-         * this if I want an sensible genre system. Why is it this way? Nobody knows! Now this
-         * quirk is immortalized and has to be replicated in all future iterations of this API! Yay!
+         * In any reasonable platform, you think that you could just query a media database for the
+         * "genre" field and get the genre for a song, right? But not with android! No. Thats too
+         * normal for this dysfunctional SDK that was dropped on it's head as a baby. Instead, we
+         * have to iterate through EACH GENRE, QUERY THE MEDIA DATABASE FOR THE SONGS OF THAT GENRE,
+         * AND THEN ITERATE THROUGH THAT LIST TO LINK EVERY SONG WITH THE GENRE. This O(mom im scared)
+         * algorithm single-handedly DOUBLES the amount of time it takes Auxio to load music, but
+         * apparently this is the only way you can have a remotely sensible genre system on this
+         * busted OS. Why is it this way? Nobody knows! Now this quirk is immortalized and has to
+         * be replicated in all future versions of this API, because god forbid you break some
+         * app that's probably older than some of the people reading this by now.
+         *
+         * Another fun fact, did you know that you can only get the date from ID3v2.3 MPEG files?
+         * I sure didn't, until I decided to update my music collection to ID3v2.4 and Xiph only
+         * to see that android apparently has a brain aneurysm the moment it sees a dreaded TDRC
+         * or DATE tag. This bug is similarly baked into the platform and hasnt been fixed, even
+         * in android TWELVE. ID3v2.4 has existed for TWENTY-ONE YEARS. IT CAN DRINK NOW. At least
+         * you could replace your ancient dinosaur parser with Taglib or something, but again,
+         * google cant bear even slighting the gods of backwards compat.
+         *
+         * Is there anything we can do about this system? No. Google's issue tracker, in classic
+         * google fashion, requires a google account to even view. Even if I were to set aside my
+         * Torvalds-esqe convictions and make an account, MediaStore is such an obscure part of the
+         * platform that it basically receives no attention compared to the advertising APIs or the
+         * nineteenth UI rework, and its not like the many music player developers are going to band
+         * together to beg google to take this API behind the woodshed and shoot it. So instead,
+         * players like VLC and Vanilla just hack their own pidgin version of MediaStore off of
+         * their own media parsers, but even this becomes increasingly impossible as google
+         * continues to kill the filesystem ala iOS. In the future MediaStore could be the only
+         * system we have, which is also the day greenland melts and birthdays stop happening
+         * forever. I'm pretty sure that at this point nothing is going to happen, google will
+         * continue to neglect MediaStore, and all the people who just want to listen to their music
+         * collections on their phone will continue to get screwed. But hey, at least some dev at
+         * google got a cushy managerial position where they can tweet about politics all day for
+         * shipping the brand new androidx.FooBarBlasterView, yay!
          *
          * I hate this platform so much.
          */
+
         genres.forEach { genre ->
             val songCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),

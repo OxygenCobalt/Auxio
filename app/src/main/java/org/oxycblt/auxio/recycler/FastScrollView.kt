@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.songs
+package org.oxycblt.auxio.recycler
 
 import android.content.Context
 import android.os.Build

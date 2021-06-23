@@ -20,3 +20,9 @@ These arent as likely to be accepted. As I said, I do not want Auxio to become o
 This does not rule out these additions, but they are not accepted as often as others. I will also hold off adding features until I'm able to implement them without disruption or strange behaviors.
 
 Feel free to fork Auxio to add your own feature set however.
+
+#### Additions that have already been rejected:
+- Lyrics [#19]
+- Recently added list[#18]
+- Folder View/Grouping [#10]
+- Replaygain [#7]

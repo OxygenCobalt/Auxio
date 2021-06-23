@@ -24,10 +24,6 @@ Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request
 
 ExoPlayer is far more flexible than the native MediaPlayer API, which allows Auxio to have consistent behavior across devices & OEMs, along with allowing Auxio to be extended to music sources outside of local files. You can read more about the benefits (and drawbacks) of ExoPlayer [Here](https://exoplayer.dev/pros-and-cons.html).
 
-## Why is there no black mode?
-
-Android does not support a black mode directly, only dark and light. Therefore I have to implement the mode myself, which will take some time. I plan to add it however.
-
 ## Why cant I have a custom accent?
 
 Custom accents would require some changes to the accent system in the app, which will take some time. I plan to add them however.
