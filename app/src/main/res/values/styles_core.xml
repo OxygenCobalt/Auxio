@@ -5,7 +5,8 @@
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Template" parent="Theme.Master" />
 
-    <!-- Redirects to the correct toolbar popup theme [Normal or Black] -->
+    <!-- Redirects to the correct toolbar popup theme so that it can work on black mode
+     TODO: I wonder if theres a way to collapse this with the other Toolbar theme. -->
     <attr name="toolbarPopupTheme" format="reference" />
 
     <!-- Base theme -->
@@ -41,6 +42,7 @@
         <!-- @formatter:on -->
     </style>
 
+    <!-- The basic black theme derived in all black accents. -->
     <style name="Theme.Base.Black" parent="Theme.Base">
         <item name="colorSurface">@color/surface_color_black</item>
         <item name="colorControlHighlight">@color/selection_color_black</item>

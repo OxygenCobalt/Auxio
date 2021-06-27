@@ -16,7 +16,6 @@
     <string name="label_filter_all">Tudo</string>
 
     <string name="label_sort">Classificação</string>
-    <string name="label_sort_none">Padrão</string>
     <string name="label_sort_alpha_down">Ascendente</string>
     <string name="label_sort_alpha_up">Descendente</string>
 

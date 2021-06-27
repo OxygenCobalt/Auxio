@@ -8,7 +8,7 @@ import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.ui.ACCENTS
 import org.oxycblt.auxio.ui.Accent
 
-// A couple of utils for migrating from old settings values to the new the new
+// A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0
 
 fun handleThemeCompat(prefs: SharedPreferences): Int {

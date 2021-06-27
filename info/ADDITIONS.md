@@ -25,4 +25,4 @@ Feel free to fork Auxio to add your own feature set however.
 - Lyrics [#19]
 - Recently added list[#18]
 - Folder View/Grouping [#10]
-- Replaygain [#7]
+- ReplayGain [#7]

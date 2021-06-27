@@ -160,9 +160,11 @@ class PlaybackSessionConnector(
 
     private fun getPlayerState(): Int {
         if (playbackManager.song == null) {
+            // No song, player should be stopped
             return PlaybackStateCompat.STATE_STOPPED
         }
 
+        // Otherwise play/pause
         return if (playbackManager.isPlaying) {
             PlaybackStateCompat.STATE_PLAYING
         } else {

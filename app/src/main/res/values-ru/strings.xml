@@ -16,7 +16,6 @@
     <string name="label_filter_all">Всё</string>
 
     <string name="label_sort">Сортировка</string>
-    <string name="label_sort_none">По умолчанию</string>
     <string name="label_sort_alpha_down">По возрастанию</string>
     <string name="label_sort_alpha_up">По убыванию</string>
 

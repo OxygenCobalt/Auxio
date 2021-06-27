@@ -19,7 +19,6 @@
     <string name="label_filter_all">Alles</string>
 
     <string name="label_sort">Sortierung</string>
-    <string name="label_sort_none">Standard</string>
     <string name="label_sort_alpha_down">Aufsteigend</string>
     <string name="label_sort_alpha_up">Absteigend</string>
 

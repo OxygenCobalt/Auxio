@@ -9,6 +9,7 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
+    <!-- Base style for the toolbar popup menu -->
     <style name="ThemeOverlay.ToolbarPopup.Base" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">?attr/colorSurface</item>
     </style>

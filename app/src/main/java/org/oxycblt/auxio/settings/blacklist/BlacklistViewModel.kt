@@ -73,7 +73,7 @@ class BlacklistViewModel(context: Context) : ViewModel() {
     }
 
     /**
-     * Check if changes have been made to the viewmodel's paths.
+     * Check if changes have been made to the ViewModel's paths.
      */
     fun isModified() = dbPaths != paths.value
 

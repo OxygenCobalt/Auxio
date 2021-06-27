@@ -20,7 +20,6 @@
     <string name="label_filter_all">Alles</string>
 
     <string name="label_sort">Sorteren</string>
-    <string name="label_sort_none">Standaard</string>
     <string name="label_sort_alpha_down">Oplopend</string>
     <string name="label_sort_alpha_up">Aflopend</string>
 

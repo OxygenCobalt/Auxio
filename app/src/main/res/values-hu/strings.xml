@@ -16,7 +16,6 @@
     <string name="label_filter_all">Összes</string>
 
     <string name="label_sort">Összes</string>
-    <string name="label_sort_none">Alapértelmezett</string>
     <string name="label_sort_alpha_down">Növekvő</string>
     <string name="label_sort_alpha_up">Csökkenő</string>
 

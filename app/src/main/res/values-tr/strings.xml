@@ -16,7 +16,6 @@
     <string name="label_filter_all">Tümü</string>
 
     <string name="label_sort">Sıralama</string>
-    <string name="label_sort_none">Varsayılan</string>
     <string name="label_sort_alpha_down">Artan</string>
     <string name="label_sort_alpha_up">Azalan</string>
 

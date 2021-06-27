@@ -26,7 +26,7 @@
 
         <ProgressBar
             android:id="@+id/playback_progress"
-            style="@style/Widget.Seekbar.Compact"
+            style="@style/Widget.ProgressBar.Compact"
             android:progress="@{playbackModel.positionAsProgress}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

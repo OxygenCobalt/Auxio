@@ -21,7 +21,6 @@
     <string name="label_filter_all">All</string>
 
     <string name="label_sort">Sort</string>
-    <string name="label_sort_none">Default</string>
     <string name="label_sort_alpha_down">Ascending</string>
     <string name="label_sort_alpha_up">Descending</string>
 

@@ -36,9 +36,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // TODO: Add a swipe-to-next-track function using a ViewPager
-        //  Would require writing my own variant though to avoid index updates
-
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
         val accentColor = Accent.get().getStateList(requireContext())
         val controlColor = R.color.control_color.toStateList(requireContext())

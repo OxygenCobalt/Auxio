@@ -15,7 +15,6 @@ import org.oxycblt.auxio.music.Song
  * off the given sorting mode.
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
- * TODO: Make SortMode use title case [skip the/a(n)]
  */
 enum class SortMode(@DrawableRes val iconRes: Int) {
     // Icons for each mode are assigned to the enums themselves

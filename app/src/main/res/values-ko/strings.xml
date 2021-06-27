@@ -16,7 +16,6 @@
     <string name="label_filter_all">전부</string>
 
     <string name="label_sort">분류</string>
-    <string name="label_sort_none">기본</string>
     <string name="label_sort_alpha_down">오름차순</string>
     <string name="label_sort_alpha_up">내림차순</string>
 

@@ -92,7 +92,5 @@ class AboutFragment : Fragment() {
         private const val LINK_CODEBASE = "https://github.com/oxygencobalt/Auxio"
         private const val LINK_FAQ = "$LINK_CODEBASE/blob/master/info/FAQ.md"
         private const val LINK_LICENSES = "$LINK_CODEBASE/blob/master/info/LICENSES.md"
-
-        const val TAG = "TAG_ABOUT_DIALOG"
     }
 }

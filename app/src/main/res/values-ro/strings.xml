@@ -16,7 +16,6 @@
     <string name="label_filter_all">Tot</string>
 
     <string name="label_sort">Sortare</string>
-    <string name="label_sort_none">În mod implicit</string>
     <string name="label_sort_alpha_down">Crescător</string>
     <string name="label_sort_alpha_up">Descrescător</string>
 

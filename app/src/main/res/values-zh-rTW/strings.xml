@@ -16,7 +16,6 @@
     <string name="label_filter_all">全部</string>
 
     <string name="label_sort">排序</string>
-    <string name="label_sort_none">默認</string>
     <string name="label_sort_alpha_down">升序排列</string>
     <string name="label_sort_alpha_up">降序排列</string>
 

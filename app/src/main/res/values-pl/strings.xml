@@ -16,7 +16,6 @@
     <string name="label_filter_all">Wszystkie</string>
 
     <string name="label_sort">Sortowanie</string>
-    <string name="label_sort_none">Domyślne</string>
     <string name="label_sort_alpha_down">Rosnąco</string>
     <string name="label_sort_alpha_up">Malejąco</string>
 
