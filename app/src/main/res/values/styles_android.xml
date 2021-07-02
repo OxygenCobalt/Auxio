@@ -9,19 +9,10 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <!-- Base style for the toolbar popup menu -->
-    <style name="ThemeOverlay.ToolbarPopup.Base" parent="ThemeOverlay.AppCompat.DayNight">
-        <item name="android:colorBackground">?attr/colorSurface</item>
-    </style>
-
     <!-- Toolbar popup menu -->
-    <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.ToolbarPopup.Base">
+    <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
+        <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="colorControlHighlight">@color/selection_color</item>
-    </style>
-
-    <!-- Toolbar popup menu [Black] -->
-    <style name="ThemeOverlay.ToolbarPopup.Black" parent="ThemeOverlay.ToolbarPopup.Base">
-        <item name="colorControlHighlight">@color/selection_color_black</item>
     </style>
 
     <!-- Base custom dialog theme. Don't try to understand this. -->
@@ -46,7 +37,6 @@
     <!-- Black theme dialog theme -->
     <style name="Theme.CustomDialog.Black" parent="Theme.CustomDialog.Base">
         <item name="colorSurface">@color/surface_color_black</item>
-        <item name="colorControlHighlight">@color/selection_color_black</item>
     </style>
 
     <!-- Material-specific dialog style -->

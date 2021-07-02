@@ -8,7 +8,6 @@
     <color name="nav_color">#01fafafa</color>
 
     <color name="surface_color_black">#000000</color>
-    <color name="selection_color_black">#363636</color>
 
     <!--
     Base color set derived from Music Player GO.

@@ -129,6 +129,7 @@ fun @receiver:DrawableRes Int.toAnimDrawable(context: Context) =
 /**
  * Resolve this int into a color as if it was an attribute
  */
+@ColorInt
 fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     // Convert the attribute into its color
     val resolvedAttr = TypedValue()

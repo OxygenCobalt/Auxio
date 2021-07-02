@@ -8,7 +8,7 @@
         <item name="android:layout_height">?android:attr/actionBarSize</item>
         <item name="android:background">?attr/colorSurface</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
-        <item name="popupTheme">?attr/toolbarPopupTheme</item>
+        <item name="popupTheme">@style/ThemeOverlay.ToolbarPopup</item>
 
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
         <item name="titleTextColor">?attr/colorPrimary</item>
