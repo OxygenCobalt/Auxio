@@ -62,7 +62,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 - Storage (`READ_EXTERNAL_STORAGE`): to read and play your media files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`): to keep the music playing even if the app itself is in background
-- Network (`ACCESS_NETWORK_STATE`): unknown
 
 ## Contributing
 
