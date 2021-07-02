@@ -10,11 +10,12 @@ Auxio is local music player for android that I built for myself, primarily. Its 
 
 ## Where can I download Auxio?
 
-Currently, its available on the [IzzyOnDroid F-Droid repository](https://apt.izzysoft.de/fdroid/). I still want to make some changes and get feedback before I submit it to the mainline F-Droid repository, but it will arrive there eventually.
+Auxio is available on the [F-Droid](https://f-droid.org/en/packages/org.oxycblt.auxio/) repository.
 
 ## Can I translate Auxio to my native language?
 
-See the [Translations](https://github.com/OxygenCobalt/Auxio/issues/3) issue for guidance on how to create translations and submit them to the project. Any contributions are appreciated.
+See the [Translations](https://github.com/OxygenCobalt/Auxio/issues/3) issue for guidance on how to create translations and submit them to the project. Any contributions are appreciated and
+tend to always be accepted.
 
 ## How can I contribute/report issues?
 
@@ -22,7 +23,7 @@ Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request
 
 ## Why ExoPlayer?
 
-ExoPlayer is far more flexible than the native MediaPlayer API, which allows Auxio to have consistent behavior across devices & OEMs, along with allowing Auxio to be extended to music sources outside of local files. You can read more about the benefits (and drawbacks) of ExoPlayer [Here](https://exoplayer.dev/pros-and-cons.html).
+ExoPlayer is far more flexible than the native MediaPlayer API, which allows consistent behavior across devices & OEMs amd the ability to be extended to music sources outside of local files. You can read more about the benefits (and drawbacks) of ExoPlayer [Here](https://exoplayer.dev/pros-and-cons.html).
 
 ## Why cant I have a custom accent?
 

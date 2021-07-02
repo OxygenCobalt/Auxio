@@ -14,7 +14,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
 /**
  * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player],
- * and [PlaybackStateManager]
+ * and [PlaybackStateManager].
  */
 class PlaybackSessionConnector(
     private val context: Context,
@@ -106,6 +106,9 @@ class PlaybackSessionConnector(
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
+        // Load the cover asynchronously. This is the entire reason I don't use a plain
+        // MediaSessionConnector, which AFAIK makes it impossible to load this the way I do
+        // without a bunch of stupid race conditions.
         loadBitmap(context, song) { bitmap ->
             builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
             mediaSession.setMetadata(builder.build())
