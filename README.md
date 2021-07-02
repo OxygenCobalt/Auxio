@@ -5,7 +5,7 @@
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
         <img alt="GitHub release" src="https://img.shields.io/static/v1?label=Tag&message=v1.4.0&color=0D5AF5">
     </a>
-    <a href="https://www.gnu.org/licenses/gpl-3.0"> 
+    <a href="https://www.gnu.org/licenses/gpl-3.0">
         <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg">
     </a>
     <img alt="Minimum SDK" src="https://img.shields.io/badge/API-21%2B-32B5ED">
@@ -58,6 +58,11 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Liked songs
 - More notification actions
 
+## Permissions
+
+- Storage (`READ_EXTERNAL_STORAGE`): to read and play your media files
+- Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`): to keep the music playing even if the app itself is in background
+
 ## Contributing
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).
@@ -66,7 +71,7 @@ However, feature additions and major UI changes are less likely to be accepted. 
 
 ## License
 
-[![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
+[![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
 Auxio is Free Software: You can use, study share and improve it at your
 will. Specifically you can redistribute and/or modify it under the terms of the
