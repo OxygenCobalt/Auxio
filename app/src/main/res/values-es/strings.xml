@@ -1,126 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-     <string name="info_app_desc">Reproductor simple y racional para Android.</string>
-     <string name="info_channel_name">Reproductor de música</string>
-     <string name="label_retry">Reintentar</string>
-     <string name="label_grant">Permitir</string>
-     <string name="label_library">Biblioteca</string>
-     <string name="label_genres">Géneros</string>
-     <string name="label_artists">Artistas</string>
-     <string name="label_albums">Álbum</string>
-     <string name="label_songs">Canciones</string>
-     <string name="label_all_songs">Todas las canciones</string>
-     <string name="label_search">Buscar</string>
-     <string name="label_filter">Filtro</string>
-     <string name="label_filter_all">Todo</string>
-     <string name="label_sort">Ordenar</string>
-     <string name="label_sort_alpha_down">Ascendente</string>
-     <string name="label_sort_alpha_up">Descendente</string>
-     <string name="label_play">Reproducir</string>
-     <string name="label_shuffle">Aleatorio</string>
-     <string name="label_play_all_songs">Reproducir todas las canciones</string>
-     <string name="label_play_album">Reproducir por álbum</string>
-     <string name="label_play_artist">Reproducir por artista</string>
-     <string name="label_play_genre">Reproducir por género</string>
-     <string name="label_playback">Reproducción actual</string>
-     <string name="label_queue">Cola</string>
-     <string name="label_queue_add">Agregar a la cola</string>
-     <string name="label_queue_added">Agregada a la cola</string>
-     <string name="label_next_user_queue">A continuación...</string>
-     <string name="label_go_artist">Ir al artista</string>
-     <string name="label_go_album">Ir al álbum</string>
-     <string name="label_state_saved">Estado guardado</string>
-     <string name="label_add">Añadir</string>
-     <string name="label_save">Guardar</string>
-     <string name="label_no_dirs">No hay carpetas</string>
-     <string name="label_about">Acerca de</string>
-     <string name="label_version">Versión</string>
-     <string name="label_code">Ver en Github</string>
-     <string name="label_faq">FAQ</string>
-     <string name="label_licenses">Licencias</string>
-     <string name="label_author">Desarrollado por OxygenCobalt</string>
-     <string name="setting_title">Preferencias</string>
-     <string name="setting_ui">Apariencia</string>
-     <string name="setting_theme">Tema</string>
-     <string name="setting_theme_auto">Automático</string>
-     <string name="setting_theme_day">Claro</string>
-     <string name="setting_theme_night">Oscuro</string>
-     <string name="setting_accent">Acento</string>
-     <string name="setting_black_mode">Tema negro</string>
-     <string name="setting_black_mode_desc">Usar tema negro puro</string>
-     <string name="setting_display">Pantalla</string>
-     <string name="setting_lib_display">Ítem de biblioteca</string>
-     <string name="setting_color_notif">Ajustar color de notificación</string>
-     <string name="setting_color_desc">Mostrar imagen de álbum en la notificación</string>
-     <string name="setting_show_covers">Mostrar carátula de álbum</string>
-     <string name="setting_show_covers_desc">Desactivar para ahorrar uso de memoria</string>
-     <string name="setting_quality_covers">Ignorar carátulas de MediaStore</string>
-     <string name="setting_quality_covers_desc">Mejora la calidad de las carátulas de álbum, pero resulta en tiempos de carga lentos y un mayor uso de memoria</string>
-     <string name="setting_use_alt_action">Usar acción de notificación alternativa</string>
-     <string name="setting_use_alt_loop">Preferir acción modo repetir</string>
-     <string name="setting_use_alt_shuffle">Preferir acción aleatoria</string>
-     <string name="setting_audio">Audio</string>
-     <string name="setting_audio_focus">Enfoque de audio</string>
-     <string name="setting_audio_focus_desc">Pausar cuando se reproduce otro audio (ej. Llamadas)</string>
-     <string name="setting_audio_plug_mgt">Conexión de auriculares</string>
-     <string name="setting_audio_plug_mgt_desc">Reproducir/Pausar cuando la conexión de los auriculares cambie</string>
-     <string name="setting_behavior">Funcionamiento</string>
-     <string name="setting_behavior_song_playback_mode">Cuando una canción es seleccionada</string>
-     <string name="setting_behavior_keep_shuffle">Recordar orden aleatorio</string>
-     <string name="setting_behavior_keep_shuffle_desc">Mantener la reproducción aleatoria cuando se reproduce una nueva canción</string>
-     <string name="setting_behavior_rewind_prev">Rebobinar antes de saltar al anterior</string>
-     <string name="setting_behavior_rewind_prev_desc">Rebobinar antes de saltar a la canción anterior</string>
-     <string name="setting_content">Contenido</string>
-     <string name="setting_content_save">Guardar estado de reproducción</string>
-     <string name="setting_content_save_desc">Guardar el estado actual de la reproducción ahora</string>
-     <string name="setting_content_blacklist">Carpetas excluidas</string>
-     <string name="setting_content_blacklist_desc">El contenido de las carpetas excluidas se oculta de la biblioteca</string>
-     <string name="error_no_music">No se encontró música</string>
-     <string name="error_load_failed">Error al cargar música</string>
-     <string name="error_no_perms">Auxio necesita permiso para leer tu biblioteca musical</string>
-     <string name="error_no_browser">Ninguna aplicación puede abrir este enlace</string>
-     <string name="error_bad_dir">Este directorio no es compatible</string>
-     <string name="hint_search_library">Busca en tu biblioteca...</string>
-     <string name="description_sort_button">Cambiar el orden de clasificación</string>
-     <string name="description_track_number">Pista %d</string>
-     <string name="description_play_pause">Reproducir o Pausar</string>
-     <string name="description_skip_next">Saltar a la siguiente canción</string>
-     <string name="description_skip_prev">Saltar a la última canción</string>
-     <string name="description_shuffle_on">Activar la reproducción aleatoria</string>
-     <string name="description_shuffle_off">Desactivar la reproducción aleatoria</string>
-     <string name="description_change_loop">Cambiar el modo de repetición</string>
-     <string name="description_clear_user_queue">Limpiar cola</string>
-     <string name="description_clear_search">Borrar historial de búsqueda</string>
-     <string name="description_blacklist_delete">Eliminar directorio excluido</string>
-     <string name="description_error">Error</string>
-     <string name="description_auxio_icon">Auxio icon</string>
-     <string name="description_album_cover">Carátula de álbum para %s</string>
-     <string name="description_artist_image">Imagen de artista para %s</string>
-     <string name="description_genre_image">Imagen de género para %s</string>
-     <string name="placeholder_genre">Género desconocido</string>
-     <string name="placeholder_artist">Artista desconocido</string>
-     <string name="placeholder_album">Álbum desconocido</string>
-     <string name="placeholder_no_date">Sin fecha</string>
-     <string name="color_label_red">Rojo</string>
-     <string name="color_label_pink">Rosa</string>
-     <string name="color_label_purple">Púrpura</string>
-     <string name="color_label_deep_purple">Púrpura Profundo</string>
-     <string name="color_label_indigo">Índigo</string>
-     <string name="color_label_blue">Azul</string>
-     <string name="color_label_light_blue">Azul Claro</string>
-     <string name="color_label_cyan">Cyan</string>
-     <string name="color_label_teal">Teal</string>
-     <string name="color_label_green">Verde</string>
-     <string name="color_label_light_green">Verde Claro</string>
-     <string name="color_label_lime">Lima</string>
-     <string name="color_label_yellow">Amarillo</string>
-     <string name="color_label_orange">Naranja</string>
-     <string name="color_label_deep_orange">Naranja Profundo</string>
-     <string name="color_label_brown">Café</string>
-     <string name="color_label_grey">Gris</string>
-     <string name="color_label_blue_grey">Azul Gris</string>
-     <string name="format_next_from">Siguiente de: %s</string>
-     <string name="format_songs_loaded">Canciones encontradas: %d</string>
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">Reproductor simple y racional para Android.</string>
+    <string name="info_channel_name">Reproductor de música</string>
+
+    <!-- Label Namespace | Static Labels -->
+    <string name="label_retry">Reintentar</string>
+    <string name="label_grant">Permitir</string>
+
+    <string name="label_library">Biblioteca</string>
+    <string name="label_genres">Géneros</string>
+    <string name="label_artists">Artistas</string>
+    <string name="label_albums">Álbum</string>
+    <string name="label_songs">Canciones</string>
+    <string name="label_all_songs">Todas las canciones</string>
+
+    <string name="label_search">Buscar</string>
+    <string name="label_filter">Filtro</string>
+    <string name="label_filter_all">Todo</string>
+
+    <string name="label_sort">Ordenar</string>
+    <string name="label_sort_alpha_down">Ascendente</string>
+    <string name="label_sort_alpha_up">Descendente</string>
+
+    <string name="label_play">Reproducir</string>
+    <string name="label_shuffle">Aleatorio</string>
+    <string name="label_play_all_songs">Reproducir todas las canciones</string>
+    <string name="label_play_album">Reproducir por álbum</string>
+    <string name="label_play_artist">Reproducir por artista</string>
+    <string name="label_play_genre">Reproducir por género</string>
+    <string name="label_playback">Reproducción actual</string>
+
+    <string name="label_queue">Cola</string>
+    <string name="label_queue_add">Agregar a la cola</string>
+    <string name="label_queue_added">Agregada a la cola</string>
+    <string name="label_next_user_queue">A continuación...</string>
+
+    <string name="label_go_artist">Ir al artista</string>
+    <string name="label_go_album">Ir al álbum</string>
+
+    <string name="label_state_saved">Estado guardado</string>
+
+    <string name="label_add">Añadir</string>
+    <string name="label_save">Guardar</string>
+    <string name="label_no_dirs">No hay carpetas</string>
+
+    <string name="label_about">Acerca de</string>
+    <string name="label_version">Versión</string>
+    <string name="label_code">Ver en Github</string>
+    <string name="label_faq">FAQ</string>
+    <string name="label_licenses">Licencias</string>
+    <string name="label_author">Desarrollado por OxygenCobalt</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="setting_title">Preferencias</string>
+
+    <string name="setting_ui">Apariencia</string>
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_auto">Automático</string>
+    <string name="setting_theme_day">Claro</string>
+    <string name="setting_theme_night">Oscuro</string>
+    <string name="setting_accent">Acento</string>
+    <string name="setting_black_mode">Tema negro</string>
+    <string name="setting_black_mode_desc">Usar tema negro puro</string>
+
+    <string name="setting_display">Pantalla</string>
+    <string name="setting_lib_display">Ítem de biblioteca</string>
+    <string name="setting_color_notif">Ajustar color de notificación</string>
+    <string name="setting_color_desc">Mostrar imagen de álbum en la notificación</string>
+    <string name="setting_show_covers">Mostrar carátula de álbum</string>
+    <string name="setting_show_covers_desc">Desactivar para ahorrar uso de memoria</string>
+    <string name="setting_quality_covers">Ignorar carátulas de MediaStore</string>
+    <string name="setting_quality_covers_desc">Mejora la calidad de las carátulas de álbum, pero resulta en tiempos de carga lentos y un mayor uso de memoria</string>
+    <string name="setting_use_alt_action">Usar acción de notificación alternativa</string>
+    <string name="setting_use_alt_loop">Preferir acción modo repetir</string>
+    <string name="setting_use_alt_shuffle">Preferir acción aleatoria</string>
+
+    <string name="setting_audio">Audio</string>
+    <string name="setting_audio_focus">Enfoque de audio</string>
+    <string name="setting_audio_focus_desc">Pausar cuando se reproduce otro audio (ej. Llamadas)</string>
+    <string name="setting_audio_plug_mgt">Conexión de auriculares</string>
+    <string name="setting_audio_plug_mgt_desc">Reproducir/Pausar cuando la conexión de los auriculares cambie</string>
+
+    <string name="setting_behavior">Funcionamiento</string>
+    <string name="setting_behavior_song_playback_mode">Cuando una canción es seleccionada</string>
+    <string name="setting_behavior_keep_shuffle">Recordar orden aleatorio</string>
+    <string name="setting_behavior_keep_shuffle_desc">Mantener la reproducción aleatoria cuando se reproduce una nueva canción</string>
+    <string name="setting_behavior_rewind_prev">Rebobinar antes de saltar al anterior</string>
+    <string name="setting_behavior_rewind_prev_desc">Rebobinar antes de saltar a la canción anterior</string>
+
+    <string name="setting_content">Contenido</string>
+    <string name="setting_content_save">Guardar estado de reproducción</string>
+    <string name="setting_content_save_desc">Guardar el estado actual de la reproducción ahora</string>
+    <string name="setting_content_blacklist">Carpetas excluidas</string>
+    <string name="setting_content_blacklist_desc">El contenido de las carpetas excluidas se oculta de la biblioteca</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="error_no_music">No se encontró música</string>
+    <string name="error_load_failed">Error al cargar música</string>
+    <string name="error_no_perms">Auxio necesita permiso para leer tu biblioteca musical</string>
+    <string name="error_no_browser">Ninguna aplicación puede abrir este enlace</string>
+    <string name="error_bad_dir">Este directorio no es compatible</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">Busca en tu biblioteca...</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="description_sort_button">Cambiar el orden de clasificación</string>
+    <string name="description_track_number">Pista %d</string>
+
+    <string name="description_play_pause">Reproducir o Pausar</string>
+    <string name="description_skip_next">Saltar a la siguiente canción</string>
+    <string name="description_skip_prev">Saltar a la última canción</string>
+    <string name="description_shuffle_on">Activar la reproducción aleatoria</string>
+    <string name="description_shuffle_off">Desactivar la reproducción aleatoria</string>
+    <string name="description_change_loop">Cambiar el modo de repetición</string>
+
+    <string name="description_clear_user_queue">Limpiar cola</string>
+    <string name="description_clear_search">Borrar historial de búsqueda</string>
+    <string name="description_blacklist_delete">Eliminar directorio excluido</string>
+
+    <string name="description_error">Error</string>
+    <string name="description_auxio_icon">Auxio icon</string>
+    <string name="description_album_cover">Carátula de álbum para %s</string>
+    <string name="description_artist_image">Imagen de artista para %s</string>
+    <string name="description_genre_image">Imagen de género para %s</string>
+
+    <!-- Placeholder Namespace | Placeholder values -->
+    <string name="placeholder_genre">Género desconocido</string>
+    <string name="placeholder_artist">Artista desconocido</string>
+    <string name="placeholder_album">Álbum desconocido</string>
+    <string name="placeholder_no_date">Sin fecha</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="color_label_red">Rojo</string>
+    <string name="color_label_pink">Rosa</string>
+    <string name="color_label_purple">Púrpura</string>
+    <string name="color_label_deep_purple">Púrpura Profundo</string>
+    <string name="color_label_indigo">Índigo</string>
+    <string name="color_label_blue">Azul</string>
+    <string name="color_label_light_blue">Azul Claro</string>
+    <string name="color_label_cyan">Cyan</string>
+    <string name="color_label_teal">Teal</string>
+    <string name="color_label_green">Verde</string>
+    <string name="color_label_light_green">Verde Claro</string>
+    <string name="color_label_lime">Lima</string>
+    <string name="color_label_yellow">Amarillo</string>
+    <string name="color_label_orange">Naranja</string>
+    <string name="color_label_deep_orange">Naranja Profundo</string>
+    <string name="color_label_brown">Café</string>
+    <string name="color_label_grey">Gris</string>
+    <string name="color_label_blue_grey">Azul Gris</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+    <string name="format_next_from">Siguiente de: %s</string>
+    <string name="format_songs_loaded">Canciones encontradas: %d</string>
 
     <plurals name="format_song_count">
         <item quantity="one">%d Canción</item>
