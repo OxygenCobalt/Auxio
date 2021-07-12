@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
@@ -69,11 +69,11 @@ class MainFragment : Fragment() {
             itemTextColor = navTints
 
             if (isTablet(resources) && !isLandscape(resources)) {
-                labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+                labelVisibilityMode = BottomNavigationView.LABEL_VISIBILITY_LABELED
             }
 
             navController?.let { controller ->
-                binding.navBar.setOnNavigationItemSelectedListener { item ->
+                binding.navBar.setOnItemSelectedListener { item ->
                     navigateWithItem(controller, item)
                 }
             }

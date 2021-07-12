@@ -72,7 +72,7 @@ fun String.getGenreNameCompat(): String? {
         }
     }
 
-    // ID3 v3+, current name is fine.
+    // Current name is fine.
     return null
 }
 
