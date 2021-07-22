@@ -97,6 +97,10 @@ class SettingsManager private constructor(context: Context) :
     val rewindWithPrev: Boolean
         get() = sharedPrefs.getBoolean(KEY_PREV_REWIND, true)
 
+    /** Whether [LoopMode.TRACK] should pause when the track repeats */
+    val pauseOnLoop: Boolean
+        get() = sharedPrefs.getBoolean(KEY_LOOP_PAUSE, false)
+
     /** The current [SortMode] of the library. */
     var librarySortMode: SortMode
         get() = sharedPrefs.getData(KEY_LIB_SORT_MODE, SortMode::fromInt) ?: SortMode.ALPHA_DOWN
@@ -214,6 +218,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
+        const val KEY_LOOP_PAUSE = "KEY_LOOP_PAUSE"
 
         const val KEY_SAVE_STATE = "KEY_SAVE_STATE"
         const val KEY_BLACKLIST = "KEY_BLACKLIST"

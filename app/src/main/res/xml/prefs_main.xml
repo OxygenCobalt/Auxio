@@ -126,6 +126,14 @@
             app:summary="@string/setting_behavior_rewind_prev_desc"
             app:title="@string/setting_behavior_rewind_prev" />
 
+        <SwitchPreference
+            app:allowDividerBelow="false"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="KEY_LOOP_PAUSE"
+            app:summary="@string/setting_behavior_loop_pause_desc"
+            app:title="@string/setting_behavior_loop_pause" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

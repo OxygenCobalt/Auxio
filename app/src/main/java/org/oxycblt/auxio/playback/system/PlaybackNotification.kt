@@ -160,7 +160,7 @@ class PlaybackNotification private constructor(
             iconRes, actionName,
             PendingIntent.getBroadcast(
                 context, REQUEST_CODE,
-                Intent(actionName), PendingIntent.FLAG_UPDATE_CURRENT
+                Intent(actionName), PendingIntent.FLAG_UPDATE_CURRENT,
             )
         )
 

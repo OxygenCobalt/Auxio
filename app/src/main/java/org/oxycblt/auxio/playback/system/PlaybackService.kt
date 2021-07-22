@@ -188,7 +188,17 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 releaseWakelock()
             }
 
-            Player.STATE_ENDED -> playbackManager.next()
+            Player.STATE_ENDED -> {
+                if (playbackManager.loopMode == LoopMode.TRACK) {
+                    playbackManager.rewind()
+
+                    if (settingsManager.pauseOnLoop) {
+                        playbackManager.setPlaying(false)
+                    }
+                } else {
+                    playbackManager.next()
+                }
+            }
 
             else -> {}
         }
@@ -249,12 +259,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
-        player.repeatMode = if (loopMode == LoopMode.TRACK) {
-            Player.REPEAT_MODE_ONE
-        } else {
-            Player.REPEAT_MODE_OFF
-        }
-
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(this, loopMode)
 
