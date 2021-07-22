@@ -13,7 +13,6 @@ import java.lang.Exception
 /**
  * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
  * @author OxygenCobalt
- * TODO: Modernize the blacklist system to Android 10+
  */
 class MusicStore private constructor() {
     private var mGenres = listOf<Genre>()

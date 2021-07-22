@@ -27,13 +27,12 @@ ExoPlayer is far more flexible than the native MediaPlayer API, which allows con
 
 ## Why cant I have a custom accent?
 
-Custom accents would require some changes to the accent system in the app, which will take some time. I plan to add them however.
+Android themes can't be modified dynamically, making applying a custom theme nearly impossible without duplicating code and having an extremely brittle system. Therefore its not implemented.
+This may change in Android 12 however, if google exposes the APIs for Material U coloring.
 
 ## Why are accents lighter/less saturated in dark mode?
 
 As per the [Material Guidelines](https://material.io/design/color/dark-theme.html), accents should be less saturated on dark mode to reduce eye strain and to make it look better in general.
-
-You will be able to set the accent to something less saturated when I implement custom accents.
 
 ## Why isn't edge-to-edge enabled on versions below Oreo?
 

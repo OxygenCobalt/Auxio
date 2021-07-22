@@ -54,11 +54,10 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## To possibly come in the future:
 
-- Artist Images
-- Custom accents
 - Playlists
 - Liked songs
 - More notification actions
+- Other things, possibly
 
 ## Permissions
 

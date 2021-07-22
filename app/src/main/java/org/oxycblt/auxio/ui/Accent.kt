@@ -12,7 +12,6 @@ import org.oxycblt.auxio.R
 
 /**
  * A list of all possible accents.
- * TODO: Add custom accents
  */
 val ACCENTS = arrayOf(
     Accent(R.color.red, R.style.Theme_Red, R.style.Theme_Red_Black, R.string.color_label_red),

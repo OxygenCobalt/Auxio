@@ -16,7 +16,6 @@ import org.oxycblt.auxio.ui.memberBinding
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
- * TODO: Add custom artist images
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {
