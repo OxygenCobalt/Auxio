@@ -4,7 +4,7 @@
     <string name="info_channel_name">Musikwiedergabe</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">Wieder Versuchen</string>
+    <string name="label_retry">Erneut versuchen</string>
     <string name="label_grant">Gewähren</string>
 
     <string name="label_library">Bibliothek</string>
@@ -24,7 +24,7 @@
 
     <string name="label_play">Abspielen</string>
     <string name="label_shuffle">Zufällig</string>
-    <string name="label_play_all_songs">Von alle Lieder abspielen</string>
+    <string name="label_play_all_songs">Von allen Lieder abspielen</string>
     <string name="label_play_album">Vom Album abspielen</string>
     <string name="label_play_artist">Vom Künstler abspielen</string>
     <string name="label_play_genre">Vom Genre abspielen</string>
@@ -33,7 +33,7 @@
     <string name="label_queue">Warteschlange</string>
     <string name="label_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="label_queue_added">Der Warteschlange hinzugefügt</string>
-    <string name="label_next_user_queue">Nächsten im Warteschlange</string>
+    <string name="label_next_user_queue">Nächstes in Warteschlange</string>
 
     <string name="label_go_artist">Zum Künstler gehen</string>
     <string name="label_go_album">Zum Album gehen</string>
@@ -62,42 +62,42 @@
     <string name="setting_accent">Akzentfarbe</string>
 
     <string name="setting_display">Anzeige</string>
-    <string name="setting_lib_display">Musikbibliothekitems</string>
+    <string name="setting_lib_display">Musikbibliothekeinträge</string>
     <string name="setting_color_notif">Benachrichtigung farblich anpassen</string>
-    <string name="setting_color_desc">Albumcover am Benachrichtigung zeigen</string>
+    <string name="setting_color_desc">Albumcover in der Benachrichtigung zeigen</string>
     <string name="setting_show_covers">Albumcover anzeigen</string>
-    <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
-    <string name="setting_quality_covers">MediaStore Cover ignorieren</string>
-    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch länger Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
-    <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
-    <string name="setting_use_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
-    <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
+    <string name="setting_show_covers_desc">Ausschalten, um Speicherplatz sparen</string>
+    <string name="setting_quality_covers">MediaStore Covers ignorieren</string>
+    <string name="setting_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
+    <string name="setting_use_alt_action">Andere Benachrichtigungsaktionen verwenden</string>
+    <string name="setting_use_alt_loop">Wiederholen-Aktionstaste bevorzugen</string>
+    <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
 
     <string name="setting_audio">Audio</string>
     <string name="setting_audio_focus">Audiofokus</string>
-    <string name="setting_audio_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Anrufe]</string>
-    <string name="setting_audio_plug_mgt">Kopfhörerafokus</string>
-    <string name="setting_audio_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
+    <string name="setting_audio_focus_desc">Pausieren, wenn andere App Audio abspielt [Bsp. Anrufe]</string>
+    <string name="setting_audio_plug_mgt">Kopfhörerfokus</string>
+    <string name="setting_audio_plug_mgt_desc">Abspielen/Pausieren wenn die Kopfhörerverbindung geändert wird</string>
 
     <string name="setting_behavior">Verhalten</string>
-    <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt hat</string>
+    <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt wird</string>
     <string name="setting_behavior_keep_shuffle">Zufällig-Einstellung merken</string>
-    <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
-    <string name="setting_behavior_rewind_prev">Zurückspulen bevor zurück springen</string>
-    <string name="setting_behavior_rewind_prev_desc">Zurückspulen bevor zum vorheriger Lied springen</string>
+    <string name="setting_behavior_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
+    <string name="setting_behavior_rewind_prev">Zurückspulen bevor zurück gegangen wird</string>
+    <string name="setting_behavior_rewind_prev_desc">Zurückspulen bevor zum vorherigen Lied gegangen wird</string>
 
-    <string name="setting_content">Content</string>
+    <string name="setting_content">Inhalt</string>
     <string name="setting_content_save">Wiedergabezustand abspeichern</string>
-    <string name="setting_content_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
+    <string name="setting_content_save_desc">Den aktuellen Wiedergabezustand abspeichern</string>
     <string name="setting_content_blacklist">Ausgeschlossene Ordner</string>
-    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
+    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner werden nicht in deiner Musikbibliothek angezeigt</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="error_no_music">Keine Musik gefunden</string>
-    <string name="error_load_failed">Laden die Musik fehlgeschlagen</string>
-    <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
-    <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
-    <string name="error_bad_dir">Das Verzeichnis ist nicht gestützt</string>
+    <string name="error_load_failed">Laden der Musik fehlgeschlagen</string>
+    <string name="error_no_perms">Auxio braucht die Berechtigung, um deine Musikbibliothek zu lesen</string>
+    <string name="error_no_browser">Link konnte nicht geöffnet werden</string>
+    <string name="error_bad_dir">Das Verzeichnis wird nicht unterstützt</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>
@@ -107,14 +107,14 @@
     <string name="description_track_number">Titel %d</string>
 
     <string name="description_play_pause">Abspielen oder Pausieren</string>
-    <string name="description_skip_prev">Zu letzter Lied springen</string>
-    <string name="description_skip_next">Zu nächster Lied springen</string>
+    <string name="description_skip_prev">Zu letztem Lied springen</string>
+    <string name="description_skip_next">Zu nächstem Lied springen</string>
     <string name="description_shuffle_on">Zufällig anschalten</string>
     <string name="description_shuffle_off">Zufällig ausschalten</string>
-    <string name="description_change_loop">Art die Wiederholung ändern</string>
+    <string name="description_change_loop">Art der Wiederholung ändern</string>
 
     <string name="description_clear_search">Suchanfrage löschen</string>
-    <string name="description_clear_user_queue">Warteschlange entleeren</string>
+    <string name="description_clear_user_queue">Warteschlange leeren</string>
 
     <string name="description_error">Fehler</string>
     <string name="description_auxio_icon">Auxio-Icon</string>
@@ -161,5 +161,10 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Alben</item>
     </plurals>
+    <string name="setting_black_mode">Schwarzes Thema</string>
+    <string name="setting_black_mode_desc">Ein vollständig schwarzes Thema verwenden</string>
+    <string name="setting_behavior_loop_pause">Pause beim Wiederholen</string>
+    <string name="setting_behavior_loop_pause_desc">Pausiert, wenn ein Song wiederholt wird</string>
+    <string name="description_blacklist_delete">Ausgeschlossenen Ordner entfernen</string>
 
 </resources>
