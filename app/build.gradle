@@ -62,7 +62,7 @@ dependencies {
 
     // General
     implementation "androidx.core:core-ktx:1.6.0"
-    implementation "androidx.activity:activity-ktx:1.2.4"
+    implementation "androidx.activity:activity-ktx:1.3.0"
     implementation 'androidx.fragment:fragment-ktx:1.3.6'
 
     // UI
@@ -110,7 +110,7 @@ dependencies {
 
 task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
-    main = "com.pinterest.ktlint.Main"
+    mainClass = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
 
     args "src/**/*.kt"
@@ -119,7 +119,7 @@ check.dependsOn ktlint
 
 task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
-    main = "com.pinterest.ktlint.Main"
+    mainClass = "com.pinterest.ktlint.Main"
     classpath = configurations.ktlint
 
     args "-F", "src/**/*.kt"
