@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Point
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -235,25 +234,19 @@ fun Activity.isIrregularLandscape(): Boolean {
  * @return If the system bars are on the bottom, false if no.
  */
 private fun isSystemBarOnBottom(activity: Activity): Boolean {
-    val realPoint = Point()
     val metrics = DisplayMetrics()
 
-    var width = 0
-    var height = 0
+    var width: Int
+    var height: Int
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        activity.display?.let { display ->
-            display.getRealSize(realPoint)
-
-            activity.windowManager.currentWindowMetrics.bounds.also {
-                width = it.width()
-                height = it.height()
-            }
+        activity.windowManager.currentWindowMetrics.bounds.also {
+            width = it.width()
+            height = it.height()
         }
     } else {
         @Suppress("DEPRECATION")
         activity.getSystemServiceSafe(WindowManager::class).apply {
-            defaultDisplay.getRealSize(realPoint)
             defaultDisplay.getMetrics(metrics)
 
             width = metrics.widthPixels
