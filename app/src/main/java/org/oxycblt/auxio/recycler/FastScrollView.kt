@@ -157,10 +157,13 @@ class FastScrollView @JvmOverloads constructor(
         )
 
         // If the scroller size is too small to contain all the entries, truncate entries
-        // so that the fast scroller entries fit.
-        val maxEntries = height / textHeight
+        // so that the fast scroller entries fit. Include the thumb in here so it isn't cut
+        // off.
+        val maxEntries = (height - (binding.scrollThumb.height * 2)) / textHeight
 
-        if (indicators.size > maxEntries.toInt()) {
+        logD("${ceil(indicators.size / maxEntries).toInt()}")
+
+        if (indicators.size > maxEntries) {
             val truncateInterval = ceil(indicators.size / maxEntries).toInt()
 
             check(truncateInterval > 1) {

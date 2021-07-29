@@ -58,12 +58,12 @@ private val ID3_GENRES = arrayOf(
  */
 fun String.getGenreNameCompat(): String? {
     if (isDigitsOnly()) {
-        // ID3 v1, just parse as an integer
+        // ID3v1, just parse as an integer
         return ID3_GENRES.getOrNull(toInt())
     }
 
     if (startsWith('(') && endsWith(')')) {
-        // ID3 v2+, parse out the parentheses and get the integer
+        // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
         // Any genres formatted as "(CHARS)" will be ignored.
         val genreInt = substring(1 until lastIndex).toIntOrNull()
 
