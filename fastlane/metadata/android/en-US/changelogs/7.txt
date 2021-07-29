@@ -1,0 +1,9 @@
+- Added black dark theme
+- Added a fast-scroller to the library view
+- Redesigned the about screen
+- Added full spanish translations [Courtesy of tesphil]
+- Improved german translations [Courtesy of qwerty287]
+- Added an option to pause when a song repeats
+- Article sort is now used everywhere
+- Fixed issues regarding playback from the lock screen
+- Removed the `ACCESS_NETWORK_STATE` permission
