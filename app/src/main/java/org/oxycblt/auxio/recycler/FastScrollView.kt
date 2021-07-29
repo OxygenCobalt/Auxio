@@ -161,8 +161,6 @@ class FastScrollView @JvmOverloads constructor(
         // off.
         val maxEntries = (height - (binding.scrollThumb.height * 2)) / textHeight
 
-        logD("${ceil(indicators.size / maxEntries).toInt()}")
-
         if (indicators.size > maxEntries) {
             val truncateInterval = ceil(indicators.size / maxEntries).toInt()
 
