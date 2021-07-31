@@ -144,8 +144,8 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
             NUMERIC_UP -> {
                 val list = mutableListOf<Song>()
 
-                songs.groupBy { it.album }.toSortedMap(compareBy { it.year }).values.forEach { items ->
-                    list.addAll(items.sortedWith(compareBy { it.track }))
+                songs.groupBy { it.album }.entries.sortedBy { it.key.year }.forEach { entry ->
+                    list.addAll(entry.value.sortedWith(compareBy { it.track }))
                 }
 
                 list
@@ -154,8 +154,8 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
             NUMERIC_DOWN -> {
                 val list = mutableListOf<Song>()
 
-                songs.groupBy { it.album }.toSortedMap(compareByDescending { it.year }).values.forEach { items ->
-                    list.addAll(items.sortedWith(compareBy { it.track }))
+                songs.groupBy { it.album }.entries.sortedWith(compareByDescending { it.key.year }).forEach { entry ->
+                    list.addAll(entry.value.sortedWith(compareBy { it.track }))
                 }
 
                 list
