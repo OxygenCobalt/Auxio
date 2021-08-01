@@ -134,6 +134,7 @@
     <string name="placeholder_artist">Unknown Artist</string>
     <string name="placeholder_album">Unknown Album</string>
     <string name="placeholder_no_date">No Date</string>
+    <string name="placeholder_playback">No music playing</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="color_label_red">Red</string>

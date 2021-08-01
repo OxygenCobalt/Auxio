@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.library
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -61,6 +62,7 @@ class LibraryAdapter(
     /**
      * Update the data with [newData]. [notifyDataSetChanged] will be called.
      */
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newData: List<Parent>) {
         data = newData
 

@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
@@ -24,7 +25,11 @@ class SlideLinearLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : LinearLayout(context, attrs, defStyleAttr) {
+    @SuppressLint("DiscouragedPrivateApi")
     private val disappearingChildrenField: Field? = try {
+        // We need to read this field to correctly draw the disappearing children
+        // If google ever hides this API I am going to scream, because its their busted
+        // ViewGroup code that forces me to do this in the first place
         ViewGroup::class.java.getDeclaredField("mDisappearingChildren").also {
             it.isAccessible = true
         }
@@ -90,13 +95,13 @@ class SlideLinearLayout @JvmOverloads constructor(
         return true
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun getDisappearingChildren(): List<View>? {
         if (disappearingChildrenField == null || disappearingChildren != null) {
             return disappearingChildren
         }
 
         try {
+            @Suppress("UNCHECKED_CAST")
             disappearingChildren = disappearingChildrenField.get(this) as List<View>?
         } catch (e: Exception) {
             logD("Could not get list of disappearing children.")

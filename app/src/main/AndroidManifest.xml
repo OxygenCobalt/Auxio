@@ -7,8 +7,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- Workaround for ExoPlayer's online functionality requiring unnecessary permissions -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
+    <!-- Workaround for ExoPlayer requiring unnecessary permissions -->
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
 
     <queries />
 
@@ -21,12 +23,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Base">
+
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTask"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:exported="true"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter>
@@ -46,10 +49,25 @@
                 <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".playback.system.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher_round" />
+
+        <receiver
+            android:name=".widget.MinimalWidgetProvider"
+            android:exported="false"
+            android:enabled="@bool/widgets_supported">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_minimal" />
+        </receiver>
     </application>
 </manifest>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Widgets are limited to android 12 until I can find an okay-ish way to backport them.
+    -->
+    <bool name="widgets_supported">true</bool>
+</resources>

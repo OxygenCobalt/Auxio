@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Widget" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="colorPrimary">?android:attr/colorAccent</item>
+        <item name="colorSecondary">?android:attr/colorAccent</item>
+    </style>
+</resources>

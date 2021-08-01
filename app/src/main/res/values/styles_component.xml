@@ -157,8 +157,6 @@
         <item name="android:thumbTint">?attr/colorPrimary</item>
     </style>
 
-
-
     <!-- Base style for the material buttons -->
     <style name="Widget.MaterialComponents.Button.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>

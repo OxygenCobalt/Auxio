@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
@@ -41,6 +42,8 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.getSystemServiceSafe
+import org.oxycblt.auxio.widget.BaseWidget
+import org.oxycblt.auxio.widget.MinimalWidgetProvider
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -48,26 +51,36 @@ import org.oxycblt.auxio.ui.getSystemServiceSafe
  * - The [MediaSessionCompat]
  * - The Media Notification
  * - Headset management
+ * - Widgets
  *
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
  * so therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
+
+    // Player components
     private lateinit var player: SimpleExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var connector: PlaybackSessionConnector
 
+    // Notification components
     private lateinit var notification: PlaybackNotification
     private lateinit var notificationManager: NotificationManager
 
+    // System backend components
     private lateinit var audioReactor: AudioReactor
     private lateinit var wakeLock: PowerManager.WakeLock
     private val systemReceiver = SystemEventReceiver()
 
+    // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
+    // Widgets
+    private val minimalWidget = MinimalWidgetProvider.new()
+
+    // State
     private var isForeground = false
 
     private val serviceJob = Job()
@@ -81,8 +94,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         return START_NOT_STICKY
     }
 
-    // No binding, service is headless.
-    // Deliver updates through PlaybackStateManager/SettingsManager instead.
+    // No binding, service is headless
+    // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
@@ -127,6 +140,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(Intent.ACTION_HEADSET_PLUG)
+
+            addAction(BaseWidget.ACTION_WIDGET_UPDATE)
 
             registerReceiver(systemReceiver, this)
         }
@@ -231,11 +246,14 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
 
+            minimalWidget?.update(this, playbackManager)
+
             return
         }
 
-        // Stop playing/the notification if there's nothing to play.
+        // Clear if there's nothing to play.
         player.stop()
+        minimalWidget?.stop(this)
         stopForegroundAndNotification()
     }
 
@@ -476,6 +494,15 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                         DISCONNECTED -> pauseFromPlug()
                     }
                 }
+
+                // Newly added widgets need PlaybackService to
+                BaseWidget.ACTION_WIDGET_UPDATE -> {
+                    when (intent.getIntExtra(BaseWidget.KEY_WIDGET_TYPE, -1)) {
+                        MinimalWidgetProvider.TYPE -> minimalWidget?.update(
+                            this@PlaybackService, playbackManager
+                        )
+                    }
+                }
             }
         }
 
@@ -507,5 +534,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         private const val CONNECTED = 1
         private const val WAKELOCK_TIME = 25000L
         private const val POS_POLL_INTERVAL = 500L
+
+        const val BROADCAST_WIDGET_START = BuildConfig.APPLICATION_ID + ".key.WIDGETS_START"
     }
 }
