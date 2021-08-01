@@ -44,6 +44,8 @@ class QueueFragment : Fragment() {
 
         // --- UI SETUP ---
 
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.queueToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }

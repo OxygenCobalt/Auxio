@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.widget
+package org.oxycblt.auxio.widgets
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -11,7 +11,6 @@ import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
@@ -96,7 +95,7 @@ abstract class BaseWidget : AppWidgetProvider() {
         val ids = getAppWidgetIds(ComponentName(context, this::class.java))
 
         if (ids.isNotEmpty()) {
-            // Existing widgets found, update thoughs
+            // Existing widgets found, update those
             ids.forEach { id ->
                 updateAppWidget(id, views)
             }

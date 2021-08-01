@@ -43,6 +43,8 @@ class LibraryFragment : Fragment() {
 
         // --- UI SETUP ---
 
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.libraryToolbar.apply {
             menu.findItem(libraryModel.sortMode.toMenuId()).isChecked = true
 

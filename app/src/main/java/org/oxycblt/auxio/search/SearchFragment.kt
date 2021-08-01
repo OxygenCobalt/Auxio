@@ -51,6 +51,8 @@ class SearchFragment : Fragment() {
 
         // --- UI SETUP --
 
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.searchToolbar.apply {
             menu.findItem(searchModel.filterMode.toId()).isChecked = true
 

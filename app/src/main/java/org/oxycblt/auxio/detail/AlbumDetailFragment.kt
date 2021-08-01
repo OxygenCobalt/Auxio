@@ -53,7 +53,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         setupToolbar(R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {

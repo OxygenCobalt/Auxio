@@ -1,4 +1,4 @@
-package org.oxycblt.auxio.widget
+package org.oxycblt.auxio.widgets
 
 import android.content.Context
 import android.os.Build
@@ -8,9 +8,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-
-// Workaround to make studio shut up about perfectly valid layouts somehow
-// being invalid for remote views.
 
 /**
  * The minimal widget. This widget only shows the album, song name, and artist without any
@@ -67,6 +64,9 @@ class MinimalWidgetProvider : BaseWidget() {
 
     companion object {
         const val TYPE = 0xA0D0
+
+        // Workaround to make studio shut up about perfectly valid layouts somehow
+        // being invalid for remote views.
         const val LAYOUT = R.layout.widget_minimal
 
         fun new(): MinimalWidgetProvider? {

@@ -53,7 +53,7 @@ class GenreDetailFragment : DetailFragment() {
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         setupToolbar()
         setupRecycler(detailAdapter) { pos ->

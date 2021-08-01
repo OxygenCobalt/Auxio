@@ -57,7 +57,7 @@ class MainFragment : Fragment() {
 
         // --- UI SETUP ---
 
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         // Speed up the slide-in effect on the controls view, solely to improve the UX
         // and maybe hide the problem where the main view will snap-shrink before the compact

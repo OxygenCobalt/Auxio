@@ -37,6 +37,7 @@ class LoadingFragment : Fragment() {
 
         // --- UI SETUP ---
 
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.loadingModel = loadingModel
 
         // --- VIEWMODEL SETUP ---

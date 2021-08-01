@@ -42,8 +42,8 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.getSystemServiceSafe
-import org.oxycblt.auxio.widget.BaseWidget
-import org.oxycblt.auxio.widget.MinimalWidgetProvider
+import org.oxycblt.auxio.widgets.BaseWidget
+import org.oxycblt.auxio.widgets.MinimalWidgetProvider
 
 /**
  * A service that manages the system-side aspects of playback, such as:
