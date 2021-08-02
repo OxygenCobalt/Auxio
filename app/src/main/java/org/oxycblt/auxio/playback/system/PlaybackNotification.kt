@@ -30,12 +30,22 @@ class PlaybackNotification private constructor(
     context: Context,
     mediaToken: MediaSessionCompat.Token
 ) : NotificationCompat.Builder(context, CHANNEL_ID), PlaybackStateManager.Callback {
+    private val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        PendingIntent.FLAG_IMMUTABLE
+    else 0
+
     init {
+        val activityIntent = PendingIntent.getActivity(
+            context, REQUEST_CODE,
+            Intent(context, MainActivity::class.java),
+            pendingIntentFlags
+        )
+
         setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
-        setContentIntent(newPendingIntent(context, Intent(context, MainActivity::class.java)))
+        setContentIntent(activityIntent)
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         addAction(buildLoopAction(context, LoopMode.NONE))
@@ -152,21 +162,13 @@ class PlaybackNotification private constructor(
     ): NotificationCompat.Action {
         val action = NotificationCompat.Action.Builder(
             iconRes, actionName,
-            newPendingIntent(context, Intent(actionName))
+            PendingIntent.getBroadcast(
+                context, REQUEST_CODE,
+                Intent(actionName), pendingIntentFlags
+            )
         )
 
         return action.build()
-    }
-
-    private fun newPendingIntent(context: Context, intent: Intent): PendingIntent {
-        return PendingIntent.getBroadcast(
-            context, REQUEST_CODE, intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            }
-        )
     }
 
     companion object {

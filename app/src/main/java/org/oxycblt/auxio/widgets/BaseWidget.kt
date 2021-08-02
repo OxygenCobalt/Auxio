@@ -84,7 +84,9 @@ abstract class BaseWidget : AppWidgetProvider() {
             android.R.id.background,
             PendingIntent.getActivity(
                 context, 0xA0A0, Intent(context, MainActivity::class.java),
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    PendingIntent.FLAG_IMMUTABLE
+                else 0
             )
         )
 
