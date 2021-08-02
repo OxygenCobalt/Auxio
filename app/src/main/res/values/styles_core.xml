@@ -42,4 +42,10 @@
         <item name="colorSurface">@color/surface_black</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog.Black</item>
     </style>
+
+    <!--
+    Theming widgets is technically possible below Android 10, but its too much of a hassle.
+    Default to a light blue theme.
+    -->
+    <style name="Theme.Widget" parent="@style/Theme.Blue" />
 </resources>

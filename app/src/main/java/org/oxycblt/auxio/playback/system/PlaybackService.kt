@@ -78,7 +78,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     private val settingsManager = SettingsManager.getInstance()
 
     // Widgets
-    private val minimalWidget = MinimalWidgetProvider.new()
+    private val minimalWidget = MinimalWidgetProvider()
 
     // State
     private var isForeground = false
@@ -179,6 +179,10 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         audioReactor.release()
         releaseWakelock()
 
+        // Technically the widgets don't *have* to be reset, but any commands from them
+        // won't work if the service is dead, so we do it anyway
+        minimalWidget.stop(this)
+
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
 
@@ -246,14 +250,14 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
 
-            minimalWidget?.update(this, playbackManager)
+            minimalWidget.update(this, playbackManager)
 
             return
         }
 
         // Clear if there's nothing to play.
         player.stop()
-        minimalWidget?.stop(this)
+        minimalWidget.stop(this)
         stopForegroundAndNotification()
     }
 

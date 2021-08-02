@@ -2,7 +2,6 @@ package org.oxycblt.auxio.widgets
 
 import android.content.Context
 import android.os.Build
-import android.view.View
 import android.widget.RemoteViews
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
@@ -17,14 +16,7 @@ class MinimalWidgetProvider : BaseWidget() {
     override val type: Int get() = TYPE
 
     override fun getDefaultViews(context: Context): RemoteViews {
-        val views = getRemoteViews(context, LAYOUT)
-
-        views.setInt(R.id.widget_cover, "setImageResource", R.drawable.ic_song_clear)
-        views.setInt(R.id.widget_cover, "setVisibility", View.VISIBLE)
-        views.setInt(R.id.widget_placeholder_msg, "setVisibility", View.VISIBLE)
-        views.setInt(R.id.widget_meta, "setVisibility", View.GONE)
-
-        return views
+        return getRemoteViews(context, R.layout.widget_default)
     }
 
     override fun updateViews(
@@ -32,15 +24,12 @@ class MinimalWidgetProvider : BaseWidget() {
         playbackManager: PlaybackStateManager,
         onDone: (RemoteViews) -> Unit
     ) {
-        val views = getRemoteViews(context, LAYOUT)
         val song = playbackManager.song
 
         if (song != null) {
             logD("updating view to ${song.name}")
 
-            // Show the proper widget views
-            views.setInt(R.id.widget_placeholder_msg, "setVisibility", View.GONE)
-            views.setInt(R.id.widget_meta, "setVisibility", View.VISIBLE)
+            val views = getRemoteViews(context, R.layout.widget_minimal)
 
             // Update the metadata
             views.setTextViewText(R.id.widget_song, song.name)
@@ -51,24 +40,18 @@ class MinimalWidgetProvider : BaseWidget() {
                 if (bitmap != null) {
                     views.setBitmap(R.id.widget_cover, "setImageBitmap", bitmap)
                 } else {
-                    views.setInt(R.id.widget_cover, "setImageResource", R.drawable.ic_song_clear)
+                    views.setInt(R.id.widget_cover, "setImageResource", R.drawable.ic_song)
                 }
 
                 onDone(views)
             }
         } else {
-            views.setInt(R.id.widget_cover, "setImageResource", R.drawable.ic_song_clear)
-            onDone(views)
+            onDone(getDefaultViews(context))
         }
     }
 
     companion object {
         const val TYPE = 0xA0D0
-
-        // Workaround to make studio shut up about perfectly valid layouts somehow
-        // being invalid for remote views.
-        const val LAYOUT = R.layout.widget_minimal
-
         fun new(): MinimalWidgetProvider? {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 MinimalWidgetProvider()

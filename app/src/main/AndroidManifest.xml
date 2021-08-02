@@ -57,9 +57,9 @@
             android:roundIcon="@mipmap/ic_launcher_round" />
 
         <receiver
+            android:label="@string/info_widget_minimal"
             android:name=".widgets.MinimalWidgetProvider"
-            android:exported="false"
-            android:enabled="@bool/widgets_supported">
+            android:exported="false">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

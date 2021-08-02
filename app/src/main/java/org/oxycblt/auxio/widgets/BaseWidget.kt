@@ -11,6 +11,7 @@ import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 
@@ -112,11 +113,3 @@ abstract class BaseWidget : AppWidgetProvider() {
         const val KEY_WIDGET_TYPE = BuildConfig.APPLICATION_ID + ".key.WIDGET_TYPE"
     }
 }
-
-// PLAN:
-// - Service calls methods on the widgets, think a subset of PlaybackStateManager.Callback
-// - Widgets send BACK broadcasts to control playback, as other parts of the code do
-// - Since widgets are broadcastrecievers, this is okay, shouldn't cause memory leaks
-// - Can't use playbackstatemanager here since that would make the app unkillable
-// - Callbacks also need to handle PlaybackService dying and being unable to send any
-// more updates, and PlaybackService starting up as well
