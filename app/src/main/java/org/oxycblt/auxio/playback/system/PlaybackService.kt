@@ -369,6 +369,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         onLoopUpdate(playbackManager.loopMode)
         onSongUpdate(playbackManager.song)
         onSeek(playbackManager.position)
+
+        // Notify other classes that rely on this service to also update.
+        widgets.update()
     }
 
     /**
@@ -495,9 +498,11 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                     }
                 }
 
-                BaseWidget.ACTION_WIDGET_UPDATE -> widgets.initWidget(
-                    intent.getIntExtra(BaseWidget.ACTION_WIDGET_UPDATE, -1)
-                )
+                BaseWidget.ACTION_WIDGET_UPDATE -> {
+                    widgets.initWidget(
+                        intent.getIntExtra(BaseWidget.KEY_WIDGET_TYPE, -1)
+                    )
+                }
             }
         }
 

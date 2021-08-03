@@ -51,7 +51,7 @@ class MinimalWidgetProvider : BaseWidget() {
         val song = playbackManager.song
 
         if (song != null) {
-            logD("updating view to ${song.name}")
+            logD("Updating view to ${song.name}")
 
             val views = createViews(context, R.layout.widget_minimal)
 
@@ -88,6 +88,8 @@ class MinimalWidgetProvider : BaseWidget() {
                 onDone(views)
             }
         } else {
+            logD("No song playing, reverting to default view")
+
             onDone(defaultViews(context))
         }
     }

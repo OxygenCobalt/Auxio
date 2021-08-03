@@ -155,8 +155,8 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
                 val list = mutableListOf<Song>()
 
                 songs.groupBy { it.album }.entries.sortedWith(compareByDescending { it.key.year }).forEach { entry ->
-                    list.addAll(entry.value.sortedWith(compareBy { it.track }))
-                }
+                list.addAll(entry.value.sortedWith(compareBy { it.track }))
+            }
 
                 list
             }

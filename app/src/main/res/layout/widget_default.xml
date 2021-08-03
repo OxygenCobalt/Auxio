@@ -3,6 +3,7 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     android:theme="@style/Theme.Widget">
 
     <android.widget.ImageView

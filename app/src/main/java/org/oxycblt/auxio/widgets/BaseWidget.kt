@@ -45,8 +45,6 @@ abstract class BaseWidget : AppWidgetProvider() {
      * Update the widget based on the playback state.
      */
     fun update(context: Context, playbackManager: PlaybackStateManager) {
-        logD("Dispatching playback state update")
-
         val manager = AppWidgetManager.getInstance(context)
 
         // View updates are often async due to image loading, so only push the views
@@ -57,10 +55,10 @@ abstract class BaseWidget : AppWidgetProvider() {
     }
 
     /*
-     * Stop this widget, reverting it to its default state.
+     * Revert this widget to its default view
      */
-    fun stop(context: Context) {
-        logD("Stopping widget")
+    fun reset(context: Context) {
+        logD("Resetting widget")
 
         val manager = AppWidgetManager.getInstance(context)
         manager.applyViews(context, defaultViews(context))
@@ -71,9 +69,9 @@ abstract class BaseWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        appWidgetManager.applyViews(context, defaultViews(context))
-
         logD("Sending update intent to PlaybackService")
+
+        appWidgetManager.applyViews(context, defaultViews(context))
 
         val intent = Intent(ACTION_WIDGET_UPDATE)
             .putExtra(KEY_WIDGET_TYPE, type)

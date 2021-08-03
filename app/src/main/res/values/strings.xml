@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
+
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
@@ -137,6 +138,8 @@
     <string name="placeholder_album">Unknown Album</string>
     <string name="placeholder_no_date">No Date</string>
     <string name="placeholder_playback">No music playing</string>
+    <string name="placeholder_widget_song">Song Name</string>
+    <string name="placeholder_widget_artist">Artist Name</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="color_label_red">Red</string>
