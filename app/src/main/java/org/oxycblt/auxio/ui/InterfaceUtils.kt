@@ -31,6 +31,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
 
+const val INTENT_REQUEST_CODE = 0xA0A0
+
 // --- VIEW CONFIGURATION ---
 
 /**
@@ -153,8 +155,6 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
 fun Context.showToast(@StringRes str: Int) {
     Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
 }
-
-const val INTENT_REQUEST_CODE = 0xA0A0
 
 /**
  * Create a broadcast [PendingIntent]

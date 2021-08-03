@@ -21,10 +21,9 @@ class AudioReactor(
     context: Context,
     private val player: SimpleExoPlayer
 ) : AudioManager.OnAudioFocusChangeListener {
-    private val audioManager = context.getSystemServiceSafe(AudioManager::class)
-
-    private val settingsManager = SettingsManager.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+    private val audioManager = context.getSystemServiceSafe(AudioManager::class)
 
     private val request = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
         .setWillPauseWhenDucked(true)

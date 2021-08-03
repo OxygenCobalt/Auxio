@@ -14,7 +14,7 @@ import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.newBroadcastIntent
 import org.oxycblt.auxio.ui.newMainIntent
 
@@ -25,9 +25,11 @@ import org.oxycblt.auxio.ui.newMainIntent
  */
 @SuppressLint("RestrictedApi")
 class PlaybackNotification private constructor(
-    context: Context,
+    private val context: Context,
     mediaToken: MediaSessionCompat.Token
-) : NotificationCompat.Builder(context, CHANNEL_ID), PlaybackStateManager.Callback {
+) : NotificationCompat.Builder(context, CHANNEL_ID) {
+    val settingsManager = SettingsManager.getInstance()
+
     init {
         setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -47,16 +49,19 @@ class PlaybackNotification private constructor(
                 .setMediaSession(mediaToken)
                 .setShowActionsInCompactView(1, 2, 3)
         )
+
+        // Don't connect to PlaybackStateManager here. This is because it's possible for this
+        // notification to not be updated by PlaybackStateManager before PlaybackService pushes
+        // the notification, resulting in invalid metadata.
     }
 
     // --- STATE FUNCTIONS ---
 
     /**
      * Set the metadata of the notification using [song].
-     * @param colorize Whether to show the album art of [song] on the notification
      * @param onDone What to do when the loading of the album art is finished
      */
-    fun setMetadata(context: Context, song: Song, colorize: Boolean, onDone: () -> Unit) {
+    fun setMetadata(song: Song, onDone: () -> Unit) {
         setContentTitle(song.name)
         setContentText(song.album.artist.name)
 
@@ -66,7 +71,7 @@ class PlaybackNotification private constructor(
             setSubText(song.album.name)
         }
 
-        if (colorize) {
+        if (!settingsManager.colorizeNotif) {
             // loadBitmap() is concurrent, so only call back to the object calling this function when
             // the loading is over.
             loadBitmap(context, song) { bitmap ->
@@ -82,28 +87,28 @@ class PlaybackNotification private constructor(
     /**
      * Set the playing icon on the notification
      */
-    fun setPlaying(context: Context, isPlaying: Boolean) {
+    fun setPlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
     /**
      * Update the first action to reflect the [loopMode] given.
      */
-    fun setLoop(context: Context, loopMode: LoopMode) {
+    fun setLoop(loopMode: LoopMode) {
         mActions[0] = buildLoopAction(context, loopMode)
     }
 
     /**
      * Update the first action to reflect whether the queue is shuffled or not
      */
-    fun setShuffle(context: Context, isShuffling: Boolean) {
+    fun setShuffle(isShuffling: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffling)
     }
 
     /**
      * Apply the current [parent] to the header of the notification.
      */
-    fun setParent(context: Context, parent: Parent?) {
+    fun setParent(parent: Parent?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS

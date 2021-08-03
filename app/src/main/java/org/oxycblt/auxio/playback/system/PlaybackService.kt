@@ -48,7 +48,6 @@ import org.oxycblt.auxio.widgets.WidgetController
 /**
  * A service that manages the system-side aspects of playback, such as:
  * - The single [SimpleExoPlayer] instance.
- * - The [MediaSessionCompat]
  * - The Media Notification
  * - Headset management
  * - Widgets
@@ -56,8 +55,6 @@ import org.oxycblt.auxio.widgets.WidgetController
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
  * so therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
- *
- * TODO: Try to split up this god object somewhat, such as making the notification state-aware.
  */
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
 
@@ -246,7 +243,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             player.prepare()
 
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                song, ::startForegroundOrNotify
             )
 
             return
@@ -258,7 +255,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     }
 
     override fun onParentUpdate(parent: Parent?) {
-        notification.setParent(this, parent)
+        notification.setParent(parent)
 
         startForegroundOrNotify()
     }
@@ -272,13 +269,13 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             player.pause()
         }
 
-        notification.setPlaying(this, isPlaying)
+        notification.setPlaying(isPlaying)
         startForegroundOrNotify()
     }
 
     override fun onLoopUpdate(loopMode: LoopMode) {
         if (!settingsManager.useAltNotifAction) {
-            notification.setLoop(this, loopMode)
+            notification.setLoop(loopMode)
 
             startForegroundOrNotify()
         }
@@ -286,7 +283,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onShuffleUpdate(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
-            notification.setShuffle(this, isShuffling)
+            notification.setShuffle(isShuffling)
 
             startForegroundOrNotify()
         }
@@ -301,16 +298,16 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                song, ::startForegroundOrNotify
             )
         }
     }
 
     override fun onNotifActionUpdate(useAltAction: Boolean) {
         if (useAltAction) {
-            notification.setShuffle(this, playbackManager.isShuffling)
+            notification.setShuffle(playbackManager.isShuffling)
         } else {
-            notification.setLoop(this, playbackManager.loopMode)
+            notification.setLoop(playbackManager.loopMode)
         }
 
         startForegroundOrNotify()
@@ -321,7 +318,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             connector.onSongUpdate(song)
 
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                song, ::startForegroundOrNotify
             )
         }
     }
@@ -329,7 +326,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
             notification.setMetadata(
-                this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
+                song, ::startForegroundOrNotify
             )
         }
     }
