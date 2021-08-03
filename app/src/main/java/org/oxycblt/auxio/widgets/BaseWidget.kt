@@ -1,19 +1,18 @@
 package org.oxycblt.auxio.widgets
 
-import android.app.PendingIntent
+import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.ui.newMainIntent
 
 /**
  * The base widget class for all widget implementations in Auxio.
@@ -21,11 +20,16 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 abstract class BaseWidget : AppWidgetProvider() {
     abstract val type: Int
 
-    /*
-     * Returns the default view for this widget. This should be the "No music playing" screen
-     * in pretty much all cases.
-     */
-    protected abstract fun getDefaultViews(context: Context): RemoteViews
+    protected open fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
+        val views = RemoteViews(context.packageName, layout)
+
+        views.setOnClickPendingIntent(
+            android.R.id.background,
+            context.newMainIntent()
+        )
+
+        return views
+    }
 
     /*
      * Update views based off of the playback state. This job is asynchronous and should be
@@ -59,7 +63,7 @@ abstract class BaseWidget : AppWidgetProvider() {
         logD("Stopping widget")
 
         val manager = AppWidgetManager.getInstance(context)
-        manager.applyViews(context, getDefaultViews(context))
+        manager.applyViews(context, defaultViews(context))
     }
 
     override fun onUpdate(
@@ -67,7 +71,7 @@ abstract class BaseWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        appWidgetManager.applyViews(context, getDefaultViews(context))
+        appWidgetManager.applyViews(context, defaultViews(context))
 
         logD("Sending update intent to PlaybackService")
 
@@ -78,20 +82,12 @@ abstract class BaseWidget : AppWidgetProvider() {
         context.sendBroadcast(intent)
     }
 
-    protected fun getRemoteViews(context: Context, @LayoutRes layout: Int): RemoteViews {
-        val views = RemoteViews(context.packageName, layout)
-
-        views.setOnClickPendingIntent(
-            android.R.id.background,
-            PendingIntent.getActivity(
-                context, 0xA0A0, Intent(context, MainActivity::class.java),
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    PendingIntent.FLAG_IMMUTABLE
-                else 0
-            )
+    @SuppressLint("RemoteViewLayout")
+    protected fun defaultViews(context: Context): RemoteViews {
+        return RemoteViews(
+            context.packageName,
+            R.layout.widget_default
         )
-
-        return views
     }
 
     private fun AppWidgetManager.applyViews(context: Context, views: RemoteViews) {

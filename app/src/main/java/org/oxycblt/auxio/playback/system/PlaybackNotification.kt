@@ -5,20 +5,19 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
-import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.ui.newBroadcastIntent
+import org.oxycblt.auxio.ui.newMainIntent
 
 /**
  * The unified notification for [PlaybackService]. This is not self-sufficient, updates have
@@ -35,24 +34,18 @@ class PlaybackNotification private constructor(
     else 0
 
     init {
-        val activityIntent = PendingIntent.getActivity(
-            context, REQUEST_CODE,
-            Intent(context, MainActivity::class.java),
-            pendingIntentFlags
-        )
-
         setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
-        setContentIntent(activityIntent)
+        setContentIntent(context.newMainIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         addAction(buildLoopAction(context, LoopMode.NONE))
-        addAction(buildAction(context, ACTION_SKIP_PREV, R.drawable.ic_skip_prev))
+        addAction(buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev))
         addAction(buildPlayPauseAction(context, true))
-        addAction(buildAction(context, ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
-        addAction(buildAction(context, ACTION_EXIT, R.drawable.ic_exit))
+        addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
+        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_exit))
 
         setStyle(
             MediaStyle()
@@ -130,7 +123,7 @@ class PlaybackNotification private constructor(
     ): NotificationCompat.Action {
         val drawableRes = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
 
-        return buildAction(context, ACTION_PLAY_PAUSE, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
 
     private fun buildLoopAction(
@@ -143,7 +136,7 @@ class PlaybackNotification private constructor(
             LoopMode.TRACK -> R.drawable.ic_loop_one
         }
 
-        return buildAction(context, ACTION_LOOP, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_LOOP, drawableRes)
     }
 
     private fun buildShuffleAction(
@@ -152,7 +145,7 @@ class PlaybackNotification private constructor(
     ): NotificationCompat.Action {
         val drawableRes = if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_shuffle_inactive
 
-        return buildAction(context, ACTION_SHUFFLE, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_SHUFFLE, drawableRes)
     }
 
     private fun buildAction(
@@ -162,10 +155,7 @@ class PlaybackNotification private constructor(
     ): NotificationCompat.Action {
         val action = NotificationCompat.Action.Builder(
             iconRes, actionName,
-            PendingIntent.getBroadcast(
-                context, REQUEST_CODE,
-                Intent(actionName), pendingIntentFlags
-            )
+            context.newBroadcastIntent(actionName)
         )
 
         return action.build()
@@ -174,14 +164,6 @@ class PlaybackNotification private constructor(
     companion object {
         const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
         const val NOTIFICATION_ID = 0xA0A0
-        const val REQUEST_CODE = 0xA0C0
-
-        const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
-        const val ACTION_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
-        const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
-        const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
-        const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
-        const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
 
         /**
          * Build a new instance of [PlaybackNotification].

@@ -49,6 +49,36 @@
             android:textColor="?android:attr/textColorSecondary"
             tools:text="Artist Name" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/widget_skip_prev"
+                style="@style/Widget.Button.Unbounded"
+                android:layout_weight="1"
+                android:contentDescription="@string/description_skip_prev"
+                android:src="@drawable/ic_skip_prev" />
+
+            <ImageButton
+                android:id="@+id/widget_play_pause"
+                style="@style/Widget.Button.Unbounded"
+                android:layout_weight="1"
+                android:contentDescription="@string/description_play_pause"
+                android:src="@drawable/ic_play" />
+
+            <ImageButton
+                android:id="@+id/widget_skip_next"
+                style="@style/Widget.Button.Unbounded"
+                android:layout_weight="1"
+                android:contentDescription="@string/description_skip_next"
+                android:src="@drawable/ic_skip_next" />
+
+        </LinearLayout>
+
     </android.widget.LinearLayout>
 
 </LinearLayout>

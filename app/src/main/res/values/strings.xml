@@ -126,6 +126,7 @@
 
     <string name="description_error">Error</string>
     <string name="description_auxio_icon">Auxio icon</string>
+    <string name="description_placeholder_cover">Album cover</string>
     <string name="description_album_cover">Album Cover for %s</string>
     <string name="description_artist_image">Artist Image for %s</string>
     <string name="description_genre_image">Genre Image for %s</string>

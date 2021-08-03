@@ -85,7 +85,7 @@ class PlaybackSessionConnector(
 
     override fun onStop() {
         // Get the service to shut down with the ACTION_EXIT intent
-        context.sendBroadcast(Intent(PlaybackNotification.ACTION_EXIT))
+        context.sendBroadcast(Intent(PlaybackService.ACTION_EXIT))
     }
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---

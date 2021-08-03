@@ -1,7 +1,9 @@
 package org.oxycblt.auxio.ui
 
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -24,6 +26,7 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
@@ -149,6 +152,32 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
  */
 fun Context.showToast(@StringRes str: Int) {
     Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
+}
+
+const val INTENT_REQUEST_CODE = 0xA0A0
+
+/**
+ * Create a broadcast [PendingIntent]
+ */
+fun Context.newBroadcastIntent(what: String): PendingIntent {
+    return PendingIntent.getBroadcast(
+        this, INTENT_REQUEST_CODE, Intent(what),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            PendingIntent.FLAG_IMMUTABLE
+        else 0
+    )
+}
+
+/**
+ * Create a [PendingIntent] that leads to Auxio's [MainActivity]
+ */
+fun Context.newMainIntent(): PendingIntent {
+    return PendingIntent.getActivity(
+        this, INTENT_REQUEST_CODE, Intent(this, MainActivity::class.java),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            PendingIntent.FLAG_IMMUTABLE
+        else 0
+    )
 }
 
 /**

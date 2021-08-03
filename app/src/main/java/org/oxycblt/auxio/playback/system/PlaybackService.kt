@@ -43,7 +43,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.getSystemServiceSafe
 import org.oxycblt.auxio.widgets.BaseWidget
-import org.oxycblt.auxio.widgets.MinimalWidgetProvider
+import org.oxycblt.auxio.widgets.WidgetController
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -56,6 +56,8 @@ import org.oxycblt.auxio.widgets.MinimalWidgetProvider
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
  * so therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
+ *
+ * TODO: Try to split up this god object somewhat, such as making the notification state-aware.
  */
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
 
@@ -71,14 +73,12 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     // System backend components
     private lateinit var audioReactor: AudioReactor
     private lateinit var wakeLock: PowerManager.WakeLock
+    private lateinit var widgets: WidgetController
     private val systemReceiver = SystemEventReceiver()
 
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
-
-    // Widgets
-    private val minimalWidget = MinimalWidgetProvider()
 
     // State
     private var isForeground = false
@@ -113,12 +113,14 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             false
         )
 
+        // --- SYSTEM SETUP ---
+
         audioReactor = AudioReactor(this, player)
         wakeLock = getSystemServiceSafe(PowerManager::class).newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK, this::class.simpleName
         )
 
-        // --- CALLBACKS ---
+        widgets = WidgetController(this)
 
         // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply {
@@ -129,12 +131,12 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         // Then the notif/headset callbacks
         IntentFilter().apply {
-            addAction(PlaybackNotification.ACTION_LOOP)
-            addAction(PlaybackNotification.ACTION_SHUFFLE)
-            addAction(PlaybackNotification.ACTION_SKIP_PREV)
-            addAction(PlaybackNotification.ACTION_PLAY_PAUSE)
-            addAction(PlaybackNotification.ACTION_SKIP_NEXT)
-            addAction(PlaybackNotification.ACTION_EXIT)
+            addAction(ACTION_LOOP)
+            addAction(ACTION_SHUFFLE)
+            addAction(ACTION_SKIP_PREV)
+            addAction(ACTION_PLAY_PAUSE)
+            addAction(ACTION_SKIP_NEXT)
+            addAction(ACTION_EXIT)
 
             addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
             addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
@@ -177,11 +179,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         connector.release()
         mediaSession.release()
         audioReactor.release()
+        widgets.release()
         releaseWakelock()
-
-        // Technically the widgets don't *have* to be reset, but any commands from them
-        // won't work if the service is dead, so we do it anyway
-        minimalWidget.stop(this)
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
@@ -250,14 +249,11 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 this, song, settingsManager.colorizeNotif, ::startForegroundOrNotify
             )
 
-            minimalWidget.update(this, playbackManager)
-
             return
         }
 
         // Clear if there's nothing to play.
         player.stop()
-        minimalWidget.stop(this)
         stopForegroundAndNotification()
     }
 
@@ -458,22 +454,22 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
                 // --- NOTIFICATION CASES ---
 
-                PlaybackNotification.ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
+                ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
                     !playbackManager.isPlaying
                 )
 
-                PlaybackNotification.ACTION_LOOP -> playbackManager.setLoopMode(
+                ACTION_LOOP -> playbackManager.setLoopMode(
                     playbackManager.loopMode.increment()
                 )
 
-                PlaybackNotification.ACTION_SHUFFLE -> playbackManager.setShuffling(
+                ACTION_SHUFFLE -> playbackManager.setShuffling(
                     !playbackManager.isShuffling, keepSong = true
                 )
 
-                PlaybackNotification.ACTION_SKIP_PREV -> playbackManager.prev()
-                PlaybackNotification.ACTION_SKIP_NEXT -> playbackManager.next()
+                ACTION_SKIP_PREV -> playbackManager.prev()
+                ACTION_SKIP_NEXT -> playbackManager.next()
 
-                PlaybackNotification.ACTION_EXIT -> {
+                ACTION_EXIT -> {
                     playbackManager.setPlaying(false)
                     stopForegroundAndNotification()
                 }
@@ -499,14 +495,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                     }
                 }
 
-                // Newly added widgets need PlaybackService to
-                BaseWidget.ACTION_WIDGET_UPDATE -> {
-                    when (intent.getIntExtra(BaseWidget.KEY_WIDGET_TYPE, -1)) {
-                        MinimalWidgetProvider.TYPE -> minimalWidget?.update(
-                            this@PlaybackService, playbackManager
-                        )
-                    }
-                }
+                BaseWidget.ACTION_WIDGET_UPDATE -> widgets.initWidget(
+                    intent.getIntExtra(BaseWidget.ACTION_WIDGET_UPDATE, -1)
+                )
             }
         }
 
@@ -539,6 +530,11 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         private const val WAKELOCK_TIME = 25000L
         private const val POS_POLL_INTERVAL = 500L
 
-        const val BROADCAST_WIDGET_START = BuildConfig.APPLICATION_ID + ".key.WIDGETS_START"
+        const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
+        const val ACTION_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+        const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
+        const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
+        const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
+        const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
     }
 }
