@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.settings.blacklist
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemBlacklistEntryBinding
@@ -24,9 +25,10 @@ class BlacklistEntryAdapter(
         holder.bind(paths[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(newPaths: MutableList<String>) {
         paths = newPaths
-        notifyDataSetChanged()
+        notifyDataSetChanged() // TODO: Consider using remote/addition
     }
 
     inner class ViewHolder(

@@ -5,9 +5,6 @@
         <item name="colorSecondary">?android:attr/colorAccent</item>
         <item name="colorControlNormal">?android:attr/colorControlNormal</item>
         <item name="colorControlHighlight">?android:attr/colorControlHighlight</item>
-
-        <item name="colorSurface">@color/surface_color</item>
-        <item name="android:windowBackground">?attr/colorSurface</item>
-        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="colorSurface">?android:attr/colorBackground</item>
     </style>
 </resources>

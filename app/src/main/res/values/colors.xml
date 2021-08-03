@@ -4,11 +4,6 @@
     <color name="surface_night">#ff151515</color>
     <color name="surface_black">#ff000000</color>
 
-    <color name="text_primary_day">#ff000000</color>
-    <color name="text_secondary_day">#ff323232</color>
-    <color name="text_primary_night">#ffffffff</color>
-    <color name="text_secondary_night">#ffbebebe</color>
-
     <color name="surface_color">@color/surface_day</color>
     <color name="selection_color">#cbcbcb</color>
     <color name="control_color">#202020</color>

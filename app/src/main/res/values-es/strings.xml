@@ -34,7 +34,7 @@
     <string name="label_queue">Cola</string>
     <string name="label_queue_add">Agregar a la cola</string>
     <string name="label_queue_added">Agregada a la cola</string>
-    <string name="label_next_user_queue">A continuación...</string>
+    <string name="label_next_user_queue">A continuación…</string>
 
     <string name="label_go_artist">Ir al artista</string>
     <string name="label_go_album">Ir al álbum</string>
@@ -103,7 +103,7 @@
     <string name="error_bad_dir">Este directorio no es compatible</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Busca en tu biblioteca...</string>
+    <string name="hint_search_library">Busca en tu biblioteca…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="description_sort_button">Cambiar el orden de clasificación</string>

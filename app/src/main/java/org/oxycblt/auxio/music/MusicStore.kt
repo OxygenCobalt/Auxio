@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.music
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -90,6 +91,9 @@ class MusicStore private constructor() {
 
         cur?.use { cursor ->
             cursor.moveToFirst()
+
+            // Make studio shut up about "invalid ranges" that don't exist
+            @SuppressLint("Range")
             val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
 
             return songs.find { it.fileName == fileName }

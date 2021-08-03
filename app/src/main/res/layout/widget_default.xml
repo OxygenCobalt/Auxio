@@ -3,11 +3,9 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
     android:theme="@style/Theme.Widget">
 
     <android.widget.ImageView
-        android:id="@+id/widget_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.3"
@@ -16,7 +14,6 @@
         android:src="@drawable/ic_song" />
 
     <android.widget.TextView
-        android:id="@+id/widget_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

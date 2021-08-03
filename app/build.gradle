@@ -94,7 +94,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:2.14.2"
 
     // Image loading
-    implementation 'io.coil-kt:coil:1.3.0'
+    implementation 'io.coil-kt:coil:1.3.1'
 
     // Material
     implementation "com.google.android.material:material:1.4.0"
@@ -102,7 +102,7 @@ dependencies {
     // --- DEBUG ---
 
     // Lint
-    ktlint 'com.pinterest:ktlint:0.41.0'
+    ktlint 'com.pinterest:ktlint:0.42.0'
 
     // Memory Leak checking
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'

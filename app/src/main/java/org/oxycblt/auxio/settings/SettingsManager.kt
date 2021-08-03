@@ -97,7 +97,7 @@ class SettingsManager private constructor(context: Context) :
     val rewindWithPrev: Boolean
         get() = sharedPrefs.getBoolean(KEY_PREV_REWIND, true)
 
-    /** Whether [LoopMode.TRACK] should pause when the track repeats */
+    /** Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats */
     val pauseOnLoop: Boolean
         get() = sharedPrefs.getBoolean(KEY_LOOP_PAUSE, false)
 

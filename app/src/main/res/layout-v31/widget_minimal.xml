@@ -4,7 +4,6 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
     android:orientation="vertical"
     android:theme="@style/Theme.Widget">
 
@@ -13,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="?attr/colorSurface"
         android:scaleType="centerCrop"
         tools:ignore="contentDescription"
         tools:src="@drawable/ic_song" />
 
     <android.widget.LinearLayout
-        android:id="@+id/widget_meta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

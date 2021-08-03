@@ -3,7 +3,6 @@ package org.oxycblt.auxio.playback.system
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
@@ -29,10 +28,6 @@ class PlaybackNotification private constructor(
     context: Context,
     mediaToken: MediaSessionCompat.Token
 ) : NotificationCompat.Builder(context, CHANNEL_ID), PlaybackStateManager.Callback {
-    private val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        PendingIntent.FLAG_IMMUTABLE
-    else 0
-
     init {
         setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
