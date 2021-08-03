@@ -16,6 +16,9 @@ import java.lang.reflect.Field
  * views when animated with a stock LayoutTransition. If something breaks on the playback controls
  * or nav bar, this is probably the culprit.
  *
+ * "But oxygencobalt, couldn't you just write your own animation code and run that instea-"
+ * **NO.**
+ *
  * Adapted from this StackOverflow answer:
  * https://stackoverflow.com/a/35087229
  * @author OxygenCobalt
