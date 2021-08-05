@@ -88,14 +88,32 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="Widget.Button.Unbounded.Widget" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_height">32dp</item>
-        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    <style name="Widget.Button.Unbounded.Widget.Base" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_height">@dimen/height_widget_button</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/spacing_micro</item>
     </style>
 
-    <style name="Widget.Button.Unbounded.Widget.V31" parent="Widget.Button.Unbounded.Widget">
-        <item name="android:background">@drawable/ui_unbounded_ripple</item>
+    <style name="Widget.Button.Unbounded.Widget" parent="Widget.Button.Unbounded.Widget.Base">
+         <!--
+         Can't use a normal unbounded ripple here since it causes a weird bug
+         where the ripples will have a fixed starting size. Default to the
+         uglier system ripple instead.
+         -->
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="WidgetPanel.Base">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">?attr/colorSurface</item>
+    </style>
+
+    <style name="WidgetPanel" parent="WidgetPanel.Base">
+        <item name="android:elevation">@dimen/elevation_normal</item>
     </style>
 </resources>

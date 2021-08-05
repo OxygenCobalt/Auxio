@@ -12,6 +12,7 @@
 
     <!-- Height Namespace | Height for UI elements -->
     <dimen name="height_compact_progress">2dp</dimen>
+    <dimen name="height_widget_button">32dp</dimen>
 
     <!-- Width Namespace | Width for UI elements -->
     <dimen name="width_track_number">32dp</dimen>

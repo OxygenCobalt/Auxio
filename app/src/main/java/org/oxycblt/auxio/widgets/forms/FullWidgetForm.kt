@@ -70,7 +70,7 @@ class FullWidgetForm : WidgetForm(R.layout.widget_full) {
             views.setCharSequence(
                 R.id.widget_cover,
                 "setContentDescription",
-                context.getString(R.string.description_placeholder_cover)
+                context.getString(R.string.description_no_cover)
             )
         }
 

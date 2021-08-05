@@ -110,8 +110,6 @@
     <string name="description_play_pause">Afspelen/Pauzeren</string>
     <string name="description_skip_next">Naar volgend nummer gaan</string>
     <string name="description_skip_prev">Naar het laatste nummer gaan</string>
-    <string name="description_shuffle_on">Zet shuffle aan</string>
-    <string name="description_shuffle_off">Zet shuffle uit</string>
     <string name="description_change_loop">Herhaalfunctie wijzigen</string>
 
     <string name="description_clear_user_queue">Wachtrij wissen</string>

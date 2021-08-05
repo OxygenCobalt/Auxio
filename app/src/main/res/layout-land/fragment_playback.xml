@@ -148,7 +148,6 @@
         <ImageButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Button.Unbounded"
-            android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_prev"
             android:onClick="@{() -> playbackModel.skipPrev()}"
             android:src="@drawable/ic_skip_prev"
@@ -170,7 +169,6 @@
         <ImageButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Button.Unbounded"
-            android:background="@drawable/ui_unbounded_ripple"
             android:contentDescription="@string/description_skip_next"
             android:onClick="@{() -> playbackModel.skipNext()}"
             android:src="@drawable/ic_skip_next"
@@ -183,8 +181,7 @@
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
             android:layout_marginEnd="@dimen/spacing_small"
-            android:background="@drawable/ui_unbounded_ripple"
-            android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
+            android:contentDescription="@string/description_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"

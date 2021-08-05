@@ -112,8 +112,6 @@
     <string name="description_play_pause">Reproducir o Pausar</string>
     <string name="description_skip_next">Saltar a la siguiente canción</string>
     <string name="description_skip_prev">Saltar a la última canción</string>
-    <string name="description_shuffle_on">Activar la reproducción aleatoria</string>
-    <string name="description_shuffle_off">Desactivar la reproducción aleatoria</string>
     <string name="description_change_loop">Cambiar el modo de repetición</string>
 
     <string name="description_clear_user_queue">Limpiar cola</string>

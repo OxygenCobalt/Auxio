@@ -9,44 +9,21 @@
 
     <ImageView
         android:id="@+id/widget_cover"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="?attr/colorSurface"
-        android:scaleType="centerCrop"
-        tools:ignore="contentDescription"
+        style="@style/FluidImageView"
+        android:contentDescription="@string/description_no_cover"
         android:src="@drawable/ic_song" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="?attr/colorSurface"
-        android:elevation="@dimen/elevation_normal"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_medium">
+        style="@style/WidgetPanel">
 
         <TextView
             android:id="@+id/widget_song"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/inter"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold"
+            style="@style/Widget.TextView.Widget.Primary"
             android:text="@string/placeholder_widget_song" />
 
         <TextView
             android:id="@+id/widget_artist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="@font/inter"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:textColor="?android:attr/textColorSecondary"
+            style="@style/Widget.TextView.Widget.Secondary"
             android:text="@string/placeholder_widget_artist" />
 
         <LinearLayout
@@ -54,33 +31,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium">
 
-            <!--
-             Can't use a normal unbounded ripple here since it causes a weird bug
-             where the ripples will have a fixed starting size. Default to the
-             uglier system ripple instead.
-             -->
-
             <ImageButton
                 android:id="@+id/widget_skip_prev"
                 style="@style/Widget.Button.Unbounded.Widget"
-                android:layout_width="0dp"
-                android:layout_weight="1"
                 android:contentDescription="@string/description_skip_prev"
                 android:src="@drawable/ic_skip_prev" />
 
             <ImageButton
                 android:id="@+id/widget_play_pause"
                 style="@style/Widget.Button.Unbounded.Widget"
-                android:layout_width="0dp"
-                android:layout_weight="1"
                 android:contentDescription="@string/description_play_pause"
                 android:src="@drawable/ic_play" />
 
             <ImageButton
                 android:id="@+id/widget_skip_next"
                 style="@style/Widget.Button.Unbounded.Widget"
-                android:layout_width="0dp"
-                android:layout_weight="1"
                 android:contentDescription="@string/description_skip_next"
                 android:src="@drawable/ic_skip_next" />
 

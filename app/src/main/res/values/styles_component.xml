@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- COMPONENT-SPECIFIC STYLES. NOT RE-USABLE. -->
+    <!-- TODO: Extract the component-specific and general styles into separate stylesheets -->
 
     <!-- Title theme for Detail Fragments -->
     <style name="DetailTitleText">
@@ -102,14 +103,41 @@
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
     </style>
 
     <!-- Style for the album/artist text in PlaybackFragment -->
     <style name="Widget.TextView.Playback.Secondary" parent="Widget.TextView.Playback.Base">
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <!-- Style for text used in widgets -->
+    <style name="Widget.TextView.Widget.Base" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <!-- Style for the title text in PlaybackFragment -->
+    <style name="Widget.TextView.Widget.Primary" parent="Widget.TextView.Widget.Base">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
+    </style>
+
+    <!-- Style for the album/artist text in PlaybackFragment -->
+    <style name="Widget.TextView.Widget.Secondary" parent="Widget.TextView.Widget.Base">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
     </style>
 
     <!-- Style for the play/pause circle button -->
@@ -142,6 +170,18 @@
         <item name="android:layout_height">0dp</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:outlineProvider">bounds</item>
+    </style>
+
+    <!--
+    Style for an ImageView that expands regardless of whether it can fit,
+    mostly used on widgets
+    -->
+    <style name="FluidImageView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="android:scaleType">centerCrop</item>
     </style>
 
     <!-- Style for the seekbar on PlaybackFragment -->

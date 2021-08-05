@@ -109,8 +109,6 @@
     <string name="description_play_pause">Abspielen oder Pausieren</string>
     <string name="description_skip_prev">Zu letzter Lied springen</string>
     <string name="description_skip_next">Zu nächster Lied springen</string>
-    <string name="description_shuffle_on">Zufällig anschalten</string>
-    <string name="description_shuffle_off">Zufällig ausschalten</string>
     <string name="description_change_loop">Art die Wiederholung ändern</string>
 
     <string name="description_clear_search">Suchanfrage löschen</string>

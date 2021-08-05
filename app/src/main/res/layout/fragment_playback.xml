@@ -165,7 +165,7 @@
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Button.Unbounded"
             android:layout_marginEnd="@dimen/spacing_small"
-            android:contentDescription="@{playbackModel.isShuffling() ? @string/description_shuffle_off : @string/description_shuffle_on"
+            android:contentDescription="@string/description_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"

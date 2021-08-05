@@ -55,7 +55,7 @@ class SmallWidgetForm : WidgetForm(R.layout.widget_small) {
             views.setCharSequence(
                 R.id.widget_cover,
                 "setContentDescription",
-                context.getString(R.string.description_placeholder_cover)
+                context.getString(R.string.description_no_cover)
             )
         }
 
