@@ -57,8 +57,8 @@
             android:roundIcon="@mipmap/ic_launcher_round" />
 
         <receiver
-            android:label="@string/info_widget_minimal"
-            android:name=".widgets.MinimalWidgetProvider"
+            android:label="@string/info_channel_name"
+            android:name=".widgets.WidgetProvider"
             android:exported="false">
 
             <intent-filter>

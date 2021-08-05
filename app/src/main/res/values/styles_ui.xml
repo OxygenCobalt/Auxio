@@ -87,4 +87,15 @@
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
+
+    <style name="Widget.Button.Unbounded.Widget" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/spacing_micro</item>
+    </style>
+
+    <style name="Widget.Button.Unbounded.Widget.V31" parent="Widget.Button.Unbounded.Widget">
+        <item name="android:background">@drawable/ui_unbounded_ripple</item>
+    </style>
 </resources>

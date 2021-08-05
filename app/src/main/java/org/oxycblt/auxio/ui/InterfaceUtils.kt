@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
 
@@ -101,7 +102,7 @@ fun @receiver:ColorRes Int.toColor(context: Context): Int {
     return try {
         ContextCompat.getColor(context, this)
     } catch (e: Resources.NotFoundException) {
-        logE("Attempted color load failed.")
+        logE("Attempted color load failed: ${e.stackTraceToString()}")
 
         // Default to the emergency color [Black] if the loading fails.
         ContextCompat.getColor(context, android.R.color.black)
@@ -145,6 +146,8 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     } else {
         resolvedAttr.data
     }
+
+    logD(context.theme)
 
     return color.toColor(context)
 }

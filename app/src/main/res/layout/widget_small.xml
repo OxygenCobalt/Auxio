@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:theme="@style/Theme.Widget">
 
-    <android.widget.ImageView
+    <ImageView
         android:id="@+id/widget_cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -17,16 +17,16 @@
         tools:ignore="contentDescription"
         tools:src="@drawable/ic_song" />
 
-    <android.widget.LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?android:attr/colorBackground"
+        android:background="?attr/colorSurface"
         android:elevation="@dimen/elevation_normal"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
-        <android.widget.TextView
+        <TextView
             android:id="@+id/widget_song"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:textStyle="bold"
             tools:text="Song Name" />
 
-        <android.widget.TextView
+        <TextView
             android:id="@+id/widget_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small">
+            android:layout_marginTop="@dimen/spacing_medium">
 
             <!--
              Can't use a normal unbounded ripple here since it causes a weird bug
@@ -62,30 +62,30 @@
 
             <ImageButton
                 android:id="@+id/widget_skip_prev"
-                style="@style/Widget.Button.Unbounded"
+                style="@style/Widget.Button.Unbounded.Widget"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/description_skip_prev"
                 android:src="@drawable/ic_skip_prev" />
 
             <ImageButton
                 android:id="@+id/widget_play_pause"
-                style="@style/Widget.Button.Unbounded"
+                style="@style/Widget.Button.Unbounded.Widget"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/description_play_pause"
                 android:src="@drawable/ic_play" />
 
             <ImageButton
                 android:id="@+id/widget_skip_next"
-                style="@style/Widget.Button.Unbounded"
+                style="@style/Widget.Button.Unbounded.Widget"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/description_skip_next"
                 android:src="@drawable/ic_skip_next" />
 
         </LinearLayout>
 
-    </android.widget.LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

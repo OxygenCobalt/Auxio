@@ -42,8 +42,8 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.getSystemServiceSafe
-import org.oxycblt.auxio.widgets.BaseWidget
 import org.oxycblt.auxio.widgets.WidgetController
+import org.oxycblt.auxio.widgets.WidgetProvider
 
 /**
  * A service that manages the system-side aspects of playback, such as:
@@ -140,7 +140,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(Intent.ACTION_HEADSET_PLUG)
 
-            addAction(BaseWidget.ACTION_WIDGET_UPDATE)
+            addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
 
             registerReceiver(systemReceiver, this)
         }
@@ -495,10 +495,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                     }
                 }
 
-                BaseWidget.ACTION_WIDGET_UPDATE -> {
-                    widgets.initWidget(
-                        intent.getIntExtra(BaseWidget.KEY_WIDGET_TYPE, -1)
-                    )
+                WidgetProvider.ACTION_WIDGET_UPDATE -> {
+                    widgets.update()
                 }
             }
         }

@@ -6,7 +6,7 @@
     android:background="?attr/colorSurface"
     android:theme="@style/Theme.Widget">
 
-    <android.widget.ImageView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.3"
@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_song" />
 
-    <android.widget.TextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

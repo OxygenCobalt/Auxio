@@ -19,7 +19,8 @@ import org.oxycblt.auxio.ui.isNight
 
 /**
  * The single [AppCompatActivity] for Auxio.
- * TODO: Port widgets to non-12 android
+ * TODO: Migrate to colorAccent
+ *
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()
