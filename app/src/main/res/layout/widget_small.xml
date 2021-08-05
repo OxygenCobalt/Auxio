@@ -15,7 +15,7 @@
         android:background="?attr/colorSurface"
         android:scaleType="centerCrop"
         tools:ignore="contentDescription"
-        tools:src="@drawable/ic_song" />
+        android:src="@drawable/ic_song" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
-            tools:text="Song Name" />
+            android:text="@string/placeholder_widget_song" />
 
         <TextView
             android:id="@+id/widget_artist"
@@ -47,7 +47,7 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="Artist Name" />
+            android:text="@string/placeholder_widget_artist" />
 
         <LinearLayout
             android:layout_width="match_parent"

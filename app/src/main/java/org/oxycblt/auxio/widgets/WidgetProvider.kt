@@ -133,13 +133,15 @@ class WidgetProvider : AppWidgetProvider() {
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
             // This is mostly a guess based on RemoteView's documentation, and it has some
-            // problems [most notably UI jittering when resizing], but it works. It may be
-            // improved once Android 12's source is released.
+            // problems [most notably UI jittering when resizing]. Its better than just using
+            // one layout though. It may be improved once Android 12's source is released.
 
             // Theres a non-zero likelihood that this code ends up being copy-pasted all over
             // by other apps that are trying to refresh their widgets for Android 12. So, if
             // you're doing that than uh...hi.
 
+            // Each widget has independent dimensions, so we iterate through them all
+            // and do this for each.
             val ids = getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
 
             for (id in ids) {
@@ -170,21 +172,19 @@ class WidgetProvider : AppWidgetProvider() {
                         }
                     }
 
+                    // Find the layout with the greatest area. This is what we use.
                     val layout = candidates.maxByOrNull { it.height * it.width }
 
                     if (layout != null) {
                         logD("Using widget layout $layout")
 
-                        updateAppWidget(
-                            ComponentName(context, WidgetProvider::class.java),
-                            views[layout]
-                        )
+                        updateAppWidget(id, views[layout])
 
                         continue
                     }
                 }
 
-                // No layout works. Just use the smallest view.
+                // No layout fits. Just use the smallest view.
 
                 logD("No widget layout found")
 
