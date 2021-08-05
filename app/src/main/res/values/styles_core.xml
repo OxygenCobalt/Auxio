@@ -44,8 +44,8 @@
     </style>
 
     <!--
-    Theming widgets is technically possible below Android 10, but its too much of a hassle.
-    Default to a light blue theme.
+    Theming widgets is technically possible below Android 12, but I *really* don't care enough
+    to bother with it.
     -->
     <style name="Theme.Widget" parent="@style/Theme.Blue" />
 </resources>

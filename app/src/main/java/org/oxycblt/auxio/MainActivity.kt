@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        // Start PlaybackService
         startService(Intent(this, PlaybackService::class.java))
 
         // onNewIntent doesnt automatically call on startup, so call it here.

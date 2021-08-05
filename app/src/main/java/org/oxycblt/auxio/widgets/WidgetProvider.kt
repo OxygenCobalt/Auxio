@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
@@ -14,6 +15,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.newMainIntent
 import org.oxycblt.auxio.widgets.forms.FullWidgetForm
 import org.oxycblt.auxio.widgets.forms.SmallWidgetForm
@@ -36,71 +38,40 @@ class WidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        logD("Sending update intent to PlaybackService")
-
-        appWidgetManager.applyViews(context, defaultViews(context))
-
-        val intent = Intent(ACTION_WIDGET_UPDATE)
-            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
-
-        context.sendBroadcast(intent)
+        applyDefaultViews(context, appWidgetManager)
+        requestUpdate(context)
     }
 
     /*
      * Update the widget based on the playback state.
      */
     fun update(context: Context, playbackManager: PlaybackStateManager) {
-        val manager = AppWidgetManager.getInstance(context)
-
+        val appWidgetManager = AppWidgetManager.getInstance(context)
         val song = playbackManager.song
 
         if (song == null) {
-            manager.applyViews(context, defaultViews(context))
+            applyDefaultViews(context, appWidgetManager)
             return
         }
 
-        // What we do here depends on how we're responding to layout changes.
-        // If we are on Android 11 or below, then we use the current widget form and default
-        // to SmallWidgetForm if one couldn't be figured out.
-        // If we are using Android S, we use the standard method of creating each RemoteView
-        // instance and putting them into a Map with their size ranges. This isn't as nice
-        // as it means we have to always load album art, even with the text only widget forms.
-        // But it's still preferable than to the Pre-12 method.
-
         // FIXME: Fix the race conditions with the bitmap loading.
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            loadBitmap(context, song) { bitmap ->
-                val state = WidgetState(
-                    song,
-                    bitmap,
-                    playbackManager.isPlaying,
-                    playbackManager.isShuffling,
-                    playbackManager.loopMode
-                )
+        loadBitmap(context, song) { bitmap ->
+            val state = WidgetState(
+                song,
+                bitmap,
+                playbackManager.isPlaying,
+                playbackManager.isShuffling,
+                playbackManager.loopMode
+            )
 
-                // Map each widget form to the rough dimensions where it would look nice.
-                // This might need to be adjusted.
-                val views = mapOf(
-                    SizeF(110f, 110f) to SmallWidgetForm().createViews(context, state),
-                    SizeF(272f, 110f) to FullWidgetForm().createViews(context, state)
-                )
+            // Map each widget form to the rough dimensions where it would look at least okay.
+            val views = mapOf(
+                SizeF(110f, 110f) to SmallWidgetForm().createViews(context, state),
+                SizeF(272f, 110f) to FullWidgetForm().createViews(context, state)
+            )
 
-                manager.applyViews(context, RemoteViews(views))
-            }
-        } else {
-            loadBitmap(context, song) { bitmap ->
-                val state = WidgetState(
-                    song,
-                    bitmap,
-                    playbackManager.isPlaying,
-                    playbackManager.isShuffling,
-                    playbackManager.loopMode
-                )
-
-                // TODO: Make sub-12 widgets responsive.
-                manager.applyViews(context, FullWidgetForm().createViews(context, state))
-            }
+            appWidgetManager.applyViewsCompat(context, views)
         }
     }
 
@@ -110,12 +81,11 @@ class WidgetProvider : AppWidgetProvider() {
     fun reset(context: Context) {
         logD("Resetting widget")
 
-        val manager = AppWidgetManager.getInstance(context)
-        manager.applyViews(context, defaultViews(context))
+        applyDefaultViews(context, AppWidgetManager.getInstance(context))
     }
 
     @SuppressLint("RemoteViewLayout")
-    private fun defaultViews(context: Context): RemoteViews {
+    private fun applyDefaultViews(context: Context, manager: AppWidgetManager) {
         val views = RemoteViews(context.packageName, R.layout.widget_default)
 
         views.setOnClickPendingIntent(
@@ -123,20 +93,107 @@ class WidgetProvider : AppWidgetProvider() {
             context.newMainIntent()
         )
 
-        return views
+        manager.updateAppWidget(ComponentName(context, this::class.java), views)
     }
 
-    private fun AppWidgetManager.applyViews(context: Context, views: RemoteViews) {
-        val ids = getAppWidgetIds(ComponentName(context, this::class.java))
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
-        if (ids.isNotEmpty()) {
-            // Existing widgets found, update those
-            ids.forEach { id ->
-                updateAppWidget(id, views)
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            // We can't resize the widget until we can generate the views, request an update
+            // from PlaybackService.
+            requestUpdate(context)
+        }
+    }
+
+    private fun requestUpdate(context: Context) {
+        logD("Sending update intent to PlaybackService")
+
+        val intent = Intent(ACTION_WIDGET_UPDATE)
+            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
+
+        context.sendBroadcast(intent)
+    }
+
+    private fun AppWidgetManager.applyViewsCompat(
+        context: Context,
+        views: Map<SizeF, RemoteViews>
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Widgets are automatically responsive on Android 12, no need to do anything.
+            updateAppWidget(
+                ComponentName(context, WidgetProvider::class.java),
+                RemoteViews(views)
+            )
         } else {
-            // No existing widgets found. Fall back to the name of the widget class
-            updateAppWidget(ComponentName(context, this@WidgetProvider::class.java), views)
+            // Otherwise, we try our best to backport the responsive behavior to older versions.
+            // This is mostly a guess based on RemoteView's documentation, and it has some
+            // problems [most notably UI jittering when resizing], but it works. It may be
+            // improved once Android 12's source is released.
+
+            // Theres a non-zero likelihood that this code ends up being copy-pasted all over
+            // by other apps that are trying to refresh their widgets for Android 12. So, if
+            // you're doing that than uh...hi.
+
+            val ids = getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
+
+            for (id in ids) {
+                val options = getAppWidgetOptions(id)
+
+                if (options != null) {
+                    var width: Int
+                    var height: Int
+
+                    // AFAIK, Landscape mode uses MAX_WIDTH and MIN_HEIGHT, while Portrait
+                    // uses MIN_WIDTH and MAX_HEIGHT
+                    if (isLandscape(context.resources)) {
+                        height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+                        width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+                    } else {
+                        width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+                        height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+                    }
+
+                    logD("Assuming widget dimens are ${width}x$height")
+
+                    // Find layouts that fit into the widget
+                    val candidates = mutableListOf<SizeF>()
+
+                    for (size in views.keys) {
+                        if (size.width < width && size.height < height) {
+                            candidates.add(size)
+                        }
+                    }
+
+                    val layout = candidates.maxByOrNull { it.height * it.width }
+
+                    if (layout != null) {
+                        logD("Using widget layout $layout")
+
+                        updateAppWidget(
+                            ComponentName(context, WidgetProvider::class.java),
+                            views[layout]
+                        )
+
+                        continue
+                    }
+                }
+
+                // No layout works. Just use the smallest view.
+
+                logD("No widget layout found")
+
+                val minimum = requireNotNull(
+                    views.minByOrNull { it.key.width * it.key.height }?.value
+                )
+
+                updateAppWidget(id, minimum)
+            }
         }
     }
 

@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
 
@@ -146,8 +145,6 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     } else {
         resolvedAttr.data
     }
-
-    logD(context.theme)
 
     return color.toColor(context)
 }
