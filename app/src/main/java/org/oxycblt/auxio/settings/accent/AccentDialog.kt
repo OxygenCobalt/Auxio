@@ -57,7 +57,7 @@ class AccentDialog : LifecycleDialog() {
     }
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.setting_accent)
+        builder.setTitle(R.string.set_accent)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             if (pendingAccent != Accent.get()) {

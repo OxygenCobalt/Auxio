@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="entires_theme">
-        <item>@string/setting_theme_auto</item>
-        <item>@string/setting_theme_day</item>
-        <item>@string/setting_theme_night</item>
+        <item>@string/set_theme_auto</item>
+        <item>@string/set_theme_day</item>
+        <item>@string/set_theme_night</item>
     </string-array>
 
     <integer-array name="values_theme">
@@ -13,9 +13,9 @@
     </integer-array>
 
     <string-array name="entries_lib_display">
-        <item>@string/label_genres</item>
-        <item>@string/label_artists</item>
-        <item>@string/label_albums</item>
+        <item>@string/lbl_genres</item>
+        <item>@string/lbl_artists</item>
+        <item>@string/lbl_albums</item>
     </string-array>
 
     <integer-array name="values_lib_display">
@@ -25,10 +25,10 @@
     </integer-array>
 
     <array name="entries_song_playback_mode">
-        <item>@string/label_play_all_songs</item>
-        <item>@string/label_play_artist</item>
-        <item>@string/label_play_album</item>
-        <item>@string/label_play_genre</item>
+        <item>@string/lbl_play_all</item>
+        <item>@string/lbl_play_artist</item>
+        <item>@string/lbl_play_album</item>
+        <item>@string/lbl_play_genre</item>
     </array>
 
     <string-array name="values_song_playback_mode">

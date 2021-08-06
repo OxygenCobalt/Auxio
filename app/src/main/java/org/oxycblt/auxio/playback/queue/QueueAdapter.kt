@@ -171,7 +171,7 @@ class QueueAdapter(
             binding.headerButton.apply {
                 setImageResource(R.drawable.ic_clear)
 
-                contentDescription = context.getString(R.string.description_clear_user_queue)
+                contentDescription = context.getString(R.string.desc_clear_user_queue)
                 TooltipCompat.setTooltipText(this, contentDescription)
 
                 setOnClickListener {

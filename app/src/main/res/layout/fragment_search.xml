@@ -16,11 +16,11 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_toolbar"
-                style="@style/Toolbar.Style"
+                style="@style/Widget.Toolbar"
                 android:elevation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_search"
-                app:title="@string/label_search" />
+                app:title="@string/lbl_search" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/search_text_layout"
@@ -30,7 +30,7 @@
                 app:boxStrokeColor="?attr/colorPrimary"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="2dp"
-                app:endIconContentDescription="@string/description_clear_search"
+                app:endIconContentDescription="@string/desc_clear_search"
                 app:endIconDrawable="@drawable/ic_close"
                 app:endIconTint="?attr/colorControlNormal"
                 app:endIconMode="clear_text"

@@ -63,14 +63,14 @@ class FullWidgetForm : WidgetForm(R.layout.widget_full) {
             views.setImageViewBitmap(R.id.widget_cover, state.albumArt)
             views.setCharSequence(
                 R.id.widget_cover, "setContentDescription",
-                context.getString(R.string.description_album_cover, state.song.album.name)
+                context.getString(R.string.desc_album_cover, state.song.album.name)
             )
         } else {
             views.setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
             views.setCharSequence(
                 R.id.widget_cover,
                 "setContentDescription",
-                context.getString(R.string.description_no_cover)
+                context.getString(R.string.desc_no_cover)
             )
         }
 

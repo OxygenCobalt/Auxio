@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_shuffle"
         android:icon="@drawable/ic_shuffle"
-        android:title="@string/label_shuffle"
+        android:title="@string/lbl_shuffle"
         app:showAsAction="always" />
 </menu>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base style for the material buttons -->
-    <style name="Widget.MaterialComponents.Button.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
+    <style name="Widget.Button.Vibrant.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:clickable">true</item>

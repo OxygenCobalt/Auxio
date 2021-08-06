@@ -13,8 +13,8 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/about_toolbar"
-            style="@style/Toolbar.Style.Icon.Down"
-            app:title="@string/label_about" />
+            style="@style/Widget.Toolbar.Icon.Down"
+            app:title="@string/lbl_about" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                         android:layout_height="@dimen/size_app_icon"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:contentDescription="@string/description_auxio_icon"
+                        android:contentDescription="@string/desc_auxio_icon"
                         android:src="@mipmap/ic_launcher"
                         app:layout_constraintEnd_toStartOf="@+id/about_app_name"
                         app:layout_constraintHorizontal_chainStyle="packed"
@@ -80,15 +80,14 @@
                         android:layout_height="0dp"
                         android:padding="@dimen/spacing_medium"
                         app:layout_constraintTop_toBottomOf="@+id/about_desc"
-                        app:layout_constraintVertical_chainStyle="packed"
-                        tools:layout_editor_absoluteX="-16dp">
+                        app:layout_constraintVertical_chainStyle="packed">
 
                         <ImageView
                             android:id="@+id/about_version_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/label_version"
-                            android:src="@drawable/ic_version"
+                            android:contentDescription="@string/lbl_version"
+                            android:src="@drawable/ic_about"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -98,7 +97,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/spacing_medium"
-                            android:text="@string/label_version"
+                            android:text="@string/lbl_version"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                             app:layout_constraintBottom_toTopOf="@+id/about_version"
                             app:layout_constraintStart_toEndOf="@+id/about_version_icon"
@@ -119,8 +118,8 @@
 
                     <TextView
                         android:id="@+id/about_code"
-                        style="@style/Widget.TextView.About.Clickable"
-                        android:text="@string/label_code"
+                        style="@style/Widget.TextView.Icon.Clickable"
+                        android:text="@string/lbl_code"
                         app:drawableStartCompat="@drawable/ic_code"
                         app:layout_constraintBottom_toTopOf="@+id/about_faq"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -129,8 +128,8 @@
 
                     <TextView
                         android:id="@+id/about_licenses"
-                        style="@style/Widget.TextView.About.Clickable"
-                        android:text="@string/label_licenses"
+                        style="@style/Widget.TextView.Icon.Clickable"
+                        android:text="@string/lbl_licenses"
                         app:drawableStartCompat="@drawable/ic_license"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -138,9 +137,9 @@
 
                     <TextView
                         android:id="@+id/about_faq"
-                        style="@style/Widget.TextView.About.Clickable"
-                        android:text="@string/label_faq"
-                        app:drawableStartCompat="@drawable/ic_about"
+                        style="@style/Widget.TextView.Icon.Clickable"
+                        android:text="@string/lbl_faq"
+                        app:drawableStartCompat="@drawable/ic_faq"
                         app:layout_constraintBottom_toTopOf="@+id/about_licenses"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -148,7 +147,7 @@
 
                     <TextView
                         android:id="@+id/about_song_count"
-                        style="@style/Widget.TextView.About"
+                        style="@style/Widget.TextView.Icon"
                         android:theme="@style/Theme.Neutral"
                         app:drawableStartCompat="@drawable/ic_song"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -158,8 +157,8 @@
 
                     <TextView
                         android:id="@+id/about_author"
-                        style="@style/Widget.TextView.About"
-                        android:text="@string/label_author"
+                        style="@style/Widget.TextView.Icon"
+                        android:text="@string/lbl_author"
                         app:drawableStartCompat="@drawable/ic_author"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

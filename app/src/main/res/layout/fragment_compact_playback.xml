@@ -34,8 +34,9 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            style="@style/CompactImageView"
-            android:contentDescription="@{@string/description_album_cover(song.name)}"
+            style="@style/Widget.ImageView.Compact"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +47,8 @@
             android:id="@+id/playback_song"
             style="@style/Widget.TextView.Compact.Primary"
             android:text="@{song.name}"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -56,6 +59,8 @@
         <TextView
             android:id="@+id/playback_info"
             style="@style/Widget.TextView.Compact.Secondary"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
@@ -65,13 +70,15 @@
 
         <org.oxycblt.auxio.playback.PlayPauseButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Button.Unbounded.PlayPause"
-            android:contentDescription="@string/description_play_pause"
+            style="@style/Widget.Button.Unbounded"
+            android:padding="0dp"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_play_large" />
+            tools:src="@drawable/ic_pause_large" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

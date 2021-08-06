@@ -11,13 +11,12 @@
             type="org.oxycblt.auxio.music.Artist" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
 
         <ImageView
             android:id="@+id/artist_image"
-            android:layout_width="@dimen/size_cover_normal"
-            android:layout_height="@dimen/size_cover_normal"
-            android:contentDescription="@{@string/description_artist_image(artist.name)}"
+            style="@style/Widget.ImageView.Normal"
+            android:contentDescription="@{@string/desc_artist_image(artist.name)}"
             app:artistImage="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -11,18 +11,16 @@
             type="org.oxycblt.auxio.music.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
 
         <ImageView
             android:id="@+id/album_cover"
-            android:layout_width="@dimen/size_cover_compact"
-            android:layout_height="@dimen/size_cover_compact"
-            android:contentDescription="@{@string/description_album_cover(song.name)}"
+            style="@style/Widget.ImageView.Compact"
+            android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
             tools:src="@drawable/ic_song" />
 
         <TextView

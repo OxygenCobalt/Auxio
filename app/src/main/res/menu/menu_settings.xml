@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/ic_about"
-        android:title="@string/label_about"
+        android:title="@string/lbl_about"
         app:showAsAction="always" />
 </menu>

@@ -111,7 +111,7 @@ fun Int.toYear(context: Context): String {
     return if (this > 0) {
         toString()
     } else {
-        context.getString(R.string.placeholder_no_date)
+        context.getString(R.string.def_date)
     }
 }
 
@@ -122,7 +122,7 @@ fun Int.toYear(context: Context): String {
  */
 @BindingAdapter("artistGenre")
 fun TextView.bindArtistGenre(artist: Artist) {
-    text = artist.genre?.resolvedName ?: context.getString(R.string.placeholder_genre)
+    text = artist.genre?.resolvedName ?: context.getString(R.string.def_genre)
 }
 
 /**
@@ -130,8 +130,8 @@ fun TextView.bindArtistGenre(artist: Artist) {
  */
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
-    val albums = context.getPlural(R.plurals.format_album_count, artist.albums.size)
-    val songs = context.getPlural(R.plurals.format_song_count, artist.songs.size)
+    val albums = context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
+    val songs = context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
 
     text = context.getString(R.string.format_double_counts, albums, songs)
 }
@@ -144,7 +144,7 @@ fun TextView.bindAllAlbumDetails(album: Album) {
     text = context.getString(
         R.string.format_double_info,
         album.year.toYear(context),
-        context.getPlural(R.plurals.format_song_count, album.songs.size),
+        context.getPlural(R.plurals.fmt_song_count, album.songs.size),
         album.totalDuration
     )
 }
@@ -157,7 +157,7 @@ fun TextView.bindAlbumInfo(album: Album) {
     text = context.getString(
         R.string.format_info,
         album.artist.name,
-        context.getPlural(R.plurals.format_song_count, album.songs.size),
+        context.getPlural(R.plurals.fmt_song_count, album.songs.size),
     )
 }
 

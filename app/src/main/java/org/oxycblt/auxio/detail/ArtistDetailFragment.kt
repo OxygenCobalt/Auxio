@@ -87,7 +87,7 @@ class ArtistDetailFragment : DetailFragment() {
             data.add(
                 Header(
                     id = -2,
-                    name = getString(R.string.label_songs),
+                    name = getString(R.string.lbl_songs),
                     isAction = true
                 )
             )

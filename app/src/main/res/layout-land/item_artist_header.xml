@@ -24,8 +24,8 @@
             android:layout_width="@dimen/size_cover_detail_land"
             android:layout_height="@dimen/size_cover_detail_land"
             android:layout_margin="@dimen/spacing_medium"
-            android:contentDescription="@{@string/description_artist_image(artist.name)}"
-            style="@style/ElevatedImageView"
+            android:contentDescription="@{@string/desc_artist_image(artist.name)}"
+            style="@style/Widget.ImageView.Full"
             app:artistImage="@{artist}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/artist_name"
-            style="@style/DetailTitleText"
+            style="@style/Widget.TextView.Detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -75,9 +75,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/artist_play_button"
-            style="@style/Widget.MaterialComponents.Button.Unimportant"
+            style="@style/Widget.Button.Vibrant.Secondary"
             android:onClick="@{() -> playbackModel.playArtist(artist, false)}"
-            android:text="@string/label_play"
+            android:text="@string/lbl_play"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_medium"
             app:layout_constraintEnd_toStartOf="@+id/artist_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,10 +88,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/artist_shuffle_button"
-            style="@style/Widget.MaterialComponents.Button.Highlighted"
+            style="@style/Widget.Button.Vibrant.Primary"
             android:backgroundTint="?attr/colorPrimary"
             android:onClick="@{() -> playbackModel.playArtist(artist, true)}"
-            android:text="@string/label_shuffle"
+            android:text="@string/lbl_shuffle"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="@+id/artist_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_play_button"
@@ -96,9 +101,11 @@
 
         <TextView
             android:id="@+id/artist_album_header"
-            style="@style/HeaderText"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            style="@style/Widget.TextView.Header"
             android:layout_marginTop="@dimen/spacing_small"
-            android:text="@string/label_albums"
+            android:text="@string/lbl_albums"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_play_button" />
 

@@ -11,13 +11,12 @@
             type="org.oxycblt.auxio.music.Genre" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
 
         <ImageView
             android:id="@+id/genre_image"
-            android:layout_width="@dimen/size_cover_normal"
-            android:layout_height="@dimen/size_cover_normal"
-            android:contentDescription="@{@string/description_genre_image(genre.name)}"
+            style="@style/Widget.ImageView.Normal"
+            android:contentDescription="@{@string/desc_genre_image(genre.name)}"
             app:genreImage="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +37,7 @@
         <TextView
             android:id="@+id/genre_count"
             style="@style/ItemText.Secondary"
-            android:text="@{@plurals/format_song_count(genre.songs.size(), genre.songs.size())}"
+            android:text="@{@plurals/fmt_song_count(genre.songs.size(), genre.songs.size())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_image"

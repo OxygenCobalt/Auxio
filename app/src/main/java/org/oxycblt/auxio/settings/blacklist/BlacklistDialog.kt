@@ -86,11 +86,11 @@ class BlacklistDialog : LifecycleDialog() {
     }
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.setting_content_blacklist)
+        builder.setTitle(R.string.set_blacklist)
 
         // Dont set the click listener here, we do some custom black magic in onCreateView instead.
-        builder.setNeutralButton(R.string.label_add, null)
-        builder.setPositiveButton(R.string.label_save, null)
+        builder.setNeutralButton(R.string.lbl_add, null)
+        builder.setPositiveButton(R.string.lbl_save, null)
         builder.setNegativeButton(android.R.string.cancel, null)
     }
 
@@ -105,7 +105,7 @@ class BlacklistDialog : LifecycleDialog() {
         if (path != null) {
             blacklistModel.addPath(path)
         } else {
-            requireContext().showToast(R.string.error_bad_dir)
+            requireContext().showToast(R.string.err_bad_dir)
         }
     }
 

@@ -25,8 +25,6 @@ import org.oxycblt.auxio.widgets.forms.WidgetForm
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
  * packing what could be considered 3 or 4 widgets into a single responsive widget. More specifically:
  *
- * - TODO?: For widgets 3x1 or lower, show a text-only view with minimal controls
- * - TODO?: For widgets 4x1, show a minimized view with album art
  * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
  * - For widgets 4x2 or higher, show a complete view with all playback controls
  *
@@ -105,7 +103,7 @@ class WidgetProvider : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            // We can't resize the widget until we can generate the views, request an update
+            // We can't resize the widget until we can generate the views, so request an update
             // from PlaybackService.
             requestUpdate(context)
         }

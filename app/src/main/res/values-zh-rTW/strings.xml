@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">重試</string>
-    <string name="label_grant">取得</string>
+    <string name="lbl_retry">重試</string>
+    <string name="lbl_grant">取得</string>
 
-    <string name="label_library">音樂庫</string>
-    <string name="label_genres">類型</string>
-    <string name="label_artists">演出者</string>
-    <string name="label_albums">專輯</string>
-    <string name="label_songs">歌曲</string>
-    <string name="label_all_songs">歌曲</string>
+    <string name="lbl_library">音樂庫</string>
+    <string name="lbl_genres">類型</string>
+    <string name="lbl_artists">演出者</string>
+    <string name="lbl_albums">專輯</string>
+    <string name="lbl_songs">歌曲</string>
+    <string name="lbl_all_songs">歌曲</string>
 
-    <string name="label_search">搜尋</string>
-    <string name="label_filter">篩選器</string>
-    <string name="label_filter_all">全部</string>
+    <string name="lbl_search">搜尋</string>
+    <string name="lbl_filter">篩選器</string>
+    <string name="lbl_filter_all">全部</string>
 
-    <string name="label_sort">排序</string>
-    <string name="label_sort_alpha_down">升序排列</string>
-    <string name="label_sort_alpha_up">降序排列</string>
+    <string name="lbl_sort">排序</string>
+    <string name="lbl_sort_alpha_down">升序排列</string>
+    <string name="lbl_sort_alpha_up">降序排列</string>
 
-    <string name="label_play">播放</string>
-    <string name="label_shuffle">隨機播放</string>
-    <string name="label_playback">播放面板</string>
+    <string name="lbl_play">播放</string>
+    <string name="lbl_shuffle">隨機播放</string>
+    <string name="lbl_playback">播放面板</string>
 
-    <string name="label_queue">隊列</string>
-    <string name="label_queue_add">添加到隊列</string>
-    <string name="label_queue_added">已加入隊列</string>
-    <string name="label_next_user_queue">播放佇列：即將播放</string>
+    <string name="lbl_queue">隊列</string>
+    <string name="lbl_queue_add">添加到隊列</string>
+    <string name="lbl_queue_added">已加入隊列</string>
+    <string name="lbl_next_user_queue">播放佇列：即將播放</string>
 
-    <string name="label_go_artist">前往該歌手頁面</string>
-    <string name="label_go_album">專輯</string>
+    <string name="lbl_go_artist">前往該歌手頁面</string>
+    <string name="lbl_go_album">專輯</string>
 
-    <string name="label_about">關於</string>
-    <string name="label_version">版本</string>
-    <string name="label_code">在 GitHub 上檢視</string>
-    <string name="label_licenses">授權條款</string>
+    <string name="lbl_about">關於</string>
+    <string name="lbl_version">版本</string>
+    <string name="lbl_code">在 GitHub 上檢視</string>
+    <string name="lbl_licenses">授權條款</string>
 
     <!-- Settings namespace | Settings-related labels -->
-    <string name="setting_title">設定</string>
+    <string name="set_title">設定</string>
 
-    <string name="setting_ui">外觀</string>
-    <string name="setting_theme">主題色調</string>
-    <string name="setting_theme_auto">強調色</string>
-    <string name="setting_theme_day">淺色</string>
-    <string name="setting_theme_night">深色</string>
-    <string name="setting_accent">自定義</string>
+    <string name="set_ui">外觀</string>
+    <string name="set_theme">主題色調</string>
+    <string name="set_theme_auto">強調色</string>
+    <string name="set_theme_day">淺色</string>
+    <string name="set_theme_night">深色</string>
+    <string name="set_accent">自定義</string>
 
-    <string name="setting_color_notif">彩色通知</string>
-    <string name="setting_quality_covers">忽略音訊檔內嵌的專輯封面</string>
+    <string name="set_color_notif">彩色通知</string>
+    <string name="set_quality_covers">忽略音訊檔內嵌的專輯封面</string>
 
-    <string name="setting_audio">音訊</string>
-    <string name="setting_audio_focus">音頻焦點</string>
-    <string name="setting_audio_plug_mgt">耳機插頭</string>
+    <string name="set_audio">音訊</string>
+    <string name="set_focus">音頻焦點</string>
+    <string name="set_plug_mgt">耳機插頭</string>
 
     <string name="setting_behavior">行為</string>
     <string name="setting_behavior_keep_shuffle">記住隨機播放</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">找不到音樂</string>
+    <string name="err_no_music">找不到音樂</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_track_number">音軌 %d</string>
+    <string name="desc_track_number">音軌 %d</string>
 
-    <string name="description_play_pause">播放/暫停</string>
+    <string name="desc_play_pause">播放/暫停</string>
 
-    <string name="description_clear_user_queue">清空播放佇列</string>
+    <string name="desc_clear_user_queue">清空播放佇列</string>
 
-    <string name="description_error">錯誤</string>
+    <string name="desc_error">錯誤</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">搜尋音樂庫…</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <plurals name="format_song_count">
+    <plurals name="fmt_song_count">
         <item quantity="other">%d 歌曲</item>
     </plurals>
 
-    <plurals name="format_album_count">
+    <plurals name="fmt_album_count">
         <item quantity="other">%d 專輯</item>
     </plurals>
 </resources>

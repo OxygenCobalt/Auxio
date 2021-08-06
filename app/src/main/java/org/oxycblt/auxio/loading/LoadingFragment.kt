@@ -144,17 +144,17 @@ class LoadingFragment : Fragment() {
         when (error) {
             MusicStore.Response.NO_MUSIC -> {
                 binding.loadingRetryButton.visibility = View.VISIBLE
-                binding.loadingErrorText.text = getString(R.string.error_no_music)
+                binding.loadingErrorText.text = getString(R.string.err_no_music)
             }
 
             MusicStore.Response.NO_PERMS -> {
                 binding.loadingGrantButton.visibility = View.VISIBLE
-                binding.loadingErrorText.text = getString(R.string.error_no_perms)
+                binding.loadingErrorText.text = getString(R.string.err_no_perms)
             }
 
             MusicStore.Response.FAILED -> {
                 binding.loadingRetryButton.visibility = View.VISIBLE
-                binding.loadingErrorText.text = getString(R.string.error_load_failed)
+                binding.loadingErrorText.text = getString(R.string.err_load_failed)
             }
 
             else -> {}

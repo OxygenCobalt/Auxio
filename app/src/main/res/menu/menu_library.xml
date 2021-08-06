@@ -5,16 +5,16 @@
     <item
         android:id="@+id/submenu_sorting"
         android:icon="@drawable/ic_sort_none"
-        android:title="@string/label_sort"
+        android:title="@string/lbl_sort"
         app:showAsAction="always">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/option_sort_alpha_down"
-                    android:title="@string/label_sort_alpha_down" />
+                    android:title="@string/lbl_sort_alpha_down" />
                 <item
                     android:id="@+id/option_sort_alpha_up"
-                    android:title="@string/label_sort_alpha_up" />
+                    android:title="@string/lbl_sort_alpha_up" />
             </group>
         </menu>
     </item>

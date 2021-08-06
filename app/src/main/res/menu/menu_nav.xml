@@ -3,17 +3,17 @@
     <item
         android:id="@+id/library_fragment"
         android:icon="@drawable/ic_library"
-        android:title="@string/label_library" />
+        android:title="@string/lbl_library" />
     <item
         android:id="@+id/songs_fragment"
         android:icon="@drawable/ic_song"
-        android:title="@string/label_songs" />
+        android:title="@string/lbl_songs" />
     <item
         android:id="@+id/search_fragment"
         android:icon="@drawable/ic_search"
-        android:title="@string/label_search" />
+        android:title="@string/lbl_search" />
     <item
         android:id="@+id/settings_fragment"
         android:icon="@drawable/ic_settings"
-        android:title="@string/setting_title" />
+        android:title="@string/set_title" />
 </menu>

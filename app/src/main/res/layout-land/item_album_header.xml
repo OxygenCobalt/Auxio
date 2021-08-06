@@ -29,8 +29,8 @@
             android:layout_height="@dimen/size_cover_detail_land"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:contentDescription="@{@string/description_album_cover(album.name)}"
-            style="@style/ElevatedImageView"
+            android:contentDescription="@{@string/desc_album_cover(album.name)}"
+            style="@style/Widget.ImageView.Full"
             app:albumArt="@{album}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/album_name"
-            style="@style/DetailTitleText"
+            style="@style/Widget.TextView.Detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -83,9 +83,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/album_play_button"
-            style="@style/Widget.MaterialComponents.Button.Unimportant"
+            style="@style/Widget.Button.Vibrant.Secondary"
             android:onClick="@{() -> playbackModel.playAlbum(album, false)}"
-            android:text="@string/label_play"
+            android:text="@string/lbl_play"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_medium"
             app:layout_constraintEnd_toStartOf="@+id/album_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,10 +96,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/album_shuffle_button"
-            style="@style/Widget.MaterialComponents.Button.Highlighted"
+            style="@style/Widget.Button.Vibrant.Primary"
             android:backgroundTint="?attr/colorPrimary"
             android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
-            android:text="@string/label_shuffle"
+            android:text="@string/lbl_shuffle"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="@+id/album_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_play_button"
@@ -104,21 +109,29 @@
 
         <TextView
             android:id="@+id/album_song_header"
-            style="@style/HeaderText"
-            android:layout_marginTop="8dp"
-            android:text="@string/label_songs"
+            style="@style/Widget.TextView.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@drawable/ui_header_dividers"
+            android:text="@string/lbl_songs"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/album_play_button" />
 
         <ImageButton
             android:id="@+id/album_sort_button"
-            style="@style/HeaderAction"
-            android:contentDescription="@string/description_sort_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Button.Unbounded.Small"
+            android:contentDescription="@string/desc_sort_button"
             android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
             app:layout_constraintBottom_toBottomOf="@+id/album_song_header"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/album_song_header"
             app:sortIcon="@{detailModel.albumSortMode}"
             tools:src="@drawable/ic_sort_numeric_down" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

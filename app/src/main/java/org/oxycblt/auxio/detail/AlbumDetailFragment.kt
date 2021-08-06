@@ -58,7 +58,7 @@ class AlbumDetailFragment : DetailFragment() {
         setupToolbar(R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {
                 playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
-                requireContext().showToast(R.string.label_queue_added)
+                requireContext().showToast(R.string.lbl_queue_added)
                 true
             } else {
                 false

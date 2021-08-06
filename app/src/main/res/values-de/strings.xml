@@ -4,80 +4,80 @@
     <string name="info_channel_name">Musikwiedergabe</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">Wieder Versuchen</string>
-    <string name="label_grant">Gewähren</string>
+    <string name="lbl_retry">Wieder Versuchen</string>
+    <string name="lbl_grant">Gewähren</string>
 
-    <string name="label_library">Bibliothek</string>
-    <string name="label_genres">Genres</string>
-    <string name="label_artists">Künstler</string>
-    <string name="label_albums">Alben</string>
-    <string name="label_songs">Lieder</string>
-    <string name="label_all_songs">Alle Lieder</string>
+    <string name="lbl_library">Bibliothek</string>
+    <string name="lbl_genres">Genres</string>
+    <string name="lbl_artists">Künstler</string>
+    <string name="lbl_albums">Alben</string>
+    <string name="lbl_songs">Lieder</string>
+    <string name="lbl_all_songs">Alle Lieder</string>
 
-    <string name="label_search">Suchen</string>
-    <string name="label_filter">Filtern</string>
-    <string name="label_filter_all">Alles</string>
+    <string name="lbl_search">Suchen</string>
+    <string name="lbl_filter">Filtern</string>
+    <string name="lbl_filter_all">Alles</string>
 
-    <string name="label_sort">Sortierung</string>
-    <string name="label_sort_alpha_down">Aufsteigend</string>
-    <string name="label_sort_alpha_up">Absteigend</string>
+    <string name="lbl_sort">Sortierung</string>
+    <string name="lbl_sort_alpha_down">Aufsteigend</string>
+    <string name="lbl_sort_alpha_up">Absteigend</string>
 
-    <string name="label_play">Abspielen</string>
-    <string name="label_shuffle">Zufällig</string>
-    <string name="label_play_all_songs">Von alle Lieder abspielen</string>
-    <string name="label_play_album">Vom Album abspielen</string>
-    <string name="label_play_artist">Vom Künstler abspielen</string>
-    <string name="label_play_genre">Vom Genre abspielen</string>
-    <string name="label_playback">Aktuelle Wiedergabe</string>
+    <string name="lbl_play">Abspielen</string>
+    <string name="lbl_shuffle">Zufällig</string>
+    <string name="lbl_play_all">Von alle Lieder abspielen</string>
+    <string name="lbl_play_album">Vom Album abspielen</string>
+    <string name="lbl_play_artist">Vom Künstler abspielen</string>
+    <string name="lbl_play_genre">Vom Genre abspielen</string>
+    <string name="lbl_playback">Aktuelle Wiedergabe</string>
 
-    <string name="label_queue">Warteschlange</string>
-    <string name="label_queue_add">Zur Warteschlange hinzufügen</string>
-    <string name="label_queue_added">Der Warteschlange hinzugefügt</string>
-    <string name="label_next_user_queue">Nächsten im Warteschlange</string>
+    <string name="lbl_queue">Warteschlange</string>
+    <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
+    <string name="lbl_queue_added">Der Warteschlange hinzugefügt</string>
+    <string name="lbl_next_user_queue">Nächsten im Warteschlange</string>
 
-    <string name="label_go_artist">Zum Künstler gehen</string>
-    <string name="label_go_album">Zum Album gehen</string>
+    <string name="lbl_go_artist">Zum Künstler gehen</string>
+    <string name="lbl_go_album">Zum Album gehen</string>
 
-    <string name="label_state_saved">Wiedergabezustand abgespeichert</string>
+    <string name="lbl_state_saved">Wiedergabezustand abgespeichert</string>
 
-    <string name="label_add">Hinzufügen</string>
-    <string name="label_save">Abspeichern</string>
-    <string name="label_no_dirs">Keine Ordner</string>
+    <string name="lbl_add">Hinzufügen</string>
+    <string name="lbl_save">Abspeichern</string>
+    <string name="lbl_no_dirs">Keine Ordner</string>
 
-    <string name="label_about">Über</string>
-    <string name="label_version">Version</string>
-    <string name="label_code">Auf GitHub ansehen</string>
-    <string name="label_faq">FAQ</string>
-    <string name="label_licenses">Lizenzen</string>
-    <string name="label_author">Entwickelt von OxygenCobalt</string>
+    <string name="lbl_about">Über</string>
+    <string name="lbl_version">Version</string>
+    <string name="lbl_code">Auf GitHub ansehen</string>
+    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_licenses">Lizenzen</string>
+    <string name="lbl_author">Entwickelt von OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
-    <string name="setting_title">Einstellungen</string>
+    <string name="set_title">Einstellungen</string>
 
-    <string name="setting_ui">Aussehen</string>
-    <string name="setting_theme">Thema</string>
-    <string name="setting_theme_auto">Automatisch</string>
-    <string name="setting_theme_day">Hell</string>
-    <string name="setting_theme_night">Dunkel</string>
-    <string name="setting_accent">Akzentfarbe</string>
+    <string name="set_ui">Aussehen</string>
+    <string name="set_theme">Thema</string>
+    <string name="set_theme_auto">Automatisch</string>
+    <string name="set_theme_day">Hell</string>
+    <string name="set_theme_night">Dunkel</string>
+    <string name="set_accent">Akzentfarbe</string>
 
-    <string name="setting_display">Anzeige</string>
-    <string name="setting_lib_display">Musikbibliothekitems</string>
-    <string name="setting_color_notif">Benachrichtigung farblich anpassen</string>
-    <string name="setting_color_desc">Albumcover am Benachrichtigung zeigen</string>
+    <string name="set_display">Anzeige</string>
+    <string name="set_lib_display">Musikbibliothekitems</string>
+    <string name="set_color_notif">Benachrichtigung farblich anpassen</string>
+    <string name="set_color_notif_desc">Albumcover am Benachrichtigung zeigen</string>
     <string name="setting_show_covers">Albumcover anzeigen</string>
-    <string name="setting_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
-    <string name="setting_quality_covers">MediaStore Cover ignorieren</string>
-    <string name="setting_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch länger Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
-    <string name="setting_use_alt_action">Ändere Aktionstaste verwenden</string>
-    <string name="setting_use_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
-    <string name="setting_use_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
+    <string name="set_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
+    <string name="set_quality_covers">MediaStore Cover ignorieren</string>
+    <string name="set_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch länger Ladezeit und höher Speicherverbrauch beeinträchtigt</string>
+    <string name="set_alt_action">Ändere Aktionstaste verwenden</string>
+    <string name="set_alt_loop">Wiederholen-Aktionstaste Vorziehen</string>
+    <string name="set_alt_shuffle">Zufällig-Aktionstaste Vorziehen</string>
 
-    <string name="setting_audio">Audio</string>
-    <string name="setting_audio_focus">Audiofokus</string>
-    <string name="setting_audio_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Anrufe]</string>
-    <string name="setting_audio_plug_mgt">Kopfhörerafokus</string>
-    <string name="setting_audio_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
+    <string name="set_audio">Audio</string>
+    <string name="set_focus">Audiofokus</string>
+    <string name="set_focus_desc">Pausieren wenn anderes Audio abspielt [Bsp. Anrufe]</string>
+    <string name="set_plug_mgt">Kopfhörerafokus</string>
+    <string name="set_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
 
     <string name="setting_behavior">Verhalten</string>
     <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt hat</string>
@@ -86,76 +86,76 @@
     <string name="setting_behavior_rewind_prev">Zurückspulen bevor zurück springen</string>
     <string name="setting_behavior_rewind_prev_desc">Zurückspulen bevor zum vorheriger Lied springen</string>
 
-    <string name="setting_content">Content</string>
-    <string name="setting_content_save">Wiedergabezustand abspeichern</string>
-    <string name="setting_content_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
-    <string name="setting_content_blacklist">Ausgeschlossene Ordner</string>
-    <string name="setting_content_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
+    <string name="set_content">Content</string>
+    <string name="set_save">Wiedergabezustand abspeichern</string>
+    <string name="set_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
+    <string name="set_blacklist">Ausgeschlossene Ordner</string>
+    <string name="set_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">Keine Musik gefunden</string>
-    <string name="error_load_failed">Laden die Musik fehlgeschlagen</string>
-    <string name="error_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
-    <string name="error_no_browser">Link könnte nicht geöffnet werden</string>
-    <string name="error_bad_dir">Das Verzeichnis ist nicht gestützt</string>
+    <string name="err_no_music">Keine Musik gefunden</string>
+    <string name="err_load_failed">Laden die Musik fehlgeschlagen</string>
+    <string name="err_no_perms">Auxio braucht Berechtigung, zu lesen deine Musikbibliothek</string>
+    <string name="err_no_app">Link könnte nicht geöffnet werden</string>
+    <string name="err_bad_dir">Das Verzeichnis ist nicht gestützt</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Durchsuche deine Musikbibliothek…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_sort_button">Reihenfolge ändern</string>
-    <string name="description_track_number">Titel %d</string>
+    <string name="desc_sort_button">Reihenfolge ändern</string>
+    <string name="desc_track_number">Titel %d</string>
 
-    <string name="description_play_pause">Abspielen oder Pausieren</string>
-    <string name="description_skip_prev">Zu letzter Lied springen</string>
-    <string name="description_skip_next">Zu nächster Lied springen</string>
-    <string name="description_change_loop">Art die Wiederholung ändern</string>
+    <string name="desc_play_pause">Abspielen oder Pausieren</string>
+    <string name="desc_skip_prev">Zu letzter Lied springen</string>
+    <string name="desc_skip_next">Zu nächster Lied springen</string>
+    <string name="desc_change_loop">Art die Wiederholung ändern</string>
 
-    <string name="description_clear_search">Suchanfrage löschen</string>
-    <string name="description_clear_user_queue">Warteschlange entleeren</string>
+    <string name="desc_clear_search">Suchanfrage löschen</string>
+    <string name="desc_clear_user_queue">Warteschlange entleeren</string>
 
-    <string name="description_error">Fehler</string>
-    <string name="description_auxio_icon">Auxio-Icon</string>
-    <string name="description_album_cover">Albumcover für %s</string>
-    <string name="description_artist_image">Künstlerbild für %s</string>
-    <string name="description_genre_image">Genrebild für %s</string>
+    <string name="desc_error">Fehler</string>
+    <string name="desc_auxio_icon">Auxio-Icon</string>
+    <string name="desc_album_cover">Albumcover für %s</string>
+    <string name="desc_artist_image">Künstlerbild für %s</string>
+    <string name="desc_genre_image">Genrebild für %s</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
-    <string name="placeholder_genre">Unbekanntes Genre</string>
-    <string name="placeholder_artist">Unbekannter Künstler</string>
-    <string name="placeholder_album">Unbekanntes Album</string>
-    <string name="placeholder_no_date">Kein Datum</string>
+    <string name="def_genre">Unbekanntes Genre</string>
+    <string name="def_artist">Unbekannter Künstler</string>
+    <string name="def_album">Unbekanntes Album</string>
+    <string name="def_date">Kein Datum</string>
 
     <!-- Color Label namespace | Accent names -->
-    <string name="color_label_red">Rot</string>
-    <string name="color_label_pink">Rosa</string>
-    <string name="color_label_purple">Lila</string>
-    <string name="color_label_deep_purple">Dunkellila</string>
-    <string name="color_label_indigo">Indigoblau</string>
-    <string name="color_label_blue">Blau</string>
-    <string name="color_label_light_blue">Hellblau</string>
-    <string name="color_label_cyan">Türkis</string>
-    <string name="color_label_teal">Blaugrün</string>
-    <string name="color_label_green">Grün</string>
-    <string name="color_label_light_green">Hellgrün</string>
-    <string name="color_label_lime">Lindgrün</string>
-    <string name="color_label_yellow">Gelb</string>
-    <string name="color_label_orange">Orange</string>
-    <string name="color_label_deep_orange">Tieforange</string>
-    <string name="color_label_brown">Braun</string>
-    <string name="color_label_grey">Grau</string>
-    <string name="color_label_blue_grey">Blaugrau</string>
+    <string name="clr_red">Rot</string>
+    <string name="clr_pink">Rosa</string>
+    <string name="clr_purple">Lila</string>
+    <string name="clr_deep_purple">Dunkellila</string>
+    <string name="clr_indigo">Indigoblau</string>
+    <string name="clr_blue">Blau</string>
+    <string name="clr_light_blue">Hellblau</string>
+    <string name="clr_cyan">Türkis</string>
+    <string name="clr_teal">Blaugrün</string>
+    <string name="clr_green">Grün</string>
+    <string name="color_light_green">Hellgrün</string>
+    <string name="color_lime">Lindgrün</string>
+    <string name="color_yellow">Gelb</string>
+    <string name="clr_orange">Orange</string>
+    <string name="clr_deep_orange">Tieforange</string>
+    <string name="clr_label_brown">Braun</string>
+    <string name="clr_label_grey">Grau</string>
+    <string name="clr_blue_grey">Blaugrau</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_next_from">Nächsten von: %s</string>
-    <string name="format_songs_loaded">Lieder geladen: %d</string>
+    <string name="fmt_next_from">Nächsten von: %s</string>
+    <string name="fmt_songs_loaded">Lieder geladen: %d</string>
 
-    <plurals name="format_song_count">
+    <plurals name="fmt_song_count">
         <item quantity="one">%d Lied</item>
         <item quantity="other">%d Lieder</item>
     </plurals>
 
-    <plurals name="format_album_count">
+    <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Alben</item>
     </plurals>

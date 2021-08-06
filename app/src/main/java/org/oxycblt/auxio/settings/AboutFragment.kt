@@ -40,7 +40,7 @@ class AboutFragment : Fragment() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
         binding.aboutSongCount.text = getString(
-            R.string.format_songs_loaded, musicStore.songs.size
+            R.string.fmt_songs_loaded, musicStore.songs.size
         )
 
         logD("Dialog created.")
@@ -76,7 +76,7 @@ class AboutFragment : Fragment() {
             }
         } else {
             // No app installed to open the link
-            requireContext().showToast(R.string.error_no_browser)
+            requireContext().showToast(R.string.err_no_app)
         }
     }
 

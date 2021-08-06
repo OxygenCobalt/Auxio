@@ -13,9 +13,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/queue_toolbar"
-            style="@style/Toolbar.Style.Icon.Down"
+            style="@style/Widget.Toolbar.Icon.Down"
             app:navigationIcon="@drawable/ic_down"
-            app:title="@string/label_queue" />
+            app:title="@string/lbl_queue" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/queue_recycler"

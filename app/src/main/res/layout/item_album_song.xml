@@ -11,13 +11,13 @@
             type="org.oxycblt.auxio.music.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemSurroundings">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
 
         <TextView
             android:id="@+id/song_track"
             android:layout_width="@dimen/width_track_number"
             android:layout_height="wrap_content"
-            android:contentDescription="@{@string/description_track_number(song.track)}"
+            android:contentDescription="@{@string/desc_track_number(song.track)}"
             android:gravity="center"
             android:maxLines="1"
             android:text="@{String.valueOf(song.track)}"

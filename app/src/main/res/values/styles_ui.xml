@@ -2,8 +2,8 @@
 <resources>
     <!-- SHARED RE-USABLE UI STYLES -->
 
-    <!-- Toolbar theme -->
-    <style name="Toolbar.Style" parent="ThemeOverlay.MaterialComponents.ActionBar">
+    <!-- VIEW STYLES -->
+    <style name="Widget.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
         <item name="android:background">?attr/colorSurface</item>
@@ -16,17 +16,64 @@
     </style>
 
     <!-- Toolbar sub-style with a nav icon -->
-    <style name="Toolbar.Style.Icon" parent="Toolbar.Style">
+    <style name="Widget.Toolbar.Icon" parent="Widget.Toolbar">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
 
     <!-- Toolbar sub-style with a downwards nav icon -->
-    <style name="Toolbar.Style.Icon.Down" parent="Toolbar.Style">
+    <style name="Widget.Toolbar.Icon.Down" parent="Widget.Toolbar">
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
 
-    <!-- Style for the general item background -->
-    <style name="ItemSurroundings">
+    <style name="Widget.ProgressBar.Compact" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/height_compact_progress</item>
+        <item name="android:progressBackgroundTint">?attr/colorControlNormal</item>
+        <item name="android:progressTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.SeekBar.Full" parent="@style/Widget.AppCompat.SeekBar">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:paddingStart">@dimen/spacing_mid_large</item>
+        <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
+        <item name="android:progressBackgroundTint">?android:attr/colorControlNormal</item>
+        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:thumbOffset">@dimen/offset_thumb</item>
+        <item name="android:thumbTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.ImageView.Compact" parent="">
+        <item name="android:layout_width">@dimen/size_cover_compact</item>
+        <item name="android:layout_height">@dimen/size_cover_compact</item>
+    </style>
+
+    <style name="Widget.ImageView.Normal" parent="">
+        <item name="android:layout_width">@dimen/size_cover_normal</item>
+        <item name="android:layout_height">@dimen/size_cover_normal</item>
+    </style>
+
+    <style name="Widget.ImageView.Large" parent="">
+        <item name="android:layout_width">@dimen/size_cover_large</item>
+        <item name="android:layout_height">@dimen/size_cover_large</item>
+    </style>
+
+    <style name="Widget.ImageView.Full" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:elevation">@dimen/elevation_normal</item>
+        <item name="android:outlineProvider">bounds</item>
+    </style>
+
+    <!-- VIEWGROUP STYLES -->
+
+    <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">@dimen/text_size_toolbar_header</item>
+    </style>
+
+    <style name="ItemLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/ui_ripple</item>
@@ -35,32 +82,66 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <!-- Base style for any item text -->
-    <style name="ItemText">
-        <item name="android:textAlignment">viewStart</item>
+    <!-- TEXTVIEW STYLES -->
+    <style name="ItemText" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:layout_marginStart">@dimen/spacing_medium</item>
     </style>
 
-    <!-- Style for primary item text -->
     <style name="ItemText.Primary" parent="ItemText">
         <item name="android:textAppearance">?android:attr/textAppearanceListItem</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <!-- Style for secondary item text -->
     <style name="ItemText.Secondary" parent="ItemText">
         <item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
-    <!-- Style for header text -->
-    <style name="HeaderText">
+    <style name="Widget.TextView.Emp.Base" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="Widget.TextView.Primary" parent="Widget.TextView.Emp.Base">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
+    </style>
+
+    <style name="Widget.TextView.Secondary" parent="Widget.TextView.Emp.Base">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <style name="Widget.TextView.Compact.Base" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="Widget.TextView.Compact.Primary" parent="Widget.TextView.Compact.Base">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+    </style>
+
+    <style name="Widget.TextView.Compact.Secondary" parent="Widget.TextView.Compact.Base">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+    </style>
+
+    <style name="Widget.TextView.Header" parent="@style/Widget.AppCompat.TextView">
         <item name="android:paddingStart">@dimen/spacing_medium</item>
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
@@ -72,7 +153,39 @@
         <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <!-- Style for an unbounded button -->
+    <style name="Widget.TextView.Detail" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textSize">@dimen/text_size_detail_header_max</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+
+        <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
+        <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
+        <item name="autoSizeStepGranularity">@dimen/text_size_increment</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="Widget.TextView.Icon" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">@dimen/spacing_medium</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+    </style>
+
+    <style name="Widget.TextView.Icon.Clickable" parent="Widget.TextView.Icon">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/ui_ripple</item>
+    </style>
+
+    <!-- BUTTON STYLES -->
+
     <style name="Widget.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">@dimen/size_play_pause_compact</item>
         <item name="android:layout_height">@dimen/size_play_pause_compact</item>
@@ -82,38 +195,40 @@
     </style>
 
     <style name="Widget.Button.Unbounded.Text" parent="Widget.AppCompat.Button.Borderless.Colored">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="Widget.Button.Unbounded.Widget.Base" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_height">@dimen/height_widget_button</item>
+    <style name="Widget.Button.Unbounded.Small" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingStart">@dimen/spacing_medium</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_medium</item>
+        <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
+    </style>
+
+    <style name="Widget.Button.Vibrant.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_micro</item>
-    </style>
-
-    <style name="Widget.Button.Unbounded.Widget" parent="Widget.Button.Unbounded.Widget.Base">
-         <!--
-         Can't use a normal unbounded ripple here since it causes a weird bug
-         where the ripples will have a fixed starting size. Default to the
-         uglier system ripple instead.
-         -->
-        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="WidgetPanel.Base">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:padding">@dimen/spacing_medium</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:background">?attr/colorSurface</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="textAllCaps">false</item>
+        <item name="cornerRadius">0dp</item>
     </style>
 
-    <style name="WidgetPanel" parent="WidgetPanel.Base">
-        <item name="android:elevation">@dimen/elevation_normal</item>
+    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.Button.Vibrant.Base">
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/surface_color</item>
+    </style>
+
+    <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.Button.Vibrant.Base">
+        <item name="strokeColor">@color/divider_color</item>
+        <item name="strokeWidth">@dimen/width_play_stroke</item>
     </style>
 </resources>

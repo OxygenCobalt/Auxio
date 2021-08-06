@@ -12,12 +12,12 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/library_toolbar"
-            style="@style/Toolbar.Style"
+            style="@style/Widget.Toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_library"
-            app:title="@string/label_library" />
+            app:title="@string/lbl_library" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/library_recycler"

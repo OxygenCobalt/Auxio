@@ -141,7 +141,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.KEY_SAVE_STATE -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.savePlaybackState(requireContext()) {
-                            requireContext().showToast(R.string.label_state_saved)
+                            requireContext().showToast(R.string.lbl_state_saved)
                         }
 
                         true

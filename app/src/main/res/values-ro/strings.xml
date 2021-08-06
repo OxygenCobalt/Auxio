@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">Reîncearcă</string>
-    <string name="label_grant">Permiteți</string>
+    <string name="lbl_retry">Reîncearcă</string>
+    <string name="lbl_grant">Permiteți</string>
 
-    <string name="label_library">Bibliotecă</string>
-    <string name="label_genres">Genuri</string>
-    <string name="label_artists">Artiști</string>
-    <string name="label_albums">Albume</string>
-    <string name="label_songs">Cântece</string>
-    <string name="label_all_songs">Toate Cântece</string>
+    <string name="lbl_library">Bibliotecă</string>
+    <string name="lbl_genres">Genuri</string>
+    <string name="lbl_artists">Artiști</string>
+    <string name="lbl_albums">Albume</string>
+    <string name="lbl_songs">Cântece</string>
+    <string name="lbl_all_songs">Toate Cântece</string>
 
-    <string name="label_search">Căutare</string>
-    <string name="label_filter">Filtru</string>
-    <string name="label_filter_all">Tot</string>
+    <string name="lbl_search">Căutare</string>
+    <string name="lbl_filter">Filtru</string>
+    <string name="lbl_filter_all">Tot</string>
 
-    <string name="label_sort">Sortare</string>
-    <string name="label_sort_alpha_down">Crescător</string>
-    <string name="label_sort_alpha_up">Descrescător</string>
+    <string name="lbl_sort">Sortare</string>
+    <string name="lbl_sort_alpha_down">Crescător</string>
+    <string name="lbl_sort_alpha_up">Descrescător</string>
 
-    <string name="label_play">Redă</string>
-    <string name="label_shuffle">Amestecare</string>
-    <string name="label_playback">Redare Acum</string>
+    <string name="lbl_play">Redă</string>
+    <string name="lbl_shuffle">Amestecare</string>
+    <string name="lbl_playback">Redare Acum</string>
 
-    <string name="label_queue">Fila de așteptare</string>
-    <string name="label_queue_add">Adăugați la lista de așteptare</string>
-    <string name="label_queue_added">A fost adăugat la liste de așteptare</string>
-    <string name="label_next_user_queue">Urmează</string>
+    <string name="lbl_queue">Fila de așteptare</string>
+    <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
+    <string name="lbl_queue_added">A fost adăugat la liste de așteptare</string>
+    <string name="lbl_next_user_queue">Urmează</string>
 
-    <string name="label_go_artist">Accesaţi artistul</string>
-    <string name="label_go_album">Accesaţi albumul</string>
+    <string name="lbl_go_artist">Accesaţi artistul</string>
+    <string name="lbl_go_album">Accesaţi albumul</string>
 
-    <string name="label_about">Despre</string>
-    <string name="label_version">Versiune</string>
-    <string name="label_code">Vedeți pe GitHub</string>
-    <string name="label_faq">FAQ</string>
-    <string name="label_licenses">Licențe</string>
-    <string name="label_author">Dezvoltat de OxygenCobalt</string>
+    <string name="lbl_about">Despre</string>
+    <string name="lbl_version">Versiune</string>
+    <string name="lbl_code">Vedeți pe GitHub</string>
+    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_licenses">Licențe</string>
+    <string name="lbl_author">Dezvoltat de OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
-    <string name="setting_title">Setări</string>
+    <string name="set_title">Setări</string>
 
-    <string name="setting_ui">Aspect</string>
-    <string name="setting_theme">Temă</string>
-    <string name="setting_theme_auto">Automatică</string>
-    <string name="setting_theme_day">Clar</string>
-    <string name="setting_theme_night">Întunecat</string>
-    <string name="setting_accent">Culoare accentuată</string>
+    <string name="set_ui">Aspect</string>
+    <string name="set_theme">Temă</string>
+    <string name="set_theme_auto">Automatică</string>
+    <string name="set_theme_day">Clar</string>
+    <string name="set_theme_night">Întunecat</string>
+    <string name="set_accent">Culoare accentuată</string>
 
-    <string name="setting_color_notif">Colorează notificarea</string>
-    <string name="setting_quality_covers">Ignoră coperțile Media Store</string>
+    <string name="set_color_notif">Colorează notificarea</string>
+    <string name="set_quality_covers">Ignoră coperțile Media Store</string>
 
-    <string name="setting_audio">Audio</string>
-    <string name="setting_audio_focus">Concentrare audio</string>
-    <string name="setting_audio_plug_mgt">Conexiune cu cască</string>
+    <string name="set_audio">Audio</string>
+    <string name="set_focus">Concentrare audio</string>
+    <string name="set_plug_mgt">Conexiune cu cască</string>
 
     <string name="setting_behavior">Comportament</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">Nu s-a găsit nici o muzică</string>
+    <string name="err_no_music">Nu s-a găsit nici o muzică</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Căutați în bibliotecă…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_track_number">Melodie %d</string>
+    <string name="desc_track_number">Melodie %d</string>
 
-    <string name="description_play_pause">Redă/Pauză</string>
+    <string name="desc_play_pause">Redă/Pauză</string>
 
-    <string name="description_clear_user_queue">Golește lista de redare</string>
+    <string name="desc_clear_user_queue">Golește lista de redare</string>
 
-    <string name="description_error">Eroare</string>
+    <string name="desc_error">Eroare</string>
 
     <!-- Color Label namespace | Accent names -->
-    <string name="color_label_red">Roșu</string>
-    <string name="color_label_pink">Roz</string>
-    <string name="color_label_purple">Violet</string>
-    <string name="color_label_blue">Albastru</string>
-    <string name="color_label_light_blue">Albastru Deschis</string>
-    <string name="color_label_teal">Albastru Verde</string>
-    <string name="color_label_green">Verde</string>
-    <string name="color_label_light_green">Verde Deschis</string>
-    <string name="color_label_lime">Verde Galben</string>
-    <string name="color_label_yellow">Galben</string>
-    <string name="color_label_orange">Portocaliu</string>
-    <string name="color_label_brown">Brun</string>
-    <string name="color_label_grey">Gri</string>
-    <string name="color_label_blue_grey">Albastru Gri</string>
+    <string name="clr_red">Roșu</string>
+    <string name="clr_pink">Roz</string>
+    <string name="clr_purple">Violet</string>
+    <string name="clr_blue">Albastru</string>
+    <string name="clr_light_blue">Albastru Deschis</string>
+    <string name="clr_teal">Albastru Verde</string>
+    <string name="clr_green">Verde</string>
+    <string name="color_light_green">Verde Deschis</string>
+    <string name="color_lime">Verde Galben</string>
+    <string name="color_yellow">Galben</string>
+    <string name="clr_orange">Portocaliu</string>
+    <string name="clr_label_brown">Brun</string>
+    <string name="clr_label_grey">Gri</string>
+    <string name="clr_blue_grey">Albastru Gri</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <plurals name="format_song_count">
+    <plurals name="fmt_song_count">
         <item quantity="one">%d Cântec</item>
         <item quantity="few">%d Melodii</item>
         <item quantity="other">%d Cântece</item>
     </plurals>
 
-    <plurals name="format_album_count">
+    <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="few">%d Albume</item>
         <item quantity="other">%d Albume</item>

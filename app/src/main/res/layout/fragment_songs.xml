@@ -12,11 +12,11 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/song_toolbar"
-            style="@style/Toolbar.Style"
+            style="@style/Widget.Toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_songs"
-            app:title="@string/label_all_songs" />
+            app:title="@string/lbl_all_songs" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/song_recycler"

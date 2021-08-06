@@ -112,7 +112,7 @@ class PlaybackNotification private constructor(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS
-        setSubText(parent?.displayName ?: context.getString(R.string.label_all_songs))
+        setSubText(parent?.displayName ?: context.getString(R.string.lbl_all_songs))
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---

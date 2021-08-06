@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
             android:padding="@dimen/spacing_medium"
-            android:text="@string/label_no_dirs"
+            android:text="@string/lbl_no_dirs"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="?android:attr/textColorSecondary" />

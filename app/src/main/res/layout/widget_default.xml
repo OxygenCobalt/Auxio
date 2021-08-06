@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.3"
-        android:contentDescription="@string/description_no_cover"
+        android:contentDescription="@string/desc_no_cover"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_song" />
 
@@ -21,7 +21,7 @@
         android:fontFamily="@font/inter"
         android:gravity="center"
         android:padding="@dimen/spacing_medium"
-        android:text="@string/placeholder_playback"
+        android:text="@string/def_playback"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textColor="?android:attr/textColorPrimary"
         android:textStyle="bold" />

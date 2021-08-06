@@ -11,9 +11,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/settings_toolbar"
-            style="@style/Toolbar.Style"
+            style="@style/Widget.Toolbar"
             app:menu="@menu/menu_settings"
-            app:title="@string/setting_title" />
+            app:title="@string/set_title" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/settings_list_fragment"

@@ -1,104 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">Riprova</string>
-    <string name="label_grant">Permetti</string>
+    <string name="lbl_retry">Riprova</string>
+    <string name="lbl_grant">Permetti</string>
 
-    <string name="label_library">Libreria</string>
-    <string name="label_genres">Generi</string>
-    <string name="label_artists">Artisti</string>
-    <string name="label_albums">Albums</string>
-    <string name="label_songs">Canzoni</string>
-    <string name="label_all_songs">Brani Tutti</string>
+    <string name="lbl_library">Libreria</string>
+    <string name="lbl_genres">Generi</string>
+    <string name="lbl_artists">Artisti</string>
+    <string name="lbl_albums">Albums</string>
+    <string name="lbl_songs">Canzoni</string>
+    <string name="lbl_all_songs">Brani Tutti</string>
 
-    <string name="label_search">Cerca</string>
-    <string name="label_filter">Filtra</string>
-    <string name="label_filter_all">Tutto</string>
+    <string name="lbl_search">Cerca</string>
+    <string name="lbl_filter">Filtra</string>
+    <string name="lbl_filter_all">Tutto</string>
 
-    <string name="label_sort">Ordine</string>
-    <string name="label_sort_alpha_down">Ascendente</string>
-    <string name="label_sort_alpha_up">Discendente</string>
+    <string name="lbl_sort">Ordine</string>
+    <string name="lbl_sort_alpha_down">Ascendente</string>
+    <string name="lbl_sort_alpha_up">Discendente</string>
 
-    <string name="label_play">Riproduci</string>
-    <string name="label_shuffle">Casuale</string>
-    <string name="label_playback">Schermata di riproduzione</string>
+    <string name="lbl_play">Riproduci</string>
+    <string name="lbl_shuffle">Casuale</string>
+    <string name="lbl_playback">Schermata di riproduzione</string>
 
-    <string name="label_queue">Coda</string>
-    <string name="label_queue_add">Aggiungi alla coda</string>
-    <string name="label_queue_added">Aggiunta alla coda</string>
-    <string name="label_next_user_queue">A seguire</string>
+    <string name="lbl_queue">Coda</string>
+    <string name="lbl_queue_add">Aggiungi alla coda</string>
+    <string name="lbl_queue_added">Aggiunta alla coda</string>
+    <string name="lbl_next_user_queue">A seguire</string>
 
-    <string name="label_go_artist">Vai all\'artista</string>
-    <string name="label_go_album">Vai all\'album</string>
+    <string name="lbl_go_artist">Vai all\'artista</string>
+    <string name="lbl_go_album">Vai all\'album</string>
 
-    <string name="label_about">Informazioni</string>
-    <string name="label_version">Versione</string>
-    <string name="label_code">Mostra su GitHub</string>
-    <string name="label_faq">FAQ</string>
-    <string name="label_licenses">Licenze</string>
-    <string name="label_author">Sviluppato da OxygenCobalt</string>
+    <string name="lbl_about">Informazioni</string>
+    <string name="lbl_version">Versione</string>
+    <string name="lbl_code">Mostra su GitHub</string>
+    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_licenses">Licenze</string>
+    <string name="lbl_author">Sviluppato da OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
-    <string name="setting_title">Preferencias</string>
+    <string name="set_title">Preferencias</string>
 
-    <string name="setting_ui">Aspetto</string>
-    <string name="setting_theme">Tema</string>
-    <string name="setting_theme_auto">Automatico</string>
-    <string name="setting_theme_day">Chiaro</string>
-    <string name="setting_theme_night">Scuro</string>
+    <string name="set_ui">Aspetto</string>
+    <string name="set_theme">Tema</string>
+    <string name="set_theme_auto">Automatico</string>
+    <string name="set_theme_day">Chiaro</string>
+    <string name="set_theme_night">Scuro</string>
 
-    <string name="setting_accent">Accento</string>
-    <string name="setting_color_notif">Colora notifica</string>
-    <string name="setting_quality_covers">Ignora le copertine del Media Store</string>
+    <string name="set_accent">Accento</string>
+    <string name="set_color_notif">Colora notifica</string>
+    <string name="set_quality_covers">Ignora le copertine del Media Store</string>
 
-    <string name="setting_audio">Audio</string>
-    <string name="setting_audio_focus">Focus audio</string>
-    <string name="setting_audio_plug_mgt">Inserimento cuffie</string>
+    <string name="set_audio">Audio</string>
+    <string name="set_focus">Focus audio</string>
+    <string name="set_plug_mgt">Inserimento cuffie</string>
 
     <string name="setting_behavior">Comportamento</string>
     <string name="setting_behavior_keep_shuffle">Ricorda casuale</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">Nessuna canzone trovata</string>
+    <string name="err_no_music">Nessuna canzone trovata</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_track_number">Traccia %d</string>
+    <string name="desc_track_number">Traccia %d</string>
 
-    <string name="description_play_pause">Play/Pausa</string>
+    <string name="desc_play_pause">Play/Pausa</string>
 
-    <string name="description_clear_user_queue">Svuota coda</string>
+    <string name="desc_clear_user_queue">Svuota coda</string>
 
-    <string name="description_error">Errore</string>
+    <string name="desc_error">Errore</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>
 
     <!-- Color Label namespace | Accent names -->
-    <string name="color_label_red">Rosso</string>
-    <string name="color_label_pink">Rosa</string>
-    <string name="color_label_purple">Viola</string>
-    <string name="color_label_indigo">Indaco</string>
-    <string name="color_label_blue">Azzurro</string>
-    <string name="color_label_light_blue">Azzurro Chiaro</string>
-    <string name="color_label_teal">Azzurro Verde</string>
-    <string name="color_label_green">Verde</string>
-    <string name="color_label_light_green">Verde Chiaro</string>
-    <string name="color_label_lime">Verde Giallo</string>
-    <string name="color_label_yellow">Giallo</string>
-    <string name="color_label_orange">Arancio</string>
-    <string name="color_label_brown">Bruno</string>
-    <string name="color_label_grey">Grigio</string>
-    <string name="color_label_blue_grey">Azzurro Grigio</string>
+    <string name="clr_red">Rosso</string>
+    <string name="clr_pink">Rosa</string>
+    <string name="clr_purple">Viola</string>
+    <string name="clr_indigo">Indaco</string>
+    <string name="clr_blue">Azzurro</string>
+    <string name="clr_light_blue">Azzurro Chiaro</string>
+    <string name="clr_teal">Azzurro Verde</string>
+    <string name="clr_green">Verde</string>
+    <string name="color_light_green">Verde Chiaro</string>
+    <string name="color_lime">Verde Giallo</string>
+    <string name="color_yellow">Giallo</string>
+    <string name="clr_orange">Arancio</string>
+    <string name="clr_label_brown">Bruno</string>
+    <string name="clr_label_grey">Grigio</string>
+    <string name="clr_blue_grey">Azzurro Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_songs_loaded">Brani caricate: %d</string>
+    <string name="fmt_songs_loaded">Brani caricate: %d</string>
 
-    <plurals name="format_song_count">
+    <plurals name="fmt_song_count">
         <item quantity="one">%d Canto</item>
         <item quantity="other">%d Canzoni</item>
     </plurals>
 
-    <plurals name="format_album_count">
+    <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Albums</item>
     </plurals>

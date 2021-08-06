@@ -1,153 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- COMPONENT-SPECIFIC STYLES. NOT RE-USABLE. -->
-    <!-- TODO: Extract the component-specific and general styles into separate stylesheets -->
-
-    <!-- Title theme for Detail Fragments -->
-    <style name="DetailTitleText">
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textSize">@dimen/text_size_detail_header_max</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:gravity">center_vertical</item>
-
-        <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
-        <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
-        <item name="autoSizeStepGranularity">@dimen/text_size_increment</item>
-        <item name="autoSizeTextType">uniform</item>
-    </style>
-
-    <!-- Style for an action header -->
-    <style name="HeaderAction">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingTop">@dimen/spacing_small</item>
-        <item name="android:paddingBottom">@dimen/spacing_small</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
-    </style>
-
-    <!-- Style for the about TextViews -->
-    <style name="Widget.TextView.About" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:drawablePadding">@dimen/spacing_medium</item>
-        <item name="android:padding">@dimen/spacing_medium</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
-    </style>
-
-    <!-- Style for clickable about TextViews -->
-    <style name="Widget.TextView.About.Clickable" parent="Widget.TextView.About">
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/ui_ripple</item>
-    </style>
-
-    <!-- Toolbar Title EntryNames -->
-    <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textSize">@dimen/text_size_toolbar_header</item>
-    </style>
-
-    <!-- Base style for TextViews used in CompactPlaybackFragment -->
-    <style name="Widget.TextView.Compact.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">@dimen/spacing_small</item>
-        <item name="android:layout_marginEnd">@dimen/spacing_small</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <!-- Style for the song title in CompactPlaybackFragment -->
-    <style name="Widget.TextView.Compact.Primary" parent="Widget.TextView.Compact.Base">
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
-    </style>
-
-    <!-- Style for the album/artist view in CompactPlaybackFragment -->
-    <style name="Widget.TextView.Compact.Secondary" parent="Widget.TextView.Compact.Base">
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
-    </style>
-
-    <!-- Style for the ProgressBar on CompactPlaybackFragment -->
-    <style name="Widget.ProgressBar.Compact" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/height_compact_progress</item>
-        <item name="android:progressBackgroundTint">?attr/colorControlNormal</item>
-        <item name="android:progressTint">?attr/colorPrimary</item>
-    </style>
-
-    <!-- Style for the play/pause button on CompactPlaybackFragment -->
-    <style name="Widget.Button.Unbounded.PlayPause" parent="Widget.Button.Unbounded">
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_marginEnd">@dimen/spacing_small</item>
-    </style>
-
-    <!-- Base style for TextViews in PlaybackFragment -->
-    <style name="Widget.TextView.Playback.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <!-- Style for the title text in PlaybackFragment -->
-    <style name="Widget.TextView.Playback.Primary" parent="Widget.TextView.Playback.Base">
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:marqueeRepeatLimit">marquee_forever</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
-        </item>
-    </style>
-
-    <!-- Style for the album/artist text in PlaybackFragment -->
-    <style name="Widget.TextView.Playback.Secondary" parent="Widget.TextView.Playback.Base">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
-    </style>
-
-    <!-- Style for text used in widgets -->
-    <style name="Widget.TextView.Widget.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <!-- Style for the title text in PlaybackFragment -->
-    <style name="Widget.TextView.Widget.Primary" parent="Widget.TextView.Widget.Base">
-        <item name="android:fontFamily">@font/inter</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
-        </item>
-    </style>
-
-    <!-- Style for the album/artist text in PlaybackFragment -->
-    <style name="Widget.TextView.Widget.Secondary" parent="Widget.TextView.Widget.Base">
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
-    </style>
 
     <!-- Style for the play/pause circle button -->
-    <style name="PlayPause">
+    <style name="Widget.Component.Playback.PlayPause" parent="">
         <item name="android:layout_height">@dimen/size_play_pause</item>
         <item name="android:layout_width">@dimen/size_play_pause</item>
         <item name="android:background">@drawable/ui_circle_ripple</item>
         <item name="android:backgroundTint">?attr/colorPrimary</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
-        <item name="android:contentDescription">@string/description_play_pause</item>
+        <item name="android:contentDescription">@string/desc_play_pause</item>
         <item name="android:tint">?android:attr/windowBackground</item>
         <item name="android:layout_marginStart">@dimen/spacing_large</item>
         <item name="android:layout_marginTop">@dimen/spacing_medium</item>
@@ -156,75 +18,59 @@
         <item name="android:padding">@dimen/spacing_medium</item>
     </style>
 
-    <!-- Style for a small ImageView-->
-    <style name="CompactImageView">
-        <item name="android:layout_width">@dimen/size_cover_compact</item>
-        <item name="android:layout_height">@dimen/size_cover_compact</item>
-        <item name="android:layout_margin">@dimen/spacing_small</item>
-        <item name="layout_constraintDimensionRatio">1:1</item>
+    <!-- Style for text used in widgets -->
+    <style name="Widget.Component.AppWidget.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <!-- Style for a larger, elevated ImageView -->
-    <style name="ElevatedImageView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:elevation">@dimen/elevation_normal</item>
-        <item name="android:outlineProvider">bounds</item>
+    <style name="Widget.Component.AppWidget.TextView.Primary" parent="Widget.Component.AppWidget.TextView">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
     </style>
 
-    <!--
-    Style for an ImageView that expands regardless of whether it can fit,
-    mostly used on widgets
-    -->
-    <style name="FluidImageView">
+    <style name="Widget.Component.AppWidget.TextView.Secondary" parent="Widget.Component.AppWidget.TextView">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <style name="Widget.Component.AppWidget.ImageView" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:background">?attr/colorSurface</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 
-    <!-- Style for the seekbar on PlaybackFragment -->
-    <style name="Widget.SeekBar.Full" parent="@style/Widget.AppCompat.SeekBar">
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:paddingStart">@dimen/spacing_mid_large</item>
-        <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
-        <item name="android:progressBackgroundTint">?android:attr/colorControlNormal</item>
-        <item name="android:progressTint">?attr/colorPrimary</item>
-        <item name="android:splitTrack">false</item>
-        <item name="android:thumbOffset">@dimen/offset_thumb</item>
-        <item name="android:thumbTint">?attr/colorPrimary</item>
+    <style name="Widget.Component.AppWidget.Button.Base" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/spacing_micro</item>
     </style>
 
-    <!-- Base style for the material buttons -->
-    <style name="Widget.MaterialComponents.Button.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:layout_width">0dp</item>
+    <style name="Widget.Component.AppWidget.Button" parent="Widget.Component.AppWidget.Button.Base">
+         <!--
+         Can't use a normal unbounded ripple here since it causes a weird bug
+         where the ripples will have a fixed starting size. Default to the
+         uglier system ripple instead.
+         -->
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="Widget.Component.AppWidget.Panel.Base">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="rippleColor">?attr/colorControlHighlight</item>
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="textAllCaps">false</item>
-        <item name="cornerRadius">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">?attr/colorSurface</item>
     </style>
 
-    <!-- An "Unimportant" material button, used for the "Play" button -->
-    <style name="Widget.MaterialComponents.Button.Unimportant" parent="@style/Widget.MaterialComponents.Button.Base">
-        <item name="android:layout_marginTop">@dimen/spacing_small</item>
-        <item name="android:layout_marginStart">@dimen/spacing_medium</item>
-        <item name="android:layout_marginEnd">@dimen/spacing_small</item>
-        <item name="strokeColor">@color/divider_color</item>
-        <item name="strokeWidth">@dimen/width_play_stroke</item>
-    </style>
-
-    <!-- An highlighted material button, used for the "Shuffle" button -->
-    <style name="Widget.MaterialComponents.Button.Highlighted" parent="@style/Widget.MaterialComponents.Button.Base">
-        <item name="android:layout_marginStart">@dimen/spacing_small</item>
-        <item name="android:layout_marginEnd">@dimen/spacing_medium</item>
-        <item name="rippleColor">?attr/colorControlHighlight</item>
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/surface_color</item>
+    <style name="Widget.Component.AppWidget.Panel" parent="Widget.Component.AppWidget.Panel.Base">
+        <item name="android:elevation">@dimen/elevation_normal</item>
     </style>
 </resources>

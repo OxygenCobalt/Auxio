@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_play"
-        android:title="@string/label_play" />
+        android:title="@string/lbl_play" />
     <item
         android:id="@+id/action_shuffle"
-        android:title="@string/label_shuffle" />
+        android:title="@string/lbl_shuffle" />
 </menu>

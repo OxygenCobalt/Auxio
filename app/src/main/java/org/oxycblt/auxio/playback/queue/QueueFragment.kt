@@ -142,7 +142,7 @@ class QueueFragment : Fragment() {
         if (userQueue.isNotEmpty()) {
             queue += Header(
                 id = -2,
-                name = getString(R.string.label_next_user_queue),
+                name = getString(R.string.lbl_next_user_queue),
                 isAction = true
             )
 
@@ -152,7 +152,7 @@ class QueueFragment : Fragment() {
         if (nextQueue.isNotEmpty()) {
             queue += Header(
                 id = -3,
-                name = getString(R.string.format_next_from, getParentName()),
+                name = getString(R.string.fmt_next_from, getParentName()),
                 isAction = false
             )
 
@@ -163,6 +163,6 @@ class QueueFragment : Fragment() {
     }
 
     private fun getParentName(): String {
-        return playbackModel.parent.value?.displayName ?: getString(R.string.label_all_songs)
+        return playbackModel.parent.value?.displayName ?: getString(R.string.lbl_all_songs)
     }
 }

@@ -107,8 +107,8 @@ class MusicLoader(private val context: Context) {
             Albums.DEFAULT_SORT_ORDER
         )
 
-        val albumPlaceholder = context.getString(R.string.placeholder_album)
-        val artistPlaceholder = context.getString(R.string.placeholder_artist)
+        val albumPlaceholder = context.getString(R.string.def_album)
+        val artistPlaceholder = context.getString(R.string.def_artist)
 
         albumCursor?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
@@ -191,8 +191,8 @@ class MusicLoader(private val context: Context) {
         val songsByAlbum = songs.groupBy { it.albumId }
         val unknownAlbum = Album(
             id = -1,
-            name = context.getString(R.string.placeholder_album),
-            artistName = context.getString(R.string.placeholder_artist),
+            name = context.getString(R.string.def_album),
+            artistName = context.getString(R.string.def_artist),
             coverUri = Uri.EMPTY,
             year = 0
         )
@@ -300,7 +300,7 @@ class MusicLoader(private val context: Context) {
         if (songsWithoutGenres.isNotEmpty()) {
             val unknownGenre = Genre(
                 id = -2,
-                name = context.getString(R.string.placeholder_genre)
+                name = context.getString(R.string.def_genre)
             )
 
             songsWithoutGenres.forEach { song ->

@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         app:layout="@layout/item_header"
-        app:title="@string/setting_ui">
+        app:title="@string/set_ui">
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
             app:defaultValue="@integer/theme_auto"
@@ -11,20 +11,20 @@
             app:icon="@drawable/ic_day"
             app:iconSpaceReserved="false"
             app:key="KEY_THEME2"
-            app:title="@string/setting_theme" />
+            app:title="@string/set_theme" />
 
         <Preference
             app:allowDividerBelow="false"
             app:icon="@drawable/ic_accent"
             app:key="KEY_ACCENT2"
-            app:summary="@string/color_label_blue"
-            app:title="@string/setting_accent" />
+            app:summary="@string/clr_blue"
+            app:title="@string/set_accent" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_BLACK_THEME"
-            app:title="@string/setting_black_mode"
+            app:title="@string/set_black_mode"
             app:summary="@string/setting_black_mode_desc"
             app:allowDividerBelow="false" />
 
@@ -32,7 +32,7 @@
 
     <PreferenceCategory
         app:layout="@layout/item_header"
-        app:title="@string/setting_display">
+        app:title="@string/set_display">
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
             app:defaultValue="@integer/display_artist"
@@ -40,14 +40,14 @@
             app:entryValues="@array/values_lib_display"
             app:icon="@drawable/ic_artist"
             app:key="KEY_LIB_MODE"
-            app:title="@string/setting_lib_display"
+            app:title="@string/set_lib_display"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_SHOW_COVERS"
-            app:summary="@string/setting_show_covers_desc"
+            app:summary="@string/set_show_covers_desc"
             app:title="@string/setting_show_covers" />
 
         <SwitchPreferenceCompat
@@ -55,46 +55,46 @@
             app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
             app:key="KEY_QUALITY_COVERS"
-            app:summary="@string/setting_quality_covers_desc"
-            app:title="@string/setting_quality_covers" />
+            app:summary="@string/set_quality_covers_desc"
+            app:title="@string/set_quality_covers" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
             app:key="KEY_COLOR_NOTIF"
-            app:summary="@string/setting_color_desc"
-            app:title="@string/setting_color_notif" />
+            app:summary="@string/set_color_notif_desc"
+            app:title="@string/set_color_notif" />
 
         <SwitchPreferenceCompat
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_ALT_NOTIF_ACTION"
-            app:summaryOff="@string/setting_use_alt_loop"
-            app:summaryOn="@string/setting_use_alt_shuffle"
-            app:title="@string/setting_use_alt_action" />
+            app:summaryOff="@string/set_alt_loop"
+            app:summaryOn="@string/set_alt_shuffle"
+            app:title="@string/set_alt_action" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
         app:layout="@layout/item_header"
-        app:title="@string/setting_audio">
+        app:title="@string/set_audio">
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_AUDIO_FOCUS"
-            app:summary="@string/setting_audio_focus_desc"
-            app:title="@string/setting_audio_focus" />
+            app:summary="@string/set_focus_desc"
+            app:title="@string/set_focus" />
 
         <SwitchPreferenceCompat
             app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PLUG_MGT"
-            app:summary="@string/setting_audio_plug_mgt_desc"
-            app:title="@string/setting_audio_plug_mgt" />
+            app:summary="@string/set_plug_mgt_desc"
+            app:title="@string/set_plug_mgt" />
 
     </PreferenceCategory>
 
@@ -138,19 +138,19 @@
 
     <PreferenceCategory
         app:layout="@layout/item_header"
-        app:title="@string/setting_content">
+        app:title="@string/set_content">
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="KEY_SAVE_STATE"
-            app:summary="@string/setting_content_save_desc"
-            app:title="@string/setting_content_save" />
+            app:summary="@string/set_save_desc"
+            app:title="@string/set_save" />
 
         <Preference
             app:iconSpaceReserved="false"
             app:key="KEY_BLACKLIST"
-            app:summary="@string/setting_content_blacklist_desc"
-            app:title="@string/setting_content_blacklist" />
+            app:summary="@string/set_blacklist_desc"
+            app:title="@string/set_blacklist" />
 
     </PreferenceCategory>
 </PreferenceScreen>

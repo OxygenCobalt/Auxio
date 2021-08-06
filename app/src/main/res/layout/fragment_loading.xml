@@ -29,7 +29,7 @@
             android:layout_width="@dimen/size_error_icon"
             android:layout_height="@dimen/size_error_icon"
             android:layout_margin="@dimen/spacing_small"
-            android:contentDescription="@string/description_error"
+            android:contentDescription="@string/desc_error"
             android:src="@drawable/ic_error"
             android:visibility="gone"
             tools:visibility="visible" />
@@ -46,17 +46,21 @@
 
         <Button
             android:id="@+id/loading_retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.Button.Unbounded.Text"
             android:onClick="@{() -> loadingModel.load(context)}"
-            android:text="@string/label_retry"
+            android:text="@string/lbl_retry"
             android:visibility="gone"
             tools:visibility="visible" />
 
         <Button
             android:id="@+id/loading_grant_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="@style/Widget.Button.Unbounded.Text"
             android:onClick="@{() -> loadingModel.grant()}"
-            android:text="@string/label_grant"
+            android:text="@string/lbl_grant"
             android:visibility="gone"
             tools:visibility="visible" />
 

@@ -5,80 +5,80 @@
     <string name="info_channel_name">Muziek Afspelen</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="label_retry">Opnieuw proberen</string>
-    <string name="label_grant">Toestaan</string>
+    <string name="lbl_retry">Opnieuw proberen</string>
+    <string name="lbl_grant">Toestaan</string>
 
-    <string name="label_library">Bibliotheek</string>
-    <string name="label_genres">Genres</string>
-    <string name="label_artists">Artiesten</string>
-    <string name="label_albums">Albums</string>
-    <string name="label_songs">Nummers</string>
-    <string name="label_all_songs">Alle Nummers</string>
+    <string name="lbl_library">Bibliotheek</string>
+    <string name="lbl_genres">Genres</string>
+    <string name="lbl_artists">Artiesten</string>
+    <string name="lbl_albums">Albums</string>
+    <string name="lbl_songs">Nummers</string>
+    <string name="lbl_all_songs">Alle Nummers</string>
 
-    <string name="label_search">Zoeken</string>
-    <string name="label_filter">Filter</string>
-    <string name="label_filter_all">Alles</string>
+    <string name="lbl_search">Zoeken</string>
+    <string name="lbl_filter">Filter</string>
+    <string name="lbl_filter_all">Alles</string>
 
-    <string name="label_sort">Sorteren</string>
-    <string name="label_sort_alpha_down">Oplopend</string>
-    <string name="label_sort_alpha_up">Aflopend</string>
+    <string name="lbl_sort">Sorteren</string>
+    <string name="lbl_sort_alpha_down">Oplopend</string>
+    <string name="lbl_sort_alpha_up">Aflopend</string>
 
-    <string name="label_play">Afspelen</string>
-    <string name="label_shuffle">Shuffle</string>
-    <string name="label_play_all_songs">Speel van alle nummers </string>
-    <string name="label_play_album">Speel af van album </string>
-    <string name="label_play_artist">Speel van artiest </string>
-    <string name="label_play_genre">Speel vanuit genre </string>
-    <string name="label_playback">Afspeelscherm</string>
+    <string name="lbl_play">Afspelen</string>
+    <string name="lbl_shuffle">Shuffle</string>
+    <string name="lbl_play_all">Speel van alle nummers </string>
+    <string name="lbl_play_album">Speel af van album </string>
+    <string name="lbl_play_artist">Speel van artiest </string>
+    <string name="lbl_play_genre">Speel vanuit genre </string>
+    <string name="lbl_playback">Afspeelscherm</string>
 
-    <string name="label_queue">Wachtrij</string>
-    <string name="label_queue_add">Toevoegen aan wachtrij</string>
-    <string name="label_queue_added">Toegevoegd aan de wachtrij</string>
-    <string name="label_next_user_queue">Als volgende</string>
+    <string name="lbl_queue">Wachtrij</string>
+    <string name="lbl_queue_add">Toevoegen aan wachtrij</string>
+    <string name="lbl_queue_added">Toegevoegd aan de wachtrij</string>
+    <string name="lbl_next_user_queue">Als volgende</string>
 
-    <string name="label_go_artist">Ga naar artiest</string>
-    <string name="label_go_album">Ga naar album</string>
+    <string name="lbl_go_artist">Ga naar artiest</string>
+    <string name="lbl_go_album">Ga naar album</string>
 
-    <string name="label_state_saved">Staat gered</string>
+    <string name="lbl_state_saved">Staat gered</string>
 
-    <string name="label_add">Toevoegen</string>
-    <string name="label_save">Opslaan</string>
-    <string name="label_no_dirs">Geen Mappen</string>
+    <string name="lbl_add">Toevoegen</string>
+    <string name="lbl_save">Opslaan</string>
+    <string name="lbl_no_dirs">Geen Mappen</string>
 
-    <string name="label_about">Over</string>
-    <string name="label_version">Versie</string>
-    <string name="label_code">Bekijken op GitHub</string>
-    <string name="label_faq">FAQ</string>
-    <string name="label_licenses">Licenties</string>
-    <string name="label_author">Ontwikkeld door OxygenCobalt</string>
+    <string name="lbl_about">Over</string>
+    <string name="lbl_version">Versie</string>
+    <string name="lbl_code">Bekijken op GitHub</string>
+    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_licenses">Licenties</string>
+    <string name="lbl_author">Ontwikkeld door OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
-    <string name="setting_title">Instellingen</string>
+    <string name="set_title">Instellingen</string>
 
-    <string name="setting_ui">Uiterlijk</string>
-    <string name="setting_theme">Thema</string>
-    <string name="setting_theme_auto">Automatisch</string>
-    <string name="setting_theme_day">Licht</string>
-    <string name="setting_theme_night">Donker</string>
-    <string name="setting_accent">Accent</string>
+    <string name="set_ui">Uiterlijk</string>
+    <string name="set_theme">Thema</string>
+    <string name="set_theme_auto">Automatisch</string>
+    <string name="set_theme_day">Licht</string>
+    <string name="set_theme_night">Donker</string>
+    <string name="set_accent">Accent</string>
 
-    <string name="setting_display">Scherm</string>
-    <string name="setting_lib_display">Bibliotheek Items</string>
-    <string name="setting_color_notif">Notificatie kleur aanpassen</string>
-    <string name="setting_color_desc">Toon album art op notification</string>
+    <string name="set_display">Scherm</string>
+    <string name="set_lib_display">Bibliotheek Items</string>
+    <string name="set_color_notif">Notificatie kleur aanpassen</string>
+    <string name="set_color_notif_desc">Toon album art op notification</string>
     <string name="setting_show_covers">Toon albumhoezen</string>
-    <string name="setting_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
-    <string name="setting_quality_covers">Negeer Mediaopslag illustraties</string>
-    <string name="setting_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
-    <string name="setting_use_alt_action">Gebruikt een afternatief notification action</string>
-    <string name="setting_use_alt_loop">Voorkeur aan herhaalde actie</string>
-    <string name="setting_use_alt_shuffle">Voorkeur aan shuffle actie</string>
+    <string name="set_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
+    <string name="set_quality_covers">Negeer Mediaopslag illustraties</string>
+    <string name="set_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>
+    <string name="set_alt_action">Gebruikt een afternatief notification action</string>
+    <string name="set_alt_loop">Voorkeur aan herhaalde actie</string>
+    <string name="set_alt_shuffle">Voorkeur aan shuffle actie</string>
 
-    <string name="setting_audio">Audio</string>
-    <string name="setting_audio_focus">Audiofocus</string>
-    <string name="setting_audio_focus_desc">Pauze wanneer andere audio speelt [ex. Gesprekken]</string>
-    <string name="setting_audio_plug_mgt">Headset-pluggen</string>
-    <string name="setting_audio_plug_mgt_desc">Afspelen/Pauzeren wanneer de headsetaansluiting verandert</string>
+    <string name="set_audio">Audio</string>
+    <string name="set_focus">Audiofocus</string>
+    <string name="set_focus_desc">Pauze wanneer andere audio speelt [ex. Gesprekken]</string>
+    <string name="set_plug_mgt">Headset-pluggen</string>
+    <string name="set_plug_mgt_desc">Afspelen/Pauzeren wanneer de headsetaansluiting verandert</string>
 
     <string name="setting_behavior">Gedrag</string>
     <string name="setting_behavior_song_playback_mode">Wanneer een liedje is geselecteerd</string>
@@ -87,77 +87,77 @@
     <string name="setting_behavior_rewind_prev">Terugspoelen voordat je terugspoelt</string>
     <string name="setting_behavior_rewind_prev_desc">Terugspoelen voordat u naar het vorige nummer gaat</string>
 
-    <string name="setting_content">Inhoud</string>
-    <string name="setting_content_save">Afspeelstatus opslaan</string>
-    <string name="setting_content_save_desc">Sla de huidige afspeelstatus nu op </string>
-    <string name="setting_content_blacklist">Uitgesloten mappen </string>
-    <string name="setting_content_blacklist_desc">De inhoud van uitgesloten mappen wordt verborgen voor uw bibliotheek</string>
+    <string name="set_content">Inhoud</string>
+    <string name="set_save">Afspeelstatus opslaan</string>
+    <string name="set_save_desc">Sla de huidige afspeelstatus nu op </string>
+    <string name="set_blacklist">Uitgesloten mappen </string>
+    <string name="set_blacklist_desc">De inhoud van uitgesloten mappen wordt verborgen voor uw bibliotheek</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="error_no_music">Geen muziek aangetroffen</string>
-    <string name="error_load_failed">Laden van muziek mislukt</string>
-    <string name="error_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
-    <string name="error_no_browser">Geen app kan deze link openen</string>
-    <string name="error_bad_dir">Deze map wordt niet ondersteund</string>
+    <string name="err_no_music">Geen muziek aangetroffen</string>
+    <string name="err_load_failed">Laden van muziek mislukt</string>
+    <string name="err_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
+    <string name="err_no_app">Geen app kan deze link openen</string>
+    <string name="err_bad_dir">Deze map wordt niet ondersteund</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Zoek in uw bibliotheek…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="description_sort_button">Sorteervolgorde wijzigen</string>
-    <string name="description_track_number">Nummer %d</string>
+    <string name="desc_sort_button">Sorteervolgorde wijzigen</string>
+    <string name="desc_track_number">Nummer %d</string>
 
-    <string name="description_play_pause">Afspelen/Pauzeren</string>
-    <string name="description_skip_next">Naar volgend nummer gaan</string>
-    <string name="description_skip_prev">Naar het laatste nummer gaan</string>
-    <string name="description_change_loop">Herhaalfunctie wijzigen</string>
+    <string name="desc_play_pause">Afspelen/Pauzeren</string>
+    <string name="desc_skip_next">Naar volgend nummer gaan</string>
+    <string name="desc_skip_prev">Naar het laatste nummer gaan</string>
+    <string name="desc_change_loop">Herhaalfunctie wijzigen</string>
 
-    <string name="description_clear_user_queue">Wachtrij wissen</string>
-    <string name="description_clear_search">Zoekopdracht wissen</string>
-    <string name="description_blacklist_delete">Verwijder uitgesloten map</string>
+    <string name="desc_clear_user_queue">Wachtrij wissen</string>
+    <string name="desc_clear_search">Zoekopdracht wissen</string>
+    <string name="desc_blacklist_delete">Verwijder uitgesloten map</string>
 
-    <string name="description_error">Fout</string>
-    <string name="description_auxio_icon">Auxio pictogram</string>
-    <string name="description_album_cover">Artist Image voor  %s</string>
-    <string name="description_artist_image">Artist Image voor %s</string>
-    <string name="description_genre_image">Genre Image voor %s</string>
+    <string name="desc_error">Fout</string>
+    <string name="desc_auxio_icon">Auxio pictogram</string>
+    <string name="desc_album_cover">Artist Image voor  %s</string>
+    <string name="desc_artist_image">Artist Image voor %s</string>
+    <string name="desc_genre_image">Genre Image voor %s</string>
 
     <!-- Placeholder Namespace | Placeholder values -->
-    <string name="placeholder_genre">Onbekend Genre</string>
-    <string name="placeholder_artist">Onbekend Artist</string>
-    <string name="placeholder_album">Onbekend Album</string>
-    <string name="placeholder_no_date">Geen datum </string>
+    <string name="def_genre">Onbekend Genre</string>
+    <string name="def_artist">Onbekend Artist</string>
+    <string name="def_album">Onbekend Album</string>
+    <string name="def_date">Geen datum </string>
 
     <!-- Color Label namespace | Accent names -->
-    <string name="color_label_red">Rood</string>
-    <string name="color_label_pink">Roze</string>
-    <string name="color_label_purple">Paars</string>
-    <string name="color_label_deep_purple">Donkerpaars</string>
-    <string name="color_label_indigo">Indigoblauw</string>
-    <string name="color_label_blue">Blauw</string>
-    <string name="color_label_light_blue">Lichtblauw</string>
-    <string name="color_label_teal">Blauwgroen</string>
-    <string name="color_label_green">Groen</string>
-    <string name="color_label_light_green">Lichtgroen</string>
-    <string name="color_label_cyan">Cyaan</string>
-    <string name="color_label_lime">Geelgroen</string>
-    <string name="color_label_yellow">Geel</string>
-    <string name="color_label_orange">Oranje</string>
-    <string name="color_label_deep_orange">Dieporanje</string>
-    <string name="color_label_brown">Bruin</string>
-    <string name="color_label_grey">Grijis</string>
-    <string name="color_label_blue_grey">Blauwgrijis</string>
+    <string name="clr_red">Rood</string>
+    <string name="clr_pink">Roze</string>
+    <string name="clr_purple">Paars</string>
+    <string name="clr_deep_purple">Donkerpaars</string>
+    <string name="clr_indigo">Indigoblauw</string>
+    <string name="clr_blue">Blauw</string>
+    <string name="clr_light_blue">Lichtblauw</string>
+    <string name="clr_teal">Blauwgroen</string>
+    <string name="clr_green">Groen</string>
+    <string name="color_light_green">Lichtgroen</string>
+    <string name="clr_cyan">Cyaan</string>
+    <string name="color_lime">Geelgroen</string>
+    <string name="color_yellow">Geel</string>
+    <string name="clr_orange">Oranje</string>
+    <string name="clr_deep_orange">Dieporanje</string>
+    <string name="clr_label_brown">Bruin</string>
+    <string name="clr_label_grey">Grijis</string>
+    <string name="clr_blue_grey">Blauwgrijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_next_from">Volgende van: %s</string>
-    <string name="format_songs_loaded">Nummers geladen: %d</string>
+    <string name="fmt_next_from">Volgende van: %s</string>
+    <string name="fmt_songs_loaded">Nummers geladen: %d</string>
 
-    <plurals name="format_song_count">
+    <plurals name="fmt_song_count">
         <item quantity="one">%d Nummer</item>
         <item quantity="other">%d Nummers</item>
     </plurals>
 
-    <plurals name="format_album_count">
+    <plurals name="fmt_album_count">
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Albums</item>
     </plurals>
