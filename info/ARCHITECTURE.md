@@ -166,7 +166,7 @@ PlaybackStateManager───────────────────┘
 
 `PlaybackStateManager` is the shared object that contains the master copy of the playback state, doing all operations on it. This object should ***NEVER*** be used in a UI, as it does not sanitize input and can cause major problems if a Volatile UI interacts with it. It's callback system is also prone to memory leaks if not cleared when done. `PlaybackViewModel` should be used instead, as it exposes stable data and safe functions that UIs can use to interact with the playback state.
 
-`PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance and notification and also modify the state depending on system events, such as when a button is pressed on a headset. It should **never** be bound to, mostly because there is no need given that `PlaybackViewModel` exposes the same data in a much safer fashion. `PlaybackService` also controls the `PlaybackSessionConnector` and `AudioReactor` classes, which manage the `MediaSession` and `AudioFocus` state respectively.
+`PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance, the notification, and also modify the state depending on system events, such as when a button is pressed on a headset. It should **never** be bound to, mostly because there is no need given that `PlaybackViewModel` exposes the same data in a much safer fashion. `PlaybackService` also controls the `PlaybackSessionConnector`, `AudioReactor`, and `WidgetController` classes, which manage the `MediaSession`, Audio Focus, and Widgets respectively.
 
 #### `.recycler`
 
@@ -190,3 +190,30 @@ Shared User Interface utilities. This is primarily made up of convenience/extens
 - The Accent Management system
 - `newMenu` and `ActionMenu`, which automates menu creation for most data types
 - `memberBinding` and `MemberBinder`, which allows for ViewBindings to be used as a member variable without memory leaks or nullability issues.
+
+#### `.widgets`
+
+The widget sub-module. This module differs heavily from the rest of Auxio, as widget UIs can't be controlled in the same
+way that UIs in the main process can.
+
+Widgets are controlled by two pieces of code:
+
+- `WidgetProvider`, which provides the widget layouts to the system
+- `WidgetController`, which acts as an intermediary between the Auxio process and the widget [ex. Monitoring the playback state]
+
+The widget update process is described in this diagram:
+
+```
+WidgetController<──────────PlaybackService
+      │           Controls        ^
+      │                           │
+      │ Updates                   │
+      │                           │
+      │                           │
+      v          Requests Update  │
+ WidgetProvider───────────────────┘
+```
+
+When `WidgetProvider` creates a layout, it first turns the `PlaybackStateManager` instance into a `WidgetState`, which is
+an immutable version of the playback state that negates some of the problems with using a shared object here. It then picks
+a layout [e.g "Form"] depending on its current dimensions and applies the `WidgetState` object to that.

@@ -8,7 +8,9 @@ import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
- * widget state based off of that. This cannot be rolled into [WidgetProvider] directly.
+ * widget state based off of that. This cannot be rolled into [WidgetProvider] directly, as it may
+ * result in memory leaks if [PlaybackStateManager]/[SettingsManager] gets created and bound
+ * to without being released.
  */
 class WidgetController(private val context: Context) :
     PlaybackStateManager.Callback,
@@ -22,6 +24,9 @@ class WidgetController(private val context: Context) :
         settingsManager.addCallback(this)
     }
 
+    /*
+     * Update the widget.
+     */
     fun update() {
         widget.update(context, playbackManager)
     }
