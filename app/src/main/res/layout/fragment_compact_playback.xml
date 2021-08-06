@@ -46,9 +46,9 @@
         <TextView
             android:id="@+id/playback_song"
             style="@style/Widget.TextView.Compact.Primary"
-            android:text="@{song.name}"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
+            android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -71,10 +71,10 @@
         <org.oxycblt.auxio.playback.PlayPauseButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Button.Unbounded"
-            android:padding="0dp"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
+            android:padding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

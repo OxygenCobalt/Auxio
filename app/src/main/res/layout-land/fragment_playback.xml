@@ -102,9 +102,9 @@
 
         <SeekBar
             android:id="@+id/playback_seek_bar"
+            style="@style/Widget.SeekBar.Full"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.SeekBar.Full"
             android:layout_marginTop="@dimen/spacing_medium"
             app:layout_constraintBottom_toTopOf="@+id/playback_duration_current"
             app:layout_constraintEnd_toEndOf="parent"

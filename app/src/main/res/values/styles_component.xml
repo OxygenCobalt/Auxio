@@ -54,11 +54,11 @@
     </style>
 
     <style name="Widget.Component.AppWidget.Button" parent="Widget.Component.AppWidget.Button.Base">
-         <!--
-         Can't use a normal unbounded ripple here since it causes a weird bug
-         where the ripples will have a fixed starting size. Default to the
-         uglier system ripple instead.
-         -->
+        <!--
+        Can't use a normal unbounded ripple here since it causes a weird bug
+        where the ripples will have a fixed starting size. Default to the
+        uglier system ripple instead.
+        -->
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 

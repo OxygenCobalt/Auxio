@@ -18,9 +18,9 @@
 
         <TextView
             android:id="@+id/header_title"
+            style="@style/Widget.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.TextView.Header"
             android:text="@{header.name}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,9 +28,9 @@
 
         <ImageButton
             android:id="@+id/header_button"
+            style="@style/Widget.Button.Unbounded.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.Button.Unbounded.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/header_title"

@@ -46,9 +46,9 @@
 
         <Button
             android:id="@+id/loading_retry_button"
+            style="@style/Widget.Button.Unbounded.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Button.Unbounded.Text"
             android:onClick="@{() -> loadingModel.load(context)}"
             android:text="@string/lbl_retry"
             android:visibility="gone"
@@ -56,9 +56,9 @@
 
         <Button
             android:id="@+id/loading_grant_button"
+            style="@style/Widget.Button.Unbounded.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Button.Unbounded.Text"
             android:onClick="@{() -> loadingModel.grant()}"
             android:text="@string/lbl_grant"
             android:visibility="gone"

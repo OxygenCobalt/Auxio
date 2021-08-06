@@ -26,11 +26,11 @@
 
         <ImageView
             android:id="@+id/genre_image"
+            style="@style/Widget.ImageView.Full"
             android:layout_width="@dimen/size_cover_detail"
             android:layout_height="@dimen/size_cover_detail"
             android:layout_marginTop="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_genre_image(genre.name)}"
-            style="@style/Widget.ImageView.Full"
             app:genreImage="@{genre}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -79,11 +79,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/genre_play_button"
             style="@style/Widget.Button.Vibrant.Secondary"
-            android:onClick="@{() -> playbackModel.playGenre(genre, false)}"
-            android:text="@string/lbl_play"
+            android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
-            android:layout_marginStart="@dimen/spacing_medium"
+            android:onClick="@{() -> playbackModel.playGenre(genre, false)}"
+            android:text="@string/lbl_play"
             app:layout_constraintEnd_toStartOf="@+id/genre_shuffle_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genre_duration" />
@@ -101,9 +101,9 @@
 
         <TextView
             android:id="@+id/genre_song_header"
+            style="@style/Widget.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.TextView.Header"
             android:layout_marginTop="@dimen/spacing_small"
             android:text="@string/lbl_songs"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,9 +111,9 @@
 
         <ImageButton
             android:id="@+id/genre_sort_button"
+            style="@style/Widget.Button.Unbounded.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.Button.Unbounded.Small"
             android:contentDescription="@string/desc_sort_button"
             android:onClick="@{() -> detailModel.incrementGenreSortMode()}"
             app:layout_constraintBottom_toBottomOf="@+id/genre_song_header"

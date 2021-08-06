@@ -69,7 +69,7 @@
             style="@style/Widget.Button.Vibrant.Secondary"
             android:onClick="@{() -> playbackModel.playGenre(genre, false)}"
             android:text="@string/lbl_play"
-                        android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:layout_marginStart="@dimen/spacing_medium"
             app:layout_constraintEnd_toStartOf="@+id/genre_shuffle_button"

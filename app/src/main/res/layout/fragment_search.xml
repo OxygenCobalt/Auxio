@@ -32,8 +32,8 @@
                 app:boxStrokeWidthFocused="2dp"
                 app:endIconContentDescription="@string/desc_clear_search"
                 app:endIconDrawable="@drawable/ic_close"
-                app:endIconTint="?attr/colorControlNormal"
                 app:endIconMode="clear_text"
+                app:endIconTint="?attr/colorControlNormal"
                 app:errorEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText

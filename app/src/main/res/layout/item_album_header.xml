@@ -79,11 +79,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/album_play_button"
             style="@style/Widget.Button.Vibrant.Secondary"
-            android:onClick="@{() -> playbackModel.playAlbum(album, false)}"
-            android:text="@string/lbl_play"
+            android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
-            android:layout_marginStart="@dimen/spacing_medium"
+            android:onClick="@{() -> playbackModel.playAlbum(album, false)}"
+            android:text="@string/lbl_play"
             app:layout_constraintEnd_toStartOf="@+id/album_shuffle_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/album_details" />
@@ -91,11 +91,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/album_shuffle_button"
             style="@style/Widget.Button.Vibrant.Primary"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:backgroundTint="?attr/colorPrimary"
             android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
             android:text="@string/lbl_shuffle"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="@+id/album_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_play_button"
@@ -103,9 +103,9 @@
 
         <TextView
             android:id="@+id/album_song_header"
+            style="@style/Widget.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.TextView.Header"
             android:layout_marginTop="@dimen/spacing_small"
             android:background="@drawable/ui_header_dividers"
             android:text="@string/lbl_songs"
@@ -114,9 +114,9 @@
 
         <ImageButton
             android:id="@+id/album_sort_button"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             style="@style/Widget.Button.Unbounded.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/desc_sort_button"
             android:onClick="@{() -> detailModel.incrementAlbumSortMode()}"
             app:layout_constraintBottom_toBottomOf="@+id/album_song_header"

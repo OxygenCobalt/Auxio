@@ -79,8 +79,8 @@
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:layout_marginBottom="@dimen/spacing_medium"
-            android:text="@{song.album.name}"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
+            android:text="@{song.album.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,9 +88,9 @@
 
         <SeekBar
             android:id="@+id/playback_seek_bar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
             style="@style/Widget.SeekBar.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/playback_duration_current"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

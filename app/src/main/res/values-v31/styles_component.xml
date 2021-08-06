@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Widget.Component.AppWidget.Button" parent="Widget.Component.AppWidget.Button.Base">
         <item name="android:background">@drawable/ui_unbounded_ripple</item>
     </style>
