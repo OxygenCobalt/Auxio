@@ -17,9 +17,6 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.newMainIntent
-import org.oxycblt.auxio.widgets.forms.FullWidgetForm
-import org.oxycblt.auxio.widgets.forms.SmallWidgetForm
-import org.oxycblt.auxio.widgets.forms.WidgetForm
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
@@ -28,7 +25,7 @@ import org.oxycblt.auxio.widgets.forms.WidgetForm
  * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
  * - For widgets 4x2 or higher, show a complete view with all playback controls
  *
- * For more specific details about these sub-widgets, see [WidgetForm].
+ * For more specific details about these sub-widgets, see Forms.kt.
  */
 class WidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -38,6 +35,21 @@ class WidgetProvider : AppWidgetProvider() {
     ) {
         applyDefaultViews(context, appWidgetManager)
         requestUpdate(context)
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            // We can't resize the widget until we can generate the views, so request an update
+            // from PlaybackService.
+            requestUpdate(context)
+        }
     }
 
     /*
@@ -65,57 +77,12 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Map each widget form to the rough dimensions where it would look at least okay.
             val views = mapOf(
-                SizeF(110f, 110f) to SmallWidgetForm().createViews(context, state),
-                SizeF(272f, 110f) to FullWidgetForm().createViews(context, state)
+                SizeF(110f, 110f) to createSmallWidget(context, state),
+                SizeF(250f, 110f) to createFullWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)
         }
-    }
-
-    /*
-     * Revert this widget to its default view
-     */
-    fun reset(context: Context) {
-        logD("Resetting widget")
-
-        applyDefaultViews(context, AppWidgetManager.getInstance(context))
-    }
-
-    @SuppressLint("RemoteViewLayout")
-    private fun applyDefaultViews(context: Context, manager: AppWidgetManager) {
-        val views = RemoteViews(context.packageName, R.layout.widget_default)
-
-        views.setOnClickPendingIntent(
-            android.R.id.background,
-            context.newMainIntent()
-        )
-
-        manager.updateAppWidget(ComponentName(context, this::class.java), views)
-    }
-
-    override fun onAppWidgetOptionsChanged(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
-        newOptions: Bundle?
-    ) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            // We can't resize the widget until we can generate the views, so request an update
-            // from PlaybackService.
-            requestUpdate(context)
-        }
-    }
-
-    private fun requestUpdate(context: Context) {
-        logD("Sending update intent to PlaybackService")
-
-        val intent = Intent(ACTION_WIDGET_UPDATE)
-            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
-
-        context.sendBroadcast(intent)
     }
 
     private fun AppWidgetManager.applyViewsCompat(
@@ -133,10 +100,6 @@ class WidgetProvider : AppWidgetProvider() {
             // This is mostly a guess based on RemoteView's documentation, and it has some
             // problems [most notably UI jittering when resizing]. Its better than just using
             // one layout though. It may be improved once Android 12's source is released.
-
-            // Theres a non-zero likelihood that this code ends up being copy-pasted all over
-            // by other apps that are trying to refresh their widgets for Android 12. So, if
-            // you're doing that than uh...hi.
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.
@@ -159,13 +122,20 @@ class WidgetProvider : AppWidgetProvider() {
                         height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
                     }
 
-                    logD("Assuming widget dimens are ${width}x$height")
+                    // Widget dimens pre-12 are weird. Basically, they correspond to columns
+                    // but with 2 columns worth of DiP added for some insane reason. Take
+                    // the dimens, normalize them into cells, and then turn them back into dimens.
+                    // This is super lossy and may result in wonky layouts, but it *seems* to work.
+                    width = normalizeDimen(width)
+                    height = normalizeDimen(height)
+
+                    logD("Assuming true widget dimens are ${width}x$height")
 
                     // Find layouts that fit into the widget
                     val candidates = mutableListOf<SizeF>()
 
                     for (size in views.keys) {
-                        if (size.width < width && size.height < height) {
+                        if (size.width <= width && size.height <= height) {
                             candidates.add(size)
                         }
                     }
@@ -193,6 +163,46 @@ class WidgetProvider : AppWidgetProvider() {
                 updateAppWidget(id, minimum)
             }
         }
+    }
+
+    private fun normalizeDimen(dimen: Int): Int {
+        var cells = 0
+
+        while (70 * cells - 30 < dimen) {
+            cells++
+        }
+
+        return 70 * (cells - 2) - 30
+    }
+
+    /*
+     * Revert this widget to its default view
+     */
+    fun reset(context: Context) {
+        logD("Resetting widget")
+
+        applyDefaultViews(context, AppWidgetManager.getInstance(context))
+    }
+
+    @SuppressLint("RemoteViewLayout")
+    private fun applyDefaultViews(context: Context, manager: AppWidgetManager) {
+        val views = RemoteViews(context.packageName, R.layout.widget_default)
+
+        views.setOnClickPendingIntent(
+            android.R.id.background,
+            context.newMainIntent()
+        )
+
+        manager.updateAppWidget(ComponentName(context, this::class.java), views)
+    }
+
+    private fun requestUpdate(context: Context) {
+        logD("Sending update intent to PlaybackService")
+
+        val intent = Intent(ACTION_WIDGET_UPDATE)
+            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
+
+        context.sendBroadcast(intent)
     }
 
     companion object {

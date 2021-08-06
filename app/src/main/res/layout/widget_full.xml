@@ -12,7 +12,7 @@
         android:contentDescription="@string/desc_no_cover"
         android:src="@drawable/ic_song" />
 
-    <LinearLayout style="@style/Widget.Component.AppWidget.Panel.Base">
+    <LinearLayout style="@style/Widget.Component.AppWidget.Panel">
 
         <TextView
             android:id="@+id/widget_song"
