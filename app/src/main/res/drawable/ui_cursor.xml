@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--Custom cursor shape that reflects the current accent color. https://stackoverflow.com/a/28311351/14143986-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="?attr/colorPrimary" />
+    <solid android:color="?attr/colorAccent" />
     <size android:width="2dp" />
 </shape>

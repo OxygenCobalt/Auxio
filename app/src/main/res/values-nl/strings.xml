@@ -80,12 +80,12 @@
     <string name="set_plug_mgt">Headset-pluggen</string>
     <string name="set_plug_mgt_desc">Afspelen/Pauzeren wanneer de headsetaansluiting verandert</string>
 
-    <string name="setting_behavior">Gedrag</string>
-    <string name="setting_behavior_song_playback_mode">Wanneer een liedje is geselecteerd</string>
-    <string name="setting_behavior_keep_shuffle">Onthoud shuffle</string>
-    <string name="setting_behavior_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
-    <string name="setting_behavior_rewind_prev">Terugspoelen voordat je terugspoelt</string>
-    <string name="setting_behavior_rewind_prev_desc">Terugspoelen voordat u naar het vorige nummer gaat</string>
+    <string name="set_behavior">Gedrag</string>
+    <string name="set_song_mode">Wanneer een liedje is geselecteerd</string>
+    <string name="set_keep_shuffle">Onthoud shuffle</string>
+    <string name="set_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
+    <string name="set_rewind_prev">Terugspoelen voordat je terugspoelt</string>
+    <string name="set_rewind_prev_desc">Terugspoelen voordat u naar het vorige nummer gaat</string>
 
     <string name="set_content">Inhoud</string>
     <string name="set_save">Afspeelstatus opslaan</string>
@@ -138,10 +138,10 @@
     <string name="clr_light_blue">Lichtblauw</string>
     <string name="clr_teal">Blauwgroen</string>
     <string name="clr_green">Groen</string>
-    <string name="color_light_green">Lichtgroen</string>
+    <string name="clr_light_green">Lichtgroen</string>
     <string name="clr_cyan">Cyaan</string>
-    <string name="color_lime">Geelgroen</string>
-    <string name="color_yellow">Geel</string>
+    <string name="clr_lime">Geelgroen</string>
+    <string name="clr_yellow">Geel</string>
     <string name="clr_orange">Oranje</string>
     <string name="clr_deep_orange">Dieporanje</string>
     <string name="clr_label_brown">Bruin</string>

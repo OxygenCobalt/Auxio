@@ -11,7 +11,7 @@
         <item name="popupTheme">@style/ThemeOverlay.ToolbarPopup</item>
 
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
-        <item name="titleTextColor">?attr/colorPrimary</item>
+        <item name="titleTextColor">?attr/colorAccent</item>
         <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 
@@ -29,7 +29,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/height_compact_progress</item>
         <item name="android:progressBackgroundTint">?attr/colorControlNormal</item>
-        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:progressTint">?attr/colorAccent</item>
     </style>
 
     <style name="Widget.SeekBar.Full" parent="@style/Widget.AppCompat.SeekBar">
@@ -38,10 +38,10 @@
         <item name="android:paddingStart">@dimen/spacing_mid_large</item>
         <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
         <item name="android:progressBackgroundTint">?android:attr/colorControlNormal</item>
-        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:progressTint">?attr/colorAccent</item>
         <item name="android:splitTrack">false</item>
         <item name="android:thumbOffset">@dimen/offset_thumb</item>
-        <item name="android:thumbTint">?attr/colorPrimary</item>
+        <item name="android:thumbTint">?attr/colorAccent</item>
     </style>
 
     <style name="Widget.ImageView.Compact" parent="">
@@ -161,7 +161,7 @@
         <item name="android:textAlignment">viewStart</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorAccent</item>
 
         <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
         <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
@@ -196,7 +196,7 @@
 
     <style name="Widget.Button.Unbounded.Text" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
     <style name="Widget.Button.Unbounded.Small" parent="Widget.AppCompat.Button.Borderless">

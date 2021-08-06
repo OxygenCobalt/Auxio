@@ -55,7 +55,7 @@
     <string name="set_focus">Concentrare audio</string>
     <string name="set_plug_mgt">Conexiune cu cască</string>
 
-    <string name="setting_behavior">Comportament</string>
+    <string name="set_behavior">Comportament</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nu s-a găsit nici o muzică</string>
@@ -80,9 +80,9 @@
     <string name="clr_light_blue">Albastru Deschis</string>
     <string name="clr_teal">Albastru Verde</string>
     <string name="clr_green">Verde</string>
-    <string name="color_light_green">Verde Deschis</string>
-    <string name="color_lime">Verde Galben</string>
-    <string name="color_yellow">Galben</string>
+    <string name="clr_light_green">Verde Deschis</string>
+    <string name="clr_lime">Verde Galben</string>
+    <string name="clr_yellow">Galben</string>
     <string name="clr_orange">Portocaliu</string>
     <string name="clr_label_brown">Brun</string>
     <string name="clr_label_grey">Gri</string>

@@ -64,8 +64,6 @@ class WidgetProvider : AppWidgetProvider() {
             return
         }
 
-        // FIXME: Fix the race conditions with the bitmap loading.
-
         loadBitmap(context, song) { bitmap ->
             val state = WidgetState(
                 song,
@@ -83,6 +81,15 @@ class WidgetProvider : AppWidgetProvider() {
 
             appWidgetManager.applyViewsCompat(context, views)
         }
+    }
+
+    /*
+     * Revert this widget to its default view
+     */
+    fun reset(context: Context) {
+        logD("Resetting widget")
+
+        applyDefaultViews(context, AppWidgetManager.getInstance(context))
     }
 
     private fun AppWidgetManager.applyViewsCompat(
@@ -125,7 +132,8 @@ class WidgetProvider : AppWidgetProvider() {
                     // Widget dimens pre-12 are weird. Basically, they correspond to columns
                     // but with 2 columns worth of DiP added for some insane reason. Take
                     // the dimens, normalize them into cells, and then turn them back into dimens.
-                    // This is super lossy and may result in wonky layouts, but it *seems* to work.
+                    // This may result in wonky layouts, but it *seems* to work well enough
+                    // in practice.
                     width = normalizeDimen(width)
                     height = normalizeDimen(height)
 
@@ -153,7 +161,6 @@ class WidgetProvider : AppWidgetProvider() {
                 }
 
                 // No layout fits. Just use the smallest view.
-
                 logD("No widget layout found")
 
                 val minimum = requireNotNull(
@@ -173,15 +180,6 @@ class WidgetProvider : AppWidgetProvider() {
         }
 
         return 70 * (cells - 2) - 30
-    }
-
-    /*
-     * Revert this widget to its default view
-     */
-    fun reset(context: Context) {
-        logD("Resetting widget")
-
-        applyDefaultViews(context, AppWidgetManager.getInstance(context))
     }
 
     @SuppressLint("RemoteViewLayout")

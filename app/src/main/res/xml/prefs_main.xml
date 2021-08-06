@@ -100,7 +100,7 @@
 
     <PreferenceCategory
         app:layout="@layout/item_header"
-        app:title="@string/setting_behavior">
+        app:title="@string/set_behavior">
 
         <org.oxycblt.auxio.settings.ui.IntListPreference
             app:defaultValue="@integer/play_mode_songs"
@@ -108,31 +108,31 @@
             app:entryValues="@array/values_song_playback_mode"
             app:iconSpaceReserved="false"
             app:key="KEY_SONG_PLAY_MODE2"
-            app:title="@string/setting_behavior_song_playback_mode"
+            app:title="@string/set_song_mode"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_KEEP_SHUFFLE"
-            app:summary="@string/setting_behavior_keep_shuffle_desc"
-            app:title="@string/setting_behavior_keep_shuffle" />
+            app:summary="@string/set_keep_shuffle_desc"
+            app:title="@string/set_keep_shuffle" />
 
         <SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PREV_REWIND"
-            app:summary="@string/setting_behavior_rewind_prev_desc"
-            app:title="@string/setting_behavior_rewind_prev" />
+            app:summary="@string/set_rewind_prev_desc"
+            app:title="@string/set_rewind_prev" />
 
         <SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_LOOP_PAUSE"
-            app:summary="@string/setting_behavior_loop_pause_desc"
-            app:title="@string/setting_behavior_loop_pause" />
+            app:summary="@string/set_loop_pause_desc"
+            app:title="@string/set_loop_pause" />
 
     </PreferenceCategory>
 

@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:boxBackgroundMode="filled"
-                app:boxStrokeColor="?attr/colorPrimary"
+                app:boxStrokeColor="?attr/colorAccent"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="2dp"
                 app:endIconContentDescription="@string/desc_clear_search"

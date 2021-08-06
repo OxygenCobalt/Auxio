@@ -56,7 +56,7 @@
     <string name="set_focus">Audio Focus</string>
     <string name="set_plug_mgt">Branchement du casque</string>
 
-    <string name="setting_behavior">Comportement</string>
+    <string name="set_behavior">Comportement</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Pas de musique trouvée</string>
@@ -81,9 +81,9 @@
     <string name="clr_light_blue">Bleu Clair</string>
     <string name="clr_teal">Bleu Vert</string>
     <string name="clr_green">Vert</string>
-    <string name="color_light_green">Vert Clair</string>
-    <string name="color_lime">Vert Citron</string>
-    <string name="color_yellow">Jaune</string>
+    <string name="clr_light_green">Vert Clair</string>
+    <string name="clr_lime">Vert Citron</string>
+    <string name="clr_yellow">Jaune</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_label_brown">Brun</string>
     <string name="clr_label_grey">Gris</string>

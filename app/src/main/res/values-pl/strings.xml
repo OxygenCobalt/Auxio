@@ -54,7 +54,7 @@
     <string name="set_focus">Wyciszanie otoczenia</string>
     <string name="set_plug_mgt">Podłączanie słuchawek</string>
 
-    <string name="setting_behavior">Zachowanie</string>
+    <string name="set_behavior">Zachowanie</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nie znaleziono muzyki</string>
@@ -79,9 +79,9 @@
     <string name="clr_blue">Błękit</string>
     <string name="clr_light_blue">Jasnobłękit</string>
     <string name="clr_green">Zielony</string>
-    <string name="color_light_green">Jasnozielony</string>
-    <string name="color_lime">Żółtyzielony</string>
-    <string name="color_yellow">Żółty</string>
+    <string name="clr_light_green">Jasnozielony</string>
+    <string name="clr_lime">Żółtyzielony</string>
+    <string name="clr_yellow">Żółty</string>
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_label_brown">Brązowy</string>
     <string name="clr_label_grey">Szary</string>

@@ -13,7 +13,7 @@
             android:layout_width="@dimen/size_scroll_thumb"
             android:layout_height="@dimen/size_scroll_thumb"
             android:background="@drawable/ui_circle"
-            android:backgroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorAccent"
             android:elevation="@dimen/elevation_small"
             android:stateListAnimator="@animator/animator_thumb"
             app:layout_constraintEnd_toStartOf="@+id/scroll_indicator_text">

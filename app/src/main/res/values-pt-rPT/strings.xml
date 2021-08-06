@@ -55,8 +55,8 @@
     <string name="set_focus">Foco de áudio</string>
     <string name="set_plug_mgt">Entrada do fone de ouvido</string>
 
-    <string name="setting_behavior">Comportamento</string>
-    <string name="setting_behavior_keep_shuffle">Memorizar aleatorização</string>
+    <string name="set_behavior">Comportamento</string>
+    <string name="set_keep_shuffle">Memorizar aleatorização</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenhuma música encontrada</string>
@@ -81,9 +81,9 @@
     <string name="clr_light_blue">Azul-claro</string>
     <string name="clr_teal">Azul-verde</string>
     <string name="clr_green">Verde</string>
-    <string name="color_light_green">Verde-claro</string>
-    <string name="color_lime">Verde-amarelo</string>
-    <string name="color_yellow">Amarelo</string>
+    <string name="clr_light_green">Verde-claro</string>
+    <string name="clr_lime">Verde-amarelo</string>
+    <string name="clr_yellow">Amarelo</string>
     <string name="clr_orange">Laranja</string>
     <string name="clr_label_brown">Moreno</string>
     <string name="clr_label_grey">Grisalho</string>

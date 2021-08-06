@@ -53,8 +53,8 @@
     <string name="set_audio">Audio</string>
     <string name="set_focus">Fokus audio</string>
 
-    <string name="setting_behavior">Perilaku</string>
-    <string name="setting_behavior_keep_shuffle">Ingat putar acak</string>
+    <string name="set_behavior">Perilaku</string>
+    <string name="set_keep_shuffle">Ingat putar acak</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musik tidak ditemukan</string>

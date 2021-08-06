@@ -53,7 +53,7 @@
     <string name="set_focus">오디오 포커스</string>
     <string name="set_plug_mgt">헤드셋 연결</string>
 
-    <string name="setting_behavior">동작</string>
+    <string name="set_behavior">동작</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">노래를 찾을 수 없습니다</string>

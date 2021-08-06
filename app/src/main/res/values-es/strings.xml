@@ -82,12 +82,12 @@
     <string name="set_plug_mgt">Conexión de auriculares</string>
     <string name="set_plug_mgt_desc">Reproducir/Pausar cuando la conexión de los auriculares cambie</string>
 
-    <string name="setting_behavior">Funcionamiento</string>
-    <string name="setting_behavior_song_playback_mode">Cuando una canción es seleccionada</string>
-    <string name="setting_behavior_keep_shuffle">Recordar orden aleatorio</string>
-    <string name="setting_behavior_keep_shuffle_desc">Mantener la reproducción aleatoria cuando se reproduce una nueva canción</string>
-    <string name="setting_behavior_rewind_prev">Rebobinar antes de saltar al anterior</string>
-    <string name="setting_behavior_rewind_prev_desc">Rebobinar antes de saltar a la canción anterior</string>
+    <string name="set_behavior">Funcionamiento</string>
+    <string name="set_song_mode">Cuando una canción es seleccionada</string>
+    <string name="set_keep_shuffle">Recordar orden aleatorio</string>
+    <string name="set_keep_shuffle_desc">Mantener la reproducción aleatoria cuando se reproduce una nueva canción</string>
+    <string name="set_rewind_prev">Rebobinar antes de saltar al anterior</string>
+    <string name="set_rewind_prev_desc">Rebobinar antes de saltar a la canción anterior</string>
 
     <string name="set_content">Contenido</string>
     <string name="set_save">Guardar estado de reproducción</string>
@@ -141,9 +141,9 @@
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Verde</string>
-    <string name="color_light_green">Verde Claro</string>
-    <string name="color_lime">Lima</string>
-    <string name="color_yellow">Amarillo</string>
+    <string name="clr_light_green">Verde Claro</string>
+    <string name="clr_lime">Lima</string>
+    <string name="clr_yellow">Amarillo</string>
     <string name="clr_orange">Naranja</string>
     <string name="clr_deep_orange">Naranja Profundo</string>
     <string name="clr_label_brown">Café</string>

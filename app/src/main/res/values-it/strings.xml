@@ -55,8 +55,8 @@
     <string name="set_focus">Focus audio</string>
     <string name="set_plug_mgt">Inserimento cuffie</string>
 
-    <string name="setting_behavior">Comportamento</string>
-    <string name="setting_behavior_keep_shuffle">Ricorda casuale</string>
+    <string name="set_behavior">Comportamento</string>
+    <string name="set_keep_shuffle">Ricorda casuale</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nessuna canzone trovata</string>
@@ -82,9 +82,9 @@
     <string name="clr_light_blue">Azzurro Chiaro</string>
     <string name="clr_teal">Azzurro Verde</string>
     <string name="clr_green">Verde</string>
-    <string name="color_light_green">Verde Chiaro</string>
-    <string name="color_lime">Verde Giallo</string>
-    <string name="color_yellow">Giallo</string>
+    <string name="clr_light_green">Verde Chiaro</string>
+    <string name="clr_lime">Verde Giallo</string>
+    <string name="clr_yellow">Giallo</string>
     <string name="clr_orange">Arancio</string>
     <string name="clr_label_brown">Bruno</string>
     <string name="clr_label_grey">Grigio</string>

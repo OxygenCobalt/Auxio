@@ -107,7 +107,8 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 │  ├──.accent      # Accent UI + Systems
 │  └──.ui          # Settings-Related UIs
 ├──.songs          # Songs UI
-└──.ui             # Shared user interface utilities
+├──.ui             # Shared user interface utilities
+└──.widget         # Widgets
 ```
 
 #### `.coil`

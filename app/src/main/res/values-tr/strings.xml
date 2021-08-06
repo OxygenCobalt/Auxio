@@ -53,7 +53,7 @@
     <string name="set_audio">Ses</string>
     <string name="set_focus">Ses odaklama</string>
 
-    <string name="setting_behavior">Tercihler</string>
+    <string name="set_behavior">Tercihler</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Müzik bulunamadı</string>

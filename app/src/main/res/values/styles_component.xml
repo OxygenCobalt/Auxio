@@ -7,7 +7,7 @@
         <item name="android:layout_height">@dimen/size_play_pause</item>
         <item name="android:layout_width">@dimen/size_play_pause</item>
         <item name="android:background">@drawable/ui_circle_ripple</item>
-        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:backgroundTint">?attr/colorAccent</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:contentDescription">@string/desc_play_pause</item>
         <item name="android:tint">?android:attr/windowBackground</item>

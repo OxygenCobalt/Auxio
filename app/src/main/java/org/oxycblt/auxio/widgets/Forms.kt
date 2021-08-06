@@ -9,7 +9,7 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.ui.newBroadcastIntent
 import org.oxycblt.auxio.ui.newMainIntent
 
-private fun createBaseView(
+private fun createViews(
     context: Context,
     @LayoutRes layout: Int,
     state: WidgetState
@@ -56,33 +56,23 @@ private fun createBaseView(
 
     if (state.albumArt != null) {
         views.setImageViewBitmap(R.id.widget_cover, state.albumArt)
-        views.setCharSequence(
-            R.id.widget_cover, "setContentDescription",
-            context.getString(R.string.desc_album_cover, state.song.album.name)
+        views.setContentDescription(
+            R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
         )
     } else {
         views.setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
-        views.setCharSequence(
-            R.id.widget_cover,
-            "setContentDescription",
-            context.getString(R.string.desc_no_cover)
-        )
+        views.setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
 
     return views
 }
 
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
-    return createBaseView(context, R.layout.widget_small, state)
+    return createViews(context, R.layout.widget_small, state)
 }
 
 fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createBaseView(context, R.layout.widget_full, state)
-
-    // The main way the large widget differs from the other widgets is the addition of extra
-    // controls. However, since the context we use to load attributes is from the main process,
-    // attempting to dynamically color anything will result in an error. More duplicate
-    // resources it is. This is getting really tiring.
+    val views = createViews(context, R.layout.widget_full, state)
 
     views.setOnClickPendingIntent(
         R.id.widget_loop,
@@ -98,10 +88,15 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
         )
     )
 
-    val shuffleRes = if (state.isShuffled)
-        R.drawable.ic_shuffle_tinted
-    else
-        R.drawable.ic_shuffle
+    // The main way the large widget differs from the other widgets is the addition of extra
+    // controls. However, since the context we use to load attributes is from the main process,
+    // attempting to dynamically color anything will result in an error. More duplicate
+    // resources it is. This is getting really tiring.
+
+    val shuffleRes = when {
+        state.isShuffled -> R.drawable.ic_shuffle_tinted
+        else -> R.drawable.ic_shuffle
+    }
 
     val loopRes = when (state.loopMode) {
         LoopMode.NONE -> R.drawable.ic_loop

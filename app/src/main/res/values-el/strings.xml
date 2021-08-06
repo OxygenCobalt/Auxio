@@ -50,7 +50,7 @@
 
     <string name="set_audio">Ήχος</string>
 
-    <string name="setting_behavior">Συμπεριφορά</string>
+    <string name="set_behavior">Συμπεριφορά</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Κομμάτι %d</string>
@@ -72,9 +72,9 @@
     <string name="clr_light_blue">Ανοιχτός Γαλάζιος</string>
     <string name="clr_teal">Γαλάζιος Πράσινος</string>
     <string name="clr_green">Πράσινος</string>
-    <string name="color_light_green">Ανοιχτός Πράσινος</string>
-    <string name="color_lime">Πράσινος Κίτρινος</string>
-    <string name="color_yellow">Κίτρινος</string>
+    <string name="clr_light_green">Ανοιχτός Πράσινος</string>
+    <string name="clr_lime">Πράσινος Κίτρινος</string>
+    <string name="clr_yellow">Κίτρινος</string>
     <string name="clr_orange">Πορτοκαλής</string>
     <string name="clr_label_brown">Καφέ</string>
     <string name="clr_label_grey">Γκρί</string>

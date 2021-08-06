@@ -54,7 +54,7 @@
     <string name="set_focus">Hangfókusz</string>
     <string name="set_plug_mgt">Fejhallgató csatlakozó</string>
 
-    <string name="setting_behavior">Működés</string>
+    <string name="set_behavior">Működés</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nem található zene</string>
@@ -81,9 +81,9 @@
     <string name="clr_light_blue">Világoskék</string>
     <string name="clr_teal">Kékeszöld</string>
     <string name="clr_green">Zöld</string>
-    <string name="color_light_green">Világoszöld</string>
-    <string name="color_lime">Sárgazöld</string>
-    <string name="color_yellow">Sárga</string>
+    <string name="clr_light_green">Világoszöld</string>
+    <string name="clr_lime">Sárgazöld</string>
+    <string name="clr_yellow">Sárga</string>
     <string name="clr_orange">Narancs</string>
     <string name="clr_label_brown">Barna</string>
     <string name="clr_label_grey">Szürke</string>

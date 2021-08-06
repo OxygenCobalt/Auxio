@@ -54,8 +54,8 @@
     <string name="set_focus">Фокусировка аудио</string>
     <string name="set_plug_mgt">Гарнитура</string>
 
-    <string name="setting_behavior">Поведение</string>
-    <string name="setting_behavior_keep_shuffle">Запомнить перемешивание</string>
+    <string name="set_behavior">Поведение</string>
+    <string name="set_keep_shuffle">Запомнить перемешивание</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музыка не найдена</string>
@@ -79,8 +79,8 @@
     <string name="clr_light_blue">Голубой</string>
     <string name="clr_teal">Зелёный</string>
     <string name="clr_green">Светло-Зелёный</string>
-    <string name="color_yellow">Оранжевый</string>
-    <string name="color_light_green">Жёлтый</string>
+    <string name="clr_yellow">Оранжевый</string>
+    <string name="clr_light_green">Жёлтый</string>
     <string name="clr_orange">Коричневый</string>
     <string name="clr_label_brown">Седой</string>
     <string name="clr_blue_grey">Нейтральный</string>

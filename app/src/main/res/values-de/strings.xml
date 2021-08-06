@@ -79,12 +79,12 @@
     <string name="set_plug_mgt">Kopfhörerafokus</string>
     <string name="set_plug_mgt_desc">Abspielen/Pausieren wenn der Kopfhöreranschluss ändern</string>
 
-    <string name="setting_behavior">Verhalten</string>
-    <string name="setting_behavior_song_playback_mode">Wenn ein Lied ausgewählt hat</string>
-    <string name="setting_behavior_keep_shuffle">Zufällig-Einstellung merken</string>
-    <string name="setting_behavior_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
-    <string name="setting_behavior_rewind_prev">Zurückspulen bevor zurück springen</string>
-    <string name="setting_behavior_rewind_prev_desc">Zurückspulen bevor zum vorheriger Lied springen</string>
+    <string name="set_behavior">Verhalten</string>
+    <string name="set_song_mode">Wenn ein Lied ausgewählt hat</string>
+    <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
+    <string name="set_keep_shuffle_desc">Lassen zufällig an, wenn ein neues Lied anspielen</string>
+    <string name="set_rewind_prev">Zurückspulen bevor zurück springen</string>
+    <string name="set_rewind_prev_desc">Zurückspulen bevor zum vorheriger Lied springen</string>
 
     <string name="set_content">Content</string>
     <string name="set_save">Wiedergabezustand abspeichern</string>
@@ -137,9 +137,9 @@
     <string name="clr_cyan">Türkis</string>
     <string name="clr_teal">Blaugrün</string>
     <string name="clr_green">Grün</string>
-    <string name="color_light_green">Hellgrün</string>
-    <string name="color_lime">Lindgrün</string>
-    <string name="color_yellow">Gelb</string>
+    <string name="clr_light_green">Hellgrün</string>
+    <string name="clr_lime">Lindgrün</string>
+    <string name="clr_yellow">Gelb</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_deep_orange">Tieforange</string>
     <string name="clr_label_brown">Braun</string>

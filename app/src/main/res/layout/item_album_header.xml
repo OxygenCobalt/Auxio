@@ -93,7 +93,7 @@
             style="@style/Widget.Button.Vibrant.Primary"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:backgroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorAccent"
             android:onClick="@{() -> playbackModel.playAlbum(album, true)}"
             android:text="@string/lbl_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/album_play_button"

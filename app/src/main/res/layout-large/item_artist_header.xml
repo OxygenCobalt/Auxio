@@ -89,7 +89,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/artist_shuffle_button"
             style="@style/Widget.Button.Vibrant.Primary"
-            android:backgroundTint="?attr/colorPrimary"
+            android:backgroundTint="?attr/colorAccent"
             android:onClick="@{() -> playbackModel.playArtist(artist, true)}"
             android:text="@string/lbl_shuffle"
             android:layout_marginStart="@dimen/spacing_small"

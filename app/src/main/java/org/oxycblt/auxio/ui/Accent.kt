@@ -16,24 +16,14 @@ import org.oxycblt.auxio.R
 val ACCENTS = arrayOf(
     Accent(R.color.red, R.style.Theme_Red, R.style.Theme_Red_Black, R.string.clr_red),
     Accent(R.color.pink, R.style.Theme_Pink, R.style.Theme_Pink_Black, R.string.clr_pink),
-    Accent(
-        R.color.purple,
-        R.style.Theme_Purple,
-        R.style.Theme_Purple_Black,
-        R.string.clr_purple
-    ),
+    Accent(R.color.purple, R.style.Theme_Purple, R.style.Theme_Purple_Black, R.string.clr_purple),
     Accent(
         R.color.deep_purple,
         R.style.Theme_DeepPurple,
         R.style.Theme_DeepPurple_Black,
         R.string.clr_deep_purple
     ),
-    Accent(
-        R.color.indigo,
-        R.style.Theme_Indigo,
-        R.style.Theme_Indigo_Black,
-        R.string.clr_indigo
-    ),
+    Accent(R.color.indigo, R.style.Theme_Indigo, R.style.Theme_Indigo_Black, R.string.clr_indigo),
     Accent(R.color.blue, R.style.Theme_Blue, R.style.Theme_Blue_Black, R.string.clr_blue),
     Accent(
         R.color.light_blue,
@@ -48,21 +38,11 @@ val ACCENTS = arrayOf(
         R.color.light_green,
         R.style.Theme_LightGreen,
         R.style.Theme_LightGreen_Black,
-        R.string.color_light_green
+        R.string.clr_light_green
     ),
-    Accent(R.color.lime, R.style.Theme_Lime, R.style.Theme_Lime_Black, R.string.color_lime),
-    Accent(
-        R.color.yellow,
-        R.style.Theme_Yellow,
-        R.style.Theme_Yellow_Black,
-        R.string.color_yellow
-    ),
-    Accent(
-        R.color.orange,
-        R.style.Theme_Orange,
-        R.style.Theme_Orange_Black,
-        R.string.clr_orange
-    ),
+    Accent(R.color.lime, R.style.Theme_Lime, R.style.Theme_Lime_Black, R.string.clr_lime),
+    Accent(R.color.yellow, R.style.Theme_Yellow, R.style.Theme_Yellow_Black, R.string.clr_yellow),
+    Accent(R.color.orange, R.style.Theme_Orange, R.style.Theme_Orange_Black, R.string.clr_orange),
     Accent(
         R.color.deep_orange,
         R.style.Theme_DeepOrange,

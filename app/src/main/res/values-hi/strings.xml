@@ -46,7 +46,7 @@
     <string name="set_focus">ऑडियो फोकस</string>
     <string name="set_plug_mgt">हेडसेट प्लग</string>
 
-    <string name="setting_behavior">चाल चलन</string>
+    <string name="set_behavior">चाल चलन</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">कोई संगीत नहीं मिला</string>

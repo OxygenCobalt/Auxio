@@ -47,7 +47,7 @@
 
     <string name="set_audio">Аудіо</string>
 
-    <string name="setting_behavior">Поведінка</string>
+    <string name="set_behavior">Поведінка</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Музику не знайдено</string>

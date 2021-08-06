@@ -85,14 +85,14 @@
     <string name="set_plug_mgt">Headset focus</string>
     <string name="set_plug_mgt_desc">Play/Pause when the headset connection changes</string>
 
-    <string name="setting_behavior">Behavior</string>
-    <string name="setting_behavior_song_playback_mode">When a song is selected</string>
-    <string name="setting_behavior_keep_shuffle">Remember shuffle</string>
-    <string name="setting_behavior_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
-    <string name="setting_behavior_rewind_prev">Rewind before skipping back</string>
-    <string name="setting_behavior_rewind_prev_desc">Rewind before skipping to the previous song</string>
-    <string name="setting_behavior_loop_pause">Pause on repeat</string>
-    <string name="setting_behavior_loop_pause_desc">Pause when a song repeats</string>
+    <string name="set_behavior">Behavior</string>
+    <string name="set_song_mode">When a song is selected</string>
+    <string name="set_keep_shuffle">Remember shuffle</string>
+    <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
+    <string name="set_rewind_prev">Rewind before skipping back</string>
+    <string name="set_rewind_prev_desc">Rewind before skipping to the previous song</string>
+    <string name="set_loop_pause">Pause on repeat</string>
+    <string name="set_loop_pause_desc">Pause when a song repeats</string>
 
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
@@ -151,9 +151,9 @@
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Green</string>
-    <string name="color_light_green">Light Green</string>
-    <string name="color_lime">Lime</string>
-    <string name="color_yellow">Yellow</string>
+    <string name="clr_light_green">Light Green</string>
+    <string name="clr_lime">Lime</string>
+    <string name="clr_yellow">Yellow</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_deep_orange">Deep Orange</string>
     <string name="clr_label_brown">Brown</string>

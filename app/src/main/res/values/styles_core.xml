@@ -7,24 +7,27 @@
 
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Template">
+        <!-- Colors -->
+        <item name="colorSurface">@color/surface_color</item>
+        <item name="colorAccent">@color/design_default_color_primary</item>
+
+        <item name="colorPrimary">?attr/colorSurface</item>
+        <item name="colorSecondary">?attr/colorSurface</item>
+        <item name="colorControlNormal">@color/control_color</item>
+        <item name="colorControlHighlight">@color/selection_color</item>
+        <item name="colorControlActivated">?attr/colorAccent</item>
+
+        <!-- Appearance -->
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">@font/inter</item>
-        <item name="android:scrollbars">none</item>
-        <item name="android:windowIsFloating">false</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
-
-        <!-- Default values for the accents. -->
-        <item name="colorPrimary">@color/design_default_color_primary</item>
-        <item name="colorSecondary">@color/design_default_color_primary</item>
-
-        <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
-        <item name="colorControlNormal">@color/control_color</item>
-        <item name="colorControlHighlight">@color/selection_color</item>
-        <item name="colorControlActivated">?attr/colorPrimary</item>
         <item name="cornerRadius">0dp</item>
 
-        <item name="colorSurface">@color/surface_color</item>
+        <!-- System-specific magic -->
+        <item name="android:scrollbars">none</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="popupMenuStyle">@style/Widget.CustomPopup</item>
 
         <!--
         These exact flags, in this exact order, in this exact formatting somehow make

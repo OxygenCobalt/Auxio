@@ -48,7 +48,7 @@
 
     <string name="set_audio">音频</string>
 
-    <string name="setting_behavior">行为</string>
+    <string name="set_behavior">行为</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">正在扫描…</string>
