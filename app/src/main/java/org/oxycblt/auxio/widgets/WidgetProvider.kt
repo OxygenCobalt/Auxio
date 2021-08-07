@@ -1,6 +1,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.annotation.SuppressLint
+import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -129,13 +130,20 @@ class WidgetProvider : AppWidgetProvider() {
                         height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
                     }
 
-                    // Widget dimens pre-12 are weird. Basically, they correspond to columns
-                    // but with 2 columns worth of DiP added for some insane reason. Take
-                    // the dimens, normalize them into cells, and then turn them back into dimens.
-                    // This may result in wonky layouts, but it *seems* to work well enough
-                    // in practice.
-                    width = normalizeDimen(width)
-                    height = normalizeDimen(height)
+                    // Most of the major launchers seem to provide widget sizes that don't include
+                    // padding. Re-add the padding to the width/height and then use that.
+                    val padding = AppWidgetHostView.getDefaultPaddingForWidget(
+                        context,
+                        ComponentName(context, WidgetProvider::class.java),
+                        null
+                    )
+
+                    val density = context.resources.displayMetrics.density
+                    val paddingX = ((padding.left + padding.right) / density).toInt()
+                    val paddingY = ((padding.top + padding.bottom) / density).toInt()
+
+                    width += paddingX
+                    height += paddingY
 
                     logD("Assuming true widget dimens are ${width}x$height")
 
@@ -179,6 +187,7 @@ class WidgetProvider : AppWidgetProvider() {
             cells++
         }
 
+        // Change the (cells - X) value depending on your widget's minimum cells
         return 70 * (cells - 2) - 30
     }
 

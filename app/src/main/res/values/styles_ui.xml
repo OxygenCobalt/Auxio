@@ -220,15 +220,11 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.Button.Vibrant.Base">
-        <item name="rippleColor">?attr/colorControlHighlight</item>
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:textColor">@color/surface_color</item>
-    </style>
+    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.Button.Vibrant.Base" />
 
     <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.Button.Vibrant.Base">
         <item name="strokeColor">@color/divider_color</item>
         <item name="strokeWidth">@dimen/width_play_stroke</item>
+        <item name="android:textColor">?attr/colorAccent</item>
     </style>
 </resources>
