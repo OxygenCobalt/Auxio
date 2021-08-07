@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2021 Auxio Project
+ * WidgetProvider.kt is part of Auxio.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.oxycblt.auxio.widgets
 
 import android.annotation.SuppressLint
@@ -97,6 +115,8 @@ class WidgetProvider : AppWidgetProvider() {
         context: Context,
         views: Map<SizeF, RemoteViews>
     ) {
+        check(views.isNotEmpty()) { "Must provide a non-empty map" }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // Widgets are automatically responsive on Android 12, no need to do anything.
             updateAppWidget(
@@ -113,82 +133,67 @@ class WidgetProvider : AppWidgetProvider() {
             // and do this for each.
             val ids = getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
 
+            // Most of the major launchers seem to provide widget sizes that don't include
+            // padding. Query for the padding here so we can get a sane result later on.
+            val padding = AppWidgetHostView.getDefaultPaddingForWidget(
+                context,
+                ComponentName(context, WidgetProvider::class.java),
+                null
+            )
+
+            val density = context.resources.displayMetrics.density
+            val padW = ((padding.left + padding.right) / density).toInt()
+            val padH = ((padding.top + padding.bottom) / density).toInt()
+
             for (id in ids) {
                 val options = getAppWidgetOptions(id)
 
-                if (options != null) {
-                    var width: Int
-                    var height: Int
+                var width: Int
+                var height: Int
 
-                    // AFAIK, Landscape mode uses MAX_WIDTH and MIN_HEIGHT, while Portrait
-                    // uses MIN_WIDTH and MAX_HEIGHT
-                    if (isLandscape(context.resources)) {
-                        height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-                        width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
-                    } else {
-                        width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-                        height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-                    }
+                // Landscape/Portrait modes use different dimen bounds
+                if (isLandscape(context.resources)) {
+                    width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+                    height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+                } else {
+                    width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+                    height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+                }
 
-                    // Most of the major launchers seem to provide widget sizes that don't include
-                    // padding. Re-add the padding to the width/height and then use that.
-                    val padding = AppWidgetHostView.getDefaultPaddingForWidget(
-                        context,
-                        ComponentName(context, WidgetProvider::class.java),
-                        null
-                    )
+                height += padW
+                width += padH
 
-                    val density = context.resources.displayMetrics.density
-                    val paddingX = ((padding.left + padding.right) / density).toInt()
-                    val paddingY = ((padding.top + padding.bottom) / density).toInt()
+                logD("Assuming true widget dimens are ${width}x$height")
 
-                    width += paddingX
-                    height += paddingY
+                // Find the layout with the greatest area that fits entirely within
+                // the widget. This is what we will use.
 
-                    logD("Assuming true widget dimens are ${width}x$height")
+                val candidates = mutableListOf<SizeF>()
 
-                    // Find layouts that fit into the widget
-                    val candidates = mutableListOf<SizeF>()
-
-                    for (size in views.keys) {
-                        if (size.width <= width && size.height <= height) {
-                            candidates.add(size)
-                        }
-                    }
-
-                    // Find the layout with the greatest area. This is what we use.
-                    val layout = candidates.maxByOrNull { it.height * it.width }
-
-                    if (layout != null) {
-                        logD("Using widget layout $layout")
-
-                        updateAppWidget(id, views[layout])
-
-                        continue
+                for (size in views.keys) {
+                    if (size.width <= width && size.height <= height) {
+                        candidates.add(size)
                     }
                 }
 
-                // No layout fits. Just use the smallest view.
-                logD("No widget layout found")
+                val layout = candidates.maxByOrNull { it.height * it.width }
 
-                val minimum = requireNotNull(
-                    views.minByOrNull { it.key.width * it.key.height }?.value
-                )
+                if (layout != null) {
+                    logD("Using widget layout $layout")
+                    updateAppWidget(id, views[layout])
+                    continue
+                } else {
+                    // Default to the smallest view if no layout fits
+                    logD("No widget layout found")
 
-                updateAppWidget(id, minimum)
+                    val minimum = requireNotNull(
+                        views.minByOrNull { it.key.width * it.key.height }?.value
+                    )
+
+                    updateAppWidget(id, minimum)
+                }
             }
         }
-    }
-
-    private fun normalizeDimen(dimen: Int): Int {
-        var cells = 0
-
-        while (70 * cells - 30 < dimen) {
-            cells++
-        }
-
-        // Change the (cells - X) value depending on your widget's minimum cells
-        return 70 * (cells - 2) - 30
     }
 
     @SuppressLint("RemoteViewLayout")

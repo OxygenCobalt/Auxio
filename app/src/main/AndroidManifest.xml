@@ -67,7 +67,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_minimal" />
+                android:resource="@xml/widget_info" />
         </receiver>
     </application>
 </manifest>

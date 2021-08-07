@@ -26,3 +26,4 @@ Feel free to fork Auxio to add your own feature set however.
 - Recently added list [#18]
 - Folder View/Grouping [#10]
 - ReplayGain [#7]
+- Tag editing [#33]

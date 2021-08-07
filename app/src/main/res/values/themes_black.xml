@@ -74,8 +74,4 @@
     <style name="Theme.BlueGrey.Black" parent="Theme.Base.Black">
         <item name="colorAccent">@color/blue_grey</item>
     </style>
-
-    <style name="Theme.Neutral.Black" parent="Theme.Base.Black">
-        <item name="colorAccent">@color/control_color</item>
-    </style>
 </resources>
