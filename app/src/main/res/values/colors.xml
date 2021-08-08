@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="surface_day">#fffafafa</color>
-    <color name="surface_night">#ff121212</color>
+    <color name="surface_night">#ff151515</color>
     <color name="surface_black">#ff000000</color>
 
     <color name="surface">@color/surface_day</color>

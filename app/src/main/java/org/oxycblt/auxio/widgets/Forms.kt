@@ -29,8 +29,7 @@ import org.oxycblt.auxio.ui.newMainIntent
 
 private fun createViews(
     context: Context,
-    @LayoutRes layout: Int,
-    state: WidgetState
+    @LayoutRes layout: Int
 ): RemoteViews {
     val views = RemoteViews(context.packageName, layout)
 
@@ -39,31 +38,35 @@ private fun createViews(
         context.newMainIntent()
     )
 
-    views.setOnClickPendingIntent(
+    return views
+}
+
+private fun RemoteViews.applyState(context: Context, state: WidgetState) {
+    setOnClickPendingIntent(
         R.id.widget_skip_prev,
         context.newBroadcastIntent(
             PlaybackService.ACTION_SKIP_PREV
         )
     )
 
-    views.setOnClickPendingIntent(
+    setOnClickPendingIntent(
         R.id.widget_play_pause,
         context.newBroadcastIntent(
             PlaybackService.ACTION_PLAY_PAUSE
         )
     )
 
-    views.setOnClickPendingIntent(
+    setOnClickPendingIntent(
         R.id.widget_skip_next,
         context.newBroadcastIntent(
             PlaybackService.ACTION_SKIP_NEXT
         )
     )
 
-    views.setTextViewText(R.id.widget_song, state.song.name)
-    views.setTextViewText(R.id.widget_artist, state.song.album.artist.name)
+    setTextViewText(R.id.widget_song, state.song.name)
+    setTextViewText(R.id.widget_artist, state.song.album.artist.name)
 
-    views.setImageViewResource(
+    setImageViewResource(
         R.id.widget_play_pause,
         if (state.isPlaying) {
             R.drawable.ic_pause
@@ -73,24 +76,29 @@ private fun createViews(
     )
 
     if (state.albumArt != null) {
-        views.setImageViewBitmap(R.id.widget_cover, state.albumArt)
-        views.setContentDescription(
+        setImageViewBitmap(R.id.widget_cover, state.albumArt)
+        setContentDescription(
             R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
         )
     } else {
-        views.setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
-        views.setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
+        setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
+}
 
-    return views
+fun createDefaultWidget(context: Context): RemoteViews {
+    return createViews(context, R.layout.widget_default)
 }
 
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_small, state)
+    val views = createViews(context, R.layout.widget_small)
+    views.applyState(context, state)
+    return views
 }
 
 fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_full, state)
+    val views = createViews(context, R.layout.widget_full)
+    views.applyState(context, state)
 
     views.setOnClickPendingIntent(
         R.id.widget_loop,
@@ -107,9 +115,9 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
     )
 
     // The main way the large widget differs from the other widgets is the addition of extra
-    // controls. However, since the context we use to load attributes is from the main process,
-    // attempting to dynamically color anything will result in an error. More duplicate
-    // resources it is. This is getting really tiring.
+    // controls. However, since we can't retrieve the context of our views here, we cant
+    // dynamically set the image view attributes. More duplicate resources it is. This is
+    // getting really tiring.
 
     val shuffleRes = when {
         state.isShuffled -> R.drawable.ic_shuffle_tinted

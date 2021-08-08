@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.widgets
 
-import android.annotation.SuppressLint
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -30,12 +29,10 @@ import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.ui.isLandscape
-import org.oxycblt.auxio.ui.newMainIntent
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
@@ -44,15 +41,61 @@ import org.oxycblt.auxio.ui.newMainIntent
  * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
  * - For widgets 4x2 or higher, show a complete view with all playback controls
  *
+ * Other widget variants might be added if there is sufficient demand.
+ *
  * For more specific details about these sub-widgets, see Forms.kt.
  */
 class WidgetProvider : AppWidgetProvider() {
+    /*
+     * Update the widget based on the playback state.
+     */
+    fun update(context: Context, playbackManager: PlaybackStateManager) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val song = playbackManager.song
+
+        if (song == null) {
+            reset(context)
+            return
+        }
+
+        loadBitmap(context, song) { bitmap ->
+            val state = WidgetState(
+                song,
+                bitmap,
+                playbackManager.isPlaying,
+                playbackManager.isShuffling,
+                playbackManager.loopMode
+            )
+
+            // Map each widget form to the cells where it would look at least okay.
+            val views = mapOf(
+                SizeF(180f, 110f) to createSmallWidget(context, state),
+                SizeF(250f, 110f) to createFullWidget(context, state)
+            )
+
+            appWidgetManager.applyViewsCompat(context, views)
+        }
+    }
+
+    /*
+     * Revert this widget to its default view
+     */
+    fun reset(context: Context) {
+        logD("Resetting widget")
+
+        AppWidgetManager.getInstance(context).updateAppWidget(
+            ComponentName(context, this::class.java), createDefaultWidget(context)
+        )
+    }
+
+    // / --- OVERRIDES ---
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        applyDefaultViews(context, appWidgetManager)
+        reset(context)
         requestUpdate(context)
     }
 
@@ -71,44 +114,15 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    /*
-     * Update the widget based on the playback state.
-     */
-    fun update(context: Context, playbackManager: PlaybackStateManager) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val song = playbackManager.song
+    // / --- INTERNAL METHODS ---
 
-        if (song == null) {
-            applyDefaultViews(context, appWidgetManager)
-            return
-        }
+    private fun requestUpdate(context: Context) {
+        logD("Sending update intent to PlaybackService")
 
-        loadBitmap(context, song) { bitmap ->
-            val state = WidgetState(
-                song,
-                bitmap,
-                playbackManager.isPlaying,
-                playbackManager.isShuffling,
-                playbackManager.loopMode
-            )
+        val intent = Intent(ACTION_WIDGET_UPDATE)
+            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
 
-            // Map each widget form to the rough dimensions where it would look at least okay.
-            val views = mapOf(
-                SizeF(110f, 110f) to createSmallWidget(context, state),
-                SizeF(250f, 110f) to createFullWidget(context, state)
-            )
-
-            appWidgetManager.applyViewsCompat(context, views)
-        }
-    }
-
-    /*
-     * Revert this widget to its default view
-     */
-    fun reset(context: Context) {
-        logD("Resetting widget")
-
-        applyDefaultViews(context, AppWidgetManager.getInstance(context))
+        context.sendBroadcast(intent)
     }
 
     private fun AppWidgetManager.applyViewsCompat(
@@ -188,27 +202,6 @@ class WidgetProvider : AppWidgetProvider() {
                 }
             }
         }
-    }
-
-    @SuppressLint("RemoteViewLayout")
-    private fun applyDefaultViews(context: Context, manager: AppWidgetManager) {
-        val views = RemoteViews(context.packageName, R.layout.widget_default)
-
-        views.setOnClickPendingIntent(
-            android.R.id.background,
-            context.newMainIntent()
-        )
-
-        manager.updateAppWidget(ComponentName(context, this::class.java), views)
-    }
-
-    private fun requestUpdate(context: Context) {
-        logD("Sending update intent to PlaybackService")
-
-        val intent = Intent(ACTION_WIDGET_UPDATE)
-            .addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
-
-        context.sendBroadcast(intent)
     }
 
     companion object {
