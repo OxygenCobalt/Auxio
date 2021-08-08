@@ -48,7 +48,7 @@
             app:iconSpaceReserved="false"
             app:key="KEY_SHOW_COVERS"
             app:summary="@string/set_show_covers_desc"
-            app:title="@string/setting_show_covers" />
+            app:title="@string/set_show_covers" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"

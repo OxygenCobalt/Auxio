@@ -68,7 +68,7 @@
     <string name="set_lib_display">Ítem de biblioteca</string>
     <string name="set_color_notif">Ajustar color de notificación</string>
     <string name="set_color_notif_desc">Mostrar imagen de álbum en la notificación</string>
-    <string name="setting_show_covers">Mostrar carátula de álbum</string>
+    <string name="set_show_covers">Mostrar carátula de álbum</string>
     <string name="set_show_covers_desc">Desactivar para ahorrar uso de memoria</string>
     <string name="set_quality_covers">Ignorar carátulas de MediaStore</string>
     <string name="set_quality_covers_desc">Mejora la calidad de las carátulas de álbum, pero resulta en tiempos de carga lentos y un mayor uso de memoria</string>

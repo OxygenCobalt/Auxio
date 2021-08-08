@@ -66,7 +66,7 @@
     <string name="set_lib_display">Bibliotheek Items</string>
     <string name="set_color_notif">Notificatie kleur aanpassen</string>
     <string name="set_color_notif_desc">Toon album art op notification</string>
-    <string name="setting_show_covers">Toon albumhoezen</string>
+    <string name="set_show_covers">Toon albumhoezen</string>
     <string name="set_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
     <string name="set_quality_covers">Negeer Mediaopslag illustraties</string>
     <string name="set_quality_covers_desc">Verhoogt de kwaliteit van de albumhoezen, maar resulteert in langere laadtijden en hoger geheugengebruik </string>

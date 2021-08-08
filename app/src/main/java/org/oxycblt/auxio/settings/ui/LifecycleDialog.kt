@@ -37,7 +37,7 @@ abstract class LifecycleDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
 
-        // Setting the background in XML will also apply it to the tooltip for some inane reason
+        // Setting the background in XML will also apply it to the tooltip for some insane reason
         // so we have to do it programmatically instead.
         builder.background = R.attr.colorSurface.resolveAttr(requireContext()).toDrawable()
 

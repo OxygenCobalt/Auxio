@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.logD
@@ -102,6 +103,6 @@ class AccentDialog : LifecycleDialog() {
 
     companion object {
         const val TAG = "TAG_ACCENT_DIALOG"
-        const val KEY_PENDING_ACCENT = "AXKEY_PEND_ACCENT"
+        const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
     }
 }

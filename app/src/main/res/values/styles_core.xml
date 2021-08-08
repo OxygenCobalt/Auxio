@@ -4,19 +4,22 @@
     <style name="Theme.Master" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Edge" parent="Theme.Master" />
-    <!-- Android-12 Splashscreen config -->
+    <!-- Android 12 Splashscreen config -->
     <style name="Theme.Splash" parent="Theme.Edge" />
 
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Splash">
-        <!-- Colors -->
-        <item name="colorSurface">@color/surface_color</item>
-        <item name="colorAccent">@color/design_default_color_primary</item>
+        <!-- TODO: Improve the color contrast on the dark theme [colorOnSurface] -->
 
-        <item name="colorPrimary">?attr/colorSurface</item>
-        <item name="colorSecondary">?attr/colorSurface</item>
-        <item name="colorControlNormal">@color/control_color</item>
-        <item name="colorControlHighlight">@color/selection_color</item>
+        <!-- Colors -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorAccent">@color/design_default_color_primary</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+
+        <item name="colorPrimary">?attr/colorAccent</item>
+        <item name="colorSecondary">?attr/colorAccent</item>
+        <item name="colorControlNormal">@color/control</item>
+        <item name="colorControlHighlight">@color/selection</item>
         <item name="colorControlActivated">?attr/colorAccent</item>
 
         <!-- Appearance -->

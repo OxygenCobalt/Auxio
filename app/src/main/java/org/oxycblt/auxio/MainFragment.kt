@@ -134,7 +134,6 @@ class MainFragment : Fragment() {
      */
     private fun navigateWithItem(navController: NavController, item: MenuItem): Boolean {
         if (navController.currentDestination!!.id != item.itemId) {
-            // Create custom NavOptions myself so that animations work
             val options = NavOptions.Builder()
                 .setLaunchSingleTop(true)
                 .setEnterAnim(R.animator.nav_default_enter_anim)

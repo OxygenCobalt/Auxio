@@ -7,7 +7,7 @@
         <shape android:shape="rectangle">
             <stroke
                 android:width="0.5dp"
-                android:color="@color/divider_color" />
+                android:color="@color/divider" />
         </shape>
     </item>
 </layer-list>

@@ -56,7 +56,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     ): View {
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
         val accentColor = Accent.get().getStateList(requireContext())
-        val controlColor = R.color.control_color.toStateList(requireContext())
+        val controlColor = R.color.control.toStateList(requireContext())
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
         val iconQueueActive = R.drawable.ic_queue.toDrawable(requireContext())

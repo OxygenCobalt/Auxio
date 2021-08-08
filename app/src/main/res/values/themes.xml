@@ -76,6 +76,6 @@
     </style>
 
     <style name="Theme.Neutral" parent="Theme.Base">
-        <item name="colorAccent">@color/control_color</item>
+        <item name="colorAccent">@color/control</item>
     </style>
 </resources>

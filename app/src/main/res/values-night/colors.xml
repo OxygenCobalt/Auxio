@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="surface_color">@color/surface_night</color>
-    <color name="divider_color">#323232</color>
-    <color name="selection_color">#484848</color>
-    <color name="inactive_color">#404040</color>
-    <color name="control_color">#ffffff</color>
-    <color name="nav_color">#01151515</color>
+    <color name="surface">@color/surface_night</color>
+    <color name="divider">#323232</color>
+    <color name="selection">#484848</color>
+    <color name="inactive">#404040</color>
+    <color name="control">#ffffff</color>
+    <color name="nav_bar">#01151515</color>
 
     <!--
     Base color set derived from Music Player GO.

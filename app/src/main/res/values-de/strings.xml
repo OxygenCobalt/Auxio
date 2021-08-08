@@ -65,7 +65,7 @@
     <string name="set_lib_display">Musikbibliothekitems</string>
     <string name="set_color_notif">Benachrichtigung farblich anpassen</string>
     <string name="set_color_notif_desc">Albumcover am Benachrichtigung zeigen</string>
-    <string name="setting_show_covers">Albumcover anzeigen</string>
+    <string name="set_show_covers">Albumcover anzeigen</string>
     <string name="set_show_covers_desc">Ausschalten zu Speicherverbrauch sparen</string>
     <string name="set_quality_covers">MediaStore Cover ignorieren</string>
     <string name="set_quality_covers_desc">Verbesst die Albumcover Qualität, jedoch länger Ladezeit und höher Speicherverbrauch beeinträchtigt</string>

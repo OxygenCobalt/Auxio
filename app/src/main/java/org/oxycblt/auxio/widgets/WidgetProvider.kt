@@ -124,9 +124,8 @@ class WidgetProvider : AppWidgetProvider() {
             updateAppWidget(name, RemoteViews(views))
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
-            // This is mostly a guess based on RemoteView's documentation, and it has some
-            // problems [most notably UI jittering when resizing]. Its better than just using
-            // one layout though. It may be improved once Android 12's source is released.
+            // This is mostly a guess based on RemoteView's documentation. It may be improved when
+            // Android 12's source is released.
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.

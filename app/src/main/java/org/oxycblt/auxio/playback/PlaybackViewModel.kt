@@ -436,14 +436,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Enable animation on CompactPlaybackFragment
+     * Enable animation on the play/pause button, usually done after the first LiveData fire
      */
     fun enableAnimation() {
         mCanAnimate = true
     }
 
     /**
-     * Disable animation on CompactPlaybackFragment
+     * Disable animation on play/pause button, usually done after when a UI is created
      */
     fun disableAnimation() {
         mCanAnimate = false

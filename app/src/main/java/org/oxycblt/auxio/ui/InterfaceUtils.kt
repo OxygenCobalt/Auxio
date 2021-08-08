@@ -58,7 +58,7 @@ const val INTENT_REQUEST_CODE = 0xA0A0
  */
 fun ImageButton.disable() {
     if (isEnabled) {
-        imageTintList = R.color.inactive_color.toStateList(context)
+        imageTintList = R.color.inactive.toStateList(context)
         isEnabled = false
     }
 }

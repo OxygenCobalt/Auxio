@@ -137,6 +137,8 @@ class BlacklistDialog : LifecycleDialog() {
         val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
 
         // Only the main drive is supported, since thats all we can get from MediaColumns.DATA
+        // Unless I change the system to use the drive/directory system, but thats limited to
+        // Android 10
         if (typeAndPath[0] == "primary") {
             return getRootPath() + "/" + typeAndPath.last()
         }

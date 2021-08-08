@@ -71,7 +71,7 @@
     <string name="set_lib_display">Library Items</string>
     <string name="set_color_notif">Colorize notification</string>
     <string name="set_color_notif_desc">Show album art on notification</string>
-    <string name="setting_show_covers">Show album covers</string>
+    <string name="set_show_covers">Show album covers</string>
     <string name="set_show_covers_desc">Turn off to save memory usage</string>
     <string name="set_quality_covers">Ignore MediaStore covers</string>
     <string name="set_quality_covers_desc">Increases the quality of the album covers, but results in longer loading times and higher memory usage</string>
