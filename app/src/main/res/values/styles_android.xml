@@ -68,6 +68,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textColor">?attr/colorAccent</item>
         <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
         <item name="rippleColor">?android:attr/colorControlHighlight</item>
         <item name="cornerRadius">0dp</item>

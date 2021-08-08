@@ -117,12 +117,11 @@ class WidgetProvider : AppWidgetProvider() {
     ) {
         check(views.isNotEmpty()) { "Must provide a non-empty map" }
 
+        val name = ComponentName(context, WidgetProvider::class.java)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // Widgets are automatically responsive on Android 12, no need to do anything.
-            updateAppWidget(
-                ComponentName(context, WidgetProvider::class.java),
-                RemoteViews(views)
-            )
+            updateAppWidget(name, RemoteViews(views))
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
             // This is mostly a guess based on RemoteView's documentation, and it has some
@@ -131,15 +130,11 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.
-            val ids = getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
+            val ids = getAppWidgetIds(name)
 
             // Most of the major launchers seem to provide widget sizes that don't include
             // padding. Query for the padding here so we can get a sane result later on.
-            val padding = AppWidgetHostView.getDefaultPaddingForWidget(
-                context,
-                ComponentName(context, WidgetProvider::class.java),
-                null
-            )
+            val padding = AppWidgetHostView.getDefaultPaddingForWidget(context, name, null)
 
             val density = context.resources.displayMetrics.density
             val padW = ((padding.left + padding.right) / density).toInt()

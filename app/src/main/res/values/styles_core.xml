@@ -3,10 +3,12 @@
     <!-- Master parent theme based off of Theme.MaterialComponents.DayNight.NoActionBar.Bridge -->
     <style name="Theme.Master" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
-    <style name="Theme.Template" parent="Theme.Master" />
+    <style name="Theme.Edge" parent="Theme.Master" />
+    <!-- Android-12 Splashscreen config -->
+    <style name="Theme.Splash" parent="Theme.Edge" />
 
     <!-- Base theme -->
-    <style name="Theme.Base" parent="Theme.Template">
+    <style name="Theme.Base" parent="Theme.Splash">
         <!-- Colors -->
         <item name="colorSurface">@color/surface_color</item>
         <item name="colorAccent">@color/design_default_color_primary</item>

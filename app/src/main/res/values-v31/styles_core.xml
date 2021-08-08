@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.Splash" parent="Theme.Edge">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    </style>
 
     <style name="Theme.Widget" parent="@android:style/Theme.DeviceDefault.DayNight">
         <item name="colorAccent">?android:attr/colorAccent</item>
