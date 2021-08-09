@@ -39,14 +39,13 @@
     <dimen name="size_app_icon">50dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
-    <dimen name="text_size_min">10sp</dimen>
     <dimen name="text_size_increment">1sp</dimen>
+    <dimen name="text_size_min">10sp</dimen>
     <dimen name="text_size_track_max">20sp</dimen>
     <dimen name="text_size_detail_header_max">26sp</dimen>
-    <dimen name="text_size_thumb">18sp</dimen>
-    <dimen name="text_size_header">19sp</dimen>
-    <dimen name="text_size_material_button">16sp</dimen>
-    <dimen name="text_size_toolbar_header">20sp</dimen>
+    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_mid_large">18sp</dimen>
+    <dimen name="text_size_toolbar">20sp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>

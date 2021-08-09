@@ -25,7 +25,7 @@
                 android:fontFamily="@font/inter_semibold"
                 android:gravity="center"
                 android:textColor="?android:attr/windowBackground"
-                android:textSize="@dimen/text_size_thumb"
+                android:textSize="@dimen/text_size_mid_large"
                 tools:text="A" />
 
         </FrameLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,61 +10,80 @@
             type="org.oxycblt.auxio.loading.LoadingViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_small">
+        android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/loading_circle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_small"
-            android:paddingBottom="@dimen/spacing_tiny" />
+        <!-- TODO: Get this splash icon working with Android 12 splashes -->
 
         <ImageView
-            android:id="@+id/loading_error_icon"
-            android:layout_width="@dimen/size_error_icon"
-            android:layout_height="@dimen/size_error_icon"
-            android:layout_margin="@dimen/spacing_small"
-            android:contentDescription="@string/desc_error"
-            android:src="@drawable/ic_error"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:id="@+id/loading_splash"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/desc_auxio_icon"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/loading_error_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?android:attr/textColorPrimary"
-            tools:text="Some kind of error" />
+            android:layout_margin="@dimen/spacing_large"
+            android:animateLayoutChanges="true"
+            android:layout_gravity="bottom"
+            android:fitsSystemWindows="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/loading_retry_button"
-            style="@style/Widget.Button.Unbounded.Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> loadingModel.load(context)}"
-            android:text="@string/lbl_retry"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/loading_circle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:layout_constraintBottom_toBottomOf="@+id/loading_action_button"
+                app:layout_constraintTop_toTopOf="@+id/loading_error_icon" />
 
-        <Button
-            android:id="@+id/loading_grant_button"
-            style="@style/Widget.Button.Unbounded.Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> loadingModel.grant()}"
-            android:text="@string/lbl_grant"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            <TextView
+                android:id="@+id/loading_error_text"
+                android:fontFamily="@font/inter_semibold"
+                android:textSize="@dimen/text_size_mid_large"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/loading_action_button"
+                tools:text="No Music Found" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/loading_error_icon"
+                android:layout_width="@dimen/size_error_icon"
+                android:layout_height="@dimen/size_error_icon"
+                android:layout_marginBottom="@dimen/spacing_small"
+                android:contentDescription="@string/desc_error"
+                android:src="@drawable/ic_error"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/loading_error_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/loading_action_button"
+                style="@style/Widget.Button.Vibrant.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_mid_large"
+                android:layout_marginEnd="@dimen/spacing_mid_large"
+                android:text="@string/lbl_retry"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </layout>

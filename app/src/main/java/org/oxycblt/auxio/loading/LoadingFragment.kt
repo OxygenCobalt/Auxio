@@ -141,10 +141,9 @@ class LoadingFragment : Fragment() {
      */
     private fun showLoading(binding: FragmentLoadingBinding) {
         binding.apply {
-            loadingErrorIcon.visibility = View.GONE
-            loadingErrorText.visibility = View.GONE
-            loadingRetryButton.visibility = View.GONE
-            loadingGrantButton.visibility = View.GONE
+            loadingErrorIcon.visibility = View.INVISIBLE
+            loadingErrorText.visibility = View.INVISIBLE
+            loadingActionButton.visibility = View.INVISIBLE
             loadingCircle.visibility = View.VISIBLE
         }
     }
@@ -158,21 +157,37 @@ class LoadingFragment : Fragment() {
         binding.loadingCircle.visibility = View.GONE
         binding.loadingErrorIcon.visibility = View.VISIBLE
         binding.loadingErrorText.visibility = View.VISIBLE
+        binding.loadingActionButton.visibility = View.VISIBLE
 
         when (error) {
             MusicStore.Response.NO_MUSIC -> {
-                binding.loadingRetryButton.visibility = View.VISIBLE
                 binding.loadingErrorText.text = getString(R.string.err_no_music)
-            }
-
-            MusicStore.Response.NO_PERMS -> {
-                binding.loadingGrantButton.visibility = View.VISIBLE
-                binding.loadingErrorText.text = getString(R.string.err_no_perms)
+                binding.loadingActionButton.apply {
+                    setText(R.string.lbl_retry)
+                    setOnClickListener {
+                        loadingModel.load(context)
+                    }
+                }
             }
 
             MusicStore.Response.FAILED -> {
-                binding.loadingRetryButton.visibility = View.VISIBLE
                 binding.loadingErrorText.text = getString(R.string.err_load_failed)
+                binding.loadingActionButton.apply {
+                    setText(R.string.lbl_retry)
+                    setOnClickListener {
+                        loadingModel.load(context)
+                    }
+                }
+            }
+
+            MusicStore.Response.NO_PERMS -> {
+                binding.loadingErrorText.text = getString(R.string.err_no_perms)
+                binding.loadingActionButton.apply {
+                    setText(R.string.lbl_grant)
+                    setOnClickListener {
+                        loadingModel.grant()
+                    }
+                }
             }
 
             else -> {}
