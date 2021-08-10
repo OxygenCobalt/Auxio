@@ -16,73 +16,61 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- TODO: Get this splash icon working with Android 12 splashes -->
+        <!--
+        TODO: Get this to line up with Android 12's splash screen when I can figure
+         out what they do
+        -->
 
         <ImageView
             android:id="@+id/loading_splash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/desc_auxio_icon"
-            android:scaleType="fitCenter"
+            android:padding="@dimen/spacing_huge"
             android:src="@drawable/ic_launcher_foreground" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+            android:id="@+id/loading_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_large"
             android:animateLayoutChanges="true"
             android:layout_gravity="bottom"
-            android:fitsSystemWindows="true"
             android:gravity="center"
             android:orientation="vertical">
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
+            <ProgressBar
                 android:id="@+id/loading_circle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"
                 app:layout_constraintBottom_toBottomOf="@+id/loading_action_button"
-                app:layout_constraintTop_toTopOf="@+id/loading_error_icon" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/loading_error_text"
-                android:fontFamily="@font/inter_semibold"
-                android:textSize="@dimen/text_size_mid_large"
-                android:textColor="?android:attr/textColorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_small"
+                android:fontFamily="@font/inter_semibold"
                 android:textAlignment="center"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/text_size_mid_large"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/loading_action_button"
                 tools:text="No Music Found" />
-
-            <ImageView
-                android:id="@+id/loading_error_icon"
-                android:layout_width="@dimen/size_error_icon"
-                android:layout_height="@dimen/size_error_icon"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:contentDescription="@string/desc_error"
-                android:src="@drawable/ic_error"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/loading_error_text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loading_action_button"
                 style="@style/Widget.Button.Vibrant.Primary"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_mid_large"
-                android:layout_marginEnd="@dimen/spacing_mid_large"
+                android:paddingStart="@dimen/spacing_insane"
+                android:paddingEnd="@dimen/spacing_insane"
                 android:text="@string/lbl_retry"
-                android:visibility="gone"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="visible" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

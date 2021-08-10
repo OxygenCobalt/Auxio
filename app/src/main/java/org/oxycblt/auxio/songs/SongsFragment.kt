@@ -49,9 +49,7 @@ class SongsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentSongsBinding.inflate(inflater)
-        val songAdapter = SongsAdapter(musicStore.songs, playbackModel::playSong) { view, data ->
-            newMenu(view, data)
-        }
+        val songAdapter = SongsAdapter(musicStore.songs, playbackModel::playSong, ::newMenu)
 
         // --- UI SETUP ---
 

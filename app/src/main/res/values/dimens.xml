@@ -8,6 +8,7 @@
     <dimen name="spacing_mid_large">24dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
     <dimen name="spacing_mid_huge">48dp</dimen>
+    <dimen name="spacing_huge">64dp</dimen>
     <dimen name="spacing_insane">128dp</dimen>
 
     <!-- Height Namespace | Height for UI elements -->

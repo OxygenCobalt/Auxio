@@ -54,10 +54,7 @@ class LibraryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentLibraryBinding.inflate(inflater)
-
-        val libraryAdapter = LibraryAdapter(::navToDetail) { view, data ->
-            newMenu(view, data)
-        }
+        val libraryAdapter = LibraryAdapter(::navToDetail, ::newMenu)
 
         // --- UI SETUP ---
 

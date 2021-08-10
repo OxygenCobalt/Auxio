@@ -33,15 +33,33 @@ sealed class BaseModel {
 }
 
 /**
+ * Provides a versatile static hash for a music item that will not change when
+ * MediaStore changes.
+ *
+ * The reason why this is used is down a couple of reasons:
+ * - MediaStore will refresh the unique ID of a piece of media whenever the library
+ * changes, which creates bad UX
+ * - Using song names makes collisions too common to be reliable
+ * - Hashing into an integer makes databases both smaller and more efficent
+ *
+ * This does lock me into a "Load everything at once, lol" architecture for Auxio, but I
+ * think its worth it.
+ *
+ * @property hash A unique-ish hash for this media item
+ *
+ * TODO: Make this hash stronger
+ */
+sealed interface Hashable {
+    val hash: Int
+}
+
+/**
  * [BaseModel] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
- * @property hash A versatile, unique(ish) hash used for databases
  * @property displayName Name that handles the usage of [Genre.resolvedName]
  * and the normal [BaseModel.name]
  */
-sealed class Parent : BaseModel() {
-    abstract val hash: Int
-
+sealed class Parent : BaseModel(), Hashable {
     val displayName: String get() = if (this is Genre) {
         resolvedName
     } else {
@@ -61,7 +79,6 @@ sealed class Parent : BaseModel() {
  * These are not ensured to be linked due to possible quirks in the genre loading system.
  * @property seconds  The Song's duration in seconds
  * @property formattedDuration The Song's duration as a duration string.
- * @property hash     A versatile, unique(ish) hash used for databases
  */
 data class Song(
     override val id: Long,
@@ -70,7 +87,7 @@ data class Song(
     val albumId: Long,
     val track: Int,
     val duration: Long
-) : BaseModel() {
+) : BaseModel(), Hashable {
     private var mAlbum: Album? = null
     private var mGenre: Genre? = null
 
@@ -80,7 +97,12 @@ data class Song(
     val seconds = duration / 1000
     val formattedDuration = seconds.toDuration()
 
-    val hash = songHash()
+    override val hash: Int get() {
+        var result = name.hashCode()
+        result = 31 * result + track
+        result = 31 * result + duration.hashCode()
+        return result
+    }
 
     fun linkAlbum(album: Album) {
         if (mAlbum == null) {
@@ -92,13 +114,6 @@ data class Song(
         if (mGenre == null) {
             mGenre = genre
         }
-    }
-
-    private fun songHash(): Int {
-        var result = name.hashCode()
-        result = 31 * result + track
-        result = 31 * result + duration.hashCode()
-        return result
     }
 }
 
@@ -127,7 +142,12 @@ data class Album(
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration()
 
-    override val hash = albumHash()
+    override val hash: Int get() {
+        var result = name.hashCode()
+        result = 31 * result + artistName.hashCode()
+        result = 31 * result + year
+        return result
+    }
 
     fun linkArtist(artist: Artist) {
         mArtist = artist
@@ -138,13 +158,6 @@ data class Album(
             song.linkAlbum(this)
             mSongs.add(song)
         }
-    }
-
-    private fun albumHash(): Int {
-        var result = name.hashCode()
-        result = 31 * result + artistName.hashCode()
-        result = 31 * result + year
-        return result
     }
 }
 

@@ -60,9 +60,7 @@ class SearchFragment : Fragment() {
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater)
 
-        val searchAdapter = SearchAdapter(::onItemSelection) { view, data ->
-            newMenu(view, data)
-        }
+        val searchAdapter = SearchAdapter(::onItemSelection, ::newMenu)
 
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         val defaultParams = toolbarParams.scrollFlags

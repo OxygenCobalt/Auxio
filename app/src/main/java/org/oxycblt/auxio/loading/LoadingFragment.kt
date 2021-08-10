@@ -33,6 +33,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.ui.isLandscape
 
 /**
  * Fragment that handles what to display during the loading process.
@@ -57,6 +58,10 @@ class LoadingFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.loadingModel = loadingModel
+
+        // The loading panel shouldn't fit the system window on landscape as that will cause it
+        // to be mis-aligned with the Auxio icon.
+        binding.loadingPanel.fitsSystemWindows = !isLandscape(resources)
 
         // --- VIEWMODEL SETUP ---
 
@@ -141,7 +146,6 @@ class LoadingFragment : Fragment() {
      */
     private fun showLoading(binding: FragmentLoadingBinding) {
         binding.apply {
-            loadingErrorIcon.visibility = View.INVISIBLE
             loadingErrorText.visibility = View.INVISIBLE
             loadingActionButton.visibility = View.INVISIBLE
             loadingCircle.visibility = View.VISIBLE
@@ -155,7 +159,6 @@ class LoadingFragment : Fragment() {
      */
     private fun showError(binding: FragmentLoadingBinding, error: MusicStore.Response) {
         binding.loadingCircle.visibility = View.GONE
-        binding.loadingErrorIcon.visibility = View.VISIBLE
         binding.loadingErrorText.visibility = View.VISIBLE
         binding.loadingActionButton.visibility = View.VISIBLE
 
