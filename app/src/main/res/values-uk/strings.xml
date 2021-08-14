@@ -62,8 +62,6 @@
 
     <string name="desc_clear_user_queue">Очистити черга</string>
 
-    <string name="desc_error">Помилка</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Пісні завантажено: %d</string>
 

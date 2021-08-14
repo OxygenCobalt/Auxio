@@ -69,8 +69,6 @@
 
     <string name="desc_clear_user_queue">Kosongkan antrean</string>
 
-    <string name="desc_error">Galat</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
 
     <plurals name="fmt_song_count">

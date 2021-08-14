@@ -16,18 +16,13 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!--
-        TODO: Get this to line up with Android 12's splash screen when I can figure
-         out what they do
-        -->
-
         <ImageView
             android:id="@+id/loading_splash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:src="@drawable/ic_launcher_foreground"
             android:contentDescription="@string/desc_auxio_icon"
-            android:padding="@dimen/spacing_huge"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:padding="@dimen/spacing_huge" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loading_panel"
@@ -54,7 +49,7 @@
                 android:fontFamily="@font/inter_semibold"
                 android:textAlignment="center"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/text_size_mid_large"
+                android:textSize="@dimen/text_size_medium"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/loading_action_button"
                 tools:text="No Music Found" />

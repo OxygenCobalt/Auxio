@@ -114,7 +114,6 @@
     <string name="desc_clear_search">Suchanfrage löschen</string>
     <string name="desc_clear_user_queue">Warteschlange entleeren</string>
 
-    <string name="desc_error">Fehler</string>
     <string name="desc_auxio_icon">Auxio-Icon</string>
     <string name="desc_album_cover">Albumcover für %s</string>
     <string name="desc_artist_image">Künstlerbild für %s</string>

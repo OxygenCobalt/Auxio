@@ -37,6 +37,9 @@ import org.oxycblt.auxio.ui.isLandscape
 
 /**
  * Fragment that handles what to display during the loading process.
+ * TODO: Figure out how to phase out the loading screen since
+ *  Android 12 is annoyingly stubborn about having one splash
+ *  screen and one splash screen only.
  * @author OxygenCobalt
  */
 class LoadingFragment : Fragment() {

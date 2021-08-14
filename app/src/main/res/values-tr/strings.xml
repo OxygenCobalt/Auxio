@@ -68,8 +68,6 @@
 
     <string name="desc_clear_user_queue">Temizle Kuyruk</string>
 
-    <string name="desc_error">Hata</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
 
     <plurals name="fmt_song_count">

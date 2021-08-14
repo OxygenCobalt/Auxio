@@ -15,7 +15,8 @@
 
         <TextView
             android:id="@+id/song_track"
-            android:layout_width="@dimen/width_track_number"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/width_track_number"
             android:layout_height="wrap_content"
             android:contentDescription="@{@string/desc_track_number(song.track)}"
             android:gravity="center"
@@ -24,11 +25,7 @@
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorTertiary"
-            android:textSize="@dimen/text_size_track_max"
-            app:autoSizeMaxTextSize="@dimen/text_size_detail_header_max"
-            app:autoSizeMinTextSize="@dimen/text_size_min"
-            app:autoSizeStepGranularity="@dimen/text_size_increment"
-            app:autoSizeTextType="uniform"
+            android:textSize="@dimen/text_size_large"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

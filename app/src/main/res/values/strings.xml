@@ -5,7 +5,7 @@
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
     <string name="info_widget_name">Now Playing</string>
-    <string name="info_widget_desc">View and control music playback</string>
+    <string name="info_widget_desc">View and control playing music</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Retry</string>
@@ -124,7 +124,6 @@
     <string name="desc_clear_search">Clear search query</string>
     <string name="desc_blacklist_delete">Remove excluded directory</string>
 
-    <string name="desc_error">Error</string>
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_no_cover">Album cover</string>
     <string name="desc_album_cover">Album Cover for %s</string>

@@ -116,7 +116,6 @@
     <string name="desc_clear_search">Zoekopdracht wissen</string>
     <string name="desc_blacklist_delete">Verwijder uitgesloten map</string>
 
-    <string name="desc_error">Fout</string>
     <string name="desc_auxio_icon">Auxio pictogram</string>
     <string name="desc_album_cover">Artist Image voor  %s</string>
     <string name="desc_artist_image">Artist Image voor %s</string>

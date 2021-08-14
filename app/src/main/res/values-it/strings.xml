@@ -68,8 +68,6 @@
 
     <string name="desc_clear_user_queue">Svuota coda</string>
 
-    <string name="desc_error">Errore</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>
 

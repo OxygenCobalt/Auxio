@@ -66,8 +66,6 @@
 
     <string name="desc_clear_user_queue">清空播放佇列</string>
 
-    <string name="desc_error">錯誤</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">搜尋音樂庫…</string>
 

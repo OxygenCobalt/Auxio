@@ -118,7 +118,6 @@
     <string name="desc_clear_search">Borrar historial de búsqueda</string>
     <string name="desc_blacklist_delete">Eliminar directorio excluido</string>
 
-    <string name="desc_error">Error</string>
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_album_cover">Carátula de álbum para %s</string>
     <string name="desc_artist_image">Imagen de artista para %s</string>

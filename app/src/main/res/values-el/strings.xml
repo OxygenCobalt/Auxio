@@ -59,8 +59,6 @@
 
     <string name="desc_clear_user_queue">Εκκαθάριση ουράς αναπαραγωγής</string>
 
-    <string name="desc_error">Εμφάνιση σφάλματος</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Αναζήτηση στη βιβλιοθήκη…</string>
 

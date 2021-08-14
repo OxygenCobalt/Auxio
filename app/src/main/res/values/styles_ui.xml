@@ -70,7 +70,7 @@
 
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textSize">@dimen/text_size_toolbar</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
     <style name="ItemLayout">
@@ -146,7 +146,7 @@
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:textSize">@dimen/text_size_mid_large</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:background">@drawable/ui_header_dividers</item>
@@ -155,18 +155,11 @@
 
     <style name="Widget.TextView.Detail" parent="@style/Widget.AppCompat.TextView">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textSize">@dimen/text_size_detail_header_max</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/text_size_huge</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?attr/colorAccent</item>
-
-        <item name="autoSizeMaxTextSize">@dimen/text_size_detail_header_max</item>
-        <item name="autoSizeMinTextSize">@dimen/text_size_min</item>
-        <item name="autoSizeStepGranularity">@dimen/text_size_increment</item>
-        <item name="autoSizeTextType">uniform</item>
     </style>
 
     <style name="Widget.TextView.Icon" parent="Widget.AppCompat.TextView">

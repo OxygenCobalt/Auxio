@@ -67,8 +67,6 @@
 
     <string name="desc_clear_user_queue">Limpar fila</string>
 
-    <string name="desc_error">Erro</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Procurar na biblioteca…</string>
 

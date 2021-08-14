@@ -68,7 +68,6 @@
 
     <string name="desc_clear_user_queue">Effacer la file d\'attente</string>
 
-    <string name="desc_error">L’erreur</string>
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
 

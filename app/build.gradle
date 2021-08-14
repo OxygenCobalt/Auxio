@@ -5,7 +5,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    buildToolsVersion "31.0.0"
 
     defaultConfig {
         applicationId "org.oxycblt.auxio"
@@ -13,7 +13,7 @@ android {
         versionCode 7
 
         minSdkVersion 21
-        targetSdkVersion 30 // Note: Do not increment until platform stability
+        targetSdkVersion 31
 
         buildFeatures {
             dataBinding true
@@ -91,7 +91,7 @@ dependencies {
     // --- THIRD PARTY ---
 
     // ExoPlayer
-    implementation "com.google.android.exoplayer:exoplayer-core:2.14.2"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.15.0"
 
     // Image loading
     implementation 'io.coil-kt:coil:1.3.2'

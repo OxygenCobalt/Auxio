@@ -67,8 +67,6 @@
 
     <string name="desc_clear_user_queue">Очистить очередь</string>
 
-    <string name="desc_error">Ошибка</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Поиск в библиотеке…</string>
 

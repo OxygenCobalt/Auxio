@@ -21,8 +21,6 @@
     <dimen name="width_fast_scroll">20dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
-    <dimen name="size_error_icon">48dp</dimen>
-
     <dimen name="size_small_unb_ripple">18dp</dimen>
     <dimen name="size_unb_ripple">24dp</dimen>
 
@@ -40,13 +38,10 @@
     <dimen name="size_app_icon">50dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
-    <dimen name="text_size_increment">1sp</dimen>
-    <dimen name="text_size_min">10sp</dimen>
-    <dimen name="text_size_track_max">20sp</dimen>
-    <dimen name="text_size_detail_header_max">26sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
-    <dimen name="text_size_mid_large">18sp</dimen>
-    <dimen name="text_size_toolbar">20sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">20sp</dimen>
+    <dimen name="text_size_huge">26sp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>

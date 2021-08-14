@@ -32,8 +32,8 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.support.v4.media.session.MediaSessionCompat
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -242,7 +242,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         acquireWakeLock()
     }
 
-    override fun onPlayerError(error: ExoPlaybackException) {
+    override fun onPlayerError(error: PlaybackException) {
         // If there's any issue, just go to the next song.
         playbackManager.next()
     }

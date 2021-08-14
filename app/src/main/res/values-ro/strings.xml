@@ -70,8 +70,6 @@
 
     <string name="desc_clear_user_queue">Golește lista de redare</string>
 
-    <string name="desc_error">Eroare</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Roșu</string>
     <string name="clr_pink">Roz</string>

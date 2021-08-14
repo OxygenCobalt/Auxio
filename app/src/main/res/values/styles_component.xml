@@ -76,7 +76,4 @@
         <item name="android:elevation">@dimen/elevation_normal</item>
     </style>
 
-    <style name="Widget.Component.Loading.ImageView.Icon" parent="">
-        <item name="android:src">@drawable/ic_launcher_foreground</item>
-    </style>
 </resources>

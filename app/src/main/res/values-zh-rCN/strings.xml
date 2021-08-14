@@ -60,8 +60,6 @@
 
     <string name="desc_clear_user_queue">清空播放队列</string>
 
-    <string name="desc_error">错误</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">
         <item quantity="other">%d 歌曲</item>

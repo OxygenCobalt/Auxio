@@ -69,8 +69,6 @@
 
     <string name="desc_clear_user_queue">Lejátszási sor</string>
 
-    <string name="desc_error">Hiba</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Piros</string>
     <string name="clr_pink">Rózsaszínű</string>
