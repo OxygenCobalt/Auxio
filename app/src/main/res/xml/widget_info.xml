@@ -4,7 +4,7 @@
     android:minWidth="180dp"
     android:minHeight="110dp"
     android:minResizeWidth="180dp"
-    android:minResizeHeight="110dp"
+    android:minResizeHeight="40dp"
     android:previewImage="@drawable/ui_widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"

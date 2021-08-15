@@ -38,10 +38,13 @@ import org.oxycblt.auxio.ui.isLandscape
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
  * packing what could be considered 3 or 4 widgets into a single responsive widget. More specifically:
  *
+ * - For widgets 2x1 or lower, show a text-only view with no controls
+ * - For widgets Wx1 or lower, show a compact view with no controls.
  * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
  * - For widgets 4x2 or higher, show a complete view with all playback controls
  *
- * Other widget variants might be added if there is sufficient demand.
+ * There are some minor problems with this implementation [notably UI jittering when the widget
+ * picks a new layout below Android 12], but this is tolerable.
  *
  * For more specific details about these sub-widgets, see Forms.kt.
  */
@@ -68,9 +71,13 @@ class WidgetProvider : AppWidgetProvider() {
             )
 
             // Map each widget form to the cells where it would look at least okay.
+            // The large widgets are 140 instead of 110 so that they're backwards compatible
+            // with the old widget size reporting
             val views = mapOf(
-                SizeF(180f, 110f) to createSmallWidget(context, state),
-                SizeF(250f, 110f) to createFullWidget(context, state)
+                SizeF(180f, 40f) to createMiniWidget(context, state),
+                SizeF(250f, 40f) to createCompactWidget(context, state),
+                SizeF(180f, 140f) to createSmallWidget(context, state),
+                SizeF(250f, 140f) to createFullWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)
@@ -138,8 +145,8 @@ class WidgetProvider : AppWidgetProvider() {
             updateAppWidget(name, RemoteViews(views))
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
-            // This is mostly a guess based on RemoteView's documentation. It may be improved when
-            // Android 12's source is released.
+            // This is mostly a guess based on RemoteView's documentation. It seems to work well
+            // on most launchers. It may be improved when Android 12's source is released.
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.
@@ -168,8 +175,8 @@ class WidgetProvider : AppWidgetProvider() {
                     height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
                 }
 
-                height += padW
-                width += padH
+                height += padH
+                width += padW
 
                 logD("Assuming true widget dimens are ${width}x$height")
 
