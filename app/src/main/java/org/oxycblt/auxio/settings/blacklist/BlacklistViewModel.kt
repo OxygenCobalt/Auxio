@@ -27,7 +27,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.database.BlacklistDatabase
+import org.oxycblt.auxio.music.BlacklistDatabase
 
 /**
  * ViewModel that acts as a wrapper around [BlacklistDatabase], allowing for the addition/removal

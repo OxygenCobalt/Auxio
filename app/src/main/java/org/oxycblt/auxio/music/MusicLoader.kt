@@ -27,7 +27,6 @@ import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.database.BlacklistDatabase
 import org.oxycblt.auxio.logD
 
 /**

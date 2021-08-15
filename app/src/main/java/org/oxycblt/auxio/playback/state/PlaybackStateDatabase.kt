@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.database
+package org.oxycblt.auxio.playback.state
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
+import org.oxycblt.auxio.ui.queryAll
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.assertBackgroundThread
 

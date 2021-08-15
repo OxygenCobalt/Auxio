@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.database
+package org.oxycblt.auxio.playback.state
 
 /**
  * A database entity that stores a simplified representation of a song in a queue.

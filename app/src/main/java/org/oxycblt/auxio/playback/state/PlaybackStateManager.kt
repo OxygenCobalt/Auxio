@@ -21,9 +21,6 @@ package org.oxycblt.auxio.playback.state
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.database.PlaybackState
-import org.oxycblt.auxio.database.PlaybackStateDatabase
-import org.oxycblt.auxio.database.QueueItem
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album

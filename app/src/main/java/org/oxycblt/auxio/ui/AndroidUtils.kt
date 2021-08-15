@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * InterfaceUtils.kt is part of Auxio.
+ * AndroidUtils.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -197,6 +199,14 @@ fun Context.newMainIntent(): PendingIntent {
         else 0
     )
 }
+
+/**
+ * Shortcut for querying all items in a database and running [block] with the cursor returned.
+ * Will not run if the cursor is null.
+ */
+fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
+    query(tableName, null, null, null, null, null, null)?.use(block)
+
 
 /**
  * Assert that we are on a background thread.

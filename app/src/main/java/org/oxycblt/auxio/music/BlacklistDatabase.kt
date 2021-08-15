@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.database
+package org.oxycblt.auxio.music
 
 import android.content.ContentValues
 import android.content.Context
@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.assertBackgroundThread
+import org.oxycblt.auxio.ui.queryAll
 
 /**
  * Database for storing blacklisted paths.
