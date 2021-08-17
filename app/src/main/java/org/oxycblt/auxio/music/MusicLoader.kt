@@ -27,6 +27,7 @@ import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.excluded.ExcludedDatabase
 import org.oxycblt.auxio.logD
 
 /**
@@ -69,7 +70,7 @@ class MusicLoader(private val context: Context) {
     @Suppress("DEPRECATION")
     private fun buildSelector() {
         // TODO: Upgrade this to be compatible with Android Q.
-        val blacklistDatabase = BlacklistDatabase.getInstance(context)
+        val blacklistDatabase = ExcludedDatabase.getInstance(context)
 
         val paths = blacklistDatabase.readPaths()
 

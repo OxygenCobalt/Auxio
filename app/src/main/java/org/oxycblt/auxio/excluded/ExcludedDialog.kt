@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.blacklist
+package org.oxycblt.auxio.excluded
 
 import android.content.Intent
 import android.net.Uri
@@ -37,16 +37,16 @@ import org.oxycblt.auxio.databinding.DialogBlacklistBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
-import org.oxycblt.auxio.ui.showToast
+import org.oxycblt.auxio.showToast
 import kotlin.system.exitProcess
 
 /**
  * Dialog that manages the currently excluded directories.
  * @author OxygenCobalt
  */
-class BlacklistDialog : LifecycleDialog() {
-    private val blacklistModel: BlacklistViewModel by viewModels {
-        BlacklistViewModel.Factory(requireContext())
+class ExcludedDialog : LifecycleDialog() {
+    private val blacklistModel: ExcludedViewModel by viewModels {
+        ExcludedViewModel.Factory(requireContext())
     }
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -58,7 +58,7 @@ class BlacklistDialog : LifecycleDialog() {
     ): View {
         val binding = DialogBlacklistBinding.inflate(inflater)
 
-        val adapter = BlacklistEntryAdapter { path ->
+        val adapter = ExcludedEntryAdapter { path ->
             blacklistModel.removePath(path)
         }
 
@@ -123,6 +123,7 @@ class BlacklistDialog : LifecycleDialog() {
         if (path != null) {
             blacklistModel.addPath(path)
         } else {
+            // TODO: Tolerate this once the excluded system is modernized
             requireContext().showToast(R.string.err_bad_dir)
         }
     }

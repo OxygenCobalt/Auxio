@@ -23,9 +23,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemGenreHeaderBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.disable
+import org.oxycblt.auxio.inflater
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
@@ -33,10 +36,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.inflater
-import org.oxycblt.auxio.ui.setTextColorResource
+import org.oxycblt.auxio.setTextColorResource
 
 /**
  * An adapter for displaying the [Song]s of a genre.

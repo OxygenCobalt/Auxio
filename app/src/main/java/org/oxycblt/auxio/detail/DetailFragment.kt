@@ -28,8 +28,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
+import org.oxycblt.auxio.isLandscape
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.isLandscape
 import org.oxycblt.auxio.ui.memberBinding
 
 /**
@@ -95,7 +95,7 @@ abstract class DetailFragment : Fragment() {
             setHasFixedSize(true)
 
             // Set up a grid if the mode is landscape
-            if (isLandscape(resources)) {
+            if (requireContext().isLandscape()) {
                 layoutManager = GridLayoutManager(requireContext(), 2).also {
                     it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {

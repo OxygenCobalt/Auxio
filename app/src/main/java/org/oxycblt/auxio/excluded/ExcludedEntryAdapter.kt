@@ -16,21 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.blacklist
+package org.oxycblt.auxio.excluded
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemBlacklistEntryBinding
-import org.oxycblt.auxio.ui.inflater
+import org.oxycblt.auxio.inflater
 
 /**
  * Adapter that shows the blacklist entries and their "Clear" button.
  * @author OxygenCobalt
  */
-class BlacklistEntryAdapter(
+class ExcludedEntryAdapter(
     private val onClear: (String) -> Unit
-) : RecyclerView.Adapter<BlacklistEntryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ExcludedEntryAdapter.ViewHolder>() {
     private var paths = mutableListOf<String>()
 
     override fun getItemCount() = paths.size

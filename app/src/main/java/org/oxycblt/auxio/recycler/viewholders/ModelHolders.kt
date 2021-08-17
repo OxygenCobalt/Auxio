@@ -25,12 +25,12 @@ import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
+import org.oxycblt.auxio.inflater
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.inflater
 
 /**
  * The Shared ViewHolder for a [Song]. Instantiation should be done with [from].

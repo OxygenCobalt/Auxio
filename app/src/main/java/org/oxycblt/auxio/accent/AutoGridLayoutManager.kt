@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.accent
 
 import android.content.Context
 import android.util.AttributeSet

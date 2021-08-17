@@ -52,6 +52,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.getSystemServiceSafe
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
@@ -59,7 +60,6 @@ import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.getSystemServiceSafe
 import org.oxycblt.auxio.widgets.WidgetController
 import org.oxycblt.auxio.widgets.WidgetProvider
 

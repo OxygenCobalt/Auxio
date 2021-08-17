@@ -27,7 +27,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.resolveAttr
+import org.oxycblt.auxio.resolveAttr
 
 /**
  * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle

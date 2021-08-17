@@ -30,7 +30,7 @@ package org.oxycblt.auxio.playback.state
  * @property inUserQueue - A bool for if the state was currently playing from the user queue.
  * @author OxygenCobalt
  */
-data class PlaybackState(
+data class DatabaseState(
     val id: Long = 0L,
     val songHash: Int,
     val position: Long,

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.accent
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,11 +27,9 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.resolveColor
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
-import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.toColor
 
 /**
  * Dialog responsible for showing the list of accents to select.
@@ -93,7 +91,7 @@ class AccentDialog : LifecycleDialog() {
     }
 
     private fun updateAccent() {
-        val accentColor = pendingAccent.color.toColor(requireContext())
+        val accentColor = pendingAccent.color.resolveColor(requireContext())
 
         (requireDialog() as AlertDialog).apply {
             getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(accentColor)

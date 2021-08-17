@@ -31,10 +31,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.newBroadcastIntent
+import org.oxycblt.auxio.newMainIntent
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.newBroadcastIntent
-import org.oxycblt.auxio.ui.newMainIntent
 
 /**
  * The unified notification for [PlaybackService]. This is not self-sufficient, updates have

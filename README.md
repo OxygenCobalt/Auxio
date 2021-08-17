@@ -21,8 +21,6 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
-**Note: Auxio is in a point that I am largely satisfied with. The app is still maintained, but feature additions will be slow.**
-
 ## Screenshots
 
 <p align="center">

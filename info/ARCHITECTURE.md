@@ -87,8 +87,10 @@ To prevent any strange bugs, all integer representations must be unique. A table
 Auxio's package structure is mostly based around the features, and then any sub-features or components involved with that. There are some shared packages however. A diagram of the package structure is shown below:
 
 ```
-org.oxycblt.auxio  # Main UI's and logging utilities 
+org.oxycblt.auxio  # Main UI's and utilities
+├──.accent         # Accent UI + Systems
 ├──.coil           # Fetchers and utilities for Coil, contains binding adapters than be used in the user interface.
+├──.blacklist      # Excluded Directories UI/Systems
 ├──.database       # Databases and their items for Auxio
 ├──.detail         # UIs for more album/artist/genre details
 │  └──.adapters    # RecyclerView adapters for the detail UIs, which display the header information and items
@@ -103,8 +105,6 @@ org.oxycblt.auxio  # Main UI's and logging utilities
 │  └──.viewholders # Shared ViewHolders and ViewHolder utilities
 ├──.search         # Search UI
 ├──.settings       # Settings UI and systems
-│  ├──.blacklist   # Excluded Directories UI/Systems
-│  ├──.accent      # Accent UI + Systems
 │  └──.ui          # Settings-Related UIs
 ├──.songs          # Songs UI
 ├──.ui             # Shared user interface utilities

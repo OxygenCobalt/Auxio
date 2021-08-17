@@ -31,7 +31,7 @@ import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.sliceArticle
-import org.oxycblt.auxio.ui.getSpans
+import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
 /**
@@ -66,7 +66,6 @@ class SongsFragment : Fragment() {
             adapter = songAdapter
             setHasFixedSize(true)
 
-            val spans = getSpans()
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }

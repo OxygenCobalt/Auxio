@@ -27,13 +27,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.isEdgeOn
-import org.oxycblt.auxio.ui.isNight
 
 /**
  * The single [AppCompatActivity] for Auxio.
@@ -66,22 +64,6 @@ class MainActivity : AppCompatActivity() {
         onNewIntent(intent)
     }
 
-    private fun setupTheme() {
-        // Update the current accent and theme
-        val settingsManager = SettingsManager.getInstance()
-        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
-
-        val newAccent = Accent.set(settingsManager.accent)
-
-        // The black theme has a completely separate set of styles since style attributes cannot
-        // be modified at runtime.
-        if (isNight() && settingsManager.useBlackTheme) {
-            setTheme(newAccent.blackTheme)
-        } else {
-            setTheme(newAccent.theme)
-        }
-    }
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
@@ -99,6 +81,22 @@ class MainActivity : AppCompatActivity() {
                     playbackModel.playWithUri(fileUri, this)
                 }
             }
+        }
+    }
+
+    private fun setupTheme() {
+        // Update the current accent and theme
+        val settingsManager = SettingsManager.getInstance()
+        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+
+        val newAccent = Accent.set(settingsManager.accent)
+
+        // The black theme has a completely separate set of styles since style attributes cannot
+        // be modified at runtime.
+        if (isNight && settingsManager.useBlackTheme) {
+            setTheme(newAccent.blackTheme)
+        } else {
+            setTheme(newAccent.theme)
         }
     }
 

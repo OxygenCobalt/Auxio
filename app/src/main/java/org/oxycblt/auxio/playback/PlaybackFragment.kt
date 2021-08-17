@@ -28,14 +28,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.ui.Accent
+import org.oxycblt.auxio.resolveDrawable
+import org.oxycblt.auxio.resolveStateList
 import org.oxycblt.auxio.ui.memberBinding
-import org.oxycblt.auxio.ui.toDrawable
-import org.oxycblt.auxio.ui.toStateList
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -56,11 +56,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     ): View {
         val normalTextColor = binding.playbackDurationCurrent.currentTextColor
         val accentColor = Accent.get().getStateList(requireContext())
-        val controlColor = R.color.control.toStateList(requireContext())
+        val controlColor = R.color.control.resolveStateList(requireContext())
 
         // Can't set the tint of a MenuItem below Android 8, so use icons instead.
-        val iconQueueActive = R.drawable.ic_queue.toDrawable(requireContext())
-        val iconQueueInactive = R.drawable.ic_queue_inactive.toDrawable(requireContext())
+        val iconQueueActive = R.drawable.ic_queue.resolveDrawable(requireContext())
+        val iconQueueInactive = R.drawable.ic_queue_inactive.resolveDrawable(requireContext())
 
         val queueItem: MenuItem
 

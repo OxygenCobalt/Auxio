@@ -55,7 +55,7 @@ class SlideLinearLayout @JvmOverloads constructor(
             it.isAccessible = true
         }
     } catch (e: NoSuchFieldException) {
-        logE("Could not get mDisappearingChildren.")
+        logE("Could not get mDisappearingChildren. This is very ungood.")
         null
     }
 

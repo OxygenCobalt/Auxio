@@ -26,7 +26,7 @@ package org.oxycblt.auxio.playback.state
  * @property isUserQueue A bool for if this queue item is a user queue item or not
  * @author OxygenCobalt
  */
-data class QueueItem(
+data class DatabaseQueueItem(
     var id: Long = 0L,
     val songHash: Int,
     val albumHash: Int,

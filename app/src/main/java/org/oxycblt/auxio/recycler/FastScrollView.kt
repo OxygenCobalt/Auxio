@@ -33,13 +33,13 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.accent.Accent
+import org.oxycblt.auxio.canScroll
 import org.oxycblt.auxio.databinding.ViewFastScrollBinding
+import org.oxycblt.auxio.inflater
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.canScroll
-import org.oxycblt.auxio.ui.inflater
-import org.oxycblt.auxio.ui.resolveAttr
-import org.oxycblt.auxio.ui.toColor
+import org.oxycblt.auxio.resolveAttr
+import org.oxycblt.auxio.resolveColor
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -49,6 +49,8 @@ import kotlin.math.roundToInt
  * fast-scrollers, this one displays indicators and a thumb instead of simply a scroll bar.
  * This code is fundamentally an adaptation of Reddit's IndicatorFastScroll, albeit specialized
  * towards Auxio. The original library is here: https://github.com/reddit/IndicatorFastScroll/
+ * TODO: Replace this with something similar to AndroidFastScroll [but optimized for Auxio],
+ *  since this thumb view is a blocker to a better sort system.
  * @author OxygenCobalt
  */
 class FastScrollView @JvmOverloads constructor(
@@ -97,7 +99,7 @@ class FastScrollView @JvmOverloads constructor(
     private data class Indicator(val char: Char, val pos: Int)
 
     private var indicators = listOf<Indicator>()
-    private val activeColor = Accent.get().color.toColor(context)
+    private val activeColor = Accent.get().color.resolveColor(context)
     private val inactiveColor = android.R.attr.textColorSecondary.resolveAttr(context)
 
     // --- STATE ---

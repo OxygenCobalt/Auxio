@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.blacklist
+package org.oxycblt.auxio.excluded
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -27,18 +27,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.music.BlacklistDatabase
 
 /**
- * ViewModel that acts as a wrapper around [BlacklistDatabase], allowing for the addition/removal
+ * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal
  * of paths. Use [Factory] to instantiate this.
  * @author OxygenCobalt
  */
-class BlacklistViewModel(context: Context) : ViewModel() {
+class ExcludedViewModel(context: Context) : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())
     val paths: LiveData<MutableList<String>> get() = mPaths
 
-    private val blacklistDatabase = BlacklistDatabase.getInstance(context)
+    private val blacklistDatabase = ExcludedDatabase.getInstance(context)
     private var dbPaths = listOf<String>()
 
     init {
@@ -97,12 +96,12 @@ class BlacklistViewModel(context: Context) : ViewModel() {
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            check(modelClass.isAssignableFrom(BlacklistViewModel::class.java)) {
+            check(modelClass.isAssignableFrom(ExcludedViewModel::class.java)) {
                 "BlacklistViewModel.Factory does not support this class"
             }
 
             @Suppress("UNCHECKED_CAST")
-            return BlacklistViewModel(context) as T
+            return ExcludedViewModel(context) as T
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AndroidUtils.kt is part of Auxio.
+ * AuxioUtils.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -46,9 +46,6 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.MainActivity
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.logE
 import kotlin.reflect.KClass
 
 const val INTENT_REQUEST_CODE = 0xA0A0
@@ -60,7 +57,7 @@ const val INTENT_REQUEST_CODE = 0xA0A0
  */
 fun ImageButton.disable() {
     if (isEnabled) {
-        imageTintList = R.color.inactive.toStateList(context)
+        imageTintList = R.color.inactive.resolveStateList(context)
         isEnabled = false
     }
 }
@@ -69,8 +66,23 @@ fun ImageButton.disable() {
  * Set a [TextView] text color, without having to resolve the resource.
  */
 fun TextView.setTextColorResource(@ColorRes color: Int) {
-    setTextColor(color.toColor(context))
+    setTextColor(color.resolveColor(context))
 }
+
+/**
+ * Get the span count for most RecyclerViews. These probably work right on most displays. Trust me.
+ */
+val RecyclerView.spans: Int get() =
+    if (context.isLandscape()) {
+        if (context.isXLTablet()) 3 else 2
+    } else {
+        if (context.isXLTablet()) 2 else 1
+    }
+
+/**
+ * Returns whether a recyclerview can scroll.
+ */
+fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 
 // --- CONVENIENCE ---
 
@@ -80,14 +92,12 @@ fun TextView.setTextColorResource(@ColorRes color: Int) {
 val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
 
 /**
- * Convenience method for getting a plural.
- * @param pluralsRes Resource for the plural
- * @param value Int value for the plural.
- * @return The formatted string requested
+ * Returns whether the current UI is in night mode or not. This will work if the theme is
+ * automatic as well.
  */
-fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
-    return resources.getQuantityString(pluralsRes, value, value)
-}
+val Context.isNight: Boolean get() =
+    resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+        Configuration.UI_MODE_NIGHT_YES
 
 /**
  * Convenience method for getting a system service without nullability issues.
@@ -100,80 +110,6 @@ fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
     return requireNotNull(ContextCompat.getSystemService(this, serviceClass.java)) {
         "System service ${serviceClass.simpleName} could not be instantiated"
     }
-}
-
-/**
- * Returns whether the current UI is in night mode or not. This will work if the theme is
- * automatic as well.
- */
-fun Context.isNight(): Boolean {
-    return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-        Configuration.UI_MODE_NIGHT_YES
-}
-
-/**
- * Resolve a color.
- * @param context [Context] required
- * @return The resolved color, black if the resolving process failed.
- */
-@ColorInt
-fun @receiver:ColorRes Int.toColor(context: Context): Int {
-    return try {
-        ContextCompat.getColor(context, this)
-    } catch (e: Resources.NotFoundException) {
-        logE("Attempted color load failed: ${e.stackTraceToString()}")
-
-        // Default to the emergency color [Black] if the loading fails.
-        ContextCompat.getColor(context, android.R.color.black)
-    }
-}
-
-/**
- * Resolve a color and turn it into a [ColorStateList]
- * @param context [Context] required
- * @return The resolved color as a [ColorStateList]
- * @see toColor
- */
-fun @receiver:ColorRes Int.toStateList(context: Context) =
-    ColorStateList.valueOf(toColor(context))
-
-/**
- * Resolve a drawable resource into a [Drawable]
- */
-fun @receiver:DrawableRes Int.toDrawable(context: Context) =
-    ContextCompat.getDrawable(context, this)
-
-/**
- * Resolve a drawable resource into an [AnimatedVectorDrawable]
- * @see toDrawable
- */
-fun @receiver:DrawableRes Int.toAnimDrawable(context: Context) =
-    toDrawable(context) as AnimatedVectorDrawable
-
-/**
- * Resolve this int into a color as if it was an attribute
- */
-@ColorInt
-fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
-    // Convert the attribute into its color
-    val resolvedAttr = TypedValue()
-    context.theme.resolveAttribute(this, resolvedAttr, true)
-
-    // Then convert it to a proper color
-    val color = if (resolvedAttr.resourceId != 0) {
-        resolvedAttr.resourceId
-    } else {
-        resolvedAttr.data
-    }
-
-    return color.toColor(context)
-}
-
-/**
- * Create a toast using the provided string resource.
- */
-fun Context.showToast(@StringRes str: Int) {
-    Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
 }
 
 /**
@@ -198,6 +134,81 @@ fun Context.newMainIntent(): PendingIntent {
             PendingIntent.FLAG_IMMUTABLE
         else 0
     )
+}
+
+/**
+ * Create a toast using the provided string resource.
+ */
+fun Context.showToast(@StringRes str: Int) {
+    Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
+}
+
+/**
+ * Convenience method for getting a plural.
+ * @param pluralsRes Resource for the plural
+ * @param value Int value for the plural.
+ * @return The formatted string requested
+ */
+fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
+    return resources.getQuantityString(pluralsRes, value, value)
+}
+
+/**
+ * Resolve a color.
+ * @param context [Context] required
+ * @return The resolved color, black if the resolving process failed.
+ */
+@ColorInt
+fun @receiver:ColorRes Int.resolveColor(context: Context): Int {
+    return try {
+        ContextCompat.getColor(context, this)
+    } catch (e: Resources.NotFoundException) {
+        logE("Attempted color load failed: ${e.stackTraceToString()}")
+
+        // Default to the emergency color [Black] if the loading fails.
+        ContextCompat.getColor(context, android.R.color.black)
+    }
+}
+
+/**
+ * Resolve a color and turn it into a [ColorStateList]
+ * @param context [Context] required
+ * @return The resolved color as a [ColorStateList]
+ * @see resolveColor
+ */
+fun @receiver:ColorRes Int.resolveStateList(context: Context) =
+    ColorStateList.valueOf(resolveColor(context))
+
+/**
+ * Resolve a drawable resource into a [Drawable]
+ */
+fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
+    requireNotNull(ContextCompat.getDrawable(context, this))
+
+/**
+ * Resolve a drawable resource into an [AnimatedVectorDrawable]
+ * @see resolveDrawable
+ */
+fun @receiver:DrawableRes Int.toAnimDrawable(context: Context) =
+    resolveDrawable(context) as AnimatedVectorDrawable
+
+/**
+ * Resolve this int into a color as if it was an attribute
+ */
+@ColorInt
+fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
+    // Convert the attribute into its color
+    val resolvedAttr = TypedValue()
+    context.theme.resolveAttribute(this, resolvedAttr, true)
+
+    // Then convert it to a proper color
+    val color = if (resolvedAttr.resourceId != 0) {
+        resolvedAttr.resourceId
+    } else {
+        resolvedAttr.data
+    }
+
+    return color.resolveColor(context)
 }
 
 /**
@@ -235,16 +246,15 @@ fun isEdgeOn(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
 
 /**
  * Determine if the device is currently in landscape.
- * @param resources [Resources] required
  */
-fun isLandscape(resources: Resources): Boolean {
+fun Context.isLandscape(): Boolean {
     return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }
 
 /**
  * Determine if we are in tablet mode or not
  */
-fun isTablet(resources: Resources): Boolean {
+fun Context.isTablet(): Boolean {
     val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
 
     return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE ||
@@ -254,27 +264,11 @@ fun isTablet(resources: Resources): Boolean {
 /**
  * Determine if the tablet is XLARGE, ignoring normal tablets.
  */
-fun isXLTablet(resources: Resources): Boolean {
+fun Context.isXLTablet(): Boolean {
     val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
 
     return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE
 }
-
-/**
- * Get the span count for most RecyclerViews. These probably work right on most displays. Trust me.
- */
-fun RecyclerView.getSpans(): Int {
-    return if (isLandscape(resources)) {
-        if (isXLTablet(resources)) 3 else 2
-    } else {
-        if (isXLTablet(resources)) 2 else 1
-    }
-}
-
-/**
- * Returns whether a recyclerview can scroll.
- */
-fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
 
 /**
  * Check if we are in the "Irregular" landscape mode (e.g landscape, but nav bar is on the sides)
@@ -282,7 +276,7 @@ fun RecyclerView.canScroll() = computeVerticalScrollRange() > height
  * @return True if we are in the irregular landscape mode, false if not.
  */
 fun Activity.isIrregularLandscape(): Boolean {
-    return isLandscape(resources) && !isSystemBarOnBottom(this)
+    return isLandscape() && !isSystemBarOnBottom(this)
 }
 
 /**

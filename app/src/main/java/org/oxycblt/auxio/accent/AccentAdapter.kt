@@ -16,17 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings.accent
+package org.oxycblt.auxio.accent
 
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.inflater
-import org.oxycblt.auxio.ui.toStateList
+import org.oxycblt.auxio.inflater
+import org.oxycblt.auxio.resolveStateList
 
 /**
  * An adapter that displays the list of all possible accents, and highlights the current one.
@@ -84,9 +82,9 @@ class AccentAdapter(
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
 
-                R.color.surface.toStateList(context)
+                R.color.surface.resolveStateList(context)
             } else {
-                android.R.color.transparent.toStateList(context)
+                android.R.color.transparent.resolveStateList(context)
             }
         }
     }

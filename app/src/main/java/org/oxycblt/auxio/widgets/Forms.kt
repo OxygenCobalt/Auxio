@@ -22,10 +22,10 @@ import android.content.Context
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.newBroadcastIntent
+import org.oxycblt.auxio.newMainIntent
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.ui.newBroadcastIntent
-import org.oxycblt.auxio.ui.newMainIntent
 
 private fun createViews(
     context: Context,
@@ -41,7 +41,7 @@ private fun createViews(
     return views
 }
 
-private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
+private fun RemoteViews.applyMeta(state: WidgetState) {
     setTextViewText(R.id.widget_song, state.song.name)
     setTextViewText(R.id.widget_artist, state.song.album.artist.name)
 }
@@ -96,20 +96,20 @@ fun createDefaultWidget(context: Context): RemoteViews {
 
 fun createMiniWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_mini)
-    views.applyMeta(context, state)
+    views.applyMeta(state)
     return views
 }
 
 fun createCompactWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_compact)
-    views.applyMeta(context, state)
+    views.applyMeta(state)
     views.applyCover(context, state)
     return views
 }
 
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_small)
-    views.applyMeta(context, state)
+    views.applyMeta(state)
     views.applyCover(context, state)
     views.applyControls(context, state)
     return views
@@ -117,7 +117,7 @@ fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
 
 fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_full)
-    views.applyMeta(context, state)
+    views.applyMeta(state)
     views.applyCover(context, state)
     views.applyControls(context, state)
 

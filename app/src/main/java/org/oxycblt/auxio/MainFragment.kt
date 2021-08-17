@@ -32,15 +32,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.isLandscape
-import org.oxycblt.auxio.ui.isTablet
-import org.oxycblt.auxio.ui.resolveAttr
-import org.oxycblt.auxio.ui.toColor
 
 /**
  * The primary "Home" [Fragment] for Auxio.
@@ -56,7 +52,7 @@ class MainFragment : Fragment() {
     ): View {
         val binding = FragmentMainBinding.inflate(inflater)
 
-        val colorActive = Accent.get().color.toColor(requireContext())
+        val colorActive = Accent.get().color.resolveColor(requireContext())
         val colorInactive = ColorUtils.setAlphaComponent(colorActive, 150)
 
         // Set up the tints for the navigation icons + text
@@ -86,7 +82,7 @@ class MainFragment : Fragment() {
             itemIconTintList = navTints
             itemTextColor = navTints
 
-            if (isTablet(resources) && !isLandscape(resources)) {
+            if (requireContext().isTablet() && !requireContext().isLandscape()) {
                 labelVisibilityMode = BottomNavigationView.LABEL_VISIBILITY_LABELED
             }
 
@@ -160,7 +156,7 @@ class MainFragment : Fragment() {
         if (song == null) {
             logD("Hiding CompactPlaybackFragment since no song is being played.")
 
-            binding.compactPlayback.visibility = if (isLandscape(resources)) {
+            binding.compactPlayback.visibility = if (requireContext().isLandscape()) {
                 View.INVISIBLE
             } else {
                 View.GONE

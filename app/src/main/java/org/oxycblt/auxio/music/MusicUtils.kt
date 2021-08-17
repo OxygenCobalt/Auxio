@@ -27,7 +27,7 @@ import android.widget.TextView
 import androidx.core.text.isDigitsOnly
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.getPlural
+import org.oxycblt.auxio.getPlural
 
 /**
  * A complete array of all the hardcoded genre values for ID3 <v3, contains standard genres and

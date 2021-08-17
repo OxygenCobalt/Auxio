@@ -30,9 +30,9 @@ import android.util.SizeF
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.coil.loadBitmap
+import org.oxycblt.auxio.isLandscape
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.ui.isLandscape
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
@@ -167,7 +167,7 @@ class WidgetProvider : AppWidgetProvider() {
                 var height: Int
 
                 // Landscape/Portrait modes use different dimen bounds
-                if (isLandscape(context.resources)) {
+                if (context.isLandscape()) {
                     width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
                     height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
                 } else {

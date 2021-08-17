@@ -16,24 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.music
+package org.oxycblt.auxio.excluded
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
+import org.oxycblt.auxio.assertBackgroundThread
 import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.ui.assertBackgroundThread
-import org.oxycblt.auxio.ui.queryAll
+import org.oxycblt.auxio.queryAll
 
 /**
- * Database for storing blacklisted paths.
+ * Database for storing excluded directories.
  * Note that the paths stored here will not work with MediaStore unless you append a "%" at the end.
  * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
  * @author OxygenCobalt
  */
-class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMN_PATH TEXT NOT NULL)")
     }
@@ -94,12 +94,12 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
         const val COLUMN_PATH = "COLUMN_PATH"
 
         @Volatile
-        private var INSTANCE: BlacklistDatabase? = null
+        private var INSTANCE: ExcludedDatabase? = null
 
         /**
          * Get/Instantiate the single instance of [PlaybackStateDatabase].
          */
-        fun getInstance(context: Context): BlacklistDatabase {
+        fun getInstance(context: Context): ExcludedDatabase {
             val currentInstance = INSTANCE
 
             if (currentInstance != null) {
@@ -107,7 +107,7 @@ class BlacklistDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, n
             }
 
             synchronized(this) {
-                val newInstance = BlacklistDatabase(context.applicationContext)
+                val newInstance = ExcludedDatabase(context.applicationContext)
                 INSTANCE = newInstance
                 return newInstance
             }

@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.sliceArticle
-import org.oxycblt.auxio.ui.getSpans
+import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
 /**
@@ -78,7 +78,6 @@ class LibraryFragment : Fragment() {
             adapter = libraryAdapter
             setHasFixedSize(true)
 
-            val spans = getSpans()
             if (spans != 1) {
                 layoutManager = GridLayoutManager(requireContext(), spans)
             }

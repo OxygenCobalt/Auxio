@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.canScroll
 import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
@@ -34,10 +35,9 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.CenterSmoothScroller
+import org.oxycblt.auxio.showToast
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.canScroll
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.ui.showToast
 
 /**
  * The [DetailFragment] for an album.

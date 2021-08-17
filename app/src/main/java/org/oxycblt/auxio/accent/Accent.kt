@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.accent
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -27,6 +27,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.resolveStateList
 
 /**
  * A list of all possible accents.
@@ -94,7 +95,7 @@ data class Accent(
     /**
      * Get a [ColorStateList] of the accent
      */
-    fun getStateList(context: Context) = color.toStateList(context)
+    fun getStateList(context: Context) = color.resolveStateList(context)
 
     /**
      * Get the name (in bold) and the hex value of a accent.

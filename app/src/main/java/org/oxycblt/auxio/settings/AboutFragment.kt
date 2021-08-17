@@ -34,7 +34,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.ui.showToast
+import org.oxycblt.auxio.showToast
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.

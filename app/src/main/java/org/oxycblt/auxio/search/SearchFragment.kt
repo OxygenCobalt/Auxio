@@ -40,7 +40,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.getSpans
+import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
 /**
@@ -90,7 +90,9 @@ class SearchFragment : Fragment() {
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            val spans = getSpans()
+
+            // It's expensive to calculate the spans for each position in the list, so cache it.
+            val spans = spans
 
             if (spans != -1) {
                 layoutManager = GridLayoutManager(requireContext(), spans).apply {

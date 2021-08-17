@@ -21,10 +21,10 @@ package org.oxycblt.auxio.settings
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import org.oxycblt.auxio.accent.ACCENTS
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.recycler.DisplayMode
-import org.oxycblt.auxio.ui.ACCENTS
-import org.oxycblt.auxio.ui.Accent
 
 // A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0

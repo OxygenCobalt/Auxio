@@ -581,8 +581,8 @@ class PlaybackStateManager private constructor() {
         logD("Getting state from DB.")
 
         val start: Long
-        val playbackState: PlaybackState?
-        val queueItems: List<QueueItem>
+        val playbackState: DatabaseState?
+        val queueItems: List<DatabaseQueueItem>
 
         withContext(Dispatchers.IO) {
             start = System.currentTimeMillis()
@@ -609,11 +609,11 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Pack the current state into a [PlaybackState] to be saved.
-     * @return A [PlaybackState] reflecting the current state.
+     * Pack the current state into a [DatabaseState] to be saved.
+     * @return A [DatabaseState] reflecting the current state.
      */
-    private fun packToPlaybackState(): PlaybackState {
-        return PlaybackState(
+    private fun packToPlaybackState(): DatabaseState {
+        return DatabaseState(
             songHash = mSong?.hash ?: Int.MIN_VALUE,
             position = mPosition,
             parentHash = mParent?.hash ?: Int.MIN_VALUE,
@@ -628,7 +628,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Unpack a [playbackState] into this instance.
      */
-    private fun unpackFromPlaybackState(playbackState: PlaybackState) {
+    private fun unpackFromPlaybackState(playbackState: DatabaseState) {
         // Turn the simplified information from PlaybackState into usable data.
 
         // Do queue setup first
@@ -646,21 +646,21 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Pack the queue into a list of [QueueItem]s to be saved.
+     * Pack the queue into a list of [DatabaseQueueItem]s to be saved.
      * @return A list of packed queue items.
      */
-    private fun packQueue(): List<QueueItem> {
-        val unified = mutableListOf<QueueItem>()
+    private fun packQueue(): List<DatabaseQueueItem> {
+        val unified = mutableListOf<DatabaseQueueItem>()
 
         var queueItemId = 0L
 
         mUserQueue.forEach { song ->
-            unified.add(QueueItem(queueItemId, song.hash, song.album.hash, true))
+            unified.add(DatabaseQueueItem(queueItemId, song.hash, song.album.hash, true))
             queueItemId++
         }
 
         mQueue.forEach { song ->
-            unified.add(QueueItem(queueItemId, song.hash, song.album.hash, false))
+            unified.add(DatabaseQueueItem(queueItemId, song.hash, song.album.hash, false))
             queueItemId++
         }
 
@@ -669,9 +669,9 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Unpack a list of queue items into a queue & user queue.
-     * @param queueItems The list of [QueueItem]s to unpack.
+     * @param queueItems The list of [DatabaseQueueItem]s to unpack.
      */
-    private fun unpackQueue(queueItems: List<QueueItem>) {
+    private fun unpackQueue(queueItems: List<DatabaseQueueItem>) {
         for (item in queueItems) {
             musicStore.findSongFast(item.songHash, item.albumHash)?.let { song ->
                 if (item.isUserQueue) {

@@ -22,11 +22,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.disable
+import org.oxycblt.auxio.inflater
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -37,10 +40,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DiffCallback
 import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
 import org.oxycblt.auxio.recycler.viewholders.Highlightable
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.disable
-import org.oxycblt.auxio.ui.inflater
-import org.oxycblt.auxio.ui.setTextColorResource
+import org.oxycblt.auxio.setTextColorResource
 
 /**
  * An adapter for displaying the [Album]s and [Song]s of an artist.

@@ -28,16 +28,16 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.children
 import coil.Coil
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.accent.Accent
+import org.oxycblt.auxio.accent.AccentDialog
+import org.oxycblt.auxio.excluded.ExcludedDialog
+import org.oxycblt.auxio.isNight
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
-import org.oxycblt.auxio.settings.accent.AccentDialog
-import org.oxycblt.auxio.settings.blacklist.BlacklistDialog
 import org.oxycblt.auxio.settings.ui.IntListPrefDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
-import org.oxycblt.auxio.ui.Accent
-import org.oxycblt.auxio.ui.isNight
-import org.oxycblt.auxio.ui.showToast
+import org.oxycblt.auxio.showToast
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -103,7 +103,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                 SettingsManager.KEY_BLACK_THEME -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        if (requireContext().isNight()) {
+                        if (requireContext().isNight) {
                             requireActivity().recreate()
                         }
 
@@ -168,7 +168,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                 SettingsManager.KEY_BLACKLIST -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        BlacklistDialog().show(childFragmentManager, BlacklistDialog.TAG)
+                        ExcludedDialog().show(childFragmentManager, ExcludedDialog.TAG)
                         true
                     }
                 }
