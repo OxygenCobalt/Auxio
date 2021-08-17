@@ -27,8 +27,8 @@
         <ImageView
             android:id="@+id/genre_image"
             style="@style/Widget.ImageView.Full"
-            android:layout_width="@dimen/size_cover_detail"
-            android:layout_height="@dimen/size_cover_detail"
+            android:layout_width="@dimen/size_cover_huge"
+            android:layout_height="@dimen/size_cover_huge"
             android:layout_marginTop="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_genre_image(genre.name)}"
             app:genreImage="@{genre}"
@@ -94,6 +94,7 @@
             android:backgroundTint="?attr/colorAccent"
             android:onClick="@{() -> playbackModel.playGenre(genre, true)}"
             android:text="@string/lbl_shuffle"
+            android:layout_marginEnd="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="@+id/genre_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_play_button"

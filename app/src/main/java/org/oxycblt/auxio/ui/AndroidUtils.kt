@@ -207,7 +207,6 @@ fun Context.newMainIntent(): PendingIntent {
 fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
 
-
 /**
  * Assert that we are on a background thread.
  */

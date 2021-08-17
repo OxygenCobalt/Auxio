@@ -64,16 +64,11 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="Widget.Component.AppWidget.Panel.Base">
+    <style name="Widget.Component.AppWidget.Panel" parent="">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:padding">@dimen/spacing_medium</item>
         <item name="android:orientation">vertical</item>
         <item name="android:background">?attr/colorSurface</item>
     </style>
-
-    <style name="Widget.Component.AppWidget.Panel" parent="Widget.Component.AppWidget.Panel.Base">
-        <item name="android:elevation">@dimen/elevation_normal</item>
-    </style>
-
 </resources>

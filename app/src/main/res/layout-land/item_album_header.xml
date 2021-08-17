@@ -26,8 +26,8 @@
         <ImageView
             android:id="@+id/album_cover"
             style="@style/Widget.ImageView.Full"
-            android:layout_width="@dimen/size_cover_detail_land"
-            android:layout_height="@dimen/size_cover_detail_land"
+            android:layout_width="@dimen/size_cover_huge_land"
+            android:layout_height="@dimen/size_cover_huge_land"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_album_cover(album.name)}"

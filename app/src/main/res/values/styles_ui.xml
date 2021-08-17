@@ -27,7 +27,7 @@
 
     <style name="Widget.ProgressBar.Compact" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/height_compact_progress</item>
+        <item name="android:layout_height">@dimen/size_stroke</item>
         <item name="android:progressBackgroundTint">?attr/colorControlNormal</item>
         <item name="android:progressTint">?attr/colorAccent</item>
     </style>
@@ -216,6 +216,6 @@
 
     <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.Button.Vibrant.Base">
         <item name="strokeColor">@color/divider</item>
-        <item name="strokeWidth">@dimen/width_play_stroke</item>
+        <item name="strokeWidth">@dimen/size_stroke</item>
     </style>
 </resources>

@@ -16,21 +16,13 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/loading_splash"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher_foreground"
-            android:contentDescription="@string/desc_auxio_icon"
-            android:padding="@dimen/spacing_huge" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loading_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_large"
             android:animateLayoutChanges="true"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical">
 

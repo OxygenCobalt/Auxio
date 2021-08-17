@@ -23,9 +23,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
-import org.oxycblt.auxio.ui.queryAll
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.ui.assertBackgroundThread
+import org.oxycblt.auxio.ui.queryAll
 
 /**
  * A SQLite database for managing the persistent playback state and queue.

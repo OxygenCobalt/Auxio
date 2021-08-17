@@ -30,7 +30,7 @@
             android:animateLayoutChanges="true"
             android:background="?android:attr/colorBackground"
             android:baselineAligned="false"
-            android:elevation="@dimen/elevation_normal"
+            android:elevation="8dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 

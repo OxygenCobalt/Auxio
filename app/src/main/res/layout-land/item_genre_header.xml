@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/genre_image"
-            android:layout_width="@dimen/size_cover_detail_land"
-            android:layout_height="@dimen/size_cover_detail_land"
+            android:layout_width="@dimen/size_cover_huge_land"
+            android:layout_height="@dimen/size_cover_huge_land"
             android:layout_margin="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_genre_image(genre.name)}"
             style="@style/Widget.ImageView.Full"

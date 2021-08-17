@@ -22,8 +22,8 @@
         <ImageView
             android:id="@+id/artist_image"
             style="@style/Widget.ImageView.Full"
-            android:layout_width="@dimen/size_cover_detail"
-            android:layout_height="@dimen/size_cover_detail"
+            android:layout_width="@dimen/size_cover_huge"
+            android:layout_height="@dimen/size_cover_huge"
             android:layout_marginTop="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_artist_image(artist.name)}"
             app:artistImage="@{artist}"

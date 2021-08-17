@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+    TODO: Rejig these dimens to line up with the 8dp grid. Dimens like the stroke should
+     be increased.-->
+
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
     <dimen name="spacing_micro">2dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
@@ -12,30 +16,29 @@
     <dimen name="spacing_insane">128dp</dimen>
 
     <!-- Height Namespace | Height for UI elements -->
-    <dimen name="height_compact_progress">2dp</dimen>
     <dimen name="height_widget_button">32dp</dimen>
 
     <!-- Width Namespace | Width for UI elements -->
     <dimen name="width_track_number">32dp</dimen>
-    <dimen name="width_play_stroke">1dp</dimen>
     <dimen name="width_fast_scroll">20dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_small_unb_ripple">18dp</dimen>
     <dimen name="size_unb_ripple">24dp</dimen>
 
-    <dimen name="size_cover_compact">46dp</dimen>
+    <dimen name="size_cover_compact">48dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
-    <dimen name="size_cover_large">68dp</dimen>
-    <dimen name="size_cover_detail">260dp</dimen>
-    <dimen name="size_cover_detail_land">130dp</dimen>
+    <dimen name="size_cover_large">64dp</dimen>
+    <dimen name="size_cover_huge">264dp</dimen>
+    <dimen name="size_cover_huge_land">136dp</dimen>
 
-    <dimen name="size_play_pause">70dp</dimen>
+    <dimen name="size_play_pause">72dp</dimen>
     <dimen name="size_play_pause_compact">36dp</dimen>
     <dimen name="size_scroll_thumb">48dp</dimen>
     <dimen name="size_clear">32dp</dimen>
 
-    <dimen name="size_app_icon">50dp</dimen>
+    <dimen name="size_app_icon">48dp</dimen>
+    <dimen name="size_stroke">2dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_small">16sp</dimen>
