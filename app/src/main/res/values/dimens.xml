@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    TODO: Rejig these dimens to line up with the 8dp grid. Dimens like the stroke should
-     be increased.-->
+    <!-- TODO: Rejig these dimens to line up with the 8dp grid. -->
 
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
     <dimen name="spacing_micro">2dp</dimen>
@@ -38,7 +36,8 @@
     <dimen name="size_clear">32dp</dimen>
 
     <dimen name="size_app_icon">48dp</dimen>
-    <dimen name="size_stroke">2dp</dimen>
+    <dimen name="size_stroke_small">1dp</dimen>
+    <dimen name="size_stroke_large">2dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_small">16sp</dimen>

@@ -71,13 +71,9 @@ class WidgetProvider : AppWidgetProvider() {
             )
 
             // Map each widget form to the cells where it would look at least okay.
-            // The large widgets are 140 instead of 110 so that they're backwards compatible
-            // with the old widget size reporting
             val views = mapOf(
-                SizeF(180f, 40f) to createMiniWidget(context, state),
-                SizeF(250f, 40f) to createCompactWidget(context, state),
-                SizeF(180f, 140f) to createSmallWidget(context, state),
-                SizeF(250f, 140f) to createFullWidget(context, state)
+                SizeF(180f, 110f) to createSmallWidget(context, state),
+                SizeF(250f, 110f) to createFullWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)

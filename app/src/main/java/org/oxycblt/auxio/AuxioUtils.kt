@@ -189,7 +189,7 @@ fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
  * Resolve a drawable resource into an [AnimatedVectorDrawable]
  * @see resolveDrawable
  */
-fun @receiver:DrawableRes Int.toAnimDrawable(context: Context) =
+fun @receiver:DrawableRes Int.resolveAnimDrawable(context: Context) =
     resolveDrawable(context) as AnimatedVectorDrawable
 
 /**

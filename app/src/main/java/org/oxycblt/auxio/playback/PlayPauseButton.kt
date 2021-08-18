@@ -26,19 +26,20 @@ import android.util.AttributeSet
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageButton
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.toAnimDrawable
+import org.oxycblt.auxio.resolveAnimDrawable
 
 /**
  * Custom [AppCompatImageButton] that handles the animated play/pause icons.
  * @author OxygenCobalt
+ * TODO: Replace this with a material icon that does the path manipulation manually.
  */
 class PlayPauseButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
-    private val iconPauseToPlay = R.drawable.ic_pause_to_play.toAnimDrawable(context)
-    private val iconPlayToPause = R.drawable.ic_play_to_pause.toAnimDrawable(context)
+    private val iconPauseToPlay = R.drawable.ic_pause_to_play.resolveAnimDrawable(context)
+    private val iconPlayToPause = R.drawable.ic_play_to_pause.resolveAnimDrawable(context)
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

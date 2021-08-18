@@ -94,19 +94,6 @@ fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
 }
 
-fun createMiniWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_mini)
-    views.applyMeta(state)
-    return views
-}
-
-fun createCompactWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_compact)
-    views.applyMeta(state)
-    views.applyCover(context, state)
-    return views
-}
-
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_small)
     views.applyMeta(state)
