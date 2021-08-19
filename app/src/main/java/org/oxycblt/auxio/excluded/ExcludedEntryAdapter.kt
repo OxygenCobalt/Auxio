@@ -21,7 +21,7 @@ package org.oxycblt.auxio.excluded
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemBlacklistEntryBinding
+import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
 import org.oxycblt.auxio.inflater
 
 /**
@@ -36,7 +36,7 @@ class ExcludedEntryAdapter(
     override fun getItemCount() = paths.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemBlacklistEntryBinding.inflate(parent.context.inflater))
+        return ViewHolder(ItemExcludedDirBinding.inflate(parent.context.inflater))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -50,7 +50,7 @@ class ExcludedEntryAdapter(
     }
 
     inner class ViewHolder(
-        private val binding: ItemBlacklistEntryBinding
+        private val binding: ItemExcludedDirBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.layoutParams = RecyclerView.LayoutParams(
@@ -59,9 +59,9 @@ class ExcludedEntryAdapter(
         }
 
         fun bind(path: String) {
-            binding.blacklistTitle.text = path
-            binding.blacklistTitle.requestLayout()
-            binding.blacklistClear.setOnClickListener {
+            binding.excludedPath.text = path
+            binding.excludedPath.requestLayout()
+            binding.excludedClear.setOnClickListener {
                 onClear(path)
             }
         }

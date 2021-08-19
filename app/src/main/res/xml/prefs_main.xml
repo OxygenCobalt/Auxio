@@ -149,8 +149,8 @@
         <Preference
             app:iconSpaceReserved="false"
             app:key="KEY_BLACKLIST"
-            app:summary="@string/set_blacklist_desc"
-            app:title="@string/set_blacklist" />
+            app:summary="@string/set_excluded_desc"
+            app:title="@string/set_excluded" />
 
     </PreferenceCategory>
 </PreferenceScreen>

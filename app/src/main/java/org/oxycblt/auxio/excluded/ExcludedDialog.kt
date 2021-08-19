@@ -33,7 +33,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogBlacklistBinding
+import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.ui.LifecycleDialog
@@ -56,7 +56,7 @@ class ExcludedDialog : LifecycleDialog() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = DialogBlacklistBinding.inflate(inflater)
+        val binding = DialogExcludedBinding.inflate(inflater)
 
         val adapter = ExcludedEntryAdapter { path ->
             blacklistModel.removePath(path)
@@ -68,7 +68,7 @@ class ExcludedDialog : LifecycleDialog() {
 
         // --- UI SETUP ---
 
-        binding.blacklistRecycler.adapter = adapter
+        binding.excludedRecycler.adapter = adapter
 
         // Now that the dialog exists, we get the view manually when the dialog is shown
         // and override its click-listener so that the dialog does not auto-dismiss when we
@@ -95,7 +95,7 @@ class ExcludedDialog : LifecycleDialog() {
         blacklistModel.paths.observe(viewLifecycleOwner) { paths ->
             adapter.submitList(paths)
 
-            binding.blacklistEmptyText.isVisible = paths.isEmpty()
+            binding.excludedEmpty.isVisible = paths.isEmpty()
         }
 
         logD("Dialog created.")
@@ -104,7 +104,7 @@ class ExcludedDialog : LifecycleDialog() {
     }
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.set_blacklist)
+        builder.setTitle(R.string.set_excluded)
 
         // Dont set the click listener here, we do some custom black magic in onCreateView instead.
         builder.setNeutralButton(R.string.lbl_add, null)

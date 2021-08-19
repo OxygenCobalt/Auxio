@@ -10,7 +10,7 @@
         android:paddingTop="@dimen/spacing_small">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/blacklist_recycler"
+            android:id="@+id/excluded_recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -18,10 +18,10 @@
             android:overScrollMode="never"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="1"
-            tools:listitem="@layout/item_blacklist_entry" />
+            tools:listitem="@layout/item_excluded_dir" />
 
         <TextView
-            android:id="@+id/blacklist_empty_text"
+            android:id="@+id/excluded_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"

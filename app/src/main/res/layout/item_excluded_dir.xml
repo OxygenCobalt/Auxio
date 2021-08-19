@@ -9,19 +9,19 @@
         android:focusable="false">
 
         <TextView
-            android:id="@+id/blacklist_title"
+            android:id="@+id/excluded_path"
             style="@style/ItemText.Primary"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:maxLines="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/blacklist_clear"
+            app:layout_constraintEnd_toStartOf="@+id/excluded_clear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="/storage/emulated/0/directory" />
 
         <ImageButton
-            android:id="@+id/blacklist_clear"
+            android:id="@+id/excluded_clear"
             style="@style/Widget.Button.Unbounded"
             android:layout_width="@dimen/size_clear"
             android:layout_height="@dimen/size_clear"

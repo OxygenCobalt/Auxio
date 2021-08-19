@@ -48,10 +48,11 @@
     </style>
 
     <style name="Widget.Component.AppWidget.Button.Base" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_height">@dimen/height_widget_button</item>
+        <item name="android:layout_height">@dimen/size_unbounded</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/spacing_tiny</item>
     </style>
 
     <style name="Widget.Component.AppWidget.Button" parent="Widget.Component.AppWidget.Button.Base">

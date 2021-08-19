@@ -92,8 +92,8 @@
     <string name="set_content">Contenido</string>
     <string name="set_save">Guardar estado de reproducción</string>
     <string name="set_save_desc">Guardar el estado actual de la reproducción ahora</string>
-    <string name="set_blacklist">Carpetas excluidas</string>
-    <string name="set_blacklist_desc">El contenido de las carpetas excluidas se oculta de la biblioteca</string>
+    <string name="set_excluded">Carpetas excluidas</string>
+    <string name="set_excluded_desc">El contenido de las carpetas excluidas se oculta de la biblioteca</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No se encontró música</string>

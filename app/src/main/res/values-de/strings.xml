@@ -89,8 +89,8 @@
     <string name="set_content">Content</string>
     <string name="set_save">Wiedergabezustand abspeichern</string>
     <string name="set_save_desc">Der aktuell Wiedergabezustand jetzt abspeichern</string>
-    <string name="set_blacklist">Ausgeschlossene Ordner</string>
-    <string name="set_blacklist_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
+    <string name="set_excluded">Ausgeschlossene Ordner</string>
+    <string name="set_excluded_desc">Die Inhalte der ausgeschlossene Ordner sind versteckt von deiner Musikbibliothek</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
