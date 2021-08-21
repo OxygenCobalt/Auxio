@@ -42,7 +42,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
  * - For widgets 4x2 or higher, show a complete view with all playback controls
  *
  * There are some minor problems with this implementation [notably UI jittering when the widget
- * picks a new layout below Android 12], but this is tolerable.
+ * picks a new layout below Android 12], but this is tolerable. It may be improved in the future.
  *
  * For more specific details about these sub-widgets, see Forms.kt.
  */
@@ -140,7 +140,7 @@ class WidgetProvider : AppWidgetProvider() {
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
             // This is mostly a guess based on RemoteView's documentation. It seems to work well
-            // on most launchers. It may be improved when Android 12's source is released.
+            // enough on most launchers.
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.

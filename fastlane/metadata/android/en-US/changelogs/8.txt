@@ -1,0 +1,6 @@
+- Added Widgets
+- Android 12 support
+- Minor UI improvements
+- Fast scroller now truncates more aggressively when there is not enough space
+- Fixed issue where the new about screen would be cut off in landscape mode
+- Fixed issue where songs from two albums with the same year would be incorrectly shown in the artist view

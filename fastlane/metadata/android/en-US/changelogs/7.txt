@@ -6,4 +6,4 @@
 - Added an option to pause when a song repeats
 - Article sort is now used everywhere
 - Fixed issues regarding playback from the lock screen
-- Removed the `ACCESS_NETWORK_STATE` permission
+- Removed the ACCESS_NETWORK_STATE permission

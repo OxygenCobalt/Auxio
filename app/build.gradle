@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.oxycblt.auxio"
-        versionName "1.4.1"
-        versionCode 7
+        versionName "1.4.2"
+        versionCode 8
 
         minSdkVersion 21
         targetSdkVersion 31
