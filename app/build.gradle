@@ -33,6 +33,8 @@ android {
         }
     }
 
+    // ExoPlayer needs Java 8 to compile.
+
     kotlinOptions {
         jvmTarget = "1.8"
     }

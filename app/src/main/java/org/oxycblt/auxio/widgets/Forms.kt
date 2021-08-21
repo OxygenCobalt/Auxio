@@ -41,9 +41,19 @@ private fun createViews(
     return views
 }
 
-private fun RemoteViews.applyMeta(state: WidgetState) {
+private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
     setTextViewText(R.id.widget_song, state.song.name)
     setTextViewText(R.id.widget_artist, state.song.album.artist.name)
+
+    if (state.albumArt != null) {
+        setImageViewBitmap(R.id.widget_cover, state.albumArt)
+        setContentDescription(
+            R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
+        )
+    } else {
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
+        setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
+    }
 }
 
 fun RemoteViews.applyControls(context: Context, state: WidgetState) {
@@ -78,34 +88,20 @@ fun RemoteViews.applyControls(context: Context, state: WidgetState) {
     )
 }
 
-fun RemoteViews.applyCover(context: Context, state: WidgetState) {
-    if (state.albumArt != null) {
-        setImageViewBitmap(R.id.widget_cover, state.albumArt)
-        setContentDescription(
-            R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
-        )
-    } else {
-        setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
-        setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
-    }
-}
-
 fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
 }
 
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_small)
-    views.applyMeta(state)
-    views.applyCover(context, state)
+    views.applyMeta(context, state)
     views.applyControls(context, state)
     return views
 }
 
 fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
     val views = createViews(context, R.layout.widget_full)
-    views.applyMeta(state)
-    views.applyCover(context, state)
+    views.applyMeta(context, state)
     views.applyControls(context, state)
 
     views.setOnClickPendingIntent(
