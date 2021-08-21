@@ -74,11 +74,10 @@
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
-            android:padding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_pause_large" />
+            tools:src="@drawable/ic_pause" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

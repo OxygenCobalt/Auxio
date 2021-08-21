@@ -148,7 +148,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
-            tools:src="@drawable/ic_pause_large" />
+            tools:src="@drawable/ic_pause" />
 
         <ImageButton
             android:id="@+id/playback_skip_next"
