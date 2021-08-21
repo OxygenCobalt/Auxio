@@ -30,6 +30,11 @@ import kotlin.math.sign
  * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
  * and [QueueAdapter] simultaneously.
  * @author OxygenCobalt
+ * TODO: Its possible to apply some elevation to the item views when they are picked up,
+ *  however you need to keep track of the viewholder in the item touch helper and reset
+ *  it when done. Theoretically this also means you can do the material drawer thing where
+ *  the bottom of the recyclerview a darker color but is only shown when an item is moved.
+ *  Maybe.
  */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter

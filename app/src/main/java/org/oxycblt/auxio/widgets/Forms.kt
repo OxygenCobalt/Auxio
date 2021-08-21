@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
@@ -127,7 +126,6 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
         state.isShuffled -> R.drawable.ic_shuffle_tinted
         else -> R.drawable.ic_shuffle
     }
-
 
     val loopRes = when (state.loopMode) {
         LoopMode.NONE -> R.drawable.ic_loop

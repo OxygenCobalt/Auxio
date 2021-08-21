@@ -24,23 +24,15 @@
         android:clickable="true"
         android:focusable="true">
 
-        <ProgressBar
-            android:id="@+id/playback_progress"
-            style="@style/Widget.ProgressBar.Compact"
-            android:progress="@{playbackModel.positionAsProgress}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:progress="70" />
-
         <ImageView
             android:id="@+id/playback_cover"
             style="@style/Widget.ImageView.Compact"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/playback_progress"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playback_progress"
+            app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_song" />
 
         <TextView
@@ -52,7 +44,7 @@
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/playback_cover"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Song Name" />
 
@@ -62,7 +54,7 @@
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
@@ -71,13 +63,22 @@
         <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Button.Unbounded"
+            android:src="@drawable/ic_playing_state"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
-            android:src="@drawable/ic_playing_state"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/playback_progress"
+            style="@style/Widget.ProgressBar.Compact"
+            android:progress="@{playbackModel.positionAsProgress}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:progress="70" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
