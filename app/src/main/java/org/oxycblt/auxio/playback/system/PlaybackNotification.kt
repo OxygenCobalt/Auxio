@@ -46,7 +46,7 @@ class PlaybackNotification private constructor(
     private val context: Context,
     mediaToken: MediaSessionCompat.Token
 ) : NotificationCompat.Builder(context, CHANNEL_ID) {
-    val settingsManager = SettingsManager.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
     init {
         setSmallIcon(R.drawable.ic_song)

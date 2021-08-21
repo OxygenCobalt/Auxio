@@ -313,6 +313,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let { song ->
+            connector.onSongUpdate(song)
             notification.setMetadata(song, ::startForegroundOrNotify)
         }
     }
@@ -416,6 +417,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 } else {
                     startForeground(PlaybackNotification.NOTIFICATION_ID, notification.build())
                 }
+
+                isForeground = true
             } else {
                 // If we are already in foreground just update the notification
                 notificationManager.notify(
