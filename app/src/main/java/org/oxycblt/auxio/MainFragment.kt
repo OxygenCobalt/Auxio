@@ -161,8 +161,6 @@ class MainFragment : Fragment() {
             } else {
                 View.GONE
             }
-
-            playbackModel.disableAnimation()
         } else {
             binding.compactPlayback.visibility = View.VISIBLE
         }

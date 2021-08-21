@@ -79,19 +79,11 @@ class CompactPlaybackFragment : Fragment() {
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.playbackPlayPause.setPlaying(isPlaying, playbackModel.canAnimate)
-
-            playbackModel.enableAnimation()
+            binding.playbackPlayPause.isActivated = isPlaying
         }
 
         logD("Fragment Created")
 
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        playbackModel.disableAnimation()
     }
 }

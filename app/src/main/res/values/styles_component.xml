@@ -3,13 +3,13 @@
     <!-- COMPONENT-SPECIFIC STYLES. NOT RE-USABLE. -->
 
     <style name="Widget.Component.Playback.PlayPause" parent="">
-        <item name="android:layout_height">@dimen/size_play_pause</item>
-        <item name="android:layout_width">@dimen/size_play_pause</item>
+        <item name="android:layout_height">@dimen/size_btn_large</item>
+        <item name="android:layout_width">@dimen/size_btn_large</item>
         <item name="android:background">@drawable/ui_circle_ripple</item>
-        <item name="android:backgroundTint">?attr/colorAccent</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:contentDescription">@string/desc_play_pause</item>
-        <item name="android:tint">?android:attr/windowBackground</item>
+        <item name="android:tint">?attr/colorSurface</item>
+        <item name="android:src">@drawable/ic_playing_state</item>
         <item name="android:layout_marginStart">@dimen/spacing_large</item>
         <item name="android:layout_marginTop">@dimen/spacing_medium</item>
         <item name="android:layout_marginEnd">@dimen/spacing_large</item>
@@ -48,11 +48,11 @@
     </style>
 
     <style name="Widget.Component.AppWidget.Button.Base" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_height">@dimen/size_unbounded</item>
+        <item name="android:layout_height">@dimen/size_btn_small</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_tiny</item>
+        <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
     <style name="Widget.Component.AppWidget.Button" parent="Widget.Component.AppWidget.Button.Base">

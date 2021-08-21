@@ -78,7 +78,7 @@
     </style>
 
     <!-- TEXTVIEW STYLES -->
-    <style name="ItemText" parent="Widget.AppCompat.TextView">
+    <style name="Widget.TextView.Item.Base" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAlignment">viewStart</item>
@@ -87,12 +87,12 @@
         <item name="android:layout_marginStart">@dimen/spacing_medium</item>
     </style>
 
-    <style name="ItemText.Primary" parent="ItemText">
+    <style name="Widget.TextView.Item.Primary" parent="Widget.TextView.Item.Base">
         <item name="android:textAppearance">?android:attr/textAppearanceListItem</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="ItemText.Secondary" parent="ItemText">
+    <style name="Widget.TextView.Item.Secondary" parent="Widget.TextView.Item.Base">
         <item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
@@ -141,7 +141,9 @@
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
+        <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:background">@drawable/ui_header_dividers</item>
@@ -175,16 +177,16 @@
     <!-- BUTTON STYLES -->
 
     <style name="Widget.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">@dimen/size_unbounded</item>
-        <item name="android:layout_height">@dimen/size_unbounded</item>
+        <item name="android:layout_width">@dimen/size_btn_small</item>
+        <item name="android:layout_height">@dimen/size_btn_small</item>
         <item name="android:background">@drawable/ui_unbounded_ripple</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_micro</item>
+        <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
     <style name="Widget.Button.Unbounded.Small" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">@dimen/size_btn_small</item>
+        <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:paddingStart">@dimen/spacing_medium</item>
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>

@@ -18,7 +18,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_check"
             tools:backgroundTint="?attr/colorAccent"
-            tools:ignore="contentDescription" />
+            tools:ignore="ContentDescription, SpeakableTextPresentCheck" />
 
     </FrameLayout>
 </layout>

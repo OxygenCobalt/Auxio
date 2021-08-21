@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/header_title"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
             tools:src="@drawable/ic_clear" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -144,11 +144,12 @@
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <org.oxycblt.auxio.playback.PlayPauseButton
+        <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Component.Playback.PlayPause"
             android:layout_marginBottom="@dimen/spacing_large"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
+            android:contentDescription="@string/desc_play_pause"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
@@ -172,6 +173,7 @@
             android:contentDescription="@string/desc_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
+            app:tint="@color/color_accent_active"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />

@@ -6,6 +6,7 @@
     <color name="inactive">#404040</color>
     <color name="control">#ffffff</color>
     <color name="nav_bar">#01151515</color>
+    <color name="secondary_text">#bebebe</color>
 
     <!--
     Base color set derived from Music Player GO.
@@ -27,6 +28,6 @@
     <color name="orange">#ffcc80</color>
     <color name="deep_orange">#ffab91</color>
     <color name="brown">#bcaaa4</color>
-    <color name="grey">#CFCFCF</color>
+    <color name="grey">#cfcfcf</color>
     <color name="blue_grey">#b0bec5</color>
 </resources>

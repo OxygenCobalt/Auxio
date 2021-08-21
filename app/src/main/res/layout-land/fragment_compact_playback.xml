@@ -60,17 +60,16 @@
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
             tools:text="Artist Name / Album Name" />
 
-        <org.oxycblt.auxio.playback.PlayPauseButton
+        <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Button.Unbounded"
-            android:padding="0dp"
+            android:src="@drawable/ic_playing_state"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_pause" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/playback_progress"

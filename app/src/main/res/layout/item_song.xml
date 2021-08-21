@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/song_name"
-            style="@style/ItemText.Primary"
+            style="@style/Widget.TextView.Item.Primary"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/song_info"
-            style="@style/ItemText.Secondary"
+            style="@style/Widget.TextView.Item.Secondary"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"

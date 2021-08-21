@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/artist_name"
-            style="@style/ItemText.Primary"
+            style="@style/Widget.TextView.Item.Primary"
             android:text="@{artist.name}"
             app:layout_constraintBottom_toTopOf="@+id/artist_details"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/artist_details"
-            style="@style/ItemText.Secondary"
+            style="@style/Widget.TextView.Item.Secondary"
             app:artistCounts="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

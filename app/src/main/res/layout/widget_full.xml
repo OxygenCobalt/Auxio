@@ -46,7 +46,7 @@
                 android:id="@+id/widget_play_pause"
                 style="@style/Widget.Component.AppWidget.Button"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/ic_play" />
+                android:src="@drawable/ic_playing_state" />
 
             <ImageButton
                 android:id="@+id/widget_skip_next"

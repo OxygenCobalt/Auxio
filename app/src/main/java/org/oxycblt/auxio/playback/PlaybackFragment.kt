@@ -107,11 +107,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
-            binding.playbackShuffle.imageTintList = if (isShuffling) {
-                accentColor
-            } else {
-                controlColor
-            }
+            binding.playbackShuffle.isActivated = isShuffling
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) { loopMode ->
@@ -174,17 +170,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.playbackPlayPause.apply {
-                if (isPlaying) {
-                    backgroundTintList = accentColor
-                    setPlaying(true, playbackModel.canAnimate)
-                } else {
-                    backgroundTintList = controlColor
-                    setPlaying(false, playbackModel.canAnimate)
-                }
-            }
-
-            playbackModel.enableAnimation()
+            binding.playbackPlayPause.isActivated = isPlaying
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
@@ -196,12 +182,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        playbackModel.disableAnimation()
     }
 
     // --- SEEK CALLBACKS ---

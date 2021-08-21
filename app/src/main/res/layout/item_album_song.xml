@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/song_name"
-            style="@style/ItemText.Primary"
+            style="@style/Widget.TextView.Item.Primary"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_duration"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/song_duration"
-            style="@style/ItemText.Secondary"
+            style="@style/Widget.TextView.Item.Secondary"
             android:text="@{song.formattedDuration}"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"

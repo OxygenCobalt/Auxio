@@ -2,7 +2,8 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?attr/colorControlHighlight">
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="oval"
+            android:tint="@color/color_accent_active">
             <solid android:color="@android:color/white" />
         </shape>
     </item>

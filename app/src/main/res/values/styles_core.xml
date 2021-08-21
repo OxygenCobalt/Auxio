@@ -25,8 +25,10 @@
         <!-- Appearance -->
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
+
         <item name="cornerRadius">0dp</item>
 
         <!-- System-specific magic -->

@@ -70,7 +70,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Other
     private val mIsSeeking = MutableLiveData(false)
     private var mIntentUri: Uri? = null
-    private var mCanAnimate = false
 
     /** The current song. */
     val song: LiveData<Song?> get() = mSong
@@ -94,7 +93,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val loopMode: LiveData<LoopMode> get() = mLoopMode
 
     val isSeeking: LiveData<Boolean> get() = mIsSeeking
-    val canAnimate: Boolean get() = mCanAnimate
 
     /** The position as a duration string. */
     val formattedPosition = Transformations.map(mPosition) {
@@ -351,8 +349,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Flip the playing status, e.g from playing to paused
      */
     fun invertPlayingStatus() {
-        enableAnimation()
-
         playbackManager.setPlaying(!playbackManager.isPlaying)
     }
 
@@ -433,20 +429,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun setSeekingStatus(isSeeking: Boolean) {
         mIsSeeking.value = isSeeking
-    }
-
-    /**
-     * Enable animation on the play/pause button, usually done after the first LiveData fire
-     */
-    fun enableAnimation() {
-        mCanAnimate = true
-    }
-
-    /**
-     * Disable animation on play/pause button, usually done after when a UI is created
-     */
-    fun disableAnimation() {
-        mCanAnimate = false
     }
 
     // --- OVERRIDES ---

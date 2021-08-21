@@ -186,13 +186,6 @@ fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
     requireNotNull(ContextCompat.getDrawable(context, this))
 
 /**
- * Resolve a drawable resource into an [AnimatedVectorDrawable]
- * @see resolveDrawable
- */
-fun @receiver:DrawableRes Int.resolveAnimDrawable(context: Context) =
-    resolveDrawable(context) as AnimatedVectorDrawable
-
-/**
  * Resolve this int into a color as if it was an attribute
  */
 @ColorInt

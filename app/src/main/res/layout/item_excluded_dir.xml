@@ -10,7 +10,7 @@
 
         <TextView
             android:id="@+id/excluded_path"
-            style="@style/ItemText.Primary"
+            style="@style/Widget.TextView.Item.Primary"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:maxLines="@null"
@@ -23,11 +23,9 @@
         <ImageButton
             android:id="@+id/excluded_clear"
             style="@style/Widget.Button.Unbounded"
-            android:layout_width="@dimen/size_clear"
-            android:layout_height="@dimen/size_clear"
             android:contentDescription="@string/desc_blacklist_delete"
             android:src="@drawable/ic_clear"
-            android:tint="?attr/colorControlNormal"
+            app:tint="?attr/colorControlNormal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

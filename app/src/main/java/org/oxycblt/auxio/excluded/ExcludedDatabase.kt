@@ -97,7 +97,7 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
         private var INSTANCE: ExcludedDatabase? = null
 
         /**
-         * Get/Instantiate the single instance of [PlaybackStateDatabase].
+         * Get/Instantiate the single instance of [ExcludedDatabase].
          */
         fun getInstance(context: Context): ExcludedDatabase {
             val currentInstance = INSTANCE

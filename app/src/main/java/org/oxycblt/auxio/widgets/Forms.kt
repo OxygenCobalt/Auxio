@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
@@ -118,20 +119,20 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
         )
     )
 
-    // The main way the large widget differs from the other widgets is the addition of extra
-    // controls. However, since we can't retrieve the context of our views here, we cant
-    // dynamically set the image view attributes. More duplicate resources it is. This is
-    // getting really tiring.
+    // While it is technically possible to use the setColorFilter to tint these buttons, its
+    // actually less efficent than using duplicate drawables.
+    // And no, we can't control state drawables with RemoteViews. Because of course we can't.
 
     val shuffleRes = when {
         state.isShuffled -> R.drawable.ic_shuffle_tinted
         else -> R.drawable.ic_shuffle
     }
 
+
     val loopRes = when (state.loopMode) {
         LoopMode.NONE -> R.drawable.ic_loop
-        LoopMode.ALL -> R.drawable.ic_loop_all_tinted
-        LoopMode.TRACK -> R.drawable.ic_loop_one_tinted
+        LoopMode.ALL -> R.drawable.ic_loop_tinted
+        LoopMode.TRACK -> R.drawable.ic_loop_one
     }
 
     views.setImageViewResource(R.id.widget_shuffle, shuffleRes)

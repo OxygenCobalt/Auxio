@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/genre_name"
-            style="@style/ItemText.Primary"
+            style="@style/Widget.TextView.Item.Primary"
             android:text="@{genre.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/genre_count"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/genre_count"
-            style="@style/ItemText.Secondary"
+            style="@style/Widget.TextView.Item.Secondary"
             android:text="@{@plurals/fmt_song_count(genre.songs.size(), genre.songs.size())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
