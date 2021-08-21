@@ -89,7 +89,7 @@ class PlaybackNotification private constructor(
             setSubText(song.album.name)
         }
 
-        if (!settingsManager.colorizeNotif) {
+        if (settingsManager.colorizeNotif) {
             // loadBitmap() is concurrent, so only call back to the object calling this function when
             // the loading is over.
             loadBitmap(context, song) { bitmap ->
