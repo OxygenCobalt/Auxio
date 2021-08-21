@@ -3,7 +3,9 @@
     <!--
     TODO: Redo these dimens to line up with the 8dp grid. Tiny spacing can be used for
       internal elements, but micro spacing needs to be phased out. Certain dimens need to
-      be flattened and buttons need to become at least 48x48
+      be flattened and buttons need to become at least 48x48.
+      - The unbounded buttons can become 48x48 with 8dp of padding to keep icon dimens.
+      If the play icon is replaced then it will also be trivial to do with them as well.
     -->
 
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
@@ -27,7 +29,7 @@
 
     <dimen name="size_cover_compact">48dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
-    <dimen name="size_cover_huge_land">128dp</dimen>
+    <dimen name="size_cover_huge_land">136dp</dimen>
     <dimen name="size_cover_huge">264dp</dimen>
 
     <dimen name="size_play_pause">72dp</dimen>

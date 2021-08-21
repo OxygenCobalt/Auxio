@@ -2,6 +2,8 @@
 <resources>
     <!--
     All the base themes/accents.
+    TODO: Material You Theme. Theres no API support [yet], but I can use the system colors to
+     get it working well enough.
     -->
     <style name="Theme.Red" parent="Theme.Base">
         <item name="colorAccent">@color/red</item>
