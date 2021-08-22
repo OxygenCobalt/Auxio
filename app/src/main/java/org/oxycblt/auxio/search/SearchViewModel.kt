@@ -39,13 +39,13 @@ import org.oxycblt.auxio.settings.SettingsManager
 class SearchViewModel : ViewModel() {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     private var mIsNavigating = false
-    private var mFilterMode = DisplayMode.SHOW_ALL
+    private var mFilterMode: DisplayMode? = null
     private var mLastQuery = ""
 
     /** Current search results from the last [doSearch] call. */
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
     val isNavigating: Boolean get() = mIsNavigating
-    val filterMode: DisplayMode get() = mFilterMode
+    val filterMode: DisplayMode? get() = mFilterMode
 
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -70,31 +70,33 @@ class SearchViewModel : ViewModel() {
         viewModelScope.launch {
             val results = mutableListOf<BaseModel>()
 
-            if (mFilterMode.isAllOr(DisplayMode.SHOW_ARTISTS)) {
-                musicStore.artists.filterByOrNull(query)?.let { artists ->
-                    results.add(Header(id = -2, name = context.getString(R.string.lbl_artists)))
-                    results.addAll(artists)
+            // A filter mode of null means to not filter at all.
+
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
+                musicStore.songs.filterByOrNull(query)?.let { songs ->
+                    results.add(Header(id = -2, name = context.getString(R.string.lbl_songs)))
+                    results.addAll(songs)
                 }
             }
 
-            if (mFilterMode.isAllOr(DisplayMode.SHOW_ALBUMS)) {
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
                     results.add(Header(id = -3, name = context.getString(R.string.lbl_albums)))
                     results.addAll(albums)
                 }
             }
 
-            if (mFilterMode.isAllOr(DisplayMode.SHOW_GENRES)) {
-                musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(Header(id = -4, name = context.getString(R.string.lbl_genres)))
-                    results.addAll(genres)
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
+                musicStore.artists.filterByOrNull(query)?.let { artists ->
+                    results.add(Header(id = -4, name = context.getString(R.string.lbl_artists)))
+                    results.addAll(artists)
                 }
             }
 
-            if (mFilterMode.isAllOr(DisplayMode.SHOW_SONGS)) {
-                musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(Header(id = -5, name = context.getString(R.string.lbl_songs)))
-                    results.addAll(songs)
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
+                musicStore.genres.filterByOrNull(query)?.let { genres ->
+                    results.add(Header(id = -5, name = context.getString(R.string.lbl_genres)))
+                    results.addAll(genres)
                 }
             }
 
@@ -107,7 +109,14 @@ class SearchViewModel : ViewModel() {
      * New value will be pushed to [filterMode].
      */
     fun updateFilterModeWithId(@IdRes id: Int, context: Context) {
-        mFilterMode = DisplayMode.fromId(id)
+        mFilterMode = when (id) {
+            R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
+            R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
+            R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
+            R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
+
+            else -> null
+        }
 
         settingsManager.searchFilterMode = mFilterMode
 

@@ -34,15 +34,6 @@
         app:layout="@layout/item_header"
         app:title="@string/set_display">
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
-            app:defaultValue="@integer/display_artist"
-            app:entries="@array/entries_lib_display"
-            app:entryValues="@array/values_lib_display"
-            app:icon="@drawable/ic_artist"
-            app:key="KEY_LIB_MODE"
-            app:title="@string/set_lib_display"
-            app:useSimpleSummaryProvider="true" />
-
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"

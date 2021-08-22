@@ -32,24 +32,25 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
-import org.oxycblt.auxio.home.pager.AlbumListFragment
-import org.oxycblt.auxio.home.pager.ArtistListFragment
-import org.oxycblt.auxio.home.pager.GenreListFragment
-import org.oxycblt.auxio.home.pager.SongListFragment
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.recycler.DisplayMode
 import java.lang.Exception
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
  * TODO: Re-add sorting (but new and improved)
- * TODO: Fix issue where elevation will act wrong when switching tabs
+ * TODO: Add lift-on-scroll eventually
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val tabs = arrayOf(
+        DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
+        DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,12 +107,11 @@ class HomeFragment : Fragment() {
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
-            val labelRes = when (pos) {
-                0 -> R.string.lbl_songs
-                1 -> R.string.lbl_albums
-                2 -> R.string.lbl_artists
-                3 -> R.string.lbl_genres
-                else -> error("Unreachable")
+            val labelRes = when (tabs[pos]) {
+                DisplayMode.SHOW_SONGS -> R.string.lbl_songs
+                DisplayMode.SHOW_ALBUMS -> R.string.lbl_albums
+                DisplayMode.SHOW_ARTISTS -> R.string.lbl_artists
+                DisplayMode.SHOW_GENRES -> R.string.lbl_genres
             }
 
             tab.setText(labelRes)
@@ -128,16 +128,8 @@ class HomeFragment : Fragment() {
 
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> SongListFragment()
-                1 -> AlbumListFragment()
-                2 -> ArtistListFragment()
-                3 -> GenreListFragment()
-                else -> error("Unreachable")
-            }
-        }
 
-        override fun getItemCount(): Int = 4
+        override fun getItemCount(): Int = tabs.size
+        override fun createFragment(position: Int): Fragment = HomeListFragment.new(tabs[position])
     }
 }

@@ -80,10 +80,6 @@ class SettingsManager private constructor(context: Context) :
     val useAltNotifAction: Boolean
         get() = sharedPrefs.getBoolean(KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
-    /** What to display on the library. */
-    val libraryDisplayMode: DisplayMode
-        get() = handleLibDisplayCompat(sharedPrefs)
-
     /**
      * Whether to even loading embedded covers
      */
@@ -118,17 +114,6 @@ class SettingsManager private constructor(context: Context) :
     val pauseOnLoop: Boolean
         get() = sharedPrefs.getBoolean(KEY_LOOP_PAUSE, false)
 
-    /** The current [SortMode] of the library. */
-    var librarySortMode: SortMode
-        get() = sharedPrefs.getData(KEY_LIB_SORT_MODE, SortMode::fromInt) ?: SortMode.ALPHA_DOWN
-
-        set(value) {
-            sharedPrefs.edit {
-                putInt(KEY_LIB_SORT_MODE, value.toInt())
-                apply()
-            }
-        }
-
     var albumSortMode: SortMode
         get() = sharedPrefs.getData(KEY_ALBUM_SORT_MODE, SortMode::fromInt) ?: SortMode.NUMERIC_DOWN
         set(value) {
@@ -157,12 +142,12 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The current filter mode of the search tab */
-    var searchFilterMode: DisplayMode
-        get() = handleSearchModeCompat(sharedPrefs)
+    var searchFilterMode: DisplayMode?
+        get() = sharedPrefs.getData(KEY_SEARCH_FILTER_MODE, DisplayMode::fromSearchInt)
 
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_SEARCH_FILTER_MODE, value.toInt())
+                putInt(KEY_SEARCH_FILTER_MODE, DisplayMode.toSearchInt(value))
                 apply()
             }
         }
@@ -191,10 +176,6 @@ class SettingsManager private constructor(context: Context) :
                 it.onNotifActionUpdate(useAltNotifAction)
             }
 
-            KEY_LIB_DISPLAY_MODE -> callbacks.forEach {
-                it.onLibDisplayModeUpdate(libraryDisplayMode)
-            }
-
             KEY_SHOW_COVERS -> callbacks.forEach {
                 it.onShowCoverUpdate(showCovers)
             }
@@ -213,7 +194,6 @@ class SettingsManager private constructor(context: Context) :
     interface Callback {
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
-        fun onLibDisplayModeUpdate(displayMode: DisplayMode) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
     }
@@ -223,7 +203,6 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
         const val KEY_ACCENT = "KEY_ACCENT2"
 
-        const val KEY_LIB_DISPLAY_MODE = "KEY_LIB_MODE"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"

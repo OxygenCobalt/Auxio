@@ -34,7 +34,6 @@ import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.isNight
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.ui.IntListPrefDialog
 import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.showToast
@@ -118,15 +117,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
 
                     summary = Accent.get().getDetailedSummary(context)
-                }
-
-                SettingsManager.KEY_LIB_DISPLAY_MODE -> {
-                    setIcon(settingsManager.libraryDisplayMode.iconRes)
-
-                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
-                        setIcon(DisplayMode.fromInt(value as Int)!!.iconRes)
-                        true
-                    }
                 }
 
                 SettingsManager.KEY_SHOW_COVERS -> {

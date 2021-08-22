@@ -43,6 +43,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -75,7 +76,15 @@ class SearchFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.searchToolbar.apply {
-            menu.findItem(searchModel.filterMode.toId()).isChecked = true
+            val itemId = when (searchModel.filterMode) {
+                DisplayMode.SHOW_SONGS -> R.id.option_filter_songs
+                DisplayMode.SHOW_ALBUMS -> R.id.option_filter_albums
+                DisplayMode.SHOW_ARTISTS -> R.id.option_filter_artists
+                DisplayMode.SHOW_GENRES -> R.id.option_filter_genres
+                null -> R.id.option_filter_all
+            }
+
+            menu.findItem(itemId).isChecked = true
 
             setNavigationOnClickListener {
                 requireView().rootView.clearFocus()

@@ -24,7 +24,6 @@ import androidx.core.content.edit
 import org.oxycblt.auxio.accent.ACCENTS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.recycler.DisplayMode
 
 // A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0
@@ -84,23 +83,6 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     return ACCENTS[prefs.getInt(SettingsManager.KEY_ACCENT, 5)]
 }
 
-fun handleLibDisplayCompat(prefs: SharedPreferences): DisplayMode {
-    if (prefs.contains(OldKeys.KEY_LIB_MODE)) {
-        val mode = prefs.handleOldDisplayMode(OldKeys.KEY_LIB_MODE) ?: DisplayMode.SHOW_ARTISTS
-
-        prefs.edit {
-            putInt(SettingsManager.KEY_LIB_DISPLAY_MODE, mode.toInt())
-            remove(OldKeys.KEY_LIB_MODE)
-            apply()
-        }
-
-        return mode
-    }
-
-    return prefs.getData(SettingsManager.KEY_LIB_DISPLAY_MODE, DisplayMode::fromInt)
-        ?: DisplayMode.SHOW_ARTISTS
-}
-
 fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
     if (prefs.contains(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
         val mode = when (prefs.getStringOrNull(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
@@ -125,44 +107,13 @@ fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
         ?: PlaybackMode.ALL_SONGS
 }
 
-fun handleSearchModeCompat(prefs: SharedPreferences): DisplayMode {
-    if (prefs.contains(OldKeys.KEY_SEARCH_FILTER)) {
-        val mode = prefs.handleOldDisplayMode(OldKeys.KEY_SEARCH_FILTER) ?: DisplayMode.SHOW_ALL
-
-        prefs.edit {
-            putInt(SettingsManager.KEY_SEARCH_FILTER_MODE, mode.toInt())
-            remove(OldKeys.KEY_SEARCH_FILTER)
-            apply()
-        }
-
-        return mode
-    }
-
-    return prefs.getData(SettingsManager.KEY_SEARCH_FILTER_MODE, DisplayMode::fromInt)
-        ?: DisplayMode.SHOW_ALL
-}
-
-private fun SharedPreferences.handleOldDisplayMode(key: String): DisplayMode? {
-    return when (getStringOrNull(key)) {
-        EntryValues.SHOW_GENRES -> DisplayMode.SHOW_GENRES
-        EntryValues.SHOW_ARTISTS -> DisplayMode.SHOW_ARTISTS
-        EntryValues.SHOW_ALBUMS -> DisplayMode.SHOW_ALBUMS
-        EntryValues.SHOW_SONGS -> DisplayMode.SHOW_SONGS
-        EntryValues.SHOW_ALL -> DisplayMode.SHOW_ALL
-
-        else -> null
-    }
-}
-
 /**
  * Cache of the old keys used in Auxio.
  */
 private object OldKeys {
     const val KEY_ACCENT = "KEY_ACCENT"
     const val KEY_THEME = "KEY_THEME"
-    const val KEY_LIB_MODE = "KEY_LIBRARY_DISPLAY_MODE"
     const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
-    const val KEY_SEARCH_FILTER = "KEY_SEARCH"
 }
 
 /**
@@ -172,12 +123,6 @@ private object EntryValues {
     const val THEME_AUTO = "AUTO"
     const val THEME_LIGHT = "LIGHT"
     const val THEME_DARK = "DARK"
-
-    const val SHOW_GENRES = "SHOW_GENRES"
-    const val SHOW_ARTISTS = "SHOW_ARTISTS"
-    const val SHOW_ALBUMS = "SHOW_ALBUMS"
-    const val SHOW_SONGS = "SHOW_SONGS"
-    const val SHOW_ALL = "SHOW_ALL"
 
     const val IN_GENRE = "IN_GENRE"
     const val IN_ARTIST = "IN_ARTIST"
