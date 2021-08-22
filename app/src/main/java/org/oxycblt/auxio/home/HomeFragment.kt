@@ -25,7 +25,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -35,12 +37,15 @@ import org.oxycblt.auxio.home.pager.ArtistListFragment
 import org.oxycblt.auxio.home.pager.GenreListFragment
 import org.oxycblt.auxio.home.pager.SongListFragment
 import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import java.lang.Exception
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
  * TODO: Re-add sorting (but new and improved)
+ * TODO: Fix issue where elevation will act wrong when switching tabs
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {

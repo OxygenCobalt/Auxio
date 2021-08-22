@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:listitem="@layout/item_artist" />
+            tools:layout="@layout/fragment_home_list" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -21,6 +21,15 @@
                 <item
                     android:id="@+id/option_sort_alpha_up"
                     android:title="@string/lbl_sort_alpha_up" />
+                <item
+                    android:id="@+id/option_sort_artist"
+                    android:title="@string/lbl_sort_artist" />
+                <item
+                    android:id="@+id/option_sort_album"
+                    android:title="@string/lbl_sort_album" />
+                <item
+                    android:id="@+id/option_sort_year"
+                    android:title="@string/lbl_sort_year" />
             </group>
         </menu>
     </item>

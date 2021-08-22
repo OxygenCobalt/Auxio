@@ -23,17 +23,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeAdapter
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
 class ArtistListFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,18 +40,25 @@ class ArtistListFragment : Fragment() {
     ): View {
         val binding = FragmentHomeListBinding.inflate(inflater)
 
-        val adapter = HomeAdapter(
+        val homeAdapter = HomeAdapter(
             doOnClick = { item ->
-                HomeFragmentDirections.actionShowArtist(item.id)
+                findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
             },
             ::newMenu
         )
 
-        adapter.updateData(MusicStore.getInstance().artists)
+        homeAdapter.updateData(MusicStore.getInstance().artists)
 
         // --- UI SETUP ---
 
-        binding.homeRecycler.adapter = adapter
+        binding.homeRecycler.apply {
+            adapter = homeAdapter
+            setHasFixedSize(true)
+
+            if (spans != 1) {
+                layoutManager = GridLayoutManager(requireContext(), spans)
+            }
+        }
 
         return binding.root
     }

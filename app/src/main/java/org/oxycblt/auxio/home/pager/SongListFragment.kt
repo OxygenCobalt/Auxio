@@ -24,11 +24,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeAdapter
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
 class SongListFragment : Fragment() {
@@ -41,18 +43,25 @@ class SongListFragment : Fragment() {
     ): View {
         val binding = FragmentHomeListBinding.inflate(inflater)
 
-        val adapter = HomeAdapter(
+        val homeAdapter = HomeAdapter(
             doOnClick = { item ->
                 playbackModel.playSong(item as Song)
             },
             ::newMenu
         )
 
-        adapter.updateData(MusicStore.getInstance().songs)
+        homeAdapter.updateData(MusicStore.getInstance().songs)
 
         // --- UI SETUP ---
 
-        binding.homeRecycler.adapter = adapter
+        binding.homeRecycler.apply {
+            adapter = homeAdapter
+            setHasFixedSize(true)
+
+            if (spans != 1) {
+                layoutManager = GridLayoutManager(requireContext(), spans)
+            }
+        }
 
         return binding.root
     }
