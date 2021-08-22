@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * LibraryAdapter.kt is part of Auxio.
+ * HomeAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.library
+package org.oxycblt.auxio.home
 
 import android.annotation.SuppressLint
 import android.view.View
@@ -24,22 +24,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
 import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
 import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
+import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
 
 /**
  * An adapter for displaying library items. Supports [Parent]s only.
  * @author OxygenCobalt
  */
-class LibraryAdapter(
-    private val doOnClick: (data: Parent) -> Unit,
-    private val doOnLongClick: (view: View, data: Parent) -> Unit
+class HomeAdapter(
+    private val doOnClick: (data: BaseModel) -> Unit,
+    private val doOnLongClick: (view: View, data: BaseModel) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var data = listOf<Parent>()
+    private var data = listOf<BaseModel>()
 
     override fun getItemCount(): Int = data.size
 
@@ -48,6 +51,8 @@ class LibraryAdapter(
             is Genre -> GenreViewHolder.ITEM_TYPE
             is Artist -> ArtistViewHolder.ITEM_TYPE
             is Album -> AlbumViewHolder.ITEM_TYPE
+            is Song -> SongViewHolder.ITEM_TYPE
+            else -> error("Unsupported item ${data[position]::class.simpleName}")
         }
     }
 
@@ -65,6 +70,10 @@ class LibraryAdapter(
                 parent.context, doOnClick, doOnLongClick
             )
 
+            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
+                parent.context, doOnClick, doOnLongClick
+            )
+
             else -> error("Invalid viewholder item type.")
         }
     }
@@ -74,6 +83,7 @@ class LibraryAdapter(
             is Genre -> (holder as GenreViewHolder).bind(item)
             is Artist -> (holder as ArtistViewHolder).bind(item)
             is Album -> (holder as AlbumViewHolder).bind(item)
+            is Song -> (holder as SongViewHolder).bind(item)
         }
     }
 
@@ -81,7 +91,7 @@ class LibraryAdapter(
      * Update the data with [newData]. [notifyDataSetChanged] will be called.
      */
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<Parent>) {
+    fun updateData(newData: List<BaseModel>) {
         data = newData
 
         notifyDataSetChanged()

@@ -32,8 +32,8 @@
             app:popEnterAnim="@anim/anim_stationary"
             app:popExitAnim="@anim/anim_nav_slide_down" />
         <action
-            android:id="@+id/action_show_about"
-            app:destination="@id/about_fragment"
+            android:id="@+id/action_show_settings"
+            app:destination="@id/settings_fragment"
             app:enterAnim="@anim/anim_nav_slide_up"
             app:exitAnim="@anim/anim_stationary"
             app:popEnterAnim="@anim/anim_stationary"
@@ -62,4 +62,17 @@
         android:name="org.oxycblt.auxio.settings.AboutFragment"
         android:label="dialog_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="org.oxycblt.auxio.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_show_about"
+            app:destination="@id/about_fragment"
+            app:enterAnim="@anim/anim_nav_slide_up"
+            app:exitAnim="@anim/anim_stationary"
+            app:popEnterAnim="@anim/anim_stationary"
+            app:popExitAnim="@anim/anim_nav_slide_down" />
+    </fragment>
 </navigation>

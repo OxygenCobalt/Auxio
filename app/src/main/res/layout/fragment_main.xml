@@ -19,35 +19,15 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:navGraph="@navigation/nav_explore"
-            tools:layout="@layout/fragment_library" />
+            tools:layout="@layout/fragment_home" />
 
-        <org.oxycblt.auxio.ui.SlideLinearLayout
-            android:id="@+id/controls_container"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/main_playback"
+            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:background="?android:attr/colorBackground"
-            android:baselineAligned="false"
             android:elevation="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/compact_playback"
-                android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_compact_playback" />
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/nav_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="?attr/colorSurface"
-                app:elevation="0dp"
-                app:menu="@menu/menu_nav" />
-
-        </org.oxycblt.auxio.ui.SlideLinearLayout>
+            android:background="?attr/colorSurface"
+            tools:layout="@layout/fragment_compact_playback" />
     </LinearLayout>
 </layout>

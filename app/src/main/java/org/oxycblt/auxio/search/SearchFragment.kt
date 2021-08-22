@@ -72,6 +72,10 @@ class SearchFragment : Fragment() {
         binding.searchToolbar.apply {
             menu.findItem(searchModel.filterMode.toId()).isChecked = true
 
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+
             setOnMenuItemClickListener { item ->
                 if (item.itemId != R.id.submenu_filtering) {
                     searchModel.updateFilterModeWithId(item.itemId, requireContext())

@@ -16,7 +16,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_toolbar"
-                style="@style/Widget.Toolbar"
+                style="@style/Widget.Toolbar.Icon"
                 android:elevation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_search"

@@ -3,10 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/lbl_search"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/submenu_sorting"
         android:icon="@drawable/ic_sort_none"
         android:title="@string/lbl_sort"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
         <menu>
             <group android:checkableBehavior="single">
                 <item
@@ -18,4 +24,10 @@
             </group>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/set_title"
+        app:showAsAction="ifRoom"/>
 </menu>

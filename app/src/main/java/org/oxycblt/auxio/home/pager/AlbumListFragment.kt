@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SettingsFragment.kt is part of Auxio.
+ * GenreListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,41 +16,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings
+package org.oxycblt.auxio.home.pager
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import org.oxycblt.auxio.databinding.FragmentSettingsBinding
+import androidx.fragment.app.viewModels
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.HomeAdapter
+import org.oxycblt.auxio.home.HomeFragmentDirections
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.newMenu
 
-/**
- * A container [Fragment] for the settings menu.
- * @author OxygenCobalt
- */
-class SettingsFragment : Fragment() {
+class AlbumListFragment : Fragment() {
+    private val playbackModel: PlaybackViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentSettingsBinding.inflate(inflater)
+        val binding = FragmentHomeListBinding.inflate(inflater)
 
-        binding.settingsToolbar.apply {
-            setOnMenuItemClickListener {
-                findNavController().navigate(
-                    SettingsFragmentDirections.actionShowAbout()
-                )
+        val adapter = HomeAdapter(
+            doOnClick = { item ->
+                HomeFragmentDirections.actionShowAlbum(item.id)
+            },
+            ::newMenu
+        )
 
-                true
-            }
+        adapter.updateData(MusicStore.getInstance().albums)
 
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-        }
+        // --- UI SETUP ---
+
+        binding.homeRecycler.adapter = adapter
 
         return binding.root
     }

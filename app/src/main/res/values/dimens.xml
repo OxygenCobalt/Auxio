@@ -6,7 +6,6 @@
     -->
 
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
-    <dimen name="spacing_tiny">4dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_mid_large">24dp</dimen>
@@ -22,9 +21,6 @@
     <dimen name="size_btn_small">48dp</dimen>
     <dimen name="size_btn_large">64dp</dimen>
 
-    <dimen name="size_small_unb_ripple">20dp</dimen>
-    <dimen name="size_unb_ripple">24dp</dimen>
-
     <dimen name="size_cover_compact">48dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
     <dimen name="size_cover_huge_land">136dp</dimen>
@@ -33,8 +29,8 @@
     <dimen name="size_stroke_small">1dp</dimen>
     <dimen name="size_stroke_large">2dp</dimen>
 
-    <dimen name="size_app_icon">48dp</dimen>
-    <dimen name="size_scroll_thumb">48dp</dimen>
+    <dimen name="size_small_unb_ripple">20dp</dimen>
+    <dimen name="size_unb_ripple">24dp</dimen>
 
     <!-- Text Size Namespace | Text Sizes -->
     <dimen name="text_size_small">16sp</dimen>

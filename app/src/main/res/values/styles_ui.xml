@@ -7,7 +7,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
         <item name="android:background">?attr/colorSurface</item>
-        <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="popupTheme">@style/ThemeOverlay.ToolbarPopup</item>
 
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
@@ -61,6 +60,10 @@
         <item name="android:outlineProvider">bounds</item>
     </style>
 
+    <style name="TextAppearance.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
     <!-- VIEWGROUP STYLES -->
 
     <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
@@ -78,6 +81,7 @@
     </style>
 
     <!-- TEXTVIEW STYLES -->
+
     <style name="Widget.TextView.Item.Base" parent="Widget.AppCompat.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

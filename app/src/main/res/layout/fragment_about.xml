@@ -36,8 +36,7 @@
 
                     <ImageView
                         android:id="@+id/about_auxio_icon"
-                        android:layout_width="@dimen/size_app_icon"
-                        android:layout_height="@dimen/size_app_icon"
+                        style="@style/Widget.ImageView.Compact"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginTop="@dimen/spacing_medium"
                         android:contentDescription="@string/desc_auxio_icon"

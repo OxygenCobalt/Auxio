@@ -14,7 +14,7 @@
         <!-- Colors -->
         <item name="colorSurface">@color/surface</item>
         <item name="colorAccent">@color/design_default_color_primary</item>
-        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#00000000</item>
 
         <item name="colorPrimary">?attr/colorAccent</item>
         <item name="colorSecondary">?attr/colorAccent</item>
