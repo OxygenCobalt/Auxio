@@ -27,10 +27,10 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.recycler.viewholders.AlbumViewHolder
-import org.oxycblt.auxio.recycler.viewholders.ArtistViewHolder
-import org.oxycblt.auxio.recycler.viewholders.GenreViewHolder
-import org.oxycblt.auxio.recycler.viewholders.SongViewHolder
+import org.oxycblt.auxio.recycler.AlbumViewHolder
+import org.oxycblt.auxio.recycler.ArtistViewHolder
+import org.oxycblt.auxio.recycler.GenreViewHolder
+import org.oxycblt.auxio.recycler.SongViewHolder
 
 class HomeAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,

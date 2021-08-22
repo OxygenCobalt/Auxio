@@ -34,9 +34,9 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
-import org.oxycblt.auxio.recycler.viewholders.HeaderViewHolder
+import org.oxycblt.auxio.recycler.HeaderViewHolder
 
 /**
  * The single adapter for both the Next Queue and the User Queue.

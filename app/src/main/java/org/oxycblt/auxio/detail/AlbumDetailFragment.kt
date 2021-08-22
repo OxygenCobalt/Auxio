@@ -18,12 +18,14 @@
 
 package org.oxycblt.auxio.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearSmoothScroller
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.canScroll
 import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
@@ -34,7 +36,6 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.recycler.CenterSmoothScroller
 import org.oxycblt.auxio.showToast
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.newMenu
@@ -136,7 +137,8 @@ class AlbumDetailFragment : DetailFragment() {
                     )
                 }
 
-                else -> {}
+                else -> {
+                }
             }
         }
 
@@ -185,6 +187,29 @@ class AlbumDetailFragment : DetailFragment() {
                 // that case.
                 binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
             }
+        }
+    }
+
+    /**
+     * [LinearSmoothScroller] subclass that centers the item on the screen instead of
+     * snapping to the top or bottom.
+     */
+    private class CenterSmoothScroller(
+        context: Context,
+        target: Int
+    ) : LinearSmoothScroller(context) {
+        init {
+            targetPosition = target
+        }
+
+        override fun calculateDtToFit(
+            viewStart: Int,
+            viewEnd: Int,
+            boxStart: Int,
+            boxEnd: Int,
+            snapPreference: Int
+        ): Int {
+            return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
         }
     }
 }

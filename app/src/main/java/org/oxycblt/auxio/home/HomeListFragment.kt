@@ -39,6 +39,8 @@ import org.oxycblt.auxio.ui.newMenu
 
 /*
  * Fragment that contains a list of items specified by a [DisplayMode].
+ * TODO: Fix crash from not saving the display mode. This is getting really tiring.
+ *  Just keep the index for the tab we're working with and then just use that w/homeModel.
  */
 class HomeListFragment : Fragment() {
     private val homeModel: HomeViewModel by viewModels()

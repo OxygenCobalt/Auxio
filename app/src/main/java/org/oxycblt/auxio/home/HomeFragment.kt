@@ -47,8 +47,7 @@ import org.oxycblt.auxio.recycler.DisplayMode
  * views for each respective fragment.
  * TODO: Re-add sorting (but new and improved)
  * TODO: Add lift-on-scroll eventually [when I can file a bug report or hack it into working]
- * FIXME: Fix issue where for the toolbar will default to its collapsed state for basically no
- *  reason
+ * FIXME: Keep the collapsed state in the ViewModel so we can make sure it stays consistent
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {

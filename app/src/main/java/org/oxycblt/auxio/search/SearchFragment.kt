@@ -52,7 +52,7 @@ import org.oxycblt.auxio.ui.newMenu
  * @author OxygenCobalt
  */
 class SearchFragment : Fragment() {
-    // SearchViewModel only scoped to this Fragment
+    // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
@@ -64,9 +64,14 @@ class SearchFragment : Fragment() {
     ): View {
         val binding = FragmentSearchBinding.inflate(inflater)
 
-        val searchAdapter = SearchAdapter(::onItemSelection, ::newMenu)
-
         val imm = requireContext().getSystemServiceSafe(InputMethodManager::class)
+
+        val searchAdapter = SearchAdapter(
+            doOnClick = { item ->
+                onItemSelection(item, imm)
+            },
+            ::newMenu
+        )
 
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         val defaultParams = toolbarParams.scrollFlags
@@ -87,7 +92,7 @@ class SearchFragment : Fragment() {
             menu.findItem(itemId).isChecked = true
 
             setNavigationOnClickListener {
-                requireView().rootView.clearFocus()
+                imm.hide()
                 findNavController().navigateUp()
             }
 
@@ -158,6 +163,8 @@ class SearchFragment : Fragment() {
                     else -> return@observe
                 }
             )
+
+            imm.hide()
         }
 
         logD("Fragment created.")
@@ -171,19 +178,22 @@ class SearchFragment : Fragment() {
         searchModel.setNavigating(false)
     }
 
+    private fun InputMethodManager.hide() {
+        hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
     /**
      * Function that handles when an [item] is selected.
      * Handles all datatypes that are selectable.
      */
-    private fun onItemSelection(item: BaseModel) {
+    private fun onItemSelection(item: BaseModel, imm: InputMethodManager) {
         if (item is Song) {
             playbackModel.playSong(item)
 
             return
         }
 
-        // Get rid of the keyboard if we are navigating
-        requireView().rootView.clearFocus()
+        imm.hide()
 
         if (!searchModel.isNavigating) {
             searchModel.setNavigating(true)

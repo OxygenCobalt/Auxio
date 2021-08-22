@@ -33,9 +33,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.recycler.BaseViewHolder
 import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.viewholders.BaseViewHolder
-import org.oxycblt.auxio.recycler.viewholders.Highlightable
 import org.oxycblt.auxio.setTextColorResource
 
 /**

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.recycler.viewholders
+package org.oxycblt.auxio.recycler
 
 import android.view.View
 import androidx.databinding.ViewDataBinding

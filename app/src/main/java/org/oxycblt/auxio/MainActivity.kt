@@ -35,6 +35,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * The single [AppCompatActivity] for Auxio.
+ * TODO: Improve edge-to-edge everywhere
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

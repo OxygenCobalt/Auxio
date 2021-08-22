@@ -18,25 +18,22 @@
 
 package org.oxycblt.auxio.recycler
 
-import androidx.annotation.DrawableRes
-import org.oxycblt.auxio.R
-
 /**
  * An enum for determining what items to show in a given list.
  * @author OxygenCobalt
  */
-enum class DisplayMode(@DrawableRes val iconRes: Int) {
-    SHOW_GENRES(R.drawable.ic_genre),
-    SHOW_ARTISTS(R.drawable.ic_artist),
-    SHOW_ALBUMS(R.drawable.ic_album),
-    SHOW_SONGS(R.drawable.ic_song);
+enum class DisplayMode {
+    SHOW_GENRES,
+    SHOW_ARTISTS,
+    SHOW_ALBUMS,
+    SHOW_SONGS;
 
     companion object {
-        const val CONST_SHOW_ALL = 0xA107
-        const val CONST_SHOW_GENRES = 0xA108
-        const val CONST_SHOW_ARTISTS = 0xA109
-        const val CONST_SHOW_ALBUMS = 0xA10A
-        const val CONST_SHOW_SONGS = 0xA10B
+        private const val CONST_SHOW_ALL = 0xA107
+        private const val CONST_SHOW_GENRES = 0xA108
+        private const val CONST_SHOW_ARTISTS = 0xA109
+        private const val CONST_SHOW_ALBUMS = 0xA10A
+        private const val CONST_SHOW_SONGS = 0xA10B
 
         fun toSearchInt(value: DisplayMode?): Int {
             return when (value) {
