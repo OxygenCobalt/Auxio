@@ -10,6 +10,7 @@
     <!-- Base theme -->
     <style name="Theme.Base" parent="Theme.Splash">
         <!-- TODO: Improve the color contrast on the dark theme [colorOnSurface] -->
+        <!-- TODO: Migrate to liftOnScroll everywhere that is not HomeFragment -->
 
         <!-- Colors -->
         <item name="colorSurface">@color/surface</item>

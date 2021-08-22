@@ -27,6 +27,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -88,16 +89,21 @@ class HomeListFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        val data = when (displayMode) {
+        val toObserve = when (displayMode) {
             DisplayMode.SHOW_SONGS -> homeModel.songs
             DisplayMode.SHOW_ALBUMS -> homeModel.albums
             DisplayMode.SHOW_ARTISTS -> homeModel.artists
             DisplayMode.SHOW_GENRES -> homeModel.genres
         }
 
-        data.observe(viewLifecycleOwner) { data ->
+        // Make sure that this RecyclerView has data before startup
+        homeAdapter.updateData(toObserve.value!!)
+
+        toObserve.observe(viewLifecycleOwner) { data ->
             homeAdapter.updateData(data)
         }
+
+        logD("Fragment created")
 
         return binding.root
     }

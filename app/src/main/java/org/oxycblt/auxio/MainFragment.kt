@@ -29,7 +29,9 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 
 /**
- * A wrapper around the home
+ * A wrapper around the home fragment that shows the playback fragment and controls
+ * the more high-level navigation features.
+ * TODO: Re-add the nice playback slide in animation
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

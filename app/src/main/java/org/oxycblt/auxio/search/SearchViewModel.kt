@@ -72,31 +72,31 @@ class SearchViewModel : ViewModel() {
 
             // A filter mode of null means to not filter at all.
 
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
-                musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(Header(id = -2, name = context.getString(R.string.lbl_songs)))
-                    results.addAll(songs)
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
+                musicStore.artists.filterByOrNull(query)?.let { artists ->
+                    results.add(Header(id = -1, name = context.getString(R.string.lbl_artists)))
+                    results.addAll(artists)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
-                    results.add(Header(id = -3, name = context.getString(R.string.lbl_albums)))
+                    results.add(Header(id = -2, name = context.getString(R.string.lbl_albums)))
                     results.addAll(albums)
-                }
-            }
-
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
-                musicStore.artists.filterByOrNull(query)?.let { artists ->
-                    results.add(Header(id = -4, name = context.getString(R.string.lbl_artists)))
-                    results.addAll(artists)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(Header(id = -5, name = context.getString(R.string.lbl_genres)))
+                    results.add(Header(id = -3, name = context.getString(R.string.lbl_genres)))
                     results.addAll(genres)
+                }
+            }
+
+            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
+                musicStore.songs.filterByOrNull(query)?.let { songs ->
+                    results.add(Header(id = -4, name = context.getString(R.string.lbl_songs)))
+                    results.addAll(songs)
                 }
             }
 

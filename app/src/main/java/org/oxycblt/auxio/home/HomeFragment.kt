@@ -32,21 +32,29 @@ import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
-import java.lang.Exception
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
  * TODO: Re-add sorting (but new and improved)
- * TODO: Add lift-on-scroll eventually
+ * TODO: Add lift-on-scroll eventually [when I can file a bug report or hack it into working]
+ * FIXME: Fix issue where for the toolbar will default to its collapsed state for basically no
+ *  reason
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
+
     private val tabs = arrayOf(
         DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
         DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
@@ -62,6 +70,9 @@ class HomeFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
+
+        // For some insane reason certain navigation actions will collapse the app bar
+        binding.homeAppbar.setExpanded(true)
 
         binding.homeToolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -89,7 +100,7 @@ class HomeFragment : Fragment() {
             // Derived from: https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
 
             try {
-                val recycler = ViewPager2::class.java.getDeclaredField("mRecyclerView").apply {
+                val recycler = ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
                     isAccessible = true
                     get(binding.homePager)
                 }
@@ -98,7 +109,7 @@ class HomeFragment : Fragment() {
                     isAccessible = true
 
                     val slop = get(recycler) as Int
-                    set(recycler, slop * 8)
+                    set(recycler, slop * 3) // 3x seems to be the best fit here
                 }
             } catch (e: Exception) {
                 logE("Unable to reduce ViewPager sensitivity")
@@ -120,6 +131,29 @@ class HomeFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         playbackModel.setupPlayback(requireContext())
+
+        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
+            when (item) {
+                is Song -> findNavController().navigate(
+                    HomeFragmentDirections.actionShowAlbum(item.album.id)
+                )
+
+                is Album -> findNavController().navigate(
+                    HomeFragmentDirections.actionShowAlbum(item.id)
+                )
+
+                is Artist -> findNavController().navigate(
+                    HomeFragmentDirections.actionShowArtist(item.id)
+                )
+
+                is Genre -> findNavController().navigate(
+                    HomeFragmentDirections.actionShowGenre(item.id)
+                )
+
+                else -> {
+                }
+            }
+        }
 
         logD("Fragment Created.")
 
