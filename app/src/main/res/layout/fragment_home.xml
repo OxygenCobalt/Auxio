@@ -17,12 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
-            app:liftOnScroll="true">
+            android:elevation="@dimen/elevation_normal">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/home_toolbar"
                 style="@style/Widget.Toolbar"
                 app:menu="@menu/menu_home"
+                android:elevation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:title="@string/info_app_name" />
 
