@@ -22,6 +22,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +34,7 @@ import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.getSystemServiceSafe
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -62,6 +65,8 @@ class SearchFragment : Fragment() {
 
         val searchAdapter = SearchAdapter(::onItemSelection, ::newMenu)
 
+        val imm = requireContext().getSystemServiceSafe(InputMethodManager::class)
+
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         val defaultParams = toolbarParams.scrollFlags
 
@@ -73,6 +78,7 @@ class SearchFragment : Fragment() {
             menu.findItem(searchModel.filterMode.toId()).isChecked = true
 
             setNavigationOnClickListener {
+                requireView().rootView.clearFocus()
                 findNavController().navigateUp()
             }
 
@@ -106,6 +112,12 @@ class SearchFragment : Fragment() {
                     }
                 }
             }
+        }
+
+        // Auto-open the keyboard
+        binding.searchEditText.requestFocus()
+        binding.searchEditText.postDelayed(200) {
+            imm.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
         }
 
         // --- VIEWMODEL SETUP ---
