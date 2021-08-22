@@ -78,7 +78,32 @@ class HomeFragment : Fragment() {
             true
         }
 
-        binding.homePager.adapter = HomePagerAdapter()
+        binding.homePager.apply {
+            adapter = HomePagerAdapter()
+
+            // By default, ViewPager2's sensitivity is high enough to result in vertical
+            // scroll events being registered as horizontal scroll events. Reflect into the
+            // internal recyclerview and  change the touch slope so that touch actions will
+            // act more as a scroll than as a swipe.
+            // Derived from: https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
+
+            try {
+                val recycler = ViewPager2::class.java.getDeclaredField("mRecyclerView").apply {
+                    isAccessible = true
+                    get(binding.homePager)
+                }
+
+                RecyclerView::class.java.getDeclaredField("mTouchSlop").apply {
+                    isAccessible = true
+
+                    val slop = get(recycler) as Int
+                    set(recycler, slop * 8)
+                }
+            } catch (e: Exception) {
+                logE("Unable to reduce ViewPager sensitivity")
+                logE(e.stackTraceToString())
+            }
+        }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
             val labelRes = when (pos) {
