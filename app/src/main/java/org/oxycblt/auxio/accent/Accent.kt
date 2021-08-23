@@ -27,7 +27,7 @@ import androidx.annotation.StringRes
 import androidx.annotation.StyleRes
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.resolveStateList
+import org.oxycblt.auxio.util.resolveStateList
 
 /**
  * A list of all possible accents.

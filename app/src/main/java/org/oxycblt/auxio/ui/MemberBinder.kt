@@ -26,8 +26,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import org.oxycblt.auxio.assertMainThread
-import org.oxycblt.auxio.inflater
+import org.oxycblt.auxio.util.assertMainThread
+import org.oxycblt.auxio.util.inflater
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

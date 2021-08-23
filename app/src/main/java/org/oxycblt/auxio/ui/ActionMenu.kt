@@ -33,7 +33,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.showToast
+import org.oxycblt.auxio.util.showToast
 
 /**
  * Extension method for creating and showing a new [ActionMenu].

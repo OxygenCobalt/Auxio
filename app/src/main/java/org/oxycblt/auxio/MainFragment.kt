@@ -27,6 +27,8 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.isLandscape
+import org.oxycblt.auxio.util.logD
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls

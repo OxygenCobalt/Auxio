@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * DiffCallback.kt is part of Auxio.
+ * IntListPrefDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.settings
 
-import androidx.recyclerview.widget.DiffUtil
-import org.oxycblt.auxio.music.BaseModel
+import androidx.appcompat.app.AlertDialog
+import org.oxycblt.auxio.ui.LifecycleDialog
 
-/**
- * A re-usable diff callback for all [BaseModel] implementations.
- * **Use this instead of creating a DiffCallback for each adapter.**
- * @author OxygenCobalt
- */
-class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        return oldItem.hashCode() == newItem.hashCode()
+class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog() {
+    override fun onConfigDialog(builder: AlertDialog.Builder) {
+        builder.setTitle(pref.title)
+
+        builder.setSingleChoiceItems(pref.entries, pref.getValueIndex()) { _, index ->
+            pref.setValueIndex(index)
+
+            dismiss()
+        }
+
+        builder.setNegativeButton(android.R.string.cancel, null)
     }
 
-    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
-        return oldItem.id == newItem.id
+    companion object {
+        const val TAG = "TAG_INT_PREF_DIALOG"
     }
 }

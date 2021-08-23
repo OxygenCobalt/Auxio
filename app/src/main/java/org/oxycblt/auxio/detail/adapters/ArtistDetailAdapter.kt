@@ -28,18 +28,18 @@ import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.disable
-import org.oxycblt.auxio.inflater
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.BaseViewHolder
-import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.setTextColorResource
+import org.oxycblt.auxio.ui.BaseViewHolder
+import org.oxycblt.auxio.ui.DiffCallback
+import org.oxycblt.auxio.util.disable
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.setTextColorResource
 
 /**
  * An adapter for displaying the [Album]s and [Song]s of an artist.

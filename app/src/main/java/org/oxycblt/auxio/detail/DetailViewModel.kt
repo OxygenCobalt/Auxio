@@ -25,8 +25,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.SortMode
 
 /**
  * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what

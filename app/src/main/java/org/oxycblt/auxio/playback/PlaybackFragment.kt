@@ -31,11 +31,11 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.resolveDrawable
-import org.oxycblt.auxio.resolveStateList
 import org.oxycblt.auxio.ui.memberBinding
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.resolveDrawable
+import org.oxycblt.auxio.util.resolveStateList
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.

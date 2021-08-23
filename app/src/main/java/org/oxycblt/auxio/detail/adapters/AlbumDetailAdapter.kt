@@ -27,15 +27,15 @@ import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemAlbumHeaderBinding
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.disable
-import org.oxycblt.auxio.inflater
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.BaseViewHolder
-import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.setTextColorResource
+import org.oxycblt.auxio.ui.BaseViewHolder
+import org.oxycblt.auxio.ui.DiffCallback
+import org.oxycblt.auxio.util.disable
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.setTextColorResource
 
 /**
  * An adapter for displaying the details and [Song]s of an [Album]

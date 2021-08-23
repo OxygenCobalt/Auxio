@@ -32,9 +32,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.showToast
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.showToast
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.

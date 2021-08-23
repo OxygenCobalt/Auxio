@@ -28,15 +28,15 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
-import org.oxycblt.auxio.inflater
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.BaseViewHolder
-import org.oxycblt.auxio.recycler.DiffCallback
-import org.oxycblt.auxio.recycler.HeaderViewHolder
+import org.oxycblt.auxio.ui.BaseViewHolder
+import org.oxycblt.auxio.ui.DiffCallback
+import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logE
 
 /**
  * The single adapter for both the Next Queue and the User Queue.

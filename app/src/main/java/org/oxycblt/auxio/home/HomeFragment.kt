@@ -33,14 +33,14 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.recycler.DisplayMode
+import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail

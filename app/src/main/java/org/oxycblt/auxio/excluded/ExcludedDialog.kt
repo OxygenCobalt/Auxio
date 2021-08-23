@@ -31,13 +31,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.showToast
 import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.showToast
 import kotlin.system.exitProcess
 
 /**
@@ -177,6 +178,6 @@ class ExcludedDialog : LifecycleDialog() {
     }
 
     companion object {
-        const val TAG = "TAG_BLACKLIST_DIALOG"
+        const val TAG = BuildConfig.APPLICATION_ID + ".tag.EXCLUDED"
     }
 }

@@ -22,7 +22,7 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
-import org.oxycblt.auxio.inflater
+import org.oxycblt.auxio.util.inflater
 
 /**
  * Adapter that shows the blacklist entries and their "Clear" button.

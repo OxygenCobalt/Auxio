@@ -26,8 +26,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -39,8 +37,10 @@ import org.oxycblt.auxio.playback.queue.QueueAdapter
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.recycler.SortMode
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].

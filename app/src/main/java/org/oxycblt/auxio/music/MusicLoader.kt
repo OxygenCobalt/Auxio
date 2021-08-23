@@ -28,7 +28,7 @@ import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
-import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.util.logD
 
 /**
  * Class that loads/constructs [Genre]s, [Artist]s, [Album]s, and [Song] objects from the filesystem

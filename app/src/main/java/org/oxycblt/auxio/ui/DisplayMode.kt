@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.ui
 
 /**
  * An enum for determining what items to show in a given list.

@@ -28,7 +28,7 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.databinding.FragmentCompactPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.logD
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [Fragment] that displays the currently played song at a glance, with some basic controls.
@@ -36,6 +36,7 @@ import org.oxycblt.auxio.logD
  *
  * Instantiation is done by FragmentContainerView, **do not instantiate this fragment manually.**
  * @author OxygenCobalt
+ * TODO: Add more controls to this view depending on screen width
  */
 class CompactPlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

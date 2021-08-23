@@ -31,8 +31,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentLoadingBinding
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.util.logD
 
 /**
  * Fragment that handles what to display during the loading process.

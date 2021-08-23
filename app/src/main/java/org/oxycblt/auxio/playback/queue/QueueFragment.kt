@@ -32,11 +32,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
-import org.oxycblt.auxio.isEdgeOn
-import org.oxycblt.auxio.isIrregularLandscape
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.isEdgeOn
+import org.oxycblt.auxio.util.isIrregularLandscape
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to

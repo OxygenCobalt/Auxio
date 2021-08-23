@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.recycler
+package org.oxycblt.auxio.ui
 
 import android.widget.ImageButton
 import androidx.annotation.DrawableRes

@@ -25,10 +25,10 @@ import androidx.core.animation.addListener
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.SimpleExoPlayer
-import org.oxycblt.auxio.getSystemServiceSafe
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.logD
 
 /**
  * Object that manages the AudioFocus state.

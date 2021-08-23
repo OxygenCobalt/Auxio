@@ -38,11 +38,6 @@ fun Int.toThemeIcon(): Int {
 }
 
 /**
- * A verbose shortcut for getString(key, null). Used during string pref migrations
- */
-fun SharedPreferences.getStringOrNull(key: String): String? = getString(key, null)
-
-/**
  * Converts an int preference under [key] to [T] through a [convert] function.
  * This is only intended for use for the enums with fromInt functions.
  *

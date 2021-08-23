@@ -21,8 +21,6 @@ package org.oxycblt.auxio.playback.state
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -30,6 +28,8 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * Master class (and possible god object) for the playback state.

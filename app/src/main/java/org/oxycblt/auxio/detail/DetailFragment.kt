@@ -28,9 +28,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.isLandscape
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
+import org.oxycblt.auxio.util.isLandscape
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.

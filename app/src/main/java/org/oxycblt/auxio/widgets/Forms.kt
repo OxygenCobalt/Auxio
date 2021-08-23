@@ -22,10 +22,10 @@ import android.content.Context
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.newBroadcastIntent
-import org.oxycblt.auxio.newMainIntent
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.util.newBroadcastIntent
+import org.oxycblt.auxio.util.newMainIntent
 
 private fun createViews(
     context: Context,

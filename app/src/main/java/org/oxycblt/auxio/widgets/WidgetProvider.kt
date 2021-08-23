@@ -30,9 +30,9 @@ import android.util.SizeF
 import android.widget.RemoteViews
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.coil.loadBitmap
-import org.oxycblt.auxio.isLandscape
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.isLandscape
+import org.oxycblt.auxio.util.logD
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively

@@ -31,12 +31,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.accent.AccentDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
-import org.oxycblt.auxio.isNight
-import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.ui.IntListPrefDialog
-import org.oxycblt.auxio.settings.ui.IntListPreference
-import org.oxycblt.auxio.showToast
+import org.oxycblt.auxio.util.isNight
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.showToast
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].

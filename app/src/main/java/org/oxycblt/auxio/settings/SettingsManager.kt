@@ -25,8 +25,8 @@ import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.accent.ACCENTS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.recycler.DisplayMode
-import org.oxycblt.auxio.recycler.SortMode
+import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.SortMode
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.

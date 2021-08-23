@@ -32,6 +32,9 @@ import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.isEdgeOn
+import org.oxycblt.auxio.util.isNight
+import org.oxycblt.auxio.util.logD
 
 /**
  * The single [AppCompatActivity] for Auxio.

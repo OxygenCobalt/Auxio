@@ -4,7 +4,7 @@
         app:layout="@layout/item_header"
         app:title="@string/set_ui">
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entires_theme"
             app:entryValues="@array/values_theme"
@@ -93,7 +93,7 @@
         app:layout="@layout/item_header"
         app:title="@string/set_behavior">
 
-        <org.oxycblt.auxio.settings.ui.IntListPreference
+        <org.oxycblt.auxio.settings.IntListPreference
             app:defaultValue="@integer/play_mode_songs"
             app:entries="@array/entries_song_playback_mode"
             app:entryValues="@array/values_song_playback_mode"

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * LogUtils.kt is part of Auxio.
+ * LogUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio
+package org.oxycblt.auxio.util
 
 import android.util.Log
+import org.oxycblt.auxio.BuildConfig
 
 // Shortcut functions for logging.
 // Yes, I know timber exists but this does what I need.

@@ -23,8 +23,8 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.inflater
-import org.oxycblt.auxio.resolveStateList
+import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.resolveStateList
 
 /**
  * An adapter that displays the list of all possible accents, and highlights the current one.

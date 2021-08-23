@@ -23,9 +23,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
-import org.oxycblt.auxio.assertBackgroundThread
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.queryAll
+import org.oxycblt.auxio.util.assertBackgroundThread
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.queryAll
 
 /**
  * Database for storing excluded directories.

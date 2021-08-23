@@ -29,8 +29,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.DisplayMode
 
 /**
  * The [ViewModel] for the search functionality

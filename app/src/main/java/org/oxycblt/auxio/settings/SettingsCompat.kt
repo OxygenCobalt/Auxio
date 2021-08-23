@@ -108,6 +108,11 @@ fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
 }
 
 /**
+ * A verbose shortcut for getString(key, null). Used during string pref migrations
+ */
+private fun SharedPreferences.getStringOrNull(key: String): String? = getString(key, null)
+
+/**
  * Cache of the old keys used in Auxio.
  */
 private object OldKeys {

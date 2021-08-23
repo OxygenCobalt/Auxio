@@ -25,8 +25,8 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.logE
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 import java.lang.Exception
 
 /**

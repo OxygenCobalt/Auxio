@@ -26,10 +26,10 @@ import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
-import org.oxycblt.auxio.logD
-import org.oxycblt.auxio.resolveColor
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.resolveColor
 
 /**
  * Dialog responsible for showing the list of accents to select.
@@ -100,7 +100,7 @@ class AccentDialog : LifecycleDialog() {
     }
 
     companion object {
-        const val TAG = "TAG_ACCENT_DIALOG"
+        const val TAG = BuildConfig.APPLICATION_ID + ".tag.ACCENT_PICKER"
         const val KEY_PENDING_ACCENT = BuildConfig.APPLICATION_ID + ".key.PENDING_ACCENT"
     }
 }
