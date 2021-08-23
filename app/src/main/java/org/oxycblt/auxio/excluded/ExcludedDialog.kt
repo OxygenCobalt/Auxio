@@ -36,8 +36,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.ui.LifecycleDialog
 import org.oxycblt.auxio.showToast
+import org.oxycblt.auxio.ui.LifecycleDialog
 import kotlin.system.exitProcess
 
 /**

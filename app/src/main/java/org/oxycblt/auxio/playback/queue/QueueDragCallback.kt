@@ -18,8 +18,11 @@
 
 package org.oxycblt.auxio.playback.queue
 
+import android.graphics.Canvas
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import kotlin.math.abs
 import kotlin.math.max
@@ -30,14 +33,10 @@ import kotlin.math.sign
  * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
  * and [QueueAdapter] simultaneously.
  * @author OxygenCobalt
- * TODO: Its possible to apply some elevation to the item views when they are picked up,
- *  however you need to keep track of the viewholder in the item touch helper and reset
- *  it when done. Theoretically this also means you can do the material drawer thing where
- *  the bottom of the recyclerview a darker color but is only shown when an item is moved.
- *  Maybe.
  */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter
+    private var shouldLift = true
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -85,6 +84,57 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
             target.bindingAdapterPosition,
             queueAdapter
         )
+    }
+
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
+        // The material design page on elevation has a cool example of draggable items elevating
+        // themselves when being dragged. Too bad google doesn't provide a single utility to do
+        // this in your own app :^). To emulate it, I check if this child is in a drag state and
+        // then animate an elevation change. This animation also changes the background so that
+        // the item will actually draw over.
+
+        val view = viewHolder.itemView
+
+        if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            view.animate()
+                .withStartAction { view.setBackgroundResource(R.color.surface) }
+                .translationZ(view.resources.getDimension(R.dimen.elevation_normal))
+                .setDuration(100)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .start()
+
+            shouldLift = false
+        }
+
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+    }
+
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+        // When an elevated item is done, we reset the elevation using another animation
+        // and set the background to null again so a seam doesn't show up in further actions.
+
+        val view = viewHolder.itemView
+
+        if (view.translationZ != 0.0f) {
+            viewHolder.itemView.animate()
+                .withEndAction { view.setBackgroundResource(android.R.color.transparent) }
+                .translationZ(0.0f)
+                .setDuration(100)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .start()
+        }
+
+        shouldLift = true
+
+        super.clearView(recyclerView, viewHolder)
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

@@ -46,8 +46,11 @@ import org.oxycblt.auxio.recycler.DisplayMode
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
  * TODO: Re-add sorting (but new and improved)
+ *  It will require a new SortMode to be made simply for compat. Migrate the old SortMode
+ *  eventually.
  * TODO: Add lift-on-scroll eventually [when I can file a bug report or hack it into working]
- * FIXME: Keep the collapsed state in the ViewModel so we can make sure it stays consistent
+ * FIXME: Find a way to store the collapsed state so it stays consistent
+ * TODO: Fix issue where TabLayout ripples will shove above the indicator
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
@@ -93,7 +96,6 @@ class HomeFragment : Fragment() {
             // internal recyclerview and change the touch slope so that touch actions will
             // act more as a scroll than as a swipe.
             // Derived from: https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
-
             try {
                 val recycler = ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
                     isAccessible = true
@@ -124,8 +126,6 @@ class HomeFragment : Fragment() {
         }.attach()
 
         // --- VIEWMODEL SETUP ---
-
-        playbackModel.setupPlayback(requireContext())
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             when (item) {

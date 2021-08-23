@@ -35,6 +35,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.recycler.DisplayMode
+import org.oxycblt.auxio.recycler.sliceArticle
 import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
@@ -103,7 +104,13 @@ class HomeListFragment : Fragment() {
         homeAdapter.updateData(toObserve.value!!)
 
         toObserve.observe(viewLifecycleOwner) { data ->
-            homeAdapter.updateData(data)
+            homeAdapter.updateData(
+                data.sortedWith(
+                    compareBy(String.CASE_INSENSITIVE_ORDER) {
+                        it.name.sliceArticle()
+                    }
+                )
+            )
         }
 
         logD("Fragment created")

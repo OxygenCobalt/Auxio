@@ -29,7 +29,7 @@ import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.resolveColor
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.settings.ui.LifecycleDialog
+import org.oxycblt.auxio.ui.LifecycleDialog
 
 /**
  * Dialog responsible for showing the list of accents to select.

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 /**
  * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
  * [SortMode] they are currently on.
+ * TODO: Redo sorting here
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
