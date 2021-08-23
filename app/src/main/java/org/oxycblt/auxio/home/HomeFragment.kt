@@ -53,11 +53,7 @@ import org.oxycblt.auxio.recycler.DisplayMode
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-
-    private val tabs = arrayOf(
-        DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
-        DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
-    )
+    private val homeModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,7 +90,7 @@ class HomeFragment : Fragment() {
 
             // By default, ViewPager2's sensitivity is high enough to result in vertical
             // scroll events being registered as horizontal scroll events. Reflect into the
-            // internal recyclerview and  change the touch slope so that touch actions will
+            // internal recyclerview and change the touch slope so that touch actions will
             // act more as a scroll than as a swipe.
             // Derived from: https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
 
@@ -117,7 +113,7 @@ class HomeFragment : Fragment() {
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
-            val labelRes = when (tabs[pos]) {
+            val labelRes = when (requireNotNull(homeModel.tabs.value)[pos]) {
                 DisplayMode.SHOW_SONGS -> R.string.lbl_songs
                 DisplayMode.SHOW_ALBUMS -> R.string.lbl_albums
                 DisplayMode.SHOW_ARTISTS -> R.string.lbl_artists
@@ -162,7 +158,7 @@ class HomeFragment : Fragment() {
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
 
-        override fun getItemCount(): Int = tabs.size
-        override fun createFragment(position: Int): Fragment = HomeListFragment.new(tabs[position])
+        override fun getItemCount(): Int = requireNotNull(homeModel.tabs.value).size
+        override fun createFragment(position: Int): Fragment = HomeListFragment.new(position)
     }
 }

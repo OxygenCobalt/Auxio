@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.logD
 import org.oxycblt.auxio.music.Album
@@ -37,15 +38,13 @@ import org.oxycblt.auxio.recycler.DisplayMode
 import org.oxycblt.auxio.spans
 import org.oxycblt.auxio.ui.newMenu
 
-/*
- * Fragment that contains a list of items specified by a [DisplayMode].
- * TODO: Fix crash from not saving the display mode. This is getting really tiring.
- *  Just keep the index for the tab we're working with and then just use that w/homeModel.
+/**
+ * Fragment that contains a list of items specified by a [DisplayMode]. This fragment
+ * should be created using the [new] method with it's position in the ViewPager.
  */
 class HomeListFragment : Fragment() {
     private val homeModel: HomeViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by viewModels()
-    private lateinit var displayMode: DisplayMode
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,7 +90,9 @@ class HomeListFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        val toObserve = when (displayMode) {
+        val pos = requireNotNull(arguments).getInt(ARG_POS)
+
+        val toObserve = when (requireNotNull(homeModel.tabs.value)[pos]) {
             DisplayMode.SHOW_SONGS -> homeModel.songs
             DisplayMode.SHOW_ALBUMS -> homeModel.albums
             DisplayMode.SHOW_ARTISTS -> homeModel.artists
@@ -111,12 +112,16 @@ class HomeListFragment : Fragment() {
     }
 
     companion object {
+        private const val ARG_POS = BuildConfig.APPLICATION_ID + ".key.POS"
+
         /*
          * Instantiates this fragment for use in a ViewPager.
          */
-        fun new(mode: DisplayMode): HomeListFragment {
+        fun new(pos: Int): HomeListFragment {
             val fragment = HomeListFragment()
-            fragment.displayMode = mode
+            fragment.arguments = Bundle().apply {
+                putInt(ARG_POS, pos)
+            }
             return fragment
         }
     }

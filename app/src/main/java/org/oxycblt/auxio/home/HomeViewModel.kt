@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.recycler.DisplayMode
 
 class HomeViewModel : ViewModel() {
     private val mGenres = MutableLiveData(listOf<Genre>())
@@ -40,6 +41,9 @@ class HomeViewModel : ViewModel() {
     private val mSongs = MutableLiveData(listOf<Song>())
     val songs: LiveData<List<Song>> get() = mSongs
 
+    private val mTabs = MutableLiveData(arrayOf<DisplayMode>())
+    val tabs: LiveData<Array<DisplayMode>> = mTabs
+
     private val musicStore = MusicStore.getInstance()
 
     init {
@@ -47,5 +51,9 @@ class HomeViewModel : ViewModel() {
         mArtists.value = musicStore.artists
         mAlbums.value = musicStore.albums
         mSongs.value = musicStore.songs
+        mTabs.value = arrayOf(
+            DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
+            DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
+        )
     }
 }
