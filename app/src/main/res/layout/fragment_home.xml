@@ -16,6 +16,8 @@
             android:id="@+id/home_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:background="?attr/colorSurface"
             android:elevation="@dimen/elevation_normal">
 
@@ -31,9 +33,13 @@
                 android:id="@+id/home_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:tabUnboundedRipple="true"
+                app:tabRippleColor="?attr/colorControlHighlight"
                 app:tabTextAppearance="@style/TextAppearance.TabLayout.Label"
-                app:tabMode="scrollable"
                 app:tabContentStart="@dimen/spacing_medium"
+                app:tabMode="scrollable"
                 app:tabTextColor="?android:attr/textColorPrimary"
                 app:tabIndicatorColor="?attr/colorAccent" />
 

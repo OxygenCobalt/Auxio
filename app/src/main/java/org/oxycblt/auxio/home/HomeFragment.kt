@@ -49,8 +49,6 @@ import org.oxycblt.auxio.util.logE
  *  It will require a new SortMode to be made simply for compat. Migrate the old SortMode
  *  eventually.
  * TODO: Add lift-on-scroll eventually [when I can file a bug report or hack it into working]
- * FIXME: Find a way to store the collapsed state so it stays consistent
- * TODO: Fix issue where TabLayout ripples will shove above the indicator
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
@@ -68,9 +66,6 @@ class HomeFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        // For some insane reason certain navigation actions will collapse the app bar
-        binding.homeAppbar.setExpanded(true)
 
         binding.homeToolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -128,24 +123,28 @@ class HomeFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            when (item) {
-                is Song -> findNavController().navigate(
-                    HomeFragmentDirections.actionShowAlbum(item.album.id)
-                )
+            // Unless we wait for the AppBarLayout to be done setting up before we navigate,
+            // it might result in the collapsed state being lost for...reasons.
+            binding.homeAppbar.post {
+                when (item) {
+                    is Song -> findNavController().navigate(
+                        HomeFragmentDirections.actionShowAlbum(item.album.id)
+                    )
 
-                is Album -> findNavController().navigate(
-                    HomeFragmentDirections.actionShowAlbum(item.id)
-                )
+                    is Album -> findNavController().navigate(
+                        HomeFragmentDirections.actionShowAlbum(item.id)
+                    )
 
-                is Artist -> findNavController().navigate(
-                    HomeFragmentDirections.actionShowArtist(item.id)
-                )
+                    is Artist -> findNavController().navigate(
+                        HomeFragmentDirections.actionShowArtist(item.id)
+                    )
 
-                is Genre -> findNavController().navigate(
-                    HomeFragmentDirections.actionShowGenre(item.id)
-                )
+                    is Genre -> findNavController().navigate(
+                        HomeFragmentDirections.actionShowGenre(item.id)
+                    )
 
-                else -> {
+                    else -> {
+                    }
                 }
             }
         }
