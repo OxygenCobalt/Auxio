@@ -106,7 +106,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             view.animate()
                 .withStartAction { view.setBackgroundResource(R.color.surface) }
-                .translationZ(view.resources.getDimension(R.dimen.elevation_normal))
+                .translationZ(view.resources.getDimension(R.dimen.elevation_small))
                 .setDuration(100)
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
@@ -124,7 +124,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         val view = viewHolder.itemView
 
         if (view.translationZ != 0.0f) {
-            viewHolder.itemView.animate()
+            view.animate()
                 .withEndAction { view.setBackgroundResource(android.R.color.transparent) }
                 .translationZ(0.0f)
                 .setDuration(100)

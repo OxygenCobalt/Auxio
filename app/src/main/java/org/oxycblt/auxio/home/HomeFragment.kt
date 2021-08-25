@@ -123,8 +123,8 @@ class HomeFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            // Unless we wait for the AppBarLayout to be done setting up before we navigate,
-            // it might result in the collapsed state being lost for...reasons.
+            // The AppBarLayout bugs out and collapses when we navigate too fast, wait for it
+            // to draw before we continue.
             binding.homeAppbar.post {
                 when (item) {
                     is Song -> findNavController().navigate(

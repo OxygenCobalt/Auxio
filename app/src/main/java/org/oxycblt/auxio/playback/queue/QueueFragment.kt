@@ -36,11 +36,12 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.isEdgeOn
-import org.oxycblt.auxio.util.isIrregularLandscape
 
 /**
- * A [Fragment] that contains both the user queue and the next queue, with the ability to
+ * A [Fragment] that contains both the user queue and the next queue, with the abielity to
  * edit them as well.
+ * TODO: Edge can be improved here by turning off the landscape checks and simply padding the
+ *  root view on the irregular landscape mode [I think]
  * @author OxygenCobalt
  */
 class QueueFragment : Fragment() {
@@ -108,8 +109,22 @@ class QueueFragment : Fragment() {
     }
 
     private fun setupEdgeForQueue(binding: FragmentQueueBinding) {
-        if (isEdgeOn() && !requireActivity().isIrregularLandscape()) {
-            binding.queueToolbar.setOnApplyWindowInsetsListener { v, insets ->
+        if (isEdgeOn()) {
+            // Account for the side navigation bar if required.
+            binding.root.setOnApplyWindowInsetsListener { v, insets ->
+                val right = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    insets.getInsets(WindowInsets.Type.systemBars()).right
+                } else {
+                    @Suppress("DEPRECATION")
+                    insets.systemWindowInsetRight
+                }
+
+                v.updatePadding(right = right)
+
+                insets
+            }
+
+            binding.queueAppbar.setOnApplyWindowInsetsListener { v, insets ->
                 val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     insets.getInsets(WindowInsets.Type.systemBars()).top
                 } else {
@@ -117,7 +132,7 @@ class QueueFragment : Fragment() {
                     insets.systemWindowInsetTop
                 }
 
-                (v.parent as View).updatePadding(top = top)
+                v.updatePadding(top = top)
 
                 insets
             }
@@ -141,7 +156,6 @@ class QueueFragment : Fragment() {
                 insets
             }
         } else {
-            // Don't even bother if we are in phone landscape or if edge-to-edge is off.
             binding.root.fitsSystemWindows = true
         }
     }

@@ -1,3 +1,6 @@
+**Note:** Auxio is undergoing a major refactor right now. This document may not be fully up to date.
+It will be revamped when the refactor is complete.
+
 # Architecture
 
 This document is designed to provide a simple overview of Auxio's architecture and where code resides/should reside. It will be updated as aspects about Auxio change.

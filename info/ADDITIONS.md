@@ -27,3 +27,4 @@ Feel free to fork Auxio to add your own feature set however.
 - Folder View/Grouping [#10]
 - ReplayGain [#7]
 - Tag editing [#33]
+- Specialized queue adding (ex. Play Next) [#44]
