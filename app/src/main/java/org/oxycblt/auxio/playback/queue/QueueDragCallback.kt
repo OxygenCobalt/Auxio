@@ -32,9 +32,14 @@ import kotlin.math.sign
 /**
  * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
  * and [QueueAdapter] simultaneously.
+ * @param onItemScroll Callback for when an item begins to scroll off-screen. Argument passed
+ * is the dY value.
  * @author OxygenCobalt
  */
-class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
+class QueueDragCallback(
+    private val playbackModel: PlaybackViewModel,
+    private val onItemScroll: (Int) -> Unit
+) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter
     private var shouldLift = true
 
@@ -57,7 +62,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         totalSize: Int,
         msSinceStartScroll: Long
     ): Int {
-        // Fix to make QueueFragment scroll when an item is scrolled out of bounds.
+        // Fix to make QueueFragment scroll slower when an item is scrolled out of bounds.
         // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
         val standardSpeed = super.interpolateOutOfBoundsScroll(
             recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll
@@ -71,7 +76,13 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
             )
         )
 
-        return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
+        val result = clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
+
+        recyclerView.post {
+            onItemScroll(result)
+        }
+
+        return result
     }
 
     override fun onMove(

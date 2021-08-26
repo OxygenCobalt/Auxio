@@ -5,6 +5,7 @@
     tools:context=".playback.queue.QueueFragment">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/queue_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -14,8 +15,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/queue_appbar"
             android:layout_width="match_parent"
-            android:background="?attr/colorSurface"
             android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
             app:liftOnScroll="true">
 
             <androidx.appcompat.widget.Toolbar
@@ -26,7 +27,6 @@
                 app:title="@string/lbl_queue" />
 
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/queue_recycler"

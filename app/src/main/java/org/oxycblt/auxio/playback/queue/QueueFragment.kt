@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -38,10 +39,8 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.isEdgeOn
 
 /**
- * A [Fragment] that contains both the user queue and the next queue, with the abielity to
+ * A [Fragment] that contains both the user queue and the next queue, with the ability to
  * edit them as well.
- * TODO: Edge can be improved here by turning off the landscape checks and simply padding the
- *  root view on the irregular landscape mode [I think]
  * @author OxygenCobalt
  */
 class QueueFragment : Fragment() {
@@ -54,7 +53,17 @@ class QueueFragment : Fragment() {
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val callback = QueueDragCallback(playbackModel)
+        val callback = QueueDragCallback(playbackModel) { dY ->
+            // By default, CoordinatorLayout is not aware of scroll events originating from
+            // when an item is scrolled off-screen, so we manually add a scroll event ourselves.
+            (binding.queueAppbar.layoutParams as CoordinatorLayout.LayoutParams).behavior
+                ?.onNestedPreScroll(
+                    binding.queueCoordinator, binding.queueAppbar,
+                    binding.queueRecycler, 0, dY,
+                    IntArray(2), 0
+                )
+        }
+
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper, playbackModel)
         var lastShuffle = playbackModel.isShuffling.value
@@ -101,6 +110,7 @@ class QueueFragment : Fragment() {
             if (isShuffling != lastShuffle) {
                 lastShuffle = isShuffling
 
+                binding.queueRecycler.scrollBy(0, 100)
                 binding.queueRecycler.scrollToPosition(0)
             }
         }
@@ -112,14 +122,20 @@ class QueueFragment : Fragment() {
         if (isEdgeOn()) {
             // Account for the side navigation bar if required.
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
-                val right = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    insets.getInsets(WindowInsets.Type.systemBars()).right
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val bars = insets.getInsets(WindowInsets.Type.systemBars())
+
+                    v.updatePadding(
+                        left = bars.left,
+                        right = bars.right
+                    )
                 } else {
                     @Suppress("DEPRECATION")
-                    insets.systemWindowInsetRight
+                    v.updatePadding(
+                        left = insets.systemWindowInsetLeft,
+                        right = insets.systemWindowInsetRight
+                    )
                 }
-
-                v.updatePadding(right = right)
 
                 insets
             }

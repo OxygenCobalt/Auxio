@@ -18,14 +18,11 @@
 
 package org.oxycblt.auxio.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Build
-import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -142,43 +139,3 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
  * Check if edge-to-edge is on. Really a glorified version check.
  */
 fun isEdgeOn(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
-
-/**
- * Check if we are in the "Irregular" landscape mode (e.g landscape, but nav bar is on the sides)
- * Used to disable most of edge-to-edge if that's the case, as I cant get it to work on this mode.
- * @return True if we are in the irregular landscape mode, false if not.
- */
-fun Activity.isIrregularLandscape(): Boolean {
-    return isLandscape() && !isSystemBarOnBottom(this)
-}
-
-/**
- * Check if the system bars are on the bottom.
- * @return If the system bars are on the bottom, false if no.
- */
-private fun isSystemBarOnBottom(activity: Activity): Boolean {
-    val metrics = DisplayMetrics()
-
-    var width: Int
-    var height: Int
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        activity.windowManager.currentWindowMetrics.bounds.also {
-            width = it.width()
-            height = it.height()
-        }
-    } else {
-        @Suppress("DEPRECATION")
-        activity.getSystemServiceSafe(WindowManager::class).apply {
-            defaultDisplay.getMetrics(metrics)
-
-            width = metrics.widthPixels
-            height = metrics.heightPixels
-        }
-    }
-
-    val config = activity.resources.configuration
-    val canMove = (width != height && config.smallestScreenWidthDp < 600)
-
-    return (!canMove || width < height)
-}
