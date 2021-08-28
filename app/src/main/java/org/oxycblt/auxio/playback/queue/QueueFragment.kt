@@ -24,7 +24,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -53,16 +52,11 @@ class QueueFragment : Fragment() {
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val callback = QueueDragCallback(playbackModel) { dY ->
-            // By default, CoordinatorLayout is not aware of scroll events originating from
-            // when an item is scrolled off-screen, so we manually add a scroll event ourselves.
-            (binding.queueAppbar.layoutParams as CoordinatorLayout.LayoutParams).behavior
-                ?.onNestedPreScroll(
-                    binding.queueCoordinator, binding.queueAppbar,
-                    binding.queueRecycler, 0, dY,
-                    IntArray(2), 0
-                )
-        }
+        val callback = QueueDragCallback(
+            playbackModel,
+            binding.queueCoordinator,
+            binding.queueAppbar
+        )
 
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper, playbackModel)
@@ -110,7 +104,6 @@ class QueueFragment : Fragment() {
             if (isShuffling != lastShuffle) {
                 lastShuffle = isShuffling
 
-                binding.queueRecycler.scrollBy(0, 100)
                 binding.queueRecycler.scrollToPosition(0)
             }
         }
@@ -120,8 +113,8 @@ class QueueFragment : Fragment() {
 
     private fun setupEdgeForQueue(binding: FragmentQueueBinding) {
         if (isEdgeOn()) {
-            // Account for the side navigation bar if required.
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
+                // Account for the side navigation bar if required.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     val bars = insets.getInsets(WindowInsets.Type.systemBars())
 

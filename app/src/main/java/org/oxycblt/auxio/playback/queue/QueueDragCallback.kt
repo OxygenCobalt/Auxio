@@ -20,8 +20,10 @@ package org.oxycblt.auxio.playback.queue
 
 import android.graphics.Canvas
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import kotlin.math.abs
@@ -32,15 +34,15 @@ import kotlin.math.sign
 /**
  * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
  * and [QueueAdapter] simultaneously.
- * @param onItemScroll Callback for when an item begins to scroll off-screen. Argument passed
- * is the dY value.
  * @author OxygenCobalt
  */
 class QueueDragCallback(
     private val playbackModel: PlaybackViewModel,
-    private val onItemScroll: (Int) -> Unit
+    private val coordinator: CoordinatorLayout,
+    private val appBar: AppBarLayout
 ) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter
+    private val tConsumed = IntArray(2)
     private var shouldLift = true
 
     override fun getMovementFlags(
@@ -79,22 +81,16 @@ class QueueDragCallback(
         val result = clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
 
         recyclerView.post {
-            onItemScroll(result)
+            // CoordinatorLayout refuses to propagate a scroll event initiated by an item scroll,
+            // so we do it ourselves.
+            (appBar.layoutParams as CoordinatorLayout.LayoutParams).behavior
+                ?.onNestedPreScroll(
+                    coordinator, appBar, recyclerView,
+                    0, result, tConsumed, 0
+                )
         }
 
         return result
-    }
-
-    override fun onMove(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        target: RecyclerView.ViewHolder
-    ): Boolean {
-        return playbackModel.moveQueueDataItems(
-            viewHolder.bindingAdapterPosition,
-            target.bindingAdapterPosition,
-            queueAdapter
-        )
     }
 
     override fun onChildDraw(
@@ -107,10 +103,12 @@ class QueueDragCallback(
         isCurrentlyActive: Boolean
     ) {
         // The material design page on elevation has a cool example of draggable items elevating
-        // themselves when being dragged. Too bad google doesn't provide a single utility to do
-        // this in your own app :^). To emulate it, I check if this child is in a drag state and
+        // themselves when being dragged. Too bad google's implementation of this doesn't even
+        // work :^). To emulate it on my own, I check if this child is in a drag state and
         // then animate an elevation change. This animation also changes the background so that
         // the item will actually draw over.
+        // TODO: Maybe restrict the item from being drawn over the recycler bounds?
+        //  Seems like its possible with enough UI magic
 
         val view = viewHolder.itemView
 
@@ -129,7 +127,7 @@ class QueueDragCallback(
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-        // When an elevated item is done, we reset the elevation using another animation
+        // When an elevated item is cleared, we reset the elevation using another animation
         // and set the background to null again so a seam doesn't show up in further actions.
 
         val view = viewHolder.itemView
@@ -146,6 +144,18 @@ class QueueDragCallback(
         shouldLift = true
 
         super.clearView(recyclerView, viewHolder)
+    }
+
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean {
+        return playbackModel.moveQueueDataItems(
+            viewHolder.bindingAdapterPosition,
+            target.bindingAdapterPosition,
+            queueAdapter
+        )
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

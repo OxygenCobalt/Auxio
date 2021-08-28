@@ -13,5 +13,4 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 - Audio Focus / Headset Management
 - No internet connectivity whatsoever
 - Kotlin from the ground-up
-- Modular, feature-based architecture
 - No rounded corners

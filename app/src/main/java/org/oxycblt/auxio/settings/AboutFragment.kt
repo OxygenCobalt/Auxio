@@ -21,6 +21,7 @@ package org.oxycblt.auxio.settings
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,27 +75,43 @@ class AboutFragment : Fragment() {
             Intent.FLAG_ACTIVITY_NEW_TASK
         )
 
-        val pkgName = requireContext().packageManager.resolveActivity(
-            browserIntent, PackageManager.MATCH_DEFAULT_ONLY
-        )?.activityInfo?.packageName
-
-        if (pkgName != null) {
-            if (pkgName == "android") {
-                // No default browser [Must open app chooser, may not be supported]
-                openAppChooser(browserIntent)
-            } else {
-                try {
-                    browserIntent.setPackage(pkgName)
-                    startActivity(browserIntent)
-                } catch (exception: ActivityNotFoundException) {
-                    // Not browser but an app chooser due to OEM garbage
-                    browserIntent.setPackage(null)
-                    openAppChooser(browserIntent)
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11 seems to now handle the app chooser situations on its own now
+            // [along with adding a new permission that breaks the old manual code], so
+            // we just do a typical activity launch.
+            try {
+                requireContext().startActivity(browserIntent)
+            } catch (e: ActivityNotFoundException) {
+                // No app installed to open the link
+                requireContext().showToast(R.string.err_no_app)
             }
         } else {
-            // No app installed to open the link
-            requireContext().showToast(R.string.err_no_app)
+            // On older versions of android, opening links from an ACTION_VIEW intent might
+            // not work in all cases, especially when no default app was set. If that is the
+            // case, we will try to manually handle these cases before we try to launch the
+            // browser.
+            val pkgName = requireContext().packageManager.resolveActivity(
+                browserIntent, PackageManager.MATCH_DEFAULT_ONLY
+            )?.activityInfo?.packageName
+
+            if (pkgName != null) {
+                if (pkgName == "android") {
+                    // No default browser [Must open app chooser, may not be supported]
+                    openAppChooser(browserIntent)
+                } else {
+                    try {
+                        browserIntent.setPackage(pkgName)
+                        startActivity(browserIntent)
+                    } catch (e: ActivityNotFoundException) {
+                        // Not browser but an app chooser due to OEM garbage
+                        browserIntent.setPackage(null)
+                        openAppChooser(browserIntent)
+                    }
+                }
+            } else {
+                // No app installed to open the link
+                requireContext().showToast(R.string.err_no_app)
+            }
         }
     }
 
