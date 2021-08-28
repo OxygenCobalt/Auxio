@@ -4,8 +4,8 @@
     <string name="info_app_name" translatable="false">Auxio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="format_info" translatable="false">%1$s / %2$s</string>
-    <string name="format_double_info" translatable="false">%1$s / %2$s / %3$s</string>
+    <string name="format_info" translatable="false">%1$s • %2$s</string>
+    <string name="format_double_info" translatable="false">%1$s • %2$s • %3$s</string>
     <string name="format_double_counts" translatable="false">%1$s, %2$s</string>
     <string name="format_accent_summary" translatable="false">&lt;b>%1$s&lt;/b>:&#160;%2$s</string>
 </resources>

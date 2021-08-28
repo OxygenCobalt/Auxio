@@ -32,8 +32,8 @@ import kotlin.math.min
 import kotlin.math.sign
 
 /**
- * The Drag callback used by the queue recyclerview. Delivers updates to [PlaybackViewModel]
- * and [QueueAdapter] simultaneously.
+ * A highly customized [ItemTouchHelper.Callback] that handles queue item moving, removal, and some
+ * of the UI magic that makes up the queue UI.
  * @author OxygenCobalt
  */
 class QueueDragCallback(
@@ -104,9 +104,8 @@ class QueueDragCallback(
     ) {
         // The material design page on elevation has a cool example of draggable items elevating
         // themselves when being dragged. Too bad google's implementation of this doesn't even
-        // work :^). To emulate it on my own, I check if this child is in a drag state and
-        // then animate an elevation change. This animation also changes the background so that
-        // the item will actually draw over.
+        // work! To emulate it on my own, I check if this child is in a drag state and then animate
+        // an elevation change.
         // TODO: Maybe restrict the item from being drawn over the recycler bounds?
         //  Seems like its possible with enough UI magic
 
@@ -114,7 +113,6 @@ class QueueDragCallback(
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             view.animate()
-                .withStartAction { view.setBackgroundResource(R.color.surface) }
                 .translationZ(view.resources.getDimension(R.dimen.elevation_small))
                 .setDuration(100)
                 .setInterpolator(AccelerateDecelerateInterpolator())
@@ -123,18 +121,16 @@ class QueueDragCallback(
             shouldLift = false
         }
 
-        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        view.translationX = dX
+        view.translationY = dY
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-        // When an elevated item is cleared, we reset the elevation using another animation
-        // and set the background to null again so a seam doesn't show up in further actions.
-
+        // When an elevated item is cleared, we reset the elevation using another animation.
         val view = viewHolder.itemView
 
         if (view.translationZ != 0.0f) {
             view.animate()
-                .withEndAction { view.setBackgroundResource(android.R.color.transparent) }
                 .translationZ(0.0f)
                 .setDuration(100)
                 .setInterpolator(AccelerateDecelerateInterpolator())
@@ -143,7 +139,8 @@ class QueueDragCallback(
 
         shouldLift = true
 
-        super.clearView(recyclerView, viewHolder)
+        view.translationX = 0f
+        view.translationY = 0f
     }
 
     override fun onMove(
