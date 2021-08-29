@@ -21,6 +21,7 @@ package org.oxycblt.auxio.settings
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -34,7 +35,6 @@ import org.oxycblt.auxio.accent.AccentDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.isEdgeOn
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -57,8 +57,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
         preferenceManager.onDisplayPreferenceDialogListener = this
 
-        if (isEdgeOn()) {
-            view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).applyEdge()
+        view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
+            clipToPadding = false
+
+            applyEdge { bars ->
+                updatePadding(bottom = bars.bottom)
+            }
         }
 
         logD("Fragment created.")
@@ -75,6 +79,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             super.onDisplayPreferenceDialog(preference)
         }
     }
+
     /**
      * Recursively call [handlePreference] on a preference.
      */

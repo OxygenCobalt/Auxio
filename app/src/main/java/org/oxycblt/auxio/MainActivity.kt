@@ -32,7 +32,6 @@ import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.isEdgeOn
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 
@@ -52,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             this, R.layout.activity_main
         )
 
-        if (isEdgeOn()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setupEdgeToEdge(binding)
         }
 

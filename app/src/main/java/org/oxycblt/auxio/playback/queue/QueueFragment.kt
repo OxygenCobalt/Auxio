@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -32,7 +33,6 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.isEdgeOn
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
@@ -65,6 +65,11 @@ class QueueFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.applyEdge { bars ->
+            binding.queueAppbar.updatePadding(top = bars.top)
+            binding.queueRecycler.updatePadding(bottom = bars.bottom)
+        }
+
         binding.queueToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -73,14 +78,6 @@ class QueueFragment : Fragment() {
             setHasFixedSize(true)
             adapter = queueAdapter
             helper.attachToRecyclerView(this)
-        }
-
-        if (isEdgeOn()) {
-            binding.applyEdge()
-            binding.queueAppbar.applyEdge()
-            binding.queueRecycler.applyEdge()
-        } else {
-            binding.root.fitsSystemWindows = true
         }
 
         // --- VIEWMODEL SETUP ----

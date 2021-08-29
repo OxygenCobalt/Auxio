@@ -21,8 +21,10 @@ package org.oxycblt.auxio.util
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Build
 import android.util.TypedValue
+import android.view.View
 import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.TextView
@@ -35,7 +37,6 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 
 /**
@@ -140,72 +141,58 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
 }
 
 /**
- * Check if edge-to-edge is on. Really a glorified version check.
+ * Apply edge-to-edge tweaks to the root of a [ViewBinding].
+ * @param onApply What to do when the system bar insets are provided
  */
-fun isEdgeOn(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
-
-/**
- * Apply edge-to-edge tweaks to the root view of a layout. This is largely for handling
- * edge-to-edge on phone landscape modes.
- */
-fun ViewBinding.applyEdge() {
-    root.setOnApplyWindowInsetsListener { v, insets ->
-        // Account for the side navigation bar if required.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val bars = insets.getInsets(WindowInsets.Type.systemBars())
-
-            v.updatePadding(
-                left = bars.left,
-                right = bars.right
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            v.updatePadding(
-                left = insets.systemWindowInsetLeft,
-                right = insets.systemWindowInsetRight
-            )
-        }
-
-        insets
-    }
+fun ViewBinding.applyEdge(onApply: (Rect) -> Unit) {
+    root.applyEdge(onApply)
 }
 
 /**
- * Apply edge-to-edge tweaks to an [AppBarLayout].
+ * Apply edge-to-edge tweaks to a [View].
+ * @param onApply What to do when the system bar insets are provided
  */
-fun AppBarLayout.applyEdge() {
-    setOnApplyWindowInsetsListener { v, insets ->
-        val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            insets.getInsets(WindowInsets.Type.systemBars()).top
-        } else {
-            @Suppress("DEPRECATION")
-            insets.systemWindowInsetTop
+fun View.applyEdge(onApply: (Rect) -> Unit) {
+    when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            setOnApplyWindowInsetsListener { v, insets ->
+                val bars = insets.getInsets(WindowInsets.Type.systemBars()).run {
+                    Rect(left, top, right, bottom)
+                }
+
+                updatePadding(
+                    left = bars.left,
+                    right = bars.right
+                )
+
+                onApply(bars)
+
+                insets
+            }
         }
 
-        v.updatePadding(top = top)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+            setOnApplyWindowInsetsListener { v, insets ->
+                val bars = insets.run {
+                    Rect(
+                        systemWindowInsetLeft,
+                        systemWindowInsetTop,
+                        systemWindowInsetRight,
+                        systemWindowInsetBottom
+                    )
+                }
 
-        insets
-    }
-}
+                updatePadding(
+                    left = bars.left,
+                    right = bars.right
+                )
 
-/**
- * Apply edge-to-edge tweaks to a [RecyclerView].
- */
-fun RecyclerView.applyEdge() {
-    clipToPadding = false
-
-    setOnApplyWindowInsetsListener { v, insets ->
-        val bottom = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            insets.getInsets(WindowInsets.Type.systemBars()).bottom
-        } else {
-            @Suppress("DEPRECATION")
-            insets.systemWindowInsetBottom
+                onApply(bars)
+                insets
+            }
         }
 
-        // Apply bottom padding to make sure that the last queue item isnt incorrectly lost,
-        // but also make sure that the added padding wont clip the child views entirely.
-        v.updatePadding(bottom = bottom)
-
-        insets
+        // Not on a version that supports edge [yet], just don't do it.
+        else -> fitsSystemWindows = true
     }
 }

@@ -22,11 +22,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
 import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.isEdgeOn
 
 /**
  * A container [Fragment] for the settings menu.
@@ -54,13 +54,11 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        if (isEdgeOn()) {
-            binding.applyEdge()
-            binding.settingsAppbar.applyEdge()
+        binding.applyEdge { bars ->
+            binding.settingsAppbar.updatePadding(top = bars.top)
 
-            // We can't apply edge to the RecyclerView from here. Do that in SettingsListFragment.
-        } else {
-            binding.root.fitsSystemWindows = true
+            // The padding + clipToPadding method does not seem to work with a
+            // FragmentContainerView. Do it directly in SettingsListFragment instead.
         }
 
         return binding.root
