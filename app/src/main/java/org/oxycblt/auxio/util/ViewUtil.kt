@@ -23,6 +23,7 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Build
 import android.util.TypedValue
+import android.view.WindowInsets
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -30,8 +31,11 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 
 /**
@@ -139,3 +143,69 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
  * Check if edge-to-edge is on. Really a glorified version check.
  */
 fun isEdgeOn(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+
+/**
+ * Apply edge-to-edge tweaks to the root view of a layout. This is largely for handling
+ * edge-to-edge on phone landscape modes.
+ */
+fun ViewBinding.applyEdge() {
+    root.setOnApplyWindowInsetsListener { v, insets ->
+        // Account for the side navigation bar if required.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val bars = insets.getInsets(WindowInsets.Type.systemBars())
+
+            v.updatePadding(
+                left = bars.left,
+                right = bars.right
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            v.updatePadding(
+                left = insets.systemWindowInsetLeft,
+                right = insets.systemWindowInsetRight
+            )
+        }
+
+        insets
+    }
+}
+
+/**
+ * Apply edge-to-edge tweaks to an [AppBarLayout].
+ */
+fun AppBarLayout.applyEdge() {
+    setOnApplyWindowInsetsListener { v, insets ->
+        val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            insets.getInsets(WindowInsets.Type.systemBars()).top
+        } else {
+            @Suppress("DEPRECATION")
+            insets.systemWindowInsetTop
+        }
+
+        v.updatePadding(top = top)
+
+        insets
+    }
+}
+
+/**
+ * Apply edge-to-edge tweaks to a [RecyclerView].
+ */
+fun RecyclerView.applyEdge() {
+    clipToPadding = false
+
+    setOnApplyWindowInsetsListener { v, insets ->
+        val bottom = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            insets.getInsets(WindowInsets.Type.systemBars()).bottom
+        } else {
+            @Suppress("DEPRECATION")
+            insets.systemWindowInsetBottom
+        }
+
+        // Apply bottom padding to make sure that the last queue item isnt incorrectly lost,
+        // but also make sure that the added padding wont clip the child views entirely.
+        v.updatePadding(bottom = bottom)
+
+        insets
+    }
+}

@@ -18,23 +18,20 @@
 
 package org.oxycblt.auxio.playback.queue
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isEdgeOn
 
 /**
@@ -78,7 +75,13 @@ class QueueFragment : Fragment() {
             helper.attachToRecyclerView(this)
         }
 
-        setupEdgeForQueue(binding)
+        if (isEdgeOn()) {
+            binding.applyEdge()
+            binding.queueAppbar.applyEdge()
+            binding.queueRecycler.applyEdge()
+        } else {
+            binding.root.fitsSystemWindows = true
+        }
 
         // --- VIEWMODEL SETUP ----
 
@@ -109,64 +112,6 @@ class QueueFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    private fun setupEdgeForQueue(binding: FragmentQueueBinding) {
-        if (isEdgeOn()) {
-            binding.root.setOnApplyWindowInsetsListener { v, insets ->
-                // Account for the side navigation bar if required.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val bars = insets.getInsets(WindowInsets.Type.systemBars())
-
-                    v.updatePadding(
-                        left = bars.left,
-                        right = bars.right
-                    )
-                } else {
-                    @Suppress("DEPRECATION")
-                    v.updatePadding(
-                        left = insets.systemWindowInsetLeft,
-                        right = insets.systemWindowInsetRight
-                    )
-                }
-
-                insets
-            }
-
-            binding.queueAppbar.setOnApplyWindowInsetsListener { v, insets ->
-                val top = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    insets.getInsets(WindowInsets.Type.systemBars()).top
-                } else {
-                    @Suppress("DEPRECATION")
-                    insets.systemWindowInsetTop
-                }
-
-                v.updatePadding(top = top)
-
-                insets
-            }
-
-            binding.queueRecycler.setOnApplyWindowInsetsListener { v, insets ->
-                val bottom = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    insets.getInsets(WindowInsets.Type.systemBars()).bottom
-                } else {
-                    @Suppress("DEPRECATION")
-                    insets.systemWindowInsetBottom
-                }
-
-                // Apply bottom padding to make sure that the last queue item isnt incorrectly lost,
-                // but also make sure that the added padding wont clip the child views entirely.
-                (v as RecyclerView).apply {
-                    clipToPadding = false
-                    updatePadding(bottom = bottom)
-                    overScrollMode = RecyclerView.OVER_SCROLL_IF_CONTENT_SCROLLS
-                }
-
-                insets
-            }
-        } else {
-            binding.root.fitsSystemWindows = true
-        }
     }
 
     // --- QUEUE DATA ---

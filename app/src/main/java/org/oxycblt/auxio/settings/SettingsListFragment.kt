@@ -26,12 +26,15 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.children
+import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.accent.AccentDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.applyEdge
+import org.oxycblt.auxio.util.isEdgeOn
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -53,6 +56,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
 
         preferenceManager.onDisplayPreferenceDialogListener = this
+
+        if (isEdgeOn()) {
+            view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).applyEdge()
+        }
 
         logD("Fragment created.")
     }
@@ -117,28 +124,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     summary = Accent.get().getDetailedSummary(context)
                 }
 
-                SettingsManager.KEY_SHOW_COVERS -> {
+                SettingsManager.KEY_SHOW_COVERS, SettingsManager.KEY_QUALITY_COVERS -> {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                         Coil.imageLoader(requireContext()).apply {
                             bitmapPool.clear()
                             memoryCache.clear()
                         }
-
-                        requireActivity().recreate()
-
-                        true
-                    }
-                }
-
-                SettingsManager.KEY_QUALITY_COVERS -> {
-                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
-                        // Clear out any cached images, before recreating the activity
-                        Coil.imageLoader(requireContext()).apply {
-                            bitmapPool.clear()
-                            memoryCache.clear()
-                        }
-
-                        requireActivity().recreate()
 
                         true
                     }

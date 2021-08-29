@@ -4,24 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".settings.SettingsFragment">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/settings_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         android:background="?attr/colorSurface"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/settings_toolbar"
-            style="@style/Widget.Toolbar.Icon.Down"
-            app:menu="@menu/menu_settings"
-            app:title="@string/set_title" />
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/settings_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            android:clickable="true"
+            android:focusable="true"
+            app:liftOnScroll="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/settings_toolbar"
+                style="@style/Widget.Toolbar.Icon.Down"
+                app:menu="@menu/menu_settings"
+                app:title="@string/set_title" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/settings_list_fragment"
             android:name="org.oxycblt.auxio.settings.SettingsListFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
