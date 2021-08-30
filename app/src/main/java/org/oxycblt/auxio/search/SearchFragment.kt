@@ -144,12 +144,11 @@ class SearchFragment : Fragment() {
                 // TODO: Maybe find a better way to keep scroll state when the search
                 //  results didn't actually change.
                 binding.searchRecycler.scrollToPosition(0)
-                binding.searchAppbar.isLifted = false
             }
 
             if (results.isEmpty()) {
                 binding.searchAppbar.setExpanded(true)
-                binding.searchRecycler.visibility = View.GONE
+                binding.searchRecycler.visibility = View.INVISIBLE
             } else {
                 binding.searchRecycler.visibility = View.VISIBLE
             }

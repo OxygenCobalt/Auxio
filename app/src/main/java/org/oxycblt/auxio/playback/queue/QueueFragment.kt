@@ -107,7 +107,7 @@ class QueueFragment : Fragment() {
                 lastShuffle = isShuffling
 
                 binding.queueRecycler.scrollToPosition(0)
-                binding.queueAppbar.isLifted = false // Make sure lifted state changes.
+                // binding.queueAppbar.isLifted = false // Make sure lifted state changes.
             }
         }
 

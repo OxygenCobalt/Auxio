@@ -78,19 +78,7 @@ class QueueDragCallback(
             )
         )
 
-        val result = clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
-
-        recyclerView.post {
-            // CoordinatorLayout refuses to propagate a scroll event initiated by an item scroll,
-            // so we do it ourselves.
-            (appBar.layoutParams as CoordinatorLayout.LayoutParams).behavior
-                ?.onNestedPreScroll(
-                    coordinator, appBar, recyclerView,
-                    0, result, tConsumed, 0
-                )
-        }
-
-        return result
+        return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
     }
 
     override fun onChildDraw(
