@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import kotlinx.coroutines.NonDisposableHandle.parent
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.BaseModel
@@ -105,6 +106,7 @@ class QueueFragment : Fragment() {
                 lastShuffle = isShuffling
 
                 binding.queueRecycler.scrollToPosition(0)
+                binding.queueAppbar.isLifted = false // Make sure lifted state changes.
             }
         }
 

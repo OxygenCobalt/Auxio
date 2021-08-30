@@ -32,11 +32,13 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 
 /**
@@ -138,6 +140,33 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     }
 
     return color.resolveColor(context)
+}
+
+/**
+ * Make this [AppBarLayout] fade a scrolling [view] out when it collapses.
+ * This is mostly because I am unable to figure out how to get a collapsing view not
+ * to draw under the status bar in edge-to-edge mode.
+ */
+fun AppBarLayout.makeScrollingViewFade(view: View) {
+    addOnOffsetChangedListener(
+        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            view.alpha = (view.height + verticalOffset) / view.height.toFloat()
+        }
+    )
+}
+
+/**
+ * Force-update this [AppBarLayout]'s lifted state. This is useful when the dataset changes
+ * and the lifted state must be updated.
+ */
+fun AppBarLayout.updateLiftedState(recycler: RecyclerView) {
+    post {
+        val coordinator = (parent as CoordinatorLayout)
+
+        (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
+            coordinator, this, recycler, 0, 0, IntArray(2), 0
+        )
+    }
 }
 
 /**

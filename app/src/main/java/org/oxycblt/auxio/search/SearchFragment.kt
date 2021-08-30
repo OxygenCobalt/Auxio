@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.postDelayed
+import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -42,9 +43,11 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.makeScrollingViewFade
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
@@ -78,6 +81,12 @@ class SearchFragment : Fragment() {
         // --- UI SETUP --
 
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.applyEdge { bars ->
+            binding.searchAppbar.updatePadding(top = bars.top)
+        }
+
+        binding.searchAppbar.makeScrollingViewFade(binding.searchToolbar)
 
         binding.searchToolbar.apply {
             val itemId = when (searchModel.filterMode) {
@@ -131,18 +140,18 @@ class SearchFragment : Fragment() {
 
         searchModel.searchResults.observe(viewLifecycleOwner) { results ->
             searchAdapter.submitList(results) {
+                // We've just scrolled back to the top, reset the lifted state
+                // TODO: Maybe find a better way to keep scroll state when the search
+                //  results didn't actually change.
                 binding.searchRecycler.scrollToPosition(0)
+                binding.searchAppbar.isLifted = false
             }
 
             if (results.isEmpty()) {
-                // If the data is empty, then the ability for the toolbar to collapse
-                // on scroll should be disabled.
                 binding.searchAppbar.setExpanded(true)
                 binding.searchRecycler.visibility = View.GONE
-                toolbarParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
             } else {
                 binding.searchRecycler.visibility = View.VISIBLE
-                toolbarParams.scrollFlags = defaultParams
             }
         }
 

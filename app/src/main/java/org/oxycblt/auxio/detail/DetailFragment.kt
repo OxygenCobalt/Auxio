@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.MenuRes
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isLandscape
 
 /**
@@ -42,6 +44,10 @@ abstract class DetailFragment : Fragment() {
     protected val binding by memberBinding(FragmentDetailBinding::inflate)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.applyEdge { bars ->
+            binding.detailAppbar.updatePadding(top = bars.top)
+        }
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
