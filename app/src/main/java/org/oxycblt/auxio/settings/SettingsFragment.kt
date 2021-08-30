@@ -55,11 +55,14 @@ class SettingsFragment : Fragment() {
         }
 
         binding.applyEdge { bars ->
+            binding.root.updatePadding(left = bars.left, right = bars.right)
             binding.settingsAppbar.updatePadding(top = bars.top)
 
             // The padding + clipToPadding method does not seem to work with a
             // FragmentContainerView. Do it directly in SettingsListFragment instead.
         }
+
+        binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view
 
         return binding.root
     }

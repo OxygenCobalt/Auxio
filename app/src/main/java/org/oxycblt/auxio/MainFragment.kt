@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,7 +30,6 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -52,7 +52,7 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.applyEdge { bars ->
-            binding.root.updatePadding(bottom = bars.bottom)
+            binding.root.updatePadding(bottom = bars.bottom, left = bars.left, right = bars.right)
         }
 
         // --- VIEWMODEL SETUP ---
@@ -75,16 +75,6 @@ class MainFragment : Fragment() {
      * Handle the visibility of CompactPlaybackFragment. Done here so that there's a nice animation.
      */
     private fun handleCompactPlaybackVisibility(binding: FragmentMainBinding, song: Song?) {
-        if (song == null) {
-            logD("Hiding CompactPlaybackFragment since no song is being played.")
-
-            binding.mainPlayback.visibility = if (requireContext().isLandscape()) {
-                View.INVISIBLE
-            } else {
-                View.GONE
-            }
-        } else {
-            binding.mainPlayback.visibility = View.VISIBLE
-        }
+        binding.mainPlayback.isVisible = song != null
     }
 }

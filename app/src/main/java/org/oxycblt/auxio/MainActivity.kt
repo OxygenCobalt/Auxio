@@ -37,7 +37,9 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * The single [AppCompatActivity] for Auxio.
- * TODO: Improve edge-to-edge everywhere
+ * TODO: Improve edge-to-edge everywhere and phase out fitsSystemWindows.
+ *  If you do this, then it will become trivial to merge a lot of the code [l/r padding],
+ *  fitsSystemWindow management into this activity.
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

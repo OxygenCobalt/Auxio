@@ -32,14 +32,15 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
+
+// TODO: Make a helper AppBarLayout of some kind that auto-updates the lifted state. I know
+//  what to do, it's just hard to make it work correctly.
 
 /**
  * Apply the recommended spans for a [RecyclerView].
@@ -156,20 +157,6 @@ fun AppBarLayout.makeScrollingViewFade(view: View) {
 }
 
 /**
- * Force-update this [AppBarLayout]'s lifted state. This is useful when the dataset changes
- * and the lifted state must be updated.
- */
-fun AppBarLayout.updateLiftedState(recycler: RecyclerView) {
-    post {
-        val coordinator = (parent as CoordinatorLayout)
-
-        (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
-            coordinator, this, recycler, 0, 0, IntArray(2), 0
-        )
-    }
-}
-
-/**
  * Apply edge-to-edge tweaks to the root of a [ViewBinding].
  * @param onApply What to do when the system bar insets are provided
  */
@@ -184,15 +171,10 @@ fun ViewBinding.applyEdge(onApply: (Rect) -> Unit) {
 fun View.applyEdge(onApply: (Rect) -> Unit) {
     when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            setOnApplyWindowInsetsListener { v, insets ->
+            setOnApplyWindowInsetsListener { _, insets ->
                 val bars = insets.getInsets(WindowInsets.Type.systemBars()).run {
                     Rect(left, top, right, bottom)
                 }
-
-                updatePadding(
-                    left = bars.left,
-                    right = bars.right
-                )
 
                 onApply(bars)
 
@@ -201,19 +183,13 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
         }
 
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-            setOnApplyWindowInsetsListener { v, insets ->
-                val bars = insets.run {
-                    Rect(
-                        systemWindowInsetLeft,
-                        systemWindowInsetTop,
-                        systemWindowInsetRight,
-                        systemWindowInsetBottom
-                    )
-                }
-
-                updatePadding(
-                    left = bars.left,
-                    right = bars.right
+            setOnApplyWindowInsetsListener { _, insets ->
+                @Suppress("DEPRECATION")
+                val bars = Rect(
+                    insets.systemWindowInsetLeft,
+                    insets.systemWindowInsetTop,
+                    insets.systemWindowInsetRight,
+                    insets.systemWindowInsetBottom
                 )
 
                 onApply(bars)
