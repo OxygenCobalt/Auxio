@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:fitsSystemWindows="true"
         android:orientation="vertical">
 
         <androidx.fragment.app.FragmentContainerView
@@ -27,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/elevation_normal"
+            android:clipToPadding="true"
             android:background="?attr/colorSurface"
             tools:layout="@layout/fragment_compact_playback" />
     </LinearLayout>

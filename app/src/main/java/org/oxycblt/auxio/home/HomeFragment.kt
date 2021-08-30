@@ -22,12 +22,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -39,6 +41,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -66,6 +69,21 @@ class HomeFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.applyEdge { bars ->
+            binding.homeAppbar.updatePadding(top = bars.top)
+        }
+
+        // There is basically no way to prevent the toolbar to draw under the status bar when
+        // it collapses, so do the next best thing and fade it out so it doesn't stick out like
+        // a sore thumb. As a side effect, this looks really cool.
+        binding.homeAppbar.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                binding.homeToolbar.apply {
+                    alpha = (height + verticalOffset) / height.toFloat()
+                }
+            }
+        )
 
         binding.homeToolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {

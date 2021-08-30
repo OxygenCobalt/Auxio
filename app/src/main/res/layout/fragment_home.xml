@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
             android:clickable="true"
+            android:clipChildren="true"
             android:elevation="@dimen/elevation_normal"
             android:focusable="true">
 
@@ -24,7 +25,6 @@
                 android:id="@+id/home_toolbar"
                 style="@style/Widget.Toolbar"
                 android:elevation="0dp"
-                android:fitsSystemWindows="true"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_home"
                 app:title="@string/info_app_name" />
@@ -33,8 +33,6 @@
                 android:id="@+id/home_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabIndicatorColor="?attr/colorAccent"
                 app:tabMode="scrollable"

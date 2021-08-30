@@ -22,11 +22,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 
@@ -48,6 +50,10 @@ class MainFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.applyEdge { bars ->
+            binding.root.updatePadding(bottom = bars.bottom)
+        }
 
         // --- VIEWMODEL SETUP ---
 
