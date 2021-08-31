@@ -27,6 +27,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -34,6 +35,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -49,6 +51,11 @@ class AboutFragment : Fragment() {
     ): View {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
         val musicStore = MusicStore.getInstance()
+
+        binding.applyEdge { bars ->
+            binding.aboutAppbar.updatePadding(top = bars.top,)
+            binding.aboutContents.updatePadding(bottom = bars.bottom)
+        }
 
         binding.aboutToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

@@ -55,7 +55,6 @@ class SettingsFragment : Fragment() {
         }
 
         binding.applyEdge { bars ->
-            binding.root.updatePadding(left = bars.left, right = bars.right)
             binding.settingsAppbar.updatePadding(top = bars.top)
 
             // The padding + clipToPadding method does not seem to work with a

@@ -24,6 +24,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -33,6 +34,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.memberBinding
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.resolveDrawable
 import org.oxycblt.auxio.util.resolveStateList
@@ -69,6 +71,13 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.playbackModel = playbackModel
         binding.detailModel = detailModel
+
+        binding.applyEdge { bars ->
+            binding.root.updatePadding(
+                top = bars.top,
+                bottom = bars.bottom
+            )
+        }
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener {

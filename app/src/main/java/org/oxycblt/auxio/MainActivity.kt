@@ -26,20 +26,19 @@ import android.view.WindowInsets
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 
 /**
  * The single [AppCompatActivity] for Auxio.
- * TODO: Improve edge-to-edge everywhere and phase out fitsSystemWindows.
- *  If you do this, then it will become trivial to merge a lot of the code [l/r padding],
- *  fitsSystemWindow management into this activity.
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()
@@ -54,7 +53,15 @@ class MainActivity : AppCompatActivity() {
         )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setupEdgeToEdge(binding)
+            applyEdgeToEdgeWindow(binding)
+
+            // If there are left/right insets [signalling that we are in phone landscape mode],
+            // we will always apply them.
+            binding.applyEdge { bars ->
+                binding.root.updatePadding(left = bars.left, right = bars.right)
+            }
+        } else {
+            binding.root.fitsSystemWindows = true
         }
 
         logD("Activity created.")
@@ -105,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupEdgeToEdge(binding: ActivityMainBinding) {
+    private fun applyEdgeToEdgeWindow(binding: ActivityMainBinding) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Do modern edge to edge, which happens to be around twice the size of the
             // old way of doing things. Thanks android, very cool!

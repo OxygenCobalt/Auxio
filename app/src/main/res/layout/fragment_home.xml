@@ -24,7 +24,6 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/home_toolbar"
                 style="@style/Widget.Toolbar"
-                android:elevation="0dp"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_home"
                 app:title="@string/info_app_name" />

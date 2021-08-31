@@ -24,13 +24,11 @@
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
-        android:fitsSystemWindows="true">
+        android:background="?attr/colorSurface">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
             style="@style/Widget.Toolbar.Icon.Down"
-            android:elevation="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_playback"

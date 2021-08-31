@@ -76,7 +76,6 @@ class SearchFragment : Fragment() {
         )
 
         val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-        val defaultParams = toolbarParams.scrollFlags
 
         // --- UI SETUP --
 

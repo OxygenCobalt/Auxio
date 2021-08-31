@@ -67,7 +67,6 @@ class QueueFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.applyEdge { bars ->
-            binding.root.updatePadding(left = bars.left, right = bars.right)
             binding.queueAppbar.updatePadding(top = bars.top)
             binding.queueRecycler.updatePadding(bottom = bars.bottom)
         }
@@ -107,7 +106,6 @@ class QueueFragment : Fragment() {
                 lastShuffle = isShuffling
 
                 binding.queueRecycler.scrollToPosition(0)
-                // binding.queueAppbar.isLifted = false // Make sure lifted state changes.
             }
         }
 

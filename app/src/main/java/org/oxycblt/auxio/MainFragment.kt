@@ -35,7 +35,6 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
- * TODO: Re-add the nice playback slide in animation
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -52,7 +51,7 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.applyEdge { bars ->
-            binding.root.updatePadding(bottom = bars.bottom, left = bars.left, right = bars.right)
+            binding.root.updatePadding(bottom = bars.bottom)
         }
 
         // --- VIEWMODEL SETUP ---

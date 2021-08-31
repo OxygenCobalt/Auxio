@@ -197,7 +197,6 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
             }
         }
 
-        // Not on a version that supports edge [yet], just don't do it.
-        else -> fitsSystemWindows = true
+        // Not on a version that supports edge-to-edge [yet], don't do anything
     }
 }

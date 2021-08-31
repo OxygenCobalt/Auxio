@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * CobaltCoordinatorLayout.kt is part of Auxio.
+ * LiftAppBarLayout.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ import com.google.android.material.appbar.AppBarLayout
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state
  * will not properly respond to RecyclerView events.
- * TODO: Find a way to get the lift animation to not animate on startup.
+ * FIXME: Fix issue where elevation change will always animate
+ * FIXME: Fix issue where expanded state does not work correctly when switching orientations
  */
 class LiftAppBarLayout @JvmOverloads constructor(
     context: Context,
