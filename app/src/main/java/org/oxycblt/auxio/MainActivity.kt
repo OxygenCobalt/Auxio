@@ -33,7 +33,6 @@ import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 
@@ -54,12 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             applyEdgeToEdgeWindow(binding)
-
-            // If there are left/right insets [signalling that we are in phone landscape mode],
-            // we will always apply them.
-            binding.applyEdge { bars ->
-                binding.root.updatePadding(left = bars.left, right = bars.right)
-            }
         } else {
             binding.root.fitsSystemWindows = true
         }
@@ -126,15 +119,35 @@ class MainActivity : AppCompatActivity() {
                         WindowInsets.Type.systemBars(),
                         insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
                     )
-                    .build()
+                    .build().also {
+                        val bars = it.getInsets(WindowInsets.Type.systemBars())
+
+                        // If left/right insets are present [implying phone landscape mode],
+                        // make sure that we apply them.
+                        binding.root.updatePadding(
+                            left = bars.left,
+                            right = bars.right
+                        )
+                    }
             }
         } else {
             // Do old edge-to-edge otherwise.
             logD("Doing legacy edge-to-edge.")
 
             @Suppress("DEPRECATION")
-            binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            binding.root.apply {
+                systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+                setOnApplyWindowInsetsListener { v, insets ->
+                    updatePadding(
+                        left = insets.systemWindowInsetLeft,
+                        right = insets.systemWindowInsetRight
+                    )
+
+                    insets
+                }
+            }
         }
     }
 

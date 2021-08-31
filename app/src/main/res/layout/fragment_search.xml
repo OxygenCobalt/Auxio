@@ -39,7 +39,7 @@
                     android:id="@+id/search_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorSurface"
+                    android:background="@android:color/transparent"
                     android:hint="@string/hint_search_library"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:inputType="textFilter"

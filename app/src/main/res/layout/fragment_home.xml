@@ -21,7 +21,7 @@
             android:elevation="@dimen/elevation_normal"
             android:focusable="true">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/home_toolbar"
                 style="@style/Widget.Toolbar"
                 app:layout_scrollFlags="scroll|enterAlways"
