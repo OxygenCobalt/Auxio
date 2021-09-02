@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="surface">@color/surface_night</color>
-    <color name="divider">#323232</color>
+    <color name="divider">#3b3c3f</color>
     <color name="selection">#484848</color>
     <color name="inactive">#404040</color>
     <color name="control">#ffffff</color>

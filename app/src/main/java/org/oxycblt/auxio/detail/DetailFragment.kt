@@ -36,6 +36,9 @@ import org.oxycblt.auxio.util.isLandscape
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
+ * TODO: Want to implement something using CollapsingToolbarLayout. This would eliminate alot of
+ *  the complexity from this ball of mud, but I have to do something to fix the scroll stopping
+ *  issue.
  * @author OxygenCobalt
  */
 abstract class DetailFragment : Fragment() {
