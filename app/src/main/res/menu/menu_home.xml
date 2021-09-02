@@ -38,5 +38,5 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/set_title"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>

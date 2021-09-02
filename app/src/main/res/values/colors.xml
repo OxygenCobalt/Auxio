@@ -1,32 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Sometimes we need to use the surface colors for modes that aren't the current one.
-    Colors are kept here just in case
-    -->
-    <color name="surface_day">#fffafafa</color>
-    <color name="surface_night">#ff121212</color>
-    <color name="surface_black">#ff000000</color>
+    <color name="surface_day">#fafafa</color>
+    <color name="surface_night">#202124</color>
+    <color name="surface_black">@android:color/black</color>
 
-    <!--
-    By default, colorOnSurface when applied sticks out like a sore thumb, so we
-    darken it a little so it lines up with our dark mode backgrounds.
-    Yes, this is a flagrant violation of material, but they also say that #121212 is
-    the recommended black dark color so they have no right to an opinion here.
-    -->
-    <color name="on_surface">#606060</color>
-    <color name="on_surface_black">#CDCDCD</color>
-
-    <!--
-    Typical UI colors.
-    -->
     <color name="surface">@color/surface_day</color>
     <color name="selection">#cbcbcb</color>
     <color name="control">#202020</color>
     <color name="divider">#cbcbcb</color>
     <color name="inactive">#c4c4c4</color>
     <color name="nav_bar">#01fafafa</color>
-    <color name="secondary_text">#546e7a</color>
 
     <!--
     Base color set derived from Music Player GO.

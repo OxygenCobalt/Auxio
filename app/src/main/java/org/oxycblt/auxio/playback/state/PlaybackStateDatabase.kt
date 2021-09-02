@@ -30,7 +30,8 @@ import org.oxycblt.auxio.util.queryAll
 /**
  * A SQLite database for managing the persistent playback state and queue.
  * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
- * TODO: Improve the boundary between this and [PlaybackStateManager]
+ * TODO: Improve the boundary between this and [PlaybackStateManager]. This would be more
+ *  efficient.
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :

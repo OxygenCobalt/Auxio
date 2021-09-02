@@ -12,7 +12,6 @@
         <!-- Colors -->
         <item name="colorSurface">@color/surface</item>
         <item name="colorAccent">@color/design_default_color_primary</item>
-        <item name="colorOnSurface">@color/on_surface</item>
 
         <item name="colorPrimary">?attr/colorAccent</item>
         <item name="colorSecondary">?attr/colorAccent</item>
@@ -47,7 +46,6 @@
     <!-- The basic black theme derived in all black accents. -->
     <style name="Theme.Base.Black" parent="Theme.Base">
         <item name="colorSurface">@color/surface_black</item>
-        <item name="colorOnSurface">@color/on_surface_black</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog.Black</item>
     </style>
 
