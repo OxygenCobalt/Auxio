@@ -22,13 +22,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -77,24 +81,44 @@ class HomeListFragment : Fragment() {
             ::newMenu
         )
 
+        // --- ITEM SETUP ---
+
+        // Get some tab-specific values before we go ahead. More specifically, the data to use
+        // and the unique ID that HomeFragment's AppBarLayout uses to determine lift state.
+        val pos = requireNotNull(arguments).getInt(ARG_POS)
+
+        @IdRes val customId: Int
+        val toObserve: LiveData<out List<BaseModel>>
+
+        when (requireNotNull(homeModel.tabs.value)[pos]) {
+            DisplayMode.SHOW_SONGS -> {
+                customId = R.id.home_song_list
+                toObserve = homeModel.songs
+            }
+            DisplayMode.SHOW_ALBUMS -> {
+                customId = R.id.home_album_list
+                toObserve = homeModel.albums
+            }
+            DisplayMode.SHOW_ARTISTS -> {
+                customId = R.id.home_artist_list
+                toObserve = homeModel.artists
+            }
+            DisplayMode.SHOW_GENRES -> {
+                customId = R.id.home_genre_list
+                toObserve = homeModel.genres
+            }
+        }
+
         // --- UI SETUP ---
 
         binding.homeRecycler.apply {
+            id = customId
             adapter = homeAdapter
             setHasFixedSize(true)
             applySpans()
         }
 
         // --- VIEWMODEL SETUP ---
-
-        val pos = requireNotNull(arguments).getInt(ARG_POS)
-
-        val toObserve = when (requireNotNull(homeModel.tabs.value)[pos]) {
-            DisplayMode.SHOW_SONGS -> homeModel.songs
-            DisplayMode.SHOW_ALBUMS -> homeModel.albums
-            DisplayMode.SHOW_ARTISTS -> homeModel.artists
-            DisplayMode.SHOW_GENRES -> homeModel.genres
-        }
 
         // Make sure that this RecyclerView has data before startup
         homeAdapter.updateData(toObserve.value!!)

@@ -11,15 +11,15 @@
         android:animateLayoutChanges="true"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <org.oxycblt.auxio.ui.LiftAppBarLayout
             android:id="@+id/home_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
             android:clickable="true"
             android:clipChildren="true"
-            app:liftOnScroll="true"
-            android:focusable="true">
+            android:focusable="true"
+            app:liftOnScroll="true">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/home_toolbar"
@@ -32,16 +32,16 @@
                 android:id="@+id/home_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabIndicatorColor="?attr/colorAccent"
                 app:tabMode="scrollable"
                 app:tabRippleColor="?attr/colorControlHighlight"
-                android:background="@android:color/transparent"
                 app:tabTextAppearance="@style/TextAppearance.TabLayout.Label"
                 app:tabTextColor="?android:attr/textColorPrimary"
                 app:tabUnboundedRipple="true" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+        </org.oxycblt.auxio.ui.LiftAppBarLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/home_pager"

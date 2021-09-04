@@ -20,17 +20,22 @@ package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import org.oxycblt.auxio.util.logE
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state
  * will not properly respond to RecyclerView events.
+ * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
+ *  scrolling view to use. Failure to specify this will result in the layout not working.
  * FIXME: Fix issue where elevation change will always animate
  * FIXME: Fix issue where expanded state does not work correctly when switching orientations
  */
@@ -39,15 +44,17 @@ class LiftAppBarLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     @StyleRes defStyleAttr: Int = -1
 ) : AppBarLayout(context, attrs, defStyleAttr) {
-    private var recycler: RecyclerView? = null
+    private var scrollingChild: View? = null
     private val tConsumed = IntArray(2)
 
     private val onPreDraw = ViewTreeObserver.OnPreDrawListener {
-        recycler?.let { rec ->
-            val coordinator = (parent as CoordinatorLayout)
+        val child = findScrollingChild()
+
+        if (child != null) {
+            val coordinator = parent as CoordinatorLayout
 
             (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
-                coordinator, this, rec, 0, 0, tConsumed, 0
+                coordinator, this, coordinator, 0, 0, tConsumed, 0
             )
         }
 
@@ -58,17 +65,31 @@ class LiftAppBarLayout @JvmOverloads constructor(
         viewTreeObserver.addOnPreDrawListener(onPreDraw)
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        // Assume there is one RecyclerView [Because there is]
-        recycler = (parent as ViewGroup).children.firstOrNull { it is RecyclerView }
-            as RecyclerView?
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
         viewTreeObserver.removeOnPreDrawListener(onPreDraw)
+    }
+
+    override fun setLiftOnScrollTargetViewId(liftOnScrollTargetViewId: Int) {
+        super.setLiftOnScrollTargetViewId(liftOnScrollTargetViewId)
+
+        // Sometimes we dynamically set the scrolling child [such as in HomeFragment], so clear it
+        // and re-draw when that occurs.
+        scrollingChild = null
+        onPreDraw.onPreDraw()
+    }
+
+    private fun findScrollingChild(): View? {
+        // Roll some custom code for finding our scrolling view. This can be anything as long as
+        // it updates this layout in it's onNestedPreScroll call.
+        if (scrollingChild == null) {
+            if (liftOnScrollTargetViewId != ResourcesCompat.ID_NULL) {
+                scrollingChild = (parent as ViewGroup).findViewById(liftOnScrollTargetViewId)
+            } else {
+                logE("liftOnScrollTargetViewId was not specified. ignoring scroll events.")
+            }
+        }
+        return scrollingChild
     }
 }

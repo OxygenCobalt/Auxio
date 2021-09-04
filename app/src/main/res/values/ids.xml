@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- This is for HomeFragment's AppBarLayout. Explanations for these can be found there. -->
+    <item name="home_song_list" type="id" />
+    <item name="home_album_list" type="id" />
+    <item name="home_artist_list" type="id" />
+    <item name="home_genre_list" type="id" />
+</resources>

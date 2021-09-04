@@ -116,6 +116,26 @@ class HomeFragment : Fragment() {
                 logE("Unable to reduce ViewPager sensitivity")
                 logE(e.stackTraceToString())
             }
+
+            // We know that there will only be a fixed amount of tabs, so we manually set this
+            // limit to that. This also prevents the appbar lift state from being confused during
+            // page transitions.
+            offscreenPageLimit = homeModel.tabs.value!!.size
+
+            // ViewPager2 tends to garble any scrolling view events that occur within it's
+            // fragments, so we fix that by instructing our AppBarLayout to follow the specific
+            // view we have just selected.
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    binding.homeAppbar.liftOnScrollTargetViewId =
+                        when (homeModel.tabs.value!![position]) {
+                            DisplayMode.SHOW_SONGS -> R.id.home_song_list
+                            DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
+                            DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
+                            DisplayMode.SHOW_GENRES -> R.id.home_genre_list
+                        }
+                }
+            })
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
@@ -132,7 +152,7 @@ class HomeFragment : Fragment() {
         // --- VIEWMODEL SETUP ---
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            // The AppBarLayout bugs out and collapses when we navigate too fast, wait for it
+            // The AppBarLayout gets confused and collapses when we navigate too fast, wait for it
             // to draw before we continue.
             binding.homeAppbar.post {
                 when (item) {
