@@ -26,8 +26,6 @@ import android.view.ViewTreeObserver
 import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.children
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.logE
 

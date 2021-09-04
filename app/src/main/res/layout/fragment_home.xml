@@ -36,7 +36,6 @@
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabIndicatorColor="?attr/colorAccent"
                 app:tabMode="scrollable"
-                app:tabRippleColor="?attr/colorControlHighlight"
                 app:tabTextAppearance="@style/TextAppearance.TabLayout.Label"
                 app:tabTextColor="?android:attr/textColorPrimary"
                 app:tabUnboundedRipple="true" />

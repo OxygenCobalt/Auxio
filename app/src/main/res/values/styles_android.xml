@@ -3,8 +3,8 @@
     <!-- ANDROID COMPONENT-SPECIFIC STYLES. MOSTLY HACKS -->
 
     <!-- Custom popup menu theme -->
-    <style name="Widget.CustomPopup" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">?attr/colorSurface</item>
+    <style name="Widget.CustomPopup" parent="Widget.MaterialComponents.PopupMenu.ContextMenu">
+        <item name="android:popupBackground">@drawable/ui_popup_bg</item>
         <item name="colorControlHighlight">?attr/colorControlHighlight</item>
         <item name="cornerRadius">0dp</item>
     </style>

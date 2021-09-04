@@ -2,7 +2,7 @@
 <resources>
     <color name="surface">@color/surface_night</color>
     <color name="divider">#3b3c3f</color>
-    <color name="selection">#484848</color>
+    <color name="selection">#686868</color>
     <color name="inactive">#404040</color>
     <color name="control">#ffffff</color>
     <color name="nav_bar">#01151515</color>

@@ -26,6 +26,7 @@
                 android:id="@+id/search_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintEnabled="false"
                 app:boxBackgroundMode="filled"
                 app:boxStrokeColor="?attr/colorAccent"
                 app:boxStrokeWidth="0dp"
@@ -42,9 +43,9 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:hint="@string/hint_search_library"
+                    android:padding="@dimen/spacing_medium"
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:inputType="textFilter"
-                    android:padding="@dimen/spacing_medium"
                     android:textCursorDrawable="@drawable/ui_cursor" />
 
             </com.google.android.material.textfield.TextInputLayout>

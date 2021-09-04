@@ -5,7 +5,7 @@
     <color name="surface_black">@android:color/black</color>
 
     <color name="surface">@color/surface_day</color>
-    <color name="selection">#cbcbcb</color>
+    <color name="selection">#ababab</color>
     <color name="control">#202020</color>
     <color name="divider">#cbcbcb</color>
     <color name="inactive">#c4c4c4</color>

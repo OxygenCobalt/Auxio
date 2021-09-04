@@ -34,6 +34,7 @@ import org.oxycblt.auxio.ui.DisplayMode
 
 /**
  * The [ViewModel] for the search functionality
+ * TODO: Try to find adjacent characters [e.g accented o == o]
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel() {

@@ -51,7 +51,6 @@ import org.oxycblt.auxio.util.makeScrollingViewFade
  * TODO: Re-add sorting (but new and improved)
  *  It will require a new SortMode to be made simply for compat. Migrate the old SortMode
  *  eventually.
- * TODO: Add lift-on-scroll eventually [when I can file a bug report or hack it into working]
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="?attr/colorSurface" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/color_popup_overlay" />
+        </shape>
+    </item>
+</layer-list>
