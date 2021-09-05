@@ -28,32 +28,85 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 
+/**
+ * The ViewModel for managing [HomeFragment]'s data and sorting modes.
+ */
 class HomeViewModel : ViewModel() {
-    private val mGenres = MutableLiveData(listOf<Genre>())
-    val genres: LiveData<List<Genre>> get() = mGenres
-
-    private val mArtists = MutableLiveData(listOf<Artist>())
-    val artists: LiveData<List<Artist>> get() = mArtists
+    private val mSongs = MutableLiveData(listOf<Song>())
+    val songs: LiveData<List<Song>> get() = mSongs
 
     private val mAlbums = MutableLiveData(listOf<Album>())
     val albums: LiveData<List<Album>> get() = mAlbums
 
-    private val mSongs = MutableLiveData(listOf<Song>())
-    val songs: LiveData<List<Song>> get() = mSongs
+    private val mArtists = MutableLiveData(listOf<Artist>())
+    val artists: LiveData<List<Artist>> get() = mArtists
 
-    private val mTabs = MutableLiveData(arrayOf<DisplayMode>())
+    private val mGenres = MutableLiveData(listOf<Genre>())
+    val genres: LiveData<List<Genre>> get() = mGenres
+
+    private val mTabs = MutableLiveData(
+        arrayOf(
+            DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
+            DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
+        )
+    )
     val tabs: LiveData<Array<DisplayMode>> = mTabs
+
+    private val mCurTab = MutableLiveData(mTabs.value!![0])
+    val curTab: LiveData<DisplayMode> = mCurTab
+
+    var genreSortMode = LibSortMode.ASCENDING
+        private set
+
+    var artistSortMode = LibSortMode.ASCENDING
+        private set
+
+    var albumSortMode = LibSortMode.ASCENDING
+        private set
+
+    var songSortMode = LibSortMode.ASCENDING
+        private set
 
     private val musicStore = MusicStore.getInstance()
 
     init {
-        mGenres.value = musicStore.genres
-        mArtists.value = musicStore.artists
-        mAlbums.value = musicStore.albums
-        mSongs.value = musicStore.songs
-        mTabs.value = arrayOf(
-            DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
-            DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
-        )
+        mSongs.value = songSortMode.sortSongs(musicStore.songs)
+        mAlbums.value = albumSortMode.sortAlbums(musicStore.albums)
+        mArtists.value = artistSortMode.sortModels(musicStore.artists)
+        mGenres.value = genreSortMode.sortModels(musicStore.genres)
+    }
+
+    /**
+     * Update the current tab based off of the new ViewPager position.
+     */
+    fun updateCurrentTab(pos: Int) {
+        val mode = mTabs.value!![pos]
+
+        mCurTab.value = mode
+    }
+
+    /**
+     * Update the currently displayed item's [LibSortMode].
+     */
+    fun updateCurrentSort(sort: LibSortMode) {
+        when (mCurTab.value) {
+            DisplayMode.SHOW_SONGS -> {
+                songSortMode = sort
+                mSongs.value = sort.sortSongs(mSongs.value!!)
+            }
+
+            DisplayMode.SHOW_ALBUMS -> {
+                albumSortMode = sort
+                mAlbums.value = sort.sortAlbums(mAlbums.value!!)
+            }
+            DisplayMode.SHOW_ARTISTS -> {
+                artistSortMode = sort
+                mArtists.value = sort.sortModels(mArtists.value!!)
+            }
+            DisplayMode.SHOW_GENRES -> {
+                genreSortMode = sort
+                mGenres.value = sort.sortModels(mGenres.value!!)
+            }
+        }
     }
 }

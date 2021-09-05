@@ -16,11 +16,11 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/option_sort_alpha_down"
-                    android:title="@string/lbl_sort_alpha_down" />
+                    android:id="@+id/option_sort_asc"
+                    android:title="@string/lbl_sort_asc" />
                 <item
-                    android:id="@+id/option_sort_alpha_up"
-                    android:title="@string/lbl_sort_alpha_up" />
+                    android:id="@+id/option_sort_dsc"
+                    android:title="@string/lbl_sort_dsc" />
                 <item
                     android:id="@+id/option_sort_artist"
                     android:title="@string/lbl_sort_artist" />

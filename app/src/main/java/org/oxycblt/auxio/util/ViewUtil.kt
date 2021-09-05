@@ -27,20 +27,15 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsets
 import android.widget.ImageButton
-import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
-
-// TODO: Make a helper AppBarLayout of some kind that auto-updates the lifted state. I know
-//  what to do, it's just hard to make it work correctly.
 
 /**
  * Apply the recommended spans for a [RecyclerView].
@@ -72,6 +67,7 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
 
 /**
  * Disable an image button.
+ * TODO: Replace this fragile function with something else.
  */
 fun ImageButton.disable() {
     if (isEnabled) {
@@ -79,14 +75,6 @@ fun ImageButton.disable() {
         isEnabled = false
     }
 }
-
-/**
- * Set a [TextView] text color, without having to resolve the resource.
- */
-fun TextView.setTextColorResource(@ColorRes color: Int) {
-    setTextColor(color.resolveColor(context))
-}
-
 /**
  * Returns whether a recyclerview can scroll.
  */
@@ -116,20 +104,14 @@ fun @receiver:ColorRes Int.resolveColor(context: Context): Int {
  * @see resolveColor
  */
 fun @receiver:ColorRes Int.resolveStateList(context: Context) =
-    ColorStateList.valueOf(resolveColor(context))
-
-/**
- * Resolve a drawable resource into a [Drawable]
- */
-fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
-    requireNotNull(ContextCompat.getDrawable(context, this))
+    ContextCompat.getColorStateList(context, this)
 
 /**
  * Resolve this int into a color as if it was an attribute
  */
 @ColorInt
 fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
-    // Convert the attribute into its color
+    // First resolve the attribute into its ID
     val resolvedAttr = TypedValue()
     context.theme.resolveAttribute(this, resolvedAttr, true)
 

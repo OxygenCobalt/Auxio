@@ -43,7 +43,7 @@
 
     <!-- The basic black theme derived in all black accents. -->
     <style name="Theme.Base.Black" parent="Theme.Base">
-        <item name="colorSurface">@color/surface_black</item>
+        <item name="colorSurface">@android:color/black</item>
         <item name="materialAlertDialogTheme">@style/Theme.CustomDialog.Black</item>
     </style>
 

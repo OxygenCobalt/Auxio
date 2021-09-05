@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Semua</string>
 
     <string name="lbl_sort">Urutan</string>
-    <string name="lbl_sort_alpha_down">Naik</string>
-    <string name="lbl_sort_alpha_up">Turun</string>
+    <string name="lbl_sort_asc">Naik</string>
+    <string name="lbl_sort_dsc">Turun</string>
 
     <string name="lbl_play">Putar</string>
     <string name="lbl_shuffle">Acak</string>

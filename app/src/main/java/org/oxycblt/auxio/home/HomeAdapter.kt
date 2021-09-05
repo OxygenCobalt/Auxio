@@ -32,6 +32,9 @@ import org.oxycblt.auxio.ui.ArtistViewHolder
 import org.oxycblt.auxio.ui.GenreViewHolder
 import org.oxycblt.auxio.ui.SongViewHolder
 
+/**
+ * A universal adapter for displaying data in [HomeFragment].
+ */
 class HomeAdapter(
     private val doOnClick: (data: BaseModel) -> Unit,
     private val doOnLongClick: (view: View, data: BaseModel) -> Unit
@@ -89,6 +92,9 @@ class HomeAdapter(
     fun updateData(newData: List<BaseModel>) {
         data = newData
 
+        // I would use ListAdapter instead of this inefficient invalidate call, but they still
+        // haven't fixed the issue where ListAdapter's calculations will cause wild scrolling
+        // for basically no reason.
         notifyDataSetChanged()
     }
 }

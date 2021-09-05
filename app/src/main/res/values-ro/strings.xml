@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Tot</string>
 
     <string name="lbl_sort">Sortare</string>
-    <string name="lbl_sort_alpha_down">Crescător</string>
-    <string name="lbl_sort_alpha_up">Descrescător</string>
+    <string name="lbl_sort_asc">Crescător</string>
+    <string name="lbl_sort_dsc">Descrescător</string>
 
     <string name="lbl_play">Redă</string>
     <string name="lbl_shuffle">Amestecare</string>

@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Всё</string>
 
     <string name="lbl_sort">Сортировка</string>
-    <string name="lbl_sort_alpha_down">По возрастанию</string>
-    <string name="lbl_sort_alpha_up">По убыванию</string>
+    <string name="lbl_sort_asc">По возрастанию</string>
+    <string name="lbl_sort_dsc">По убыванию</string>
 
     <string name="lbl_play">Воспроизвести</string>
     <string name="lbl_shuffle">Перемешать</string>

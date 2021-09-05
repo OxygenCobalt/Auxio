@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Tout</string>
 
     <string name="lbl_sort">Tri</string>
-    <string name="lbl_sort_alpha_down">Ascendant</string>
-    <string name="lbl_sort_alpha_up">Descendant</string>
+    <string name="lbl_sort_asc">Ascendant</string>
+    <string name="lbl_sort_dsc">Descendant</string>
 
     <string name="lbl_play">Lecture</string>
     <string name="lbl_shuffle">Aléatoire</string>

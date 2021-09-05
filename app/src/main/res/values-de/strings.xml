@@ -19,8 +19,8 @@
     <string name="lbl_filter_all">Alles</string>
 
     <string name="lbl_sort">Sortierung</string>
-    <string name="lbl_sort_alpha_down">Aufsteigend</string>
-    <string name="lbl_sort_alpha_up">Absteigend</string>
+    <string name="lbl_sort_asc">Aufsteigend</string>
+    <string name="lbl_sort_dsc">Absteigend</string>
 
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>

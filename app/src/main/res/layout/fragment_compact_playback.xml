@@ -63,7 +63,7 @@
         <ImageButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Button.Unbounded"
-            android:src="@drawable/ic_playing_state"
+            android:src="@drawable/sel_playing_state"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"

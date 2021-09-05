@@ -20,8 +20,8 @@
     <string name="lbl_filter_all">Alles</string>
 
     <string name="lbl_sort">Sorteren</string>
-    <string name="lbl_sort_alpha_down">Oplopend</string>
-    <string name="lbl_sort_alpha_up">Aflopend</string>
+    <string name="lbl_sort_asc">Oplopend</string>
+    <string name="lbl_sort_dsc">Aflopend</string>
 
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>

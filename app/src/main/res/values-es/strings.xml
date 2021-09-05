@@ -20,8 +20,8 @@
     <string name="lbl_filter_all">Todo</string>
 
     <string name="lbl_sort">Ordenar</string>
-    <string name="lbl_sort_alpha_down">Ascendente</string>
-    <string name="lbl_sort_alpha_up">Descendente</string>
+    <string name="lbl_sort_asc">Ascendente</string>
+    <string name="lbl_sort_dsc">Descendente</string>
 
     <string name="lbl_play">Reproducir</string>
     <string name="lbl_shuffle">Aleatorio</string>

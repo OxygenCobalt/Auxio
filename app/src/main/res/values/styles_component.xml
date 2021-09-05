@@ -9,7 +9,7 @@
         <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:contentDescription">@string/desc_play_pause</item>
         <item name="android:tint">?attr/colorSurface</item>
-        <item name="android:src">@drawable/ic_playing_state</item>
+        <item name="android:src">@drawable/sel_playing_state</item>
         <item name="android:layout_marginStart">@dimen/spacing_large</item>
         <item name="android:layout_marginTop">@dimen/spacing_medium</item>
         <item name="android:layout_marginEnd">@dimen/spacing_large</item>

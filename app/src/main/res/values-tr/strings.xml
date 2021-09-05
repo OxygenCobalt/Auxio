@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Tümü</string>
 
     <string name="lbl_sort">Sıralama</string>
-    <string name="lbl_sort_alpha_down">Artan</string>
-    <string name="lbl_sort_alpha_up">Azalan</string>
+    <string name="lbl_sort_asc">Artan</string>
+    <string name="lbl_sort_dsc">Azalan</string>
 
     <string name="lbl_play">Başlat</string>
     <string name="lbl_shuffle">Karıştır</string>

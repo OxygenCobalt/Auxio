@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Wszystkie</string>
 
     <string name="lbl_sort">Sortowanie</string>
-    <string name="lbl_sort_alpha_down">Rosnąco</string>
-    <string name="lbl_sort_alpha_up">Malejąco</string>
+    <string name="lbl_sort_asc">Rosnąco</string>
+    <string name="lbl_sort_dsc">Malejąco</string>
 
     <string name="lbl_play">Graj</string>
     <string name="lbl_shuffle">Losowo</string>

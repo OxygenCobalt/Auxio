@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Tudo</string>
 
     <string name="lbl_sort">Classificação</string>
-    <string name="lbl_sort_alpha_down">Ascendente</string>
-    <string name="lbl_sort_alpha_up">Descendente</string>
+    <string name="lbl_sort_asc">Ascendente</string>
+    <string name="lbl_sort_dsc">Descendente</string>
 
     <string name="lbl_play">Reproduzir</string>
     <string name="lbl_shuffle">Embaralhar</string>

@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">全部</string>
 
     <string name="lbl_sort">排序</string>
-    <string name="lbl_sort_alpha_down">升序排列</string>
-    <string name="lbl_sort_alpha_up">降序排列</string>
+    <string name="lbl_sort_asc">升序排列</string>
+    <string name="lbl_sort_dsc">降序排列</string>
 
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">隨機播放</string>

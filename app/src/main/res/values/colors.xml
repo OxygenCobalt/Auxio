@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="surface">#fafafa</color>
-    <color name="surface_black">@android:color/black</color>
     <color name="control">#202020</color>
     <color name="nav_bar">#01fafafa</color>
 

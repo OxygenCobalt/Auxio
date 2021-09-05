@@ -123,7 +123,7 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
     // And no, we can't control state drawables with RemoteViews. Because of course we can't.
 
     val shuffleRes = when {
-        state.isShuffled -> R.drawable.ic_shuffle_tinted
+        state.isShuffled -> R.drawable.ic_shuffle_on
         else -> R.drawable.ic_shuffle
     }
 

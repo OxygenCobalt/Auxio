@@ -29,8 +29,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
- * An enum for the current sorting mode. Contains helper functions to sort lists based
- * off the given sorting mode.
+ * The legacy enum for sorting. This is set to be removed soon.
  * @property iconRes The icon for this [SortMode]
  * @author OxygenCobalt
  */
@@ -190,10 +189,9 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     @IdRes
     fun toMenuId(): Int {
         return when (this) {
-            ALPHA_UP -> R.id.option_sort_alpha_up
-            ALPHA_DOWN -> R.id.option_sort_alpha_down
-
-            else -> R.id.option_sort_alpha_up
+            ALPHA_UP -> R.id.option_sort_asc
+            ALPHA_DOWN -> R.id.option_sort_dsc
+            else -> R.id.option_sort_dsc
         }
     }
 

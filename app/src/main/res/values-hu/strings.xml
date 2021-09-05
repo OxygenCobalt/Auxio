@@ -16,8 +16,8 @@
     <string name="lbl_filter_all">Összes</string>
 
     <string name="lbl_sort">Összes</string>
-    <string name="lbl_sort_alpha_down">Növekvő</string>
-    <string name="lbl_sort_alpha_up">Csökkenő</string>
+    <string name="lbl_sort_asc">Növekvő</string>
+    <string name="lbl_sort_dsc">Csökkenő</string>
 
     <string name="lbl_play">Lejátszás</string>
     <string name="lbl_shuffle">Keverés</string>

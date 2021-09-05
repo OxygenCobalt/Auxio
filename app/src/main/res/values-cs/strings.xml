@@ -20,8 +20,8 @@
     <string name="lbl_filter">"Filtr"</string>
     <string name="lbl_filter_all">"Vše"</string>
     <string name="lbl_sort">"Řadit"</string>
-    <string name="lbl_sort_alpha_down">"Vzestupně"</string>
-    <string name="lbl_sort_alpha_up">"Sestupně"</string>
+    <string name="lbl_sort_asc">"Vzestupně"</string>
+    <string name="lbl_sort_dsc">"Sestupně"</string>
     <string name="lbl_sort_artist">"Umělec"</string>
     <string name="lbl_sort_album">"Album"</string>
     <string name="lbl_sort_year">"Rok"</string>

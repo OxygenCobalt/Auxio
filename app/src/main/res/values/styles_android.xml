@@ -36,7 +36,7 @@
 
     <!-- Black theme dialog theme -->
     <style name="Theme.CustomDialog.Black" parent="Theme.CustomDialog.Base">
-        <item name="colorSurface">@color/surface_black</item>
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
     <!-- Material-specific dialog style -->

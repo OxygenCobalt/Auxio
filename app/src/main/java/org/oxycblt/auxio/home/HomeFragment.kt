@@ -20,8 +20,10 @@ package org.oxycblt.auxio.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -48,13 +50,9 @@ import org.oxycblt.auxio.util.makeScrollingViewFade
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
- * TODO: Re-add sorting (but new and improved)
- *  It will require a new SortMode to be made simply for compat. Migrate the old SortMode
- *  eventually.
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
 
@@ -64,6 +62,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentHomeBinding.inflate(inflater)
+        val sortItem: MenuItem
 
         // --- UI SETUP ---
 
@@ -75,20 +74,35 @@ class HomeFragment : Fragment() {
 
         binding.homeAppbar.makeScrollingViewFade(binding.homeToolbar)
 
-        binding.homeToolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_settings -> {
-                    parentFragment?.parentFragment?.findNavController()?.navigate(
-                        MainFragmentDirections.actionShowSettings()
-                    )
+        binding.homeToolbar.apply {
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_settings -> {
+                        parentFragment?.parentFragment?.findNavController()?.navigate(
+                            MainFragmentDirections.actionShowSettings()
+                        )
+                    }
+
+                    R.id.action_search -> {
+                        findNavController().navigate(HomeFragmentDirections.actionShowSearch())
+                    }
+
+                    R.id.submenu_sorting -> { }
+
+                    // Sorting option was selected, check then and update the mode
+                    else -> {
+                        item.isChecked = true
+
+                        homeModel.updateCurrentSort(
+                            requireNotNull(LibSortMode.fromId(item.itemId))
+                        )
+                    }
                 }
 
-                R.id.action_search -> {
-                    findNavController().navigate(HomeFragmentDirections.actionShowSearch())
-                }
+                true
             }
 
-            true
+            sortItem = menu.findItem(R.id.submenu_sorting)
         }
 
         binding.homePager.apply {
@@ -121,24 +135,13 @@ class HomeFragment : Fragment() {
             // page transitions.
             offscreenPageLimit = homeModel.tabs.value!!.size
 
-            // ViewPager2 tends to garble any scrolling view events that occur within it's
-            // fragments, so we fix that by instructing our AppBarLayout to follow the specific
-            // view we have just selected.
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    binding.homeAppbar.liftOnScrollTargetViewId =
-                        when (homeModel.tabs.value!![position]) {
-                            DisplayMode.SHOW_SONGS -> R.id.home_song_list
-                            DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
-                            DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
-                            DisplayMode.SHOW_GENRES -> R.id.home_genre_list
-                        }
-                }
+                override fun onPageSelected(position: Int) = homeModel.updateCurrentTab(position)
             })
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
-            val labelRes = when (requireNotNull(homeModel.tabs.value)[pos]) {
+            val labelRes = when (homeModel.tabs.value!![pos]) {
                 DisplayMode.SHOW_SONGS -> R.string.lbl_songs
                 DisplayMode.SHOW_ALBUMS -> R.string.lbl_albums
                 DisplayMode.SHOW_ARTISTS -> R.string.lbl_artists
@@ -149,6 +152,40 @@ class HomeFragment : Fragment() {
         }.attach()
 
         // --- VIEWMODEL SETUP ---
+
+        homeModel.curTab.observe(viewLifecycleOwner) { tab ->
+            binding.homeAppbar.liftOnScrollTargetViewId = when (requireNotNull(tab)) {
+                DisplayMode.SHOW_SONGS -> {
+                    updateSortMenu(sortItem, homeModel.songSortMode)
+
+                    R.id.home_song_list
+                }
+
+                DisplayMode.SHOW_ALBUMS -> {
+                    updateSortMenu(sortItem, homeModel.albumSortMode) { id ->
+                        id != R.id.option_sort_album
+                    }
+
+                    R.id.home_album_list
+                }
+
+                DisplayMode.SHOW_ARTISTS -> {
+                    updateSortMenu(sortItem, homeModel.artistSortMode) { id ->
+                        id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                    }
+
+                    R.id.home_artist_list
+                }
+
+                DisplayMode.SHOW_GENRES -> {
+                    updateSortMenu(sortItem, homeModel.genreSortMode) { id ->
+                        id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                    }
+
+                    R.id.home_genre_list
+                }
+            }
+        }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             // The AppBarLayout gets confused and collapses when we navigate too fast, wait for it
@@ -182,10 +219,24 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    private fun updateSortMenu(
+        item: MenuItem,
+        toHighlight: LibSortMode,
+        isVisible: (Int) -> Boolean = { true }
+    ) {
+        for (option in item.subMenu) {
+            if (option.itemId == toHighlight.itemId) {
+                option.isChecked = true
+            }
+
+            option.isVisible = isVisible(option.itemId)
+        }
+    }
+
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
 
-        override fun getItemCount(): Int = requireNotNull(homeModel.tabs.value).size
+        override fun getItemCount(): Int = homeModel.tabs.value!!.size
         override fun createFragment(position: Int): Fragment = HomeListFragment.new(position)
     }
 }
