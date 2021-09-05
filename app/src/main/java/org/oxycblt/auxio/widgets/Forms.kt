@@ -129,7 +129,7 @@ fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
 
     val loopRes = when (state.loopMode) {
         LoopMode.NONE -> R.drawable.ic_loop
-        LoopMode.ALL -> R.drawable.ic_loop_tinted
+        LoopMode.ALL -> R.drawable.ic_loop_on
         LoopMode.TRACK -> R.drawable.ic_loop_one
     }
 

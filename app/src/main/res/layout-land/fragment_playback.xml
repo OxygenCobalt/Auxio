@@ -116,6 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:text="@{playbackModel.formattedPosition}"
+            android:textColor="@color/sel_accented_secondary"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
@@ -183,7 +184,7 @@
             android:contentDescription="@string/desc_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
-            app:tint="@color/sel_accent_active"
+            app:tint="@color/sel_accented"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />

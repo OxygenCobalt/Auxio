@@ -29,15 +29,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.resolveDrawable
-import org.oxycblt.auxio.util.resolveStateList
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -48,7 +45,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val binding by memberBinding(FragmentPlaybackBinding::inflate) {
-        playbackSong.isSelected = false
+        playbackSong.isSelected = false // Clear marquee to prevent a memory leak
     }
 
     override fun onCreateView(
@@ -56,14 +53,6 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val normalTextColor = binding.playbackDurationCurrent.currentTextColor
-        val accentColor = Accent.get().getStateList(requireContext())
-        val controlColor = R.color.control.resolveStateList(requireContext())
-
-        // Can't set the tint of a MenuItem below Android 8, so use icons instead.
-        val iconQueueActive = R.drawable.ic_queue.resolveDrawable(requireContext())
-        val iconQueueInactive = R.drawable.ic_queue_inactive.resolveDrawable(requireContext())
-
         val queueItem: MenuItem
 
         // --- UI SETUP ---
@@ -102,6 +91,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         binding.playbackSeekBar.setOnSeekBarChangeListener(this)
 
         // --- VIEWMODEL SETUP --
+
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
                 logD("Updating song display to ${song.name}.")
@@ -120,32 +110,17 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) { loopMode ->
-            when (loopMode) {
-                LoopMode.NONE -> {
-                    binding.playbackLoop.imageTintList = controlColor
-                    binding.playbackLoop.setImageResource(R.drawable.ic_loop)
-                }
-
-                LoopMode.ALL -> {
-                    binding.playbackLoop.imageTintList = accentColor
-                    binding.playbackLoop.setImageResource(R.drawable.ic_loop)
-                }
-
-                LoopMode.TRACK -> {
-                    binding.playbackLoop.imageTintList = accentColor
-                    binding.playbackLoop.setImageResource(R.drawable.ic_loop_one)
-                }
-
-                else -> return@observe
+            val resId = when (loopMode) {
+                LoopMode.NONE, null -> R.drawable.ic_loop
+                LoopMode.ALL -> R.drawable.ic_loop_on
+                LoopMode.TRACK -> R.drawable.ic_loop_one
             }
+
+            binding.playbackLoop.setImageResource(resId)
         }
 
         playbackModel.isSeeking.observe(viewLifecycleOwner) { isSeeking ->
-            if (isSeeking) {
-                binding.playbackDurationCurrent.setTextColor(accentColor)
-            } else {
-                binding.playbackDurationCurrent.setTextColor(normalTextColor)
-            }
+            binding.playbackDurationCurrent.isActivated = isSeeking
         }
 
         playbackModel.positionAsProgress.observe(viewLifecycleOwner) { pos ->
@@ -155,27 +130,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { nextQueue ->
-            val userQueue = playbackModel.userQueue.value!!
-
-            if (userQueue.isEmpty() && nextQueue.isEmpty()) {
-                queueItem.icon = iconQueueInactive
-                queueItem.isEnabled = false
-            } else {
-                queueItem.icon = iconQueueActive
-                queueItem.isEnabled = true
-            }
+            updateQueueIcon(queueItem)
         }
 
         playbackModel.userQueue.observe(viewLifecycleOwner) { userQueue ->
-            val nextQueue = playbackModel.nextItemsInQueue.value!!
-
-            if (userQueue.isEmpty() && nextQueue.isEmpty()) {
-                queueItem.icon = iconQueueInactive
-                queueItem.isEnabled = false
-            } else {
-                queueItem.icon = iconQueueActive
-                queueItem.isEnabled = true
-            }
+            updateQueueIcon(queueItem)
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
@@ -191,6 +150,15 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    private fun updateQueueIcon(queueItem: MenuItem) {
+        val userQueue = playbackModel.userQueue.value!!
+        val nextQueue = playbackModel.nextItemsInQueue.value!!
+
+        // The queue icon uses a selector that will automatically tint the icon as active or
+        // inactive. We just need to set the flag.
+        queueItem.isEnabled = !(userQueue.isEmpty() && nextQueue.isEmpty())
     }
 
     // --- SEEK CALLBACKS ---

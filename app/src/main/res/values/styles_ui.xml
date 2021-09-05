@@ -26,7 +26,7 @@
     <style name="Widget.ProgressBar.Compact" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/size_stroke_large</item>
-        <item name="android:progressBackgroundTint">?attr/colorControlNormal</item>
+        <item name="android:progressBackgroundTint">?attr/colorAccent</item>
         <item name="android:progressTint">?attr/colorAccent</item>
     </style>
 
@@ -35,7 +35,7 @@
         <item name="android:focusable">true</item>
         <item name="android:paddingStart">@dimen/spacing_mid_large</item>
         <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
-        <item name="android:progressBackgroundTint">?android:attr/colorControlNormal</item>
+        <item name="android:progressBackgroundTint">?attr/colorAccent</item>
         <item name="android:progressTint">?attr/colorAccent</item>
         <item name="android:splitTrack">false</item>
         <item name="android:thumbOffset">@dimen/offset_thumb</item>

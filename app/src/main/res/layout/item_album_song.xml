@@ -24,7 +24,7 @@
             android:text="@{String.valueOf(song.track)}"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="@color/sel_accented_track"
+            android:textColor="@color/sel_accented_secondary"
             android:textSize="@dimen/text_size_large"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

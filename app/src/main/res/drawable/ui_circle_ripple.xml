@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="?attr/colorControlHighlight">
+    android:color="@color/mtrl_btn_ripple_color">
     <item>
         <shape android:shape="oval"
-            android:tint="@color/sel_accent_active">
+            android:tint="@color/sel_accented">
             <solid android:color="@android:color/white" />
         </shape>
     </item>

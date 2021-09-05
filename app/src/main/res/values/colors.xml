@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="surface_day">#fafafa</color>
-    <color name="surface_night">#202124</color>
+    <color name="surface">#fafafa</color>
     <color name="surface_black">@android:color/black</color>
-
-    <color name="surface">@color/surface_day</color>
     <color name="control">#202020</color>
-    <color name="inactive">#c4c4c4</color>
     <color name="nav_bar">#01fafafa</color>
 
     <!--

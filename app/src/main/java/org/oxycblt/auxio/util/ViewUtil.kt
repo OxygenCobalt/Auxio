@@ -75,7 +75,7 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
  */
 fun ImageButton.disable() {
     if (isEnabled) {
-        imageTintList = R.color.inactive.resolveStateList(context)
+        imageTintList = ContextCompat.getColorStateList(context, R.color.overlay_disabled)
         isEnabled = false
     }
 }
