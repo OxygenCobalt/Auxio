@@ -22,7 +22,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
@@ -38,8 +37,6 @@ import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.util.disable
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.setTextColorResource
 
 /**
  * An adapter for displaying the [Album]s and [Song]s of an artist.
@@ -195,8 +192,6 @@ class ArtistDetailAdapter(
     inner class ArtistAlbumViewHolder(
         private val binding: ItemArtistAlbumBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
-        private val normalTextColor = binding.albumName.currentTextColor
-
         override fun onBind(data: Album) {
             binding.album = data
 
@@ -204,13 +199,7 @@ class ArtistDetailAdapter(
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
-            logD(isHighlighted)
-
-            if (isHighlighted) {
-                binding.albumName.setTextColorResource(Accent.get().color)
-            } else {
-                binding.albumName.setTextColor(normalTextColor)
-            }
+            binding.albumName.isActivated = isHighlighted
         }
     }
 
@@ -251,11 +240,7 @@ class ArtistDetailAdapter(
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
-            if (isHighlighted) {
-                binding.songName.setTextColorResource(Accent.get().color)
-            } else {
-                binding.songName.setTextColor(normalTextColor)
-            }
+            binding.songName.isActivated = isHighlighted
         }
     }
 

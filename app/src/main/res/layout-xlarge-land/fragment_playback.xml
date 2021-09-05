@@ -184,7 +184,7 @@
             android:contentDescription="@string/desc_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
-            app:tint="@color/color_accent_active"
+            app:tint="@color/sel_accent_active"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next" />

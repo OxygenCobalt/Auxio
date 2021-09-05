@@ -26,6 +26,7 @@
         <TextView
             android:id="@+id/album_name"
             style="@style/Widget.TextView.Item.Primary"
+            android:textColor="@color/sel_accented_primary"
             android:text="@{album.name}"
             app:layout_constraintBottom_toTopOf="@+id/album_year"
             app:layout_constraintEnd_toEndOf="parent"

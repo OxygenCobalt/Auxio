@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemAlbumHeaderBinding
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -35,7 +34,6 @@ import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.util.disable
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.setTextColorResource
 
 /**
  * An adapter for displaying the details and [Song]s of an [Album]
@@ -48,7 +46,6 @@ class AlbumDetailAdapter(
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
-
     private var currentSong: Song? = null
     private var lastHolder: Highlightable? = null
 
@@ -145,9 +142,6 @@ class AlbumDetailAdapter(
     inner class AlbumSongViewHolder(
         private val binding: ItemAlbumSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
-        private val normalTextColor = binding.songName.currentTextColor
-        private val inactiveTextColor = binding.songTrack.currentTextColor
-
         override fun onBind(data: Song) {
             binding.song = data
 
@@ -155,15 +149,8 @@ class AlbumDetailAdapter(
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
-            if (isHighlighted) {
-                val accent = Accent.get()
-
-                binding.songName.setTextColorResource(accent.color)
-                binding.songTrack.setTextColorResource(accent.color)
-            } else {
-                binding.songName.setTextColor(normalTextColor)
-                binding.songTrack.setTextColor(inactiveTextColor)
-            }
+            binding.songName.isActivated = isHighlighted
+            binding.songTrack.isActivated = isHighlighted
         }
     }
 

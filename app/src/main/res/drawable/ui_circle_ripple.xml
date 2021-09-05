@@ -3,7 +3,7 @@
     android:color="?attr/colorControlHighlight">
     <item>
         <shape android:shape="oval"
-            android:tint="@color/color_accent_active">
+            android:tint="@color/sel_accent_active">
             <solid android:color="@android:color/white" />
         </shape>
     </item>

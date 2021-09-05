@@ -18,9 +18,9 @@
 
         <item name="colorSecondary">?attr/colorAccent</item>
         <item name="colorOnSecondary">?attr/colorSurface</item>
-        
+
         <item name="colorControlNormal">@color/control</item>
-        <item name="colorControlHighlight">@color/color_selection</item>
+        <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="colorControlActivated">?attr/colorAccent</item>
 
         <!-- Appearance -->

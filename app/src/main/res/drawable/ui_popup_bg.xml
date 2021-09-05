@@ -7,7 +7,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/color_popup_overlay" />
+            <solid android:color="@color/overlay_popup" />
         </shape>
     </item>
 </layer-list>

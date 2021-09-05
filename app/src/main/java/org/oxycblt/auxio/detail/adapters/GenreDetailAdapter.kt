@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ItemGenreHeaderBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -35,7 +34,6 @@ import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.util.disable
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.setTextColorResource
 
 /**
  * An adapter for displaying the [Song]s of a genre.
@@ -48,7 +46,6 @@ class GenreDetailAdapter(
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
-
     private var currentSong: Song? = null
     private var lastHolder: Highlightable? = null
 
@@ -145,8 +142,6 @@ class GenreDetailAdapter(
     inner class GenreSongViewHolder(
         private val binding: ItemGenreSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
-        private val normalTextColor = binding.songName.currentTextColor
-
         override fun onBind(data: Song) {
             binding.song = data
 
@@ -155,11 +150,7 @@ class GenreDetailAdapter(
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
-            if (isHighlighted) {
-                binding.songName.setTextColorResource(Accent.get().color)
-            } else {
-                binding.songName.setTextColor(normalTextColor)
-            }
+            binding.songName.isActivated = isHighlighted
         }
     }
 

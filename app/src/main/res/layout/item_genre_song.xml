@@ -26,6 +26,7 @@
         <TextView
             android:id="@+id/song_name"
             style="@style/Widget.TextView.Item.Primary"
+            android:textColor="@color/sel_accented_primary"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"

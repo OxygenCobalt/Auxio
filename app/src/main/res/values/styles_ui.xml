@@ -215,7 +215,7 @@
     </style>
 
     <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.Button.Vibrant.Base">
-        <item name="strokeColor">@color/divider</item>
+        <item name="strokeColor">@color/overlay_divider</item>
         <item name="strokeWidth">@dimen/size_stroke_small</item>
         <item name="rippleColor">?attr/colorControlHighlight</item>
     </style>

@@ -12,7 +12,7 @@
     <!-- Toolbar popup menu -->
     <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
         <item name="android:colorBackground">?attr/colorSurface</item>
-        <item name="colorControlHighlight">@color/selection</item>
+        <item name="colorControlHighlight">@color/overlay_selection</item>
     </style>
 
     <!-- Base custom dialog theme. Don't try to understand this. -->
@@ -31,7 +31,7 @@
     <!-- Normal DayNight dialog theme -->
     <style name="Theme.CustomDialog" parent="Theme.CustomDialog.Base">
         <item name="colorSurface">@color/surface</item>
-        <item name="colorControlHighlight">@color/selection</item>
+        <item name="colorControlHighlight">@color/overlay_selection</item>
     </style>
 
     <!-- Black theme dialog theme -->
