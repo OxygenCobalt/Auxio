@@ -27,9 +27,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentMainBinding
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.applyEdge
+import org.oxycblt.auxio.util.applyMaterialDrawable
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -51,29 +51,24 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.applyEdge { bars ->
-            binding.root.updatePadding(bottom = bars.bottom)
+            binding.mainPlayback.updatePadding(bottom = bars.bottom)
         }
+
+        binding.mainPlayback.applyMaterialDrawable()
 
         // --- VIEWMODEL SETUP ---
 
         playbackModel.setupPlayback(requireContext())
 
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
-        handleCompactPlaybackVisibility(binding, playbackModel.song.value)
+        binding.mainPlayback.isVisible = playbackModel.song.value != null
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            handleCompactPlaybackVisibility(binding, song)
+            binding.mainPlayback.isVisible = song != null
         }
 
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    /**
-     * Handle the visibility of CompactPlaybackFragment. Done here so that there's a nice animation.
-     */
-    private fun handleCompactPlaybackVisibility(binding: FragmentMainBinding, song: Song?) {
-        binding.mainPlayback.isVisible = song != null
     }
 }

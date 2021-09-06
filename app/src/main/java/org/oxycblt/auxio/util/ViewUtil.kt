@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
@@ -35,7 +36,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
+
+/**
+ * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
+ * and setting the fill color. This assumes that the background is a [ColorDrawable] and will
+ * crash if not.
+ */
+fun View.applyMaterialDrawable() {
+    check(background is ColorDrawable) { "Background was not defined as a solid color" }
+
+    background = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+        elevation = this@applyMaterialDrawable.elevation
+        fillColor = ColorStateList.valueOf((background as ColorDrawable).color)
+    }
+}
 
 /**
  * Apply the recommended spans for a [RecyclerView].
@@ -66,6 +82,11 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
 }
 
 /**
+ * Returns whether a recyclerview can scroll.
+ */
+fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
+
+/**
  * Disable an image button.
  * TODO: Replace this fragile function with something else.
  */
@@ -75,10 +96,6 @@ fun ImageButton.disable() {
         isEnabled = false
     }
 }
-/**
- * Returns whether a recyclerview can scroll.
- */
-fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 
 /**
  * Resolve a color.

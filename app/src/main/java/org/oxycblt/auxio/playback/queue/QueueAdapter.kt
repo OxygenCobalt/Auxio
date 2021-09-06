@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.applyMaterialDrawable
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logE
 
@@ -157,6 +158,10 @@ class QueueAdapter(
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding) {
+
+        init {
+            binding.root.applyMaterialDrawable()
+        }
 
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {

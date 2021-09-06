@@ -20,10 +20,9 @@ package org.oxycblt.auxio.playback.queue
 
 import android.graphics.Canvas
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import kotlin.math.abs
@@ -36,13 +35,8 @@ import kotlin.math.sign
  * of the UI magic that makes up the queue UI.
  * @author OxygenCobalt
  */
-class QueueDragCallback(
-    private val playbackModel: PlaybackViewModel,
-    private val coordinator: CoordinatorLayout,
-    private val appBar: AppBarLayout
-) : ItemTouchHelper.Callback() {
+class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
     private lateinit var queueAdapter: QueueAdapter
-    private val tConsumed = IntArray(2)
     private var shouldLift = true
 
     override fun getMovementFlags(
@@ -100,9 +94,12 @@ class QueueDragCallback(
         val view = viewHolder.itemView
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            val bg = view.background as MaterialShapeDrawable
+
             view.animate()
                 .translationZ(view.resources.getDimension(R.dimen.elevation_small))
                 .setDuration(100)
+                .setUpdateListener { bg.elevation = view.translationZ }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
 
@@ -118,9 +115,12 @@ class QueueDragCallback(
         val view = viewHolder.itemView
 
         if (view.translationZ != 0.0f) {
+            val bg = view.background as MaterialShapeDrawable
+
             view.animate()
                 .translationZ(0.0f)
                 .setDuration(100)
+                .setUpdateListener { bg.elevation = view.translationZ }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
         }

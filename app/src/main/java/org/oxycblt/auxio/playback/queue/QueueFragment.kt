@@ -50,11 +50,7 @@ class QueueFragment : Fragment() {
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
 
-        val callback = QueueDragCallback(
-            playbackModel,
-            binding.queueCoordinator,
-            binding.queueAppbar
-        )
+        val callback = QueueDragCallback(playbackModel)
 
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper, playbackModel)
