@@ -31,10 +31,10 @@ import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
+import java.text.Normalizer
 
 /**
  * The [ViewModel] for the search functionality
- * TODO: Try to find adjacent characters [e.g accented o == o]
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel() {
@@ -130,10 +130,39 @@ class SearchViewModel : ViewModel() {
      */
     private fun List<BaseModel>.filterByOrNull(value: String): List<BaseModel>? {
         val filtered = filter {
-            it.name.contains(value, ignoreCase = true)
+            it.name.normalized().contains(value.normalized(), ignoreCase = true)
         }
 
         return if (filtered.isNotEmpty()) filtered else null
+    }
+
+    private fun String.normalized(): String {
+        // This method normalizes strings so that songs with accented characters will show
+        // up in search even if the actual character was not inputted.
+        // https://stackoverflow.com/a/32030586/14143986
+
+        // Normalize with NFKD [Meaning that symbols with identical meanings will be turned into
+        // their letter variants].
+        val norm = Normalizer.normalize(this, Normalizer.Form.NFKD)
+
+        // Normalizer doesn't exactly finish the job though. We have to rebuild all the codepoints
+        // in the string and remove the hidden characters that were added by Normalizer.
+        var idx = 0
+        val sb = StringBuilder()
+
+        while (idx < norm.length) {
+            val cp = norm.codePointAt(idx)
+            idx += Character.charCount(cp)
+
+            when (Character.getType(cp)) {
+                Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt() ->
+                    continue
+
+                else -> sb.appendCodePoint(cp)
+            }
+        }
+
+        return sb.toString()
     }
 
     /**
