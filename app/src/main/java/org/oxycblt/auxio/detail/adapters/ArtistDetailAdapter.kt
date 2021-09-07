@@ -98,7 +98,8 @@ class ArtistDetailAdapter(
             is Header -> (holder as ArtistSongHeaderViewHolder).bind(item)
             is Song -> (holder as ArtistSongViewHolder).bind(item)
 
-            else -> {}
+            else -> {
+            }
         }
 
         if (holder is Highlightable) {
@@ -122,11 +123,11 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightAlbum(album: Album?, recycler: RecyclerView) {
-        // Clear out the last ViewHolder as a song update usually signifies that this current
-        // ViewHolder is likely invalid.
+        if (album == currentAlbum) return // Already highlighting this viewholder
+
+        // Album is no longer valid, clear out this ViewHolder.
         currentAlbumHolder?.setHighlighted(false)
         currentAlbumHolder = null
-
         currentAlbum = album
 
         if (album != null) {
@@ -151,11 +152,11 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
-        // Clear out the last ViewHolder as a song update usually signifies that this current
-        // ViewHolder is likely invalid.
+        if (song == currentSong) return // Already highlighting this viewholder
+
+        // Clear the current viewholder since it's invalid
         currentSongHolder?.setHighlighted(false)
         currentSongHolder = null
-
         currentSong = song
 
         if (song != null) {

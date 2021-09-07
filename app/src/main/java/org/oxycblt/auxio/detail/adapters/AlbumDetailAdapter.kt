@@ -47,7 +47,7 @@ class AlbumDetailAdapter(
     private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentSong: Song? = null
-    private var lastHolder: Highlightable? = null
+    private var currentHolder: Highlightable? = null
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -83,8 +83,8 @@ class AlbumDetailAdapter(
         if (currentSong != null && position > 0) {
             if (item.id == currentSong?.id) {
                 // Reset the last ViewHolder before assigning the new, correct one to be highlighted
-                lastHolder?.setHighlighted(false)
-                lastHolder = (holder as Highlightable)
+                currentHolder?.setHighlighted(false)
+                currentHolder = (holder as Highlightable)
                 holder.setHighlighted(true)
             } else {
                 (holder as Highlightable).setHighlighted(false)
@@ -97,11 +97,11 @@ class AlbumDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
-        // Clear out the last ViewHolder as a song update usually signifies that this current
-        // ViewHolder is likely invalid.
-        lastHolder?.setHighlighted(false)
-        lastHolder = null
+        if (song == currentSong) return // Already highlighting this viewholder
 
+        // Clear the current viewholder since it's invalid
+        currentHolder?.setHighlighted(false)
+        currentHolder = null
         currentSong = song
 
         if (song != null) {
@@ -115,9 +115,9 @@ class AlbumDetailAdapter(
             // it does become visible.
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
-                    lastHolder = it as Highlightable
+                    currentHolder = it as Highlightable
 
-                    lastHolder?.setHighlighted(true)
+                    currentHolder?.setHighlighted(true)
                 }
             }
         }

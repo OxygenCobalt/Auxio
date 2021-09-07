@@ -41,8 +41,8 @@ import org.oxycblt.auxio.R
 
 /**
  * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
- * and setting the fill color. This assumes that the background is a [ColorDrawable] and will
- * crash if not.
+ * and setting the fill color. The [View]'s current elevation will be applied to the drawable.
+ * This functions assumes that the background is a [ColorDrawable] and will crash if not.
  */
 fun View.applyMaterialDrawable() {
     check(background is ColorDrawable) { "Background was not defined as a solid color" }
