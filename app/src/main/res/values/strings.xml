@@ -114,7 +114,6 @@
     <string name="hint_search_library">Search your library…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_sort_button">Change Sort Order</string>
     <string name="desc_track_number">Track %d</string>
 
     <string name="desc_play_pause">Play or Pause</string>

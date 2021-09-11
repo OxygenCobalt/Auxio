@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ViewHolders.kt is part of Auxio.
+ * SortHeaderViewHolder.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,16 @@ package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.view.View
+import androidx.appcompat.widget.TooltipCompat
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemAlbumBinding
 import org.oxycblt.auxio.databinding.ItemArtistBinding
 import org.oxycblt.auxio.databinding.ItemGenreBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
@@ -242,6 +245,32 @@ class HeaderViewHolder private constructor(
             return HeaderViewHolder(
                 ItemHeaderBinding.inflate(context.inflater)
             )
+        }
+    }
+}
+
+class ActionHeaderViewHolder private constructor(
+    private val binding: ItemActionHeaderBinding
+) : BaseViewHolder<ActionHeader>(binding) {
+
+    override fun onBind(data: ActionHeader) {
+        binding.header = data
+
+        binding.headerButton.apply {
+            TooltipCompat.setTooltipText(this, contentDescription)
+
+            setOnClickListener(data.onClick)
+        }
+    }
+
+    companion object {
+        const val ITEM_TYPE = 0xA999 // TODO: Give this an ID
+
+        /**
+         * Create an instance of [ActionHeaderViewHolder]
+         */
+        fun from(context: Context): ActionHeaderViewHolder {
+            return ActionHeaderViewHolder(ItemActionHeaderBinding.inflate(context.inflater))
         }
     }
 }

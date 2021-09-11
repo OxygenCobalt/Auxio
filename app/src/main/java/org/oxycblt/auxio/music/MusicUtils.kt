@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
-import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
@@ -122,67 +121,16 @@ fun Long.toDuration(): String {
     return durationString
 }
 
-/**
- * Convert an integer to its formatted year.
- */
-fun Int.toYear(context: Context): String {
-    return if (this > 0) {
-        toString()
-    } else {
-        context.getString(R.string.def_date)
-    }
-}
-
 // --- BINDING ADAPTERS ---
-
-/**
- * Bind the most prominent artist genre
- */
-@BindingAdapter("artistGenre")
-fun TextView.bindArtistGenre(artist: Artist) {
-    text = artist.genre?.resolvedName ?: context.getString(R.string.def_genre)
-}
 
 /**
  * Bind the album + song counts for an artist
  */
 @BindingAdapter("artistCounts")
 fun TextView.bindArtistCounts(artist: Artist) {
-    val albums = context.getPlural(R.plurals.fmt_album_count, artist.albums.size)
-    val songs = context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
-
-    text = context.getString(R.string.format_double_counts, albums, songs)
-}
-
-/**
- * Get all album information, used on [org.oxycblt.auxio.detail.AlbumDetailFragment]
- */
-@BindingAdapter("albumDetails")
-fun TextView.bindAllAlbumDetails(album: Album) {
     text = context.getString(
-        R.string.format_double_info,
-        album.year.toYear(context),
-        context.getPlural(R.plurals.fmt_song_count, album.songs.size),
-        album.totalDuration
+        R.string.fmt_counts,
+        context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
+        context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
     )
-}
-
-/**
- * Get basic information about an album, used on album ViewHolders
- */
-@BindingAdapter("albumInfo")
-fun TextView.bindAlbumInfo(album: Album) {
-    text = context.getString(
-        R.string.format_info,
-        album.artist.name,
-        context.getPlural(R.plurals.fmt_song_count, album.songs.size),
-    )
-}
-
-/**
- * Bind the year for an album.
- */
-@BindingAdapter("albumYear")
-fun TextView.bindAlbumYear(album: Album) {
-    text = album.year.toYear(context)
 }

@@ -21,17 +21,16 @@ package org.oxycblt.auxio.playback.queue
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
@@ -46,8 +45,7 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class QueueAdapter(
-    private val touchHelper: ItemTouchHelper,
-    private val playbackModel: PlaybackViewModel
+    private val touchHelper: ItemTouchHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data = mutableListOf<BaseModel>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
@@ -55,14 +53,10 @@ class QueueAdapter(
     override fun getItemCount(): Int = data.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (val item = data[position]) {
-            is Header -> if (item.isAction) {
-                USER_QUEUE_HEADER_ITEM_TYPE
-            } else {
-                HeaderViewHolder.ITEM_TYPE
-            }
-
+        return when (data[position]) {
             is Song -> QUEUE_SONG_ITEM_TYPE
+            is Header -> HeaderViewHolder.ITEM_TYPE
+            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
 
             else -> -1
         }
@@ -70,15 +64,12 @@ class QueueAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-
-            USER_QUEUE_HEADER_ITEM_TYPE -> UserQueueHeaderViewHolder(
-                ItemActionHeaderBinding.inflate(parent.context.inflater)
-            )
-
             QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(parent.context.inflater)
             )
+
+            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
             else -> error("Invalid viewholder item type $viewType.")
         }
@@ -86,13 +77,9 @@ class QueueAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = data[position]) {
-            is Header -> if (item.isAction) {
-                (holder as UserQueueHeaderViewHolder).bind(item)
-            } else {
-                (holder as HeaderViewHolder).bind(item)
-            }
-
             is Song -> (holder as QueueSongViewHolder).bind(item)
+            is Header -> (holder as HeaderViewHolder).bind(item)
+            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
 
             else -> logE("Bad data given to QueueAdapter.")
         }
@@ -177,29 +164,6 @@ class QueueAdapter(
                     touchHelper.startDrag(this)
                     true
                 } else false
-            }
-        }
-    }
-
-    /*
-     * The viewholder for
-     */
-    inner class UserQueueHeaderViewHolder(
-        private val binding: ItemActionHeaderBinding
-    ) : BaseViewHolder<Header>(binding) {
-
-        override fun onBind(data: Header) {
-            binding.header = data
-
-            binding.headerButton.apply {
-                setImageResource(R.drawable.ic_clear)
-
-                contentDescription = context.getString(R.string.desc_clear_user_queue)
-                TooltipCompat.setTooltipText(this, contentDescription)
-
-                setOnClickListener {
-                    playbackModel.clearUserQueue()
-                }
             }
         }
     }

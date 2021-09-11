@@ -106,7 +106,7 @@ data class Accent(
         val hex = context.getString(color).uppercase()
 
         return HtmlCompat.fromHtml(
-            context.getString(R.string.format_accent_summary, name, hex),
+            context.getString(R.string.fmt_accent_desc, name, hex),
             HtmlCompat.FROM_HTML_MODE_COMPACT
         )
     }

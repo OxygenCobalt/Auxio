@@ -16,23 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.detail.adapters
+package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemAlbumHeaderBinding
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.bindAlbumArt
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
+import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.util.disable
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -40,9 +43,8 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 class AlbumDetailAdapter(
-    private val detailModel: DetailViewModel,
     private val playbackModel: PlaybackViewModel,
-    private val lifecycleOwner: LifecycleOwner,
+    private val detailModel: DetailViewModel,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -52,19 +54,24 @@ class AlbumDetailAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Album -> ALBUM_HEADER_ITEM_TYPE
+            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> ALBUM_SONG_ITEM_TYPE
 
             else -> -1
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ALBUM_HEADER_ITEM_TYPE -> AlbumHeaderViewHolder(
-                ItemAlbumHeaderBinding.inflate(parent.context.inflater)
+                ItemDetailBinding.inflate(parent.context.inflater)
             )
+
             ALBUM_SONG_ITEM_TYPE -> AlbumSongViewHolder(
                 ItemAlbumSongBinding.inflate(parent.context.inflater)
             )
+
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
             else -> error("Invalid ViewHolder item type $viewType")
         }
@@ -76,18 +83,20 @@ class AlbumDetailAdapter(
         when (item) {
             is Album -> (holder as AlbumHeaderViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
+            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
 
-            else -> {}
+            else -> {
+            }
         }
 
-        if (currentSong != null && position > 0) {
+        if (holder is Highlightable) {
             if (item.id == currentSong?.id) {
                 // Reset the last ViewHolder before assigning the new, correct one to be highlighted
                 currentHolder?.setHighlighted(false)
-                currentHolder = (holder as Highlightable)
+                currentHolder = holder
                 holder.setHighlighted(true)
             } else {
-                (holder as Highlightable).setHighlighted(false)
+                holder.setHighlighted(false)
             }
         }
     }
@@ -124,17 +133,41 @@ class AlbumDetailAdapter(
     }
 
     inner class AlbumHeaderViewHolder(
-        private val binding: ItemAlbumHeaderBinding
+        private val binding: ItemDetailBinding
     ) : BaseViewHolder<Album>(binding) {
 
         override fun onBind(data: Album) {
-            binding.album = data
-            binding.detailModel = detailModel
-            binding.playbackModel = playbackModel
-            binding.lifecycleOwner = lifecycleOwner
+            binding.detailCover.apply {
+                bindAlbumArt(data)
+                contentDescription = context.getString(R.string.desc_album_cover, data.name)
+            }
 
-            if (data.songs.size < 2) {
-                binding.albumSortButton.disable()
+            binding.detailName.text = data.name
+
+            binding.detailSubhead.apply {
+                text = data.artist.name
+
+                setOnClickListener {
+                    detailModel.navToItem(data)
+                }
+            }
+
+            binding.detailInfo.text = binding.detailInfo.context.getString(
+                R.string.fmt_three,
+                data.year.toString(),
+                binding.detailInfo.context.getPlural(
+                    R.plurals.fmt_song_count,
+                    data.songs.size
+                ),
+                data.totalDuration
+            )
+
+            binding.detailPlayButton.setOnClickListener {
+                playbackModel.playAlbum(data, false)
+            }
+
+            binding.detailShuffleButton.setOnClickListener {
+                playbackModel.playAlbum(data, true)
             }
         }
     }

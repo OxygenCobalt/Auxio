@@ -21,7 +21,9 @@ package org.oxycblt.auxio.home
 import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.sliceArticle
 
@@ -128,6 +130,22 @@ enum class LibSortMode(@IdRes val itemId: Int) {
             DESCENDING -> album.songs.sortedByDescending { it.track }
             else -> album.songs
         }
+    }
+
+    /**
+     * Sort the songs in an artist.
+     * @see sortSongs
+     */
+    fun sortArtist(artist: Artist): List<Song> {
+        return sortSongs(artist.songs)
+    }
+
+    /**
+     * Sort the songs in a genre.
+     * @see sortSongs
+     */
+    fun sortGenre(genre: Genre): List<Song> {
+        return sortSongs(genre.songs)
     }
 
     companion object {

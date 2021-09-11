@@ -24,17 +24,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.adapters.ArtistDetailAdapter
+import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
-import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.logD
 
@@ -50,20 +47,10 @@ class ArtistDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // If DetailViewModel isn't already storing the artist, get it from MusicStore
-        // using the ID given by the navigation arguments
-        if (detailModel.currentArtist.value == null ||
-            detailModel.currentArtist.value?.id != args.artistId
-        ) {
-            detailModel.updateArtist(
-                MusicStore.getInstance().artists.find {
-                    it.id == args.artistId
-                }!!
-            )
-        }
+        detailModel.setArtist(args.artistId, requireContext())
 
         val detailAdapter = ArtistDetailAdapter(
-            playbackModel, detailModel,
+            playbackModel,
             doOnClick = { data ->
                 if (!detailModel.isNavigating) {
                     detailModel.setNavigating(true)
@@ -88,39 +75,22 @@ class ArtistDetailFragment : DetailFragment() {
         setupToolbar()
         setupRecycler(detailAdapter) { pos ->
             // If the item is an ActionHeader we need to also make the item full-width
-            pos == 0 || detailAdapter.currentList.getOrNull(pos) is Header
+            val item = detailAdapter.currentList[pos]
+            item is Header || item is ActionHeader || item is Artist
         }
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.artistSortMode.observe(viewLifecycleOwner) { mode ->
-            logD("Updating sort mode to $mode")
-
-            val artist = detailModel.currentArtist.value!!
-
-            val data = mutableListOf<BaseModel>(artist)
-
-            data.addAll(SortMode.NUMERIC_DOWN.getSortedAlbumList(artist.albums))
-
-            data.add(
-                Header(
-                    id = -2,
-                    name = getString(R.string.lbl_songs),
-                    isAction = true
-                )
-            )
-
-            data.addAll(mode.getSortedArtistSongList(artist.songs))
-
+        detailModel.artistData.observe(viewLifecycleOwner) { data ->
             detailAdapter.submitList(data)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             when (item) {
                 is Artist -> {
-                    if (item.id == detailModel.currentArtist.value!!.id) {
+                    if (item.id == detailModel.curArtist.value?.id) {
                         binding.detailRecycler.scrollToPosition(0)
-                        detailModel.doneWithNavToItem()
+                        detailModel.finishNavToItem()
                     } else {
                         findNavController().navigate(
                             ArtistDetailFragmentDirections.actionShowArtist(item.id)
@@ -136,7 +106,8 @@ class ArtistDetailFragment : DetailFragment() {
                     ArtistDetailFragmentDirections.actionShowAlbum(item.album.id)
                 )
 
-                else -> {}
+                else -> {
+                }
             }
         }
 
@@ -152,7 +123,7 @@ class ArtistDetailFragment : DetailFragment() {
         // Highlight songs if they are being played
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_ARTIST &&
-                playbackModel.parent.value?.id == detailModel.currentArtist.value!!.id
+                playbackModel.parent.value?.id == detailModel.curArtist.value?.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {

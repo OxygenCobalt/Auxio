@@ -40,7 +40,7 @@
             android:id="@+id/song_info"
             style="@style/Widget.TextView.Item.Secondary"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
+            android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"

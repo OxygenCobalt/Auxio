@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".detail.adapters.GenreDetailAdapter.GenreSongViewHolder">
+    tools:context=".detail.recycler.GenreDetailAdapter.GenreSongViewHolder">
 
     <data>
 
@@ -40,7 +40,7 @@
             android:id="@+id/song_info"
             style="@style/Widget.TextView.Item.Secondary"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:text="@{@string/format_info(song.album.artist.name, song.album.name)}"
+            android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"

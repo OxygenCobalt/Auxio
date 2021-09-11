@@ -16,36 +16,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.detail.adapters
+package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
-import org.oxycblt.auxio.databinding.ItemArtistHeaderBinding
 import org.oxycblt.auxio.databinding.ItemArtistSongBinding
-import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.util.disable
+import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
  * An adapter for displaying the [Album]s and [Song]s of an artist.
- * This isnt the nicest implementation, but it works.
  * @author OxygenCobalt
  */
 class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
-    private val detailModel: DetailViewModel,
     private val doOnClick: (data: Album) -> Unit,
     private val doOnSongClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: BaseModel) -> Unit,
@@ -60,8 +61,9 @@ class ArtistDetailAdapter(
         return when (getItem(position)) {
             is Artist -> ARTIST_HEADER_ITEM_TYPE
             is Album -> ARTIST_ALBUM_ITEM_TYPE
-            is Header -> ARTIST_SONG_HEADER_ITEM_TYPE
             is Song -> ARTIST_SONG_ITEM_TYPE
+            is Header -> HeaderViewHolder.ITEM_TYPE
+            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
 
             else -> -1
         }
@@ -70,20 +72,20 @@ class ArtistDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ARTIST_HEADER_ITEM_TYPE -> ArtistHeaderViewHolder(
-                ItemArtistHeaderBinding.inflate(parent.context.inflater)
+                ItemDetailBinding.inflate(parent.context.inflater)
             )
 
             ARTIST_ALBUM_ITEM_TYPE -> ArtistAlbumViewHolder(
                 ItemArtistAlbumBinding.inflate(parent.context.inflater)
             )
 
-            ARTIST_SONG_HEADER_ITEM_TYPE -> ArtistSongHeaderViewHolder(
-                ItemActionHeaderBinding.inflate(parent.context.inflater)
-            )
-
             ARTIST_SONG_ITEM_TYPE -> ArtistSongViewHolder(
                 ItemArtistSongBinding.inflate(parent.context.inflater)
             )
+
+            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
+
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
             else -> error("Invalid ViewHolder item type $viewType")
         }
@@ -95,9 +97,9 @@ class ArtistDetailAdapter(
         when (item) {
             is Artist -> (holder as ArtistHeaderViewHolder).bind(item)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item)
-            is Header -> (holder as ArtistSongHeaderViewHolder).bind(item)
             is Song -> (holder as ArtistSongViewHolder).bind(item)
-
+            is Header -> (holder as HeaderViewHolder).bind(item)
+            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
             else -> {
             }
         }
@@ -180,22 +182,43 @@ class ArtistDetailAdapter(
     }
 
     inner class ArtistHeaderViewHolder(
-        private val binding: ItemArtistHeaderBinding
+        private val binding: ItemDetailBinding
     ) : BaseViewHolder<Artist>(binding) {
 
         override fun onBind(data: Artist) {
-            binding.artist = data
-            binding.playbackModel = playbackModel
+            val context = binding.root.context
+
+            binding.detailCover.apply {
+                bindArtistImage(data)
+                contentDescription = context.getString(R.string.desc_artist_image, data.name)
+            }
+
+            binding.detailName.text = data.name
+
+            binding.detailSubhead.text = data.genre?.resolvedName
+                ?: context.getString(R.string.def_genre)
+
+            binding.detailInfo.text = context.getString(
+                R.string.fmt_counts,
+                context.getPlural(R.plurals.fmt_album_count, data.albums.size),
+                context.getPlural(R.plurals.fmt_song_count, data.songs.size)
+            )
+
+            binding.detailPlayButton.setOnClickListener {
+                playbackModel.playArtist(data, false)
+            }
+
+            binding.detailShuffleButton.setOnClickListener {
+                playbackModel.playArtist(data, true)
+            }
         }
     }
 
-    // Generic ViewHolder for a detail album
     inner class ArtistAlbumViewHolder(
         private val binding: ItemArtistAlbumBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
         override fun onBind(data: Album) {
             binding.album = data
-
             binding.albumName.requestLayout()
         }
 
@@ -204,39 +227,11 @@ class ArtistDetailAdapter(
         }
     }
 
-    inner class ArtistSongHeaderViewHolder(
-        private val binding: ItemActionHeaderBinding
-    ) : BaseViewHolder<Header>(binding) {
-
-        override fun onBind(data: Header) {
-            binding.header = data
-
-            binding.headerButton.apply {
-                val sortMode = detailModel.artistSortMode
-                val artist = detailModel.currentArtist.value!!
-
-                setImageResource(sortMode.value!!.iconRes)
-
-                setOnClickListener {
-                    detailModel.incrementArtistSortMode()
-                    setImageResource(sortMode.value!!.iconRes)
-                }
-
-                if (artist.songs.size < 2) {
-                    disable()
-                }
-            }
-        }
-    }
-
     inner class ArtistSongViewHolder(
         private val binding: ItemArtistSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnSongClick, doOnLongClick), Highlightable {
-        private val normalTextColor = binding.songName.currentTextColor
-
         override fun onBind(data: Song) {
             binding.song = data
-
             binding.songName.requestLayout()
         }
 
@@ -248,7 +243,6 @@ class ArtistDetailAdapter(
     companion object {
         const val ARTIST_HEADER_ITEM_TYPE = 0xA009
         const val ARTIST_ALBUM_ITEM_TYPE = 0xA00A
-        const val ARTIST_SONG_HEADER_ITEM_TYPE = 0xA00B
         const val ARTIST_SONG_ITEM_TYPE = 0xA00C
     }
 }

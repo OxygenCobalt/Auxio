@@ -25,7 +25,7 @@ import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
 import org.oxycblt.auxio.util.inflater
 
 /**
- * Adapter that shows the blacklist entries and their "Clear" button.
+ * Adapter that shows the excluded directories and their "Clear" button.
  * @author OxygenCobalt
  */
 class ExcludedEntryAdapter(

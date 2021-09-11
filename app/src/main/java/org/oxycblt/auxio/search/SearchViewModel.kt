@@ -130,7 +130,11 @@ class SearchViewModel : ViewModel() {
      */
     private fun List<BaseModel>.filterByOrNull(value: String): List<BaseModel>? {
         val filtered = filter {
-            it.name.normalized().contains(value.normalized(), ignoreCase = true)
+            // First see if the normal item name will work. If that fails, try the "normalized"
+            // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
+            // shouldn't break other language's search functionality.
+            it.name.contains(value, ignoreCase = true) ||
+                it.name.normalized().contains(value, ignoreCase = true)
         }
 
         return if (filtered.isNotEmpty()) filtered else null
@@ -155,8 +159,8 @@ class SearchViewModel : ViewModel() {
             idx += Character.charCount(cp)
 
             when (Character.getType(cp)) {
-                Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt() ->
-                    continue
+                // Character.NON_SPACING_MARK and Character.COMBINING_SPACING_MARK
+                6, 8 -> continue
 
                 else -> sb.appendCodePoint(cp)
             }

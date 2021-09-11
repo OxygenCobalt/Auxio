@@ -90,6 +90,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // an elevation change.
         // TODO: Maybe restrict the item from being drawn over the recycler bounds?
         //  Seems like its possible with enough UI magic
+        // TODO: Add an accented BG to the removal action
 
         val view = viewHolder.itemView
 

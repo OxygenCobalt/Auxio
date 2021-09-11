@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                 systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
-                setOnApplyWindowInsetsListener { v, insets ->
+                setOnApplyWindowInsetsListener { _, insets ->
                     updatePadding(
                         left = insets.systemWindowInsetLeft,
                         right = insets.systemWindowInsetRight

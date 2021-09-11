@@ -129,11 +129,11 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { nextQueue ->
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
             updateQueueIcon(queueItem)
         }
 
-        playbackModel.userQueue.observe(viewLifecycleOwner) { userQueue ->
+        playbackModel.userQueue.observe(viewLifecycleOwner) {
             updateQueueIcon(queueItem)
         }
 

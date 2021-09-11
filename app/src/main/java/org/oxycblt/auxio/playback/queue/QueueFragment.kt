@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import kotlinx.coroutines.NonDisposableHandle.parent
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -53,7 +54,7 @@ class QueueFragment : Fragment() {
         val callback = QueueDragCallback(playbackModel)
 
         val helper = ItemTouchHelper(callback)
-        val queueAdapter = QueueAdapter(helper, playbackModel)
+        val queueAdapter = QueueAdapter(helper)
         var lastShuffle = playbackModel.isShuffling.value
 
         callback.addQueueAdapter(queueAdapter)
@@ -120,10 +121,12 @@ class QueueFragment : Fragment() {
         val nextQueue = playbackModel.nextItemsInQueue.value!!
 
         if (userQueue.isNotEmpty()) {
-            queue += Header(
+            queue += ActionHeader(
                 id = -2,
                 name = getString(R.string.lbl_next_user_queue),
-                isAction = true
+                icon = R.drawable.ic_clear,
+                desc = R.string.desc_clear_user_queue,
+                onClick = { playbackModel.clearUserQueue() }
             )
 
             queue += userQueue
@@ -132,17 +135,15 @@ class QueueFragment : Fragment() {
         if (nextQueue.isNotEmpty()) {
             queue += Header(
                 id = -3,
-                name = getString(R.string.fmt_next_from, getParentName()),
-                isAction = false
+                name = getString(
+                    R.string.fmt_next_from,
+                    playbackModel.parent.value?.displayName ?: getString(R.string.lbl_all_songs)
+                )
             )
 
             queue += nextQueue
         }
 
         return queue
-    }
-
-    private fun getParentName(): String {
-        return playbackModel.parent.value?.displayName ?: getString(R.string.lbl_all_songs)
     }
 }

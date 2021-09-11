@@ -197,26 +197,24 @@
         <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
     </style>
 
-    <style name="Widget.Button.Vibrant.Base" parent="@style/Widget.MaterialComponents.Button.TextButton">
+    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorSurface</item>
+        <item name="fontFamily">@font/inter_semibold</item>
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.Button.Vibrant.Base">
-        <item name="android:textColor">?attr/colorSurface</item>
-        <item name="backgroundTint">?attr/colorAccent</item>
-        <item name="rippleColor">@color/mtrl_btn_ripple_color</item>
-    </style>
-
-    <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.Button.Vibrant.Base">
-        <item name="strokeColor">@color/overlay_divider</item>
-        <item name="strokeWidth">@dimen/size_stroke_small</item>
-        <item name="rippleColor">?attr/colorControlHighlight</item>
+    <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="cornerRadius">0dp</item>
     </style>
 </resources>

@@ -18,14 +18,8 @@
 
 package org.oxycblt.auxio.ui
 
-import android.widget.ImageButton
 import androidx.annotation.DrawableRes
-import androidx.annotation.IdRes
-import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -35,83 +29,11 @@ import org.oxycblt.auxio.music.Song
  */
 enum class SortMode(@DrawableRes val iconRes: Int) {
     // Icons for each mode are assigned to the enums themselves
-    NONE(R.drawable.ic_sort_none),
-    ALPHA_UP(R.drawable.ic_sort_alpha_up),
-    ALPHA_DOWN(R.drawable.ic_sort_alpha_down),
-    NUMERIC_UP(R.drawable.ic_sort_numeric_up),
-    NUMERIC_DOWN(R.drawable.ic_sort_numeric_down);
-
-    /**
-     * Get a sorted list of genres for a SortMode. Only supports alphabetic sorting.
-     * @param genres An unsorted list of genres.
-     * @return The sorted list of genres.
-     */
-    fun getSortedGenreList(genres: List<Genre>): List<Genre> {
-        return when (this) {
-            ALPHA_UP -> genres.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
-                    it.resolvedName.sliceArticle()
-                }
-            )
-
-            ALPHA_DOWN -> genres.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) {
-                    it.resolvedName.sliceArticle()
-                }
-            )
-
-            else -> genres
-        }
-    }
-
-    /**
-     * Get a sorted list of artists for a SortMode. Only supports alphabetic sorting.
-     * @param artists An unsorted list of artists.
-     * @return The sorted list of artists.
-     */
-    fun getSortedArtistList(artists: List<Artist>): List<Artist> {
-        return when (this) {
-            ALPHA_UP -> artists.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
-
-            ALPHA_DOWN -> artists.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
-
-            else -> artists
-        }
-    }
-
-    /**
-     * Get a sorted list of albums for a SortMode. Supports alpha + numeric sorting.
-     * @param albums An unsorted list of albums.
-     * @return The sorted list of albums.
-     */
-    fun getSortedAlbumList(albums: List<Album>): List<Album> {
-        return when (this) {
-            ALPHA_UP -> albums.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
-
-            ALPHA_DOWN -> albums.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
-
-            NUMERIC_UP -> albums.sortedBy { it.year }
-            NUMERIC_DOWN -> albums.sortedByDescending { it.year }
-
-            else -> albums
-        }
-    }
+    NONE(R.drawable.ic_sort),
+    ALPHA_UP(R.drawable.ic_sort),
+    ALPHA_DOWN(R.drawable.ic_sort),
+    NUMERIC_UP(R.drawable.ic_sort),
+    NUMERIC_DOWN(R.drawable.ic_sort);
 
     /**
      * Get a sorted list of songs for a SortMode. Supports alpha + numeric sorting.
@@ -183,19 +105,6 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
     }
 
     /**
-     * Get a sorting menu ID for this mode. Alphabetic only.
-     * @return The action id for this mode.
-     */
-    @IdRes
-    fun toMenuId(): Int {
-        return when (this) {
-            ALPHA_UP -> R.id.option_sort_asc
-            ALPHA_DOWN -> R.id.option_sort_dsc
-            else -> R.id.option_sort_dsc
-        }
-    }
-
-    /**
      * Get the constant for this mode. Used to write a compressed variant to SettingsManager
      * @return The int constant for this mode.
      */
@@ -232,14 +141,6 @@ enum class SortMode(@DrawableRes val iconRes: Int) {
             }
         }
     }
-}
-
-/**
- * Bind the [SortMode] icon for an ImageButton.
- */
-@BindingAdapter("sortIcon")
-fun ImageButton.bindSortIcon(mode: SortMode) {
-    setImageResource(mode.iconRes)
 }
 
 /**

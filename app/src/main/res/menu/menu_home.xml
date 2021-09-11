@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/submenu_sorting"
-        android:icon="@drawable/ic_sort_none"
+        android:icon="@drawable/ic_sort"
         android:title="@string/lbl_sort"
         app:showAsAction="ifRoom">
         <menu>

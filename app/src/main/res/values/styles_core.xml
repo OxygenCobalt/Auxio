@@ -11,7 +11,7 @@
     <style name="Theme.Base" parent="Theme.Splash">
         <!-- Colors -->
         <item name="colorSurface">@color/surface</item>
-        <item name="colorAccent">@color/design_default_color_primary</item>
+        <item name="colorAccent">@color/blue</item>
 
         <item name="colorPrimary">?attr/colorAccent</item>
         <item name="colorOnPrimary">?attr/colorSurface</item>

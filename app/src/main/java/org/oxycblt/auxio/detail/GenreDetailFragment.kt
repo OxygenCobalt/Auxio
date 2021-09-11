@@ -24,11 +24,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.oxycblt.auxio.detail.adapters.GenreDetailAdapter
+import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
@@ -47,20 +48,10 @@ class GenreDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // If DetailViewModel isn't already storing the genre, get it from MusicStore
-        // using the ID given by the navigation arguments
-        if (detailModel.currentGenre.value == null ||
-            detailModel.currentGenre.value?.id != args.genreId
-        ) {
-            detailModel.updateGenre(
-                MusicStore.getInstance().genres.find {
-                    it.id == args.genreId
-                }!!
-            )
-        }
+        detailModel.setGenre(args.genreId, requireContext())
 
         val detailAdapter = GenreDetailAdapter(
-            detailModel, playbackModel, viewLifecycleOwner,
+            playbackModel,
             doOnClick = { song ->
                 playbackModel.playSong(song, PlaybackMode.IN_GENRE)
             },
@@ -75,19 +66,13 @@ class GenreDetailFragment : DetailFragment() {
 
         setupToolbar()
         setupRecycler(detailAdapter) { pos ->
-            pos == 0
+            val item = detailAdapter.currentList[pos]
+            item is Header || item is ActionHeader || item is Genre
         }
 
         // --- DETAILVIEWMODEL SETUP ---
 
-        detailModel.genreSortMode.observe(viewLifecycleOwner) { mode ->
-            logD("Updating sort mode to $mode")
-
-            // Detail header data is included
-            val data = mutableListOf<BaseModel>(detailModel.currentGenre.value!!).also {
-                it.addAll(mode.getSortedSongList(detailModel.currentGenre.value!!.songs))
-            }
-
+        detailModel.genreData.observe(viewLifecycleOwner) { data ->
             detailAdapter.submitList(data)
         }
 
@@ -106,7 +91,8 @@ class GenreDetailFragment : DetailFragment() {
                     GenreDetailFragmentDirections.actionShowAlbum(item.album.id)
                 )
 
-                else -> {}
+                else -> {
+                }
             }
         }
 
@@ -114,7 +100,7 @@ class GenreDetailFragment : DetailFragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
-                playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id
+                playbackModel.parent.value?.id == detailModel.curGenre.value!!.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {

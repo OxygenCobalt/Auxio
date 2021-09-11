@@ -103,7 +103,7 @@
     <string name="hint_search_library">Musikbibliothek durchsuchen…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_sort_button">Reihenfolge ändern</string>
+    <string name="desc_sort">Reihenfolge ändern</string>
     <string name="desc_track_number">Titel %d</string>
 
     <string name="desc_play_pause">Abspielen oder Pausieren</string>

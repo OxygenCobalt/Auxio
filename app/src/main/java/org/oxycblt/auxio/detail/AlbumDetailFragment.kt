@@ -27,11 +27,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.adapters.AlbumDetailAdapter
+import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
@@ -52,20 +52,10 @@ class AlbumDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // If DetailViewModel isn't already storing the album, get it from MusicStore
-        // using the ID given by the navigation arguments.
-        if (detailModel.currentAlbum.value == null ||
-            detailModel.currentAlbum.value?.id != args.albumId
-        ) {
-            detailModel.updateAlbum(
-                MusicStore.getInstance().albums.find {
-                    it.id == args.albumId
-                }!!
-            )
-        }
+        detailModel.setAlbum(args.albumId, requireContext())
 
         val detailAdapter = AlbumDetailAdapter(
-            detailModel, playbackModel, viewLifecycleOwner,
+            playbackModel, detailModel,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
             doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ALBUM) }
         )
@@ -76,7 +66,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         setupToolbar(R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {
-                playbackModel.addToUserQueue(detailModel.currentAlbum.value!!)
+                playbackModel.addToUserQueue(detailModel.curAlbum.value!!)
                 requireContext().showToast(R.string.lbl_queue_added)
                 true
             } else {
@@ -85,19 +75,13 @@ class AlbumDetailFragment : DetailFragment() {
         }
 
         setupRecycler(detailAdapter) { pos ->
-            pos == 0
+            val item = detailAdapter.currentList[pos]
+            item is Header || item is ActionHeader || item is Album
         }
 
         // -- DETAILVIEWMODEL SETUP ---
 
-        detailModel.albumSortMode.observe(viewLifecycleOwner) { mode ->
-            logD("Updating sort mode to $mode")
-
-            // Detail header data is included
-            val data = mutableListOf<BaseModel>(detailModel.currentAlbum.value!!).also {
-                it.addAll(mode.getSortedSongList(detailModel.currentAlbum.value!!.songs))
-            }
-
+        detailModel.albumData.observe(viewLifecycleOwner) { data ->
             detailAdapter.submitList(data)
         }
 
@@ -106,10 +90,10 @@ class AlbumDetailFragment : DetailFragment() {
                 // Songs should be scrolled to if the album matches, or a new detail
                 // fragment should be launched otherwise.
                 is Song -> {
-                    if (detailModel.currentAlbum.value!!.id == item.album.id) {
-                        scrollToItem(item.id)
+                    if (detailModel.curAlbum.value!!.id == item.album.id) {
+                        scrollToItem(item.id, detailAdapter)
 
-                        detailModel.doneWithNavToItem()
+                        detailModel.finishNavToItem()
                     } else {
                         findNavController().navigate(
                             AlbumDetailFragmentDirections.actionShowAlbum(item.album.id)
@@ -120,9 +104,9 @@ class AlbumDetailFragment : DetailFragment() {
                 // If the album matches, no need to do anything. Otherwise launch a new
                 // detail fragment.
                 is Album -> {
-                    if (detailModel.currentAlbum.value!!.id == item.id) {
+                    if (detailModel.curAlbum.value!!.id == item.id) {
                         binding.detailRecycler.scrollToPosition(0)
-                        detailModel.doneWithNavToItem()
+                        detailModel.finishNavToItem()
                     } else {
                         findNavController().navigate(
                             AlbumDetailFragmentDirections.actionShowAlbum(item.id)
@@ -146,7 +130,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
-                playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id
+                playbackModel.parent.value?.id == detailModel.curAlbum.value!!.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
@@ -169,17 +153,15 @@ class AlbumDetailFragment : DetailFragment() {
     /**
      * Scroll to an song using its [id].
      */
-    private fun scrollToItem(id: Long) {
+    private fun scrollToItem(id: Long, adapter: AlbumDetailAdapter) {
         // Calculate where the item for the currently played song is
-        val pos = detailModel.albumSortMode.value!!.getSortedSongList(
-            detailModel.currentAlbum.value!!.songs
-        ).indexOfFirst { it.id == id }
+        val pos = adapter.currentList.indexOfFirst { it.id == id && it is Album }
 
         if (pos != -1) {
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos.inc())
+                    CenterSmoothScroller(requireContext(), pos)
                 )
 
                 // If the recyclerview can scroll, its certain that it will have to scroll to

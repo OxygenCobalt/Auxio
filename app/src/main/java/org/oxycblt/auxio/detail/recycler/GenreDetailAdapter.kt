@@ -16,23 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.detail.adapters
+package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.databinding.ItemGenreHeaderBinding
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.bindGenreImage
+import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
-import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.util.disable
+import org.oxycblt.auxio.util.getPlural
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -40,9 +42,7 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 class GenreDetailAdapter(
-    private val detailModel: DetailViewModel,
     private val playbackModel: PlaybackViewModel,
-    private val lifecycleOwner: LifecycleOwner,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -52,6 +52,7 @@ class GenreDetailAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is Genre -> GENRE_HEADER_ITEM_TYPE
+            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> GENRE_SONG_ITEM_TYPE
 
             else -> -1
@@ -61,12 +62,14 @@ class GenreDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             GENRE_HEADER_ITEM_TYPE -> GenreHeaderViewHolder(
-                ItemGenreHeaderBinding.inflate(parent.context.inflater)
+                ItemDetailBinding.inflate(parent.context.inflater)
             )
 
             GENRE_SONG_ITEM_TYPE -> GenreSongViewHolder(
                 ItemGenreSongBinding.inflate(parent.context.inflater),
             )
+
+            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
             else -> error("Bad viewholder item type $viewType")
         }
@@ -77,18 +80,19 @@ class GenreDetailAdapter(
 
         when (item) {
             is Genre -> (holder as GenreHeaderViewHolder).bind(item)
+            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
             is Song -> (holder as GenreSongViewHolder).bind(item)
             else -> {}
         }
 
-        if (currentSong != null && position > 0) {
+        if (holder is Highlightable) {
             if (item.id == currentSong?.id) {
                 // Reset the last ViewHolder before assigning the new, correct one to be highlighted
                 currentHolder?.setHighlighted(false)
-                currentHolder = (holder as Highlightable)
+                currentHolder = holder
                 holder.setHighlighted(true)
             } else {
-                (holder as Highlightable).setHighlighted(false)
+                holder.setHighlighted(false)
             }
         }
     }
@@ -125,16 +129,30 @@ class GenreDetailAdapter(
     }
 
     inner class GenreHeaderViewHolder(
-        private val binding: ItemGenreHeaderBinding
+        private val binding: ItemDetailBinding
     ) : BaseViewHolder<Genre>(binding) {
         override fun onBind(data: Genre) {
-            binding.genre = data
-            binding.detailModel = detailModel
-            binding.playbackModel = playbackModel
-            binding.lifecycleOwner = lifecycleOwner
+            val context = binding.root.context
 
-            if (data.songs.size < 2) {
-                binding.genreSortButton.disable()
+            binding.detailCover.apply {
+                bindGenreImage(data)
+                contentDescription = context.getString(R.string.desc_artist_image, data.name)
+            }
+
+            binding.detailName.text = data.name
+
+            binding.detailSubhead.apply {
+                text = context.getPlural(R.plurals.fmt_song_count, data.songs.size)
+            }
+
+            binding.detailInfo.text = data.totalDuration
+
+            binding.detailPlayButton.setOnClickListener {
+                playbackModel.playGenre(data, false)
+            }
+
+            binding.detailShuffleButton.setOnClickListener {
+                playbackModel.playGenre(data, true)
             }
         }
     }

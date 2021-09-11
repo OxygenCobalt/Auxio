@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.HeaderViewHolder">
 
-
     <data>
 
         <variable
             name="header"
-            type="org.oxycblt.auxio.music.Header" />
+            type="org.oxycblt.auxio.music.ActionHeader" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,10 +31,12 @@
             style="@style/Widget.Button.Unbounded.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@{context.getString(header.desc)}"
+            android:src="@{context.getDrawable(header.icon)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_clear" />
+            tools:src="@drawable/ic_sort"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".detail.adapters.ArtistDetailAdapter.ArtistAlbumViewHolder">
+    tools:context=".detail.recycler.ArtistDetailAdapter.ArtistAlbumViewHolder">
 
     <data>
 
@@ -38,7 +38,7 @@
         <TextView
             android:id="@+id/album_year"
             style="@style/Widget.TextView.Item.Secondary"
-            app:albumYear="@{album}"
+            android:text="@{album.year != 0 ? String.valueOf(album.year) : @string/def_date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"

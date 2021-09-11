@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:theme="@style/Theme.Neutral"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <com.google.android.material.card.MaterialCardView
@@ -38,7 +39,7 @@
                 app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/overlay_divider"
+                app:strokeColor="@color/mtrl_btn_stroke_color_selector"
                 app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -158,7 +159,6 @@
                     <TextView
                         android:id="@+id/about_song_count"
                         style="@style/Widget.TextView.Icon"
-                        android:theme="@style/Theme.Neutral"
                         app:drawableStartCompat="@drawable/ic_song"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -169,7 +169,7 @@
                         android:id="@+id/about_author"
                         style="@style/Widget.TextView.Icon"
                         android:text="@string/lbl_author"
-                        app:drawableStartCompat="@drawable/ic_author"
+                        app:drawableStartCompat="@drawable/ic_artist"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_song_count" />

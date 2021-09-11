@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -74,9 +73,6 @@ class SearchFragment : Fragment() {
             },
             ::newMenu
         )
-
-        val toolbarParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
-
         // --- UI SETUP --
 
         binding.lifecycleOwner = viewLifecycleOwner

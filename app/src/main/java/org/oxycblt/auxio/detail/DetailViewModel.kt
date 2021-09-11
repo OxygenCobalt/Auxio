@@ -18,112 +18,135 @@
 
 package org.oxycblt.auxio.detail
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.home.LibSortMode
+import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.ui.SortMode
 
 /**
  * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
  * [SortMode] they are currently on.
- * TODO: Redo sorting here
+ * TODO: Re-add sorting
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
-    private val settingsManager = SettingsManager.getInstance()
-
     // --- CURRENT VALUES ---
 
-    private val mCurrentGenre = MutableLiveData<Genre?>()
-    val currentGenre: LiveData<Genre?> get() = mCurrentGenre
+    private val mCurGenre = MutableLiveData<Genre?>()
+    val curGenre: LiveData<Genre?> get() = mCurGenre
 
-    private val mCurrentArtist = MutableLiveData<Artist?>()
-    val currentArtist: LiveData<Artist?> get() = mCurrentArtist
+    private val mGenreData = MutableLiveData(listOf<BaseModel>())
+    val genreData: LiveData<List<BaseModel>> = mGenreData
 
-    private val mCurrentAlbum = MutableLiveData<Album?>()
-    val currentAlbum: LiveData<Album?> get() = mCurrentAlbum
+    private val mCurArtist = MutableLiveData<Artist?>()
+    val curArtist: LiveData<Artist?> get() = mCurArtist
 
-    // --- SORT MODES ---
+    private val mArtistData = MutableLiveData(listOf<BaseModel>())
+    val artistData: LiveData<List<BaseModel>> = mArtistData
 
-    private val mGenreSortMode = MutableLiveData(settingsManager.genreSortMode)
-    val genreSortMode: LiveData<SortMode> get() = mGenreSortMode
+    private val mCurAlbum = MutableLiveData<Album?>()
+    val curAlbum: LiveData<Album?> get() = mCurAlbum
 
-    private val mArtistSortMode = MutableLiveData(settingsManager.artistSortMode)
-    val albumSortMode: LiveData<SortMode> get() = mAlbumSortMode
+    private val mAlbumData = MutableLiveData(listOf<BaseModel>())
+    val albumData: LiveData<List<BaseModel>> get() = mAlbumData
 
-    private val mAlbumSortMode = MutableLiveData(settingsManager.albumSortMode)
-    val artistSortMode: LiveData<SortMode> get() = mArtistSortMode
-
-    private var mIsNavigating = false
-    val isNavigating: Boolean get() = mIsNavigating
+    var isNavigating = false
+        private set
 
     private val mNavToItem = MutableLiveData<BaseModel?>()
 
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
-    fun updateGenre(genre: Genre) {
-        mCurrentGenre.value = genre
+    private val musicStore = MusicStore.getInstance()
+
+    fun setGenre(id: Long, context: Context) {
+        if (mCurGenre.value?.id == id) return
+
+        mCurGenre.value = musicStore.genres.find { it.id == id }
+
+        val data = mutableListOf<BaseModel>(curGenre.value!!)
+
+        data.add(
+            ActionHeader(
+                id = -2,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = {
+                }
+            )
+        )
+
+        data.addAll(LibSortMode.ASCENDING.sortGenre(curGenre.value!!))
+
+        mGenreData.value = data
     }
 
-    fun updateArtist(artist: Artist) {
-        mCurrentArtist.value = artist
+    fun setArtist(id: Long, context: Context) {
+        if (mCurArtist.value?.id == id) return
+
+        mCurArtist.value = musicStore.artists.find { it.id == id }
+
+        val artist = curArtist.value!!
+        val data = mutableListOf<BaseModel>(artist)
+
+        data.add(
+            Header(
+                id = -2,
+                name = context.getString(R.string.lbl_albums)
+            )
+        )
+
+        data.addAll(LibSortMode.YEAR.sortAlbums(artist.albums))
+
+        data.add(
+            ActionHeader(
+                id = -3,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = {
+                }
+            )
+        )
+
+        data.addAll(LibSortMode.YEAR.sortArtist(artist))
+
+        mArtistData.value = data.toList()
     }
 
-    fun updateAlbum(album: Album) {
-        mCurrentAlbum.value = album
-    }
+    fun setAlbum(id: Long, context: Context) {
+        if (mCurAlbum.value?.id == id) return
 
-    /**
-     * Increment the sort mode of the genre artists
-     */
-    fun incrementGenreSortMode() {
-        val mode = when (mGenreSortMode.value) {
-            SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
-            SortMode.ALPHA_UP -> SortMode.ALPHA_DOWN
+        mCurAlbum.value = musicStore.albums.find { it.id == id }
 
-            else -> SortMode.ALPHA_DOWN
-        }
+        val data = mutableListOf<BaseModel>(curAlbum.value!!)
 
-        mGenreSortMode.value = mode
-        settingsManager.genreSortMode = mode
-    }
+        data.add(
+            ActionHeader(
+                id = -2,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = {
+                }
+            )
+        )
 
-    /**
-     * Increment the sort mode of the artist albums
-     */
-    fun incrementArtistSortMode() {
-        val mode = when (mArtistSortMode.value) {
-            SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
-            SortMode.NUMERIC_UP -> SortMode.ALPHA_DOWN
-            SortMode.ALPHA_DOWN -> SortMode.ALPHA_UP
-            SortMode.ALPHA_UP -> SortMode.NUMERIC_DOWN
+        data.addAll(LibSortMode.ASCENDING.sortAlbum(curAlbum.value!!))
 
-            else -> SortMode.NUMERIC_DOWN
-        }
-
-        mArtistSortMode.value = mode
-        settingsManager.artistSortMode = mode
-    }
-
-    /**
-     * Increment the sort mode of the album song
-     */
-    fun incrementAlbumSortMode() {
-        val mode = when (mAlbumSortMode.value) {
-            SortMode.NUMERIC_DOWN -> SortMode.NUMERIC_UP
-            SortMode.NUMERIC_UP -> SortMode.NUMERIC_DOWN
-
-            else -> SortMode.NUMERIC_DOWN
-        }
-
-        mAlbumSortMode.value = mode
-        settingsManager.albumSortMode = mAlbumSortMode.value!!
+        mAlbumData.value = data
     }
 
     /**
@@ -136,14 +159,14 @@ class DetailViewModel : ViewModel() {
     /**
      * Mark that the navigation process is done.
      */
-    fun doneWithNavToItem() {
+    fun finishNavToItem() {
         mNavToItem.value = null
     }
 
     /**
      * Update the current navigation status to [isNavigating]
      */
-    fun setNavigating(isNavigating: Boolean) {
-        mIsNavigating = isNavigating
+    fun setNavigating(navigating: Boolean) {
+        isNavigating = navigating
     }
 }
