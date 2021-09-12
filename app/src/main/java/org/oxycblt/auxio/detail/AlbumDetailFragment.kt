@@ -155,9 +155,10 @@ class AlbumDetailFragment : DetailFragment() {
      */
     private fun scrollToItem(id: Long, adapter: AlbumDetailAdapter) {
         // Calculate where the item for the currently played song is
-        val pos = adapter.currentList.indexOfFirst { it.id == id && it is Album }
+        val pos = adapter.currentList.indexOfFirst { it.id == id && it is Song }
 
         if (pos != -1) {
+            logD("IDIOT.")
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(

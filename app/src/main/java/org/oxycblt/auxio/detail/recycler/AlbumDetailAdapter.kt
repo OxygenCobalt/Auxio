@@ -148,7 +148,7 @@ class AlbumDetailAdapter(
                 text = data.artist.name
 
                 setOnClickListener {
-                    detailModel.navToItem(data)
+                    detailModel.navToItem(data.artist)
                 }
             }
 
