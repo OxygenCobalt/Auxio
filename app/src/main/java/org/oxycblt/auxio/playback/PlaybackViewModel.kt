@@ -331,9 +331,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Add an [Album] to the user queue
      */
     fun addToUserQueue(album: Album) {
-        val songs = SortMode.NUMERIC_DOWN.getSortedSongList(album.songs)
-
-        playbackManager.addToUserQueue(songs)
+        // TODO: Make this reflect the sort mode
+        playbackManager.addToUserQueue(SortMode.ASCENDING.sortAlbum(album))
     }
 
     /**

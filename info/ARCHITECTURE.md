@@ -45,18 +45,17 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA002 | ArtistViewHolder
 0xA003 | GenreViewHolder
 0xA004 | HeaderViewHolder
+0xA005 | ActionHeaderViewHolder
 
-0xA005 | QueueSongViewHolder
-0xA006 | UserQueueHeaderViewHolder
+0xA005 | AlbumDetailViewHolder
+0xA006 | AlbumSongViewHolder
+0xA007 | ArtistDetailViewHolder
+0xA008 | ArtistAlbumViewHolder
+0xA009 | ArtistSongViewHolder
+0xA010 | GenreDetailViewHolder
+0xA011 | GenreSongViewHolder
 
-0xA007 | AlbumHeaderViewHolder
-0xA008 | AlbumSongViewHolder
-0xA009 | ArtistHeaderViewHolder
-0xA00A | ArtistAlbumViewHolder
-0xA00B | ArtistSongHeaderViewHolder
-0xA00C | ArtistSongViewHolder
-0xA00D | GenreHeaderViewHolder
-0xA00E | GenreSongViewHolder
+0xA00A | QueueSongViewHolder
 
 0xA0A0 | Auxio notification code
 0xA0C0 | Auxio request code
@@ -77,12 +76,6 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA109 | DisplayMode.SHOW_ARTISTS
 0xA10A | DisplayMode.SHOW_ALBUMS
 0xA10B | DisplayMode.SHOW_SONGS
-
-0xA10C | SortMode.NONE 
-0xA10D | SortMode.ALPHA_UP
-0xA10E | SortMode.ALPHA_DOWN 
-0xA10F | SortMode.NUMERIC_UP
-0xA110 | SortMode.NUMERIC_DOWN
 ```
 
 #### Package structure overview

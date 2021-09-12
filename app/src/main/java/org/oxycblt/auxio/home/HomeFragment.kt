@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -93,7 +94,7 @@ class HomeFragment : Fragment() {
                         item.isChecked = true
 
                         homeModel.updateCurrentSort(
-                            requireNotNull(LibSortMode.fromId(item.itemId))
+                            requireNotNull(SortMode.fromId(item.itemId))
                         )
                     }
                 }
@@ -220,7 +221,7 @@ class HomeFragment : Fragment() {
 
     private fun updateSortMenu(
         item: MenuItem,
-        toHighlight: LibSortMode,
+        toHighlight: SortMode,
         isVisible: (Int) -> Boolean = { true }
     ) {
         for (option in item.subMenu) {

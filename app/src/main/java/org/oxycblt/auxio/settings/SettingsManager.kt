@@ -26,7 +26,6 @@ import org.oxycblt.auxio.accent.ACCENTS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -113,33 +112,6 @@ class SettingsManager private constructor(context: Context) :
     /** Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats */
     val pauseOnLoop: Boolean
         get() = sharedPrefs.getBoolean(KEY_LOOP_PAUSE, false)
-
-    var albumSortMode: SortMode
-        get() = sharedPrefs.getData(KEY_ALBUM_SORT_MODE, SortMode::fromInt) ?: SortMode.NUMERIC_DOWN
-        set(value) {
-            sharedPrefs.edit {
-                putInt(KEY_ALBUM_SORT_MODE, value.toInt())
-                apply()
-            }
-        }
-
-    var artistSortMode: SortMode
-        get() = sharedPrefs.getData(KEY_ARTIST_SORT_MODE, SortMode::fromInt) ?: SortMode.NUMERIC_DOWN
-        set(value) {
-            sharedPrefs.edit {
-                putInt(KEY_ARTIST_SORT_MODE, value.toInt())
-                apply()
-            }
-        }
-
-    var genreSortMode: SortMode
-        get() = sharedPrefs.getData(KEY_GENRE_SORT_MODE, SortMode::fromInt) ?: SortMode.ALPHA_DOWN
-        set(value) {
-            sharedPrefs.edit {
-                putInt(KEY_GENRE_SORT_MODE, value.toInt())
-                apply()
-            }
-        }
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?

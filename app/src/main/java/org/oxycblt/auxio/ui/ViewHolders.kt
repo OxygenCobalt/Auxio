@@ -266,7 +266,7 @@ class ActionHeaderViewHolder private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA999 // TODO: Give this an ID
+        const val ITEM_TYPE = 0xA005
 
         /**
          * Create an instance of [ActionHeaderViewHolder]

@@ -51,7 +51,7 @@ class GenreDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Genre -> GENRE_HEADER_ITEM_TYPE
+            is Genre -> GENRE_DETAIL_ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> GENRE_SONG_ITEM_TYPE
 
@@ -61,7 +61,7 @@ class GenreDetailAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GENRE_HEADER_ITEM_TYPE -> GenreHeaderViewHolder(
+            GENRE_DETAIL_ITEM_TYPE -> GenreDetailViewHolder(
                 ItemDetailBinding.inflate(parent.context.inflater)
             )
 
@@ -79,7 +79,7 @@ class GenreDetailAdapter(
         val item = getItem(position)
 
         when (item) {
-            is Genre -> (holder as GenreHeaderViewHolder).bind(item)
+            is Genre -> (holder as GenreDetailViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
             is Song -> (holder as GenreSongViewHolder).bind(item)
             else -> {}
@@ -128,7 +128,7 @@ class GenreDetailAdapter(
         }
     }
 
-    inner class GenreHeaderViewHolder(
+    inner class GenreDetailViewHolder(
         private val binding: ItemDetailBinding
     ) : BaseViewHolder<Genre>(binding) {
         override fun onBind(data: Genre) {
@@ -173,7 +173,7 @@ class GenreDetailAdapter(
     }
 
     companion object {
-        const val GENRE_HEADER_ITEM_TYPE = 0xA00D
-        const val GENRE_SONG_ITEM_TYPE = 0xA00E
+        const val GENRE_DETAIL_ITEM_TYPE = 0xA00B
+        const val GENRE_SONG_ITEM_TYPE = 0xA00C
     }
 }

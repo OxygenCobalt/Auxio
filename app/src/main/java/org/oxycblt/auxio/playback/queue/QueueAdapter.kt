@@ -169,7 +169,6 @@ class QueueAdapter(
     }
 
     companion object {
-        const val QUEUE_SONG_ITEM_TYPE = 0xA005
-        const val USER_QUEUE_HEADER_ITEM_TYPE = 0xA006
+        const val QUEUE_SONG_ITEM_TYPE = 0xA00D
     }
 }

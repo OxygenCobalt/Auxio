@@ -59,7 +59,7 @@ class ArtistDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Artist -> ARTIST_HEADER_ITEM_TYPE
+            is Artist -> ARTIST_DETAIL_ITEM_TYPE
             is Album -> ARTIST_ALBUM_ITEM_TYPE
             is Song -> ARTIST_SONG_ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
@@ -71,7 +71,7 @@ class ArtistDetailAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ARTIST_HEADER_ITEM_TYPE -> ArtistHeaderViewHolder(
+            ARTIST_DETAIL_ITEM_TYPE -> ArtistDetailViewHolder(
                 ItemDetailBinding.inflate(parent.context.inflater)
             )
 
@@ -95,7 +95,7 @@ class ArtistDetailAdapter(
         val item = getItem(position)
 
         when (item) {
-            is Artist -> (holder as ArtistHeaderViewHolder).bind(item)
+            is Artist -> (holder as ArtistDetailViewHolder).bind(item)
             is Album -> (holder as ArtistAlbumViewHolder).bind(item)
             is Song -> (holder as ArtistSongViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
@@ -181,7 +181,7 @@ class ArtistDetailAdapter(
         }
     }
 
-    inner class ArtistHeaderViewHolder(
+    inner class ArtistDetailViewHolder(
         private val binding: ItemDetailBinding
     ) : BaseViewHolder<Artist>(binding) {
 
@@ -241,8 +241,8 @@ class ArtistDetailAdapter(
     }
 
     companion object {
-        const val ARTIST_HEADER_ITEM_TYPE = 0xA009
-        const val ARTIST_ALBUM_ITEM_TYPE = 0xA00A
-        const val ARTIST_SONG_ITEM_TYPE = 0xA00C
+        const val ARTIST_DETAIL_ITEM_TYPE = 0xA008
+        const val ARTIST_ALBUM_ITEM_TYPE = 0xA009
+        const val ARTIST_SONG_ITEM_TYPE = 0xA00A
     }
 }

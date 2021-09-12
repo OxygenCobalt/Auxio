@@ -23,7 +23,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.home.LibSortMode
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -88,7 +87,7 @@ class DetailViewModel : ViewModel() {
             )
         )
 
-        data.addAll(LibSortMode.ASCENDING.sortGenre(curGenre.value!!))
+        data.addAll(SortMode.ASCENDING.sortGenre(curGenre.value!!))
 
         mGenreData.value = data
     }
@@ -108,7 +107,7 @@ class DetailViewModel : ViewModel() {
             )
         )
 
-        data.addAll(LibSortMode.YEAR.sortAlbums(artist.albums))
+        data.addAll(SortMode.YEAR.sortAlbums(artist.albums))
 
         data.add(
             ActionHeader(
@@ -121,7 +120,7 @@ class DetailViewModel : ViewModel() {
             )
         )
 
-        data.addAll(LibSortMode.YEAR.sortArtist(artist))
+        data.addAll(SortMode.YEAR.sortArtist(artist))
 
         mArtistData.value = data.toList()
     }
@@ -144,7 +143,7 @@ class DetailViewModel : ViewModel() {
             )
         )
 
-        data.addAll(LibSortMode.ASCENDING.sortAlbum(curAlbum.value!!))
+        data.addAll(SortMode.ASCENDING.sortAlbum(curAlbum.value!!))
 
         mAlbumData.value = data
     }

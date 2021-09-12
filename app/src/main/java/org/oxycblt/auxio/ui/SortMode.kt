@@ -18,125 +18,146 @@
 
 package org.oxycblt.auxio.ui
 
-import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 
 /**
- * The legacy enum for sorting. This is set to be removed soon.
- * @property iconRes The icon for this [SortMode]
+ * The enum for the current sort state.
+ * This enum is semantic depending on the context it is used. Documentation describing each
+ * sorting functions behavior can be found in the function definition.
+ * @param itemId Menu ID associated with this enum
  * @author OxygenCobalt
  */
-enum class SortMode(@DrawableRes val iconRes: Int) {
-    // Icons for each mode are assigned to the enums themselves
-    NONE(R.drawable.ic_sort),
-    ALPHA_UP(R.drawable.ic_sort),
-    ALPHA_DOWN(R.drawable.ic_sort),
-    NUMERIC_UP(R.drawable.ic_sort),
-    NUMERIC_DOWN(R.drawable.ic_sort);
+enum class SortMode(@IdRes val itemId: Int) {
+    ASCENDING(R.id.option_sort_asc),
+    DESCENDING(R.id.option_sort_dsc),
+    ARTIST(R.id.option_sort_artist),
+    ALBUM(R.id.option_sort_album),
+    YEAR(R.id.option_sort_year);
 
     /**
-     * Get a sorted list of songs for a SortMode. Supports alpha + numeric sorting.
-     * @param songs An unsorted list of songs.
-     * @return The sorted list of songs.
+     * Sort a list of songs.
+     *
+     * **Behavior:**
+     * - [ASCENDING] & [DESCENDING]: See [sortModels]
+     * - [ARTIST]: Grouped by album and then sorted [ASCENDING] based off the artist name.
+     * - [ALBUM]: Grouped by album and sorted [ASCENDING]
+     * - [YEAR]: Grouped by album and sorted by year
+     *
+     * The grouping mode for songs in an album will be by track, [ASCENDING].
+     * @see sortAlbums
      */
-    fun getSortedSongList(songs: List<Song>): List<Song> {
+    fun sortSongs(songs: Collection<Song>): List<Song> {
         return when (this) {
-            ALPHA_UP -> songs.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
+            ASCENDING, DESCENDING -> sortModels(songs)
 
-            ALPHA_DOWN -> songs.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
-
-            NUMERIC_UP -> songs.sortedWith(compareByDescending { it.track })
-            NUMERIC_DOWN -> songs.sortedWith(compareBy { it.track })
-
-            else -> songs
+            else -> sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
+                ASCENDING.sortAlbum(album)
+            }
         }
     }
 
     /**
-     * Get a sorted list of songs with regards to an artist.
-     * @param songs An unsorted list of songs
-     * @return The sorted list of songs
+     * Sort a list of albums.
+     *
+     * **Behavior:**
+     * - [ASCENDING] & [DESCENDING]: See [sortModels]
+     * - [ARTIST]: Grouped by artist and sorted [ASCENDING]
+     * - [ALBUM]: [ASCENDING]
+     * - [YEAR]: Sorted by year
+     *
+     * The grouping mode for albums in an artist will be [YEAR].
      */
-    fun getSortedArtistSongList(songs: List<Song>): List<Song> {
+    fun sortAlbums(albums: Collection<Album>): List<Album> {
         return when (this) {
-            ALPHA_UP -> songs.sortedWith(
-                compareByDescending(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
+            ASCENDING, DESCENDING -> sortModels(albums)
 
-            ALPHA_DOWN -> songs.sortedWith(
-                compareBy(String.CASE_INSENSITIVE_ORDER) {
-                    it.name.sliceArticle()
-                }
-            )
+            ARTIST -> ASCENDING.sortModels(albums.groupBy { it.artist }.keys)
+                .flatMap { YEAR.sortAlbums(it.albums) }
 
-            NUMERIC_UP -> {
-                val list = mutableListOf<Song>()
+            ALBUM -> ASCENDING.sortModels(albums)
 
-                songs.groupBy { it.album }.entries.sortedBy { it.key.year }.forEach { entry ->
-                    list.addAll(entry.value.sortedWith(compareBy { it.track }))
-                }
-
-                list
-            }
-
-            NUMERIC_DOWN -> {
-                val list = mutableListOf<Song>()
-
-                songs.groupBy { it.album }.entries.sortedWith(compareByDescending { it.key.year }).forEach { entry ->
-                    list.addAll(entry.value.sortedWith(compareBy { it.track }))
-                }
-
-                list
-            }
-
-            else -> songs
+            YEAR -> albums.sortedByDescending { it.year }
         }
     }
 
     /**
-     * Get the constant for this mode. Used to write a compressed variant to SettingsManager
-     * @return The int constant for this mode.
+     * Sort a list of generic [BaseModel] instances.
+     *
+     * **Behavior:**
+     * - [ASCENDING]: Sorted by name, ascending
+     * - [DESCENDING]: Sorted by name, descending
+     * - Same list is returned otherwise.
+     *
+     * Names will be treated as case-insensitive. Articles like "the" and "a" will be skipped
+     * to line up with MediaStore behavior.
      */
-    fun toInt(): Int {
+    fun <T : BaseModel> sortModels(models: Collection<T>): List<T> {
         return when (this) {
-            NONE -> CONST_NONE
-            ALPHA_UP -> CONST_ALPHA_UP
-            ALPHA_DOWN -> CONST_ALPHA_DOWN
-            NUMERIC_UP -> CONST_NUMERIC_UP
-            NUMERIC_DOWN -> CONST_NUMERIC_DOWN
+            ASCENDING -> models.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { model ->
+                    model.name.sliceArticle()
+                }
+            )
+
+            DESCENDING -> models.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { model ->
+                    model.name.sliceArticle()
+                }
+            )
+
+            else -> models.toList()
         }
+    }
+
+    /**
+     * Sort the songs in an album.
+     *
+     * **Behavior:**
+     * - [ASCENDING]: By track, ascending
+     * - [DESCENDING]: By track, descending
+     * - Same song list is returned otherwise.
+     */
+    fun sortAlbum(album: Album): List<Song> {
+        return when (this) {
+            ASCENDING -> album.songs.sortedBy { it.track }
+            DESCENDING -> album.songs.sortedByDescending { it.track }
+            else -> album.songs
+        }
+    }
+
+    /**
+     * Sort the songs in an artist.
+     * @see sortSongs
+     */
+    fun sortArtist(artist: Artist): List<Song> {
+        return sortSongs(artist.songs)
+    }
+
+    /**
+     * Sort the songs in a genre.
+     * @see sortSongs
+     */
+    fun sortGenre(genre: Genre): List<Song> {
+        return sortSongs(genre.songs)
     }
 
     companion object {
-        const val CONST_NONE = 0xA10C
-        const val CONST_ALPHA_UP = 0xA10D
-        const val CONST_ALPHA_DOWN = 0xA10E
-        const val CONST_NUMERIC_UP = 0xA10F
-        const val CONST_NUMERIC_DOWN = 0xA110
-
         /**
-         * Get an enum for an int constant
-         * @return The [SortMode] if the constant is valid, null otherwise.
+         * Convert a menu [id] to an instance of [SortMode].
          */
-        fun fromInt(value: Int): SortMode? {
-            return when (value) {
-                CONST_NONE -> NONE
-                CONST_ALPHA_UP -> ALPHA_UP
-                CONST_ALPHA_DOWN -> ALPHA_DOWN
-                CONST_NUMERIC_UP -> NUMERIC_UP
-                CONST_NUMERIC_DOWN -> NUMERIC_DOWN
-
+        fun fromId(@IdRes id: Int): SortMode? {
+            return when (id) {
+                ASCENDING.itemId -> ASCENDING
+                DESCENDING.itemId -> DESCENDING
+                ARTIST.itemId -> ARTIST
+                ALBUM.itemId -> ALBUM
+                YEAR.itemId -> YEAR
                 else -> null
             }
         }

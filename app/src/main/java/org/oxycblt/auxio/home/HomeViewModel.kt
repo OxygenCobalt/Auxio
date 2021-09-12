@@ -27,6 +27,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.SortMode
 
 /**
  * The ViewModel for managing [HomeFragment]'s data and sorting modes.
@@ -55,16 +56,16 @@ class HomeViewModel : ViewModel() {
     private val mCurTab = MutableLiveData(mTabs.value!![0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
-    var genreSortMode = LibSortMode.ASCENDING
+    var genreSortMode = SortMode.ASCENDING
         private set
 
-    var artistSortMode = LibSortMode.ASCENDING
+    var artistSortMode = SortMode.ASCENDING
         private set
 
-    var albumSortMode = LibSortMode.ASCENDING
+    var albumSortMode = SortMode.ASCENDING
         private set
 
-    var songSortMode = LibSortMode.ASCENDING
+    var songSortMode = SortMode.ASCENDING
         private set
 
     private val musicStore = MusicStore.getInstance()
@@ -86,9 +87,9 @@ class HomeViewModel : ViewModel() {
     }
 
     /**
-     * Update the currently displayed item's [LibSortMode].
+     * Update the currently displayed item's [SortMode].
      */
-    fun updateCurrentSort(sort: LibSortMode) {
+    fun updateCurrentSort(sort: SortMode) {
         when (mCurTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 songSortMode = sort

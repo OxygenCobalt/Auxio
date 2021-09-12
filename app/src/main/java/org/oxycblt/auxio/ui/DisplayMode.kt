@@ -29,7 +29,7 @@ enum class DisplayMode {
     SHOW_SONGS;
 
     companion object {
-        private const val CONST_SHOW_ALL = 0xA107
+        private const val CONST_NULL = 0xA107
         private const val CONST_SHOW_GENRES = 0xA108
         private const val CONST_SHOW_ARTISTS = 0xA109
         private const val CONST_SHOW_ALBUMS = 0xA10A
@@ -41,7 +41,7 @@ enum class DisplayMode {
                 SHOW_ALBUMS -> CONST_SHOW_ALBUMS
                 SHOW_ARTISTS -> CONST_SHOW_ARTISTS
                 SHOW_GENRES -> CONST_SHOW_GENRES
-                null -> CONST_SHOW_ALL
+                null -> CONST_NULL
             }
         }
 

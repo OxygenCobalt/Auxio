@@ -28,6 +28,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -731,21 +732,21 @@ class PlaybackStateManager private constructor() {
      * Create an ordered queue based on an [Album].
      */
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
-        return settingsManager.albumSortMode.getSortedSongList(album.songs).toMutableList()
+        return SortMode.ASCENDING.sortAlbum(album).toMutableList()
     }
 
     /**
      * Create an ordered queue based on an [Artist].
      */
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
-        return settingsManager.artistSortMode.getSortedArtistSongList(artist.songs).toMutableList()
+        return SortMode.YEAR.sortArtist(artist).toMutableList()
     }
 
     /**
      * Create an ordered queue based on a [Genre].
      */
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
-        return settingsManager.genreSortMode.getSortedSongList(genre.songs).toMutableList()
+        return SortMode.ASCENDING.sortGenre(genre).toMutableList()
     }
 
     /**
