@@ -37,6 +37,4 @@
     <dimen name="elevation_large">8dp</dimen>
 
     <dimen name="offset_thumb">4dp</dimen>
-
-    <dimen name="abc_dialog_list_padding_top_no_title">0dp</dimen>
 </resources>

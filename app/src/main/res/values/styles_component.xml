@@ -72,7 +72,5 @@
         <item name="android:background">?attr/colorSurface</item>
     </style>
 
-    <style name="Widget.Component.AppWidget.Panel" parent="Widget.Component.AppWidget.Panel.Base">
-        <item name="android:elevation">@dimen/elevation_normal</item>
-    </style>
+    <style name="Widget.Component.AppWidget.Panel" parent="Widget.Component.AppWidget.Panel.Base" />
 </resources>
