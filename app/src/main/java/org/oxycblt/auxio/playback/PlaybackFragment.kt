@@ -88,7 +88,10 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee of song title work
         binding.playbackSong.isSelected = true
-        binding.playbackSeekBar.setOnSeekBarChangeListener(this)
+        binding.playbackSeekBar.apply {
+            setOnSeekBarChangeListener(this@PlaybackFragment)
+            isEnabled = true
+        }
 
         // --- VIEWMODEL SETUP --
 

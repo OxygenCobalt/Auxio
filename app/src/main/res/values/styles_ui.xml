@@ -40,6 +40,13 @@
         <item name="android:splitTrack">false</item>
         <item name="android:thumbOffset">@dimen/offset_thumb</item>
         <item name="android:thumbTint">?attr/colorAccent</item>
+        <item name="android:enabled">true</item>
+        <item name="android:theme">@style/ThemeOverlay.SeekbarSelectionHack</item>
+    </style>
+    
+    <style name="ThemeOverlay.SeekbarSelectionHack" parent="">
+        <!-- TODO: Remove this dumb hack and use a slider -->
+        <item name="colorControlHighlight">@color/overlay_seekbar_halo</item>
     </style>
 
     <style name="Widget.ImageView.Compact" parent="">
@@ -200,10 +207,11 @@
     <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:letterSpacing">0.05</item>
+        <item name="android:letterSpacing">0.01</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textColor">?attr/colorSurface</item>
+        <item name="rippleColor">@color/mtrl_btn_ripple_color</item>
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="cornerRadius">0dp</item>
     </style>
@@ -211,7 +219,7 @@
     <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:letterSpacing">0.05</item>
+        <item name="android:letterSpacing">0.0125</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="fontFamily">@font/inter_semibold</item>

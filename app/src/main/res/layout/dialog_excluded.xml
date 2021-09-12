@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/spacing_small">
+        android:paddingTop="@dimen/spacing_medium">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/excluded_recycler"

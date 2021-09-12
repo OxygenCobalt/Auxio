@@ -5,7 +5,6 @@
     <!-- Custom popup menu theme -->
     <style name="Widget.CustomPopup" parent="Widget.MaterialComponents.PopupMenu.ContextMenu">
         <item name="android:popupBackground">@drawable/ui_popup_bg</item>
-        <item name="colorControlHighlight">?attr/colorControlHighlight</item>
         <item name="cornerRadius">0dp</item>
     </style>
 
@@ -15,39 +14,14 @@
         <item name="colorControlHighlight">@color/overlay_selection</item>
     </style>
 
-    <!-- Base custom dialog theme. Don't try to understand this. -->
-    <style name="Theme.CustomDialog.Base" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="android:colorControlHighlight">?attr/colorControlHighlight</item>
+    <!-- Normal DayNight dialog theme -->
+    <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
-
+        <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Widget.TextView.Dialog.Title</item>
-        <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
-
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Button.Dialog</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.Button.Dialog</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Button.Dialog.Neutral</item>
-    </style>
-
-    <!-- Normal DayNight dialog theme -->
-    <style name="Theme.CustomDialog" parent="Theme.CustomDialog.Base">
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
-    </style>
-
-    <!-- Black theme dialog theme -->
-    <style name="Theme.CustomDialog.Black" parent="Theme.CustomDialog.Base">
-        <item name="colorSurface">@android:color/black</item>
-    </style>
-
-    <!-- Material-specific dialog style -->
-    <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.MaterialComponents">
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Angular</item>
-    </style>
-
-    <!-- Dialog shape with no rounded corners -->
-    <style name="ShapeAppearance.Angular" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily">cut</item>
-        <item name="cornerRadius">0dp</item>
     </style>
 
     <!-- Custom dialog title theme -->
@@ -55,6 +29,7 @@
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:paddingBottom">@dimen/spacing_medium</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
@@ -71,7 +46,6 @@
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textColor">?attr/colorAccent</item>
         <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
-        <item name="rippleColor">?android:attr/colorControlHighlight</item>
         <item name="cornerRadius">0dp</item>
     </style>
 
