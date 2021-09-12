@@ -127,24 +127,6 @@ class PlaybackSessionConnector(
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
-        // Oh my god. I don't like swearing in my comments, but I have no other way to describe my
-        // attitudes by the insane change Android 11 made to MediaStyle. Basically, they changed
-        // the notification code to FIRST look for a large icon [like previous versions], but THEN
-        // TO LOOK TO THE MEDIA SESSION SECOND. Cue me having to debug this issue for over 3 hours
-        // thinking it was some kind of strange bytecode problem, only to realize that it was this
-        // undocumented behavior change.
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            logD("Doing colorizeNotif R+ hack")
-
-            val settingsManager = SettingsManager.getInstance()
-
-            if (!settingsManager.colorizeNotif) {
-                mediaSession.setMetadata(builder.build())
-                return
-            }
-        }
-
         // Load the cover asynchronously. This is the entire reason I don't use a plain
         // MediaSessionConnector, which AFAIK makes it impossible to load this the way I do
         // without a bunch of stupid race conditions.

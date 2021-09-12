@@ -56,7 +56,6 @@ class SettingsManager private constructor(context: Context) :
     /** The current accent. */
     var accent: Accent
         get() = handleAccentCompat(sharedPrefs)
-
         set(value) {
             val accentIndex = ACCENTS.indexOf(value)
 
@@ -67,10 +66,6 @@ class SettingsManager private constructor(context: Context) :
                 apply()
             }
         }
-
-    /** Whether to colorize the notification */
-    val colorizeNotif: Boolean
-        get() = sharedPrefs.getBoolean(KEY_COLORIZE_NOTIFICATION, true)
 
     /**
      * Whether to display the LoopMode or the shuffle status on the notification.
@@ -115,11 +110,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
-        get() = sharedPrefs.getData(KEY_SEARCH_FILTER_MODE, DisplayMode::fromSearchInt)
-
+        get() = DisplayMode.fromFilterInt(sharedPrefs.getInt(KEY_SEARCH_FILTER_MODE, Int.MIN_VALUE))
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_SEARCH_FILTER_MODE, DisplayMode.toSearchInt(value))
+                putInt(KEY_SEARCH_FILTER_MODE, DisplayMode.toFilterInt(value))
                 apply()
             }
         }
@@ -140,10 +134,6 @@ class SettingsManager private constructor(context: Context) :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            KEY_COLORIZE_NOTIFICATION -> callbacks.forEach {
-                it.onColorizeNotifUpdate(colorizeNotif)
-            }
-
             KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach {
                 it.onNotifActionUpdate(useAltNotifAction)
             }
@@ -177,7 +167,6 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
-        const val KEY_COLORIZE_NOTIFICATION = "KEY_COLOR_NOTIF"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
 
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
@@ -190,11 +179,6 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_SAVE_STATE = "KEY_SAVE_STATE"
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
-
-        const val KEY_LIB_SORT_MODE = "KEY_LIBRARY_SORT_MODE"
-        const val KEY_ALBUM_SORT_MODE = "KEY_ALBUM_SORT"
-        const val KEY_ARTIST_SORT_MODE = "KEY_ARTIST_SORT"
-        const val KEY_GENRE_SORT_MODE = "KEY_GENRE_SORT"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 

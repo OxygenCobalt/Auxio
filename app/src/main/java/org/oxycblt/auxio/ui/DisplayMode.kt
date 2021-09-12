@@ -34,8 +34,8 @@ enum class DisplayMode {
         private const val CONST_SHOW_ARTISTS = 0xA109
         private const val CONST_SHOW_ALBUMS = 0xA10A
         private const val CONST_SHOW_SONGS = 0xA10B
-
-        fun toSearchInt(value: DisplayMode?): Int {
+        
+        fun toFilterInt(value: DisplayMode?): Int {
             return when (value) {
                 SHOW_SONGS -> CONST_SHOW_SONGS
                 SHOW_ALBUMS -> CONST_SHOW_ALBUMS
@@ -45,7 +45,7 @@ enum class DisplayMode {
             }
         }
 
-        fun fromSearchInt(value: Int): DisplayMode? {
+        fun fromFilterInt(value: Int): DisplayMode? {
             return when (value) {
                 CONST_SHOW_SONGS -> SHOW_SONGS
                 CONST_SHOW_ALBUMS -> SHOW_ALBUMS

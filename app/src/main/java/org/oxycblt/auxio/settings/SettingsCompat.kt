@@ -28,6 +28,9 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 // A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0
 
+// TODO: Slate these for removal in 2.0.0. 1.4.0 was Pre-FDroid so it's extremely likely that
+//  everyone has migrated.
+
 fun handleThemeCompat(prefs: SharedPreferences): Int {
     if (prefs.contains(OldKeys.KEY_THEME)) {
         // Before the creation of IntListPreference, I used strings to represent the themes.
@@ -103,7 +106,7 @@ fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
         return mode
     }
 
-    return prefs.getData(SettingsManager.KEY_SONG_PLAYBACK_MODE, PlaybackMode::fromInt)
+    return PlaybackMode.fromInt(prefs.getInt(SettingsManager.KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
         ?: PlaybackMode.ALL_SONGS
 }
 

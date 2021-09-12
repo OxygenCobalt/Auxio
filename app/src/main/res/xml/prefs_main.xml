@@ -50,14 +50,6 @@
             app:title="@string/set_quality_covers" />
 
         <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:dependency="KEY_SHOW_COVERS"
-            app:iconSpaceReserved="false"
-            app:key="KEY_COLOR_NOTIF"
-            app:summary="@string/set_color_notif_desc"
-            app:title="@string/set_color_notif" />
-
-        <SwitchPreferenceCompat
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
