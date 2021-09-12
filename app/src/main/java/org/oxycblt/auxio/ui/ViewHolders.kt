@@ -256,6 +256,8 @@ class ActionHeaderViewHolder private constructor(
     override fun onBind(data: ActionHeader) {
         binding.header = data
 
+        binding.executePendingBindings()
+
         binding.headerButton.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
 

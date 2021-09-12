@@ -6,7 +6,6 @@
     <style name="Widget.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
-        <item name="popupTheme">@style/ThemeOverlay.ToolbarPopup</item>
 
         <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
         <item name="titleTextColor">?attr/colorAccent</item>

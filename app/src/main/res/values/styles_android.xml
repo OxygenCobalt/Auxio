@@ -1,20 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ANDROID COMPONENT-SPECIFIC STYLES. MOSTLY HACKS -->
+    <!-- ANDROID COMPONENT-SPECIFIC STYLES.-->
 
-    <!-- Custom popup menu theme -->
-    <style name="Widget.CustomPopup" parent="Widget.MaterialComponents.PopupMenu.ContextMenu">
-        <item name="android:popupBackground">@drawable/ui_popup_bg</item>
-        <item name="cornerRadius">0dp</item>
-    </style>
-
-    <!-- Toolbar popup menu -->
-    <style name="ThemeOverlay.ToolbarPopup" parent="ThemeOverlay.AppCompat.DayNight">
-        <item name="android:colorBackground">?attr/colorSurface</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
-    </style>
-
-    <!-- Normal DayNight dialog theme -->
+    <!-- Dialog theme where all fixes are applied -->
     <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
         <item name="colorControlHighlight">@color/overlay_selection</item>
@@ -29,13 +17,12 @@
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
-        <item name="android:paddingBottom">@dimen/spacing_medium</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
     <style name="Widget.CheckedTextView.Dialog" parent="Widget.MaterialComponents.CheckedTextView">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:background">@null</item>
     </style>
 

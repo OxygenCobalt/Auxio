@@ -39,6 +39,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
+ * TODO: Turn the seekbar + durations combo into a single view that shares touch events. This could
+ *  also make material sliders usable maybe.
  * @author OxygenCobalt
  */
 class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {

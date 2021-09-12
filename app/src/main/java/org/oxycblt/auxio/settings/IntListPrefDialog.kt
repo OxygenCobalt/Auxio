@@ -18,31 +18,35 @@
 
 package org.oxycblt.auxio.settings
 
-import android.util.TypedValue
+import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
+import androidx.preference.PreferenceFragmentCompat
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.LifecycleDialog
-import org.oxycblt.auxio.util.resolveAttr
 
-class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog() {
+class IntListPrefDialog : LifecycleDialog() {
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        // Don't set the title. Instead. Set a custom title view so that the padding actually
-        // works between the title and this dialog's contents. I can't believe I have to do this.
-        val titleView = AppCompatTextView(requireContext()).apply {
-            text = pref.title
-            typeface = ResourcesCompat.getFont(context, R.font.inter_bold)
-            setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimensionPixelSize(R.dimen.text_size_large).toFloat()
-            )
-            setTextColor(android.R.attr.textColorPrimary.resolveAttr(context))
+        // Since we have to store the preference key as an argument, we have to find the
+        // preference we need to use manually.
+        val pref = requireNotNull(
+            (parentFragment as PreferenceFragmentCompat).preferenceManager
+                .findPreference<IntListPreference>(requireArguments().getString(ARG_KEY, null))
+        )
 
-            // We have to make the bottom padding account for the ListView's immutable top padding,
-            // because Android's dialog code is a massive pile of broken spaghetti.
+        // Don't set the title. Instead, Set a custom title view so that the padding is actually a
+        // uniform 16dp between the title and the list of options. I can't believe I have to do this.
+        val titleView = AppCompatTextView(
+            ContextThemeWrapper(
+                requireContext(),
+                R.style.Widget_TextView_Dialog_Title
+            )
+        ).apply {
+            text = pref.title
+
             val padding = resources.getDimension(R.dimen.spacing_medium).toInt()
             val paddingHack = resources.getDimension(R.dimen.spacing_small).toInt()
 
@@ -53,7 +57,6 @@ class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog()
 
         builder.setSingleChoiceItems(pref.entries, pref.getValueIndex()) { _, index ->
             pref.setValueIndex(index)
-
             dismiss()
         }
 
@@ -62,5 +65,14 @@ class IntListPrefDialog(private val pref: IntListPreference) : LifecycleDialog()
 
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.INT_PREF"
+        const val ARG_KEY = BuildConfig.APPLICATION_ID + ".arg.PREF_KEY"
+
+        fun from(pref: IntListPreference): IntListPrefDialog {
+            return IntListPrefDialog().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_KEY, pref.key)
+                }
+            }
+        }
     }
 }

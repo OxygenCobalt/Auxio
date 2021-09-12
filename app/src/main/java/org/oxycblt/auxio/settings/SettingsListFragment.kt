@@ -74,7 +74,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {
         if (preference is IntListPreference) {
-            IntListPrefDialog(preference).show(childFragmentManager, IntListPrefDialog.TAG)
+            IntListPrefDialog.from(preference).show(childFragmentManager, IntListPrefDialog.TAG)
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
