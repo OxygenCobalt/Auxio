@@ -23,7 +23,7 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/home_toolbar"
-                style="@style/Widget.Toolbar"
+                style="@style/Widget.Auxio.Toolbar"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:menu="@menu/menu_home"
                 app:title="@string/info_app_name" />
@@ -36,7 +36,7 @@
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabIndicatorColor="?attr/colorAccent"
                 app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TextAppearance.TabLayout.Label"
+                app:tabTextAppearance="@style/TextAppearance.Auxio.TabLayout.Label"
                 app:tabTextColor="?android:attr/textColorPrimary"
                 app:tabUnboundedRipple="true" />
 

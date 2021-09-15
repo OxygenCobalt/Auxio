@@ -47,15 +47,15 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA004 | HeaderViewHolder
 0xA005 | ActionHeaderViewHolder
 
-0xA005 | AlbumDetailViewHolder
-0xA006 | AlbumSongViewHolder
-0xA007 | ArtistDetailViewHolder
-0xA008 | ArtistAlbumViewHolder
-0xA009 | ArtistSongViewHolder
-0xA010 | GenreDetailViewHolder
-0xA011 | GenreSongViewHolder
+0xA006 | AlbumDetailViewHolder
+0xA007 | AlbumSongViewHolder
+0xA008 | ArtistDetailViewHolder
+0xA009 | ArtistAlbumViewHolder
+0xA00A | ArtistSongViewHolder
+0xA00B | GenreDetailViewHolder
+0xA00C | GenreSongViewHolder
 
-0xA00A | QueueSongViewHolder
+0xA00D | QueueSongViewHolder
 
 0xA0A0 | Auxio notification code
 0xA0C0 | Auxio request code
@@ -71,7 +71,7 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA105 | PlaybackMode.IN_ALBUM
 0xA106 | PlaybackMode.ALL_SONGS
 
-0xA107 | DisplayMode.SHOW_ALL
+0xA107 | Null DisplayMode [Filter Nothing]
 0xA108 | DisplayMode.SHOW_GENRES
 0xA109 | DisplayMode.SHOW_ARTISTS
 0xA10A | DisplayMode.SHOW_ALBUMS

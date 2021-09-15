@@ -19,7 +19,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/about_toolbar"
-                style="@style/Widget.Toolbar.Icon.Down"
+                style="@style/Widget.Auxio.Toolbar.Icon.Down"
                 app:title="@string/lbl_about" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -29,7 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:theme="@style/Theme.Neutral"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <com.google.android.material.card.MaterialCardView
@@ -48,7 +47,7 @@
 
                     <ImageView
                         android:id="@+id/about_auxio_icon"
-                        style="@style/Widget.ImageView.Compact"
+                        style="@style/Widget.Auxio.Image.Compact"
                         android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginTop="@dimen/spacing_medium"
                         android:contentDescription="@string/desc_auxio_icon"
@@ -88,7 +87,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/version_container"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_height="match_parent"
                         android:padding="@dimen/spacing_medium"
                         app:layout_constraintTop_toBottomOf="@+id/about_desc"
                         app:layout_constraintVertical_chainStyle="packed">
@@ -129,7 +128,9 @@
 
                     <TextView
                         android:id="@+id/about_code"
-                        style="@style/Widget.TextView.Icon.Clickable"
+                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/lbl_code"
                         app:drawableStartCompat="@drawable/ic_code"
                         app:layout_constraintBottom_toTopOf="@+id/about_faq"
@@ -139,7 +140,9 @@
 
                     <TextView
                         android:id="@+id/about_licenses"
-                        style="@style/Widget.TextView.Icon.Clickable"
+                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/lbl_licenses"
                         app:drawableStartCompat="@drawable/ic_license"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -148,7 +151,9 @@
 
                     <TextView
                         android:id="@+id/about_faq"
-                        style="@style/Widget.TextView.Icon.Clickable"
+                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/lbl_faq"
                         app:drawableStartCompat="@drawable/ic_faq"
                         app:layout_constraintBottom_toTopOf="@+id/about_licenses"
@@ -158,7 +163,10 @@
 
                     <TextView
                         android:id="@+id/about_song_count"
-                        style="@style/Widget.TextView.Icon"
+                        style="@style/Widget.Auxio.TextView.Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/Theme.Auxio.Neutral"
                         app:drawableStartCompat="@drawable/ic_song"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -167,7 +175,10 @@
 
                     <TextView
                         android:id="@+id/about_author"
-                        style="@style/Widget.TextView.Icon"
+                        style="@style/Widget.Auxio.TextView.Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/Theme.Auxio.Neutral"
                         android:text="@string/lbl_author"
                         app:drawableStartCompat="@drawable/ic_artist"
                         app:layout_constraintEnd_toEndOf="parent"

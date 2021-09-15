@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/header_title"
-            style="@style/Widget.TextView.Header"
+            style="@style/Widget.Auxio.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{header.name}"
@@ -28,15 +28,20 @@
 
         <ImageButton
             android:id="@+id/header_button"
-            style="@style/Widget.Button.Unbounded.Small"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:contentDescription="@{context.getString(header.desc)}"
+            android:minWidth="@dimen/size_btn_small"
+            android:minHeight="@dimen/size_btn_small"
+            android:paddingStart="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_medium"
+            android:background="@drawable/ui_small_unbounded_ripple"
             android:src="@{context.getDrawable(header.icon)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_sort"/>
+            tools:src="@drawable/ic_sort" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

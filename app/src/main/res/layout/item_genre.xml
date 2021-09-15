@@ -11,11 +11,11 @@
             type="org.oxycblt.auxio.music.Genre" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
         <ImageView
             android:id="@+id/genre_image"
-            style="@style/Widget.ImageView.Normal"
+            style="@style/Widget.Auxio.Image.Normal"
             android:contentDescription="@{@string/desc_genre_image(genre.name)}"
             app:genreImage="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,9 @@
 
         <TextView
             android:id="@+id/genre_name"
-            style="@style/Widget.TextView.Item.Primary"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@{genre.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/genre_count"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +38,9 @@
 
         <TextView
             android:id="@+id/genre_count"
-            style="@style/Widget.TextView.Item.Secondary"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@{@plurals/fmt_song_count(genre.songs.size(), genre.songs.size())}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

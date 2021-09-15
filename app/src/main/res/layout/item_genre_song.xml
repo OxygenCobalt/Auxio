@@ -11,11 +11,11 @@
             type="org.oxycblt.auxio.music.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
         <ImageView
             android:id="@+id/album_cover"
-            style="@style/Widget.ImageView.Compact"
+            style="@style/Widget.Auxio.Image.Compact"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,10 +25,12 @@
 
         <TextView
             android:id="@+id/song_name"
-            style="@style/Widget.TextView.Item.Primary"
-            android:textColor="@color/sel_accented_primary"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
+            android:textColor="@color/sel_accented_primary"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
             app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
@@ -38,7 +40,9 @@
 
         <TextView
             android:id="@+id/song_info"
-            style="@style/Widget.TextView.Item.Secondary"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,7 +53,9 @@
 
         <TextView
             android:id="@+id/song_duration"
-            style="@style/Widget.TextView.Item.Secondary"
+                        android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:ellipsize="none"
             android:gravity="end"
             android:text="@{song.formattedDuration}"

@@ -3,33 +3,38 @@
     <!-- SHARED RE-USABLE UI STYLES -->
 
     <!-- VIEW STYLES -->
-    <style name="Widget.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+
+    <!-- Base toolbar style -->
+    <style name="Widget.Auxio.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
 
-        <item name="titleTextAppearance">@style/TextAppearance.Toolbar.Header</item>
+        <item name="titleTextAppearance">@style/TextAppearance.ToolbarTitle</item>
         <item name="titleTextColor">?attr/colorAccent</item>
         <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 
     <!-- Toolbar sub-style with a nav icon -->
-    <style name="Widget.Toolbar.Icon" parent="Widget.Toolbar">
+    <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
 
     <!-- Toolbar sub-style with a downwards nav icon -->
-    <style name="Widget.Toolbar.Icon.Down" parent="Widget.Toolbar">
+    <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar">
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
 
-    <style name="Widget.ProgressBar.Compact" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/size_stroke_large</item>
+    <style name="TextAppearance.ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
+    <style name="Widget.Auxio.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressBackgroundTint">?attr/colorAccent</item>
         <item name="android:progressTint">?attr/colorAccent</item>
     </style>
 
-    <style name="Widget.SeekBar.Full" parent="@style/Widget.AppCompat.SeekBar">
+    <style name="Widget.Auxio.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:paddingStart">@dimen/spacing_mid_large</item>
@@ -40,43 +45,36 @@
         <item name="android:thumbOffset">@dimen/offset_thumb</item>
         <item name="android:thumbTint">?attr/colorAccent</item>
         <item name="android:enabled">true</item>
-        <item name="android:theme">@style/ThemeOverlay.SeekbarSelectionHack</item>
+        <item name="android:theme">@style/ThemeOverlay.SeekbarHalo</item>
     </style>
     
-    <style name="ThemeOverlay.SeekbarSelectionHack" parent="">
+    <style name="ThemeOverlay.SeekbarHalo" parent="">
         <!-- TODO: Remove this dumb hack and use a slider -->
         <item name="colorControlHighlight">@color/overlay_seekbar_halo</item>
     </style>
 
-    <style name="Widget.ImageView.Compact" parent="">
+    <style name="Widget.Auxio.Image.Compact" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>
     </style>
 
-    <style name="Widget.ImageView.Normal" parent="">
+    <style name="Widget.Auxio.Image.Normal" parent="">
         <item name="android:layout_width">@dimen/size_cover_normal</item>
         <item name="android:layout_height">@dimen/size_cover_normal</item>
     </style>
 
-    <style name="Widget.ImageView.Full" parent="">
+    <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:outlineProvider">bounds</item>
     </style>
 
-    <style name="TextAppearance.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
+    <style name="TextAppearance.Auxio.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
         <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 
-    <!-- VIEWGROUP STYLES -->
-
-    <style name="TextAppearance.Toolbar.Header" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textSize">@dimen/text_size_large</item>
-    </style>
-
-    <style name="ItemLayout">
+    <style name="Widget.Auxio.ItemLayout" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/ui_ripple</item>
@@ -87,65 +85,53 @@
 
     <!-- TEXTVIEW STYLES -->
 
-    <style name="Widget.TextView.Item.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Widget.Auxio.TextView.Base" parent="Widget.AppCompat.TextView">
         <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="Widget.Auxio.TextView.Item.Base" parent="Widget.Auxio.TextView.Base">
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:layout_marginStart">@dimen/spacing_medium</item>
     </style>
 
-    <style name="Widget.TextView.Item.Primary" parent="Widget.TextView.Item.Base">
+    <style name="Widget.Auxio.TextView.Item.Primary" parent="Widget.Auxio.TextView.Item.Base">
         <item name="android:textAppearance">?android:attr/textAppearanceListItem</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="Widget.TextView.Item.Secondary" parent="Widget.TextView.Item.Base">
+    <style name="Widget.Auxio.TextView.Item.Secondary" parent="Widget.Auxio.TextView.Item.Base">
         <item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
-    <style name="Widget.TextView.Emp.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <style name="Widget.TextView.Primary" parent="Widget.TextView.Emp.Base">
+    <style name="Widget.Auxio.TextView.Primary" parent="Widget.Auxio.TextView.Base">
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">1</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
         </item>
     </style>
 
-    <style name="Widget.TextView.Secondary" parent="Widget.TextView.Emp.Base">
+    <style name="Widget.Auxio.TextView.Secondary" parent="Widget.Auxio.TextView.Base">
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
     </style>
 
-    <style name="Widget.TextView.Compact.Base" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textAlignment">viewStart</item>
-    </style>
-
-    <style name="Widget.TextView.Compact.Primary" parent="Widget.TextView.Compact.Base">
+    <style name="Widget.Auxio.TextView.Primary.Compact" parent="Widget.Auxio.TextView.Base">
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
     </style>
 
-    <style name="Widget.TextView.Compact.Secondary" parent="Widget.TextView.Compact.Base">
+    <style name="Widget.Auxio.TextView.Secondary.Compact" parent="Widget.Auxio.TextView.Base">
+        <item name="android:maxLines">1</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
-    <style name="Widget.TextView.Header" parent="@style/Widget.AppCompat.TextView">
+    <style name="Widget.Auxio.TextView.Header" parent="Widget.Auxio.TextView.Base">
         <item name="android:paddingStart">@dimen/spacing_medium</item>
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
@@ -156,28 +142,23 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:background">@drawable/ui_header_dividers</item>
-        <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <style name="Widget.TextView.Detail" parent="@style/Widget.AppCompat.TextView">
+    <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textSize">@dimen/text_size_huge</item>
         <item name="android:textAlignment">viewStart</item>
-        <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
-    <style name="Widget.TextView.Icon" parent="Widget.AppCompat.TextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Widget.Auxio.TextView.Icon" parent="Widget.Auxio.TextView.Base">
         <item name="android:drawablePadding">@dimen/spacing_medium</item>
         <item name="android:padding">@dimen/spacing_medium</item>
-        <item name="android:textAlignment">viewStart</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
     </style>
 
-    <style name="Widget.TextView.Icon.Clickable" parent="Widget.TextView.Icon">
+    <style name="Widget.Auxio.TextView.Icon.Clickable" parent="Widget.Auxio.TextView.Icon">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">@drawable/ui_ripple</item>
@@ -185,27 +166,15 @@
 
     <!-- BUTTON STYLES -->
 
-    <style name="Widget.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">@dimen/size_btn_small</item>
-        <item name="android:layout_height">@dimen/size_btn_small</item>
+    <style name="Widget.Auxio.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:minWidth">@dimen/size_btn_small</item>
         <item name="android:background">@drawable/ui_unbounded_ripple</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
-    <style name="Widget.Button.Unbounded.Small" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minWidth">@dimen/size_btn_small</item>
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-        <item name="android:paddingStart">@dimen/spacing_medium</item>
-        <item name="android:paddingTop">@dimen/spacing_small</item>
-        <item name="android:paddingBottom">@dimen/spacing_small</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:background">@drawable/ui_small_unbounded_ripple</item>
-    </style>
-
-    <style name="Widget.Button.Vibrant.Primary" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Widget.Auxio.Button.Primary" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>
@@ -215,13 +184,22 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <style name="Widget.Button.Vibrant.Secondary" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:letterSpacing">0.0125</item>
+    <style name="Widget.Auxio.Button.Secondary" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:letterSpacing">0.01</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="cornerRadius">0dp</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Circular" parent="">
+        <item name="android:minHeight">@dimen/size_btn_large</item>
+        <item name="android:minWidth">@dimen/size_btn_large</item>
+        <item name="android:background">@drawable/ui_circle_ripple</item>
+        <item name="android:elevation">@dimen/elevation_normal</item>
+        <item name="android:contentDescription">@string/desc_play_pause</item>
+        <item name="android:tint">?attr/colorSurface</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
     </style>
 </resources>

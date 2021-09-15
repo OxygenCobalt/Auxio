@@ -12,9 +12,9 @@
 
     <TextView
         android:id="@android:id/title"
-        style="@style/Widget.TextView.Header"
-        android:layout_width="match_parent"
+        style="@style/Widget.Auxio.TextView.Header"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:text="@{header.name}"
         tools:text="Songs" />
 </layout>

@@ -18,10 +18,10 @@
 
         <ImageView
             android:id="@+id/album_cover"
-            style="@style/Widget.ImageView.Compact"
+            style="@style/Widget.Auxio.Image.Compact"
+            android:layout_margin="@dimen/spacing_medium"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
-            android:layout_margin="@dimen/spacing_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,9 @@
 
         <TextView
             android:id="@+id/song_name"
-            style="@style/Widget.TextView.Item.Primary"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
@@ -41,7 +43,9 @@
 
         <TextView
             android:id="@+id/song_info"
-            style="@style/Widget.TextView.Item.Secondary"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -53,13 +57,15 @@
         <ImageView
             android:id="@+id/song_drag_handle"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/size_btn_small"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/size_btn_small"
+            android:minHeight="@dimen/size_btn_small"
+            android:paddingStart="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_medium"
             android:clickable="true"
             android:contentDescription="@string/desc_queue_handle"
             android:focusable="true"
             android:scaleType="center"
-            android:paddingStart="@dimen/spacing_medium"
-            android:paddingEnd="@dimen/spacing_medium"
             android:src="@drawable/ic_handle"
             app:layout_constraintBottom_toBottomOf="@+id/album_cover"
             app:layout_constraintEnd_toEndOf="parent"

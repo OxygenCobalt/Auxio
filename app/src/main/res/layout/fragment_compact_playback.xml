@@ -26,7 +26,7 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            style="@style/Widget.ImageView.Compact"
+            style="@style/Widget.Auxio.Image.Compact"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
@@ -37,7 +37,9 @@
 
         <TextView
             android:id="@+id/playback_song"
-            style="@style/Widget.TextView.Compact.Primary"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            style="@style/Widget.Auxio.TextView.Primary.Compact"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@{song.name}"
@@ -50,7 +52,9 @@
 
         <TextView
             android:id="@+id/playback_info"
-            style="@style/Widget.TextView.Compact.Secondary"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            style="@style/Widget.Auxio.TextView.Secondary.Compact"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
@@ -62,7 +66,9 @@
 
         <ImageButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Button.Unbounded"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            style="@style/Widget.Auxio.Button.Unbounded"
             android:src="@drawable/sel_playing_state"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
@@ -73,7 +79,9 @@
 
         <ProgressBar
             android:id="@+id/playback_progress"
-            style="@style/Widget.ProgressBar.Compact"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_stroke_large"
+            style="@style/Widget.Auxio.ProgressBar"
             android:progress="@{playbackModel.positionAsProgress}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

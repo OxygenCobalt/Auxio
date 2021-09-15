@@ -3,31 +3,31 @@
     <!-- ANDROID COMPONENT-SPECIFIC STYLES.-->
 
     <!-- Dialog theme where all fixes are applied -->
-    <style name="Theme.CustomDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="android:checkedTextViewStyle">@style/Widget.CheckedTextView.Dialog</item>
+    <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
         <item name="colorControlHighlight">@color/overlay_selection</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/Widget.TextView.Dialog.Title</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.Button.Dialog</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.Button.Dialog</item>
-        <item name="buttonBarNeutralButtonStyle">@style/Widget.Button.Dialog.Neutral</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Auxio.Dialog.TextView</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Auxio.Dialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Auxio.Dialog.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Auxio.Dialog.Button.Neutral</item>
     </style>
 
     <!-- Custom dialog title theme -->
-    <style name="Widget.TextView.Dialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+    <style name="Widget.Auxio.Dialog.TextView" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
-    <style name="Widget.CheckedTextView.Dialog" parent="Widget.MaterialComponents.CheckedTextView">
+    <style name="Widget.Auxio.Dialog.CheckedTextView" parent="Widget.MaterialComponents.CheckedTextView">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:background">@null</item>
     </style>
 
     <!-- Style for dialog buttons -->
-    <style name="Widget.Button.Dialog" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="Widget.Auxio.Dialog.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
@@ -37,7 +37,54 @@
     </style>
 
     <!-- Custom button style that eliminates the weird margin that the neutral button has -->
-    <style name="Widget.Button.Dialog.Neutral" parent="Widget.Button.Dialog">
+    <style name="Widget.Auxio.Dialog.Button.Neutral" parent="Widget.Auxio.Dialog.Button">
         <item name="android:layout_marginStart">0dp</item>
+    </style>
+
+    <!-- Widget TextView that mimics the main Auxio Primary/Secondary TextViews. -->
+    <style name="Widget.Auxio.TextView.AppWidget" parent="Widget.Auxio.TextView.Base">
+        <item name="android:singleLine">true</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- Widget TextView that mimics the main Auxio Primary TextView -->
+    <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
+    </style>
+
+    <!-- Widget TextView that mimics the main Auxio Secondary TextView -->
+    <style name="Widget.Auxio.TextView.Secondary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <!-- Hack to make sure that ripples work the best that they can on all Android Versions -->
+    <style name="Widget.Auxio.Button.AppWidget.V31" parent="Widget.AppCompat.Button.Borderless">
+        <!--
+        Can't use a normal unbounded ripple here since it causes a weird bug
+        where the ripples will have a fixed starting size. Default to the
+        uglier system ripple instead.
+        -->
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <!-- Widget button that follows the weird widget restrictions -->
+    <style name="Widget.Auxio.Button.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
+        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:padding">@dimen/spacing_small</item>
+    </style>
+
+    <!-- Widget panel -->
+    <style name="Widget.Auxio.AppWidget.Panel" parent="">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:padding">@dimen/spacing_medium</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">?attr/colorSurface</item>
     </style>
 </resources>

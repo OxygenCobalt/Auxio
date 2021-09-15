@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Overlay" parent="Theme.Splash">
+    <style name="Theme.Auxio.DayNight" parent="Theme.Auxio.V31">
         <!--
         Use the accent color as the elevation overlay color on dark mode. It's just more visually
         appealing then a grey-ish color that sticks out like a sore thumb. Technically this is

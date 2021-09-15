@@ -3,75 +3,75 @@
     <!--
     All the base themes/accents.
     -->
-    <style name="Theme.Red.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Red" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/red</item>
     </style>
 
-    <style name="Theme.Pink.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Pink" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/pink</item>
     </style>
 
-    <style name="Theme.Purple.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Purple" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/purple</item>
     </style>
 
-    <style name="Theme.DeepPurple.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.DeepPurple" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/deep_purple</item>
     </style>
 
-    <style name="Theme.Indigo.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Indigo" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/indigo</item>
     </style>
 
-    <style name="Theme.Blue.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Blue" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/blue</item>
     </style>
 
-    <style name="Theme.LightBlue.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.LightBlue" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/light_blue</item>
     </style>
 
-    <style name="Theme.Cyan.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Cyan" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/cyan</item>
     </style>
 
-    <style name="Theme.Teal.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Teal" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/teal</item>
     </style>
 
-    <style name="Theme.Green.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Green" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/green</item>
     </style>
 
-    <style name="Theme.LightGreen.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.LightGreen" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/light_green</item>
     </style>
 
-    <style name="Theme.Lime.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Lime" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/lime</item>
     </style>
 
-    <style name="Theme.Yellow.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Yellow" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/yellow</item>
     </style>
 
-    <style name="Theme.Orange.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Orange" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/orange</item>
     </style>
 
-    <style name="Theme.DeepOrange.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.DeepOrange" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/deep_orange</item>
     </style>
 
-    <style name="Theme.Brown.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Brown" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/brown</item>
     </style>
 
-    <style name="Theme.Grey.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.Grey" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/grey</item>
     </style>
 
-    <style name="Theme.BlueGrey.Black" parent="Theme.Base.Black">
+    <style name="Theme.Auxio.Black.BlueGrey" parent="Theme.Auxio.App.Black">
         <item name="colorAccent">@color/blue_grey</item>
     </style>
 </resources>

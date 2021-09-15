@@ -42,7 +42,7 @@ class IntListPrefDialog : LifecycleDialog() {
         val titleView = AppCompatTextView(
             ContextThemeWrapper(
                 requireContext(),
-                R.style.Widget_TextView_Dialog_Title
+                R.style.Widget_Auxio_Dialog_TextView
             )
         ).apply {
             text = pref.title

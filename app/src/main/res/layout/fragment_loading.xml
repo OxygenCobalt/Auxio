@@ -48,7 +48,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loading_action_button"
-                style="@style/Widget.Button.Vibrant.Primary"
+                style="@style/Widget.Auxio.Button.Primary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_insane"

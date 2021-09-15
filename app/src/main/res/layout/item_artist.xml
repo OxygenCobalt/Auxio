@@ -11,11 +11,11 @@
             type="org.oxycblt.auxio.music.Artist" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
         <ImageView
             android:id="@+id/artist_image"
-            style="@style/Widget.ImageView.Normal"
+            style="@style/Widget.Auxio.Image.Normal"
             android:contentDescription="@{@string/desc_artist_image(artist.name)}"
             app:artistImage="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +25,9 @@
 
         <TextView
             android:id="@+id/artist_name"
-            style="@style/Widget.TextView.Item.Primary"
+                        android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
             android:text="@{artist.name}"
             app:layout_constraintBottom_toTopOf="@+id/artist_details"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +38,9 @@
 
         <TextView
             android:id="@+id/artist_details"
-            style="@style/Widget.TextView.Item.Secondary"
+                        android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
             app:artistCounts="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

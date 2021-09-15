@@ -10,17 +10,17 @@
 
         <ImageView
             android:id="@+id/detail_cover"
+            style="@style/Widget.Auxio.Image.Full"
             android:layout_width="@dimen/size_cover_huge"
             android:layout_height="@dimen/size_cover_huge"
-            style="@style/Widget.ImageView.Full"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_artist"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_artist" />
 
         <TextView
             android:id="@+id/detail_name"
-            style="@style/Widget.TextView.Detail"
+            style="@style/Widget.Auxio.TextView.Detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -60,10 +60,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/detail_play_button"
-            style="@style/Widget.Button.Vibrant.Secondary"
-            android:text="@string/lbl_play"
+            style="@style/Widget.Auxio.Button.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
+            android:text="@string/lbl_play"
             app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,10 +73,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/detail_shuffle_button"
-            style="@style/Widget.Button.Vibrant.Primary"
+            style="@style/Widget.Auxio.Button.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
             android:backgroundTint="?attr/colorAccent"
             android:text="@string/lbl_shuffle"
-            android:layout_marginStart="@dimen/spacing_small"
             app:layout_constraintBottom_toBottomOf="@+id/detail_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_play_button"

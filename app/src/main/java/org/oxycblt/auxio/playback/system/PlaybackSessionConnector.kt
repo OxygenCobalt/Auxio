@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -30,8 +29,6 @@ import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.logD
 
 /**
  * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player],

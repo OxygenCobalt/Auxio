@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Auxio.Button.AppWidget.V31" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/ui_unbounded_ripple</item>
+    </style>
+</resources>

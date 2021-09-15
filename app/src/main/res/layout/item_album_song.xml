@@ -11,16 +11,16 @@
             type="org.oxycblt.auxio.music.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemLayout">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
         <TextView
             android:id="@+id/song_track"
             android:layout_width="wrap_content"
-            android:minWidth="@dimen/size_track_number"
             android:layout_height="wrap_content"
             android:contentDescription="@{@string/desc_track_number(song.track)}"
             android:gravity="center"
             android:maxLines="1"
+            android:minWidth="@dimen/size_track_number"
             android:text="@{String.valueOf(song.track)}"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
@@ -33,7 +33,9 @@
 
         <TextView
             android:id="@+id/song_name"
-            style="@style/Widget.TextView.Item.Primary"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@{song.name}"
             android:textColor="@color/sel_accented_primary"
             app:layout_constraintBottom_toTopOf="@+id/song_duration"
@@ -45,7 +47,9 @@
 
         <TextView
             android:id="@+id/song_duration"
-            style="@style/Widget.TextView.Item.Secondary"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@{song.formattedDuration}"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="parent"

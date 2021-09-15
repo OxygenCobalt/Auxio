@@ -18,7 +18,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_toolbar"
-                style="@style/Widget.Toolbar.Icon" />
+                style="@style/Widget.Auxio.Toolbar.Icon" />
 
         </org.oxycblt.auxio.ui.LiftAppBarLayout>
 
