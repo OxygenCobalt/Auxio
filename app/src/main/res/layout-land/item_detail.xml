@@ -80,7 +80,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
-            android:backgroundTint="?attr/colorAccent"
             android:text="@string/lbl_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/detail_play_button"
             app:layout_constraintEnd_toEndOf="parent"

@@ -47,7 +47,7 @@
         <item name="android:enabled">true</item>
         <item name="android:theme">@style/ThemeOverlay.SeekbarHalo</item>
     </style>
-    
+
     <style name="ThemeOverlay.SeekbarHalo" parent="">
         <!-- TODO: Remove this dumb hack and use a slider -->
         <item name="colorControlHighlight">@color/overlay_seekbar_halo</item>
@@ -108,7 +108,7 @@
     <style name="Widget.Auxio.TextView.Primary" parent="Widget.Auxio.TextView.Base">
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:ellipsize">marquee</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
         </item>
@@ -122,12 +122,14 @@
 
     <style name="Widget.Auxio.TextView.Primary.Compact" parent="Widget.Auxio.TextView.Base">
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Secondary.Compact" parent="Widget.Auxio.TextView.Base">
         <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
@@ -174,9 +176,10 @@
         <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Primary" parent="@style/Widget.MaterialComponents.Button.TextButton">
+    <style name="Widget.Auxio.Button.Primary" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textColor">?attr/colorSurface</item>
         <item name="rippleColor">@color/mtrl_btn_ripple_color</item>
@@ -184,7 +187,7 @@
         <item name="cornerRadius">0dp</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Secondary" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="Widget.Auxio.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/text_size_small</item>

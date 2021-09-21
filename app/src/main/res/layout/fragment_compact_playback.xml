@@ -57,6 +57,7 @@
             style="@style/Widget.Auxio.TextView.Secondary.Compact"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
+            android:ellipsize="end"
             android:text="@{@string/fmt_two(song.album.artist.name, song.album.name)}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
