@@ -50,6 +50,13 @@ import org.oxycblt.auxio.util.makeScrollingViewFade
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
+ * FIXME: More UI glitches:
+ *        - AppBar will just...expand. For no reason. If you navigate away while it's partially
+ *          collapsed. No, I don't know why. Guess I have to save the state myself.
+ *        - Edge-to-edge is borked still, unsure how to really fix this aside from making some
+ *          magic layout like Material Files, but even then it might not work since the scrolling
+ *          views are not laid side-by-side to the layout itself.
+ *  So excited to have enough time to get to these in like...november.
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {

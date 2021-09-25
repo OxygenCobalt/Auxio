@@ -2,8 +2,9 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/mtrl_btn_ripple_color">
     <item>
-        <shape android:shape="oval"
+        <shape android:shape="rectangle"
             android:tint="@color/sel_accented">
+            <corners android:radius="@dimen/spacing_small" />
             <solid android:color="@android:color/white" />
         </shape>
     </item>

@@ -24,6 +24,8 @@
             android:id="@+id/detail_name"
             style="@style/Widget.Auxio.TextView.Detail"
             android:layout_width="0dp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"

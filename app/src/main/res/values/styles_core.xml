@@ -6,14 +6,9 @@
     <style name="Theme.Auxio.V27" parent="Theme.Auxio" />
     <!-- Android 12 Splashscreen config -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27" />
-    <!-- Dark-mode-specific stuff -->
-    <style name="Theme.Auxio.DayNight" parent="Theme.Auxio.V31">
-        <!-- Light theme, don't use an elevation overlay. -->
-        <item name="elevationOverlayColor">@android:color/transparent</item>
-    </style>
 
     <!-- Base theme -->
-    <style name="Theme.Auxio.App" parent="Theme.Auxio.DayNight">
+    <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">
         <!-- Colors -->
         <item name="colorSurface">@color/surface</item>
         <item name="colorAccent">@color/blue</item>
@@ -28,6 +23,14 @@
         <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="colorControlActivated">?attr/colorAccent</item>
 
+        <!--
+        Use the accent color as the elevation overlay color on dark mode. It's just more visually
+        appealing then a grey-ish color that sticks out like a sore thumb. Technically this is
+        actually a part of Material3, but that is still unstable, so I just copied this element
+        for now.
+        -->
+        <item name="elevationOverlayColor">?attr/colorPrimary</item>
+
         <!-- Appearance -->
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
@@ -39,7 +42,6 @@
         <!-- System-specific magic -->
         <item name="android:scrollbars">none</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="popupMenuBackground">@drawable/ui_popup_bg</item>
 
         <!-- Material stuff -->
         <item name="textInputStyle">@null</item>

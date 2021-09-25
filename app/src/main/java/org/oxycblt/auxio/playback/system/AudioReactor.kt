@@ -33,6 +33,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * Object that manages the AudioFocus state.
  * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
+ * FIXME: remove the janky audio fadeout code, it just does not work.
  * @author OxygenCobalt
  */
 class AudioReactor(
