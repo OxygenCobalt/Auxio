@@ -76,7 +76,7 @@
     <style name="Widget.Auxio.Button.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_small</item>
+        <item name="android:padding">10dp</item>
     </style>
 
     <!-- Widget panel -->

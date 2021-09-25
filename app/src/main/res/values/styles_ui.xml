@@ -36,14 +36,13 @@
     <style name="Widget.Auxio.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:paddingStart">@dimen/spacing_mid_large</item>
-        <item name="android:paddingEnd">@dimen/spacing_mid_large</item>
         <item name="android:progressBackgroundTint">?attr/colorAccent</item>
         <item name="android:progressTint">?attr/colorAccent</item>
         <item name="android:splitTrack">false</item>
         <item name="android:thumbOffset">@dimen/offset_thumb</item>
         <item name="android:thumbTint">?attr/colorAccent</item>
         <item name="android:enabled">true</item>
+        <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:theme">@style/ThemeOverlay.SeekbarHalo</item>
     </style>
 

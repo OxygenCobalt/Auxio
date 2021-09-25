@@ -58,6 +58,7 @@
             android:layout_marginEnd="@dimen/spacing_mid_large"
             app:layout_constraintBottom_toTopOf="@+id/playback_artist"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             app:layout_constraintVertical_chainStyle="packed">
@@ -84,6 +85,7 @@
             android:text="@{song.album.artist.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song_container"
             tools:text="Artist Name" />
@@ -99,6 +101,7 @@
             android:text="@{song.album.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_artist"
             tools:text="Album Name" />
@@ -108,9 +111,11 @@
             style="@style/Widget.Auxio.SeekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            app:layout_constraintBottom_toTopOf="@+id/playback_duration_current"
+            android:paddingStart="@dimen/spacing_mid_large"
+            android:paddingEnd="@dimen/spacing_mid_large"
+            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_album"
             tools:progress="70" />
@@ -122,17 +127,18 @@
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:text="@{playbackModel.formattedPosition}"
             android:textColor="@color/sel_accented_secondary"
-            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_seek_bar"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:text="11:38" />
 
         <TextView
-            android:id="@+id/playback_song_container_duration"
+            android:id="@+id/playback_song_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:text="@{song.formattedDuration}"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:text="16:16" />
@@ -176,9 +182,10 @@
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_container_duration"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
-            app:layout_constraintTop_toBottomOf="@+id/playback_duration_current"
+            app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:src="@drawable/ic_pause" />
 
         <ImageButton
@@ -207,6 +214,7 @@
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next"
             app:tint="@color/sel_accented" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
