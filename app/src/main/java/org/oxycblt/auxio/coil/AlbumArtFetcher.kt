@@ -30,6 +30,7 @@ import coil.size.Size
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
 import java.io.ByteArrayInputStream
@@ -56,14 +57,15 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
     }
 
     private fun loadMediaStoreCovers(data: Album): SourceResult {
-        val stream = context.contentResolver.openInputStream(data.coverUri)
+        val uri = data.id.toAlbumArtURI()
+        val stream = context.contentResolver.openInputStream(uri)
 
         if (stream != null) {
             // Don't close the stream here as it will cause an error later from an attempted read.
             // This stream still seems to close itself at some point, so its fine.
             return SourceResult(
                 source = stream.source().buffer(),
-                mimeType = context.contentResolver.getType(data.coverUri),
+                mimeType = context.contentResolver.getType(uri),
                 dataSource = DataSource.DISK
             )
         }
@@ -97,5 +99,5 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         return loadMediaStoreCovers(data)
     }
 
-    override fun key(data: Album) = data.coverUri.toString()
+    override fun key(data: Album) = data.id.toString()
 }

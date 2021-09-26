@@ -38,6 +38,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.toAlbumArtURI
 import java.io.Closeable
 import java.io.InputStream
 
@@ -57,11 +58,11 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
 
         when (data) {
             is Artist -> data.albums.forEachIndexed { index, album ->
-                if (index < 4) { uris.add(album.coverUri) }
+                if (index < 4) { uris.add(album.id.toAlbumArtURI()) }
             }
 
-            is Genre -> data.songs.groupBy { it.album.coverUri }.keys.forEachIndexed { index, uri ->
-                if (index < 4) { uris.add(uri) }
+            is Genre -> data.songs.groupBy { it.album.id }.keys.forEachIndexed { index, id ->
+                if (index < 4) { uris.add(id.toAlbumArtURI()) }
             }
 
             else -> {}

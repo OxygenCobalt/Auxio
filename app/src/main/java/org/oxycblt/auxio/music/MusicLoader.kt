@@ -20,18 +20,74 @@ package org.oxycblt.auxio.music
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
-import android.provider.MediaStore
-import android.provider.MediaStore.Audio.Albums
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.logD
 
 /**
- * Class that loads/constructs [Genre]s, [Artist]s, [Album]s, and [Song] objects from the filesystem
+ * This class does pretty much all the black magic required to get a remotely sensible music
+ * indexing system while still optimizing for time. I would recommend you leave this file now
+ * before you lose your sanity trying to understand the hoops I had to jump through for this
+ * system, but if you really want to stay, here's a debrief on why this code is so awful.
+ *
+ * MediaStore is not a good API. It is not even a bad API. Calling it a bad API is an insult to
+ * other bad android APIs, like CoordinatorLayout or InputMethodManager. No. MediaStore is a
+ * crime against humanity and probably a way to summon Zalgo if you tried hard enough.
+ *
+ * You think that if you wanted to query a song's genre from a media database, you could just
+ * put "genre" in the query and it would return it, right? But not with MediaStore! No, that's
+ * to straightfoward for this platform. So instead, you have to query for each genre, query all
+ * the songs in each genre, and then iterate through those songs to link every song with their
+ * genre. This is not documented anywhere in MediaStore's documentation, and the O(mom im scared)
+ * algorithm you have to run to get it working single-handedly DOUBLES Auxio's loading times. At
+ * no point have the devs considered that this column is absolutely busted, and instead focused on
+ * adding infuriat- I mean nice proprietary extensions to MediaStore for their own Google Play Music,
+ * and we all know how great that worked out!
+ *
+ * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
+ * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files?
+ * I sure didn't, until I decided to upgrade my music collection to ID3v2.4 and Xiph only to see
+ * that their metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or
+ * DATE tag. Once again, this is because internally android uses an ancient in-house metadata
+ * parser to get everything indexed, and so far they have not bothered to modernize this parser
+ * or even switch it to something more powerful like Taglib, not even in Android 12. ID3v2.4 is
+ * 21 years old. It can drink now. All my what.
+ *
+ * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
+ * table, so we have to go for the less efficent "make a big query on all the songs lol" method
+ * so that songs don't end up fragmented across artists. Pretty much every OEM has added some
+ * extension or quirk to MediaStore that I cannot determine, with some OEMs (COUGHSAMSUNGCOUGH)
+ * crippling the normal tables so that you're railroaded into their ad-infested music app.
+ * The way I do blacklisting relies on a deprecated method, and the supposedly "modern" method
+ * is SLOWER and causes even more problems since I have to manage databases across version
+ * boundaries. Sometimes music will have a deformed clone that I can't filter out, sometimes
+ * Genre's will just break for no reason, sometimes this plate of spaghetti just completely breaks
+ * down and is unable to get any metadata. Everything is broken in it's own special unique way and
+ * I absolutely hate it.
+ *
+ * Is there anything we can do about it? No. Google has routinely shut down issues that beg google
+ * to fix glaring issues with MediaStore or to just take the API behind the woodshed and shoot it.
+ * Largely because they have zero incentive to improve it, especially for such obscure things
+ * as indexing music. As a result, some players like Vanilla and VLC just hack their own pidgin
+ * version of MediaStore from their own parsers, but this is both infeasible for Auxio due to how
+ * incredibly slow it is to get a file handle from the android sandbox AND how much harder it is
+ * to manage a database of your own media that mirrors the filesystem perfectly. And even if I set
+ * aside those crippling issues and changed me indexer to that, it would face the even larger
+ * problem of how google keeps trying to kill the filesystem and force you into their
+ * ContentResolver API. In the future MediaStore could be the only system we have, which is also the
+ * day that greenland melts and birthdays stop happening forever.
+ *
+ * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
+ * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
+ * Because go **** yourself for wanting to listen to music you own. Be a good consoomer and listen
+ * to your AlgoMix MusikStream™.
+ *
+ * I hate this platform so much.
+ *
  * @author OxygenCobalt
  */
 class MusicLoader(private val context: Context) {
@@ -53,12 +109,11 @@ class MusicLoader(private val context: Context) {
         buildSelector()
 
         loadGenres()
-        loadAlbums()
         loadSongs()
-
-        linkAlbums()
-        buildArtists()
         linkGenres()
+
+        buildAlbums()
+        buildArtists()
     }
 
     @Suppress("DEPRECATION")
@@ -95,60 +150,14 @@ class MusicLoader(private val context: Context) {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-                val name = cursor.getStringOrNull(nameIndex) ?: continue // No non-broken genre would be missing a name
+                // No non-broken genre would be missing a name.
+                val name = cursor.getStringOrNull(nameIndex) ?: continue
 
                 genres.add(Genre(id, name))
             }
         }
 
         logD("Genre search finished with ${genres.size} genres found.")
-    }
-
-    private fun loadAlbums() {
-        logD("Starting album search...")
-
-        val albumCursor = resolver.query(
-            Albums.EXTERNAL_CONTENT_URI,
-            arrayOf(
-                Albums._ID, // 0
-                Albums.ALBUM, // 1
-                Albums.ARTIST, // 2
-                Albums.LAST_YEAR, // 4
-            ),
-            null, null,
-            Albums.DEFAULT_SORT_ORDER
-        )
-
-        val albumPlaceholder = context.getString(R.string.def_album)
-        val artistPlaceholder = context.getString(R.string.def_artist)
-
-        albumCursor?.use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(Albums._ID)
-            val nameIndex = cursor.getColumnIndexOrThrow(Albums.ALBUM)
-            val artistNameIndex = cursor.getColumnIndexOrThrow(Albums.ARTIST)
-            val yearIndex = cursor.getColumnIndexOrThrow(Albums.LAST_YEAR)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idIndex)
-                val name = cursor.getString(nameIndex) ?: albumPlaceholder
-                var artistName = cursor.getString(artistNameIndex) ?: artistPlaceholder
-                val year = cursor.getInt(yearIndex)
-                val coverUri = id.toAlbumArtURI()
-
-                // Correct any artist names to a nicer "Unknown Artist" label
-                if (artistName == MediaStore.UNKNOWN_STRING) {
-                    artistName = artistPlaceholder
-                }
-
-                albums.add(Album(id, name, artistName, coverUri, year))
-            }
-        }
-
-        albums = albums.distinctBy {
-            it.name to it.artistName to it.year
-        }.toMutableList()
-
-        logD("Album search finished with ${albums.size} albums found")
     }
 
     @SuppressLint("InlinedApi")
@@ -159,11 +168,15 @@ class MusicLoader(private val context: Context) {
             Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 Media._ID, // 0
-                Media.DISPLAY_NAME, // 1
-                Media.TITLE, // 2
-                Media.ALBUM_ID, // 3
-                Media.TRACK, // 4
-                Media.DURATION, // 5
+                Media.TITLE, // 1
+                Media.DISPLAY_NAME, // 2
+                Media.ALBUM, // 3
+                Media.ALBUM_ID, // 4
+                Media.ARTIST, // 5
+                Media.ALBUM_ARTIST, // 6
+                Media.YEAR, // 7
+                Media.TRACK, // 8
+                Media.DURATION, // 9
             ),
             selector, args,
             Media.DEFAULT_SORT_ORDER
@@ -173,7 +186,11 @@ class MusicLoader(private val context: Context) {
             val idIndex = cursor.getColumnIndexOrThrow(Media._ID)
             val titleIndex = cursor.getColumnIndexOrThrow(Media.TITLE)
             val fileIndex = cursor.getColumnIndexOrThrow(Media.DISPLAY_NAME)
-            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ID)
+            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM)
+            val albumIdIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ID)
+            val artistIndex = cursor.getColumnIndexOrThrow(Media.ARTIST)
+            val albumArtistIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ARTIST)
+            val yearIndex = cursor.getColumnIndexOrThrow(Media.YEAR)
             val trackIndex = cursor.getColumnIndexOrThrow(Media.TRACK)
             val durationIndex = cursor.getColumnIndexOrThrow(Media.DURATION)
 
@@ -181,110 +198,88 @@ class MusicLoader(private val context: Context) {
                 val id = cursor.getLong(idIndex)
                 val fileName = cursor.getString(fileIndex)
                 val title = cursor.getString(titleIndex) ?: fileName
-                val albumId = cursor.getLong(albumIndex)
+                val album = cursor.getString(albumIndex)
+                val albumId = cursor.getLong(albumIdIndex)
+
+                // MediaStore does not have support for artists in the album field, so we have to
+                // detect it on a song-by-song basis. This is another massive bottleneck in the music
+                // loader since we have to do a massive query to get what we want, but theres not
+                // a lot I can do that doesn't degrade UX.
+                val artist = cursor.getStringOrNull(albumArtistIndex)
+                    ?: cursor.getString(artistIndex)
+
+                val year = cursor.getInt(yearIndex)
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 
-                songs.add(Song(id, title, fileName, albumId, track, duration))
+                songs.add(
+                    Song(
+                        id, title, fileName, album, albumId, artist, year, track, duration
+                    )
+                )
             }
         }
 
         songs = songs.distinctBy {
-            it.name to it.albumId to it.track to it.duration
+            it.name to it.albumId to it.artistName to it.track to it.duration
         }.toMutableList()
 
         logD("Song search finished with ${songs.size} found")
     }
 
-    private fun linkAlbums() {
+    private fun buildAlbums() {
         logD("Linking albums")
 
         // Group up songs by their album ids and then link them with their albums
         val songsByAlbum = songs.groupBy { it.albumId }
-        val unknownAlbum = Album(
-            id = -1,
-            name = context.getString(R.string.def_album),
-            artistName = context.getString(R.string.def_artist),
-            coverUri = Uri.EMPTY,
-            year = 0
-        )
 
         songsByAlbum.forEach { entry ->
-            (albums.find { it.id == entry.key } ?: unknownAlbum).linkSongs(entry.value)
+            // Rely on the first song in this list for album information.
+            // Note: This might result in a bad year being used for an album if an album's songs
+            // have multiple years. This is fixable but is currently omitted for speed.
+            val song = entry.value[0]
+
+            albums.add(
+                Album(
+                    id = entry.key,
+                    name = song.albumName,
+                    artistName = song.artistName,
+                    songs = entry.value,
+                    year = song.year
+                )
+            )
         }
 
         albums.removeAll { it.songs.isEmpty() }
+        albums = SortMode.ASCENDING.sortAlbums(albums).toMutableList()
 
-        // If something goes horribly wrong and somehow songs are still not linked up by the
-        // album id, just throw them into an unknown album.
-        if (unknownAlbum.songs.isNotEmpty()) {
-            albums.add(unknownAlbum)
-        }
+        logD("Songs successfully linked into ${albums.size} albums")
     }
 
     private fun buildArtists() {
         logD("Linking artists")
 
-        // Group albums up by their artist name, should not result in any null-artist issues
         val albumsByArtist = albums.groupBy { it.artistName }
 
         albumsByArtist.forEach { entry ->
+            // Because of our hacky album artist system, MediaStore artist IDs are unreliable.
+            // Therefore we just use the hashCode of the artist name as our ID and move on.
             artists.add(
-                // IDs are incremented from the minimum int value so that they remain unique.
                 Artist(
-                    id = (Int.MIN_VALUE + artists.size).toLong(),
+                    id = entry.key.hashCode().toLong(),
                     name = entry.key,
                     albums = entry.value
                 )
             )
         }
 
+        artists = SortMode.ASCENDING.sortModels(artists).toMutableList()
+
         logD("Albums successfully linked into ${artists.size} artists")
     }
 
     private fun linkGenres() {
         logD("Linking genres")
-
-        /*
-         * Okay, I'm going to go on a bit of a tangent here because this bit of code infuriates me.
-         *
-         * In any reasonable platform, you think that you could just query a media database for the
-         * "genre" field and get the genre for a song, right? But not with android! No. Thats too
-         * normal for this dysfunctional SDK that was dropped on it's head as a baby. Instead, we
-         * have to iterate through EACH GENRE, QUERY THE MEDIA DATABASE FOR THE SONGS OF THAT GENRE,
-         * AND THEN ITERATE THROUGH THAT LIST TO LINK EVERY SONG WITH THE GENRE. This O(mom im scared)
-         * algorithm single-handedly DOUBLES the amount of time it takes Auxio to load music, but
-         * apparently this is the only way you can have a remotely sensible genre system on this
-         * busted OS. Why is it this way? Nobody knows! Now this quirk is immortalized and has to
-         * be replicated in all future versions of this API, because god forbid you break some
-         * app that's probably older than some of the people reading this by now.
-         *
-         * Another fun fact, did you know that you can only get the date from ID3v2.3 MPEG files?
-         * I sure didn't, until I decided to update my music collection to ID3v2.4 and Xiph only
-         * to see that android apparently has a brain aneurysm the moment it sees a dreaded TDRC
-         * or DATE tag. This bug is similarly baked into the platform and hasnt been fixed, even
-         * in android TWELVE. ID3v2.4 has existed for TWENTY-ONE YEARS. IT CAN DRINK NOW. At least
-         * you could replace your ancient dinosaur parser with Taglib or something, but again,
-         * google cant bear even slighting the gods of backwards compat.
-         *
-         * Is there anything we can do about this system? No. Google's issue tracker, in classic
-         * google fashion, requires a google account to even view. Even if I were to set aside my
-         * Torvalds-esqe convictions and make an account, MediaStore is such an obscure part of the
-         * platform that it basically receives no attention compared to the advertising APIs or the
-         * nineteenth UI rework, and its not like the many music player developers are going to band
-         * together to beg google to take this API behind the woodshed and shoot it. So instead,
-         * players like VLC and Vanilla just hack their own pidgin version of MediaStore off of
-         * their own media parsers, but even this becomes increasingly impossible as google
-         * continues to kill the filesystem ala iOS. In the future MediaStore could be the only
-         * system we have, which is also the day greenland melts and birthdays stop happening
-         * forever. I'm pretty sure that at this point nothing is going to happen, google will
-         * continue to neglect MediaStore, and all the people who just want to listen to their music
-         * collections on their phone will continue to get screwed. But hey, at least some dev at
-         * google got a cushy managerial position where they can tweet about politics all day for
-         * shipping the brand new androidx.FooBarBlasterView, yay!
-         *
-         * I hate this platform so much.
-         */
 
         genres.forEach { genre ->
             val songCursor = resolver.query(
@@ -306,22 +301,21 @@ class MusicLoader(private val context: Context) {
             }
         }
 
-        // Any songs without genres will be thrown into an unknown genre
-        val songsWithoutGenres = songs.filter { it.genre == null }
+        // Songs that don't have a genre will be thrown into an unknown genre.
 
-        if (songsWithoutGenres.isNotEmpty()) {
-            val unknownGenre = Genre(
-                id = -2,
-                name = context.getString(R.string.def_genre)
-            )
+        val unknownGenre = Genre(
+            id = -2,
+            name = context.getString(R.string.def_genre)
+        )
 
-            songsWithoutGenres.forEach { song ->
+        songs.forEach { song ->
+            if (song.genre == null) {
                 unknownGenre.linkSong(song)
             }
-
-            genres.add(unknownGenre)
         }
 
-        genres.removeAll { it.songs.isEmpty() }
+        if (unknownGenre.songs.isEmpty()) {
+            genres.add(unknownGenre)
+        }
     }
 }

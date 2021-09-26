@@ -163,13 +163,13 @@ class HomeFragment : Fragment() {
         homeModel.curTab.observe(viewLifecycleOwner) { tab ->
             binding.homeAppbar.liftOnScrollTargetViewId = when (requireNotNull(tab)) {
                 DisplayMode.SHOW_SONGS -> {
-                    updateSortMenu(sortItem, homeModel.songSortMode)
+                    updateSortMenu(sortItem, tab)
 
                     R.id.home_song_list
                 }
 
                 DisplayMode.SHOW_ALBUMS -> {
-                    updateSortMenu(sortItem, homeModel.albumSortMode) { id ->
+                    updateSortMenu(sortItem, tab) { id ->
                         id != R.id.option_sort_album
                     }
 
@@ -177,7 +177,7 @@ class HomeFragment : Fragment() {
                 }
 
                 DisplayMode.SHOW_ARTISTS -> {
-                    updateSortMenu(sortItem, homeModel.artistSortMode) { id ->
+                    updateSortMenu(sortItem, tab) { id ->
                         id == R.id.option_sort_asc || id == R.id.option_sort_dsc
                     }
 
@@ -185,7 +185,7 @@ class HomeFragment : Fragment() {
                 }
 
                 DisplayMode.SHOW_GENRES -> {
-                    updateSortMenu(sortItem, homeModel.genreSortMode) { id ->
+                    updateSortMenu(sortItem, tab) { id ->
                         id == R.id.option_sort_asc || id == R.id.option_sort_dsc
                     }
 
@@ -228,9 +228,11 @@ class HomeFragment : Fragment() {
 
     private fun updateSortMenu(
         item: MenuItem,
-        toHighlight: SortMode,
+        displayMode: DisplayMode,
         isVisible: (Int) -> Boolean = { true }
     ) {
+        val toHighlight = homeModel.getSortForDisplay(displayMode)
+
         for (option in item.subMenu) {
             if (option.itemId == toHighlight.itemId) {
                 option.isChecked = true

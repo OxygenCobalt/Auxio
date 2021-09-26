@@ -41,17 +41,13 @@ enum class LoopMode {
      * @return The int constant for this mode
      */
     fun toInt(): Int {
-        return when (this) {
-            NONE -> CONST_NONE
-            ALL -> CONST_ALL
-            TRACK -> CONST_TRACK
-        }
+        return CONST_NONE + ordinal
     }
 
     companion object {
-        const val CONST_NONE = 0xA100
-        const val CONST_ALL = 0xA101
-        const val CONST_TRACK = 0xA102
+        private const val CONST_NONE = 0xA100
+        private const val CONST_ALL = 0xA101
+        private const val CONST_TRACK = 0xA102
 
         /**
          * Convert an int [constant] into a LoopMode, or null if it isnt valid.

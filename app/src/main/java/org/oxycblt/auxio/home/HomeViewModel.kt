@@ -26,6 +26,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
 
@@ -56,19 +57,13 @@ class HomeViewModel : ViewModel() {
     private val mCurTab = MutableLiveData(mTabs.value!![0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
-    var genreSortMode = SortMode.ASCENDING
-        private set
-
-    var artistSortMode = SortMode.ASCENDING
-        private set
-
-    var albumSortMode = SortMode.ASCENDING
-        private set
-
-    var songSortMode = SortMode.ASCENDING
-        private set
+    private var genreSortMode = SortMode.ASCENDING
+    private var artistSortMode = SortMode.ASCENDING
+    private var albumSortMode = SortMode.ASCENDING
+    private var songSortMode = SortMode.ASCENDING
 
     private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
     init {
         mSongs.value = songSortMode.sortSongs(musicStore.songs)
@@ -84,6 +79,15 @@ class HomeViewModel : ViewModel() {
         val mode = mTabs.value!![pos]
 
         mCurTab.value = mode
+    }
+
+    fun getSortForDisplay(displayMode: DisplayMode): SortMode {
+        return when (displayMode) {
+            DisplayMode.SHOW_GENRES -> genreSortMode
+            DisplayMode.SHOW_ARTISTS -> artistSortMode
+            DisplayMode.SHOW_ALBUMS -> albumSortMode
+            DisplayMode.SHOW_SONGS -> songSortMode
+        }
     }
 
     /**

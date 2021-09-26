@@ -37,19 +37,14 @@ enum class PlaybackMode {
      * @return The constant for this mode,
      */
     fun toInt(): Int {
-        return when (this) {
-            IN_ARTIST -> CONST_IN_ARTIST
-            IN_GENRE -> CONST_IN_GENRE
-            IN_ALBUM -> CONST_IN_ALBUM
-            ALL_SONGS -> CONST_ALL_SONGS
-        }
+        return CONST_IN_ARTIST + ordinal
     }
 
     companion object {
-        const val CONST_IN_GENRE = 0xA103
-        const val CONST_IN_ARTIST = 0xA104
-        const val CONST_IN_ALBUM = 0xA105
-        const val CONST_ALL_SONGS = 0xA106
+        private const val CONST_IN_GENRE = 0xA103
+        private const val CONST_IN_ARTIST = 0xA104
+        private const val CONST_IN_ALBUM = 0xA105
+        private const val CONST_ALL_SONGS = 0xA106
 
         /**
          * Get a [PlaybackMode] for an int [constant]

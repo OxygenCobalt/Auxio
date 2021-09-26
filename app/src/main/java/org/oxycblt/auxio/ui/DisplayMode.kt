@@ -35,6 +35,11 @@ enum class DisplayMode {
         private const val CONST_SHOW_ALBUMS = 0xA10A
         private const val CONST_SHOW_SONGS = 0xA10B
 
+        /**
+         * Convert this enum into an integer for filtering.
+         * In this context, a null value means to filter nothing.
+         * @return An integer constant for that display mode, or a constant for a null [DisplayMode]
+         */
         fun toFilterInt(value: DisplayMode?): Int {
             return when (value) {
                 SHOW_SONGS -> CONST_SHOW_SONGS
@@ -45,6 +50,11 @@ enum class DisplayMode {
             }
         }
 
+        /**
+         * Convert a filtering integer to a [DisplayMode].
+         * In this context, a null value means to filter nothing.
+         * @return A [DisplayMode] for this constant (including null)
+         */
         fun fromFilterInt(value: Int): DisplayMode? {
             return when (value) {
                 CONST_SHOW_SONGS -> SHOW_SONGS

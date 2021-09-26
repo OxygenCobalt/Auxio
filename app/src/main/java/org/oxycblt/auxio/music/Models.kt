@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.music
 
-import android.net.Uri
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -87,7 +86,10 @@ data class Song(
     override val id: Long,
     override val name: String,
     val fileName: String,
+    val albumName: String,
     val albumId: Long,
+    val artistName: String,
+    val year: Int,
     val track: Int,
     val duration: Long
 ) : BaseModel(), Hashable {
@@ -97,8 +99,8 @@ data class Song(
     val genre: Genre? get() = mGenre
     val album: Album get() = requireNotNull(mAlbum)
 
-    val seconds = duration / 1000
-    val formattedDuration = seconds.toDuration()
+    val seconds: Long get() = duration / 1000
+    val formattedDuration: String get() = (duration / 1000).toDuration()
 
     override val hash: Int get() {
         var result = name.hashCode()
@@ -108,22 +110,17 @@ data class Song(
     }
 
     fun linkAlbum(album: Album) {
-        if (mAlbum == null) {
-            mAlbum = album
-        }
+        mAlbum = album
     }
 
     fun linkGenre(genre: Genre) {
-        if (mGenre == null) {
-            mGenre = genre
-        }
+        mGenre = genre
     }
 }
 
 /**
  * The data object for an album. Inherits [Parent].
  * @property artistName    The name of the parent artist. Do not use this outside of creating the artist from albums
- * @property coverUri      The [Uri] for the album's cover. **Load this using Coil.**
  * @property year          The year this album was released. 0 if there is none in the metadata.
  * @property artist        The Album's parent [Artist]. use this instead of [artistName]
  * @property songs         The Album's child [Song]s.
@@ -133,14 +130,17 @@ data class Album(
     override val id: Long,
     override val name: String,
     val artistName: String,
-    val coverUri: Uri,
-    val year: Int
+    val year: Int,
+    val songs: List<Song>
 ) : Parent() {
+    init {
+        songs.forEach { song ->
+            song.linkAlbum(this)
+        }
+    }
+
     private var mArtist: Artist? = null
     val artist: Artist get() = requireNotNull(mArtist)
-
-    private val mSongs = mutableListOf<Song>()
-    val songs: List<Song> get() = mSongs
 
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration()
@@ -155,13 +155,6 @@ data class Album(
     fun linkArtist(artist: Artist) {
         mArtist = artist
     }
-
-    fun linkSongs(songs: List<Song>) {
-        for (song in songs) {
-            song.linkAlbum(this)
-            mSongs.add(song)
-        }
-    }
 }
 
 /**
@@ -175,6 +168,12 @@ data class Artist(
     override val name: String,
     val albums: List<Album>
 ) : Parent() {
+    init {
+        albums.forEach { album ->
+            album.linkArtist(this)
+        }
+    }
+
     val genre: Genre? by lazy {
         // Get the genre that corresponds to the most songs in this artist, which would be
         // the most "Prominent" genre.
@@ -186,12 +185,6 @@ data class Artist(
     }
 
     override val hash = name.hashCode()
-
-    init {
-        albums.forEach { album ->
-            album.linkArtist(this)
-        }
-    }
 }
 
 /**

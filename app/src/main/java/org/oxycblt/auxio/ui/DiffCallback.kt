@@ -32,6 +32,9 @@ class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {
     }
 
     override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+        // Prevent ID collisions from occurring between datatypes.
+        if (oldItem.javaClass != newItem.javaClass) return false
+
         return oldItem.id == newItem.id
     }
 }
