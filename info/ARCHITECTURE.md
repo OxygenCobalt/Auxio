@@ -76,6 +76,12 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA109 | DisplayMode.SHOW_ARTISTS
 0xA10A | DisplayMode.SHOW_ALBUMS
 0xA10B | DisplayMode.SHOW_SONGS
+
+0xA10C | SortMode.ASCENDING
+0xA10D | SortMode.DESCENDING
+0xA10E | SortMode.ARTIST
+0xA10F | SortMode.ALBUM
+0xA110 | SortMode.YEAR
 ```
 
 #### Package structure overview

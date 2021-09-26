@@ -237,5 +237,28 @@ data class ActionHeader(
     override val name: String,
     @DrawableRes val icon: Int,
     @StringRes val desc: Int,
-    val onClick: (View) -> Unit
-) : BaseModel()
+    val onClick: (View) -> Unit,
+) : BaseModel() {
+    // JVM can't into comparing lambdas, so we override equals/hashCode and exclude them.
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ActionHeader) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (icon != other.icon) return false
+        if (desc != other.desc) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + icon
+        result = 31 * result + desc
+
+        return result
+    }
+}

@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -83,6 +84,14 @@ class ArtistDetailFragment : DetailFragment() {
 
         detailModel.artistData.observe(viewLifecycleOwner) { data ->
             detailAdapter.submitList(data)
+        }
+
+        detailModel.showMenu.observe(viewLifecycleOwner) { config ->
+            if (config != null) {
+                showMenu(config) { id ->
+                    id != R.id.option_sort_artist
+                }
+            }
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->

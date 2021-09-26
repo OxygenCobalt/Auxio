@@ -85,6 +85,14 @@ class AlbumDetailFragment : DetailFragment() {
             detailAdapter.submitList(data)
         }
 
+        detailModel.showMenu.observe(viewLifecycleOwner) { config ->
+            if (config != null) {
+                showMenu(config) { id ->
+                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                }
+            }
+        }
+
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             when (item) {
                 // Songs should be scrolled to if the album matches, or a new detail

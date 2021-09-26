@@ -147,7 +147,36 @@ enum class SortMode(@IdRes val itemId: Int) {
         return sortSongs(genre.songs)
     }
 
+    /**
+     * Converts this mode into an integer constant. Use this when writing a [SortMode]
+     * to storage, as it will be more efficent.
+     */
+    fun toInt(): Int {
+        return ordinal + INT_ASCENDING
+    }
+
     companion object {
+        private const val INT_ASCENDING = 0xA10C
+        private const val INT_DESCENDING = 0xA10D
+        private const val INT_ARTIST = 0xA10E
+        private const val INT_ALBUM = 0xA10F
+        private const val INT_YEAR = 0xA110
+
+        /**
+         * Returns a [SortMode] depending on the integer constant, use this when restoring
+         * a [SortMode] from storage.
+         */
+        fun fromInt(value: Int): SortMode? {
+            return when (value) {
+                INT_ASCENDING -> ASCENDING
+                INT_DESCENDING -> DESCENDING
+                INT_ARTIST -> ASCENDING
+                INT_ALBUM -> ALBUM
+                INT_YEAR -> YEAR
+                else -> null
+            }
+        }
+
         /**
          * Convert a menu [id] to an instance of [SortMode].
          */

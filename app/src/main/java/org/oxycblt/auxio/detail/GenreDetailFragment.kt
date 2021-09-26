@@ -109,6 +109,12 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
+        detailModel.showMenu.observe(viewLifecycleOwner) { config ->
+            if (config != null) {
+                showMenu(config)
+            }
+        }
+
         playbackModel.isInUserQueue.observe(viewLifecycleOwner) { inUserQueue ->
             if (inUserQueue) {
                 detailAdapter.highlightSong(null, binding.detailRecycler)

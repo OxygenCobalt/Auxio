@@ -22,14 +22,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.forEach
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isLandscape
@@ -61,6 +65,13 @@ abstract class DetailFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         callback.isEnabled = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        // Cancel all pending menus when this fragment stops to prevent bugs/crashes
+        detailModel.finishShowMenu(null, requireContext())
     }
 
     /**
@@ -110,6 +121,37 @@ abstract class DetailFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Shortcut method for spinning up the sorting [PopupMenu]
+     * @param config The initial configuration to apply to the menu. This is provided by [DetailViewModel.showMenu].
+     * @param showItem Which menu items to keep
+     */
+    protected fun showMenu(config: DetailViewModel.MenuConfig, showItem: ((Int) -> Boolean)? = null) {
+        PopupMenu(config.anchor.context, config.anchor).apply {
+            inflate(R.menu.menu_detail_sort)
+
+            setOnMenuItemClickListener { item ->
+                item.isChecked = true
+                detailModel.finishShowMenu(SortMode.fromId(item.itemId)!!, config.anchor.context)
+                true
+            }
+
+            setOnDismissListener {
+                detailModel.finishShowMenu(null, config.anchor.context)
+            }
+
+            if (showItem != null) {
+                menu.forEach { item ->
+                    item.isVisible = showItem(item.itemId)
+                }
+            }
+
+            menu.findItem(config.sortMode.itemId).isChecked = true
+
+            show()
         }
     }
 

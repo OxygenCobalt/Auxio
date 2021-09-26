@@ -26,6 +26,7 @@ import org.oxycblt.auxio.accent.ACCENTS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.SortMode
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -118,6 +119,36 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    var albumSortMode: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_ALBUM_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_ALBUM_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var artistSortMode: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_ARTIST_SORT, Int.MIN_VALUE))
+            ?: SortMode.YEAR
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_ARTIST_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var genreSortMode: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_GENRE_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_GENRE_SORT, value.toInt())
+                apply()
+            }
+        }
+
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
@@ -181,6 +212,9 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
+        const val KEY_ALBUM_SORT = "KEY_ALBUM_SORT"
+        const val KEY_ARTIST_SORT = "KEY_ARTIST_SORT"
+        const val KEY_GENRE_SORT = "KEY_GENRE_SORT"
 
         @Volatile
         private var INSTANCE: SettingsManager? = null

@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.detail
 
 import android.content.Context
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,12 +31,16 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
 
 /**
- * ViewModel that stores data for the [DetailFragment]s, such as what they're showing & what
- * [SortMode] they are currently on.
- * TODO: Re-add sorting
+ * ViewModel that stores data for the [DetailFragment]s. This includes:
+ * - What item the fragment should be showing
+ * - The RecyclerView data for each fragment
+ * - Menu triggers for each fragment
+ * - Navigation triggers for each fragment [e.g "Go to artist"]
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
@@ -59,93 +64,67 @@ class DetailViewModel : ViewModel() {
     private val mAlbumData = MutableLiveData(listOf<BaseModel>())
     val albumData: LiveData<List<BaseModel>> get() = mAlbumData
 
-    var isNavigating = false
-        private set
+    data class MenuConfig(val anchor: View, val sortMode: SortMode)
+
+    private val mShowMenu = MutableLiveData<MenuConfig?>(null)
+    val showMenu: LiveData<MenuConfig?> = mShowMenu
 
     private val mNavToItem = MutableLiveData<BaseModel?>()
-
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
 
+    var isNavigating = false
+        private set
+
+    private var currentMenuContext: DisplayMode? = null
+
     private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
 
     fun setGenre(id: Long, context: Context) {
         if (mCurGenre.value?.id == id) return
-
         mCurGenre.value = musicStore.genres.find { it.id == id }
-
-        val data = mutableListOf<BaseModel>(curGenre.value!!)
-
-        data.add(
-            ActionHeader(
-                id = -2,
-                name = context.getString(R.string.lbl_songs),
-                icon = R.drawable.ic_sort,
-                desc = R.string.lbl_sort,
-                onClick = {
-                }
-            )
-        )
-
-        data.addAll(SortMode.ASCENDING.sortGenre(curGenre.value!!))
-
-        mGenreData.value = data
+        refreshGenreData(context)
     }
 
     fun setArtist(id: Long, context: Context) {
         if (mCurArtist.value?.id == id) return
-
         mCurArtist.value = musicStore.artists.find { it.id == id }
-
-        val artist = curArtist.value!!
-        val data = mutableListOf<BaseModel>(artist)
-
-        data.add(
-            Header(
-                id = -2,
-                name = context.getString(R.string.lbl_albums)
-            )
-        )
-
-        data.addAll(SortMode.YEAR.sortAlbums(artist.albums))
-
-        data.add(
-            ActionHeader(
-                id = -3,
-                name = context.getString(R.string.lbl_songs),
-                icon = R.drawable.ic_sort,
-                desc = R.string.lbl_sort,
-                onClick = {
-                }
-            )
-        )
-
-        data.addAll(SortMode.YEAR.sortArtist(artist))
-
-        mArtistData.value = data.toList()
+        refreshArtistData(context)
     }
 
     fun setAlbum(id: Long, context: Context) {
         if (mCurAlbum.value?.id == id) return
-
         mCurAlbum.value = musicStore.albums.find { it.id == id }
+        refreshAlbumData(context)
+    }
 
-        val data = mutableListOf<BaseModel>(curAlbum.value!!)
+    /**
+     * Mark that the menu process is done with the new [SortMode].
+     * Pass null if there was no change.
+     */
+    fun finishShowMenu(newMode: SortMode?, context: Context) {
+        mShowMenu.value = null
 
-        data.add(
-            ActionHeader(
-                id = -2,
-                name = context.getString(R.string.lbl_songs),
-                icon = R.drawable.ic_sort,
-                desc = R.string.lbl_sort,
-                onClick = {
+        if (newMode != null) {
+            when (currentMenuContext) {
+                DisplayMode.SHOW_ALBUMS -> {
+                    settingsManager.albumSortMode = newMode
+                    refreshAlbumData(context)
                 }
-            )
-        )
+                DisplayMode.SHOW_ARTISTS -> {
+                    settingsManager.artistSortMode = newMode
+                    refreshArtistData(context)
+                }
+                DisplayMode.SHOW_GENRES -> {
+                    settingsManager.genreSortMode = newMode
+                    refreshGenreData(context)
+                }
+                else -> {}
+            }
+        }
 
-        data.addAll(SortMode.ASCENDING.sortAlbum(curAlbum.value!!))
-
-        mAlbumData.value = data
+        currentMenuContext = null
     }
 
     /**
@@ -167,5 +146,78 @@ class DetailViewModel : ViewModel() {
      */
     fun setNavigating(navigating: Boolean) {
         isNavigating = navigating
+    }
+
+    private fun refreshGenreData(context: Context) {
+        val data = mutableListOf<BaseModel>(curGenre.value!!)
+
+        data.add(
+            ActionHeader(
+                id = -2,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = { view ->
+                    currentMenuContext = DisplayMode.SHOW_GENRES
+                    mShowMenu.value = MenuConfig(view, settingsManager.genreSortMode)
+                }
+            )
+        )
+
+        data.addAll(settingsManager.genreSortMode.sortGenre(curGenre.value!!))
+
+        mGenreData.value = data
+    }
+
+    private fun refreshArtistData(context: Context) {
+        val artist = curArtist.value!!
+        val data = mutableListOf<BaseModel>(artist)
+
+        data.add(
+            Header(
+                id = -2,
+                name = context.getString(R.string.lbl_albums)
+            )
+        )
+
+        data.addAll(SortMode.YEAR.sortAlbums(artist.albums))
+
+        data.add(
+            ActionHeader(
+                id = -3,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = { view ->
+                    currentMenuContext = DisplayMode.SHOW_ARTISTS
+                    mShowMenu.value = MenuConfig(view, settingsManager.artistSortMode)
+                }
+            )
+        )
+
+        data.addAll(settingsManager.artistSortMode.sortArtist(artist))
+
+        mArtistData.value = data.toList()
+    }
+
+    private fun refreshAlbumData(context: Context) {
+        val data = mutableListOf<BaseModel>(curAlbum.value!!)
+
+        data.add(
+            ActionHeader(
+                id = -2,
+                name = context.getString(R.string.lbl_songs),
+                icon = R.drawable.ic_sort,
+                desc = R.string.lbl_sort,
+                onClick = { view ->
+                    currentMenuContext = DisplayMode.SHOW_ALBUMS
+                    mShowMenu.value = MenuConfig(view, settingsManager.albumSortMode)
+                }
+            )
+        )
+
+        data.addAll(settingsManager.albumSortMode.sortAlbum(curAlbum.value!!))
+
+        mAlbumData.value = data
     }
 }
