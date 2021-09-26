@@ -18,10 +18,8 @@
 
 package org.oxycblt.auxio.playback.system
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.media.AudioManager
-import androidx.core.animation.addListener
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -33,7 +31,6 @@ import org.oxycblt.auxio.util.logD
 /**
  * Object that manages the AudioFocus state.
  * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
- * FIXME: remove the janky audio fadeout code, it just does not work.
  * @author OxygenCobalt
  */
 class AudioReactor(
@@ -116,26 +113,11 @@ class AudioReactor(
     private fun unduck() {
         logD("Unducking, raising volume")
 
-        player.volume = VOLUME_DUCK
-
-        ValueAnimator().apply {
-            setFloatValues(VOLUME_DUCK, VOLUME_FULL)
-            duration = DUCK_DURATION
-            addListener(
-                onStart = { player.volume = VOLUME_DUCK },
-                onCancel = { player.volume = VOLUME_FULL },
-                onEnd = { player.volume = VOLUME_FULL }
-            )
-            addUpdateListener {
-                player.volume = animatedValue as Float
-            }
-            start()
-        }
+        player.volume = VOLUME_FULL
     }
 
     companion object {
         private const val VOLUME_DUCK = 0.2f
-        private const val DUCK_DURATION = 1500L
         private const val VOLUME_FULL = 1.0f
     }
 }
