@@ -30,10 +30,14 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
+import org.oxycblt.auxio.home.recycler.HomeAdapter
+import org.oxycblt.auxio.home.recycler.ParentAdapter
+import org.oxycblt.auxio.home.recycler.SongsAdapter
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -56,53 +60,34 @@ class HomeListFragment : Fragment() {
     ): View {
         val binding = FragmentHomeListBinding.inflate(inflater)
 
-        val homeAdapter = HomeAdapter(
-            doOnClick = { item ->
-                when (item) {
-                    is Song -> playbackModel.playSong(item)
-
-                    is Album -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowAlbum(item.id)
-                    )
-
-                    is Artist -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowArtist(item.id)
-                    )
-
-                    is Genre -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowGenre(item.id)
-                    )
-
-                    else -> {
-                    }
-                }
-            },
-            ::newMenu
-        )
-
         // Get some tab-specific values before we go ahead. More specifically, the data to use
         // and the unique ID that HomeFragment's AppBarLayout uses to determine lift state.
         val pos = requireNotNull(arguments).getInt(ARG_POS)
 
         @IdRes val customId: Int
+        val homeAdapter: HomeAdapter<out BaseModel>
         val homeData: LiveData<out List<BaseModel>>
 
         when (homeModel.tabs.value!![pos]) {
             DisplayMode.SHOW_SONGS -> {
                 customId = R.id.home_song_list
                 homeData = homeModel.songs
+                homeAdapter = SongsAdapter(::onSongClick, ::newMenu, playbackModel)
             }
             DisplayMode.SHOW_ALBUMS -> {
                 customId = R.id.home_album_list
                 homeData = homeModel.albums
+                homeAdapter = ParentAdapter(::onParentClick, ::newMenu)
             }
             DisplayMode.SHOW_ARTISTS -> {
                 customId = R.id.home_artist_list
                 homeData = homeModel.artists
+                homeAdapter = ParentAdapter(::onParentClick, ::newMenu)
             }
             DisplayMode.SHOW_GENRES -> {
                 customId = R.id.home_genre_list
                 homeData = homeModel.genres
+                homeAdapter = ParentAdapter(::onParentClick, ::newMenu)
             }
         }
 
@@ -127,6 +112,26 @@ class HomeListFragment : Fragment() {
         logD("Fragment created")
 
         return binding.root
+    }
+
+    private fun onSongClick(song: Song) {
+        playbackModel.playSong(song)
+    }
+
+    private fun onParentClick(parent: Parent) {
+        when (parent) {
+            is Album -> findNavController().navigate(
+                HomeFragmentDirections.actionShowAlbum(parent.id)
+            )
+
+            is Artist -> findNavController().navigate(
+                HomeFragmentDirections.actionShowArtist(parent.id)
+            )
+
+            is Genre -> findNavController().navigate(
+                HomeFragmentDirections.actionShowGenre(parent.id)
+            )
+        }
     }
 
     companion object {

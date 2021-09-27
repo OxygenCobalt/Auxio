@@ -56,6 +56,7 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA00C | GenreSongViewHolder
 
 0xA00D | QueueSongViewHolder
+0xA00E | PlayPauseViewHolder
 
 0xA0A0 | Auxio notification code
 0xA0C0 | Auxio request code

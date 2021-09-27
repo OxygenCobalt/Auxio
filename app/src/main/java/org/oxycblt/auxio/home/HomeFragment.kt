@@ -164,15 +164,11 @@ class HomeFragment : Fragment() {
             binding.homeAppbar.liftOnScrollTargetViewId = when (requireNotNull(tab)) {
                 DisplayMode.SHOW_SONGS -> {
                     updateSortMenu(sortItem, tab)
-
                     R.id.home_song_list
                 }
 
                 DisplayMode.SHOW_ALBUMS -> {
-                    updateSortMenu(sortItem, tab) { id ->
-                        id != R.id.option_sort_album
-                    }
-
+                    updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
                     R.id.home_album_list
                 }
 

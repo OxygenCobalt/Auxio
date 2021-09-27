@@ -205,6 +205,13 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
+     * Play all songs
+     */
+    fun playAll() {
+        playbackManager.playAll()
+    }
+
+    /**
      * Shuffle all songs
      */
     fun shuffleAll() {

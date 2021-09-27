@@ -40,13 +40,14 @@ import org.oxycblt.auxio.util.logD
  *
  * You think that if you wanted to query a song's genre from a media database, you could just
  * put "genre" in the query and it would return it, right? But not with MediaStore! No, that's
- * to straightfoward for this platform. So instead, you have to query for each genre, query all
- * the songs in each genre, and then iterate through those songs to link every song with their
- * genre. This is not documented anywhere in MediaStore's documentation, and the O(mom im scared)
- * algorithm you have to run to get it working single-handedly DOUBLES Auxio's loading times. At
- * no point have the devs considered that this column is absolutely busted, and instead focused on
- * adding infuriat- I mean nice proprietary extensions to MediaStore for their own Google Play Music,
- * and we all know how great that worked out!
+ * to straightfoward for this platform that was dropped on it's head as a baby. So instead, you
+ * have to query for each genre, query all the songs in each genre, and then iterate through those
+ * songs to link every song with their genre. This is not documented anywhere in MediaStore's
+ * documentation, and the O(mom im scared) algorithm you have to run to get it working
+ * single-handedly DOUBLES Auxio's loading times. At no point have the devs considered that this
+ * column is absolutely busted, and instead focused on adding infuriat- I mean nice proprietary
+ * extensions to MediaStore for their own Google Play Music, and we all know how great that worked
+ * out!
  *
  * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
  * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files?
@@ -55,21 +56,21 @@ import org.oxycblt.auxio.util.logD
  * DATE tag. Once again, this is because internally android uses an ancient in-house metadata
  * parser to get everything indexed, and so far they have not bothered to modernize this parser
  * or even switch it to something more powerful like Taglib, not even in Android 12. ID3v2.4 is
- * 21 years old. It can drink now. All my what.
+ * 21 years old. It can drink now. All of my what.
  *
  * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
  * table, so we have to go for the less efficent "make a big query on all the songs lol" method
  * so that songs don't end up fragmented across artists. Pretty much every OEM has added some
- * extension or quirk to MediaStore that I cannot determine, with some OEMs (COUGHSAMSUNGCOUGH)
+ * extension or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH)
  * crippling the normal tables so that you're railroaded into their ad-infested music app.
  * The way I do blacklisting relies on a deprecated method, and the supposedly "modern" method
  * is SLOWER and causes even more problems since I have to manage databases across version
  * boundaries. Sometimes music will have a deformed clone that I can't filter out, sometimes
- * Genre's will just break for no reason, sometimes this plate of spaghetti just completely breaks
+ * Genres will just break for no reason, sometimes this spaghetti parser just completely breaks
  * down and is unable to get any metadata. Everything is broken in it's own special unique way and
  * I absolutely hate it.
  *
- * Is there anything we can do about it? No. Google has routinely shut down issues that beg google
+ * Is there anything we can do about it? No. Google has routinely shut down issues that begged google
  * to fix glaring issues with MediaStore or to just take the API behind the woodshed and shoot it.
  * Largely because they have zero incentive to improve it, especially for such obscure things
  * as indexing music. As a result, some players like Vanilla and VLC just hack their own pidgin
@@ -84,7 +85,7 @@ import org.oxycblt.auxio.util.logD
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
  * Because go **** yourself for wanting to listen to music you own. Be a good consoomer and listen
- * to your AlgoMix MusikStream™.
+ * to your AlgoPop StreamMix™.
  *
  * I hate this platform so much.
  *

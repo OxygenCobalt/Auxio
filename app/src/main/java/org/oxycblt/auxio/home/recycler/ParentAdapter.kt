@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * HomeAdapter.kt is part of Auxio.
+ * ParentAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,32 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.home.recycler
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.ArtistViewHolder
 import org.oxycblt.auxio.ui.GenreViewHolder
-import org.oxycblt.auxio.ui.SongViewHolder
 
 /**
- * A universal adapter for displaying data in [HomeFragment].
+ * A universal adapter for displaying [Parent] data.
  */
-class HomeAdapter(
-    private val doOnClick: (data: BaseModel) -> Unit,
-    private val doOnLongClick: (view: View, data: BaseModel) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private var data = listOf<BaseModel>()
-
+class ParentAdapter(
+    private val doOnClick: (data: Parent) -> Unit,
+    private val doOnLongClick: (view: View, data: Parent) -> Unit,
+) : HomeAdapter<Parent>() {
     override fun getItemCount(): Int = data.size
 
     override fun getItemViewType(position: Int): Int {
@@ -49,7 +43,6 @@ class HomeAdapter(
             is Genre -> GenreViewHolder.ITEM_TYPE
             is Artist -> ArtistViewHolder.ITEM_TYPE
             is Album -> AlbumViewHolder.ITEM_TYPE
-            is Song -> SongViewHolder.ITEM_TYPE
             else -> error("Unsupported item ${data[position]::class.simpleName}")
         }
     }
@@ -68,10 +61,6 @@ class HomeAdapter(
                 parent.context, doOnClick, doOnLongClick
             )
 
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
             else -> error("Invalid viewholder item type.")
         }
     }
@@ -81,20 +70,6 @@ class HomeAdapter(
             is Genre -> (holder as GenreViewHolder).bind(item)
             is Artist -> (holder as ArtistViewHolder).bind(item)
             is Album -> (holder as AlbumViewHolder).bind(item)
-            is Song -> (holder as SongViewHolder).bind(item)
         }
-    }
-
-    /**
-     * Update the data with [newData]. [notifyDataSetChanged] will be called.
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<BaseModel>) {
-        data = newData
-
-        // I would use ListAdapter instead of this inefficient invalidate call, but they still
-        // haven't fixed the issue where ListAdapter's calculations will cause wild scrolling
-        // for basically no reason.
-        notifyDataSetChanged()
     }
 }

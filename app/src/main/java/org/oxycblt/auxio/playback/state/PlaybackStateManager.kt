@@ -233,6 +233,18 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
+     * Play all songs.
+     */
+    fun playAll() {
+        mMode = PlaybackMode.ALL_SONGS
+        mQueue = musicStore.songs.toMutableList()
+        mParent = null
+
+        setShuffling(false, keepSong = false)
+        updatePlayback(mQueue[0])
+    }
+
+    /**
      * Shuffle all songs.
      */
     fun shuffleAll() {
