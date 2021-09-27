@@ -49,6 +49,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:layout="@layout/fragment_home_list" />
-        
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

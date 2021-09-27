@@ -36,11 +36,11 @@ import org.oxycblt.auxio.util.logD
  *
  * MediaStore is not a good API. It is not even a bad API. Calling it a bad API is an insult to
  * other bad android APIs, like CoordinatorLayout or InputMethodManager. No. MediaStore is a
- * crime against humanity and probably a way to summon Zalgo if you tried hard enough.
+ * crime against humanity and probably a way to summon Zalgo if you look at it the wrong way.
  *
  * You think that if you wanted to query a song's genre from a media database, you could just
  * put "genre" in the query and it would return it, right? But not with MediaStore! No, that's
- * to straightfoward for this platform that was dropped on it's head as a baby. So instead, you
+ * too straightfoward for this SDK that was dropped on it's head as a baby. So instead, you
  * have to query for each genre, query all the songs in each genre, and then iterate through those
  * songs to link every song with their genre. This is not documented anywhere in MediaStore's
  * documentation, and the O(mom im scared) algorithm you have to run to get it working
@@ -55,8 +55,8 @@ import org.oxycblt.auxio.util.logD
  * that their metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or
  * DATE tag. Once again, this is because internally android uses an ancient in-house metadata
  * parser to get everything indexed, and so far they have not bothered to modernize this parser
- * or even switch it to something more powerful like Taglib, not even in Android 12. ID3v2.4 is
- * 21 years old. It can drink now. All of my what.
+ * or even switch it to something more powerful like Taglib, not even in Android 12. ID3v2.4 has
+ * been around for 21 years. It can drink now. All of my what.
  *
  * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
  * table, so we have to go for the less efficent "make a big query on all the songs lol" method
@@ -77,7 +77,7 @@ import org.oxycblt.auxio.util.logD
  * version of MediaStore from their own parsers, but this is both infeasible for Auxio due to how
  * incredibly slow it is to get a file handle from the android sandbox AND how much harder it is
  * to manage a database of your own media that mirrors the filesystem perfectly. And even if I set
- * aside those crippling issues and changed me indexer to that, it would face the even larger
+ * aside those crippling issues and changed my indexer to that, it would face the even larger
  * problem of how google keeps trying to kill the filesystem and force you into their
  * ContentResolver API. In the future MediaStore could be the only system we have, which is also the
  * day that greenland melts and birthdays stop happening forever.
@@ -85,9 +85,9 @@ import org.oxycblt.auxio.util.logD
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
  * Because go **** yourself for wanting to listen to music you own. Be a good consoomer and listen
- * to your AlgoPop StreamMix™.
+ * to your AlgoPop StreamMix™ instead.
  *
- * I hate this platform so much.
+ * I wish I was born in the neolithic.
  *
  * @author OxygenCobalt
  */
@@ -286,7 +286,7 @@ class MusicLoader(private val context: Context) {
             val songCursor = resolver.query(
                 Genres.Members.getContentUri("external", genre.id),
                 arrayOf(Genres.Members._ID),
-                null, null, null // Dont even bother selecting here as useless iters are less expensive than IO
+                null, null, null // Dont even bother blacklisting here as useless iters are less expensive than IO
             )
 
             songCursor?.use { cursor ->
