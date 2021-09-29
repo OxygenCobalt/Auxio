@@ -70,6 +70,9 @@
 
     <style name="TextAppearance.Auxio.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="textAllCaps">false</item>
     </style>
 
     <style name="Widget.Auxio.ItemLayout" parent="">
