@@ -84,14 +84,14 @@ class HomeFragment : Fragment() {
         binding.homeToolbar.apply {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
+                    R.id.action_search -> {
+                        findNavController().navigate(HomeFragmentDirections.actionShowSearch())
+                    }
+
                     R.id.action_settings -> {
                         parentFragment?.parentFragment?.findNavController()?.navigate(
                             MainFragmentDirections.actionShowSettings()
                         )
-                    }
-
-                    R.id.action_search -> {
-                        findNavController().navigate(HomeFragmentDirections.actionShowSearch())
                     }
 
                     R.id.submenu_sorting -> { }
