@@ -36,6 +36,10 @@ import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.home.list.AlbumListFragment
+import org.oxycblt.auxio.home.list.ArtistListFragment
+import org.oxycblt.auxio.home.list.GenreListFragment
+import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -242,6 +246,14 @@ class HomeFragment : Fragment() {
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
 
         override fun getItemCount(): Int = homeModel.tabs.value!!.size
-        override fun createFragment(position: Int): Fragment = HomeListFragment.new(position)
+
+        override fun createFragment(position: Int): Fragment {
+            return when (homeModel.tabs.value!![position]) {
+                DisplayMode.SHOW_SONGS -> SongListFragment()
+                DisplayMode.SHOW_ALBUMS -> AlbumListFragment()
+                DisplayMode.SHOW_ARTISTS -> ArtistListFragment()
+                DisplayMode.SHOW_GENRES -> GenreListFragment()
+            }
+        }
     }
 }

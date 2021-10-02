@@ -305,7 +305,7 @@ class MusicLoader(private val context: Context) {
         // Songs that don't have a genre will be thrown into an unknown genre.
 
         val unknownGenre = Genre(
-            id = -2,
+            id = Long.MIN_VALUE,
             name = context.getString(R.string.def_genre)
         )
 
@@ -315,7 +315,7 @@ class MusicLoader(private val context: Context) {
             }
         }
 
-        if (unknownGenre.songs.isEmpty()) {
+        if (unknownGenre.songs.isNotEmpty()) {
             genres.add(unknownGenre)
         }
     }
