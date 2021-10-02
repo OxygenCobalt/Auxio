@@ -38,6 +38,13 @@
             app:exitAnim="@anim/anim_stationary"
             app:popEnterAnim="@anim/anim_stationary"
             app:popExitAnim="@anim/anim_nav_slide_down" />
+        <action
+            android:id="@+id/action_show_about"
+            app:destination="@id/about_fragment"
+            app:enterAnim="@anim/anim_nav_slide_up"
+            app:exitAnim="@anim/anim_stationary"
+            app:popEnterAnim="@anim/anim_stationary"
+            app:popExitAnim="@anim/anim_nav_slide_down" />
     </fragment>
     <fragment
         android:id="@+id/playback_fragment"
@@ -66,13 +73,5 @@
         android:id="@+id/settings_fragment"
         android:name="org.oxycblt.auxio.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings">
-        <action
-            android:id="@+id/action_show_about"
-            app:destination="@id/about_fragment"
-            app:enterAnim="@anim/anim_nav_slide_up"
-            app:exitAnim="@anim/anim_stationary"
-            app:popEnterAnim="@anim/anim_stationary"
-            app:popExitAnim="@anim/anim_nav_slide_down" />
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
 </navigation>

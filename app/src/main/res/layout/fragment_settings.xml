@@ -23,7 +23,6 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/settings_toolbar"
                 style="@style/Widget.Auxio.Toolbar.Icon.Down"
-                app:menu="@menu/menu_settings"
                 app:title="@string/set_title" />
 
         </org.oxycblt.auxio.ui.LiftAppBarLayout>

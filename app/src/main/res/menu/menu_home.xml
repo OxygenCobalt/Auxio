@@ -39,4 +39,10 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/set_title"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/ic_about"
+        android:title="@string/lbl_about"
+        app:showAsAction="never"/>
 </menu>

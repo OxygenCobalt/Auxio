@@ -98,6 +98,12 @@ class HomeFragment : Fragment() {
                         )
                     }
 
+                    R.id.action_about -> {
+                        parentFragment?.parentFragment?.findNavController()?.navigate(
+                            MainFragmentDirections.actionShowAbout()
+                        )
+                    }
+
                     R.id.submenu_sorting -> { }
 
                     // Sorting option was selected, check then and update the mode

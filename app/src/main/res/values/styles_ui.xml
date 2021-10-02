@@ -64,7 +64,6 @@
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:elevation">@dimen/elevation_normal</item>
         <item name="android:outlineProvider">bounds</item>
     </style>
 
@@ -152,7 +151,6 @@
         <item name="android:textSize">@dimen/text_size_huge</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:fontFamily">@font/inter_bold</item>
-        <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Icon" parent="Widget.Auxio.TextView.Base">

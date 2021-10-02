@@ -41,14 +41,6 @@ class SettingsFragment : Fragment() {
         val binding = FragmentSettingsBinding.inflate(inflater)
 
         binding.settingsToolbar.apply {
-            setOnMenuItemClickListener {
-                findNavController().navigate(
-                    SettingsFragmentDirections.actionShowAbout()
-                )
-
-                true
-            }
-
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
@@ -57,7 +49,7 @@ class SettingsFragment : Fragment() {
         binding.applyEdge { bars ->
             binding.settingsAppbar.updatePadding(top = bars.top)
 
-            // The padding + clipToPadding method does not seem to work with a
+            // The padding + clipToPadding method does not work with a
             // FragmentContainerView. Do it directly in SettingsListFragment instead.
         }
 
