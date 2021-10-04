@@ -119,32 +119,72 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    var albumSortMode: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_ALBUM_SORT, Int.MIN_VALUE))
+    var libSongSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_ALBUM_SORT, value.toInt())
+                putInt(KEY_LIB_SONGS_SORT, value.toInt())
                 apply()
             }
         }
 
-    var artistSortMode: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_ARTIST_SORT, Int.MIN_VALUE))
+    var libAlbumSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_LIB_ALBUMS_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var libArtistSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_LIB_ARTISTS_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var libGenreSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_GENRE_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_LIB_GENRE_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var detailAlbumSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
+            ?: SortMode.ASCENDING
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_DETAIL_ALBUM_SORT, value.toInt())
+                apply()
+            }
+        }
+
+    var detailArtistSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
             ?: SortMode.YEAR
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_ARTIST_SORT, value.toInt())
+                putInt(KEY_DETAIL_ARTIST_SORT, value.toInt())
                 apply()
             }
         }
 
-    var genreSortMode: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_GENRE_SORT, Int.MIN_VALUE))
+    var detailGenreSort: SortMode
+        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_GENRE_SORT, value.toInt())
+                putInt(KEY_DETAIL_GENRE_SORT, value.toInt())
                 apply()
             }
         }
@@ -212,9 +252,15 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
-        const val KEY_ALBUM_SORT = "KEY_ALBUM_SORT"
-        const val KEY_ARTIST_SORT = "KEY_ARTIST_SORT"
-        const val KEY_GENRE_SORT = "KEY_GENRE_SORT"
+
+        const val KEY_LIB_SONGS_SORT = "KEY_SONGS_SORT"
+        const val KEY_LIB_ALBUMS_SORT = "KEY_ALBUMS_SORT"
+        const val KEY_LIB_ARTISTS_SORT = "KEY_ARTISTS_SORT"
+        const val KEY_LIB_GENRE_SORT = "KEY_GENRE_SORT"
+
+        const val KEY_DETAIL_ALBUM_SORT = "KEY_ALBUM_SORT"
+        const val KEY_DETAIL_ARTIST_SORT = "KEY_ARTIST_SORT"
+        const val KEY_DETAIL_GENRE_SORT = "KEY_GENRE_SORT"
 
         @Volatile
         private var INSTANCE: SettingsManager? = null

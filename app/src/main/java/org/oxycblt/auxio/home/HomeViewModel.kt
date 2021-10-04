@@ -32,6 +32,7 @@ import org.oxycblt.auxio.ui.SortMode
 
 /**
  * The ViewModel for managing [HomeFragment]'s data and sorting modes.
+ * TODO: Custom tabs
  */
 class HomeViewModel : ViewModel() {
     private val mSongs = MutableLiveData(listOf<Song>())
@@ -57,36 +58,29 @@ class HomeViewModel : ViewModel() {
     private val mCurTab = MutableLiveData(mTabs.value!![0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
-    private var genreSortMode = SortMode.ASCENDING
-    private var artistSortMode = SortMode.ASCENDING
-    private var albumSortMode = SortMode.ASCENDING
-    private var songSortMode = SortMode.ASCENDING
-
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     init {
-        mSongs.value = songSortMode.sortSongs(musicStore.songs)
-        mAlbums.value = albumSortMode.sortAlbums(musicStore.albums)
-        mArtists.value = artistSortMode.sortModels(musicStore.artists)
-        mGenres.value = genreSortMode.sortModels(musicStore.genres)
+        mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
+        mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
+        mArtists.value = settingsManager.libArtistSort.sortModels(musicStore.artists)
+        mGenres.value = settingsManager.libGenreSort.sortModels(musicStore.genres)
     }
 
     /**
      * Update the current tab based off of the new ViewPager position.
      */
     fun updateCurrentTab(pos: Int) {
-        val mode = mTabs.value!![pos]
-
-        mCurTab.value = mode
+        mCurTab.value = mTabs.value!![pos]
     }
 
     fun getSortForDisplay(displayMode: DisplayMode): SortMode {
         return when (displayMode) {
-            DisplayMode.SHOW_GENRES -> genreSortMode
-            DisplayMode.SHOW_ARTISTS -> artistSortMode
-            DisplayMode.SHOW_ALBUMS -> albumSortMode
-            DisplayMode.SHOW_SONGS -> songSortMode
+            DisplayMode.SHOW_SONGS -> settingsManager.libSongSort
+            DisplayMode.SHOW_ALBUMS -> settingsManager.libAlbumSort
+            DisplayMode.SHOW_ARTISTS -> settingsManager.libArtistSort
+            DisplayMode.SHOW_GENRES -> settingsManager.libGenreSort
         }
     }
 
@@ -96,20 +90,20 @@ class HomeViewModel : ViewModel() {
     fun updateCurrentSort(sort: SortMode) {
         when (mCurTab.value) {
             DisplayMode.SHOW_SONGS -> {
-                songSortMode = sort
+                settingsManager.libSongSort = sort
                 mSongs.value = sort.sortSongs(mSongs.value!!)
             }
 
             DisplayMode.SHOW_ALBUMS -> {
-                albumSortMode = sort
+                settingsManager.libAlbumSort = sort
                 mAlbums.value = sort.sortAlbums(mAlbums.value!!)
             }
             DisplayMode.SHOW_ARTISTS -> {
-                artistSortMode = sort
+                settingsManager.libArtistSort = sort
                 mArtists.value = sort.sortModels(mArtists.value!!)
             }
             DisplayMode.SHOW_GENRES -> {
-                genreSortMode = sort
+                settingsManager.libGenreSort = sort
                 mGenres.value = sort.sortModels(mGenres.value!!)
             }
         }

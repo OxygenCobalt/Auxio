@@ -106,6 +106,9 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
      * https://github.com/kabouzeid/Phonograph
      */
     private fun drawMosaic(streams: List<InputStream>): Bitmap {
+        // Use a fixed 512x512 canvas for the mosaics. Preferably we would adapt this mosaic to
+        // target ImageView size, but Coil seems to start image loading before we can even get
+        // a width/height for the view, making that impractical.
         val mosaicBitmap = Bitmap.createBitmap(
             MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.ARGB_8888
         )

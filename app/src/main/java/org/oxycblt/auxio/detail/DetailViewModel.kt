@@ -109,15 +109,15 @@ class DetailViewModel : ViewModel() {
         if (newMode != null) {
             when (currentMenuContext) {
                 DisplayMode.SHOW_ALBUMS -> {
-                    settingsManager.albumSortMode = newMode
+                    settingsManager.detailAlbumSort = newMode
                     refreshAlbumData(context)
                 }
                 DisplayMode.SHOW_ARTISTS -> {
-                    settingsManager.artistSortMode = newMode
+                    settingsManager.detailArtistSort = newMode
                     refreshArtistData(context)
                 }
                 DisplayMode.SHOW_GENRES -> {
-                    settingsManager.genreSortMode = newMode
+                    settingsManager.detailGenreSort = newMode
                     refreshGenreData(context)
                 }
                 else -> {}
@@ -159,12 +159,12 @@ class DetailViewModel : ViewModel() {
                 desc = R.string.lbl_sort,
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_GENRES
-                    mShowMenu.value = MenuConfig(view, settingsManager.genreSortMode)
+                    mShowMenu.value = MenuConfig(view, settingsManager.detailGenreSort)
                 }
             )
         )
 
-        data.addAll(settingsManager.genreSortMode.sortGenre(curGenre.value!!))
+        data.addAll(settingsManager.detailGenreSort.sortGenre(curGenre.value!!))
 
         mGenreData.value = data
     }
@@ -190,12 +190,12 @@ class DetailViewModel : ViewModel() {
                 desc = R.string.lbl_sort,
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_ARTISTS
-                    mShowMenu.value = MenuConfig(view, settingsManager.artistSortMode)
+                    mShowMenu.value = MenuConfig(view, settingsManager.detailArtistSort)
                 }
             )
         )
 
-        data.addAll(settingsManager.artistSortMode.sortArtist(artist))
+        data.addAll(settingsManager.detailArtistSort.sortArtist(artist))
 
         mArtistData.value = data.toList()
     }
@@ -211,12 +211,12 @@ class DetailViewModel : ViewModel() {
                 desc = R.string.lbl_sort,
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_ALBUMS
-                    mShowMenu.value = MenuConfig(view, settingsManager.albumSortMode)
+                    mShowMenu.value = MenuConfig(view, settingsManager.detailAlbumSort)
                 }
             )
         )
 
-        data.addAll(settingsManager.albumSortMode.sortAlbum(curAlbum.value!!))
+        data.addAll(settingsManager.detailAlbumSort.sortAlbum(curAlbum.value!!))
 
         mAlbumData.value = data
     }
