@@ -40,14 +40,13 @@ import org.oxycblt.auxio.util.logD
  *
  * You think that if you wanted to query a song's genre from a media database, you could just
  * put "genre" in the query and it would return it, right? But not with MediaStore! No, that's
- * too straightfoward for this SDK that was dropped on it's head as a baby. So instead, you
+ * too straightfoward for this class that was dropped on it's head as a baby. So instead, you
  * have to query for each genre, query all the songs in each genre, and then iterate through those
- * songs to link every song with their genre. This is not documented anywhere in MediaStore's
- * documentation, and the O(mom im scared) algorithm you have to run to get it working
- * single-handedly DOUBLES Auxio's loading times. At no point have the devs considered that this
- * column is absolutely busted, and instead focused on adding infuriat- I mean nice proprietary
- * extensions to MediaStore for their own Google Play Music, and we all know how great that worked
- * out!
+ * songs to link every song with their genre. This is not documented anywhere, and the
+ * O(mom im scared) algorithm you have to run to get it working single-handedly DOUBLES Auxio's
+ * loading times. At no point have the devs considered that this column is absolutely busted, and
+ * instead focused on adding infuriat- I mean nice proprietary extensions to MediaStore for their
+ * own Google Play Music, and we all know how great that worked out!
  *
  * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
  * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files?

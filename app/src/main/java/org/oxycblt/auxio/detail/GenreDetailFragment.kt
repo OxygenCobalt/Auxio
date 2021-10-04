@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * The [DetailFragment] for a genre.
+ * TODO: Fix issue where ARTIST order defaults to ASCENDING for some reason.
  * @author OxygenCobalt
  */
 class GenreDetailFragment : DetailFragment() {

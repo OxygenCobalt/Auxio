@@ -170,7 +170,7 @@ enum class SortMode(@IdRes val itemId: Int) {
             return when (value) {
                 INT_ASCENDING -> ASCENDING
                 INT_DESCENDING -> DESCENDING
-                INT_ARTIST -> ASCENDING
+                INT_ARTIST -> ARTIST
                 INT_ALBUM -> ALBUM
                 INT_YEAR -> YEAR
                 else -> null

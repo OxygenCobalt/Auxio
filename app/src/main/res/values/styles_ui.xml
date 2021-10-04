@@ -64,7 +64,6 @@
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
-        <item name="android:outlineProvider">bounds</item>
     </style>
 
     <style name="TextAppearance.Auxio.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
@@ -116,6 +115,7 @@
 
     <style name="Widget.Auxio.TextView.Secondary" parent="Widget.Auxio.TextView.Base">
         <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
     </style>
