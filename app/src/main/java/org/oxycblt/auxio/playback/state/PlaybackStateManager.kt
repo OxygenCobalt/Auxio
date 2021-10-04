@@ -28,7 +28,6 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -483,7 +482,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
             PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
             PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
-            PlaybackMode.ALL_SONGS -> musicStore.songs.toMutableList()
+            PlaybackMode.ALL_SONGS -> orderSongs()
         }
 
         if (keepSong) {
@@ -741,24 +740,31 @@ class PlaybackStateManager private constructor() {
     // --- ORDERING FUNCTIONS ---
 
     /**
+     * Create an ordered queue based on the main list of songs
+     */
+    private fun orderSongs(): MutableList<Song> {
+        return settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
+    }
+
+    /**
      * Create an ordered queue based on an [Album].
      */
     private fun orderSongsInAlbum(album: Album): MutableList<Song> {
-        return SortMode.ASCENDING.sortAlbum(album).toMutableList()
+        return settingsManager.detailAlbumSort.sortAlbum(album).toMutableList()
     }
 
     /**
      * Create an ordered queue based on an [Artist].
      */
     private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
-        return SortMode.YEAR.sortArtist(artist).toMutableList()
+        return settingsManager.detailArtistSort.sortArtist(artist).toMutableList()
     }
 
     /**
      * Create an ordered queue based on a [Genre].
      */
     private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
-        return SortMode.ASCENDING.sortGenre(genre).toMutableList()
+        return settingsManager.detailGenreSort.sortGenre(genre).toMutableList()
     }
 
     /**
