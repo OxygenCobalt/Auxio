@@ -83,7 +83,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_mid_huge"
             android:layout_marginEnd="@dimen/spacing_mid_huge"
-            android:layout_marginBottom="@dimen/spacing_medium"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:text="@{song.album.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
@@ -91,40 +90,15 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Album Name" />
 
-        <SeekBar
+        <org.oxycblt.auxio.playback.PlaybackSeekBar
             android:id="@+id/playback_seek_bar"
-            style="@style/Widget.Auxio.SeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="@dimen/spacing_mid_huge"
-            android:paddingEnd="@dimen/spacing_mid_huge"
-            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:progress="70" />
-
-        <TextView
-            android:id="@+id/playback_duration_current"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_mid_huge"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:text="@{playbackModel.formattedPosition}"
-            android:textColor="@color/sel_accented_secondary"
-            app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="11:38" />
-
-        <TextView
-            android:id="@+id/playback_song_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_mid_huge"
-            android:text="@{song.formattedDuration}"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="16:16" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
             android:id="@+id/playback_loop"
@@ -158,16 +132,13 @@
             style="@style/Widget.Auxio.Button.Circular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_marginEnd="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_large"
             android:contentDescription="@string/desc_play_pause"
             android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_duration"
-            app:layout_constraintStart_toStartOf="@+id/playback_duration_current"
+            app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
+            app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
             tools:src="@drawable/ic_pause" />
 
         <ImageButton

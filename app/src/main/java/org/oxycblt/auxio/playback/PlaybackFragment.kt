@@ -23,7 +23,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
+import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.logD
  *  also make material sliders usable maybe.
  * @author OxygenCobalt
  */
-class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
+class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val binding by memberBinding(FragmentPlaybackBinding::inflate) {
@@ -90,9 +90,9 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         // Make marquee of song title work
         binding.playbackSong.isSelected = true
-        binding.playbackSeekBar.apply {
-            setOnSeekBarChangeListener(this@PlaybackFragment)
-            isEnabled = true
+
+        binding.playbackSeekBar.onConfirmListener = { pos ->
+            playbackModel.setPosition(pos)
         }
 
         // --- VIEWMODEL SETUP --
@@ -102,7 +102,7 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 logD("Updating song display to ${song.name}.")
 
                 binding.song = song
-                binding.playbackSeekBar.max = song.seconds.toInt()
+                binding.playbackSeekBar.setDuration(song.seconds)
             } else {
                 logD("No song is being played, leaving.")
 
@@ -124,14 +124,8 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             binding.playbackLoop.setImageResource(resId)
         }
 
-        playbackModel.isSeeking.observe(viewLifecycleOwner) { isSeeking ->
-            binding.playbackDurationCurrent.isActivated = isSeeking
-        }
-
-        playbackModel.positionAsProgress.observe(viewLifecycleOwner) { pos ->
-            if (!playbackModel.isSeeking.value!!) {
-                binding.playbackSeekBar.progress = pos
-            }
+        playbackModel.position.observe(viewLifecycleOwner) { pos ->
+            binding.playbackSeekBar.setProgress(pos)
         }
 
         playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
@@ -164,26 +158,5 @@ class PlaybackFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         // The queue icon uses a selector that will automatically tint the icon as active or
         // inactive. We just need to set the flag.
         queueItem.isEnabled = !(userQueue.isEmpty() && nextQueue.isEmpty())
-    }
-
-    // --- SEEK CALLBACKS ---
-
-    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        if (fromUser) {
-            // Only update the display when seeking, as to have PlaybackService seek
-            // [causing possible buffering] on every movement is really odd.
-            playbackModel.updatePositionDisplay(progress)
-        }
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar) {
-        playbackModel.setSeekingStatus(true)
-    }
-
-    override fun onStopTrackingTouch(seekBar: SeekBar) {
-        playbackModel.setSeekingStatus(false)
-
-        // Confirm the position when seeking stops.
-        playbackModel.setPosition(seekBar.progress)
     }
 }

@@ -32,7 +32,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.queue.QueueAdapter
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -68,7 +67,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsInUserQueue = MutableLiveData(false)
 
     // Other
-    private val mIsSeeking = MutableLiveData(false)
     private var mIntentUri: Uri? = null
 
     /** The current song. */
@@ -91,13 +89,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
     /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
-
-    val isSeeking: LiveData<Boolean> get() = mIsSeeking
-
-    /** The position as a duration string. */
-    val formattedPosition = Transformations.map(mPosition) {
-        it.toDuration()
-    }
 
     /** The position as SeekBar progress. */
     val positionAsProgress = Transformations.map(mPosition) {
@@ -223,17 +214,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /**
      * Update the position and push it to [PlaybackStateManager]
      */
-    fun setPosition(progress: Int) {
-        playbackManager.seekTo((progress * 1000).toLong())
-    }
-
-    /**
-     * Update the position without pushing the change to [PlaybackStateManager].
-     * This is used during seek events to give the user an idea of where they're seeking to.
-     * @param progress The SeekBar progress to seek to.
-     */
-    fun updatePositionDisplay(progress: Int) {
-        mPosition.value = progress.toLong()
+    fun setPosition(progress: Long) {
+        playbackManager.seekTo((progress * 1000))
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -428,15 +410,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mLoopMode.value = playbackManager.loopMode
     }
 
-    // --- OTHER FUNCTIONS ---
-
-    /**
-     * Set whether the seeking indicator should be highlighted
-     */
-    fun setSeekingStatus(isSeeking: Boolean) {
-        mIsSeeking.value = isSeeking
-    }
-
     // --- OVERRIDES ---
 
     override fun onCleared() {
@@ -452,9 +425,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onPositionUpdate(position: Long) {
-        if (!mIsSeeking.value!!) {
-            mPosition.value = position / 1000
-        }
+        mPosition.value = position / 1000
     }
 
     override fun onQueueUpdate(queue: List<Song>) {
