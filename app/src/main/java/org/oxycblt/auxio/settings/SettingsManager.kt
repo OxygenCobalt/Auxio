@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import org.oxycblt.auxio.accent.ACCENTS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.DisplayMode
@@ -58,12 +57,8 @@ class SettingsManager private constructor(context: Context) :
     var accent: Accent
         get() = handleAccentCompat(sharedPrefs)
         set(value) {
-            val accentIndex = ACCENTS.indexOf(value)
-
-            check(accentIndex != -1) { "Invalid accent" }
-
             sharedPrefs.edit {
-                putInt(KEY_ACCENT, accentIndex)
+                putInt(KEY_ACCENT, value.index)
                 apply()
             }
         }

@@ -37,7 +37,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())
     val paths: LiveData<MutableList<String>> get() = mPaths
 
-    private val blacklistDatabase = ExcludedDatabase.getInstance(context)
+    private val excludedDatabase = ExcludedDatabase.getInstance(context)
     private var dbPaths = listOf<String>()
 
     init {
@@ -69,7 +69,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
      */
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            blacklistDatabase.writePaths(mPaths.value!!)
+            excludedDatabase.writePaths(mPaths.value!!)
             dbPaths = mPaths.value!!
 
             onDone()
@@ -81,7 +81,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
      */
     private fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
-            dbPaths = blacklistDatabase.readPaths()
+            dbPaths = excludedDatabase.readPaths()
 
             withContext(Dispatchers.Main) {
                 mPaths.value = dbPaths.toMutableList()
@@ -97,7 +97,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             check(modelClass.isAssignableFrom(ExcludedViewModel::class.java)) {
-                "BlacklistViewModel.Factory does not support this class"
+                "ExcludedViewModel.Factory does not support this class"
             }
 
             @Suppress("UNCHECKED_CAST")

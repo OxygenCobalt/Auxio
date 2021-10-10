@@ -12,18 +12,6 @@
         <item>@integer/theme_dark</item>
     </integer-array>
 
-    <string-array name="entries_lib_display">
-        <item>@string/lbl_genres</item>
-        <item>@string/lbl_artists</item>
-        <item>@string/lbl_albums</item>
-    </string-array>
-
-    <integer-array name="values_lib_display">
-        <item>@integer/display_genre</item>
-        <item>@integer/display_artist</item>
-        <item>@integer/display_album</item>
-    </integer-array>
-
     <array name="entries_song_playback_mode">
         <item>@string/lbl_play_all</item>
         <item>@string/lbl_play_artist</item>

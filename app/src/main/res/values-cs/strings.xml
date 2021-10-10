@@ -10,7 +10,6 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">"Zkusit znovu"</string>
     <string name="lbl_grant">"Udělit"</string>
-    <string name="lbl_library">"Knihovna"</string>
     <string name="lbl_genres">"Žánry"</string>
     <string name="lbl_artists">"Umělci"</string>
     <string name="lbl_albums">"Alba"</string>
@@ -60,9 +59,6 @@
     <string name="set_black_mode">"Černé téma"</string>
     <string name="setting_black_mode_desc">"Použít kompletně černé tmavé téma"</string>
     <string name="set_display">"Zobrazení"</string>
-    <string name="set_lib_display">"Položky knihovny"</string>
-    <string name="set_color_notif">"Obarvit oznámení"</string>
-    <string name="set_color_notif_desc">"Zobrazit obrázek alba v oznámení"</string>
     <string name="set_show_covers">"Zobrazit barvy alba"</string>
     <string name="set_show_covers_desc">"Vypněte pro ušetření paměti"</string>
     <string name="set_quality_covers">"Ignorovat obaly MediaStore"</string>
@@ -100,7 +96,6 @@
     <string name="hint_search_library">"Prohledat vaši knihovnu…"</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_sort">"Změnit pořadí řazení"</string>
     <string name="desc_track_number">"Stopa %d"</string>
     <string name="desc_play_pause">"Přehrát nebo pozastavit"</string>
     <string name="desc_skip_next">"Přeskočit na další skladbu"</string>
@@ -119,8 +114,6 @@
 
     <!-- Default Namespace | Placeholder values -->
     <string name="def_genre">"Neznámý žánr"</string>
-    <string name="def_artist">"Neznámý umělec"</string>
-    <string name="def_album">"Neznámé album"</string>
     <string name="def_date">"Neznámé datum"</string>
     <string name="def_playback">"Nehraje žádná hudba"</string>
     <string name="def_widget_song">"Název skladby"</string>
@@ -142,8 +135,8 @@
     <string name="clr_yellow">"Žlutá"</string>
     <string name="clr_orange">"Oranžová"</string>
     <string name="clr_deep_orange">"Tmavě oranžová"</string>
-    <string name="clr_label_brown">"Hnědá"</string>
-    <string name="clr_label_grey">"Šedá"</string>
+    <string name="clr_brown">"Hnědá"</string>
+    <string name="clr_grey">"Šedá"</string>
     <string name="clr_blue_grey">"Modrá šedá"</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

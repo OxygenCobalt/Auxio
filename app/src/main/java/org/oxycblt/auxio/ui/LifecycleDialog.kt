@@ -23,11 +23,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.resolveAttr
 
 /**
  * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle
@@ -36,9 +33,6 @@ import org.oxycblt.auxio.util.resolveAttr
 abstract class LifecycleDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
-
-        // Apply a custom background to avoid rounded corners.
-        builder.background = R.attr.colorSurface.resolveAttr(requireContext()).toDrawable()
 
         onConfigDialog(builder)
 

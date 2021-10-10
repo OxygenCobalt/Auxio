@@ -2,15 +2,11 @@
 <resources>
     <!-- SHARED RE-USABLE UI STYLES -->
 
-    <!-- VIEW STYLES -->
-
     <!-- Base toolbar style -->
-    <style name="Widget.Auxio.Toolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+    <style name="Widget.Auxio.Toolbar" parent="ThemeOverlay.Material3.ActionBar">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?android:attr/actionBarSize</item>
-
         <item name="titleTextAppearance">@style/TextAppearance.ToolbarTitle</item>
-        <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 
     <!-- Toolbar sub-style with a nav icon -->
@@ -29,19 +25,15 @@
     </style>
 
     <style name="Widget.Auxio.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressBackgroundTint">?attr/colorAccent</item>
-        <item name="android:progressTint">?attr/colorAccent</item>
+        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:progressBackgroundTint">?attr/colorSecondary</item>
     </style>
 
     <style name="Widget.Auxio.SeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:progressBackgroundTint">?attr/colorAccent</item>
-        <item name="android:progressTint">?attr/colorAccent</item>
-        <item name="android:splitTrack">false</item>
+        <item name="android:progressTint">?attr/colorPrimary</item>
+        <item name="android:progressBackgroundTint">?attr/colorSecondary</item>
         <item name="android:thumbOffset">@dimen/offset_thumb</item>
-        <item name="android:thumbTint">?attr/colorAccent</item>
-        <item name="android:enabled">true</item>
+        <item name="android:thumbTint">?attr/colorPrimary</item>
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:theme">@style/ThemeOverlay.SeekbarHalo</item>
     </style>
@@ -65,11 +57,10 @@
         <item name="android:layout_height">0dp</item>
     </style>
 
-    <style name="TextAppearance.Auxio.TabLayout.Label" parent="@style/TextAppearance.Design.Tab">
+    <style name="TextAppearance.Auxio.TabLayout.Label" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:letterSpacing">0.01</item>
         <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="textAllCaps">false</item>
     </style>
 
     <style name="Widget.Auxio.ItemLayout" parent="">
@@ -174,27 +165,17 @@
         <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Primary" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:letterSpacing">0.01</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:backgroundTint">?attr/colorPrimary</item>
+    <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button.TextButton">
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textColor">?attr/colorSurface</item>
-        <item name="android:insetTop">4dp</item>
-        <item name="android:insetBottom">4dp</item>
         <item name="rippleColor">@color/mtrl_btn_ripple_color</item>
         <item name="fontFamily">@font/inter_semibold</item>
-        <item name="cornerRadius">24dp</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:letterSpacing">0.01</item>
-        <item name="android:textAllCaps">false</item>
+    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:insetTop">4dp</item>
-        <item name="android:insetBottom">4dp</item>
-        <item name="cornerRadius">24dp</item>
     </style>
 
     <style name="Widget.Auxio.Button.Circular" parent="">

@@ -4,7 +4,6 @@
     <string name="lbl_retry">Ulangi</string>
     <string name="lbl_grant">Izinkan</string>
 
-    <string name="lbl_library">Pustaka</string>
     <string name="lbl_genres">Aliran</string>
     <string name="lbl_artists">Artis</string>
     <string name="lbl_albums">Album</string>
@@ -47,7 +46,6 @@
     <string name="set_theme_night">Gelap</string>
     <string name="set_accent">Aksen</string>
 
-    <string name="set_color_notif">Warnai Notifikasi</string>
     <string name="set_quality_covers">Abaikan sampul-sampul pada Media Penyimpanan</string>
 
     <string name="set_audio">Audio</string>

@@ -22,76 +22,108 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.text.Spanned
-import androidx.annotation.ColorRes
-import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
 import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.resolveStateList
 
-/**
- * A list of all possible accents.
- */
-val ACCENTS = arrayOf(
-    Accent(R.color.red, R.style.Theme_Auxio_Red, R.style.Theme_Auxio_Black_Red, R.string.clr_red),
-    Accent(R.color.pink, R.style.Theme_Auxio_Pink, R.style.Theme_Auxio_Black_Pink, R.string.clr_pink),
-    Accent(R.color.purple, R.style.Theme_Auxio_Purple, R.style.Theme_Auxio_Black_Purple, R.string.clr_purple),
-    Accent(
-        R.color.deep_purple,
-        R.style.Theme_Auxio_DeepPurple,
-        R.style.Theme_Auxio_Black_DeepPurple,
-        R.string.clr_deep_purple
-    ),
-    Accent(R.color.indigo, R.style.Theme_Auxio_Indigo, R.style.Theme_Auxio_Black_Indigo, R.string.clr_indigo),
-    Accent(R.color.blue, R.style.Theme_Auxio_Blue, R.style.Theme_Auxio_Black_Blue, R.string.clr_blue),
-    Accent(
-        R.color.light_blue,
-        R.style.Theme_Auxio_LightBlue,
-        R.style.Theme_Auxio_Black_LightBlue,
-        R.string.clr_light_blue
-    ),
-    Accent(R.color.cyan, R.style.Theme_Auxio_Cyan, R.style.Theme_Auxio_Black_Cyan, R.string.clr_cyan),
-    Accent(R.color.teal, R.style.Theme_Auxio_Teal, R.style.Theme_Auxio_Black_Teal, R.string.clr_teal),
-    Accent(R.color.green, R.style.Theme_Auxio_Green, R.style.Theme_Auxio_Black_Green, R.string.clr_green),
-    Accent(
-        R.color.light_green,
-        R.style.Theme_Auxio_LightGreen,
-        R.style.Theme_Auxio_Black_LightGreen,
-        R.string.clr_light_green
-    ),
-    Accent(R.color.lime, R.style.Theme_Auxio_Lime, R.style.Theme_Auxio_Black_Lime, R.string.clr_lime),
-    Accent(R.color.yellow, R.style.Theme_Auxio_Yellow, R.style.Theme_Auxio_Black_Yellow, R.string.clr_yellow),
-    Accent(R.color.orange, R.style.Theme_Auxio_Orange, R.style.Theme_Auxio_Black_Orange, R.string.clr_orange),
-    Accent(
-        R.color.deep_orange,
-        R.style.Theme_Auxio_DeepOrange,
-        R.style.Theme_Auxio_Black_DeepOrange,
-        R.string.clr_deep_orange
-    ),
-    Accent(R.color.brown, R.style.Theme_Auxio_Brown, R.style.Theme_Auxio_Brown, R.string.clr_label_brown),
-    Accent(R.color.grey, R.style.Theme_Auxio_Grey, R.style.Theme_Auxio_Black_Grey, R.string.clr_label_grey),
-    Accent(
-        R.color.blue_grey,
-        R.style.Theme_Auxio_BlueGrey,
-        R.style.Theme_Auxio_Black_BlueGrey,
-        R.string.clr_blue_grey
-    ),
+val ACCENT_PRIMARY_COLORS = arrayOf(
+    R.color.red_primary,
+    R.color.pink_primary,
+    R.color.purple_primary,
+    R.color.deep_purple_primary,
+    R.color.indigo_primary,
+    R.color.blue_primary,
+    R.color.light_blue_primary,
+    R.color.cyan_primary,
+    R.color.teal_primary,
+    R.color.green_primary,
+    R.color.light_green_primary,
+    R.color.lime_primary,
+    R.color.yellow_primary,
+    R.color.orange_primary,
+    R.color.deep_orange_primary,
+    R.color.brown_primary,
+    R.color.grey_primary,
+    R.color.blue_grey_primary
+)
+
+val ACCENT_THEMES = arrayOf(
+    R.style.Theme_Auxio_Red,
+    R.style.Theme_Auxio_Pink,
+    R.style.Theme_Auxio_Purple,
+    R.style.Theme_Auxio_DeepPurple,
+    R.style.Theme_Auxio_Indigo,
+    R.style.Theme_Auxio_Blue,
+    R.style.Theme_Auxio_LightBlue,
+    R.style.Theme_Auxio_Cyan,
+    R.style.Theme_Auxio_Teal,
+    R.style.Theme_Auxio_Green,
+    R.style.Theme_Auxio_LightGreen,
+    R.style.Theme_Auxio_Lime,
+    R.style.Theme_Auxio_Yellow,
+    R.style.Theme_Auxio_Orange,
+    R.style.Theme_Auxio_DeepOrange,
+    R.style.Theme_Auxio_Brown,
+    R.style.Theme_Auxio_Grey,
+    R.style.Theme_Auxio_BlueGrey
+)
+
+val ACCENT_BLACK_THEMES = arrayOf(
+    R.style.Theme_Auxio_Black_Red,
+    R.style.Theme_Auxio_Black_Pink,
+    R.style.Theme_Auxio_Black_Purple,
+    R.style.Theme_Auxio_Black_DeepPurple,
+    R.style.Theme_Auxio_Black_Indigo,
+    R.style.Theme_Auxio_Black_Blue,
+    R.style.Theme_Auxio_Black_LightBlue,
+    R.style.Theme_Auxio_Black_Cyan,
+    R.style.Theme_Auxio_Black_Teal,
+    R.style.Theme_Auxio_Black_Green,
+    R.style.Theme_Auxio_Black_LightGreen,
+    R.style.Theme_Auxio_Black_Lime,
+    R.style.Theme_Auxio_Black_Yellow,
+    R.style.Theme_Auxio_Black_Orange,
+    R.style.Theme_Auxio_Black_DeepOrange,
+    R.style.Theme_Auxio_Black_Brown,
+    R.style.Theme_Auxio_Black_Grey,
+    R.style.Theme_Auxio_Black_BlueGrey
+)
+
+val ACCENT_NAMES = arrayOf(
+    R.string.clr_red,
+    R.string.clr_pink,
+    R.string.clr_purple,
+    R.string.clr_deep_purple,
+    R.string.clr_indigo,
+    R.string.clr_blue,
+    R.string.clr_light_blue,
+    R.string.clr_cyan,
+    R.string.clr_teal,
+    R.string.clr_green,
+    R.string.clr_light_green,
+    R.string.clr_lime,
+    R.string.clr_yellow,
+    R.string.clr_orange,
+    R.string.clr_deep_orange,
+    R.string.clr_brown,
+    R.string.clr_grey,
+    R.string.clr_blue_grey
 )
 
 /**
  * The data object for an accent.
- * @property color The color resource for this accent
+ * @property color The primary color resource for this accent
  * @property theme The theme resource for this accent
  * @property blackTheme The black theme resource for this accent
  * @property name  The name of this accent
  * @author OxygenCobalt
  */
-data class Accent(
-    @ColorRes val color: Int,
-    @StyleRes val theme: Int,
-    @StyleRes val blackTheme: Int,
-    @StringRes val name: Int
-) {
+data class Accent(val index: Int) {
+    val color: Int get() = ACCENT_PRIMARY_COLORS[index]
+    val theme: Int get() = ACCENT_THEMES[index]
+    val blackTheme: Int get() = ACCENT_BLACK_THEMES[index]
+    val name: Int get() = ACCENT_NAMES[index]
+
     /**
      * Get a [ColorStateList] of the accent
      */

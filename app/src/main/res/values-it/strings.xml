@@ -4,7 +4,6 @@
     <string name="lbl_retry">Riprova</string>
     <string name="lbl_grant">Permetti</string>
 
-    <string name="lbl_library">Libreria</string>
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
     <string name="lbl_albums">Albums</string>
@@ -48,7 +47,6 @@
     <string name="set_theme_night">Scuro</string>
 
     <string name="set_accent">Accento</string>
-    <string name="set_color_notif">Colora notifica</string>
     <string name="set_quality_covers">Ignora le copertine del Media Store</string>
 
     <string name="set_audio">Audio</string>
@@ -84,8 +82,8 @@
     <string name="clr_lime">Verde Giallo</string>
     <string name="clr_yellow">Giallo</string>
     <string name="clr_orange">Arancio</string>
-    <string name="clr_label_brown">Bruno</string>
-    <string name="clr_label_grey">Grigio</string>
+    <string name="clr_brown">Bruno</string>
+    <string name="clr_grey">Grigio</string>
     <string name="clr_blue_grey">Azzurro Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

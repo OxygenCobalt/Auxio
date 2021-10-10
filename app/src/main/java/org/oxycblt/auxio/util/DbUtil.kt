@@ -21,7 +21,6 @@ package org.oxycblt.auxio.util
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Looper
-import org.oxycblt.auxio.R
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned.

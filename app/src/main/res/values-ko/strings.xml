@@ -4,7 +4,6 @@
     <string name="lbl_retry">재시도</string>
     <string name="lbl_grant">허가</string>
 
-    <string name="lbl_library">보관함</string>
     <string name="lbl_genres">장르</string>
     <string name="lbl_artists">아티스트</string>
     <string name="lbl_albums">앨범</string>
@@ -46,7 +45,6 @@
     <string name="set_theme_night">어두운 테마</string>
     <string name="set_accent">강조</string>
 
-    <string name="set_color_notif">색상화된 알림</string>
     <string name="set_quality_covers">미디어 스토어 앨범 커버 무시</string>
 
     <string name="set_audio">오디오</string>

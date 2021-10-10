@@ -5,7 +5,6 @@
     <string name="lbl_grant">अनुदान</string>
 
     <string name="lbl_artists">कलाकार</string>
-    <string name="lbl_library">पुस्तकालय</string>
     <string name="lbl_albums">एल्बम</string>
     <string name="lbl_songs">गीत</string>
     <string name="lbl_all_songs">गीत</string>
@@ -39,8 +38,6 @@
     <string name="set_theme_day">गहरा</string>
     <string name="set_theme_night">स्वचलित</string>
     <string name="set_accent">एक्सेंट</string>
-
-    <string name="set_color_notif">अधिसूचना को रंग दें</string>
 
     <string name="set_audio">ऑडियो</string>
     <string name="set_focus">ऑडियो फोकस</string>

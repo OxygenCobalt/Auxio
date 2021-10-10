@@ -13,27 +13,25 @@
     </style>
 
     <!-- Custom dialog title theme -->
-    <style name="Widget.Auxio.Dialog.TextView" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+    <style name="Widget.Auxio.Dialog.TextView" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:fontFamily">@font/inter_bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
-    <style name="Widget.Auxio.Dialog.CheckedTextView" parent="Widget.MaterialComponents.CheckedTextView">
+    <style name="Widget.Auxio.Dialog.CheckedTextView" parent="Widget.Material3.CheckedTextView">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:background">@null</item>
     </style>
 
     <!-- Style for dialog buttons -->
-    <style name="Widget.Auxio.Dialog.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="Widget.Auxio.Dialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textColor">?attr/colorAccent</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
-        <item name="cornerRadius">0dp</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <!-- Custom button style that eliminates the weird margin that the neutral button has -->

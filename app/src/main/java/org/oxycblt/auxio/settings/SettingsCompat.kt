@@ -21,7 +21,7 @@ package org.oxycblt.auxio.settings
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import org.oxycblt.auxio.accent.ACCENTS
+import org.oxycblt.auxio.accent.ACCENT_PRIMARY_COLORS
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 
@@ -70,8 +70,8 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
 
         // If there are still any issues with indices, just correct them so a crash doesnt occur.
-        if (accent > ACCENTS.lastIndex) {
-            accent = ACCENTS.lastIndex
+        if (accent > ACCENT_PRIMARY_COLORS.lastIndex) {
+            accent = ACCENT_PRIMARY_COLORS.lastIndex
         }
 
         prefs.edit {
@@ -80,10 +80,10 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
             apply()
         }
 
-        return ACCENTS[accent]
+        return Accent(accent)
     }
 
-    return ACCENTS[prefs.getInt(SettingsManager.KEY_ACCENT, 5)]
+    return Accent(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
 }
 
 fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {

@@ -108,16 +108,6 @@ fun Context.isLandscape(): Boolean {
 }
 
 /**
- * Determine if we are in tablet mode or not
- */
-fun Context.isTablet(): Boolean {
-    val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
-
-    return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE ||
-        layout == Configuration.SCREENLAYOUT_SIZE_LARGE
-}
-
-/**
  * Determine if the tablet is XLARGE, ignoring normal tablets.
  */
 fun Context.isXLTablet(): Boolean {

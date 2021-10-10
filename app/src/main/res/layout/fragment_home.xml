@@ -34,11 +34,9 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:tabContentStart="@dimen/spacing_medium"
-                app:tabIndicatorColor="?attr/colorAccent"
                 app:tabMode="scrollable"
                 app:tabTextAppearance="@style/TextAppearance.Auxio.TabLayout.Label"
-                app:tabTextColor="?android:attr/textColorPrimary"
-                app:tabUnboundedRipple="true" />
+                app:tabTextColor="@color/sel_accented_primary"/>
 
         </org.oxycblt.auxio.ui.LiftAppBarLayout>
 

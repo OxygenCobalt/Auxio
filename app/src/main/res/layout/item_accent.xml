@@ -17,7 +17,7 @@
             android:padding="@dimen/spacing_medium"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_check"
-            tools:backgroundTint="?attr/colorAccent"
+            tools:backgroundTint="?attr/colorPrimary"
             tools:ignore="ContentDescription, SpeakableTextPresentCheck" />
 
     </FrameLayout>

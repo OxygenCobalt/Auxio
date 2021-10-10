@@ -4,7 +4,6 @@
     <string name="lbl_retry">Yeniden dene</string>
     <string name="lbl_grant">İzin</string>
 
-    <string name="lbl_library">Kitaplık</string>
     <string name="lbl_genres">Türler</string>
     <string name="lbl_artists">Sanatçılar</string>
     <string name="lbl_albums">Albümler</string>
@@ -47,7 +46,6 @@
     <string name="set_theme_night">Koyu</string>
     <string name="set_accent">Ana Renk</string>
 
-    <string name="set_color_notif">Bildirimi renklendir</string>
     <string name="set_quality_covers">Medya Deposu albüm kapağını yoksay</string>
 
     <string name="set_audio">Ses</string>

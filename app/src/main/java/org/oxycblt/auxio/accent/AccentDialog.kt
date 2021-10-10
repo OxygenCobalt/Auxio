@@ -47,7 +47,7 @@ class AccentDialog : LifecycleDialog() {
         val binding = DialogAccentBinding.inflate(inflater)
 
         savedInstanceState?.getInt(KEY_PENDING_ACCENT)?.let { index ->
-            pendingAccent = ACCENTS.getOrElse(index) { pendingAccent }
+            pendingAccent = Accent(index)
         }
 
         // --- UI SETUP ---
@@ -70,7 +70,7 @@ class AccentDialog : LifecycleDialog() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putInt(KEY_PENDING_ACCENT, ACCENTS.indexOf(pendingAccent))
+        outState.putInt(KEY_PENDING_ACCENT, pendingAccent.index)
     }
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {

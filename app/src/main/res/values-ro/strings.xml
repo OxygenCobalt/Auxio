@@ -4,7 +4,6 @@
     <string name="lbl_retry">Reîncearcă</string>
     <string name="lbl_grant">Permiteți</string>
 
-    <string name="lbl_library">Bibliotecă</string>
     <string name="lbl_genres">Genuri</string>
     <string name="lbl_artists">Artiști</string>
     <string name="lbl_albums">Albume</string>
@@ -48,7 +47,6 @@
     <string name="set_theme_night">Întunecat</string>
     <string name="set_accent">Culoare accentuată</string>
 
-    <string name="set_color_notif">Colorează notificarea</string>
     <string name="set_quality_covers">Ignoră coperțile Media Store</string>
 
     <string name="set_audio">Audio</string>
@@ -82,8 +80,8 @@
     <string name="clr_lime">Verde Galben</string>
     <string name="clr_yellow">Galben</string>
     <string name="clr_orange">Portocaliu</string>
-    <string name="clr_label_brown">Brun</string>
-    <string name="clr_label_grey">Gri</string>
+    <string name="clr_brown">Brun</string>
+    <string name="clr_grey">Gri</string>
     <string name="clr_blue_grey">Albastru Gri</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

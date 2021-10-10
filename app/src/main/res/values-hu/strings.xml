@@ -4,7 +4,6 @@
     <string name="lbl_retry">Újra</string>
     <string name="lbl_grant">Engedélyezés</string>
 
-    <string name="lbl_library">Könyvtár</string>
     <string name="lbl_genres">Műfajo</string>
     <string name="lbl_artists">Előadók</string>
     <string name="lbl_albums">Albumok</string>
@@ -47,7 +46,6 @@
     <string name="set_theme_night">Sötét</string>
     <string name="set_accent">Kiemelés</string>
 
-    <string name="set_color_notif">Értesítés színezése</string>
     <string name="set_quality_covers">A médiatár albumborítók figyelmen kívül hagyása</string>
 
     <string name="set_audio">Hang</string>
@@ -83,8 +81,8 @@
     <string name="clr_lime">Sárgazöld</string>
     <string name="clr_yellow">Sárga</string>
     <string name="clr_orange">Narancs</string>
-    <string name="clr_label_brown">Barna</string>
-    <string name="clr_label_grey">Szürke</string>
+    <string name="clr_brown">Barna</string>
+    <string name="clr_grey">Szürke</string>
     <string name="clr_blue_grey">Kékszürke</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

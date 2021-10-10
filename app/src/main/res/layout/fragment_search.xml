@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:boxBackgroundMode="filled"
-                app:boxStrokeColor="?attr/colorAccent"
+                app:boxStrokeColor="?attr/colorPrimary"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="@dimen/size_stroke_large"
                 app:endIconContentDescription="@string/desc_clear_search"
@@ -45,8 +45,7 @@
                     android:hint="@string/hint_search_library"
                     android:padding="@dimen/spacing_medium"
                     android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:inputType="textFilter"
-                    android:textCursorDrawable="@drawable/ui_cursor" />
+                    android:inputType="textFilter" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </org.oxycblt.auxio.ui.LiftAppBarLayout>

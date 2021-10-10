@@ -7,7 +7,7 @@
         <shape android:shape="rectangle">
             <stroke
                 android:width="@dimen/size_stroke_small"
-                android:color="@color/mtrl_btn_stroke_color_selector" />
+                android:color="?attr/colorOutline" />
         </shape>
     </item>
 </layer-list>

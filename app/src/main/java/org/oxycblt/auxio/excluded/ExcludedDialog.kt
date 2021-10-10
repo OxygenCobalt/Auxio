@@ -46,7 +46,7 @@ import kotlin.system.exitProcess
  * @author OxygenCobalt
  */
 class ExcludedDialog : LifecycleDialog() {
-    private val blacklistModel: ExcludedViewModel by viewModels {
+    private val excludedModel: ExcludedViewModel by viewModels {
         ExcludedViewModel.Factory(requireContext())
     }
 
@@ -60,7 +60,7 @@ class ExcludedDialog : LifecycleDialog() {
         val binding = DialogExcludedBinding.inflate(inflater)
 
         val adapter = ExcludedEntryAdapter { path ->
-            blacklistModel.removePath(path)
+            excludedModel.removePath(path)
         }
 
         val launcher = registerForActivityResult(
@@ -83,7 +83,7 @@ class ExcludedDialog : LifecycleDialog() {
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                if (blacklistModel.isModified()) {
+                if (excludedModel.isModified()) {
                     saveAndRestart()
                 } else {
                     dismiss()
@@ -93,7 +93,7 @@ class ExcludedDialog : LifecycleDialog() {
 
         // --- VIEWMODEL SETUP ---
 
-        blacklistModel.paths.observe(viewLifecycleOwner) { paths ->
+        excludedModel.paths.observe(viewLifecycleOwner) { paths ->
             adapter.submitList(paths)
 
             binding.excludedEmpty.isVisible = paths.isEmpty()
@@ -122,7 +122,7 @@ class ExcludedDialog : LifecycleDialog() {
         val path = parseDocTreePath(uri)
 
         if (path != null) {
-            blacklistModel.addPath(path)
+            excludedModel.addPath(path)
         } else {
             // TODO: Tolerate this once the excluded system is modernized
             requireContext().showToast(R.string.err_bad_dir)
@@ -149,7 +149,7 @@ class ExcludedDialog : LifecycleDialog() {
     }
 
     private fun saveAndRestart() {
-        blacklistModel.save {
+        excludedModel.save {
             playbackModel.savePlaybackState(requireContext(), ::hardRestart)
         }
     }

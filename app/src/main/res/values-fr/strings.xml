@@ -4,7 +4,6 @@
     <string name="lbl_retry">Réessayer</string>
     <string name="lbl_grant">Accorder</string>
 
-    <string name="lbl_library">Bibliothèque</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artistes</string>
     <string name="lbl_albums">Albums</string>
@@ -48,8 +47,6 @@
     <string name="set_theme_night">Sombre</string>
     <string name="set_accent">Couleur d\'accentuation</string>
 
-    <string name="set_lib_display">Objets Bibliothèque</string>
-    <string name="set_color_notif">Notification colorée</string>
     <string name="set_quality_covers">Ignorer le stockage des pochettes</string>
 
     <string name="set_audio">Audio</string>
@@ -84,8 +81,8 @@
     <string name="clr_lime">Vert Citron</string>
     <string name="clr_yellow">Jaune</string>
     <string name="clr_orange">Orange</string>
-    <string name="clr_label_brown">Brun</string>
-    <string name="clr_label_grey">Gris</string>
+    <string name="clr_brown">Brun</string>
+    <string name="clr_grey">Gris</string>
     <string name="clr_blue_grey">Bleu Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

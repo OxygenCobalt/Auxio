@@ -1,49 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Master parent theme based off of Theme.MaterialComponents.DayNight.NoActionBar.Bridge -->
-    <style name="Theme.Auxio" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+    <style name="Theme.Auxio" parent="Theme.Material3.DayNight.NoActionBar" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Auxio.V27" parent="Theme.Auxio" />
-    <!-- Android 12 Splashscreen config -->
-    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27" />
+    <!-- Android 12 configuration -->
+    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
+        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="colorOnSecondary">?attr/colorOnPrimary</item>
+        <item name="colorSecondaryContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnSecondaryContainer">?attr/colorOnPrimaryContainer</item>
+
+        <item name="colorTertiary">?attr/colorPrimary</item>
+        <item name="colorOnTertiary">?attr/colorOnPrimary</item>
+        <item name="colorTertiaryContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnTertiaryContainer">?attr/colorOnPrimaryContainer</item>
+
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorControlNormal">@color/control</item>
+        <item name="colorControlHighlight">@color/overlay_selection</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+
+        <item name="colorAccent">?attr/colorPrimary</item>
+    </style>>
 
     <!-- Base theme -->
     <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">
-        <!-- Colors -->
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorAccent">@color/blue</item>
-
-        <item name="colorPrimary">?attr/colorAccent</item>
-        <item name="colorOnPrimary">?attr/colorSurface</item>
-
-        <item name="colorSecondary">?attr/colorAccent</item>
-        <item name="colorOnSecondary">?attr/colorSurface</item>
-
-        <item name="colorControlNormal">@color/control</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
-        <item name="colorControlActivated">?attr/colorAccent</item>
-
-        <!--
-        Use the accent color as the elevation overlay color on dark mode. It's just more visually
-        appealing then a grey-ish color that sticks out like a sore thumb. Technically this is
-        actually a part of Material3, but that is still unstable, so I just copied this element
-        for now.
-        -->
-        <item name="elevationOverlayColor">?attr/colorPrimary</item>
+        <!-- Values -->
+        <item name="colorOutline">@color/overlay_stroke</item>
 
         <!-- Appearance -->
-        <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">@font/inter</item>
-        <item name="android:textCursorDrawable">@drawable/ui_cursor</item>
-
-        <item name="cornerRadius">0dp</item>
-
-        <!-- System-specific magic -->
         <item name="android:scrollbars">none</item>
-        <item name="android:windowIsFloating">false</item>
 
-        <!-- Material stuff -->
+        <!-- Material -->
         <item name="textInputStyle">@null</item>
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
     </style>

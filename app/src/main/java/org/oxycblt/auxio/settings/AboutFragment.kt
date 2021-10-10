@@ -53,7 +53,7 @@ class AboutFragment : Fragment() {
         val musicStore = MusicStore.getInstance()
 
         binding.applyEdge { bars ->
-            binding.aboutAppbar.updatePadding(top = bars.top,)
+            binding.aboutAppbar.updatePadding(top = bars.top)
             binding.aboutContents.updatePadding(bottom = bars.bottom)
         }
 

@@ -8,7 +8,6 @@
     <string name="lbl_retry">Reintentar</string>
     <string name="lbl_grant">Permitir</string>
 
-    <string name="lbl_library">Biblioteca</string>
     <string name="lbl_genres">Géneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbum</string>
@@ -65,9 +64,6 @@
     <string name="setting_black_mode_desc">Usar tema negro puro</string>
 
     <string name="set_display">Pantalla</string>
-    <string name="set_lib_display">Ítem de biblioteca</string>
-    <string name="set_color_notif">Ajustar color de notificación</string>
-    <string name="set_color_notif_desc">Mostrar imagen de álbum en la notificación</string>
     <string name="set_show_covers">Mostrar carátula de álbum</string>
     <string name="set_show_covers_desc">Desactivar para ahorrar uso de memoria</string>
     <string name="set_quality_covers">Ignorar carátulas de MediaStore</string>
@@ -106,7 +102,6 @@
     <string name="hint_search_library">Busca en tu biblioteca…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_sort">Cambiar el orden de clasificación</string>
     <string name="desc_track_number">Pista %d</string>
 
     <string name="desc_play_pause">Reproducir o Pausar</string>
@@ -125,8 +120,6 @@
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="def_genre">Género desconocido</string>
-    <string name="def_artist">Artista desconocido</string>
-    <string name="def_album">Álbum desconocido</string>
     <string name="def_date">Sin fecha</string>
 
     <!-- Color Label namespace | Accent names -->
@@ -145,8 +138,8 @@
     <string name="clr_yellow">Amarillo</string>
     <string name="clr_orange">Naranja</string>
     <string name="clr_deep_orange">Naranja Profundo</string>
-    <string name="clr_label_brown">Café</string>
-    <string name="clr_label_grey">Gris</string>
+    <string name="clr_brown">Café</string>
+    <string name="clr_grey">Gris</string>
     <string name="clr_blue_grey">Azul Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

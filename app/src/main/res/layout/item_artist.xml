@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/artist_name"
-                        android:layout_width="0dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/Widget.Auxio.TextView.Item.Primary"
             android:text="@{artist.name}"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/artist_details"
-                        android:layout_width="0dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/Widget.Auxio.TextView.Item.Secondary"
             app:artistCounts="@{artist}"

@@ -4,7 +4,6 @@
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_grant">Разрешить</string>
 
-    <string name="lbl_library">Библиотека</string>
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
     <string name="lbl_albums">Альбомы</string>
@@ -47,7 +46,6 @@
     <string name="set_theme_night">Темная</string>
     <string name="set_accent">Акцент</string>
 
-    <string name="set_color_notif">Цветное уведомление</string>
     <string name="set_quality_covers">Игнорировать хранилище обложек альбомов</string>
 
     <string name="set_audio">Аудио</string>
@@ -80,7 +78,7 @@
     <string name="clr_yellow">Оранжевый</string>
     <string name="clr_light_green">Жёлтый</string>
     <string name="clr_orange">Коричневый</string>
-    <string name="clr_label_brown">Седой</string>
+    <string name="clr_brown">Седой</string>
     <string name="clr_blue_grey">Нейтральный</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

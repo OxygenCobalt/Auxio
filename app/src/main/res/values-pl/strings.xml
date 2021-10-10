@@ -4,7 +4,6 @@
     <string name="lbl_retry">Ponów</string>
     <string name="lbl_grant">Przyznaj</string>
 
-    <string name="lbl_library">Biblioteka</string>
     <string name="lbl_genres">Gatunki</string>
     <string name="lbl_artists">Wykonawcy</string>
     <string name="lbl_albums">Albumy</string>
@@ -47,7 +46,6 @@
     <string name="set_theme_night">Ciemny</string>
     <string name="set_accent">Odcień koloru</string>
 
-    <string name="set_color_notif">Pokolorowanie powiadomienia</string>
     <string name="set_quality_covers">Ignoruj okładki z Media Store</string>
 
     <string name="set_audio">Dźwięk</string>
@@ -81,8 +79,8 @@
     <string name="clr_lime">Żółtyzielony</string>
     <string name="clr_yellow">Żółty</string>
     <string name="clr_orange">Pomarańczowy</string>
-    <string name="clr_label_brown">Brązowy</string>
-    <string name="clr_label_grey">Szary</string>
+    <string name="clr_brown">Brązowy</string>
+    <string name="clr_grey">Szary</string>
     <string name="clr_blue_grey">Błękitszary</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

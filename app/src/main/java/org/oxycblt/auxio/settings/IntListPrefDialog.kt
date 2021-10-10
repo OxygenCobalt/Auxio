@@ -20,12 +20,8 @@ package org.oxycblt.auxio.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.view.updatePadding
 import androidx.preference.PreferenceFragmentCompat
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.LifecycleDialog
 
 class IntListPrefDialog : LifecycleDialog() {
@@ -37,23 +33,7 @@ class IntListPrefDialog : LifecycleDialog() {
                 .findPreference<IntListPreference>(requireArguments().getString(ARG_KEY, null))
         )
 
-        // Don't set the title. Instead, Set a custom title view so that the padding is actually a
-        // uniform 16dp between the title and the list of options. I can't believe I have to do this.
-        val titleView = AppCompatTextView(
-            ContextThemeWrapper(
-                requireContext(),
-                R.style.Widget_Auxio_Dialog_TextView
-            )
-        ).apply {
-            text = pref.title
-
-            val padding = resources.getDimension(R.dimen.spacing_medium).toInt()
-            val paddingHack = resources.getDimension(R.dimen.spacing_small).toInt()
-
-            updatePadding(left = padding, top = padding, right = padding, bottom = paddingHack)
-        }
-
-        builder.setCustomTitle(titleView)
+        builder.setTitle(pref.title)
 
         builder.setSingleChoiceItems(pref.entries, pref.getValueIndex()) { _, index ->
             pref.setValueIndex(index)

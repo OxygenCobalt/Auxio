@@ -27,7 +27,6 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsets
-import android.widget.ImageButton
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -85,17 +84,6 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
  * Returns whether a recyclerview can scroll.
  */
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
-
-/**
- * Disable an image button.
- * TODO: Replace this fragile function with something else.
- */
-fun ImageButton.disable() {
-    if (isEnabled) {
-        imageTintList = ContextCompat.getColorStateList(context, R.color.overlay_disabled)
-        isEnabled = false
-    }
-}
 
 /**
  * Resolve a color.

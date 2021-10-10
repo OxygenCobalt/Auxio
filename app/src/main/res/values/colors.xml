@@ -5,25 +5,114 @@
     <color name="nav_bar">#01fafafa</color>
 
     <!--
-    Base color set derived from Music Player GO.
-    https://github.com/enricocid/Music-Player-GO
+    Each accent's color roles.
+    Note that some accents might have different tones used for legibility. Those are not errors.
     -->
-    <color name="red">#f44336</color>
-    <color name="pink">#e91e63</color>
-    <color name="purple">#9c27b0</color>
-    <color name="deep_purple">#673ab7</color>
-    <color name="indigo">#3f51b5</color>
-    <color name="blue">#2196f3</color>
-    <color name="light_blue">#03a9f4</color>
-    <color name="cyan">#00bcd4</color>
-    <color name="teal">#009688</color>
-    <color name="green">#4caf50</color>
-    <color name="light_green">#8bc34a</color>
-    <color name="lime">#B7C534</color>
-    <color name="yellow">#E4AC00</color>
-    <color name="orange">#E68A01</color>
-    <color name="deep_orange">#ff5722</color>
-    <color name="brown">#795548</color>
-    <color name="grey">#808080</color>
-    <color name="blue_grey">#607d8b</color>
+    <color name="red_primary">@color/red_40</color>
+    <color name="red_on_primary">@color/red_100</color>
+    <color name="red_primary_inverse">@color/red_80</color>
+    <color name="red_primary_container">@color/red_90</color>
+    <color name="red_on_primary_container">@color/red_10</color>
+
+    <color name="pink_primary">@color/pink_40</color>
+    <color name="pink_on_primary">@color/pink_100</color>
+    <color name="pink_primary_inverse">@color/pink_80</color>
+    <color name="pink_primary_container">@color/pink_90</color>
+    <color name="pink_on_primary_container">@color/pink_10</color>
+
+    <color name="purple_primary">@color/purple_40</color>
+    <color name="purple_on_primary">@color/purple_100</color>
+    <color name="purple_primary_inverse">@color/purple_80</color>
+    <color name="purple_primary_container">@color/purple_90</color>
+    <color name="purple_on_primary_container">@color/purple_10</color>
+
+    <color name="deep_purple_primary">@color/deep_purple_40</color>
+    <color name="deep_purple_on_primary">@color/deep_purple_100</color>
+    <color name="deep_purple_primary_inverse">@color/deep_purple_80</color>
+    <color name="deep_purple_primary_container">@color/deep_purple_90</color>
+    <color name="deep_purple_on_primary_container">@color/deep_purple_10</color>
+
+    <color name="indigo_primary">@color/indigo_40</color>
+    <color name="indigo_on_primary">@color/indigo_100</color>
+    <color name="indigo_primary_inverse">@color/indigo_80</color>
+    <color name="indigo_primary_container">@color/indigo_90</color>
+    <color name="indigo_on_primary_container">@color/indigo_10</color>
+
+    <color name="blue_primary">@color/blue_40</color>
+    <color name="blue_on_primary">@color/blue_100</color>
+    <color name="blue_primary_inverse">@color/blue_80</color>
+    <color name="blue_primary_container">@color/blue_90</color>
+    <color name="blue_on_primary_container">@color/blue_10</color>
+
+    <color name="light_blue_primary">@color/light_blue_40</color>
+    <color name="light_blue_on_primary">@color/light_blue_100</color>
+    <color name="light_blue_primary_inverse">@color/light_blue_80</color>
+    <color name="light_blue_primary_container">@color/light_blue_90</color>
+    <color name="light_blue_on_primary_container">@color/light_blue_10</color>
+
+    <color name="cyan_primary">@color/cyan_40</color>
+    <color name="cyan_on_primary">@color/cyan_100</color>
+    <color name="cyan_primary_inverse">@color/cyan_80</color>
+    <color name="cyan_primary_container">@color/cyan_90</color>
+    <color name="cyan_on_primary_container">@color/cyan_10</color>
+
+    <color name="teal_primary">@color/teal_40</color>
+    <color name="teal_on_primary">@color/teal_100</color>
+    <color name="teal_primary_inverse">@color/teal_80</color>
+    <color name="teal_primary_container">@color/teal_90</color>
+    <color name="teal_on_primary_container">@color/teal_10</color>
+
+    <color name="green_primary">@color/green_40</color>
+    <color name="green_on_primary">@color/green_100</color>
+    <color name="green_primary_inverse">@color/green_80</color>
+    <color name="green_primary_container">@color/green_90</color>
+    <color name="green_on_primary_container">@color/green_10</color>
+
+    <color name="light_green_primary">@color/light_green_40</color>
+    <color name="light_green_on_primary">@color/light_green_100</color>
+    <color name="light_green_primary_inverse">@color/light_green_80</color>
+    <color name="light_green_primary_container">@color/light_green_90</color>
+    <color name="light_green_on_primary_container">@color/light_green_10</color>
+
+    <color name="lime_primary">@color/lime_40</color>
+    <color name="lime_on_primary">@color/lime_100</color>
+    <color name="lime_primary_inverse">@color/lime_80</color>
+    <color name="lime_primary_container">@color/lime_90</color>
+    <color name="lime_on_primary_container">@color/lime_10</color>
+
+    <color name="yellow_primary">@color/yellow_40</color>
+    <color name="yellow_on_primary">@color/yellow_100</color>
+    <color name="yellow_primary_inverse">@color/yellow_80</color>
+    <color name="yellow_primary_container">@color/yellow_90</color>
+    <color name="yellow_on_primary_container">@color/yellow_10</color>
+
+    <color name="orange_primary">@color/orange_40</color>
+    <color name="orange_on_primary">@color/orange_100</color>
+    <color name="orange_primary_inverse">@color/orange_80</color>
+    <color name="orange_primary_container">@color/orange_90</color>
+    <color name="orange_on_primary_container">@color/orange_10</color>
+
+    <color name="deep_orange_primary">@color/deep_orange_40</color>
+    <color name="deep_orange_on_primary">@color/deep_orange_100</color>
+    <color name="deep_orange_primary_inverse">@color/deep_orange_80</color>
+    <color name="deep_orange_primary_container">@color/deep_orange_90</color>
+    <color name="deep_orange_on_primary_container">@color/deep_orange_10</color>
+
+    <color name="brown_primary">@color/brown_40</color>
+    <color name="brown_on_primary">@color/brown_100</color>
+    <color name="brown_primary_inverse">@color/brown_80</color>
+    <color name="brown_primary_container">@color/brown_90</color>
+    <color name="brown_on_primary_container">@color/brown_10</color>
+
+    <color name="grey_primary">@color/grey_40</color>
+    <color name="grey_on_primary">@color/grey_100</color>
+    <color name="grey_primary_inverse">@color/grey_80</color>
+    <color name="grey_primary_container">@color/grey_70</color>
+    <color name="grey_on_primary_container">@color/grey_10</color>
+
+    <color name="blue_grey_primary">@color/blue_grey_40</color>
+    <color name="blue_grey_on_primary">@color/blue_grey_100</color>
+    <color name="blue_grey_primary_inverse">@color/blue_grey_80</color>
+    <color name="blue_grey_primary_container">@color/blue_grey_90</color>
+    <color name="blue_grey_on_primary_container">@color/blue_grey_10</color>
 </resources>

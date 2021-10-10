@@ -4,7 +4,6 @@
     <string name="lbl_retry">Προσπάθεια εκ νέου</string>
     <string name="lbl_grant">Χορήγησε</string>
 
-    <string name="lbl_library">Βιβλιοθήκη</string>
     <string name="lbl_genres">Είδη</string>
     <string name="lbl_artists">Καλλιτέχνες</string>
     <string name="lbl_albums">Άλμπουμ</string>
@@ -45,7 +44,6 @@
     <string name="set_theme_night">Σκοτεινό</string>
     <string name="set_accent">Χρώμα χαρακτήρων</string>
 
-    <string name="set_color_notif">Χρωματισμός ειδοποιήσεων</string>
     <string name="set_quality_covers">Παράληψη των Media Store εξωφύλλων</string>
 
     <string name="set_audio">Ήχος</string>
@@ -74,8 +72,8 @@
     <string name="clr_lime">Πράσινος Κίτρινος</string>
     <string name="clr_yellow">Κίτρινος</string>
     <string name="clr_orange">Πορτοκαλής</string>
-    <string name="clr_label_brown">Καφέ</string>
-    <string name="clr_label_grey">Γκρί</string>
+    <string name="clr_brown">Καφέ</string>
+    <string name="clr_grey">Γκρί</string>
     <string name="clr_blue_grey">Γαλάζιος Γκρί</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

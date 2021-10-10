@@ -11,7 +11,6 @@
     <string name="lbl_retry">Retry</string>
     <string name="lbl_grant">Grant</string>
 
-    <string name="lbl_library">Library</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artists</string>
     <string name="lbl_albums">Albums</string>
@@ -71,13 +70,10 @@
     <string name="setting_black_mode_desc">Use a pure-black dark theme</string>
 
     <string name="set_display">Display</string>
-    <string name="set_lib_display">Library Items</string>
-    <string name="set_color_notif">Colorize notification</string>
-    <string name="set_color_notif_desc">Show album art on notification</string>
     <string name="set_show_covers">Show album covers</string>
     <string name="set_show_covers_desc">Turn off to save memory usage</string>
     <string name="set_quality_covers">Ignore MediaStore covers</string>
-    <string name="set_quality_covers_desc">Increases the quality of the album covers, but results in longer loading times and higher memory usage</string>
+    <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
     <string name="set_alt_action">Use alternate notification action</string>
     <string name="set_alt_loop">Prefer repeat mode action</string>
     <string name="set_alt_shuffle">Prefer shuffle action</string>
@@ -136,8 +132,6 @@
 
     <!-- Default Namespace | Placeholder values -->
     <string name="def_genre">Unknown Genre</string>
-    <string name="def_artist">Unknown Artist</string>
-    <string name="def_album">Unknown Album</string>
     <string name="def_date">No Date</string>
     <string name="def_playback">No music playing</string>
     <string name="def_widget_song">Song Name</string>
@@ -159,8 +153,8 @@
     <string name="clr_yellow">Yellow</string>
     <string name="clr_orange">Orange</string>
     <string name="clr_deep_orange">Deep Orange</string>
-    <string name="clr_label_brown">Brown</string>
-    <string name="clr_label_grey">Grey</string>
+    <string name="clr_brown">Brown</string>
+    <string name="clr_grey">Grey</string>
     <string name="clr_blue_grey">Blue Grey</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

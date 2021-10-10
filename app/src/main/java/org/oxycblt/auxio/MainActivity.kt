@@ -90,18 +90,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        // Update the current accent and theme
-        val settingsManager = SettingsManager.getInstance()
-        AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+        // We only use Material You theming on Android 12 and above.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            // Update the current accent and theme
+            val settingsManager = SettingsManager.getInstance()
+            AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
 
-        val newAccent = Accent.set(settingsManager.accent)
+            val newAccent = Accent.set(settingsManager.accent)
 
-        // The black theme has a completely separate set of styles since style attributes cannot
-        // be modified at runtime.
-        if (isNight && settingsManager.useBlackTheme) {
-            setTheme(newAccent.blackTheme)
-        } else {
-            setTheme(newAccent.theme)
+            // The black theme has a completely separate set of styles since style attributes cannot
+            // be modified at runtime.
+            if (isNight && settingsManager.useBlackTheme) {
+                setTheme(newAccent.blackTheme)
+            } else {
+                setTheme(newAccent.theme)
+            }
         }
     }
 

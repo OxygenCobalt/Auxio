@@ -8,7 +8,6 @@
     <string name="lbl_retry">Opnieuw proberen</string>
     <string name="lbl_grant">Toestaan</string>
 
-    <string name="lbl_library">Bibliotheek</string>
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artiesten</string>
     <string name="lbl_albums">Albums</string>
@@ -63,9 +62,6 @@
     <string name="set_accent">Accent</string>
 
     <string name="set_display">Scherm</string>
-    <string name="set_lib_display">Bibliotheek Items</string>
-    <string name="set_color_notif">Notificatie kleur aanpassen</string>
-    <string name="set_color_notif_desc">Toon album art op notification</string>
     <string name="set_show_covers">Toon albumhoezen</string>
     <string name="set_show_covers_desc">Schakel uit om geheugengebruik te besparen</string>
     <string name="set_quality_covers">Negeer Mediaopslag illustraties</string>
@@ -104,7 +100,6 @@
     <string name="hint_search_library">Zoek in uw bibliotheek…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_sort">Sorteervolgorde wijzigen</string>
     <string name="desc_track_number">Nummer %d</string>
 
     <string name="desc_play_pause">Afspelen/Pauzeren</string>
@@ -123,8 +118,6 @@
 
     <!-- Placeholder Namespace | Placeholder values -->
     <string name="def_genre">Onbekend Genre</string>
-    <string name="def_artist">Onbekend Artist</string>
-    <string name="def_album">Onbekend Album</string>
     <string name="def_date">Geen datum </string>
 
     <!-- Color Label namespace | Accent names -->
@@ -143,8 +136,8 @@
     <string name="clr_yellow">Geel</string>
     <string name="clr_orange">Oranje</string>
     <string name="clr_deep_orange">Dieporanje</string>
-    <string name="clr_label_brown">Bruin</string>
-    <string name="clr_label_grey">Grijis</string>
+    <string name="clr_brown">Bruin</string>
+    <string name="clr_grey">Grijis</string>
     <string name="clr_blue_grey">Blauwgrijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->

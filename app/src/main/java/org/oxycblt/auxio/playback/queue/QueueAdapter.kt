@@ -29,7 +29,6 @@ import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
@@ -41,7 +40,6 @@ import org.oxycblt.auxio.util.logE
 /**
  * The single adapter for both the Next Queue and the User Queue.
  * @param touchHelper The [ItemTouchHelper] ***containing*** [QueueDragCallback] to be used
- * @param playbackModel The [PlaybackViewModel] for updates to be dispatched to
  * @author OxygenCobalt
  */
 class QueueAdapter(

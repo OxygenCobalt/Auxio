@@ -4,7 +4,6 @@
     <string name="lbl_retry">重試</string>
     <string name="lbl_grant">取得</string>
 
-    <string name="lbl_library">音樂庫</string>
     <string name="lbl_genres">類型</string>
     <string name="lbl_artists">演出者</string>
     <string name="lbl_albums">專輯</string>
@@ -46,7 +45,6 @@
     <string name="set_theme_night">深色</string>
     <string name="set_accent">自定義</string>
 
-    <string name="set_color_notif">彩色通知</string>
     <string name="set_quality_covers">忽略音訊檔內嵌的專輯封面</string>
 
     <string name="set_audio">音訊</string>
