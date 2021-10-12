@@ -72,6 +72,10 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <style name="ThemeOverlay.Accent" parent="">
+        <item name="colorOnPrimary">?attr/colorSurface</item>
+    </style>
+
     <!-- TEXTVIEW STYLES -->
 
     <style name="Widget.Auxio.TextView.Base" parent="Widget.AppCompat.TextView">

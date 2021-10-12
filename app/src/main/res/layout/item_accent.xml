@@ -4,6 +4,7 @@
     tools:context=".settings.pref.AccentAdapter.ViewHolder">
 
     <FrameLayout
+        android:theme="@style/ThemeOverlay.Accent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_small">
