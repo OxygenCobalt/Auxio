@@ -37,7 +37,6 @@ import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -320,8 +319,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Add an [Album] to the user queue
      */
     fun addToUserQueue(album: Album) {
-        // TODO: Make this reflect the sort mode
-        playbackManager.addToUserQueue(SortMode.ASCENDING.sortAlbum(album))
+        playbackManager.addToUserQueue(settingsManager.detailAlbumSort.sortAlbum(album))
     }
 
     /**
