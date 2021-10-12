@@ -60,7 +60,6 @@ import org.oxycblt.auxio.util.makeScrollingViewFade
  *        - Edge-to-edge is borked still, unsure how to really fix this aside from making some
  *          magic layout like Material Files, but even then it might not work since the scrolling
  *          views are not laid side-by-side to the layout itself.
- *  So excited to have enough time to get to these in like...november.
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.queue
 
 import android.graphics.Canvas
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -31,8 +32,9 @@ import kotlin.math.min
 import kotlin.math.sign
 
 /**
- * A highly customized [ItemTouchHelper.Callback] that handles queue item moving, removal, and some
- * of the UI magic that makes up the queue UI.
+ * A highly customized [ItemTouchHelper.Callback] that handles the queue system while basically
+ * rebuilding most the "Material-y" aspects of an editable list because Google's implementations
+ * are hot garbage. This shouldn't have *too many* UI bugs. I hope.
  * @author OxygenCobalt
  */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
@@ -88,48 +90,63 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // themselves when being dragged. Too bad google's implementation of this doesn't even
         // work! To emulate it on my own, I check if this child is in a drag state and then animate
         // an elevation change.
-        // TODO: Maybe restrict the item from being drawn over the recycler bounds?
-        //  Seems like its possible with enough UI magic
-        // TODO: Add an accented BG to the removal action
+        // TODO: Some other enhancements I could make maybe
+        //  - Maybe stopping dragged items from extending beyond their specific part of the queue?
 
-        val view = viewHolder.itemView
+        val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            val bg = view.background as MaterialShapeDrawable
+            val bg = holder.bodyView.background as MaterialShapeDrawable
+            val elevation = recyclerView.resources.getDimension(R.dimen.elevation_small)
 
-            view.animate()
-                .translationZ(view.resources.getDimension(R.dimen.elevation_small))
+            holder.itemView.animate()
+                .translationZ(elevation)
                 .setDuration(100)
-                .setUpdateListener { bg.elevation = view.translationZ }
+                .setUpdateListener {
+                    bg.elevation = holder.itemView.translationZ
+                }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
 
             shouldLift = false
         }
 
-        view.translationX = dX
-        view.translationY = dY
+        // We show a background with a clear icon behind the queue song each time one is swiped
+        // away. To avoid any canvas shenanigans, we just place a custom background view behind the
+        // main "body" layout of the queue item and then translate that.
+        //
+        // That comes with a couple of problems, however. For one, the background view will always
+        // lag behind the body view, resulting in a noticeable pixel offset when dragging. To fix
+        // this, we make this a separate view and make this view invisible whenever the item is
+        // not being swiped. We cannot merge this view with the FrameLayout, as that will cause
+        // another weird pixel desync issue that is less visible but still incredibly annoying.
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            holder.backgroundView.isInvisible = dX == 0f
+        }
+
+        holder.bodyView.translationX = dX
+        holder.itemView.translationY = dY
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         // When an elevated item is cleared, we reset the elevation using another animation.
-        val view = viewHolder.itemView
+        val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 
-        if (view.translationZ != 0.0f) {
-            val bg = view.background as MaterialShapeDrawable
+        if (holder.itemView.translationZ != 0.0f) {
+            val bg = holder.bodyView.background as MaterialShapeDrawable
 
-            view.animate()
+            holder.itemView.animate()
                 .translationZ(0.0f)
                 .setDuration(100)
-                .setUpdateListener { bg.elevation = view.translationZ }
+                .setUpdateListener { bg.elevation = holder.itemView.translationZ }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
         }
 
         shouldLift = true
 
-        view.translationX = 0f
-        view.translationY = 0f
+        holder.bodyView.translationX = 0f
+        holder.itemView.translationY = 0f
     }
 
     override fun onMove(

@@ -34,8 +34,6 @@ import org.oxycblt.auxio.util.logE
  * will not properly respond to RecyclerView events.
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  *  scrolling view to use. Failure to specify this will result in the layout not working.
- * FIXME: Fix issue where elevation change will always animate
- * FIXME: Fix issue where expanded state does not work correctly when switching orientations
  */
 class LiftAppBarLayout @JvmOverloads constructor(
     context: Context,

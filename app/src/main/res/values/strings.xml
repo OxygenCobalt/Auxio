@@ -119,6 +119,7 @@
     <string name="desc_shuffle">Turn shuffle on or off</string>
 
     <string name="desc_clear_user_queue">Clear queue</string>
+    <string name="desc_clear_queue_item">Remove this queue item</string>
     <string name="desc_queue_handle">Move queue song</string>
     <string name="desc_clear_search">Clear search query</string>
     <string name="desc_blacklist_delete">Remove excluded directory</string>

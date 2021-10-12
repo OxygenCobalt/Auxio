@@ -30,6 +30,7 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -110,6 +111,15 @@ fun @receiver:ColorRes Int.resolveColor(context: Context): Int {
  */
 fun @receiver:ColorRes Int.resolveStateList(context: Context) =
     ContextCompat.getColorStateList(context, this)
+
+/*
+ * Resolve a color and turn it into a [ColorStateList]
+ * @param context [Context] required
+ * @return The resolved color as a [ColorStateList]
+ * @see resolveColor
+ */
+fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
+    requireNotNull(ContextCompat.getDrawable(context, this))
 
 /**
  * Resolve this int into a color as if it was an attribute

@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
 import org.oxycblt.auxio.util.applyMaterialDrawable
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -113,6 +115,8 @@ class QueueAdapter(
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
+        logD(data)
+
         /*
          * If the data from the next queue is now entirely empty [Signified by a header at the
          * end, remove the next queue header as notify as such.
@@ -123,14 +127,15 @@ class QueueAdapter(
          * Otherwise just remove the item as usual.
          */
         if (data[data.lastIndex] is Header) {
+            logD("Queue is empty, removing header")
+
             val lastIndex = data.lastIndex
-
             data.removeAt(lastIndex)
-
             notifyItemRangeRemoved(lastIndex, 2)
-        } else if (data.lastIndex >= 1 && data[0] is Header && data[1] is Header) {
-            data.removeAt(0)
+        } else if (data.lastIndex >= 1 && data[0] is ActionHeader && data[1] is Header) {
+            logD("User queue is empty, removing header")
 
+            data.removeAt(0)
             notifyItemRangeRemoved(0, 2)
         } else {
             notifyItemRemoved(adapterIndex)
@@ -143,9 +148,11 @@ class QueueAdapter(
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding) {
+        val bodyView: View get() = binding.body
+        val backgroundView: View get() = binding.background
 
         init {
-            binding.root.applyMaterialDrawable()
+            binding.body.applyMaterialDrawable()
         }
 
         @SuppressLint("ClickableViewAccessibility")
