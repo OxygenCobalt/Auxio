@@ -18,36 +18,33 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/search_toolbar"
                 style="@style/Widget.Auxio.Toolbar.Icon"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:menu="@menu/menu_search"
-                app:title="@string/lbl_search" />
+                app:menu="@menu/menu_search">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_text_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintEnabled="false"
-                app:boxBackgroundMode="filled"
-                app:boxStrokeColor="?attr/colorPrimary"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="@dimen/size_stroke_large"
-                app:endIconContentDescription="@string/desc_clear_search"
-                app:endIconDrawable="@drawable/ic_close"
-                app:endIconMode="clear_text"
-                app:endIconTint="?attr/colorControlNormal"
-                app:errorEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_edit_text"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/search_text_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/hint_search_library"
-                    android:padding="@dimen/spacing_medium"
-                    android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:inputType="textFilter" />
+                    app:hintEnabled="false"
+                    app:endIconContentDescription="@string/desc_clear_search"
+                    app:endIconDrawable="@drawable/ic_close"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="?attr/colorControlNormal"
+                    app:errorEnabled="false">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/hint_search_library"
+                        android:padding="@dimen/spacing_medium"
+                        android:imeOptions="actionSearch|flagNoExtractUi"
+                        android:inputType="textFilter" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
         </org.oxycblt.auxio.ui.LiftAppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -17,12 +17,14 @@
         <item name="colorOnTertiaryContainer">?attr/colorOnPrimaryContainer</item>
 
         <item name="colorSurface">@color/surface</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
         <item name="colorControlNormal">@color/control</item>
         <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
 
-        <item name="colorAccent">?attr/colorPrimary</item>
-    </style>>
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
+    </style>
 
     <!-- Base theme -->
     <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">

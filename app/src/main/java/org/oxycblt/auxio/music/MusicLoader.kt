@@ -61,13 +61,12 @@ import org.oxycblt.auxio.util.logD
  * table, so we have to go for the less efficent "make a big query on all the songs lol" method
  * so that songs don't end up fragmented across artists. Pretty much every OEM has added some
  * extension or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH)
- * crippling the normal tables so that you're railroaded into their ad-infested music app.
- * The way I do blacklisting relies on a deprecated method, and the supposedly "modern" method
- * is SLOWER and causes even more problems since I have to manage databases across version
- * boundaries. Sometimes music will have a deformed clone that I can't filter out, sometimes
- * Genres will just break for no reason, sometimes this spaghetti parser just completely breaks
- * down and is unable to get any metadata. Everything is broken in it's own special unique way and
- * I absolutely hate it.
+ * crippling the normal tables so that you're railroaded into their music app. The way I do
+ * blacklisting relies on a deprecated method, and the supposedly "modern" method is SLOWER and
+ * causes even more problems since I have to manage databases across version boundaries. Sometimes
+ * music will have a deformed clone that I can't filter out, sometimes Genres will just break for no
+ * reason, sometimes this spaghetti parser just completely breaks down and is unable to get any
+ * metadata. Everything is broken in it's own special unique way and I absolutely hate it.
  *
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged google
  * to fix glaring issues with MediaStore or to just take the API behind the woodshed and shoot it.

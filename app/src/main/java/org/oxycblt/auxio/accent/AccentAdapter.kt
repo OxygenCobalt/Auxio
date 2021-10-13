@@ -31,7 +31,6 @@ import org.oxycblt.auxio.util.resolveStateList
  * @author OxygenCobalt
  * @param onSelect What to do when an accent is selected.
  */
-
 class AccentAdapter(
     private var curAccent: Accent,
     private val onSelect: (accent: Accent) -> Unit
