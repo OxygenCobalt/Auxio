@@ -23,14 +23,17 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.iterator
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -46,10 +49,10 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.makeScrollingViewFade
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
@@ -63,6 +66,7 @@ import org.oxycblt.auxio.util.makeScrollingViewFade
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
+    private val binding: FragmentHomeBinding by memberBinding(FragmentHomeBinding::inflate)
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
 
@@ -71,7 +75,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentHomeBinding.inflate(inflater)
         val sortItem: MenuItem
 
         // --- UI SETUP ---
@@ -82,7 +85,34 @@ class HomeFragment : Fragment() {
             binding.homeAppbar.updatePadding(top = bars.top)
         }
 
-        binding.homeAppbar.makeScrollingViewFade(binding.homeToolbar)
+        binding.homeAppbar.apply {
+            addOnOffsetChangedListener(
+                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    binding.homeToolbar.alpha = (binding.homeToolbar.height + verticalOffset) /
+                        binding.homeToolbar.height.toFloat()
+                }
+            )
+
+            post {
+                // To add our fast scroller, we need to
+                val vOffset = (
+                    (layoutParams as CoordinatorLayout.LayoutParams)
+                        .behavior as AppBarLayout.Behavior
+                    ).topAndBottomOffset
+
+                binding.homePager.updatePaddingRelative(
+                    bottom = binding.homeAppbar.totalScrollRange + vOffset
+                )
+
+                binding.homeAppbar.addOnOffsetChangedListener(
+                    AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                        binding.homePager.updatePaddingRelative(
+                            bottom = binding.homeAppbar.totalScrollRange + verticalOffset
+                        )
+                    }
+                )
+            }
+        }
 
         binding.homeToolbar.apply {
             setOnMenuItemClickListener { item ->

@@ -86,7 +86,7 @@ dependencies {
 
     // Media
     // TODO: Migrate to media2 when I can figure out how to use it
-    implementation "androidx.media:media:1.4.2"
+    implementation "androidx.media:media:1.4.3"
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.1.1"
@@ -101,6 +101,8 @@ dependencies {
 
     // Material
     implementation "com.google.android.material:material:1.5.0-alpha04"
+
+    implementation 'me.zhanghai.android.fastscroll:library:1.1.7'
 
     // --- DEBUG ---
 

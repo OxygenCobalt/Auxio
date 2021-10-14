@@ -46,7 +46,6 @@ import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.makeScrollingViewFade
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
@@ -80,8 +79,6 @@ class SearchFragment : Fragment() {
         binding.applyEdge { bars ->
             binding.searchAppbar.updatePadding(top = bars.top)
         }
-
-        binding.searchAppbar.makeScrollingViewFade(binding.searchToolbar)
 
         binding.searchToolbar.apply {
             val itemId = when (searchModel.filterMode) {

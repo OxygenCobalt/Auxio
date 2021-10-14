@@ -29,7 +29,6 @@ import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.LifecycleDialog
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.resolveColor
 
 /**
  * Dialog responsible for showing the list of accents to select.
@@ -55,12 +54,8 @@ class AccentDialog : LifecycleDialog() {
         binding.accentRecycler.apply {
             adapter = AccentAdapter(pendingAccent) { accent ->
                 pendingAccent = accent
-
-                updateAccent()
             }
         }
-
-        updateAccent()
 
         logD("Dialog created.")
 
@@ -88,15 +83,6 @@ class AccentDialog : LifecycleDialog() {
 
         // Negative button just dismisses, no need for a listener.
         builder.setNegativeButton(android.R.string.cancel, null)
-    }
-
-    private fun updateAccent() {
-        val accentColor = pendingAccent.color.resolveColor(requireContext())
-
-        (requireDialog() as AlertDialog).apply {
-            getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(accentColor)
-            getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(accentColor)
-        }
     }
 
     companion object {

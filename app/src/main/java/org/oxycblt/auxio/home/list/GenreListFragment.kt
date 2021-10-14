@@ -23,11 +23,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import me.zhanghai.android.fastscroll.PopupTextProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.ui.GenreViewHolder
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.sliceArticle
 
 class GenreListFragment : HomeListFragment() {
     override fun onCreateView(
@@ -50,6 +52,11 @@ class GenreListFragment : HomeListFragment() {
 
         return binding.root
     }
+
+    override val popupProvider: PopupTextProvider
+        get() = PopupTextProvider { idx ->
+            homeModel.genres.value!![idx].name.sliceArticle().first().uppercase()
+        }
 
     class GenreAdapter(
         private val doOnClick: (data: Genre) -> Unit,

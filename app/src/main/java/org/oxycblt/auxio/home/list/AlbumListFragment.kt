@@ -23,11 +23,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import me.zhanghai.android.fastscroll.PopupTextProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.ui.AlbumViewHolder
+import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.sliceArticle
 
 class AlbumListFragment : HomeListFragment() {
     override fun onCreateView(
@@ -50,6 +54,23 @@ class AlbumListFragment : HomeListFragment() {
 
         return binding.root
     }
+
+    override val popupProvider: PopupTextProvider
+        get() = PopupTextProvider { idx ->
+            val album = homeModel.albums.value!![idx]
+
+            when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
+                SortMode.ASCENDING, SortMode.DESCENDING -> album.name.sliceArticle()
+                    .first().uppercase()
+
+                SortMode.ARTIST -> album.artist.name.sliceArticle()
+                    .first().uppercase()
+
+                SortMode.YEAR -> album.year.toString()
+
+                else -> ""
+            }
+        }
 
     class AlbumAdapter(
         private val doOnClick: (data: Album) -> Unit,

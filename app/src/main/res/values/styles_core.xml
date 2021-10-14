@@ -6,6 +6,7 @@
     <style name="Theme.Auxio.V27" parent="Theme.Auxio" />
     <!-- Android 12 configuration -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
+        <!-- Make sure to apply more accent-friendly values on older versions -->
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
         <item name="colorSecondaryContainer">?attr/colorPrimaryContainer</item>
@@ -21,9 +22,6 @@
         <item name="colorControlNormal">@color/control</item>
         <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="colorControlActivated">?attr/colorPrimary</item>
-
-        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
-        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
     </style>
 
     <!-- Base theme -->
@@ -31,7 +29,9 @@
         <!-- Values -->
         <item name="colorOutline">@color/overlay_stroke</item>
 
-        <!-- Appearance -->
+        <!-- Android component magic -->
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">@font/inter</item>

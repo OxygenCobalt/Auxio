@@ -23,11 +23,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import me.zhanghai.android.fastscroll.PopupTextProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemPlayShuffleBinding
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.sliceArticle
+import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.inflater
 
 class SongListFragment : HomeListFragment() {
@@ -46,9 +51,32 @@ class SongListFragment : HomeListFragment() {
         )
 
         setupRecycler(R.id.home_song_list, adapter, homeModel.songs)
+        binding.homeRecycler.applySpans { it == 0 }
 
         return binding.root
     }
+
+    override val popupProvider: PopupTextProvider
+        get() = PopupTextProvider { idx ->
+            if (idx == 0) {
+                return@PopupTextProvider ""
+            }
+
+            val song = homeModel.songs.value!![idx]
+
+            when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+                SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
+                    .first().uppercase()
+
+                SortMode.ARTIST -> song.album.artist.name.sliceArticle()
+                    .first().uppercase()
+
+                SortMode.ALBUM -> song.album.name.sliceArticle()
+                    .first().uppercase()
+
+                SortMode.YEAR -> song.album.year.toString()
+            }
+        }
 
     inner class SongsAdapter(
         private val doOnClick: (data: Song) -> Unit,
