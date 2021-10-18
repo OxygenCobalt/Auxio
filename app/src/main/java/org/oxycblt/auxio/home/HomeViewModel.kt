@@ -39,6 +39,10 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
+    /** Internal getter for getting the visible library tabs */
+    private val visibleTabs: List<DisplayMode> get() = settingsManager.libTabs
+        .filterIsInstance<Tab.Visible>().map { it.mode }
+
     private val mSongs = MutableLiveData(listOf<Song>())
     val songs: LiveData<List<Song>> get() = mSongs
 
@@ -51,7 +55,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val mGenres = MutableLiveData(listOf<Genre>())
     val genres: LiveData<List<Genre>> get() = mGenres
 
-    var tabs: List<DisplayMode> = settingsManager.visibleTabs
+    var tabs: List<DisplayMode> = visibleTabs
         private set
 
     private val mCurTab = MutableLiveData(tabs[0])
@@ -122,7 +126,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     // --- OVERRIDES ---
 
     override fun onLibTabsUpdate(libTabs: Array<Tab>) {
-        tabs = settingsManager.visibleTabs
+        tabs = visibleTabs
         mRecreateTabs.value = true
     }
 

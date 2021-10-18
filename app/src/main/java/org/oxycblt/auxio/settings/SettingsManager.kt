@@ -31,6 +31,8 @@ import org.oxycblt.auxio.ui.SortMode
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
  * @author OxygenCobalt
+ * TODO: Consider re-adding the colorize notif setting but only on <Android 10 since it really
+ * doesn't work on Android 11+
  */
 class SettingsManager private constructor(context: Context) :
     SharedPreferences.OnSharedPreferenceChangeListener {
@@ -81,9 +83,6 @@ class SettingsManager private constructor(context: Context) :
                 apply()
             }
         }
-
-    /** The currently visible library tabs */
-    val visibleTabs: List<DisplayMode> get() = libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
     /** Whether to load embedded covers */
     val showCovers: Boolean

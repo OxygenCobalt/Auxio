@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.settings
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -105,6 +106,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         pref.apply {
             when (key) {
                 SettingsManager.KEY_THEME -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
+
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
@@ -115,6 +118,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
 
                 SettingsManager.KEY_BLACK_THEME -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
+
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         if (requireContext().isNight) {
                             requireActivity().recreate()
@@ -125,6 +130,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
 
                 SettingsManager.KEY_ACCENT -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
+
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         AccentDialog().show(childFragmentManager, AccentDialog.TAG)
                         true

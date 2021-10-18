@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.settings.tabs
 
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -54,10 +55,6 @@ sealed class Tab(open val mode: DisplayMode) {
         /** The default tab sequence, represented in integer form **/
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
-        // Temporary value to make sure we create a 5-tab sequence even though playlists
-        // aren't implemented yet.
-        private const val TEMP_BIT_CAP = 20
-
         /**
          * Convert an array [tabs] into a sequence of tabs.
          */
@@ -66,7 +63,7 @@ sealed class Tab(open val mode: DisplayMode) {
             val distinct = tabs.distinctBy { it.mode }
 
             var sequence = 0b0100
-            var shift = TEMP_BIT_CAP
+            var shift = SEQUENCE_LEN * 4
 
             distinct.forEach { tab ->
                 val bin = when (tab) {
@@ -89,8 +86,10 @@ sealed class Tab(open val mode: DisplayMode) {
 
             // Try to parse a mode for each chunk in the sequence.
             // If we can't parse one, just skip it.
-            for (shift in (0..TEMP_BIT_CAP).reversed() step 4) {
+            for (shift in (0..4 * SEQUENCE_LEN).reversed() step 4) {
                 val chunk = sequence.shr(shift) and 0b1111
+
+                logD(sequence.shr(shift).toString(2))
 
                 val mode = when (chunk and 7) {
                     0 -> DisplayMode.SHOW_SONGS
