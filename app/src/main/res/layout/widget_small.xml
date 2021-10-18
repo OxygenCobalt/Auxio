@@ -7,7 +7,7 @@
     android:background="?attr/colorSurface"
     android:theme="@style/Theme.Widget">
 
-    <ImageView
+    <android.widget.ImageView
         android:id="@+id/widget_cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,28 +16,28 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_song" />
 
-    <LinearLayout style="@style/Widget.Auxio.AppWidget.Panel">
+    <android.widget.LinearLayout style="@style/Widget.Auxio.AppWidget.Panel">
 
-        <TextView
+        <android.widget.TextView
             android:id="@+id/widget_song"
             style="@style/Widget.Auxio.TextView.Primary.AppWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/def_widget_song" />
 
-        <TextView
+        <android.widget.TextView
             android:id="@+id/widget_artist"
             style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/def_widget_artist" />
 
-        <LinearLayout
+        <android.widget.LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium">
 
-            <ImageButton
+            <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
@@ -46,7 +46,7 @@
                 android:contentDescription="@string/desc_skip_prev"
                 android:src="@drawable/ic_skip_prev" />
 
-            <ImageButton
+            <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
@@ -55,7 +55,7 @@
                 android:contentDescription="@string/desc_play_pause"
                 android:src="@drawable/ic_play" />
 
-            <ImageButton
+            <android.widget.ImageButton
                 android:id="@+id/widget_skip_next"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
@@ -64,8 +64,8 @@
                 android:contentDescription="@string/desc_skip_next"
                 android:src="@drawable/ic_skip_next" />
 
-        </LinearLayout>
+        </android.widget.LinearLayout>
 
-    </LinearLayout>
+    </android.widget.LinearLayout>
 
 </LinearLayout>

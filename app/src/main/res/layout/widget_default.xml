@@ -8,7 +8,7 @@
     android:theme="@style/Theme.Widget"
     tools:ignore="Overdraw">
 
-    <ImageView
+    <android.widget.ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.3"
@@ -16,7 +16,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_song" />
 
-    <TextView
+    <android.widget.TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

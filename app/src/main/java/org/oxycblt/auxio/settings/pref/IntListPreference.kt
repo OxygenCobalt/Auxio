@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.settings
+package org.oxycblt.auxio.settings.pref
 
 import android.content.Context
 import android.content.res.TypedArray

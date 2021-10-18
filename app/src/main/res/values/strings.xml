@@ -70,6 +70,8 @@
     <string name="setting_black_mode_desc">Use a pure-black dark theme</string>
 
     <string name="set_display">Display</string>
+    <string name="set_lib_tabs">Library tabs</string>
+    <string name="set_lib_tabs_desc">Change visibility and order of library tabs</string>
     <string name="set_show_covers">Show album covers</string>
     <string name="set_show_covers_desc">Turn off to save memory usage</string>
     <string name="set_quality_covers">Ignore MediaStore covers</string>
@@ -120,7 +122,8 @@
 
     <string name="desc_clear_user_queue">Clear queue</string>
     <string name="desc_clear_queue_item">Remove this queue item</string>
-    <string name="desc_queue_handle">Move queue song</string>
+    <string name="desc_queue_handle">Move this queue song</string>
+    <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
     <string name="desc_blacklist_delete">Remove excluded directory</string>
 
@@ -161,6 +164,7 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Next From: %s</string>
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
+
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Song</item>

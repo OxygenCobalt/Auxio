@@ -53,8 +53,6 @@
         <item name="android:textColorPrimaryInverseDisableOnly">@color/m3_dynamic_dark_primary_text_disable_only</item>
         <item name="android:textColorHint">@color/m3_dynamic_hint_foreground</item>
         <item name="android:textColorHintInverse">@color/m3_dynamic_dark_hint_foreground</item>
-        <item name="android:textColorHighlight">@color/m3_dynamic_highlighted_text</item>
-        <item name="android:textColorHighlightInverse">@color/m3_dynamic_dark_highlighted_text</item>
         <item name="android:textColorAlertDialogListItem">@color/m3_dynamic_default_color_primary_text</item>
     </style>
 

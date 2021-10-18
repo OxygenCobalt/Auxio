@@ -2,9 +2,10 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         app:layout="@layout/item_header"
+        app:isPreferenceVisible="@bool/enable_theme_settings"
         app:title="@string/set_ui">
 
-        <org.oxycblt.auxio.settings.IntListPreference
+        <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entires_theme"
             app:entryValues="@array/values_theme"
@@ -14,7 +15,6 @@
             app:title="@string/set_theme" />
 
         <Preference
-            app:allowDividerBelow="false"
             app:icon="@drawable/ic_accent"
             app:key="KEY_ACCENT2"
             app:summary="@string/clr_blue"
@@ -33,6 +33,12 @@
     <PreferenceCategory
         app:layout="@layout/item_header"
         app:title="@string/set_display">
+
+        <Preference
+            app:key="KEY_LIB_TABS"
+            app:title="@string/set_lib_tabs"
+            app:summary="@string/set_lib_tabs_desc"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -85,7 +91,7 @@
         app:layout="@layout/item_header"
         app:title="@string/set_behavior">
 
-        <org.oxycblt.auxio.settings.IntListPreference
+        <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/play_mode_songs"
             app:entries="@array/entries_song_playback_mode"
             app:entryValues="@array/values_song_playback_mode"

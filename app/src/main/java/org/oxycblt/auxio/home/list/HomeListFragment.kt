@@ -37,6 +37,10 @@ import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.resolveDrawable
 
+/**
+ * A Base [Fragment] implementing the base features shared across all detail fragments.
+ *
+ */
 abstract class HomeListFragment : Fragment() {
     protected val binding: FragmentHomeListBinding by memberBinding(
         FragmentHomeListBinding::inflate
@@ -83,6 +87,9 @@ abstract class HomeListFragment : Fragment() {
         @SuppressLint("NotifyDataSetChanged")
         fun updateData(newData: List<T>) {
             data = newData
+
+            // notifyDataSetChanged here is okay, as we have no idea how the layout changed when
+            // we re-sort and ListAdapter causes the scroll position to get messed up
             notifyDataSetChanged()
         }
     }

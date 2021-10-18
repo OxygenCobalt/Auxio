@@ -15,7 +15,7 @@
             app:liftOnScroll="true"
             app:liftOnScrollTargetViewId="@id/search_recycler">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/search_toolbar"
                 style="@style/Widget.Auxio.Toolbar.Icon"
                 app:menu="@menu/menu_search">
@@ -43,7 +43,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </org.oxycblt.auxio.ui.LiftAppBarLayout>
 

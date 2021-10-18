@@ -82,7 +82,7 @@ import org.oxycblt.auxio.util.logD
  *
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
- * Because go **** yourself for wanting to listen to music you own. Be a good consoomer and listen
+ * Because go screw yourself for wanting to listen to music you own. Be a good consoomer and listen
  * to your AlgoPop StreamMix™ instead.
  *
  * I wish I was born in the neolithic.

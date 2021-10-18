@@ -35,6 +35,9 @@ import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.accent.AccentDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.settings.pref.IntListPrefDialog
+import org.oxycblt.auxio.settings.pref.IntListPreference
+import org.oxycblt.auxio.settings.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -128,6 +131,13 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
 
                     summary = Accent.get().getDetailedSummary(context)
+                }
+
+                SettingsManager.KEY_LIB_TABS -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
+                        true
+                    }
                 }
 
                 SettingsManager.KEY_SHOW_COVERS, SettingsManager.KEY_QUALITY_COVERS -> {

@@ -24,6 +24,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.settings.tabs.Tab
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
 
@@ -70,9 +71,21 @@ class SettingsManager private constructor(context: Context) :
     val useAltNotifAction: Boolean
         get() = sharedPrefs.getBoolean(KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
-    /**
-     * Whether to even loading embedded covers
-     */
+    /** The current library tabs preferred by the user. */
+    var libTabs: Array<Tab>
+        get() = Tab.fromSequence(sharedPrefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
+            ?: Tab.fromSequence(Tab.SEQUENCE_DEFAULT)!!
+        set(value) {
+            sharedPrefs.edit {
+                putInt(KEY_LIB_TABS, Tab.toSequence(value))
+                apply()
+            }
+        }
+
+    /** The currently visible library tabs */
+    val visibleTabs: List<DisplayMode> get() = libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
+
+    /** Whether to load embedded covers */
     val showCovers: Boolean
         get() = sharedPrefs.getBoolean(KEY_SHOW_COVERS, true)
 
@@ -114,6 +127,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The song sort mode on HomeFragment **/
     var libSongSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -124,6 +138,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The album sort mode on HomeFragment **/
     var libAlbumSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -134,6 +149,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The artist sort mode on HomeFragment **/
     var libArtistSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -144,6 +160,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The genre sort mode on HomeFragment **/
     var libGenreSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_GENRE_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -154,6 +171,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The detail album sort mode **/
     var detailAlbumSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -164,6 +182,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The detail artist sort mode **/
     var detailArtistSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
             ?: SortMode.YEAR
@@ -174,6 +193,7 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** The detail genre sort mode **/
     var detailGenreSort: SortMode
         get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
             ?: SortMode.ASCENDING
@@ -211,6 +231,10 @@ class SettingsManager private constructor(context: Context) :
             KEY_QUALITY_COVERS -> callbacks.forEach {
                 it.onQualityCoverUpdate(useQualityCovers)
             }
+
+            KEY_LIB_TABS -> callbacks.forEach {
+                it.onLibTabsUpdate(libTabs)
+            }
         }
     }
 
@@ -220,6 +244,7 @@ class SettingsManager private constructor(context: Context) :
      * context.
      */
     interface Callback {
+        fun onLibTabsUpdate(libTabs: Array<Tab>) {}
         fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
@@ -231,6 +256,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
         const val KEY_ACCENT = "KEY_ACCENT2"
 
+        const val KEY_LIB_TABS = "KEY_LIB_TABS"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"

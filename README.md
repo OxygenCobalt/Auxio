@@ -46,14 +46,13 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Search Functionality
 - Audio Focus / Headset Management
 - No internet connectivity whatsoever
-- Kotlin from the ground-up
-- Modular, feature-based architecture
-- No rounded corners
+- No rounded album corners
 
 ## To possibly come in the future:
 
 - Playlists
 - Liked songs
+- Improved tablet layouts
 - More notification actions
 - Other things, possibly
 

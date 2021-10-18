@@ -36,7 +36,8 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
- * packing what could be considered 3 or 4 widgets into a single responsive widget. More specifically:
+ * packing what could be considered multiple widgets into a single responsive widget. More
+ * specifically:
  *
  * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
  * - For widgets 4x2 or higher, show a complete view with all playback controls
@@ -115,7 +116,7 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    // / --- INTERNAL METHODS ---
+    // --- INTERNAL METHODS ---
 
     private fun requestUpdate(context: Context) {
         logD("Sending update intent to PlaybackService")

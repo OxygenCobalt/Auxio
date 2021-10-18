@@ -4,17 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/accent_recycler"
+        android:id="@+id/tab_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:paddingTop="@dimen/spacing_medium"
-        android:paddingStart="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_small"
-        app:layoutManager="org.oxycblt.auxio.accent.AutoGridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
         app:layout_constraintTop_toBottomOf="@+id/accent_header"
-        tools:itemCount="18"
-        tools:listitem="@layout/item_accent" />
+        tools:itemCount="5"
+        tools:listitem="@layout/item_tab" />
 
 </layout>

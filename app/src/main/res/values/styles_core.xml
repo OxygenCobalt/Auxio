@@ -18,16 +18,16 @@
         <item name="colorOnTertiaryContainer">?attr/colorOnPrimaryContainer</item>
 
         <item name="colorSurface">@color/surface</item>
-        <item name="colorAccent">?attr/colorPrimary</item>
         <item name="colorControlNormal">@color/control</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
-        <item name="colorControlActivated">?attr/colorPrimary</item>
     </style>
 
     <!-- Base theme -->
     <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">
         <!-- Values -->
         <item name="colorOutline">@color/overlay_stroke</item>
+        <item name="colorAccent">?attr/colorSecondary</item>
+        <item name="colorControlHighlight">@color/overlay_selection</item>
+        <item name="colorControlActivated">?attr/colorSecondary</item>
 
         <!-- Android component magic -->
         <item name="android:textColorHighlight">@color/overlay_text_highlight</item>

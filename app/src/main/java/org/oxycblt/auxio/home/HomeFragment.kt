@@ -49,7 +49,6 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
-import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -57,16 +56,12 @@ import org.oxycblt.auxio.util.logE
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
- * FIXME: More UI glitches:
- *        - AppBar will just...expand. For no reason. If you navigate away while it's partially
- *          collapsed. No, I don't know why. Guess I have to save the state myself.
- *        - Edge-to-edge is borked still, unsure how to really fix this aside from making some
- *          magic layout like Material Files, but even then it might not work since the scrolling
- *          views are not laid side-by-side to the layout itself.
+ * FIXME: Edge-to-edge is borked still, unsure how to really fix this aside from making some
+ *        magic layout like Material Files, but even then it might not work since the scrolling
+ *        views are not laid side-by-side to the layout itself.
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
-    private val binding: FragmentHomeBinding by memberBinding(FragmentHomeBinding::inflate)
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
 
@@ -75,6 +70,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentHomeBinding.inflate(inflater)
         val sortItem: MenuItem
 
         // --- UI SETUP ---
@@ -86,6 +82,12 @@ class HomeFragment : Fragment() {
         }
 
         binding.homeAppbar.apply {
+            // I have no idea how to clip the collapsing toolbar while still making the elevation
+            // overlay bleed into the status bar, so I take the easy way out and just fade the
+            // toolbar when the offset changes.
+            // Note: Don't merge this with the other OnOffsetChangedListener, as this one needs
+            // to be added pre-start to work correctly while the other one needs to be posted to
+            // work correctly
             addOnOffsetChangedListener(
                 AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                     binding.homeToolbar.alpha = (binding.homeToolbar.height + verticalOffset) /
@@ -93,8 +95,13 @@ class HomeFragment : Fragment() {
                 }
             )
 
+            // One issue that comes with using our fast scroller is that it allows scrolling
+            // without the AppBar actually being collapsed in the process. This results in
+            // the RecyclerView being clipped if you scroll down far enough. To fix this, we
+            // add another OnOffsetChangeListener that adds padding to the RecyclerView whenever
+            // the Toolbar is collapsed. This is not really ideal, as it forces a relayout and
+            // some edge-effect glitches whenever we scroll, but its the best we can do.
             post {
-                // To add our fast scroller, we need to
                 val vOffset = (
                     (layoutParams as CoordinatorLayout.LayoutParams)
                         .behavior as AppBarLayout.Behavior
@@ -135,7 +142,7 @@ class HomeFragment : Fragment() {
 
                     R.id.submenu_sorting -> { }
 
-                    // Sorting option was selected, check then and update the mode
+                    // Sorting option was selected, mark it as selected and update the mode
                     else -> {
                         item.isChecked = true
 
@@ -179,7 +186,7 @@ class HomeFragment : Fragment() {
             // We know that there will only be a fixed amount of tabs, so we manually set this
             // limit to that. This also prevents the appbar lift state from being confused during
             // page transitions.
-            offscreenPageLimit = homeModel.tabs.value!!.size
+            offscreenPageLimit = homeModel.tabs.size
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) = homeModel.updateCurrentTab(position)
@@ -187,7 +194,7 @@ class HomeFragment : Fragment() {
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
-            val labelRes = when (homeModel.tabs.value!![pos]) {
+            val labelRes = when (homeModel.tabs[pos]) {
                 DisplayMode.SHOW_SONGS -> R.string.lbl_songs
                 DisplayMode.SHOW_ALBUMS -> R.string.lbl_albums
                 DisplayMode.SHOW_ARTISTS -> R.string.lbl_artists
@@ -199,7 +206,19 @@ class HomeFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
+        homeModel.recreateTabs.observe(viewLifecycleOwner) { recreate ->
+            // notifyDataSetChanged is not practical for recreating here since it will cache
+            // the previous fragments. Just instantiate a whole new adapter.
+            if (recreate) {
+                binding.homePager.currentItem = 0
+                binding.homePager.adapter = HomePagerAdapter()
+                homeModel.finishRecreateTabs()
+            }
+        }
+
         homeModel.curTab.observe(viewLifecycleOwner) { tab ->
+            // Make sure that we update the scrolling view and allowed menu items before whenever
+            // the tab changes.
             binding.homeAppbar.liftOnScrollTargetViewId = when (requireNotNull(tab)) {
                 DisplayMode.SHOW_SONGS -> {
                     updateSortMenu(sortItem, tab)
@@ -280,10 +299,10 @@ class HomeFragment : Fragment() {
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {
 
-        override fun getItemCount(): Int = homeModel.tabs.value!!.size
+        override fun getItemCount(): Int = homeModel.tabs.size
 
         override fun createFragment(position: Int): Fragment {
-            return when (homeModel.tabs.value!![position]) {
+            return when (homeModel.tabs[position]) {
                 DisplayMode.SHOW_SONGS -> SongListFragment()
                 DisplayMode.SHOW_ALBUMS -> AlbumListFragment()
                 DisplayMode.SHOW_ARTISTS -> ArtistListFragment()

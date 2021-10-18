@@ -91,7 +91,7 @@
                 android:src="@drawable/ic_handle"
                 app:layout_constraintBottom_toBottomOf="@+id/album_cover"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/song_name" />
+                app:layout_constraintTop_toTopOf="@+id/album_cover" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

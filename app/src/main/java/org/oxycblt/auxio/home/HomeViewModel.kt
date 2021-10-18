@@ -27,14 +27,18 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.tabs.Tab
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
 
 /**
- * The ViewModel for managing [HomeFragment]'s data and sorting modes.
- * TODO: Custom tabs
+ * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
+ * @author OxygenCobalt
  */
-class HomeViewModel : ViewModel() {
+class HomeViewModel : ViewModel(), SettingsManager.Callback {
+    private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+
     private val mSongs = MutableLiveData(listOf<Song>())
     val songs: LiveData<List<Song>> get() = mSongs
 
@@ -47,32 +51,38 @@ class HomeViewModel : ViewModel() {
     private val mGenres = MutableLiveData(listOf<Genre>())
     val genres: LiveData<List<Genre>> get() = mGenres
 
-    private val mTabs = MutableLiveData(
-        arrayOf(
-            DisplayMode.SHOW_SONGS, DisplayMode.SHOW_ALBUMS,
-            DisplayMode.SHOW_ARTISTS, DisplayMode.SHOW_GENRES
-        )
-    )
-    val tabs: LiveData<Array<DisplayMode>> = mTabs
+    var tabs: List<DisplayMode> = settingsManager.visibleTabs
+        private set
 
-    private val mCurTab = MutableLiveData(mTabs.value!![0])
+    private val mCurTab = MutableLiveData(tabs[0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
-    private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    /**
+     * Marker to recreate all library tabs, usually initiated by a settings change.
+     * When this flag is set, all tabs (and their respective viewpager fragments) will be
+     * recreated from scratch.
+     */
+    private val mRecreateTabs = MutableLiveData(false)
+    val recreateTabs: LiveData<Boolean> = mRecreateTabs
 
     init {
         mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
         mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
         mArtists.value = settingsManager.libArtistSort.sortModels(musicStore.artists)
         mGenres.value = settingsManager.libGenreSort.sortModels(musicStore.genres)
+
+        settingsManager.addCallback(this)
     }
 
     /**
      * Update the current tab based off of the new ViewPager position.
      */
     fun updateCurrentTab(pos: Int) {
-        mCurTab.value = mTabs.value!![pos]
+        mCurTab.value = tabs[pos]
+    }
+
+    fun finishRecreateTabs() {
+        mRecreateTabs.value = false
     }
 
     fun getSortForDisplay(displayMode: DisplayMode): SortMode {
@@ -107,5 +117,17 @@ class HomeViewModel : ViewModel() {
                 mGenres.value = sort.sortModels(mGenres.value!!)
             }
         }
+    }
+
+    // --- OVERRIDES ---
+
+    override fun onLibTabsUpdate(libTabs: Array<Tab>) {
+        tabs = settingsManager.visibleTabs
+        mRecreateTabs.value = true
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        settingsManager.removeCallback(this)
     }
 }

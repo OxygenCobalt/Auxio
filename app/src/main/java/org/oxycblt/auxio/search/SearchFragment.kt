@@ -133,8 +133,6 @@ class SearchFragment : Fragment() {
         searchModel.searchResults.observe(viewLifecycleOwner) { results ->
             searchAdapter.submitList(results) {
                 // We've just scrolled back to the top, reset the lifted state
-                // TODO: Maybe find a better way to keep scroll state when the search
-                //  results didn't actually change.
                 binding.searchRecycler.scrollToPosition(0)
             }
 

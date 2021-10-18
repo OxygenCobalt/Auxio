@@ -5,7 +5,7 @@
     <!-- Base toolbar style -->
     <style name="Widget.Auxio.Toolbar" parent="ThemeOverlay.Material3.ActionBar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?android:attr/actionBarSize</item>
+        <item name="android:layout_height">@dimen/size_btn_medium</item>
         <item name="titleTextAppearance">@style/TextAppearance.ToolbarTitle</item>
     </style>
 

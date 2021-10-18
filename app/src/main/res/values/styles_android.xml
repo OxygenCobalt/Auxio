@@ -31,7 +31,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <!-- Custom button style that eliminates the weird margin that the neutral button has -->

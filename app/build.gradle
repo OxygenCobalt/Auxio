@@ -97,11 +97,13 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:2.15.1"
 
     // Image loading
-    implementation 'io.coil-kt:coil:1.3.2'
+    implementation 'io.coil-kt:coil:1.4.0'
 
     // Material
     implementation "com.google.android.material:material:1.5.0-alpha04"
 
+    // Fast scrolling
+    // TODO: Merge eventually
     implementation 'me.zhanghai.android.fastscroll:library:1.1.7'
 
     // --- DEBUG ---
