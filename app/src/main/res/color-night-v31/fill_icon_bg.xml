@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Use pure black on dark mode. This is because other neutral colors on dark mode
-    will result in the auxio icon blending in with the background of either the launcher
-    drawer or the recent apps menu. -->
-    <item android:color="@android:color/system_neutral1_1000" />
-</selector>
