@@ -2,8 +2,13 @@
 <resources>
     <!-- Base app colors -->
     <color name="surface">#fafafa</color>
+    <color name="surface_inverse">@color/surface_night</color>
     <color name="control">#202020</color>
     <color name="nav_bar">#01fafafa</color>
+
+    <color name="surface_day">#fafafa</color>
+    <color name="surface_night">#1f1f1f</color>
+    <color name="surface_black">@android:color/black</color>
 
     <!--
     Each accent's color roles.

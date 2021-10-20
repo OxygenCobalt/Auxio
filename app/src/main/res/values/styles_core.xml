@@ -7,6 +7,9 @@
     <!-- Android 12 configuration -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
         <!-- Make sure to apply more accent-friendly values on older versions -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceInverse">@color/surface_inverse</item>
+
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
         <item name="colorSecondaryContainer">?attr/colorPrimaryContainer</item>
@@ -16,9 +19,6 @@
         <item name="colorOnTertiary">?attr/colorOnPrimary</item>
         <item name="colorTertiaryContainer">?attr/colorPrimaryContainer</item>
         <item name="colorOnTertiaryContainer">?attr/colorOnPrimaryContainer</item>
-
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorControlNormal">@color/control</item>
     </style>
 
     <!-- Base theme -->
@@ -26,6 +26,7 @@
         <!-- Values -->
         <item name="colorOutline">@color/overlay_stroke</item>
         <item name="colorAccent">?attr/colorSecondary</item>
+        <item name="colorControlNormal">?attr/colorSurfaceInverse</item>
         <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="colorControlActivated">?attr/colorSecondary</item>
 
@@ -48,7 +49,7 @@
         Assume that Android's night mode will do the rest of the work
         for us and set the background to pitch-black
         -->
-        <item name="colorSurface">@android:color/black</item>
+        <item name="colorSurface">@color/surface_black</item>
     </style>
 
     <!--

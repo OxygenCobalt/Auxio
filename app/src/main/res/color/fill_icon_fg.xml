@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- TODO: Apply dynamic colors to our icon once we can make it line up
-      with the pixel ones. Currently it's too risky as all we have are the
-      promo stuff. -->
 <gradient android:endX="64.75"
     android:endY="28.5"
     android:startX="60"

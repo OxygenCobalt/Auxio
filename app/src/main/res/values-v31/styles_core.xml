@@ -57,10 +57,10 @@
     </style>
 
     <style name="Theme.Widget" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="colorSurface">@android:color/system_accent1_50</item>
         <item name="colorPrimary">?android:attr/colorAccent</item>
         <item name="colorSecondary">?android:attr/colorAccent</item>
-        <item name="colorControlNormal">?android:attr/colorControlNormal</item>
+        <item name="colorControlNormal">@color/m3_sys_color_dynamic_light_inverse_surface</item>
         <item name="colorControlHighlight">?android:attr/colorControlHighlight</item>
-        <item name="colorSurface">?android:attr/colorBackground</item>
     </style>
 </resources>

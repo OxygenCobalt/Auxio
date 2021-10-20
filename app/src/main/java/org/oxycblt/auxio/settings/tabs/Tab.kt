@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.settings.tabs
 
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -88,8 +87,6 @@ sealed class Tab(open val mode: DisplayMode) {
             // If we can't parse one, just skip it.
             for (shift in (0..4 * SEQUENCE_LEN).reversed() step 4) {
                 val chunk = sequence.shr(shift) and 0b1111
-
-                logD(sequence.shr(shift).toString(2))
 
                 val mode = when (chunk and 7) {
                     0 -> DisplayMode.SHOW_SONGS
