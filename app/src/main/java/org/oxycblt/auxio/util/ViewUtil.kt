@@ -32,12 +32,14 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.updatePadding
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.playback.PlaybackViewModel
 
 /**
  * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
@@ -141,19 +143,6 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
 }
 
 /**
- * Make this [AppBarLayout] fade a scrolling [view] out when it collapses.
- * This is mostly because I am unable to figure out how to get a collapsing view not
- * to draw under the status bar in edge-to-edge mode.
- */
-fun AppBarLayout.makeScrollingViewFade(view: View) {
-    addOnOffsetChangedListener(
-        AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            view.alpha = (view.height + verticalOffset) / view.height.toFloat()
-        }
-    )
-}
-
-/**
  * Apply edge-to-edge tweaks to the root of a [ViewBinding].
  * @param onApply What to do when the system bar insets are provided
  */
@@ -195,5 +184,38 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
         }
 
         // Not on a version that supports edge-to-edge [yet], don't do anything
+    }
+}
+
+/**
+ * Stopgap measure to make edge-to-edge work on views that also have a playback bar.
+ * The issue is that while we can apply padding initially, the padding will still be applied
+ * when the bar is shown, which is very ungood. We mitigate this by just checking the song state
+ * and removing the padding if it isnt available, which works okayish. I think Material Files has
+ * a better implementation of the same fix however, so once I'm able to hack that layout into
+ * Auxio things should be better.
+ */
+fun RecyclerView.applyEdgeRespectingBar(
+    playbackModel: PlaybackViewModel,
+    viewLifecycleOwner: LifecycleOwner
+) {
+    var bottomPadding = 0
+
+    applyEdge {
+        bottomPadding = it.bottom
+
+        if (playbackModel.song.value == null) {
+            updatePadding(bottom = bottomPadding)
+        } else {
+            updatePadding(bottom = 0)
+        }
+    }
+
+    playbackModel.song.observe(viewLifecycleOwner) { song ->
+        if (song == null) {
+            updatePadding(bottom = bottomPadding)
+        } else {
+            updatePadding(bottom = 0)
+        }
     }
 }

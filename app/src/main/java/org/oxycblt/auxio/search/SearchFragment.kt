@@ -43,6 +43,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applyEdge
+import org.oxycblt.auxio.util.applyEdgeRespectingBar
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
@@ -126,6 +127,8 @@ class SearchFragment : Fragment() {
             applySpans { pos ->
                 searchAdapter.currentList[pos] is Header
             }
+
+            applyEdgeRespectingBar(playbackModel, viewLifecycleOwner)
         }
 
         // --- VIEWMODEL SETUP ---

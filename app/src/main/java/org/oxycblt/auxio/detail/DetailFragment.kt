@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdge
+import org.oxycblt.auxio.util.applyEdgeRespectingBar
 import org.oxycblt.auxio.util.isLandscape
 
 /**
@@ -51,6 +52,8 @@ abstract class DetailFragment : Fragment() {
         binding.applyEdge { bars ->
             binding.detailAppbar.updatePadding(top = bars.top)
         }
+
+        binding.detailRecycler.applyEdgeRespectingBar(playbackModel, viewLifecycleOwner)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
