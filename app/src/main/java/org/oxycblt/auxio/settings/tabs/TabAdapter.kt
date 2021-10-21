@@ -60,20 +60,14 @@ class TabAdapter(
                     // A. We don't have a real ViewModel state since this is a dialog
                     // B. Doing so would cause a relayout and the ripple effect to disappear
                     // Instead, simply notify a tab change and let TabCustomizeDialog handle it.
-                    binding.tabIcon.isEnabled = !binding.tabIcon.isEnabled
-                    binding.tabName.isEnabled = !binding.tabName.isEnabled
+                    binding.tabIcon.isChecked = !binding.tabIcon.isChecked
                     onTabSwitch(tab)
                 }
             }
-            binding.tabIcon.apply {
-                setImageResource(tab.mode.icon)
-                contentDescription = context.getString(tab.mode.string)
-                isEnabled = tab is Tab.Visible
-            }
 
-            binding.tabName.apply {
+            binding.tabIcon.apply {
                 setText(tab.mode.string)
-                isEnabled = tab is Tab.Visible
+                isChecked = tab is Tab.Visible
             }
 
             binding.tabDragHandle.setOnTouchListener { _, motionEvent ->

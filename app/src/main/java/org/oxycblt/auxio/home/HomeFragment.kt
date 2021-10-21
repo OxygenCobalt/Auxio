@@ -194,14 +194,7 @@ class HomeFragment : Fragment() {
         }
 
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
-            val labelRes = when (homeModel.tabs[pos]) {
-                DisplayMode.SHOW_SONGS -> R.string.lbl_songs
-                DisplayMode.SHOW_ALBUMS -> R.string.lbl_albums
-                DisplayMode.SHOW_ARTISTS -> R.string.lbl_artists
-                DisplayMode.SHOW_GENRES -> R.string.lbl_genres
-            }
-
-            tab.setText(labelRes)
+            tab.setText(homeModel.tabs[pos].string)
         }.attach()
 
         // --- VIEWMODEL SETUP ---
@@ -219,7 +212,7 @@ class HomeFragment : Fragment() {
         homeModel.curTab.observe(viewLifecycleOwner) { tab ->
             // Make sure that we update the scrolling view and allowed menu items before whenever
             // the tab changes.
-            binding.homeAppbar.liftOnScrollTargetViewId = when (requireNotNull(tab)) {
+            val targetView = when (requireNotNull(tab)) {
                 DisplayMode.SHOW_SONGS -> {
                     updateSortMenu(sortItem, tab)
                     R.id.home_song_list
@@ -246,6 +239,8 @@ class HomeFragment : Fragment() {
                     R.id.home_genre_list
                 }
             }
+
+            binding.homeAppbar.liftOnScrollTargetViewId = targetView
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->

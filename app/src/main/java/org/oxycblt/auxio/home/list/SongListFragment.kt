@@ -119,6 +119,12 @@ class SongListFragment : HomeListFragment() {
         }
     }
 
+    /**
+     * The viewholder for the play/shuffle header on the song header.
+     * Using a FAB would have been more conventional here, but it's so difficult to get a FAB
+     * to play along with edge-to-edge and nested RecyclerView instances to the point where I
+     * may as well not bother.
+     */
     private inner class PlayViewHolder(
         binding: ItemPlayShuffleBinding
     ) : RecyclerView.ViewHolder(binding.root) {

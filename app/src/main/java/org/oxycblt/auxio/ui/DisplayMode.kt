@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.ui
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import org.oxycblt.auxio.R
 
@@ -28,11 +27,11 @@ import org.oxycblt.auxio.R
  *  changing them would also change the meaning.
  * @author OxygenCobalt
  */
-enum class DisplayMode(@DrawableRes val icon: Int, @StringRes val string: Int) {
-    SHOW_SONGS(R.drawable.ic_song, R.string.lbl_songs),
-    SHOW_ALBUMS(R.drawable.ic_album, R.string.lbl_albums),
-    SHOW_ARTISTS(R.drawable.ic_artist, R.string.lbl_artists),
-    SHOW_GENRES(R.drawable.ic_genre, R.string.lbl_genres);
+enum class DisplayMode(@StringRes val string: Int) {
+    SHOW_SONGS(R.string.lbl_songs),
+    SHOW_ALBUMS(R.string.lbl_albums),
+    SHOW_ARTISTS(R.string.lbl_artists),
+    SHOW_GENRES(R.string.lbl_genres);
 
     companion object {
         private const val CONST_NULL = 0xA107

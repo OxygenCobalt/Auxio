@@ -87,10 +87,7 @@ class PlaybackFragment : Fragment() {
 
         // Make marquee of song title work
         binding.playbackSong.isSelected = true
-
-        binding.playbackSeekBar.onConfirmListener = { pos ->
-            playbackModel.setPosition(pos)
-        }
+        binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
 
         // --- VIEWMODEL SETUP --
 
