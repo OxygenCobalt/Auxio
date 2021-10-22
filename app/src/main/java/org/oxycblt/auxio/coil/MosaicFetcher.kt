@@ -22,7 +22,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.net.Uri
 import androidx.core.graphics.drawable.toDrawable
 import coil.bitmap.BitmapPool
 import coil.decode.DataSource
@@ -31,16 +30,15 @@ import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
+import coil.size.OriginalSize
 import coil.size.Size
-import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Parent
-import org.oxycblt.auxio.music.toAlbumArtURI
 import java.io.Closeable
-import java.io.InputStream
+import java.lang.Exception
 
 /**
  * A [Fetcher] that takes an [Artist] or [Genre] and returns a mosaic of its albums.
@@ -54,45 +52,44 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
         options: Options
     ): FetchResult {
         // Get the URIs for either a genre or artist
-        val uris = mutableListOf<Uri>()
+        val albums = mutableListOf<Album>()
 
         when (data) {
             is Artist -> data.albums.forEachIndexed { index, album ->
-                if (index < 4) { uris.add(album.id.toAlbumArtURI()) }
+                if (index < 4) { albums.add(album) }
             }
 
-            is Genre -> data.songs.groupBy { it.album.id }.keys.forEachIndexed { index, id ->
-                if (index < 4) { uris.add(id.toAlbumArtURI()) }
+            is Genre -> data.songs.groupBy { it.album }.keys.forEachIndexed { index, album ->
+                if (index < 4) { albums.add(album) }
             }
 
             else -> {}
         }
 
-        val streams = mutableListOf<InputStream>()
+        // Fetch our cover art using AlbumArtFetcher, as that respects any settings and is
+        // generally resilient to frustrating MediaStore issues
+        val results = mutableListOf<SourceResult>()
+        val artFetcher = AlbumArtFetcher(context)
 
         // Load MediaStore streams
-        uris.forEach { uri ->
-            val stream: InputStream? = context.contentResolver.openInputStream(uri)
-
-            if (stream != null) {
-                streams.add(stream)
+        albums.forEach { album ->
+            try {
+                results.add(artFetcher.fetch(pool, album, OriginalSize, options) as SourceResult)
+            } catch (e: Exception) {
+                // Whatever.
             }
         }
 
-        // If so many streams failed that there's not enough images to make a mosaic, then
+        // If so many fetches failed that there's not enough images to make a mosaic, then
         // just return the first cover image.
-        if (streams.size < 4) {
+        if (results.size < 4) {
             // Dont even bother if ALL the streams have failed.
-            check(streams.isNotEmpty()) { "All streams have failed. " }
+            check(results.isNotEmpty()) { "All streams have failed. " }
 
-            return SourceResult(
-                source = streams[0].source().buffer(),
-                mimeType = context.contentResolver.getType(uris[0]),
-                dataSource = DataSource.DISK
-            )
+            return results[0]
         }
 
-        val bitmap = drawMosaic(streams)
+        val bitmap = drawMosaic(results)
 
         return DrawableResult(
             drawable = bitmap.toDrawable(context.resources),
@@ -105,7 +102,7 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
      * Create the mosaic image, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
-    private fun drawMosaic(streams: List<InputStream>): Bitmap {
+    private fun drawMosaic(results: List<SourceResult>): Bitmap {
         // Use a fixed 512x512 canvas for the mosaics. Preferably we would adapt this mosaic to
         // target ImageView size, but Coil seems to start image loading before we can even get
         // a width/height for the view, making that impractical.
@@ -120,11 +117,11 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
 
         // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
         // and place it on a corner of the canvas.
-        streams.useForEach { stream ->
-            if (y == MOSAIC_BITMAP_SIZE) return@useForEach
+        results.forEach { result ->
+            if (y == MOSAIC_BITMAP_SIZE) return@forEach
 
             val bitmap = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeStream(stream),
+                BitmapFactory.decodeStream(result.source.inputStream()),
                 MOSAIC_BITMAP_INCREMENT,
                 MOSAIC_BITMAP_INCREMENT,
                 true

@@ -129,8 +129,8 @@ fun loadBitmap(
         ImageRequest.Builder(context)
             .data(song.album)
             .fetcher(AlbumArtFetcher(context))
-            .size(OriginalSize)
             .transformations(RoundedCornersTransformation(cornerRadius))
+            .size(OriginalSize)
             .target(
                 onError = { onDone(null) },
                 onSuccess = { onDone(it.toBitmap()) }

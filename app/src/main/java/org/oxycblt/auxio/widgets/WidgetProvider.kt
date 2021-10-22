@@ -91,26 +91,24 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-        val cornerRadius = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            context.resources.getDimensionPixelSize(
-                android.R.dimen.system_app_widget_inner_radius
-            ).toFloat()
-        } else {
-            0f
+        val builder = ImageRequest.Builder(context)
+            .data(song.album)
+            .fetcher(AlbumArtFetcher(context))
+            .size(OriginalSize)
+            .target(
+                onError = { onDone(null) },
+                onSuccess = { onDone(it.toBitmap()) }
+            )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.transformations(RoundedCornersTransformation(
+                context.resources.getDimensionPixelSize(
+                    android.R.dimen.system_app_widget_inner_radius
+                ).toFloat()
+            ))
         }
 
-        Coil.imageLoader(context).enqueue(
-            ImageRequest.Builder(context)
-                .data(song.album)
-                .fetcher(AlbumArtFetcher(context))
-                .size(OriginalSize)
-                .transformations(RoundedCornersTransformation(cornerRadius))
-                .target(
-                    onError = { onDone(null) },
-                    onSuccess = { onDone(it.toBitmap()) }
-                )
-                .build()
-        )
+        Coil.imageLoader(context).enqueue(builder.build())
     }
 
     /*
