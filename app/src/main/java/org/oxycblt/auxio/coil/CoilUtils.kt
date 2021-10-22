@@ -27,6 +27,8 @@ import androidx.databinding.BindingAdapter
 import coil.Coil
 import coil.fetch.Fetcher
 import coil.request.ImageRequest
+import coil.size.OriginalSize
+import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -110,7 +112,12 @@ inline fun <reified T : BaseModel> ImageView.load(
  * failed/shouldn't occur.
  * **This not meant for UIs, instead use the Binding Adapters.**
  */
-fun loadBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
+fun loadBitmap(
+    context: Context,
+    song: Song,
+    cornerRadius: Float = 0f,
+    onDone: (Bitmap?) -> Unit
+) {
     val settingsManager = SettingsManager.getInstance()
 
     if (!settingsManager.showCovers) {
@@ -122,6 +129,8 @@ fun loadBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
         ImageRequest.Builder(context)
             .data(song.album)
             .fetcher(AlbumArtFetcher(context))
+            .size(OriginalSize)
+            .transformations(RoundedCornersTransformation(cornerRadius))
             .target(
                 onError = { onDone(null) },
                 onSuccess = { onDone(it.toBitmap()) }

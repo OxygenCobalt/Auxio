@@ -56,7 +56,7 @@ private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
     }
 }
 
-fun RemoteViews.applyControls(context: Context, state: WidgetState) {
+private fun RemoteViews.applyControls(context: Context, state: WidgetState) {
     setOnClickPendingIntent(
         R.id.widget_skip_prev,
         context.newBroadcastIntent(
@@ -90,6 +90,20 @@ fun RemoteViews.applyControls(context: Context, state: WidgetState) {
 
 fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
+}
+
+fun createTerminalWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_terminal)
+    views.applyMeta(context, state)
+    views.applyControls(context, state)
+    return views
+}
+
+fun createMinimalWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_minimal)
+    views.applyMeta(context, state)
+    views.applyControls(context, state)
+    return views
 }
 
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {

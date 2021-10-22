@@ -90,8 +90,6 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // themselves when being dragged. Too bad google's implementation of this doesn't even
         // work! To emulate it on my own, I check if this child is in a drag state and then animate
         // an elevation change.
-        // TODO: Some other enhancements I could make maybe
-        //  - Maybe stopping dragged items from extending beyond their specific part of the queue?
 
         val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 

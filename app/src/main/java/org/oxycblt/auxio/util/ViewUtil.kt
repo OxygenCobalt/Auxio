@@ -194,6 +194,7 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
  * and removing the padding if it isnt available, which works okayish. I think Material Files has
  * a better implementation of the same fix however, so once I'm able to hack that layout into
  * Auxio things should be better.
+ * TODO: Get rid of this get rid of this get rid of this
  */
 fun RecyclerView.applyEdgeRespectingBar(
     playbackModel: PlaybackViewModel,

@@ -24,23 +24,32 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
+import androidx.core.graphics.drawable.toBitmap
+import coil.Coil
+import coil.request.ImageRequest
+import coil.size.OriginalSize
+import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.coil.loadBitmap
+import org.oxycblt.auxio.coil.AlbumArtFetcher
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
- * packing what could be considered multiple widgets into a single responsive widget. More
- * specifically:
+ * packing what could be considered multiple widgets into a single responsive widget. All types
+ * are listed below:
  *
- * - For widgets Wx2 or higher, show an expanded view with album art and basic controls
- * - For widgets 4x2 or higher, show a complete view with all playback controls
+ * - Full: Large widgets will show cover art and all controls
+ * - Small: Tall and thin widgets will show cover art and three controls
+ * - Minimal: Wide and short widgets will show cover art and all controls in a compact manner
+ * - Text: Small widgets will only show text and three controls
  *
  * There are some minor problems with this implementation [notably UI jittering when the widget
  * picks a new layout below Android 12], but this is tolerable. It may be improved in the future.
@@ -60,7 +69,7 @@ class WidgetProvider : AppWidgetProvider() {
             return
         }
 
-        loadBitmap(context, song) { bitmap ->
+        loadWidgetBitmap(context, song) { bitmap ->
             val state = WidgetState(
                 song,
                 bitmap,
@@ -71,12 +80,37 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Map each widget form to the cells where it would look at least okay.
             val views = mapOf(
-                SizeF(180f, 110f) to createSmallWidget(context, state),
-                SizeF(250f, 110f) to createFullWidget(context, state)
+                SizeF(180f, 110f) to createTerminalWidget(context, state),
+                SizeF(250f, 110f) to createMinimalWidget(context, state),
+                SizeF(180f, 270f) to createSmallWidget(context, state),
+                SizeF(250f, 270f) to createFullWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)
         }
+    }
+
+    private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
+        val cornerRadius = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.resources.getDimensionPixelSize(
+                android.R.dimen.system_app_widget_inner_radius
+            ).toFloat()
+        } else {
+            0f
+        }
+
+        Coil.imageLoader(context).enqueue(
+            ImageRequest.Builder(context)
+                .data(song.album)
+                .fetcher(AlbumArtFetcher(context))
+                .size(OriginalSize)
+                .transformations(RoundedCornersTransformation(cornerRadius))
+                .target(
+                    onError = { onDone(null) },
+                    onSuccess = { onDone(it.toBitmap()) }
+                )
+                .build()
+        )
     }
 
     /*
@@ -110,9 +144,12 @@ class WidgetProvider : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+
             // We can't resize the widget until we can generate the views, so request an update
             // from PlaybackService.
             requestUpdate(context)
+        } else {
+            logD(newOptions?.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES) ?: "nothing")
         }
     }
 

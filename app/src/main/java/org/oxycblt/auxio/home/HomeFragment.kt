@@ -56,9 +56,6 @@ import org.oxycblt.auxio.util.logE
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective fragment.
- * FIXME: Edge-to-edge is borked still, unsure how to really fix this aside from making some
- *        magic layout like Material Files, but even then it might not work since the scrolling
- *        views are not laid side-by-side to the layout itself.
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
