@@ -48,8 +48,8 @@ import org.oxycblt.auxio.util.logD
  *
  * - Full: Large widgets will show cover art and all controls
  * - Small: Tall and thin widgets will show cover art and three controls
- * - Minimal: Wide and short widgets will show cover art and all controls in a compact manner
- * - Text: Small widgets will only show text and three controls
+ * - Compact: Wide and short widgets will show cover art and all controls in a compact manner
+ * - Minimal: Small widgets will only show cover art and three controls
  *
  * There are some minor problems with this implementation [notably UI jittering when the widget
  * picks a new layout below Android 12], but this is tolerable. It may be improved in the future.
@@ -80,8 +80,8 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Map each widget form to the cells where it would look at least okay.
             val views = mapOf(
-                SizeF(180f, 110f) to createTerminalWidget(context, state),
-                SizeF(250f, 110f) to createMinimalWidget(context, state),
+                SizeF(180f, 152f) to createMinimalWidget(context, state),
+                SizeF(250f, 152f) to createCompactWidget(context, state),
                 SizeF(180f, 270f) to createSmallWidget(context, state),
                 SizeF(250f, 270f) to createFullWidget(context, state)
             )

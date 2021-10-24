@@ -49,12 +49,22 @@
         <android.widget.LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium">
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:orientation="horizontal">
+
+            <android.widget.ImageButton
+                android:id="@+id/widget_loop"
+                style="@style/Widget.Auxio.Button.AppWidget"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_change_loop"
+                android:src="@drawable/ic_loop" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
-                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
+                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_prev"
@@ -62,21 +72,30 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
-                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
+                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/ic_play" />
+                android:src="@drawable/sel_playing_state" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_next"
-                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_weight="1"
+                style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_next"
                 android:src="@drawable/ic_skip_next" />
+
+            <android.widget.ImageButton
+                android:id="@+id/widget_shuffle"
+                style="@style/Widget.Auxio.Button.AppWidget"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_shuffle"
+                android:src="@drawable/ic_shuffle" />
 
         </android.widget.LinearLayout>
 
