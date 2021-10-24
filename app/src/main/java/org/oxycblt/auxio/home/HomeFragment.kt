@@ -205,6 +205,17 @@ class HomeFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
+        // There is no way a fast scrolling event can continue across a re-create. Reset it.
+        homeModel.updateFastScrolling(false)
+
+        homeModel.fastScrolling.observe(viewLifecycleOwner) { scrolling ->
+            if (scrolling) {
+                binding.homeFab.hide()
+            } else {
+                binding.homeFab.show()
+            }
+        }
+
         homeModel.recreateTabs.observe(viewLifecycleOwner) { recreate ->
             // notifyDataSetChanged is not practical for recreating here since it will cache
             // the previous fragments. Just instantiate a whole new adapter.

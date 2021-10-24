@@ -51,7 +51,10 @@ abstract class HomeListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.homeRecycler.setup(popupProvider)
+        binding.homeRecycler.popupProvider = popupProvider
+        binding.homeRecycler.onDragListener = { dragging ->
+            homeModel.updateFastScrolling(dragging)
+        }
     }
 
     protected fun <T : BaseModel, VH : RecyclerView.ViewHolder> setupRecycler(

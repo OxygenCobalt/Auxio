@@ -62,6 +62,7 @@ import kotlin.math.abs
  * - Track view is now only used for touch bounds
  * - Redundant functions have been merged
  * - Variable names are no longer prefixed with m
+ * - Added drag listener
  * - TODO: Added documentation
  * - TODO: Popup will center itself to the thumb when possible
  *
@@ -72,7 +73,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : RecyclerView(context, attrs, defStyleAttr) {
-    private var popupProvider: ((Int) -> String)? = null
+    var popupProvider: ((Int) -> String)? = null
+    var onDragListener: ((Boolean) -> Unit)? = null
 
     private val minTouchTargetSize: Int = resources.getDimensionPixelSize(R.dimen.size_btn_small)
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
@@ -191,7 +193,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         })
     }
 
-    fun setup(provider: (Int) -> String) {
+    fun addPopupProvider(provider: (Int) -> String) {
         popupProvider = provider
     }
 
@@ -496,6 +498,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         }
 
         this.dragging = dragging
+
         if (this.dragging) {
             parent.requestDisallowInterceptTouchEvent(true)
         }
@@ -511,6 +514,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             postAutoHideScrollbar()
             hidePopup()
         }
+
+        onDragListener?.invoke(dragging)
     }
 
     // --- SCROLLBAR APPEARANCE ---

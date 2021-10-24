@@ -61,6 +61,9 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val mCurTab = MutableLiveData(tabs[0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
+    private val mFastScrolling = MutableLiveData(false)
+    val fastScrolling: LiveData<Boolean> = mFastScrolling
+
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change.
      * When this flag is set, all tabs (and their respective viewpager fragments) will be
@@ -121,6 +124,14 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
                 mGenres.value = sort.sortModels(mGenres.value!!)
             }
         }
+    }
+
+    /**
+     * Update the fast scroll state. This is used to control the FAB visibility whenever
+     * the user begins to fast scroll.
+     */
+    fun updateFastScrolling(scrolling: Boolean) {
+        mFastScrolling.value = scrolling
     }
 
     // --- OVERRIDES ---
