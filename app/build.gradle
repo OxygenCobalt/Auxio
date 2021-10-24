@@ -102,10 +102,6 @@ dependencies {
     // Material
     implementation "com.google.android.material:material:1.5.0-alpha04"
 
-    // Fast scrolling
-    // TODO: Merge eventually
-    implementation 'me.zhanghai.android.fastscroll:library:1.1.7'
-
     // --- DEBUG ---
 
     // Lint

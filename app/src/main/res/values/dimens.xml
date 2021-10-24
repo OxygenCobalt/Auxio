@@ -31,10 +31,14 @@
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_huge">26sp</dimen>
+    <dimen name="text_size_insane">34sp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>
     <dimen name="elevation_normal">4dp</dimen>
 
     <dimen name="offset_thumb">4dp</dimen>
+
+    <dimen name="popup_min_width">78dp</dimen>
+    <dimen name="popup_padding_end">28dp</dimen>
 </resources>

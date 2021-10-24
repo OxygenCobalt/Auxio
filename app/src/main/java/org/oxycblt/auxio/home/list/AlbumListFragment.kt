@@ -23,7 +23,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import me.zhanghai.android.fastscroll.PopupTextProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
@@ -55,8 +54,8 @@ class AlbumListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: PopupTextProvider
-        get() = PopupTextProvider { idx ->
+    override val popupProvider: (Int) -> String
+        get() = { idx ->
             val album = homeModel.albums.value!![idx]
 
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {

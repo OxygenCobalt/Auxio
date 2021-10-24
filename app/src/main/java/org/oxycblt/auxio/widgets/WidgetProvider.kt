@@ -101,11 +101,13 @@ class WidgetProvider : AppWidgetProvider() {
             )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            builder.transformations(RoundedCornersTransformation(
-                context.resources.getDimensionPixelSize(
-                    android.R.dimen.system_app_widget_inner_radius
-                ).toFloat()
-            ))
+            builder.transformations(
+                RoundedCornersTransformation(
+                    context.resources.getDimensionPixelSize(
+                        android.R.dimen.system_app_widget_inner_radius
+                    ).toFloat()
+                )
+            )
         }
 
         Coil.imageLoader(context).enqueue(builder.build())

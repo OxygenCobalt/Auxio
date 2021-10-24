@@ -23,7 +23,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import me.zhanghai.android.fastscroll.PopupTextProvider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemPlayShuffleBinding
 import org.oxycblt.auxio.music.Song
@@ -56,25 +55,25 @@ class SongListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: PopupTextProvider
-        get() = PopupTextProvider { idx ->
-            if (idx == 0) {
-                return@PopupTextProvider ""
-            }
+    override val popupProvider: (Int) -> String
+        get() = { idx ->
+            if (idx != 0) {
+                val song = homeModel.songs.value!![idx]
 
-            val song = homeModel.songs.value!![idx]
+                when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+                    SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
+                        .first().uppercase()
 
-            when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
-                SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
-                    .first().uppercase()
+                    SortMode.ARTIST -> song.album.artist.name.sliceArticle()
+                        .first().uppercase()
 
-                SortMode.ARTIST -> song.album.artist.name.sliceArticle()
-                    .first().uppercase()
+                    SortMode.ALBUM -> song.album.name.sliceArticle()
+                        .first().uppercase()
 
-                SortMode.ALBUM -> song.album.name.sliceArticle()
-                    .first().uppercase()
-
-                SortMode.YEAR -> song.album.year.toString()
+                    SortMode.YEAR -> song.album.year.toString()
+                }
+            } else {
+                ""
             }
         }
 

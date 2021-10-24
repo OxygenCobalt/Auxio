@@ -40,8 +40,6 @@ import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
 import java.io.ByteArrayInputStream
 
-// LEFT-OFF: Make MosaicFetcher use these covers
-
 /**
  * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
  * quality covers or not.
@@ -138,11 +136,13 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
             ext.embeddedPicture?.let { coverBytes ->
                 val stream = ByteArrayInputStream(coverBytes)
 
-                return SourceResult(
-                    source = stream.source().buffer(),
-                    mimeType = context.contentResolver.getType(songUri),
-                    dataSource = DataSource.DISK
-                )
+                stream.use { stm ->
+                    return SourceResult(
+                        source = stm.source().buffer(),
+                        mimeType = context.contentResolver.getType(songUri),
+                        dataSource = DataSource.DISK
+                    )
+                }
             }
         }
 
@@ -196,15 +196,12 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
             }
         }
 
-        return if (stream != null) {
+        return stream?.use { stm ->
             return SourceResult(
-                source = stream.source().buffer(),
+                source = stm.source().buffer(),
                 mimeType = context.contentResolver.getType(uri),
                 dataSource = DataSource.DISK
             )
-        } else {
-            // No dice.
-            null
         }
     }
 

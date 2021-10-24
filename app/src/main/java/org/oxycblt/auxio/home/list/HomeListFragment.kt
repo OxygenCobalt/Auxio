@@ -26,9 +26,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
-import me.zhanghai.android.fastscroll.FastScrollerBuilder
-import me.zhanghai.android.fastscroll.PopupTextProvider
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.BaseModel
@@ -36,7 +33,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applyEdgeRespectingBar
 import org.oxycblt.auxio.util.applySpans
-import org.oxycblt.auxio.util.resolveDrawable
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
@@ -50,18 +46,12 @@ abstract class HomeListFragment : Fragment() {
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
-    abstract val popupProvider: PopupTextProvider
+    abstract val popupProvider: (Int) -> String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.homeRecycler.apply {
-            FastScrollerBuilder(this)
-                .useMd2Style()
-                .setPopupTextProvider(popupProvider)
-                .setTrackDrawable(R.drawable.ui_scroll_track.resolveDrawable(context))
-                .build()
-        }
+        binding.homeRecycler.setup(popupProvider)
     }
 
     protected fun <T : BaseModel, VH : RecyclerView.ViewHolder> setupRecycler(
