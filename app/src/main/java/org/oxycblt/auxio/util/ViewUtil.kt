@@ -196,9 +196,10 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
  * Auxio things should be better.
  * TODO: Get rid of this get rid of this get rid of this
  */
-fun RecyclerView.applyEdgeRespectingBar(
+fun View.applyEdgeRespectingBar(
     playbackModel: PlaybackViewModel,
-    viewLifecycleOwner: LifecycleOwner
+    viewLifecycleOwner: LifecycleOwner,
+    initialPadding: Int = 0
 ) {
     var bottomPadding = 0
 
@@ -208,7 +209,7 @@ fun RecyclerView.applyEdgeRespectingBar(
         if (playbackModel.song.value == null) {
             updatePadding(bottom = bottomPadding)
         } else {
-            updatePadding(bottom = 0)
+            updatePadding(bottom = initialPadding)
         }
     }
 
@@ -216,7 +217,7 @@ fun RecyclerView.applyEdgeRespectingBar(
         if (song == null) {
             updatePadding(bottom = bottomPadding)
         } else {
-            updatePadding(bottom = 0)
+            updatePadding(bottom = initialPadding)
         }
     }
 }

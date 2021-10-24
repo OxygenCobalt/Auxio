@@ -38,7 +38,7 @@ import kotlin.math.sqrt
  * The custom drawable used as FastScrollRecyclerView's popup background.
  * This is an adaptation from AndroidFastScroll's MD2 theme.
  *
-  * Attributions as per the Apache 2.0 license:
+ * Attributions as per the Apache 2.0 license:
  * ORIGINAL AUTHOR: Zhanghai [https://github.com/zhanghai]
  * PROJECT: Android Fast Scroll [https://github.com/zhanghai/AndroidFastScroll]
  * MODIFIER: OxygenCobalt [https://github.com/]

@@ -22,9 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.ItemPlayShuffleBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SongViewHolder
@@ -32,7 +30,6 @@ import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 import org.oxycblt.auxio.util.applySpans
-import org.oxycblt.auxio.util.inflater
 
 class SongListFragment : HomeListFragment() {
     override fun onCreateView(
@@ -57,95 +54,34 @@ class SongListFragment : HomeListFragment() {
 
     override val popupProvider: (Int) -> String
         get() = { idx ->
-            if (idx != 0) {
-                val song = homeModel.songs.value!![idx]
+            val song = homeModel.songs.value!![idx]
 
-                when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
-                    SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
-                        .first().uppercase()
+            when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+                SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
+                    .first().uppercase()
 
-                    SortMode.ARTIST -> song.album.artist.name.sliceArticle()
-                        .first().uppercase()
+                SortMode.ARTIST -> song.album.artist.name.sliceArticle()
+                    .first().uppercase()
 
-                    SortMode.ALBUM -> song.album.name.sliceArticle()
-                        .first().uppercase()
+                SortMode.ALBUM -> song.album.name.sliceArticle()
+                    .first().uppercase()
 
-                    SortMode.YEAR -> song.album.year.toString()
-                }
-            } else {
-                ""
+                SortMode.YEAR -> song.album.year.toString()
             }
         }
 
     inner class SongsAdapter(
         private val doOnClick: (data: Song) -> Unit,
         private val doOnLongClick: (view: View, data: Song) -> Unit,
-    ) : HomeAdapter<Song, RecyclerView.ViewHolder>() {
-        override fun getItemCount(): Int {
-            return if (data.isNotEmpty()) {
-                data.size + 1 // Make space for the play/shuffle header
-            } else {
-                data.size
-            }
+    ) : HomeAdapter<Song, SongViewHolder>() {
+        override fun getItemCount(): Int = data.size
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
+            return SongViewHolder.from(parent.context, doOnClick, doOnLongClick)
         }
 
-        override fun getItemViewType(position: Int): Int {
-            return if (position == 0) {
-                PLAY_ITEM_TYPE
-            } else {
-                SongViewHolder.ITEM_TYPE
-            }
+        override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+            holder.bind(data[position])
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return when (viewType) {
-                PLAY_ITEM_TYPE -> PlayViewHolder(
-                    ItemPlayShuffleBinding.inflate(parent.context.inflater)
-                )
-
-                SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
-                    parent.context, doOnClick, doOnLongClick
-                )
-
-                else -> error("Invalid viewholder item type.")
-            }
-        }
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            if (holder is SongViewHolder) {
-                holder.bind(data[position - 1])
-            }
-        }
-    }
-
-    /**
-     * The viewholder for the play/shuffle header on the song header.
-     * Using a FAB would have been more conventional here, but it's so difficult to get a FAB
-     * to play along with edge-to-edge and nested RecyclerView instances to the point where I
-     * may as well not bother.
-     */
-    private inner class PlayViewHolder(
-        binding: ItemPlayShuffleBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-        init {
-            // Force the layout to *actually* be the screen width.
-            // We can't inherit BaseViewHolder here since this ViewHolder isn't really connected
-            // to an item.
-            binding.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-            )
-
-            binding.playButton.setOnClickListener {
-                playbackModel.playAll()
-            }
-
-            binding.shuffleButton.setOnClickListener {
-                playbackModel.shuffleAll()
-            }
-        }
-    }
-
-    companion object {
-        const val PLAY_ITEM_TYPE = 0xA00E
     }
 }

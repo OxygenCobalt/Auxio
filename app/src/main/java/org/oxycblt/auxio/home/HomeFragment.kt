@@ -47,6 +47,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.applyEdge
@@ -59,6 +60,7 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class HomeFragment : Fragment() {
+    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
 
@@ -68,6 +70,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentHomeBinding.inflate(inflater)
+        var bottomPadding = 0
         val sortItem: MenuItem
 
         // --- UI SETUP ---
@@ -75,6 +78,8 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.applyEdge { bars ->
+            bottomPadding = bars.bottom
+            updateFabPadding(binding, bottomPadding)
             binding.homeAppbar.updatePadding(top = bars.top)
         }
 
@@ -190,6 +195,10 @@ class HomeFragment : Fragment() {
             })
         }
 
+        binding.homeFab.setOnClickListener {
+            playbackModel.shuffleAll()
+        }
+
         TabLayoutMediator(binding.homeTabs, binding.homePager) { tab, pos ->
             tab.setText(homeModel.tabs[pos].string)
         }.attach()
@@ -206,38 +215,28 @@ class HomeFragment : Fragment() {
             }
         }
 
-        homeModel.curTab.observe(viewLifecycleOwner) { tab ->
+        homeModel.curTab.observe(viewLifecycleOwner) { t ->
+            val tab = requireNotNull(t)
+
             // Make sure that we update the scrolling view and allowed menu items before whenever
             // the tab changes.
-            val targetView = when (requireNotNull(tab)) {
-                DisplayMode.SHOW_SONGS -> {
-                    updateSortMenu(sortItem, tab)
-                    R.id.home_song_list
+            when (tab) {
+                DisplayMode.SHOW_SONGS -> updateSortMenu(sortItem, tab)
+
+                DisplayMode.SHOW_ALBUMS -> updateSortMenu(sortItem, tab) { id ->
+                    id != R.id.option_sort_album
                 }
 
-                DisplayMode.SHOW_ALBUMS -> {
-                    updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
-                    R.id.home_album_list
+                DisplayMode.SHOW_ARTISTS -> updateSortMenu(sortItem, tab) { id ->
+                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
                 }
 
-                DisplayMode.SHOW_ARTISTS -> {
-                    updateSortMenu(sortItem, tab) { id ->
-                        id == R.id.option_sort_asc || id == R.id.option_sort_dsc
-                    }
-
-                    R.id.home_artist_list
-                }
-
-                DisplayMode.SHOW_GENRES -> {
-                    updateSortMenu(sortItem, tab) { id ->
-                        id == R.id.option_sort_asc || id == R.id.option_sort_dsc
-                    }
-
-                    R.id.home_genre_list
+                DisplayMode.SHOW_GENRES -> updateSortMenu(sortItem, tab) { id ->
+                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
                 }
             }
 
-            binding.homeAppbar.liftOnScrollTargetViewId = targetView
+            binding.homeAppbar.liftOnScrollTargetViewId = tab.viewId
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
@@ -267,6 +266,10 @@ class HomeFragment : Fragment() {
             }
         }
 
+        playbackModel.song.observe(viewLifecycleOwner) {
+            updateFabPadding(binding, bottomPadding)
+        }
+
         logD("Fragment Created.")
 
         return binding.root
@@ -286,6 +289,30 @@ class HomeFragment : Fragment() {
 
             option.isVisible = isVisible(option.itemId)
         }
+    }
+
+    private fun updateFabPadding(
+        binding: FragmentHomeBinding,
+        bottomPadding: Int
+    ) {
+        // To get our FAB to work with edge-to-edge, we need keep track of the bar view and update
+        // the padding based off of that. However, we can't use the shared method here since FABs
+        // don't respect padding, so we duplicate the code here except with the margins instead.
+        val fabParams = binding.homeFab.layoutParams as CoordinatorLayout.LayoutParams
+        val baseSpacing = resources.getDimensionPixelSize(R.dimen.spacing_medium)
+
+        if (playbackModel.song.value == null) {
+            fabParams.bottomMargin = baseSpacing + bottomPadding
+        } else {
+            fabParams.bottomMargin = baseSpacing
+        }
+    }
+
+    private val DisplayMode.viewId: Int get() = when (this) {
+        DisplayMode.SHOW_SONGS -> R.id.home_song_list
+        DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
+        DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
+        DisplayMode.SHOW_GENRES -> R.id.home_genre_list
     }
 
     private inner class HomePagerAdapter :

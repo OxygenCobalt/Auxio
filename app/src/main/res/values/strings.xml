@@ -119,6 +119,7 @@
     <string name="desc_skip_prev">Skip to last song</string>
     <string name="desc_change_loop">Change repeat mode</string>
     <string name="desc_shuffle">Turn shuffle on or off</string>
+    <string name="desc_shuffle_all">Shuffle all songs</string>
 
     <string name="desc_clear_user_queue">Clear queue</string>
     <string name="desc_clear_queue_item">Remove this queue item</string>
