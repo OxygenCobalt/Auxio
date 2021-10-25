@@ -18,11 +18,14 @@
 
 package org.oxycblt.auxio.music
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.logD
@@ -46,24 +49,19 @@ class MusicStore private constructor() {
     private var mSongs = listOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    /** Marker for whether the music loading process has successfully completed. */
-    var loaded = false
-        private set
-
     /**
      * Load/Sort the entire music library. Should always be ran on a coroutine.
      */
-    suspend fun load(context: Context): Response {
-        return withContext(Dispatchers.IO) {
-            loadMusicInternal(context)
-        }
-    }
-
-    /**
-     * Do the actual music loading process internally.
-     */
-    private fun loadMusicInternal(context: Context): Response {
+    private fun load(context: Context): Response {
         logD("Starting initial music load...")
+
+        val notGranted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_DENIED
+
+        if (notGranted) {
+            return Response.Err(ErrorKind.NO_PERMS)
+        }
 
         try {
             val start = System.currentTimeMillis()
@@ -72,7 +70,7 @@ class MusicStore private constructor() {
             loader.load()
 
             if (loader.songs.isEmpty()) {
-                return Response.NO_MUSIC
+                return Response.Err(ErrorKind.NO_MUSIC)
             }
 
             mSongs = loader.songs
@@ -85,12 +83,10 @@ class MusicStore private constructor() {
             logE("Something went horribly wrong.")
             logE(e.stackTraceToString())
 
-            return Response.FAILED
+            return Response.Err(ErrorKind.FAILED)
         }
 
-        loaded = true
-
-        return Response.SUCCESS
+        return Response.Ok(this)
     }
 
     /**
@@ -121,31 +117,77 @@ class MusicStore private constructor() {
     }
 
     /**
-     * Responses that [MusicStore] sends back when a [load] call completes.
+     * A response that [MusicStore] returns when loading music.
+     * And before you ask, yes, I do like rust.
      */
-    enum class Response {
-        NO_MUSIC, NO_PERMS, FAILED, SUCCESS
+    sealed class Response {
+        class Ok(val musicStore: MusicStore) : Response()
+        class Err(val kind: ErrorKind) : Response()
+    }
+
+    enum class ErrorKind {
+        NO_PERMS, NO_MUSIC, FAILED
     }
 
     companion object {
         @Volatile
-        private var INSTANCE: MusicStore? = null
+        private var INSTANCE: Response? = null
 
         /**
-         * Get/Instantiate the single instance of [MusicStore].
+         * Initialize the loading process for this instance. This must be ran on a background
+         * thread. If the instance has already been loaded successfully, then it will be returned
+         * immediately.
          */
-        fun getInstance(): MusicStore {
+        suspend fun initInstance(context: Context): Response {
             val currentInstance = INSTANCE
 
-            if (currentInstance != null) {
+            if (currentInstance is Response.Ok) {
                 return currentInstance
             }
 
-            synchronized(this) {
-                val newInstance = MusicStore()
-                INSTANCE = newInstance
-                return newInstance
+            return withContext(Dispatchers.IO) {
+                val result = MusicStore().load(context)
+
+                synchronized(this) {
+                    INSTANCE = result
+                }
+
+                result
             }
+        }
+
+        /**
+         * Maybe get a MusicStore instance.
+         *
+         * @return null if the music store instance is still loading or if the loading process has
+         * encountered an error. An instance is returned otherwise.
+         */
+        fun maybeGetInstance(): MusicStore? {
+            val currentInstance = INSTANCE
+
+            return if (currentInstance is Response.Ok) {
+                currentInstance.musicStore
+            } else {
+                null
+            }
+        }
+
+        /**
+         * Require a MusicStore instance. This function is dangerous and should only be used if
+         * it's guaranteed that the caller's code will only be called after the initial loading
+         * process.
+         */
+        fun requireInstance(): MusicStore {
+            return requireNotNull(maybeGetInstance()) {
+                "MusicStore instance was not loaded or loading failed."
+            }
+        }
+
+        /**
+         * Check if this instance has successfully loaded or not.
+         */
+        fun loaded(): Boolean {
+            return maybeGetInstance() != null
         }
     }
 }

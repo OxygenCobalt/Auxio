@@ -99,9 +99,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         it.slice((mIndex.value!! + 1) until it.size)
     }
 
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()
-    private val musicStore = MusicStore.getInstance()
 
     init {
         playbackManager.addCallback(this)
@@ -173,7 +172,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playWithUri(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
-        if (playbackManager.isRestored && musicStore.loaded) {
+        if (playbackManager.isRestored && MusicStore.loaded()) {
             playWithUriInternal(uri, context)
         } else {
             logD("Cant play this URI right now, waiting...")
@@ -189,16 +188,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun playWithUriInternal(uri: Uri, context: Context) {
         logD("Playing with uri $uri")
 
+        val musicStore = MusicStore.requireInstance()
+
         musicStore.findSongForUri(uri, context.contentResolver)?.let { song ->
             playSong(song)
         }
-    }
-
-    /**
-     * Play all songs
-     */
-    fun playAll() {
-        playbackManager.playAll()
     }
 
     /**
@@ -370,6 +364,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Restore playback on startup. This can do one of two things:
      * - Play a file intent that was given by MainActivity in [playWithUri]
      * - Restore the last playback state if there is no active file intent.
+     * TODO: Re-add this to HomeFragment once state can be restored
      */
     fun setupPlayback(context: Context) {
         val intentUri = mIntentUri

@@ -29,11 +29,13 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
+import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
@@ -44,13 +46,14 @@ import org.oxycblt.auxio.util.showToast
  * @author OxygenCobalt
  */
 class AboutFragment : Fragment() {
+    private val homeModel: HomeViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
-        val musicStore = MusicStore.getInstance()
 
         binding.applyEdge { bars ->
             binding.aboutAppbar.updatePadding(top = bars.top)
@@ -65,9 +68,17 @@ class AboutFragment : Fragment() {
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
-        binding.aboutSongCount.text = getString(
-            R.string.fmt_songs_loaded, musicStore.songs.size
-        )
+
+        homeModel.loaderResponse.observe(viewLifecycleOwner) { response ->
+            val count = when (response) {
+                is MusicStore.Response.Ok -> response.musicStore.songs.size
+                else -> 0
+            }
+
+            binding.aboutSongCount.text = getString(
+                R.string.fmt_songs_loaded, count
+            )
+        }
 
         logD("Dialog created.")
 

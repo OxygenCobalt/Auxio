@@ -18,9 +18,12 @@
 
 package org.oxycblt.auxio.home
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -36,12 +39,7 @@ import org.oxycblt.auxio.ui.SortMode
  * @author OxygenCobalt
  */
 class HomeViewModel : ViewModel(), SettingsManager.Callback {
-    private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
-
-    /** Internal getter for getting the visible library tabs */
-    private val visibleTabs: List<DisplayMode> get() = settingsManager.libTabs
-        .filterIsInstance<Tab.Visible>().map { it.mode }
 
     private val mSongs = MutableLiveData(listOf<Song>())
     val songs: LiveData<List<Song>> get() = mSongs
@@ -58,11 +56,12 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     var tabs: List<DisplayMode> = visibleTabs
         private set
 
+    /** Internal getter for getting the visible library tabs */
+    private val visibleTabs: List<DisplayMode> get() = settingsManager.libTabs
+        .filterIsInstance<Tab.Visible>().map { it.mode }
+
     private val mCurTab = MutableLiveData(tabs[0])
     val curTab: LiveData<DisplayMode> = mCurTab
-
-    private val mFastScrolling = MutableLiveData(false)
-    val fastScrolling: LiveData<Boolean> = mFastScrolling
 
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change.
@@ -72,13 +71,51 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val mRecreateTabs = MutableLiveData(false)
     val recreateTabs: LiveData<Boolean> = mRecreateTabs
 
-    init {
-        mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
-        mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
-        mArtists.value = settingsManager.libArtistSort.sortModels(musicStore.artists)
-        mGenres.value = settingsManager.libGenreSort.sortModels(musicStore.genres)
+    private val mFastScrolling = MutableLiveData(false)
+    val fastScrolling: LiveData<Boolean> = mFastScrolling
 
+    private val mLoaderResponse = MutableLiveData<MusicStore.Response?>(null)
+    val loaderResponse: LiveData<MusicStore.Response?> = mLoaderResponse
+
+    private var isBusy = false
+
+    init {
         settingsManager.addCallback(this)
+    }
+
+    /**
+     * Initiate the loading process. This is done here since HomeFragment will be the first
+     * fragment navigated to and because SnackBars will have the best UX here.
+     */
+    fun loadMusic(context: Context) {
+        if (mLoaderResponse.value != null || isBusy) {
+            return
+        }
+
+        isBusy = true
+        mLoaderResponse.value = null
+
+        viewModelScope.launch {
+            val result = MusicStore.initInstance(context)
+
+            isBusy = false
+            mLoaderResponse.value = result
+
+            if (result is MusicStore.Response.Ok) {
+                val musicStore = result.musicStore
+
+                mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
+                mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
+                mArtists.value = settingsManager.libArtistSort.sortModels(musicStore.artists)
+                mGenres.value = settingsManager.libGenreSort.sortModels(musicStore.genres)
+            }
+        }
+    }
+
+    fun reloadMusic(context: Context) {
+        mLoaderResponse.value = null
+
+        loadMusic(context)
     }
 
     /**

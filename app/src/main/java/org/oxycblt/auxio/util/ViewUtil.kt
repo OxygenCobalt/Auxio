@@ -191,10 +191,12 @@ fun View.applyEdge(onApply: (Rect) -> Unit) {
  * Stopgap measure to make edge-to-edge work on views that also have a playback bar.
  * The issue is that while we can apply padding initially, the padding will still be applied
  * when the bar is shown, which is very ungood. We mitigate this by just checking the song state
- * and removing the padding if it isnt available, which works okayish. I think Material Files has
- * a better implementation of the same fix however, so once I'm able to hack that layout into
- * Auxio things should be better.
- * TODO: Get rid of this get rid of this get rid of this
+ * and removing the padding if there is one, which is a stupidly fragile band-aid but it
+ * works.
+ *
+ * TODO: Dumpster this and replace it with a dedicated layout. Only issue with that is how
+ *  nested our layouts are, which basically forces us to do recursion magic. Hai Zhang's Material
+ *  Files layout may help in this task.
  */
 fun View.applyEdgeRespectingBar(
     playbackModel: PlaybackViewModel,

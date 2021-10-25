@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveDrawable
 import kotlin.math.abs
@@ -47,13 +48,13 @@ import kotlin.math.abs
  * Zhanghi's AndroidFastScroll but slimmed down for Auxio and with a couple of enhancements.
  *
  * Attributions as per the Apache 2.0 license:
- * ORIGINAL AUTHOR: Zhanghai [https://github.com/zhanghai]
+ * ORIGINAL AUTHOR: Hai Zhang [https://github.com/zhanghai]
  * PROJECT: Android Fast Scroll [https://github.com/zhanghai/AndroidFastScroll]
  * MODIFIER: OxygenCobalt [https://github.com/]
  *
  * !!! MODIFICATIONS !!!:
- * - Scroller will no longer show itself on startup, which looked unpleasent with multiple
- * views
+ * - Scroller will no longer show itself on startup or relayouts, which looked unpleasant
+ * with multiple views
  * - DefaultAnimationHelper and RecyclerViewHelper were merged into the class
  * - FastScroller overlay was merged into RecyclerView instance
  * - Removed FastScrollerBuilder
@@ -65,8 +66,6 @@ import kotlin.math.abs
  * - Added drag listener
  * - TODO: Added documentation
  * - TODO: Popup will center itself to the thumb when possible
- *
- * TODO: Debug this
  */
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
@@ -193,10 +192,6 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         })
     }
 
-    fun addPopupProvider(provider: (Int) -> String) {
-        popupProvider = provider
-    }
-
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
 
     private fun onPreDraw() {
@@ -316,6 +311,10 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     }
 
     private fun updateScrollbarState() {
+        if (!canScroll() || childCount == 0) {
+            return
+        }
+
         // Getting a pixel-perfect scroll position from a recyclerview is a bit of an involved
         // process. It's kind of expected given how RecyclerView well...recycles views, but it's
         // still very annoying how many hoops one has to jump through.

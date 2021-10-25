@@ -48,7 +48,6 @@ class SearchViewModel : ViewModel() {
     val isNavigating: Boolean get() = mIsNavigating
     val filterMode: DisplayMode? get() = mFilterMode
 
-    private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     init {
@@ -60,9 +59,10 @@ class SearchViewModel : ViewModel() {
      * Will push results to [searchResults].
      */
     fun doSearch(query: String, context: Context) {
+        val musicStore = MusicStore.maybeGetInstance()
         mLastQuery = query
 
-        if (query.isEmpty()) {
+        if (query.isEmpty() || musicStore == null) {
             mSearchResults.value = listOf()
 
             return

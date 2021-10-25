@@ -33,7 +33,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 class WidgetController(private val context: Context) :
     PlaybackStateManager.Callback,
     SettingsManager.Callback {
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()
     private val widget = WidgetProvider()
 

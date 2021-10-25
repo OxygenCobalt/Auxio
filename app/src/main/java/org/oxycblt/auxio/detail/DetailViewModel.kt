@@ -78,23 +78,28 @@ class DetailViewModel : ViewModel() {
 
     private var currentMenuContext: DisplayMode? = null
 
-    private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     fun setGenre(id: Long, context: Context) {
         if (mCurGenre.value?.id == id) return
+
+        val musicStore = MusicStore.requireInstance()
         mCurGenre.value = musicStore.genres.find { it.id == id }
         refreshGenreData(context)
     }
 
     fun setArtist(id: Long, context: Context) {
         if (mCurArtist.value?.id == id) return
+
+        val musicStore = MusicStore.requireInstance()
         mCurArtist.value = musicStore.artists.find { it.id == id }
         refreshArtistData(context)
     }
 
     fun setAlbum(id: Long, context: Context) {
         if (mCurAlbum.value?.id == id) return
+
+        val musicStore = MusicStore.requireInstance()
         mCurAlbum.value = musicStore.albums.find { it.id == id }
         refreshAlbumData(context)
     }

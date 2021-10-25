@@ -58,8 +58,6 @@ class MainFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        playbackModel.setupPlayback(requireContext())
-
         // Change CompactPlaybackFragment's visibility here so that an animation occurs.
         binding.mainPlayback.isVisible = playbackModel.song.value != null
 

@@ -92,7 +92,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     private val systemReceiver = SystemEventReceiver()
 
     // Managers
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     // State

@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.logE
  * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.system.PlaybackService].
  *
- * All access should be done with [PlaybackStateManager.getInstance].
+ * All access should be done with [PlaybackStateManager.maybeGetInstance].
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -132,7 +132,6 @@ class PlaybackStateManager private constructor() {
     val hasPlayed: Boolean get() = mHasPlayed
 
     private val settingsManager = SettingsManager.getInstance()
-    private val musicStore = MusicStore.getInstance()
 
     // --- CALLBACKS ---
 
@@ -164,6 +163,8 @@ class PlaybackStateManager private constructor() {
 
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
+                val musicStore = MusicStore.requireInstance()
+
                 mParent = null
                 mQueue = musicStore.songs.toMutableList()
             }
@@ -232,21 +233,11 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Play all songs.
-     */
-    fun playAll() {
-        mMode = PlaybackMode.ALL_SONGS
-        mQueue = musicStore.songs.toMutableList()
-        mParent = null
-
-        setShuffling(false, keepSong = false)
-        updatePlayback(mQueue[0])
-    }
-
-    /**
      * Shuffle all songs.
      */
     fun shuffleAll() {
+        val musicStore = MusicStore.maybeGetInstance() ?: return
+
         mMode = PlaybackMode.ALL_SONGS
         mQueue = musicStore.songs.toMutableList()
         mParent = null
@@ -478,11 +469,17 @@ class PlaybackStateManager private constructor() {
     private fun resetShuffle(keepSong: Boolean, useLastSong: Boolean) {
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
 
+        val musicStore = MusicStore.requireInstance()
+
         mQueue = when (mMode) {
-            PlaybackMode.IN_ARTIST -> orderSongsInArtist(mParent as Artist)
-            PlaybackMode.IN_ALBUM -> orderSongsInAlbum(mParent as Album)
-            PlaybackMode.IN_GENRE -> orderSongsInGenre(mParent as Genre)
-            PlaybackMode.ALL_SONGS -> orderSongs()
+            PlaybackMode.ALL_SONGS ->
+                settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
+            PlaybackMode.IN_ALBUM ->
+                settingsManager.detailAlbumSort.sortAlbum(mParent as Album).toMutableList()
+            PlaybackMode.IN_ARTIST ->
+                settingsManager.detailArtistSort.sortArtist(mParent as Artist).toMutableList()
+            PlaybackMode.IN_GENRE ->
+                settingsManager.detailGenreSort.sortGenre(mParent as Genre).toMutableList()
         }
 
         if (keepSong) {
@@ -610,8 +607,10 @@ class PlaybackStateManager private constructor() {
         if (playbackState != null) {
             logD("Found playback state $playbackState with queue size ${queueItems.size}")
 
-            unpackFromPlaybackState(playbackState)
-            unpackQueue(queueItems)
+            val musicStore = MusicStore.requireInstance()
+
+            unpackFromPlaybackState(playbackState, musicStore)
+            unpackQueue(queueItems, musicStore)
             doParentSanityCheck()
         }
 
@@ -640,12 +639,12 @@ class PlaybackStateManager private constructor() {
     /**
      * Unpack a [playbackState] into this instance.
      */
-    private fun unpackFromPlaybackState(playbackState: DatabaseState) {
+    private fun unpackFromPlaybackState(playbackState: DatabaseState, musicStore: MusicStore) {
         // Turn the simplified information from PlaybackState into usable data.
 
         // Do queue setup first
         mMode = PlaybackMode.fromInt(playbackState.mode) ?: PlaybackMode.ALL_SONGS
-        mParent = findParent(playbackState.parentHash, mMode)
+        mParent = findParent(playbackState.parentHash, mMode, musicStore)
         mIndex = playbackState.index
 
         // Then set up the current state
@@ -663,7 +662,6 @@ class PlaybackStateManager private constructor() {
      */
     private fun packQueue(): List<DatabaseQueueItem> {
         val unified = mutableListOf<DatabaseQueueItem>()
-
         var queueItemId = 0L
 
         mUserQueue.forEach { song ->
@@ -683,7 +681,7 @@ class PlaybackStateManager private constructor() {
      * Unpack a list of queue items into a queue & user queue.
      * @param queueItems The list of [DatabaseQueueItem]s to unpack.
      */
-    private fun unpackQueue(queueItems: List<DatabaseQueueItem>) {
+    private fun unpackQueue(queueItems: List<DatabaseQueueItem>, musicStore: MusicStore) {
         for (item in queueItems) {
             musicStore.findSongFast(item.songHash, item.albumHash)?.let { song ->
                 if (item.isUserQueue) {
@@ -711,7 +709,7 @@ class PlaybackStateManager private constructor() {
     /**
      * Get a [Parent] from music store given a [hash] and PlaybackMode [mode].
      */
-    private fun findParent(hash: Int, mode: PlaybackMode): Parent? {
+    private fun findParent(hash: Int, mode: PlaybackMode, musicStore: MusicStore): Parent? {
         return when (mode) {
             PlaybackMode.IN_GENRE -> musicStore.genres.find { it.hash == hash }
             PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.hash == hash }
@@ -735,36 +733,6 @@ class PlaybackStateManager private constructor() {
                 PlaybackMode.ALL_SONGS -> null
             }
         }
-    }
-
-    // --- ORDERING FUNCTIONS ---
-
-    /**
-     * Create an ordered queue based on the main list of songs
-     */
-    private fun orderSongs(): MutableList<Song> {
-        return settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
-    }
-
-    /**
-     * Create an ordered queue based on an [Album].
-     */
-    private fun orderSongsInAlbum(album: Album): MutableList<Song> {
-        return settingsManager.detailAlbumSort.sortAlbum(album).toMutableList()
-    }
-
-    /**
-     * Create an ordered queue based on an [Artist].
-     */
-    private fun orderSongsInArtist(artist: Artist): MutableList<Song> {
-        return settingsManager.detailArtistSort.sortArtist(artist).toMutableList()
-    }
-
-    /**
-     * Create an ordered queue based on a [Genre].
-     */
-    private fun orderSongsInGenre(genre: Genre): MutableList<Song> {
-        return settingsManager.detailGenreSort.sortGenre(genre).toMutableList()
     }
 
     /**
@@ -796,7 +764,7 @@ class PlaybackStateManager private constructor() {
         /**
          * Get/Instantiate the single instance of [PlaybackStateManager].
          */
-        fun getInstance(): PlaybackStateManager {
+        fun maybeGetInstance(): PlaybackStateManager {
             val currentInstance = INSTANCE
 
             if (currentInstance != null) {

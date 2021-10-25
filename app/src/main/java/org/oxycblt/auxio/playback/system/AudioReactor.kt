@@ -37,7 +37,7 @@ class AudioReactor(
     context: Context,
     private val player: SimpleExoPlayer
 ) : AudioManager.OnAudioFocusChangeListener {
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()
     private val audioManager = context.getSystemServiceSafe(AudioManager::class)
 

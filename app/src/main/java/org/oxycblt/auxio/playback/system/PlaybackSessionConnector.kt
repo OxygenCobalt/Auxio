@@ -39,7 +39,7 @@ class PlaybackSessionConnector(
     private val player: Player,
     private val mediaSession: MediaSessionCompat
 ) : PlaybackStateManager.Callback, Player.Listener, MediaSessionCompat.Callback() {
-    private val playbackManager = PlaybackStateManager.getInstance()
+    private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val emptyMetadata = MediaMetadataCompat.Builder().build()
 
     init {

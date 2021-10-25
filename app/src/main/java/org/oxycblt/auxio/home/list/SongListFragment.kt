@@ -29,7 +29,6 @@ import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
-import org.oxycblt.auxio.util.applySpans
 
 class SongListFragment : HomeListFragment() {
     override fun onCreateView(
@@ -47,7 +46,6 @@ class SongListFragment : HomeListFragment() {
         )
 
         setupRecycler(R.id.home_song_list, adapter, homeModel.songs)
-        binding.homeRecycler.applySpans { it == 0 }
 
         return binding.root
     }

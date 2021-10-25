@@ -39,7 +39,7 @@ import kotlin.math.sqrt
  * This is an adaptation from AndroidFastScroll's MD2 theme.
  *
  * Attributions as per the Apache 2.0 license:
- * ORIGINAL AUTHOR: Zhanghai [https://github.com/zhanghai]
+ * ORIGINAL AUTHOR: Hai Zhang [https://github.com/zhanghai]
  * PROJECT: Android Fast Scroll [https://github.com/zhanghai/AndroidFastScroll]
  * MODIFIER: OxygenCobalt [https://github.com/]
  *
@@ -47,7 +47,6 @@ import kotlin.math.sqrt
  * - Use modified Auxio resources instead of AFS resources
  * - Variable names are no longer prefixed with m
  * - Suppressed deprecation warning when dealing with convexness
- * - TODO: Popup will center itself to the thumb when possible
  */
 class Md2PopupBackground(context: Context) : Drawable() {
     private val paint: Paint = Paint()
