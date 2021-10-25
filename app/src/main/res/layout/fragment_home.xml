@@ -56,7 +56,6 @@
             android:contentDescription="@string/desc_shuffle_all"
             app:layout_anchor="@id/home_pager"
             app:tint="?attr/colorControlNormal"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:layout_anchorGravity="bottom|end" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

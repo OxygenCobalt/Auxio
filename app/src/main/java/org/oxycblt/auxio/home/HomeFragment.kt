@@ -225,6 +225,9 @@ class HomeFragment : Fragment() {
         // There is no way a fast scrolling event can continue across a re-create. Reset it.
         homeModel.updateFastScrolling(false)
 
+        // TODO: We actually have to move this to MainFragment. This also means we have to
+        //  have more than one thing watching the coroutine, which completely breaks what I
+        //  wanted to do.
         homeModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             // Handle the loader response.
             when (response) {

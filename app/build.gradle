@@ -100,7 +100,7 @@ dependencies {
     implementation 'io.coil-kt:coil:1.4.0'
 
     // Material
-    implementation "com.google.android.material:material:1.5.0-alpha04"
+    implementation "com.google.android.material:material:1.5.0-alpha05"
 
     // --- DEBUG ---
 
