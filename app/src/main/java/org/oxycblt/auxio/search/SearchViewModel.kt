@@ -23,6 +23,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
@@ -37,7 +38,7 @@ import java.text.Normalizer
  * The [ViewModel] for the search functionality
  * @author OxygenCobalt
  */
-class SearchViewModel : ViewModel() {
+class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
@@ -50,15 +51,22 @@ class SearchViewModel : ViewModel() {
 
     private val settingsManager = SettingsManager.getInstance()
 
+    private val songHeader = Header(id = -1, context.getString(R.string.lbl_songs))
+    private val albumHeader = Header(id = -1, context.getString(R.string.lbl_albums))
+    private val artistHeader = Header(id = -1, context.getString(R.string.lbl_artists))
+    private val genreHeader = Header(id = -1, context.getString(R.string.lbl_genres))
+
     init {
         mFilterMode = settingsManager.searchFilterMode
+
+        MusicStore.awaitInstance(this)
     }
 
     /**
      * Use [query] to perform a search of the music library.
      * Will push results to [searchResults].
      */
-    fun doSearch(query: String, context: Context) {
+    fun doSearch(query: String) {
         val musicStore = MusicStore.maybeGetInstance()
         mLastQuery = query
 
@@ -75,28 +83,28 @@ class SearchViewModel : ViewModel() {
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->
-                    results.add(Header(id = -1, name = context.getString(R.string.lbl_artists)))
+                    results.add(artistHeader)
                     results.addAll(artists)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
-                    results.add(Header(id = -2, name = context.getString(R.string.lbl_albums)))
+                    results.add(albumHeader)
                     results.addAll(albums)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(Header(id = -3, name = context.getString(R.string.lbl_genres)))
+                    results.add(genreHeader)
                     results.addAll(genres)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(Header(id = -4, name = context.getString(R.string.lbl_songs)))
+                    results.add(songHeader)
                     results.addAll(songs)
                 }
             }
@@ -109,7 +117,7 @@ class SearchViewModel : ViewModel() {
      * Update the current filter mode with a menu [id].
      * New value will be pushed to [filterMode].
      */
-    fun updateFilterModeWithId(@IdRes id: Int, context: Context) {
+    fun updateFilterModeWithId(@IdRes id: Int) {
         mFilterMode = when (id) {
             R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
             R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
@@ -121,7 +129,7 @@ class SearchViewModel : ViewModel() {
 
         settingsManager.searchFilterMode = mFilterMode
 
-        doSearch(mLastQuery, context)
+        doSearch(mLastQuery)
     }
 
     /**
@@ -159,7 +167,8 @@ class SearchViewModel : ViewModel() {
             idx += Character.charCount(cp)
 
             when (Character.getType(cp)) {
-                // Character.NON_SPACING_MARK and Character.COMBINING_SPACING_MARK
+                // Character.NON_SPACING_MARK and Character.COMBINING_SPACING_MARK were added
+                // by normalizer
                 6, 8 -> continue
 
                 else -> sb.appendCodePoint(cp)
@@ -174,5 +183,27 @@ class SearchViewModel : ViewModel() {
      */
     fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
+    }
+
+    // --- OVERRIDES ---
+
+    override fun onLoaded(musicStore: MusicStore) {
+        doSearch(mLastQuery)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        MusicStore.cancelAwaitInstance(this)
+    }
+
+    class Factory(private val context: Context) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            check(modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+                "SearchViewModel.Factory does not support this class"
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            return SearchViewModel(context) as T
+        }
     }
 }

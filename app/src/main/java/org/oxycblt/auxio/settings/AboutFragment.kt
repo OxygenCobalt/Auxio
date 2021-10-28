@@ -36,7 +36,6 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -69,14 +68,9 @@ class AboutFragment : Fragment() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
-        homeModel.loaderResponse.observe(viewLifecycleOwner) { response ->
-            val count = when (response) {
-                is MusicStore.Response.Ok -> response.musicStore.songs.size
-                else -> 0
-            }
-
+        homeModel.songs.observe(viewLifecycleOwner) { songs ->
             binding.aboutSongCount.text = getString(
-                R.string.fmt_songs_loaded, count
+                R.string.fmt_songs_loaded, songs.size
             )
         }
 

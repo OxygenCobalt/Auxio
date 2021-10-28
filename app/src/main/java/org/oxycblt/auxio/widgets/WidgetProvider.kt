@@ -81,9 +81,9 @@ class WidgetProvider : AppWidgetProvider() {
             // Map each widget form to the cells where it would look at least okay.
             val views = mapOf(
                 SizeF(180f, 152f) to createMinimalWidget(context, state),
-                SizeF(250f, 152f) to createCompactWidget(context, state),
+                SizeF(272f, 152f) to createCompactWidget(context, state),
                 SizeF(180f, 270f) to createSmallWidget(context, state),
-                SizeF(250f, 270f) to createFullWidget(context, state)
+                SizeF(272f, 270f) to createFullWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)

@@ -129,9 +129,14 @@ class MusicStore private constructor() {
         NO_PERMS, NO_MUSIC, FAILED
     }
 
+    interface MusicCallback {
+        fun onLoaded(musicStore: MusicStore)
+    }
+
     companion object {
         @Volatile
-        private var INSTANCE: Response? = null
+        private var RESPONSE: Response? = null
+        private val AWAITING = mutableListOf<MusicCallback>()
 
         /**
          * Initialize the loading process for this instance. This must be ran on a background
@@ -139,21 +144,53 @@ class MusicStore private constructor() {
          * immediately.
          */
         suspend fun initInstance(context: Context): Response {
-            val currentInstance = INSTANCE
+            val currentInstance = RESPONSE
 
             if (currentInstance is Response.Ok) {
                 return currentInstance
             }
 
-            return withContext(Dispatchers.IO) {
-                val result = MusicStore().load(context)
+            val response = withContext(Dispatchers.IO) {
+                val response = MusicStore().load(context)
 
                 synchronized(this) {
-                    INSTANCE = result
+                    RESPONSE = response
                 }
 
-                result
+                response
             }
+
+            if (response is Response.Ok) {
+                AWAITING.forEach { it.onLoaded(response.musicStore) }
+                AWAITING.clear()
+            }
+
+            return response
+        }
+
+        /**
+         * Await the successful creation of a [MusicStore] instance. The [callback]
+         * will be called if the instance is already loaded. It's recommended to call
+         * [cancelAwaitInstance] if the object is about to be destroyed to prevent any
+         * memory leaks.
+         */
+        fun awaitInstance(callback: MusicCallback) {
+            // FIXME: There has to be some coroutiney way to do this instead of just making
+            //  a leak-prone callback system
+            val currentInstance = maybeGetInstance()
+
+            if (currentInstance != null) {
+                callback.onLoaded(currentInstance)
+            }
+
+            AWAITING.add(callback)
+        }
+
+        /**
+         * Remove a callback from the queue.
+         */
+        fun cancelAwaitInstance(callback: MusicCallback) {
+            AWAITING.remove(callback)
         }
 
         /**
@@ -163,7 +200,7 @@ class MusicStore private constructor() {
          * encountered an error. An instance is returned otherwise.
          */
         fun maybeGetInstance(): MusicStore? {
-            val currentInstance = INSTANCE
+            val currentInstance = RESPONSE
 
             return if (currentInstance is Response.Ok) {
                 currentInstance.musicStore

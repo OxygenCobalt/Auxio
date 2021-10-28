@@ -18,16 +18,12 @@
 
 package org.oxycblt.auxio.home
 
-import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.iterator
 import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
@@ -38,7 +34,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -52,6 +47,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -69,6 +65,7 @@ class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,13 +75,6 @@ class HomeFragment : Fragment() {
         val binding = FragmentHomeBinding.inflate(inflater)
         var bottomPadding = 0
         val sortItem: MenuItem
-
-        // Build the permission launcher here as you can only do it in onCreateView/onCreate
-        val permLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) {
-            homeModel.reloadMusic(requireContext())
-        }
 
         // --- UI SETUP ---
 
@@ -218,84 +208,25 @@ class HomeFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        // Initialize music loading. Unlike MainFragment, we can not only do this here on startup
-        // but also show a SnackBar in a reasonable place in this fragment.
-        homeModel.loadMusic(requireContext())
-
         // There is no way a fast scrolling event can continue across a re-create. Reset it.
         homeModel.updateFastScrolling(false)
 
-        // TODO: We actually have to move this to MainFragment. This also means we have to
-        //  have more than one thing watching the coroutine, which completely breaks what I
-        //  wanted to do.
-        homeModel.loaderResponse.observe(viewLifecycleOwner) { response ->
+        musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             // Handle the loader response.
             when (response) {
-                is MusicStore.Response.Ok -> {
-                    logD("Received Ok")
-
-                    binding.homeFab.show()
-                    playbackModel.setupPlayback(requireContext())
-                }
-
-                is MusicStore.Response.Err -> {
-                    logD("Received Error")
-
-                    // We received an error. Hide the FAB and show a Snackbar with the error
-                    // message and a corresponding action
-                    binding.homeFab.hide()
-
-                    val errorRes = when (response.kind) {
-                        MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
-                        MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
-                        MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
-                    }
-
-                    val snackbar = Snackbar.make(
-                        binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE
-                    )
-
-                    snackbar.view.apply {
-                        // Change the font family to our semibold color
-                        findViewById<Button>(
-                            com.google.android.material.R.id.snackbar_action
-                        ).typeface = ResourcesCompat.getFont(requireContext(), R.font.inter_semibold)
-
-                        fitsSystemWindows = false
-
-                        // Prevent fitsSystemWindows margins from being applied to this view
-                        // [We already do it]
-                        setOnApplyWindowInsetsListener { v, insets -> insets }
-                    }
-
-                    when (response.kind) {
-                        MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {
-                            snackbar.setAction(R.string.lbl_retry) {
-                                homeModel.reloadMusic(requireContext())
-                            }
-                        }
-
-                        MusicStore.ErrorKind.NO_PERMS -> {
-                            snackbar.setAction(R.string.lbl_grant) {
-                                permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            }
-                        }
-                    }
-
-                    snackbar.show()
-                }
+                is MusicStore.Response.Ok -> binding.homeFab.show()
 
                 // While loading or during an error, make sure we keep the shuffle fab hidden so
                 // that any kind of loading is impossible. PlaybackStateManager also relies on this
                 // invariant, so please don't change it.
-                null -> binding.homeFab.hide()
+                else -> binding.homeFab.hide()
             }
         }
 
         homeModel.fastScrolling.observe(viewLifecycleOwner) { scrolling ->
             // Make sure an update here doesn't mess up the FAB state when it comes to the
             // loader response.
-            if (homeModel.loaderResponse.value !is MusicStore.Response.Ok) {
+            if (musicModel.loaderResponse.value !is MusicStore.Response.Ok) {
                 return@observe
             }
 

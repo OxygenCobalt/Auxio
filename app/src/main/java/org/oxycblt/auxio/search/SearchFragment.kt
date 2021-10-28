@@ -54,7 +54,10 @@ import org.oxycblt.auxio.util.logD
  */
 class SearchFragment : Fragment() {
     // SearchViewModel is only scoped to this Fragment
-    private val searchModel: SearchViewModel by viewModels()
+    private val searchModel: SearchViewModel by viewModels {
+        SearchViewModel.Factory(requireContext())
+    }
+
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
@@ -99,7 +102,7 @@ class SearchFragment : Fragment() {
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId != R.id.submenu_filtering) {
-                    searchModel.updateFilterModeWithId(item.itemId, requireContext())
+                    searchModel.updateFilterModeWithId(item.itemId)
                     item.isChecked = true
                     true
                 } else {
@@ -111,7 +114,7 @@ class SearchFragment : Fragment() {
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.doSearch(text?.toString() ?: "", requireContext())
+                searchModel.doSearch(text?.toString() ?: "")
             }
 
             // Auto-open the keyboard when this view is shown
@@ -121,6 +124,7 @@ class SearchFragment : Fragment() {
                 imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
             }
         }
+
         binding.searchRecycler.apply {
             adapter = searchAdapter
 
@@ -140,7 +144,6 @@ class SearchFragment : Fragment() {
             }
 
             if (results.isEmpty()) {
-                binding.searchAppbar.setExpanded(true)
                 binding.searchRecycler.visibility = View.INVISIBLE
             } else {
                 binding.searchRecycler.visibility = View.VISIBLE
