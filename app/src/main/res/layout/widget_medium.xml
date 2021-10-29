@@ -1,14 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="?attr/colorSurface"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:theme="@style/Theme.Widget">
+    android:theme="@style/Theme.Widget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.widget.LinearLayout style="@style/Widget.Auxio.AppWidget.Panel">
+    <!--
+    We can't use ConstraintLayout on widgets due to RemoteView limitations, but
+    for this widget form to work, we need to get the cover to preserve it's aspect
+    ratio. So, we use a fixed-size 1000x1000 drawable and then align the cover view
+    to that so that the bounds will scale properly.
+    This is easily one of the worst layout hacks I've done, but it seems to work.
+    -->
+
+    <ImageView
+        android:id="@+id/widget_aspect_ratio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/widget_panel"
+        android:src="@drawable/ui_widget_aspect_ratio"
+        android:visibility="invisible"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/widget_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignStart="@id/widget_aspect_ratio"
+        android:layout_alignTop="@id/widget_aspect_ratio"
+        android:layout_alignEnd="@id/widget_aspect_ratio"
+        android:layout_alignBottom="@id/widget_aspect_ratio"
+        android:src="@drawable/ic_song"
+        tools:ignore="ContentDescription" />
+
+    <android.widget.LinearLayout
+        android:id="@+id/widget_panel"
+        style="@style/Widget.Auxio.AppWidget.Panel"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center">
 
         <android.widget.TextView
             android:id="@+id/widget_song"
@@ -27,7 +66,8 @@
         <android.widget.LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium">
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:orientation="horizontal">
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
@@ -59,5 +99,6 @@
         </android.widget.LinearLayout>
 
     </android.widget.LinearLayout>
+</RelativeLayout>
 
-</LinearLayout>
+

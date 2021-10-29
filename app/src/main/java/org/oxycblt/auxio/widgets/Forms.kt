@@ -43,7 +43,7 @@ private fun createViews(
 
 private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
     setTextViewText(R.id.widget_song, state.song.name)
-    setTextViewText(R.id.widget_artist, state.song.album.artist.name)
+    setTextViewText(R.id.widget_artist, state.song.album.artist.resolvedName)
 
     if (state.albumArt != null) {
         setImageViewBitmap(R.id.widget_cover, state.albumArt)
@@ -92,15 +92,15 @@ fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
 }
 
-fun createCompactWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_compact)
+fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_tiny)
     views.applyMeta(context, state)
     views.applyControls(context, state)
     return views
 }
 
-fun createMinimalWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_minimal)
+fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_wide)
     views.applyMeta(context, state)
     views.applyControls(context, state)
     return views
@@ -113,8 +113,15 @@ fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     return views
 }
 
-fun createFullWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_full)
+fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_medium)
+    views.applyMeta(context, state)
+    views.applyControls(context, state)
+    return views
+}
+
+fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
+    val views = createViews(context, R.layout.widget_large)
     views.applyMeta(context, state)
     views.applyControls(context, state)
 

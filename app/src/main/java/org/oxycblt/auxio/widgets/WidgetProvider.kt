@@ -46,10 +46,11 @@ import org.oxycblt.auxio.util.logD
  * packing what could be considered multiple widgets into a single responsive widget. All types
  * are listed below:
  *
- * - Full: Large widgets will show cover art and all controls
- * - Small: Tall and thin widgets will show cover art and three controls
- * - Compact: Wide and short widgets will show cover art and all controls in a compact manner
- * - Minimal: Small widgets will only show cover art and three controls
+ * - Large widgets will show cover art and all controls
+ * - Tall and thin widgets will show cover art and three controls
+ * - Wide and short widgets will show cover art and all controls in a compact manner
+ * - Small widgets will only show text and three controls
+ * - Tiny widgets [e.g landscape mode] will show cover art, text, and a play/pause control.
  *
  * There are some minor problems with this implementation [notably UI jittering when the widget
  * picks a new layout below Android 12], but this is tolerable. It may be improved in the future.
@@ -80,10 +81,11 @@ class WidgetProvider : AppWidgetProvider() {
 
             // Map each widget form to the cells where it would look at least okay.
             val views = mapOf(
-                SizeF(180f, 152f) to createMinimalWidget(context, state),
-                SizeF(272f, 152f) to createCompactWidget(context, state),
-                SizeF(180f, 270f) to createSmallWidget(context, state),
-                SizeF(272f, 270f) to createFullWidget(context, state)
+                SizeF(180f, 100f) to createTinyWidget(context, state),
+                SizeF(180f, 152f) to createSmallWidget(context, state),
+                SizeF(272f, 152f) to createWideWidget(context, state),
+                SizeF(180f, 270f) to createMediumWidget(context, state),
+                SizeF(272f, 270f) to createLargeWidget(context, state)
             )
 
             appWidgetManager.applyViewsCompat(context, views)
