@@ -112,11 +112,11 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
             }
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
-                mArtists.value = sort.sortModels(mArtists.value!!)
+                mArtists.value = sort.sortParents(mArtists.value!!)
             }
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
-                mGenres.value = sort.sortModels(mGenres.value!!)
+                mGenres.value = sort.sortParents(mGenres.value!!)
             }
         }
     }
@@ -139,8 +139,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
     override fun onLoaded(musicStore: MusicStore) {
         mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
         mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
-        mArtists.value = settingsManager.libArtistSort.sortModels(musicStore.artists)
-        mGenres.value = settingsManager.libGenreSort.sortModels(musicStore.genres)
+        mArtists.value = settingsManager.libArtistSort.sortParents(musicStore.artists)
+        mGenres.value = settingsManager.libGenreSort.sortParents(musicStore.genres)
     }
 
     override fun onCleared() {

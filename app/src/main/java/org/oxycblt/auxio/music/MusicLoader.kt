@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Genres
 import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
@@ -152,7 +153,7 @@ class MusicLoader(private val context: Context) {
                 // No non-broken genre would be missing a name.
                 val name = cursor.getStringOrNull(nameIndex) ?: continue
 
-                genres.add(Genre(id, name))
+                genres.add(Genre(id, name, name.getGenreNameCompat() ?: name))
             }
         }
 
@@ -261,18 +262,25 @@ class MusicLoader(private val context: Context) {
         val albumsByArtist = albums.groupBy { it.artistName }
 
         albumsByArtist.forEach { entry ->
+            val resolvedName = if (entry.key == MediaStore.UNKNOWN_STRING) {
+                context.getString(R.string.def_artist)
+            } else {
+                entry.key
+            }
+
             // Because of our hacky album artist system, MediaStore artist IDs are unreliable.
             // Therefore we just use the hashCode of the artist name as our ID and move on.
             artists.add(
                 Artist(
                     id = entry.key.hashCode().toLong(),
                     name = entry.key,
+                    resolvedName = resolvedName,
                     albums = entry.value
                 )
             )
         }
 
-        artists = SortMode.ASCENDING.sortModels(artists).toMutableList()
+        artists = SortMode.ASCENDING.sortParents(artists).toMutableList()
 
         logD("Albums successfully linked into ${artists.size} artists")
     }
@@ -304,7 +312,8 @@ class MusicLoader(private val context: Context) {
 
         val unknownGenre = Genre(
             id = Long.MIN_VALUE,
-            name = context.getString(R.string.def_genre)
+            name = MediaStore.UNKNOWN_STRING,
+            resolvedName = context.getString(R.string.def_genre)
         )
 
         songs.forEach { song ->

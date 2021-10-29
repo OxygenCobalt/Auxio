@@ -115,8 +115,6 @@ class QueueAdapter(
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
 
-        logD(data)
-
         /*
          * If the data from the next queue is now entirely empty [Signified by a header at the
          * end, remove the next queue header as notify as such.

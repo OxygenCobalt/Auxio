@@ -27,11 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
-import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.BaseModel
-import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.applyEdge
 
@@ -79,22 +75,13 @@ class QueueFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.userQueue.observe(viewLifecycleOwner) { userQueue ->
-            if (userQueue.isEmpty() && playbackModel.nextItemsInQueue.value!!.isEmpty()) {
+        playbackModel.displayQueue.observe(viewLifecycleOwner) { queue ->
+            if (queue.isEmpty()) {
                 findNavController().navigateUp()
-
                 return@observe
             }
 
-            queueAdapter.submitList(createQueueData())
-        }
-
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { nextQueue ->
-            if (nextQueue.isEmpty() && playbackModel.userQueue.value!!.isEmpty()) {
-                findNavController().navigateUp()
-            }
-
-            queueAdapter.submitList(createQueueData())
+            queueAdapter.submitList(queue.toMutableList())
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
@@ -109,40 +96,4 @@ class QueueFragment : Fragment() {
     }
 
     // --- QUEUE DATA ---
-
-    /**
-     * Create the queue data that should be displayed
-     * @return The list of headers/songs that should be displayed.
-     */
-    private fun createQueueData(): MutableList<BaseModel> {
-        val queue = mutableListOf<BaseModel>()
-        val userQueue = playbackModel.userQueue.value!!
-        val nextQueue = playbackModel.nextItemsInQueue.value!!
-
-        if (userQueue.isNotEmpty()) {
-            queue += ActionHeader(
-                id = -2,
-                name = getString(R.string.lbl_next_user_queue),
-                icon = R.drawable.ic_clear,
-                desc = R.string.desc_clear_user_queue,
-                onClick = { playbackModel.clearUserQueue() }
-            )
-
-            queue += userQueue
-        }
-
-        if (nextQueue.isNotEmpty()) {
-            queue += Header(
-                id = -3,
-                name = getString(
-                    R.string.fmt_next_from,
-                    playbackModel.parent.value?.displayName ?: getString(R.string.lbl_all_songs)
-                )
-            )
-
-            queue += nextQueue
-        }
-
-        return queue
-    }
 }

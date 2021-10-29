@@ -54,7 +54,8 @@ class ArtistListFragment : HomeListFragment() {
 
     override val popupProvider: (Int) -> String
         get() = { idx ->
-            homeModel.artists.value!![idx].name.sliceArticle().first().uppercase()
+            homeModel.artists.value!![idx].resolvedName
+                .sliceArticle().first().uppercase()
         }
 
     class ArtistAdapter(

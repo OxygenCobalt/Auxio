@@ -35,9 +35,9 @@ import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -54,10 +54,7 @@ import org.oxycblt.auxio.util.logD
  */
 class SearchFragment : Fragment() {
     // SearchViewModel is only scoped to this Fragment
-    private val searchModel: SearchViewModel by viewModels {
-        SearchViewModel.Factory(requireContext())
-    }
-
+    private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
@@ -183,7 +180,7 @@ class SearchFragment : Fragment() {
      * Function that handles when an [item] is selected.
      * Handles all datatypes that are selectable.
      */
-    private fun onItemSelection(item: BaseModel, imm: InputMethodManager) {
+    private fun onItemSelection(item: Music, imm: InputMethodManager) {
         if (item is Song) {
             playbackModel.playSong(item)
 

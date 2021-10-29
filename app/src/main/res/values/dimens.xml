@@ -41,4 +41,9 @@
 
     <dimen name="popup_min_width">78dp</dimen>
     <dimen name="popup_padding_end">28dp</dimen>
+
+    <dimen name="widget_width_min">176dp</dimen>
+    <dimen name="widget_height_min">180dp</dimen>
+    <dimen name="widget_width_def">@dimen/widget_width_min</dimen>
+    <dimen name="widget_height_def">180dp</dimen>
 </resources>

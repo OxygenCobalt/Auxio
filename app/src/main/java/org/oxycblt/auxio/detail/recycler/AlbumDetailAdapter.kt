@@ -145,7 +145,7 @@ class AlbumDetailAdapter(
             binding.detailName.text = data.name
 
             binding.detailSubhead.apply {
-                text = data.artist.name
+                text = data.artist.resolvedName
 
                 setOnClickListener {
                     detailModel.navToItem(data.artist)

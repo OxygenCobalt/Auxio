@@ -80,7 +80,7 @@
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
-            android:text="@{song.album.artist.name}"
+            android:text="@{song.album.artist.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

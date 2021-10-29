@@ -71,7 +71,10 @@ fun ImageView.bindGenreImage(genre: Genre?) {
     load(genre, R.drawable.ic_genre, MosaicFetcher(context))
 
     if (genre != null) {
-        contentDescription = context.getString(R.string.desc_genre_image, genre.name)
+        contentDescription = context.getString(
+            R.string.desc_genre_image,
+            genre.resolvedName
+        )
     }
 }
 

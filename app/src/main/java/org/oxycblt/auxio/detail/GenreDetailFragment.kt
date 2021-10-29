@@ -48,7 +48,7 @@ class GenreDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        detailModel.setGenre(args.genreId, requireContext())
+        detailModel.setGenre(args.genreId)
 
         val detailAdapter = GenreDetailAdapter(
             playbackModel,

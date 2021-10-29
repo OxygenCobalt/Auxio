@@ -58,8 +58,9 @@ class SongListFragment : HomeListFragment() {
                 SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
                     .first().uppercase()
 
-                SortMode.ARTIST -> song.album.artist.name.sliceArticle()
-                    .first().uppercase()
+                SortMode.ARTIST ->
+                    song.album.artist.resolvedName
+                        .sliceArticle().first().uppercase()
 
                 SortMode.ALBUM -> song.album.name.sliceArticle()
                     .first().uppercase()

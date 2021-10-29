@@ -27,6 +27,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.ArtistViewHolder
@@ -40,8 +41,8 @@ import org.oxycblt.auxio.ui.SongViewHolder
  * @author OxygenCobalt
  */
 class SearchAdapter(
-    private val doOnClick: (data: BaseModel) -> Unit,
-    private val doOnLongClick: (view: View, data: BaseModel) -> Unit
+    private val doOnClick: (data: Music) -> Unit,
+    private val doOnLongClick: (view: View, data: Music) -> Unit
 ) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
 
     override fun getItemViewType(position: Int): Int {

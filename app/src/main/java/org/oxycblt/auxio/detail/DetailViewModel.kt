@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.detail
 
-import android.content.Context
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,6 +29,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -80,50 +80,50 @@ class DetailViewModel : ViewModel() {
 
     private val settingsManager = SettingsManager.getInstance()
 
-    fun setGenre(id: Long, context: Context) {
+    fun setGenre(id: Long) {
         if (mCurGenre.value?.id == id) return
 
         val musicStore = MusicStore.requireInstance()
         mCurGenre.value = musicStore.genres.find { it.id == id }
-        refreshGenreData(context)
+        refreshGenreData()
     }
 
-    fun setArtist(id: Long, context: Context) {
+    fun setArtist(id: Long) {
         if (mCurArtist.value?.id == id) return
 
         val musicStore = MusicStore.requireInstance()
         mCurArtist.value = musicStore.artists.find { it.id == id }
-        refreshArtistData(context)
+        refreshArtistData()
     }
 
-    fun setAlbum(id: Long, context: Context) {
+    fun setAlbum(id: Long) {
         if (mCurAlbum.value?.id == id) return
 
         val musicStore = MusicStore.requireInstance()
         mCurAlbum.value = musicStore.albums.find { it.id == id }
-        refreshAlbumData(context)
+        refreshAlbumData()
     }
 
     /**
      * Mark that the menu process is done with the new [SortMode].
      * Pass null if there was no change.
      */
-    fun finishShowMenu(newMode: SortMode?, context: Context) {
+    fun finishShowMenu(newMode: SortMode?) {
         mShowMenu.value = null
 
         if (newMode != null) {
             when (currentMenuContext) {
                 DisplayMode.SHOW_ALBUMS -> {
                     settingsManager.detailAlbumSort = newMode
-                    refreshAlbumData(context)
+                    refreshAlbumData()
                 }
                 DisplayMode.SHOW_ARTISTS -> {
                     settingsManager.detailArtistSort = newMode
-                    refreshArtistData(context)
+                    refreshArtistData()
                 }
                 DisplayMode.SHOW_GENRES -> {
                     settingsManager.detailGenreSort = newMode
-                    refreshGenreData(context)
+                    refreshGenreData()
                 }
                 else -> {}
             }
@@ -153,13 +153,13 @@ class DetailViewModel : ViewModel() {
         isNavigating = navigating
     }
 
-    private fun refreshGenreData(context: Context) {
+    private fun refreshGenreData() {
         val data = mutableListOf<BaseModel>(curGenre.value!!)
 
         data.add(
             ActionHeader(
                 id = -2,
-                name = context.getString(R.string.lbl_songs),
+                string = HeaderString.Single(R.string.lbl_songs),
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->
@@ -174,14 +174,14 @@ class DetailViewModel : ViewModel() {
         mGenreData.value = data
     }
 
-    private fun refreshArtistData(context: Context) {
+    private fun refreshArtistData() {
         val artist = curArtist.value!!
         val data = mutableListOf<BaseModel>(artist)
 
         data.add(
             Header(
                 id = -2,
-                name = context.getString(R.string.lbl_albums)
+                string = HeaderString.Single(R.string.lbl_albums)
             )
         )
 
@@ -190,7 +190,7 @@ class DetailViewModel : ViewModel() {
         data.add(
             ActionHeader(
                 id = -3,
-                name = context.getString(R.string.lbl_songs),
+                string = HeaderString.Single(R.string.lbl_songs),
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->
@@ -205,13 +205,13 @@ class DetailViewModel : ViewModel() {
         mArtistData.value = data.toList()
     }
 
-    private fun refreshAlbumData(context: Context) {
+    private fun refreshAlbumData() {
         val data = mutableListOf<BaseModel>(curAlbum.value!!)
 
         data.add(
             ActionHeader(
                 id = -2,
-                name = context.getString(R.string.lbl_songs),
+                string = HeaderString.Single(R.string.lbl_songs),
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->

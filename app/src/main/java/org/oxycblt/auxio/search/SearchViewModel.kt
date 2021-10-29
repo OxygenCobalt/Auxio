@@ -18,17 +18,17 @@
 
 package org.oxycblt.auxio.search
 
-import android.content.Context
 import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.HeaderString
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -38,7 +38,7 @@ import java.text.Normalizer
  * The [ViewModel] for the search functionality
  * @author OxygenCobalt
  */
-class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback {
+class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
@@ -50,11 +50,6 @@ class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback 
     val filterMode: DisplayMode? get() = mFilterMode
 
     private val settingsManager = SettingsManager.getInstance()
-
-    private val songHeader = Header(id = -1, context.getString(R.string.lbl_songs))
-    private val albumHeader = Header(id = -1, context.getString(R.string.lbl_albums))
-    private val artistHeader = Header(id = -1, context.getString(R.string.lbl_artists))
-    private val genreHeader = Header(id = -1, context.getString(R.string.lbl_genres))
 
     init {
         mFilterMode = settingsManager.searchFilterMode
@@ -83,28 +78,28 @@ class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback 
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->
-                    results.add(artistHeader)
+                    results.add(Header(-1, HeaderString.Single(R.string.lbl_artists)))
                     results.addAll(artists)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
-                    results.add(albumHeader)
+                    results.add(Header(-1, HeaderString.Single(R.string.lbl_albums)))
                     results.addAll(albums)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(genreHeader)
+                    results.add(Header(-1, HeaderString.Single(R.string.lbl_genres)))
                     results.addAll(genres)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(songHeader)
+                    results.add(Header(-1, HeaderString.Single(R.string.lbl_songs)))
                     results.addAll(songs)
                 }
             }
@@ -136,7 +131,7 @@ class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback 
      * Shortcut that will run a ignoreCase filter on a list and only return
      * a value if the resulting list is empty.
      */
-    private fun List<BaseModel>.filterByOrNull(value: String): List<BaseModel>? {
+    private fun List<Music>.filterByOrNull(value: String): List<BaseModel>? {
         val filtered = filter {
             // First see if the normal item name will work. If that fails, try the "normalized"
             // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
@@ -194,16 +189,5 @@ class SearchViewModel(context: Context) : ViewModel(), MusicStore.MusicCallback 
     override fun onCleared() {
         super.onCleared()
         MusicStore.cancelAwaitInstance(this)
-    }
-
-    class Factory(private val context: Context) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            check(modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-                "SearchViewModel.Factory does not support this class"
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            return SearchViewModel(context) as T
-        }
     }
 }

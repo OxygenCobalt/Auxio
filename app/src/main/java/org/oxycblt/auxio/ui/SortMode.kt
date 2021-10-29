@@ -22,8 +22,8 @@ import androidx.annotation.IdRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -44,7 +44,8 @@ enum class SortMode(@IdRes val itemId: Int) {
      * Sort a list of songs.
      *
      * **Behavior:**
-     * - [ASCENDING] & [DESCENDING]: See [sortModels]
+     * - [ASCENDING]: By name after article, ascending
+     * - [DESCENDING]: By name after article, descending
      * - [ARTIST]: Grouped by album and then sorted [ASCENDING] based off the artist name.
      * - [ALBUM]: Grouped by album and sorted [ASCENDING]
      * - [YEAR]: Grouped by album and sorted by year
@@ -54,7 +55,17 @@ enum class SortMode(@IdRes val itemId: Int) {
      */
     fun sortSongs(songs: Collection<Song>): List<Song> {
         return when (this) {
-            ASCENDING, DESCENDING -> sortModels(songs)
+            ASCENDING -> songs.sortedWith(
+                compareBy(String.CASE_INSENSITIVE_ORDER) { song ->
+                    song.name.sliceArticle()
+                }
+            )
+
+            DESCENDING -> songs.sortedWith(
+                compareByDescending(String.CASE_INSENSITIVE_ORDER) { song ->
+                    song.name.sliceArticle()
+                }
+            )
 
             else -> sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
                 ASCENDING.sortAlbum(album)
@@ -66,7 +77,8 @@ enum class SortMode(@IdRes val itemId: Int) {
      * Sort a list of albums.
      *
      * **Behavior:**
-     * - [ASCENDING] & [DESCENDING]: See [sortModels]
+     * - [ASCENDING]: By name after article, ascending
+     * - [DESCENDING]: By name after article, descending
      * - [ARTIST]: Grouped by artist and sorted [ASCENDING]
      * - [ALBUM]: [ASCENDING]
      * - [YEAR]: Sorted by year
@@ -75,43 +87,40 @@ enum class SortMode(@IdRes val itemId: Int) {
      */
     fun sortAlbums(albums: Collection<Album>): List<Album> {
         return when (this) {
-            ASCENDING, DESCENDING -> sortModels(albums)
+            ASCENDING, DESCENDING -> sortParents(albums)
 
-            ARTIST -> ASCENDING.sortModels(albums.groupBy { it.artist }.keys)
+            ARTIST -> ASCENDING.sortParents(albums.groupBy { it.artist }.keys)
                 .flatMap { YEAR.sortAlbums(it.albums) }
 
-            ALBUM -> ASCENDING.sortModels(albums)
+            ALBUM -> ASCENDING.sortParents(albums)
 
             YEAR -> albums.sortedByDescending { it.year }
         }
     }
 
     /**
-     * Sort a list of generic [BaseModel] instances.
+     * Sort a generic list of [Parent] instances.
      *
      * **Behavior:**
-     * - [ASCENDING]: Sorted by name, ascending
-     * - [DESCENDING]: Sorted by name, descending
-     * - Same list is returned otherwise.
-     *
-     * Names will be treated as case-insensitive. Articles like "the" and "a" will be skipped
-     * to line up with MediaStore behavior.
+     * - [ASCENDING]: By name after article, ascending
+     * - [DESCENDING]: By name after article, descending
+     * - Same parent list is returned otherwise.
      */
-    fun <T : BaseModel> sortModels(models: Collection<T>): List<T> {
+    fun <T : Parent> sortParents(parents: Collection<T>): List<T> {
         return when (this) {
-            ASCENDING -> models.sortedWith(
+            ASCENDING -> parents.sortedWith(
                 compareBy(String.CASE_INSENSITIVE_ORDER) { model ->
-                    model.name.sliceArticle()
+                    model.resolvedName.sliceArticle()
                 }
             )
 
-            DESCENDING -> models.sortedWith(
+            DESCENDING -> parents.sortedWith(
                 compareByDescending(String.CASE_INSENSITIVE_ORDER) { model ->
-                    model.name.sliceArticle()
+                    model.resolvedName.sliceArticle()
                 }
             )
 
-            else -> models.toList()
+            else -> parents.toList()
         }
     }
 

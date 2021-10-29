@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.music
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -27,46 +28,22 @@ import androidx.annotation.StringRes
 /**
  * The base data object for all music.
  * @property id The ID that is assigned to this object
- * @property name The name of this object (Such as a song title)
  */
 sealed class BaseModel {
     abstract val id: Long
-    abstract val name: String
 }
 
-/**
- * Provides a versatile static hash for a music item that will not change when
- * MediaStore changes.
- *
- * The reason why this is used is down a couple of reasons:
- * - MediaStore will refresh the unique ID of a piece of media whenever the library
- * changes, which creates bad UX
- * - Using song names makes collisions too common to be reliable
- * - Hashing into an integer makes databases both smaller and more efficent
- *
- * This does lock me into a "Load everything at once, lol" architecture for Auxio, but I
- * think its worth it.
- *
- * @property hash A unique-ish hash for this media item
- *
- * TODO: Make this hash stronger
- */
-sealed interface Hashable {
-    val hash: Int
+sealed class Music : BaseModel() {
+    abstract val name: String
+    abstract val hash: Int
 }
 
 /**
  * [BaseModel] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
- * @property displayName Name that handles the usage of [Genre.resolvedName]
- * and the normal [BaseModel.name]
  */
-sealed class Parent : BaseModel(), Hashable {
-    val displayName: String get() = if (this is Genre) {
-        resolvedName
-    } else {
-        name
-    }
+sealed class Parent : Music() {
+    abstract val resolvedName: String
 }
 
 /**
@@ -92,7 +69,7 @@ data class Song(
     val year: Int,
     val track: Int,
     val duration: Long
-) : BaseModel(), Hashable {
+) : Music() {
     private var mAlbum: Album? = null
     private var mGenre: Genre? = null
 
@@ -145,6 +122,10 @@ data class Album(
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration()
 
+    fun linkArtist(artist: Artist) {
+        mArtist = artist
+    }
+
     override val hash: Int get() {
         var result = name.hashCode()
         result = 31 * result + artistName.hashCode()
@@ -152,9 +133,8 @@ data class Album(
         return result
     }
 
-    fun linkArtist(artist: Artist) {
-        mArtist = artist
-    }
+    override val resolvedName: String
+        get() = name
 }
 
 /**
@@ -166,6 +146,7 @@ data class Album(
 data class Artist(
     override val id: Long,
     override val name: String,
+    override val resolvedName: String,
     val albums: List<Album>
 ) : Parent() {
     init {
@@ -190,44 +171,114 @@ data class Artist(
 /**
  * The data object for a genre. Inherits [Parent]
  * @property songs   The list of all [Song]s in this genre.
- * @property resolvedName A name that has been resolved from its int-genre form to its named form.
  */
 data class Genre(
     override val id: Long,
     override val name: String,
+    override val resolvedName: String
 ) : Parent() {
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
-    val resolvedName =
-        name.getGenreNameCompat() ?: name
-
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration()
-
-    override val hash = name.hashCode()
 
     fun linkSong(song: Song) {
         mSongs.add(song)
         song.linkGenre(this)
     }
+
+    override val hash = name.hashCode()
+}
+
+/**
+ * The string used for a header instance. This class is a bit complex, mostly because it revolves
+ * around passing string resources that are then resolved by the view instead of passing a context
+ * directly.
+ */
+sealed class HeaderString {
+    /** A single string resource. */
+    class Single(@StringRes val id: Int) : HeaderString()
+    /** A string resource with an argument. */
+    class WithArg(@StringRes val id: Int, val arg: Arg) : HeaderString()
+
+    /**
+     * Resolve this instance into a string.
+     */
+    fun resolve(context: Context): String {
+        return when (this) {
+            is Single -> context.getString(id)
+            is WithArg -> context.getString(id, arg.resolve(context))
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return false
+
+        return when (this) {
+            is Single -> other is Single && other.id == id
+            is WithArg -> other is WithArg && other.id == id && other.arg == arg
+        }
+    }
+
+    override fun hashCode(): Int {
+        return when (this) {
+            is Single -> id.hashCode()
+            is WithArg -> 31 * id.hashCode() * arg.hashCode()
+        }
+    }
+
+    /**
+     * An argument for the [WithArg] header string.
+     */
+    sealed class Arg {
+        /** A string resource to be used as the argument */
+        class Resource(@StringRes val id: Int) : Arg()
+        /** A string value to be used as the argument */
+        class Value(val string: String) : Arg()
+
+        /** Resolve this argument instance into a string. */
+        fun resolve(context: Context): String {
+            return when (this) {
+                is Resource -> context.getString(id)
+                is Value -> string
+            }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return false
+
+            return when (this) {
+                is Resource -> other is Resource && other.id == id
+                is Value -> other is Value && other.string == this.string
+            }
+        }
+
+        override fun hashCode(): Int {
+            return when (this) {
+                is Resource -> id.hashCode()
+                is Value -> 31 * string.hashCode()
+            }
+        }
+    }
 }
 
 /**
  * A data object used solely for the "Header" UI element.
+ * @see HeaderString
  */
 data class Header(
     override val id: Long,
-    override val name: String,
+    val string: HeaderString
 ) : BaseModel()
 
 /**
  * A data object used for an action header. Like [Header], but with a button.
- * Inherits [BaseModel].
+ * @see HeaderString
  */
 data class ActionHeader(
     override val id: Long,
-    override val name: String,
+    val string: HeaderString,
     @DrawableRes val icon: Int,
     @StringRes val desc: Int,
     val onClick: (View) -> Unit,
@@ -239,7 +290,7 @@ data class ActionHeader(
         if (other !is ActionHeader) return false
 
         if (id != other.id) return false
-        if (name != other.name) return false
+        if (string != other.string) return false
         if (icon != other.icon) return false
         if (desc != other.desc) return false
 
@@ -248,7 +299,7 @@ data class ActionHeader(
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + name.hashCode()
+        result = 31 * result + string.hashCode()
         result = 31 * result + icon
         result = 31 * result + desc
 

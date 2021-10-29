@@ -62,7 +62,7 @@ class AlbumListFragment : HomeListFragment() {
                 SortMode.ASCENDING, SortMode.DESCENDING -> album.name.sliceArticle()
                     .first().uppercase()
 
-                SortMode.ARTIST -> album.artist.name.sliceArticle()
+                SortMode.ARTIST -> album.artist.resolvedName.sliceArticle()
                     .first().uppercase()
 
                 SortMode.YEAR -> album.year.toString()

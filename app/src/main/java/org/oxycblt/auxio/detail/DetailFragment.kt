@@ -74,7 +74,7 @@ abstract class DetailFragment : Fragment() {
         super.onStop()
 
         // Cancel all pending menus when this fragment stops to prevent bugs/crashes
-        detailModel.finishShowMenu(null, requireContext())
+        detailModel.finishShowMenu(null)
     }
 
     /**
@@ -138,12 +138,12 @@ abstract class DetailFragment : Fragment() {
 
             setOnMenuItemClickListener { item ->
                 item.isChecked = true
-                detailModel.finishShowMenu(SortMode.fromId(item.itemId)!!, config.anchor.context)
+                detailModel.finishShowMenu(SortMode.fromId(item.itemId)!!)
                 true
             }
 
             setOnDismissListener {
-                detailModel.finishShowMenu(null, config.anchor.context)
+                detailModel.finishShowMenu(null)
             }
 
             if (showItem != null) {

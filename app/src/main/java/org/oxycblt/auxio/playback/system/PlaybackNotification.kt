@@ -81,7 +81,7 @@ class PlaybackNotification private constructor(
      */
     fun setMetadata(song: Song, onDone: () -> Unit) {
         setContentTitle(song.name)
-        setContentText(song.album.artist.name)
+        setContentText(song.album.artist.resolvedName)
 
         // On older versions of android [API <24], show the song's album on the subtext instead of
         // the current mode, as that makes more sense for the old style of media notifications.
@@ -125,7 +125,7 @@ class PlaybackNotification private constructor(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS
-        setSubText(parent?.displayName ?: context.getString(R.string.lbl_all_songs))
+        setSubText(parent?.resolvedName ?: context.getString(R.string.lbl_all_songs))
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---

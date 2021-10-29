@@ -190,10 +190,13 @@ class ArtistDetailAdapter(
 
             binding.detailCover.apply {
                 bindArtistImage(data)
-                contentDescription = context.getString(R.string.desc_artist_image, data.name)
+                contentDescription = context.getString(
+                    R.string.desc_artist_image,
+                    data.resolvedName
+                )
             }
 
-            binding.detailName.text = data.name
+            binding.detailName.text = data.resolvedName
 
             binding.detailSubhead.text = data.genre?.resolvedName
                 ?: context.getString(R.string.def_genre)

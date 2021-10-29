@@ -122,11 +122,7 @@ class PlaybackFragment : Fragment() {
             binding.playbackSeekBar.setProgress(pos)
         }
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
-            updateQueueIcon(queueItem)
-        }
-
-        playbackModel.userQueue.observe(viewLifecycleOwner) {
+        playbackModel.displayQueue.observe(viewLifecycleOwner) {
             updateQueueIcon(queueItem)
         }
 

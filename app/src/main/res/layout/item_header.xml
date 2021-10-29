@@ -15,6 +15,6 @@
         style="@style/Widget.Auxio.TextView.Header"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@{header.name}"
+        android:text="@{header.string.resolve(context)}"
         tools:text="Songs" />
 </layout>

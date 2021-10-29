@@ -52,7 +52,7 @@ class AlbumDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        detailModel.setAlbum(args.albumId, requireContext())
+        detailModel.setAlbum(args.albumId)
 
         val detailAdapter = AlbumDetailAdapter(
             playbackModel, detailModel,

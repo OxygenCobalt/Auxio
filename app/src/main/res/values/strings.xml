@@ -134,8 +134,8 @@
     <string name="desc_artist_image">Artist Image for %s</string>
     <string name="desc_genre_image">Genre Image for %s</string>
 
-
     <!-- Default Namespace | Placeholder values -->
+    <string name="def_artist">Unknown Artist</string>
     <string name="def_genre">Unknown Genre</string>
     <string name="def_date">No Date</string>
     <string name="def_playback">No music playing</string>

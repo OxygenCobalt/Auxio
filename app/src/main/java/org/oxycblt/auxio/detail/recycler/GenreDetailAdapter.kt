@@ -136,10 +136,13 @@ class GenreDetailAdapter(
 
             binding.detailCover.apply {
                 bindGenreImage(data)
-                contentDescription = context.getString(R.string.desc_artist_image, data.name)
+                contentDescription = context.getString(
+                    R.string.desc_genre_image,
+                    data.resolvedName
+                )
             }
 
-            binding.detailName.text = data.name
+            binding.detailName.text = data.resolvedName
 
             binding.detailSubhead.apply {
                 text = context.getPlural(R.plurals.fmt_song_count, data.songs.size)

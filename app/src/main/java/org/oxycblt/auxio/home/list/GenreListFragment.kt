@@ -54,7 +54,8 @@ class GenreListFragment : HomeListFragment() {
 
     override val popupProvider: (Int) -> String
         get() = { idx ->
-            homeModel.genres.value!![idx].name.sliceArticle().first().uppercase()
+            homeModel.genres.value!![idx].resolvedName
+                .sliceArticle().first().uppercase()
         }
 
     class GenreAdapter(

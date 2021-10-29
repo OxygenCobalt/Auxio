@@ -48,7 +48,7 @@ class ArtistDetailFragment : DetailFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        detailModel.setArtist(args.artistId, requireContext())
+        detailModel.setArtist(args.artistId)
 
         val detailAdapter = ArtistDetailAdapter(
             playbackModel,

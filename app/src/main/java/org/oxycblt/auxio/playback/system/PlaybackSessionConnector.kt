@@ -114,13 +114,15 @@ class PlaybackSessionConnector(
             return
         }
 
+        val artistName = song.album.artist.resolvedName
+
         val builder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, song.album.artist.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, song.album.artist.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
+            .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, artistName)
+            .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, artistName)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, artistName)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
