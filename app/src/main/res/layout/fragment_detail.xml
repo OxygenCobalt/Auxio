@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.DetailFragment">
 
-    <org.oxycblt.auxio.playback.PlaybackBarLayout
+    <FrameLayout
         android:id="@+id/bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,5 +38,5 @@
                 tools:listitem="@layout/item_detail" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    </org.oxycblt.auxio.playback.PlaybackBarLayout>
+    </FrameLayout>
 </layout>

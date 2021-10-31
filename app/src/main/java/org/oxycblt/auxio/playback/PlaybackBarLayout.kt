@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.os.Build
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,13 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * properly. The mechanism is mostly inspired by Material Files' PersistentBarLayout, however
  * this class was primarily written by me and I plan to expand this layout to become part of
  * the playback navigation process.
+ *
+ * TODO: Migrate CompactPlaybackFragment to a view. This is okay, as updates can be delivered
+ *  via MainFragment and it would fix the issue where the actual layout won't measure until
+ *  the fragment is shown.
+ * TODO: Implement animation
+ * TODO: Implement the swipe-up behavior. This needs to occur, as the way the main fragment
+ *  saves state results in'
  */
 class PlaybackBarLayout @JvmOverloads constructor(
     context: Context,
@@ -74,22 +82,14 @@ class PlaybackBarLayout @JvmOverloads constructor(
                 fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
             }
         }
-    }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        if (isInEditMode) {
-            return
-        }
-
-        // By default, using a FragmentContainerView in this view will result in
-        // the fragment disappearing on a recreate. Who knows why.
-        (context as AppCompatActivity).supportFragmentManager.apply {
-            this
-                .beginTransaction()
-                .replace(R.id.main_playback, playbackFragment)
-                .commit()
+        if (!isInEditMode) {
+            (context as AppCompatActivity).supportFragmentManager.apply {
+                this
+                    .beginTransaction()
+                    .replace(R.id.main_playback, playbackFragment)
+                    .commit()
+            }
         }
     }
 
@@ -106,6 +106,8 @@ class PlaybackBarLayout @JvmOverloads constructor(
         val barWidthSpec = getChildMeasureSpec(widthMeasureSpec, 0, barParams.width)
         val barHeightSpec = getChildMeasureSpec(heightMeasureSpec, 0, barParams.height)
         barLayout.measure(barWidthSpec, barHeightSpec)
+
+        updateWindowInsets()
 
         val barHeightAdjusted = (barLayout.measuredHeight * barParams.offset).toInt()
 
@@ -124,8 +126,6 @@ class PlaybackBarLayout @JvmOverloads constructor(
                 child.measure(childWidthSpec, childHeightSpec)
             }
         }
-
-        updateWindowInsets()
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -154,9 +154,9 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        lastInsets = insets
-
         barLayout.updatePadding(bottom = insets.systemBarsCompat.bottom)
+
+        lastInsets = insets
         updateWindowInsets()
 
         return insets
@@ -171,27 +171,23 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     private fun mutateInsets(insets: WindowInsets): WindowInsets {
-        if (barLayout.isVisible) {
-            val barParams = barLayout.layoutParams as LayoutParams
-            val childConsumedInset = (barLayout.measuredHeight * barParams.offset).toInt()
+        val barParams = barLayout.layoutParams as LayoutParams
+        val childConsumedInset = (barLayout.measuredHeight * barParams.offset).toInt()
 
-            logD(childConsumedInset)
+        val bars = insets.systemBarsCompat
 
-            val bars = insets.systemBarsCompat
-
-            // TODO: Q support
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                    return WindowInsets.Builder(insets)
-                        .setInsets(
-                            WindowInsets.Type.systemBars(),
-                            Insets.of(
-                                bars.left, bars.top,
-                                bars.right, (bars.bottom - childConsumedInset).coerceAtLeast(0)
-                            )
+        // TODO: Q support
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                return WindowInsets.Builder(insets)
+                    .setInsets(
+                        WindowInsets.Type.systemBars(),
+                        Insets.of(
+                            bars.left, bars.top,
+                            bars.right, (bars.bottom - childConsumedInset).coerceAtLeast(0)
                         )
-                        .build()
-                }
+                    )
+                    .build()
             }
         }
 
@@ -199,13 +195,35 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     fun showBar() {
-        (barLayout.layoutParams as LayoutParams).offset = 1f
-        updateWindowInsets()
+        val barParams = barLayout.layoutParams as LayoutParams
+
+        if (barParams.offset == 1f) {
+            return
+        }
+
+        barParams.offset = 1f
+
+        if (isLaidOut) {
+            updateWindowInsets()
+        }
+
+        invalidate()
     }
 
     fun hideBar() {
-        (barLayout.layoutParams as LayoutParams).offset = 0f
-        updateWindowInsets()
+        val barParams = barLayout.layoutParams as LayoutParams
+
+        if (barParams.offset == 0f) {
+            return
+        }
+
+        barParams.offset = 0f
+
+        if (isLaidOut) {
+            updateWindowInsets()
+        }
+
+        invalidate()
     }
 
     // --- LAYOUT PARAMS ---
