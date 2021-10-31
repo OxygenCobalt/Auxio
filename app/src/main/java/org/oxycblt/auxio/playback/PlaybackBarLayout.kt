@@ -28,7 +28,6 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import androidx.core.view.children
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.systemBarsCompat
@@ -55,12 +54,10 @@ class PlaybackBarLayout @JvmOverloads constructor(
     init {
         addView(playbackView)
 
-        playbackView.apply {
-            (layoutParams as LayoutParams).apply {
-                width = ViewGroup.LayoutParams.MATCH_PARENT
-                height = ViewGroup.LayoutParams.WRAP_CONTENT
-                isBar = true
-            }
+        (playbackView.layoutParams as LayoutParams).apply {
+            width = ViewGroup.LayoutParams.MATCH_PARENT
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+            isBar = true
         }
     }
 
@@ -100,12 +97,7 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val barHeight = if (playbackView.isVisible) {
-            playbackView.measuredHeight
-        } else {
-            0
-        }
-
+        val barHeight = playbackView.measuredHeight
         val barHeightAdjusted = (barHeight * (playbackView.layoutParams as LayoutParams).offset).toInt()
 
         for (child in children) {
@@ -143,20 +135,23 @@ class PlaybackBarLayout @JvmOverloads constructor(
         val insets = lastInsets
 
         if (insets != null) {
-            super.dispatchApplyWindowInsets(mutateInsets(insets))
+            val adjustedInsets = adjustInsets(insets)
+
+            for (child in children) {
+                child.dispatchApplyWindowInsets(adjustedInsets)
+            }
         }
     }
 
-    private fun mutateInsets(insets: WindowInsets): WindowInsets {
+    private fun adjustInsets(insets: WindowInsets): WindowInsets {
         val barParams = playbackView.layoutParams as LayoutParams
         val childConsumedInset = (playbackView.measuredHeight * barParams.offset).toInt()
 
         val bars = insets.systemBarsCompat
 
-        // TODO: Q support
-        when {
+        return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                return WindowInsets.Builder(insets)
+                WindowInsets.Builder(insets)
                     .setInsets(
                         WindowInsets.Type.systemBars(),
                         Insets.of(
@@ -166,9 +161,17 @@ class PlaybackBarLayout @JvmOverloads constructor(
                     )
                     .build()
             }
-        }
 
-        return insets
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+                @Suppress("DEPRECATION")
+                insets.replaceSystemWindowInsets(
+                    bars.left, bars.top,
+                    bars.right, (bars.bottom - childConsumedInset).coerceAtLeast(0)
+                )
+            }
+
+            else -> insets
+        }
     }
 
     fun setSong(song: Song?) {

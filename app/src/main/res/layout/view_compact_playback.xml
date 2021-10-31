@@ -13,13 +13,8 @@
     </data>
 
     <merge
-        android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="@drawable/ui_background_ripple"
-        android:clickable="true"
-        android:focusable="true"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <ImageView
