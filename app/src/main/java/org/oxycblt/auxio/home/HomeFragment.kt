@@ -23,16 +23,13 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.iterator
-import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
@@ -76,46 +73,6 @@ class HomeFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.homeAppbar.apply {
-            // I have no idea how to clip the collapsing toolbar while still making the elevation
-            // overlay bleed into the status bar, so I take the easy way out and just fade the
-            // toolbar when the offset changes.
-            // Note: Don't merge this with the other OnOffsetChangedListener, as this one needs
-            // to be added pre-start to work correctly while the other one needs to be posted to
-            // work correctly
-            addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                    binding.homeToolbar.alpha = (binding.homeToolbar.height + verticalOffset) /
-                        binding.homeToolbar.height.toFloat()
-                }
-            )
-
-            // One issue that comes with using our fast scroller is that it allows scrolling
-            // without the AppBar actually being collapsed in the process. This results in
-            // the RecyclerView being clipped if you scroll down far enough. To fix this, we
-            // add another OnOffsetChangeListener that adds padding to the RecyclerView whenever
-            // the Toolbar is collapsed. This is not really ideal, as it forces a relayout and
-            // some edge-effect glitches whenever we scroll, but its the best we can do.
-            post {
-                val vOffset = (
-                    (layoutParams as CoordinatorLayout.LayoutParams)
-                        .behavior as AppBarLayout.Behavior
-                    ).topAndBottomOffset
-
-                binding.homePager.updatePaddingRelative(
-                    bottom = binding.homeAppbar.totalScrollRange + vOffset
-                )
-
-                binding.homeAppbar.addOnOffsetChangedListener(
-                    AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                        binding.homePager.updatePaddingRelative(
-                            bottom = binding.homeAppbar.totalScrollRange + verticalOffset
-                        )
-                    }
-                )
-            }
-        }
 
         binding.homeToolbar.apply {
             setOnMenuItemClickListener { item ->
