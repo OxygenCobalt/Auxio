@@ -9,7 +9,7 @@
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <SeekBar
-            android:id="@+id/playback_seek_bar"
+            android:id="@+id/seek_bar"
             style="@style/Widget.Auxio.SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

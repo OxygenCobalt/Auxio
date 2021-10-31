@@ -92,11 +92,11 @@ class CompactPlaybackView @JvmOverloads constructor(
 
     fun setPosition(position: Long) {
         if (binding.song == null) {
-            binding.playbackProgress.progress = 0
+            binding.playbackProgressBar.progress = 0
             return
         }
 
-        binding.playbackProgress.progress = position.toInt()
+        binding.playbackProgressBar.progress = position.toInt()
     }
 
     fun setCallback(callback: PlaybackBarLayout.ActionCallback) {

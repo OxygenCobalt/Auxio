@@ -8,7 +8,7 @@
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
         <!-- Make sure to apply more accent-friendly values on older versions -->
         <item name="colorSurface">@color/surface</item>
-        <item name="colorSurfaceInverse">@color/surface_inverse</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
 
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
@@ -24,22 +24,24 @@
     <!-- Base theme -->
     <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">
         <!-- Values -->
-        <item name="colorOutline">@color/overlay_stroke</item>
         <item name="colorAccent">?attr/colorSecondary</item>
-        <item name="colorControlNormal">?attr/colorSurfaceInverse</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
+        <item name="colorOutline">@color/overlay_stroke</item>
+        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorSecondary</item>
 
         <!-- Android component magic -->
-        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
-        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:scrollbars">none</item>
 
-        <!-- Material -->
-        <item name="textInputStyle">@null</item>
+        <!--
+        Temporary workaround where the material components text highlight colors are
+        hard-coded instead of following app colors
+        -->
+        <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
+        <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
+
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
     </style>
 

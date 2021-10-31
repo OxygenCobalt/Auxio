@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  *  scrolling view to use. Failure to specify this will result in the layout not working.
  */
-class LiftAppBarLayout @JvmOverloads constructor(
+class EdgeAppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @StyleRes defStyleAttr: Int = -1
@@ -62,12 +62,6 @@ class LiftAppBarLayout @JvmOverloads constructor(
 
     init {
         viewTreeObserver.addOnPreDrawListener(onPreDraw)
-    }
-
-    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        super.dispatchApplyWindowInsets(insets)
-
-        return onApplyWindowInsets(insets)
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {

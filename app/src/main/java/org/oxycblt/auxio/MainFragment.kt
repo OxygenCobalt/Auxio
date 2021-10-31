@@ -98,6 +98,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
 
                 // Error, show the error to the user
                 is MusicStore.Response.Err -> {
+
                     logD("Received Error")
 
                     val errorRes = when (response.kind) {

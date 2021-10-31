@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".settings.AboutFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
         android:orientation="vertical">
 
-        <org.oxycblt.auxio.ui.LiftAppBarLayout
+        <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/about_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
                 style="@style/Widget.Auxio.Toolbar.Icon.Down"
                 app:title="@string/lbl_about" />
 
-        </org.oxycblt.auxio.ui.LiftAppBarLayout>
+        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/about_contents"
@@ -188,5 +188,5 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.core.widget.NestedScrollView>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
 </layout>

@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".home.HomeFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <org.oxycblt.auxio.ui.LiftAppBarLayout
+        <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/home_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 app:tabTextAppearance="@style/TextAppearance.Auxio.TabLayout.Label"
                 app:tabTextColor="@color/sel_accented_primary"/>
 
-        </org.oxycblt.auxio.ui.LiftAppBarLayout>
+        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/home_pager"
@@ -64,5 +64,5 @@
 
         </org.oxycblt.auxio.home.FloatingActionButtonContainer>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
 </layout>

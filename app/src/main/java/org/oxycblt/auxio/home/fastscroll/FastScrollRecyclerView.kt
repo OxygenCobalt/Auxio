@@ -110,13 +110,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         hideScrollbar()
     }
 
-    private val initialPadding = Rect(
-        paddingLeft, paddingTop, paddingRight, paddingBottom
-    )
-
-    private val scrollerPadding = Rect(
-        0, 0, 0, 0
-    )
+    private val initialPadding = Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
+    private val scrollerPadding = Rect(0, 0, 0, 0)
 
     init {
         val thumbDrawable = R.drawable.ui_scroll_thumb.resolveDrawable(context)
@@ -213,23 +208,23 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         popupView.layoutDirection = layoutDirection
 
         val trackLeft = if (isRtl) {
-            paddingLeft
+            scrollerPadding.left
         } else {
-            width - paddingRight - thumbWidth
+            width - scrollerPadding.right - thumbWidth
         }
 
         trackView.layout(
-            trackLeft, paddingTop, trackLeft + thumbWidth,
+            trackLeft, scrollerPadding.top, trackLeft + thumbWidth,
             height - scrollerPadding.bottom
         )
 
         val thumbLeft = if (isRtl) {
-            paddingLeft
+            scrollerPadding.left
         } else {
-            width - paddingRight - thumbWidth
+            width - scrollerPadding.right - thumbWidth
         }
 
-        val thumbTop = paddingTop + thumbOffset
+        val thumbTop = scrollerPadding.top + thumbOffset
 
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
 
@@ -342,40 +337,10 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             return
         }
 
-        // Getting a pixel-perfect scroll position from a recyclerview is a bit of an involved
-        // process. It's kind of expected given how RecyclerView well...recycles views, but it's
-        // still very annoying how many hoops one has to jump through.
-
-        // First, we need to get the first visible child. We will use this to extrapolate a rough
-        // scroll range/position for the view.
-        // Doing this does mean that the fast scroller will break if you have a header view that's
-        // a different height, but Auxio's home UI doesn't have something like that so we're okay.
-        val firstChild = getChildAt(0)
-
-        val itemPos = firstAdapterPos
-        val itemCount = itemCount
-
-        // Now get the bounds of the first child. These are the dimensions we use to extrapolate
-        // information for the whole recyclerview.
-        getDecoratedBoundsWithMargins(firstChild, childRect)
-        val itemHeight = childRect.height()
-        val itemTop = childRect.top
-
-        // This is where things get messy. We have to take everything we just calculated and
-        // do some arithmetic to get it into a working thumb position.
-
-        // The total scroll range based on the initial item
-        val scrollRange = paddingTop + (itemCount * itemHeight) + paddingBottom
-
-        // The scroll range where the items aren't visible
-        val scrollOffsetRange = scrollRange - height
-
-        // The scroll offset, or basically the y of the current item + the height of all
-        // the previous items
-        val scrollOffset = paddingTop + (itemPos * itemHeight) - itemTop
-
-        // The range of pixels where the thumb is not present
-        val thumbOffsetRange = height - scrollerPadding.top - scrollerPadding.bottom - thumbHeight
+        // Combine the previous item dimensions with the current item top to find our scroll
+        // position
+        getDecoratedBoundsWithMargins(getChildAt(0), childRect)
+        val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - childRect.top
 
         // Finally, we can calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]

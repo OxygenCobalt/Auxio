@@ -71,7 +71,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
-            android:id="@+id/playback_progress"
+            android:id="@+id/playback_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_stroke_large"
             android:max="@{(int) song.seconds}"

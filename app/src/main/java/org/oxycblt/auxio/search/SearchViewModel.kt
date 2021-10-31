@@ -85,21 +85,21 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
-                    results.add(Header(-1, HeaderString.Single(R.string.lbl_albums)))
+                    results.add(Header(-2, HeaderString.Single(R.string.lbl_albums)))
                     results.addAll(albums)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(Header(-1, HeaderString.Single(R.string.lbl_genres)))
+                    results.add(Header(-3, HeaderString.Single(R.string.lbl_genres)))
                     results.addAll(genres)
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(Header(-1, HeaderString.Single(R.string.lbl_songs)))
+                    results.add(Header(-4, HeaderString.Single(R.string.lbl_songs)))
                     results.addAll(songs)
                 }
             }

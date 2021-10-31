@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <org.oxycblt.auxio.ui.LiftAppBarLayout
+        <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/search_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,6 +35,7 @@
                         android:id="@+id/search_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:background="@android:color/transparent"
                         android:hint="@string/hint_search_library"
                         android:padding="@dimen/spacing_medium"
@@ -45,7 +46,7 @@
 
             </com.google.android.material.appbar.MaterialToolbar>
 
-        </org.oxycblt.auxio.ui.LiftAppBarLayout>
+        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
         <org.oxycblt.auxio.ui.EdgeRecyclerView
             android:id="@+id/search_recycler"
@@ -56,5 +57,5 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:listitem="@layout/item_song" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
 </layout>

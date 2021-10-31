@@ -5,7 +5,6 @@
     <!-- Dialog theme where all fixes are applied -->
     <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
-        <item name="colorControlHighlight">@color/overlay_selection</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Widget.Auxio.Dialog.TextView</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Auxio.Dialog.Button</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.Auxio.Dialog.Button</item>

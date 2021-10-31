@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * EdgeFloatingActionButton.kt is part of Auxio.
+ * FuckedCoordinatorLayout.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +16,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.home
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.WindowInsets
-import android.widget.FrameLayout
-import androidx.core.view.updatePadding
-import org.oxycblt.auxio.util.systemBarsCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.children
 
-class FloatingActionButtonContainer @JvmOverloads constructor(
+/**
+ * Class that fixes an issue where [CoordinatorLayout] will override [onApplyWindowInsets]
+ * and delegate the job to ***LAYOUT BEHAVIOR INSTANCES*** instead of the actual views.
+ *
+ * I can't believe I have to do this.
+ */
+class EdgeCoordinatorLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
-) : FrameLayout(context, attrs, defStyleAttr) {
-    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        return onApplyWindowInsets(insets)
-    }
-
+) : CoordinatorLayout(context, attrs, defStyleAttr) {
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        updatePadding(bottom = insets.systemBarsCompat.bottom)
+        for (child in children) {
+            child.onApplyWindowInsets(insets)
+        }
 
         return insets
     }

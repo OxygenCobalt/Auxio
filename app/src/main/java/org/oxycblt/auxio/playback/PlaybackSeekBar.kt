@@ -43,19 +43,19 @@ class PlaybackSeekBar @JvmOverloads constructor(
     var onConfirmListener: ((Long) -> Unit)? = null
 
     init {
-        binding.playbackSeekBar.setOnSeekBarChangeListener(this)
+        binding.seekBar.setOnSeekBarChangeListener(this)
     }
 
     fun setProgress(seconds: Long) {
         // Don't update the progress while we are seeking, that will make the SeekBar jump around.
         if (!isSeeking) {
-            binding.playbackSeekBar.progress = seconds.toInt()
+            binding.seekBar.progress = seconds.toInt()
             binding.playbackDurationCurrent.text = seconds.toDuration()
         }
     }
 
     fun setDuration(seconds: Long) {
-        binding.playbackSeekBar.max = seconds.toInt()
+        binding.seekBar.max = seconds.toInt()
         binding.playbackSongDuration.text = seconds.toDuration()
     }
 
