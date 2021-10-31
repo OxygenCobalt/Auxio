@@ -28,10 +28,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.playback.PlaybackBarLayout
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.logD
 
@@ -39,8 +42,9 @@ import org.oxycblt.auxio.util.logD
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -63,22 +67,26 @@ class MainFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        if (playbackModel.song.value != null) {
-            binding.mainBarLayout.showBar()
-        } else {
-            binding.mainBarLayout.hideBar()
-        }
+        binding.mainBarLayout.setActionCallback(this)
+
+        binding.mainBarLayout.setSong(playbackModel.song.value)
+        binding.mainBarLayout.setPlaying(playbackModel.isPlaying.value!!)
+        binding.mainBarLayout.setPosition(playbackModel.position.value!!)
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (song != null) {
-                binding.mainBarLayout.showBar()
-            } else {
-                binding.mainBarLayout.hideBar()
-            }
+            binding.mainBarLayout.setSong(song)
         }
 
-        // Initialize music loading. Unlike MainFragment, we can not only do this here on startup
-        // but also show a SnackBar in a reasonable place in this fragment.
+        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
+            binding.mainBarLayout.setPlaying(isPlaying)
+        }
+
+        playbackModel.position.observe(viewLifecycleOwner) { pos ->
+            binding.mainBarLayout.setPosition(pos)
+        }
+
+        // Initialize music loading. Do it here so that it shows on every fragment that this
+        // one contains.
         musicModel.loadMusic(requireContext())
 
         // Handle the music loader response.
@@ -131,5 +139,19 @@ class MainFragment : Fragment() {
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    override fun onPlayPauseClick() {
+        playbackModel.invertPlayingStatus()
+    }
+
+    override fun onNavToPlayback() {
+        findNavController().navigate(
+            MainFragmentDirections.actionGoToPlayback()
+        )
+    }
+
+    override fun onNavToItem() {
+        detailModel.navToItem(playbackModel.song.value ?: return)
     }
 }

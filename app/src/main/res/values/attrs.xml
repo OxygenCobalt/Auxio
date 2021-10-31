@@ -4,9 +4,4 @@
         <attr name="entries" format="reference" />
         <attr name="entryValues" format="reference" />
     </declare-styleable>
-
-    <attr format="enum" name="layout_role">
-        <enum name="content" value="0" />
-        <enum name="floating" value="1" />
-    </attr>
 </resources>

@@ -419,7 +419,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Restore playback on startup. This can do one of two things:
      * - Play a file intent that was given by MainActivity in [playWithUri]
      * - Restore the last playback state if there is no active file intent.
-     * TODO: Re-add this to HomeFragment once state can be restored
      */
     fun setupPlayback(context: Context) {
         val intentUri = mIntentUri

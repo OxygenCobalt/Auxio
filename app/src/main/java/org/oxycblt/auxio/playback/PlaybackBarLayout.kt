@@ -19,25 +19,18 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.os.Build
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
-import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import com.google.android.material.shape.MaterialShapeDrawable
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.resolveAttr
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
@@ -46,9 +39,6 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * this class was primarily written by me and I plan to expand this layout to become part of
  * the playback navigation process.
  *
- * TODO: Migrate CompactPlaybackFragment to a view. This is okay, as updates can be delivered
- *  via MainFragment and it would fix the issue where the actual layout won't measure until
- *  the fragment is shown.
  * TODO: Implement animation
  * TODO: Implement the swipe-up behavior. This needs to occur, as the way the main fragment
  *  saves state results in'
@@ -59,36 +49,17 @@ class PlaybackBarLayout @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
     @StyleRes defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-    private val barLayout = FrameLayout(context)
-    private val playbackFragment = CompactPlaybackFragment()
+    private val playbackView = CompactPlaybackView(context)
     private var lastInsets: WindowInsets? = null
 
     init {
-        addView(barLayout)
+        addView(playbackView)
 
-        barLayout.apply {
-            id = R.id.main_playback
-
-            elevation = resources.getDimensionPixelSize(R.dimen.elevation_normal).toFloat()
-
+        playbackView.apply {
             (layoutParams as LayoutParams).apply {
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = ViewGroup.LayoutParams.WRAP_CONTENT
                 isBar = true
-            }
-
-            background = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                elevation = barLayout.elevation
-                fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
-            }
-        }
-
-        if (!isInEditMode) {
-            (context as AppCompatActivity).supportFragmentManager.apply {
-                this
-                    .beginTransaction()
-                    .replace(R.id.main_playback, playbackFragment)
-                    .commit()
             }
         }
     }
@@ -101,15 +72,15 @@ class PlaybackBarLayout @JvmOverloads constructor(
 
         setMeasuredDimension(widthSize, heightSize)
 
-        val barParams = barLayout.layoutParams as LayoutParams
+        val barParams = playbackView.layoutParams as LayoutParams
 
         val barWidthSpec = getChildMeasureSpec(widthMeasureSpec, 0, barParams.width)
         val barHeightSpec = getChildMeasureSpec(heightMeasureSpec, 0, barParams.height)
-        barLayout.measure(barWidthSpec, barHeightSpec)
+        playbackView.measure(barWidthSpec, barHeightSpec)
 
         updateWindowInsets()
 
-        val barHeightAdjusted = (barLayout.measuredHeight * barParams.offset).toInt()
+        val barHeightAdjusted = (playbackView.measuredHeight * barParams.offset).toInt()
 
         val contentWidth = measuredWidth
         val contentHeight = measuredHeight - barHeightAdjusted
@@ -129,13 +100,13 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val barHeight = if (barLayout.isVisible) {
-            barLayout.measuredHeight
+        val barHeight = if (playbackView.isVisible) {
+            playbackView.measuredHeight
         } else {
             0
         }
 
-        val barHeightAdjusted = (barHeight * (barLayout.layoutParams as LayoutParams).offset).toInt()
+        val barHeightAdjusted = (barHeight * (playbackView.layoutParams as LayoutParams).offset).toInt()
 
         for (child in children) {
             if (child.visibility == View.GONE) continue
@@ -154,12 +125,18 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        barLayout.updatePadding(bottom = insets.systemBarsCompat.bottom)
+        playbackView.updatePadding(bottom = insets.systemBarsCompat.bottom)
 
         lastInsets = insets
         updateWindowInsets()
 
         return insets
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        playbackView.clearCallback()
     }
 
     private fun updateWindowInsets() {
@@ -171,8 +148,8 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     private fun mutateInsets(insets: WindowInsets): WindowInsets {
-        val barParams = barLayout.layoutParams as LayoutParams
-        val childConsumedInset = (barLayout.measuredHeight * barParams.offset).toInt()
+        val barParams = playbackView.layoutParams as LayoutParams
+        val childConsumedInset = (playbackView.measuredHeight * barParams.offset).toInt()
 
         val bars = insets.systemBarsCompat
 
@@ -194,8 +171,29 @@ class PlaybackBarLayout @JvmOverloads constructor(
         return insets
     }
 
-    fun showBar() {
-        val barParams = barLayout.layoutParams as LayoutParams
+    fun setSong(song: Song?) {
+        if (song != null) {
+            showBar()
+            playbackView.setSong(song)
+        } else {
+            hideBar()
+        }
+    }
+
+    fun setPlaying(isPlaying: Boolean) {
+        playbackView.setPlaying(isPlaying)
+    }
+
+    fun setPosition(position: Long) {
+        playbackView.setPosition(position)
+    }
+
+    fun setActionCallback(callback: ActionCallback) {
+        playbackView.setCallback(callback)
+    }
+
+    private fun showBar() {
+        val barParams = playbackView.layoutParams as LayoutParams
 
         if (barParams.offset == 1f) {
             return
@@ -210,8 +208,8 @@ class PlaybackBarLayout @JvmOverloads constructor(
         invalidate()
     }
 
-    fun hideBar() {
-        val barParams = barLayout.layoutParams as LayoutParams
+    private fun hideBar() {
+        val barParams = playbackView.layoutParams as LayoutParams
 
         if (barParams.offset == 0f) {
             return
@@ -259,5 +257,11 @@ class PlaybackBarLayout @JvmOverloads constructor(
         constructor(source: LayoutParams) : super(source)
 
         constructor(source: ViewGroup.LayoutParams) : super(source)
+    }
+
+    interface ActionCallback {
+        fun onPlayPauseClick()
+        fun onNavToItem()
+        fun onNavToPlayback()
     }
 }

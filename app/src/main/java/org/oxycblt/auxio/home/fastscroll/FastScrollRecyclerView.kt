@@ -42,6 +42,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveDrawable
+import org.oxycblt.auxio.util.systemBarsCompat
 import kotlin.math.abs
 
 /**
@@ -324,12 +325,14 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        val bars = insets.systemBarsCompat
+
         setPadding(
             initialPadding.left, initialPadding.top, initialPadding.right,
-            initialPadding.bottom + insets.systemWindowInsetBottom
+            initialPadding.bottom + bars.bottom
         )
 
-        scrollerPadding.bottom = insets.systemWindowInsetBottom
+        scrollerPadding.bottom = bars.bottom
 
         return insets
     }

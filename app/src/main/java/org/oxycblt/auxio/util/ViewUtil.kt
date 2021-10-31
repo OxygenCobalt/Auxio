@@ -138,6 +138,10 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     return color.resolveColor(context)
 }
 
+/**
+ * Resolve window insets in a version-aware manner. This can be used to apply padding to
+ * a view that properly
+ */
 val WindowInsets.systemBarsCompat: Rect get() {
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
