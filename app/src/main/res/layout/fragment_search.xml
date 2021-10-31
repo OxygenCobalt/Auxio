@@ -47,7 +47,7 @@
 
         </org.oxycblt.auxio.ui.LiftAppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <org.oxycblt.auxio.ui.EdgeRecyclerView
             android:id="@+id/search_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

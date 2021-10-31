@@ -26,8 +26,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
@@ -35,8 +33,6 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.applyMaterialDrawable
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -65,24 +61,25 @@ class MainFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.applyEdge { bars ->
-            binding.mainPlayback.updatePadding(bottom = bars.bottom)
+        // --- VIEWMODEL SETUP ---
+
+        if (playbackModel.song.value != null) {
+            binding.mainBarLayout.showBar()
+        } else {
+            binding.mainBarLayout.hideBar()
         }
 
-        binding.mainPlayback.applyMaterialDrawable()
-
-        // --- VIEWMODEL SETUP ---
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (song != null) {
+                binding.mainBarLayout.showBar()
+            } else {
+                binding.mainBarLayout.hideBar()
+            }
+        }
 
         // Initialize music loading. Unlike MainFragment, we can not only do this here on startup
         // but also show a SnackBar in a reasonable place in this fragment.
         musicModel.loadMusic(requireContext())
-
-        // Change CompactPlaybackFragment's visibility here so that an animation occurs.
-        binding.mainPlayback.isVisible = playbackModel.song.value != null
-
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            binding.mainPlayback.isVisible = song != null
-        }
 
         // Handle the music loader response.
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->

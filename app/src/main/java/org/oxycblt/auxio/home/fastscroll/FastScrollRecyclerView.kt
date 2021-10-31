@@ -30,6 +30,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
@@ -66,6 +67,7 @@ import kotlin.math.abs
  * - Added drag listener
  * - TODO: Added documentation
  * - TODO: Popup will center itself to the thumb when possible
+ * - TODO: Stabilize how I'm using padding
  */
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
@@ -106,6 +108,14 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
         hideScrollbar()
     }
+
+    private val initialPadding = Rect(
+        paddingLeft, paddingTop, paddingRight, paddingBottom
+    )
+
+    private val scrollerPadding = Rect(
+        0, 0, 0, 0
+    )
 
     init {
         val thumbDrawable = R.drawable.ui_scroll_thumb.resolveDrawable(context)
@@ -207,7 +217,10 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             width - paddingRight - thumbWidth
         }
 
-        trackView.layout(trackLeft, paddingTop, trackLeft + thumbWidth, height - paddingBottom)
+        trackView.layout(
+            trackLeft, paddingTop, trackLeft + thumbWidth,
+            height - scrollerPadding.bottom
+        )
 
         val thumbLeft = if (isRtl) {
             paddingLeft
@@ -237,14 +250,14 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
                 val widthMeasureSpec = ViewGroup.getChildMeasureSpec(
                     MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    paddingLeft + paddingRight + thumbWidth + popupLayoutParams.leftMargin +
-                        popupLayoutParams.rightMargin,
+                    scrollerPadding.left + scrollerPadding.right + thumbWidth +
+                        popupLayoutParams.leftMargin + popupLayoutParams.rightMargin,
                     popupLayoutParams.width
                 )
 
                 val heightMeasureSpec = ViewGroup.getChildMeasureSpec(
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
-                    paddingTop + paddingBottom + popupLayoutParams.topMargin +
+                    scrollerPadding.top + scrollerPadding.bottom + popupLayoutParams.topMargin +
                         popupLayoutParams.bottomMargin,
                     popupLayoutParams.height
                 )
@@ -255,9 +268,9 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             val popupWidth = popupView.measuredWidth
             val popupHeight = popupView.measuredHeight
             val popupLeft = if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                paddingLeft + thumbWidth + popupLayoutParams.leftMargin
+                scrollerPadding.left + thumbWidth + popupLayoutParams.leftMargin
             } else {
-                width - paddingRight - thumbWidth - popupLayoutParams.rightMargin - popupWidth
+                width - scrollerPadding.right - thumbWidth - popupLayoutParams.rightMargin - popupWidth
             }
 
             // We handle RTL separately, so it's okay if Gravity.RIGHT is used here
@@ -280,8 +293,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
             val popupTop = MathUtils.clamp(
                 thumbTop + thumbAnchorY - popupAnchorY,
-                paddingTop + popupLayoutParams.topMargin,
-                height - paddingBottom - popupLayoutParams.bottomMargin - popupHeight
+                scrollerPadding.top + popupLayoutParams.topMargin,
+                height - scrollerPadding.bottom - popupLayoutParams.bottomMargin - popupHeight
             )
 
             popupView.layout(
@@ -308,6 +321,17 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         super.onLayout(changed, l, t, r, b)
 
         didRelayout = changed
+    }
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        setPadding(
+            initialPadding.left, initialPadding.top, initialPadding.right,
+            initialPadding.bottom + insets.systemWindowInsetBottom
+        )
+
+        scrollerPadding.bottom = insets.systemWindowInsetBottom
+
+        return insets
     }
 
     private fun updateScrollbarState() {
@@ -348,7 +372,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         val scrollOffset = paddingTop + (itemPos * itemHeight) - itemTop
 
         // The range of pixels where the thumb is not present
-        val thumbOffsetRange = height - paddingTop - paddingBottom - thumbHeight
+        val thumbOffsetRange = height - scrollerPadding.top - scrollerPadding.bottom - thumbHeight
 
         // Finally, we can calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
@@ -375,7 +399,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
                     if (isInViewTouchTarget(thumbView, eventX, eventY)) {
                         dragStartThumbOffset = thumbOffset
                     } else {
-                        dragStartThumbOffset = (eventY - paddingTop - thumbHeight / 2f).toInt()
+                        dragStartThumbOffset = (eventY - scrollerPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     }
 
@@ -392,7 +416,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
                         dragStartThumbOffset = thumbOffset
                     } else {
                         dragStartY = eventY
-                        dragStartThumbOffset = (eventY - paddingTop - thumbHeight / 2f).toInt()
+                        dragStartThumbOffset = (eventY - scrollerPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     }
                     setDragging(true)
@@ -577,7 +601,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
     private val thumbOffsetRange: Int
         get() {
-            return height - paddingTop - paddingBottom - thumbHeight
+            return height - scrollerPadding.top - scrollerPadding.bottom - thumbHeight
         }
 
     private val itemCount: Int

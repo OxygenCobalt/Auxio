@@ -25,7 +25,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.iterator
-import androidx.core.view.updatePadding
 import androidx.core.view.updatePaddingRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -52,7 +51,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SortMode
-import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -73,18 +71,11 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentHomeBinding.inflate(inflater)
-        var bottomPadding = 0
         val sortItem: MenuItem
 
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.applyEdge { bars ->
-            bottomPadding = bars.bottom
-            updateFabPadding(binding, bottomPadding)
-            binding.homeAppbar.updatePadding(top = bars.top)
-        }
 
         binding.homeAppbar.apply {
             // I have no idea how to clip the collapsing toolbar while still making the elevation
@@ -298,10 +289,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        playbackModel.song.observe(viewLifecycleOwner) {
-            updateFabPadding(binding, bottomPadding)
-        }
-
         logD("Fragment Created.")
 
         return binding.root
@@ -320,23 +307,6 @@ class HomeFragment : Fragment() {
             }
 
             option.isVisible = isVisible(option.itemId)
-        }
-    }
-
-    private fun updateFabPadding(
-        binding: FragmentHomeBinding,
-        bottomPadding: Int
-    ) {
-        // To get our FAB to work with edge-to-edge, we need keep track of the bar view and update
-        // the padding based off of that. However, we can't use the shared method here since FABs
-        // don't respect padding, so we duplicate the code here except with the margins instead.
-        val fabParams = binding.homeFab.layoutParams as CoordinatorLayout.LayoutParams
-        val baseSpacing = resources.getDimensionPixelSize(R.dimen.spacing_medium)
-
-        if (playbackModel.song.value == null) {
-            fabParams.bottomMargin = baseSpacing + bottomPadding
-        } else {
-            fabParams.bottomMargin = baseSpacing
         }
     }
 

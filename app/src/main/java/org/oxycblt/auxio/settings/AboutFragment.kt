@@ -36,9 +36,9 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -54,9 +54,9 @@ class AboutFragment : Fragment() {
     ): View {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
 
-        binding.applyEdge { bars ->
-            binding.aboutAppbar.updatePadding(top = bars.top)
-            binding.aboutContents.updatePadding(bottom = bars.bottom)
+        binding.aboutContents.setOnApplyWindowInsetsListener { v, insets ->
+            binding.aboutContents.updatePadding(bottom = insets.systemBarsCompat.bottom)
+            insets
         }
 
         binding.aboutToolbar.setNavigationOnClickListener {

@@ -95,7 +95,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
     fun isModified() = dbPaths != paths.value
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             check(modelClass.isAssignableFrom(ExcludedViewModel::class.java)) {
                 "ExcludedViewModel.Factory does not support this class"
             }

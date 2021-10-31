@@ -47,16 +47,23 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:layout="@layout/fragment_home_list" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/home_fab"
+        <org.oxycblt.auxio.home.FloatingActionButtonContainer
+            android:id="@+id/home_fab_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_shuffle"
-            android:layout_margin="@dimen/spacing_medium"
-            android:contentDescription="@string/desc_shuffle_all"
             app:layout_anchor="@id/home_pager"
-            app:tint="?attr/colorControlNormal"
-            app:layout_anchorGravity="bottom|end" />
+            app:layout_anchorGravity="bottom|end">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/home_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_shuffle"
+                android:layout_margin="@dimen/spacing_medium"
+                android:contentDescription="@string/desc_shuffle_all"
+                app:tint="?attr/colorOnPrimaryContainer" />
+
+        </org.oxycblt.auxio.home.FloatingActionButtonContainer>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -4,32 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.DetailFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <org.oxycblt.auxio.playback.PlaybackBarLayout
+        android:id="@+id/bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <org.oxycblt.auxio.ui.LiftAppBarLayout
-            android:id="@+id/detail_appbar"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            app:liftOnScroll="true"
-            app:liftOnScrollTargetViewId="@id/detail_recycler">
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/detail_toolbar"
-                style="@style/Widget.Auxio.Toolbar.Icon" />
+            <org.oxycblt.auxio.ui.LiftAppBarLayout
+                android:id="@+id/detail_appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                app:liftOnScroll="true"
+                app:liftOnScrollTargetViewId="@id/detail_recycler">
 
-        </org.oxycblt.auxio.ui.LiftAppBarLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/detail_toolbar"
+                    style="@style/Widget.Auxio.Toolbar.Icon" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detail_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:listitem="@layout/item_detail" />
+            </org.oxycblt.auxio.ui.LiftAppBarLayout>
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <org.oxycblt.auxio.ui.EdgeRecyclerView
+                android:id="@+id/detail_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                app:layout_role="content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                tools:listitem="@layout/item_detail" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </org.oxycblt.auxio.playback.PlaybackBarLayout>
 </layout>

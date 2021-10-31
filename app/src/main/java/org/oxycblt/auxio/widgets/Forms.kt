@@ -41,10 +41,14 @@ private fun createViews(
     return views
 }
 
-private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
+private fun RemoteViews.applyMeta(state: WidgetState): RemoteViews {
     setTextViewText(R.id.widget_song, state.song.name)
     setTextViewText(R.id.widget_artist, state.song.album.artist.resolvedName)
 
+    return this
+}
+
+private fun RemoteViews.applyCover(context: Context, state: WidgetState): RemoteViews {
     if (state.albumArt != null) {
         setImageViewBitmap(R.id.widget_cover, state.albumArt)
         setContentDescription(
@@ -54,9 +58,10 @@ private fun RemoteViews.applyMeta(context: Context, state: WidgetState) {
         setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
-}
 
-private fun RemoteViews.applyControls(context: Context, state: WidgetState) {
+    return this
+}
+private fun RemoteViews.applyControls(context: Context, state: WidgetState): RemoteViews {
     setOnClickPendingIntent(
         R.id.widget_skip_prev,
         context.newBroadcastIntent(
@@ -86,53 +91,21 @@ private fun RemoteViews.applyControls(context: Context, state: WidgetState) {
             R.drawable.ic_play
         }
     )
+
+    return this
 }
 
-fun createDefaultWidget(context: Context): RemoteViews {
-    return createViews(context, R.layout.widget_default)
-}
+private fun RemoteViews.applyFullControls(context: Context, state: WidgetState): RemoteViews {
+    applyControls(context, state)
 
-fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_tiny)
-    views.applyMeta(context, state)
-    views.applyControls(context, state)
-    return views
-}
-
-fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_wide)
-    views.applyMeta(context, state)
-    views.applyControls(context, state)
-    return views
-}
-
-fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_small)
-    views.applyMeta(context, state)
-    views.applyControls(context, state)
-    return views
-}
-
-fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_medium)
-    views.applyMeta(context, state)
-    views.applyControls(context, state)
-    return views
-}
-
-fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
-    val views = createViews(context, R.layout.widget_large)
-    views.applyMeta(context, state)
-    views.applyControls(context, state)
-
-    views.setOnClickPendingIntent(
+    setOnClickPendingIntent(
         R.id.widget_loop,
         context.newBroadcastIntent(
             PlaybackService.ACTION_LOOP
         )
     )
 
-    views.setOnClickPendingIntent(
+    setOnClickPendingIntent(
         R.id.widget_shuffle,
         context.newBroadcastIntent(
             PlaybackService.ACTION_SHUFFLE
@@ -154,8 +127,46 @@ fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
         LoopMode.TRACK -> R.drawable.ic_loop_one
     }
 
-    views.setImageViewResource(R.id.widget_shuffle, shuffleRes)
-    views.setImageViewResource(R.id.widget_loop, loopRes)
+    setImageViewResource(R.id.widget_shuffle, shuffleRes)
+    setImageViewResource(R.id.widget_loop, loopRes)
 
-    return views
+    return this
+}
+
+fun createDefaultWidget(context: Context): RemoteViews {
+    return createViews(context, R.layout.widget_default)
+}
+
+fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_tiny)
+        .applyMeta(state)
+        .applyCover(context, state)
+        .applyControls(context, state)
+}
+
+fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_wide)
+        .applyMeta(state)
+        .applyCover(context, state)
+        .applyFullControls(context, state)
+}
+
+fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_small)
+        .applyMeta(state)
+        .applyControls(context, state)
+}
+
+fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_medium)
+        .applyMeta(state)
+        .applyCover(context, state)
+        .applyControls(context, state)
+}
+
+fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_large)
+        .applyMeta(state)
+        .applyCover(context, state)
+        .applyFullControls(context, state)
 }

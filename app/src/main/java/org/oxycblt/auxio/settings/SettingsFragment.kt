@@ -22,11 +22,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
-import org.oxycblt.auxio.util.applyEdge
 
 /**
  * A container [Fragment] for the settings menu.
@@ -44,13 +42,6 @@ class SettingsFragment : Fragment() {
             setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
-        }
-
-        binding.applyEdge { bars ->
-            binding.settingsAppbar.updatePadding(top = bars.top)
-
-            // The padding + clipToPadding method does not work with a
-            // FragmentContainerView. Do it directly in SettingsListFragment instead.
         }
 
         binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view

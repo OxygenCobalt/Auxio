@@ -22,14 +22,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.applyEdge
 
 /**
  * A [Fragment] that contains both the user queue and the next queue, with the ability to
@@ -57,11 +55,6 @@ class QueueFragment : Fragment() {
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.applyEdge { bars ->
-            binding.queueAppbar.updatePadding(top = bars.top)
-            binding.queueRecycler.updatePadding(bottom = bars.bottom)
-        }
 
         binding.queueToolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

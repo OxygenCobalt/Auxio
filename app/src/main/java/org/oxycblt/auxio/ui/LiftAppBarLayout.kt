@@ -23,11 +23,14 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.WindowInsets
 import androidx.annotation.StyleRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state
@@ -59,6 +62,20 @@ class LiftAppBarLayout @JvmOverloads constructor(
 
     init {
         viewTreeObserver.addOnPreDrawListener(onPreDraw)
+    }
+
+    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        super.dispatchApplyWindowInsets(insets)
+
+        return onApplyWindowInsets(insets)
+    }
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        super.onApplyWindowInsets(insets)
+
+        updatePadding(top = insets.systemBarsCompat.top)
+
+        return insets
     }
 
     override fun onDetachedFromWindow() {

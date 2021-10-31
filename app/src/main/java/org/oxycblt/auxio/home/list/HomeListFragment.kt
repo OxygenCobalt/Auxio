@@ -31,7 +31,6 @@ import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
-import org.oxycblt.auxio.util.applyEdgeRespectingBar
 import org.oxycblt.auxio.util.applySpans
 
 /**
@@ -67,7 +66,6 @@ abstract class HomeListFragment : Fragment() {
             adapter = homeAdapter
             setHasFixedSize(true)
             applySpans()
-            applyEdgeRespectingBar(playbackModel, viewLifecycleOwner)
         }
 
         // Make sure that this RecyclerView has data before startup

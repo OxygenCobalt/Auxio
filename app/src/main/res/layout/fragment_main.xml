@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainFragment">
 
-    <LinearLayout
-        android:id="@+id/main_layout"
+    <org.oxycblt.auxio.playback.PlaybackBarLayout
+        android:id="@+id/main_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -15,20 +15,9 @@
             android:id="@+id/explore_nav_host"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             app:navGraph="@navigation/nav_explore"
             tools:layout="@layout/fragment_home" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/main_playback"
-            android:name="org.oxycblt.auxio.playback.CompactPlaybackFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            android:clipToPadding="true"
-            android:elevation="@dimen/elevation_normal"
-            tools:layout="@layout/fragment_compact_playback" />
-
-    </LinearLayout>
+    </org.oxycblt.auxio.playback.PlaybackBarLayout>
 </layout>

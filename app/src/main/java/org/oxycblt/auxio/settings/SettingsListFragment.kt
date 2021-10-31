@@ -39,10 +39,10 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.pref.IntListPrefDialog
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.tabs.TabCustomizeDialog
-import org.oxycblt.auxio.util.applyEdge
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -65,8 +65,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
             clipToPadding = false
 
-            applyEdge { bars ->
-                updatePadding(bottom = bars.bottom)
+            setOnApplyWindowInsetsListener { v, insets ->
+                updatePadding(bottom = insets.systemBarsCompat.bottom)
+
+                insets
             }
         }
 

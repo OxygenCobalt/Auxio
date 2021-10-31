@@ -32,14 +32,10 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
-import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.PlaybackViewModel
 
 /**
  * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
@@ -142,84 +138,24 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
     return color.resolveColor(context)
 }
 
-/**
- * Apply edge-to-edge tweaks to the root of a [ViewBinding].
- * @param onApply What to do when the system bar insets are provided
- */
-fun ViewBinding.applyEdge(onApply: (Rect) -> Unit) {
-    root.applyEdge(onApply)
-}
-
-/**
- * Apply edge-to-edge tweaks to a [View].
- * @param onApply What to do when the system bar insets are provided
- */
-fun View.applyEdge(onApply: (Rect) -> Unit) {
-    when {
+val WindowInsets.systemBarsCompat: Rect get() {
+    return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            setOnApplyWindowInsetsListener { _, insets ->
-                val bars = insets.getInsets(WindowInsets.Type.systemBars()).run {
-                    Rect(left, top, right, bottom)
-                }
-
-                onApply(bars)
-
-                insets
+            getInsets(WindowInsets.Type.systemBars()).run {
+                Rect(left, top, right, bottom)
             }
         }
 
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-            setOnApplyWindowInsetsListener { _, insets ->
-                @Suppress("DEPRECATION")
-                val bars = Rect(
-                    insets.systemWindowInsetLeft,
-                    insets.systemWindowInsetTop,
-                    insets.systemWindowInsetRight,
-                    insets.systemWindowInsetBottom
-                )
-
-                onApply(bars)
-                insets
-            }
+            @Suppress("DEPRECATION")
+            Rect(
+                systemWindowInsetLeft,
+                systemWindowInsetTop,
+                systemWindowInsetRight,
+                systemWindowInsetBottom
+            )
         }
 
-        // Not on a version that supports edge-to-edge [yet], don't do anything
-    }
-}
-
-/**
- * Stopgap measure to make edge-to-edge work on views that also have a playback bar.
- * The issue is that while we can apply padding initially, the padding will still be applied
- * when the bar is shown, which is very ungood. We mitigate this by just checking the song state
- * and removing the padding if there is one, which is a stupidly fragile band-aid but it
- * works.
- *
- * TODO: Dumpster this and replace it with a dedicated layout. Only issue with that is how
- *  nested our layouts are, which basically forces us to do recursion magic. Hai Zhang's Material
- *  Files layout may help in this task.
- */
-fun View.applyEdgeRespectingBar(
-    playbackModel: PlaybackViewModel,
-    viewLifecycleOwner: LifecycleOwner,
-    initialPadding: Int = 0
-) {
-    var bottomPadding = 0
-
-    applyEdge {
-        bottomPadding = it.bottom
-
-        if (playbackModel.song.value == null) {
-            updatePadding(bottom = bottomPadding)
-        } else {
-            updatePadding(bottom = initialPadding)
-        }
-    }
-
-    playbackModel.song.observe(viewLifecycleOwner) { song ->
-        if (song == null) {
-            updatePadding(bottom = bottomPadding)
-        } else {
-            updatePadding(bottom = initialPadding)
-        }
+        else -> Rect(0, 0, 0, 0)
     }
 }

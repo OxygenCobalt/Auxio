@@ -24,7 +24,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.postDelayed
-import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -42,8 +41,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.util.applyEdge
-import org.oxycblt.auxio.util.applyEdgeRespectingBar
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
@@ -76,10 +73,6 @@ class SearchFragment : Fragment() {
         // --- UI SETUP --
 
         binding.lifecycleOwner = viewLifecycleOwner
-
-        binding.applyEdge { bars ->
-            binding.searchAppbar.updatePadding(top = bars.top)
-        }
 
         binding.searchToolbar.apply {
             val itemId = when (searchModel.filterMode) {
@@ -128,8 +121,6 @@ class SearchFragment : Fragment() {
             applySpans { pos ->
                 searchAdapter.currentList[pos] is Header
             }
-
-            applyEdgeRespectingBar(playbackModel, viewLifecycleOwner)
         }
 
         // --- VIEWMODEL SETUP ---

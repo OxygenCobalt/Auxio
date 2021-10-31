@@ -46,7 +46,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Search Functionality
 - Audio Focus / Headset Management
 - No internet connectivity whatsoever
-- No rounded album corners
+- No rounded album covers
 
 ## To possibly come in the future:
 
