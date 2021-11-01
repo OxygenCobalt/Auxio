@@ -2,9 +2,6 @@
 <resources>
     <!-- Android 12 configuration -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
-        <!-- Make our splash drawable only the foreground -->
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-
         <!--
         Theme.Material3.DayNight doesn't actually apply dynamic colors by default. No.
         You have to apply a T H E M E O V E R L A Y for them to work. Except the ThemeOverlay
