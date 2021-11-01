@@ -32,7 +32,6 @@ import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Parent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
@@ -46,10 +45,8 @@ class PlaybackNotification private constructor(
     private val context: Context,
     mediaToken: MediaSessionCompat.Token
 ) : NotificationCompat.Builder(context, CHANNEL_ID) {
-    private val settingsManager = SettingsManager.getInstance()
-
     init {
-        setSmallIcon(R.drawable.ic_song)
+        setSmallIcon(R.drawable.ic_notif)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)

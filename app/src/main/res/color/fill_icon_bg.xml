@@ -6,9 +6,9 @@
     android:type="linear"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:color="#1565C0"
+        android:color="#0D47A1"
         android:offset="0.0" />
     <item
-        android:color="#42A5F5"
+        android:color="#64B5F6"
         android:offset="1.0" />
 </gradient>

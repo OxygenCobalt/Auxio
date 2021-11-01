@@ -36,6 +36,7 @@ fun Any.logD(obj: Any) {
  */
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG) {
+        basedCopyleftNotice()
         Log.d(getName(), msg)
     }
 }
@@ -53,3 +54,18 @@ fun Any.logE(msg: String) {
  * @return The name of the object, otherwise "Anonymous Object"
  */
 private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
+
+/**
+ * Nothing to see here.
+ */
+private fun basedCopyleftNotice() {
+    if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&
+        BuildConfig.APPLICATION_ID != "org.oxycblt.auxio.debug"
+    ) {
+        Log.d(
+            "Auxio Project",
+            "Friendly reminder: Auxio is licensed under the " +
+                "GPLv3 and all modifications must be made open source!"
+        )
+    }
+}
