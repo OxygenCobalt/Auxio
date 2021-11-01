@@ -66,7 +66,6 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         binding.lifecycleOwner = viewLifecycleOwner
 
         // --- VIEWMODEL SETUP ---
-
         binding.mainBarLayout.setActionCallback(this)
 
         binding.mainBarLayout.setSong(playbackModel.song.value)

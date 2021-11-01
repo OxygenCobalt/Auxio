@@ -84,6 +84,7 @@ class CompactPlaybackView @JvmOverloads constructor(
 
     fun setSong(song: Song) {
         binding.song = song
+        binding.executePendingBindings()
     }
 
     fun setPlaying(isPlaying: Boolean) {
@@ -91,11 +92,6 @@ class CompactPlaybackView @JvmOverloads constructor(
     }
 
     fun setPosition(position: Long) {
-        if (binding.song == null) {
-            binding.playbackProgressBar.progress = 0
-            return
-        }
-
         binding.playbackProgressBar.progress = position.toInt()
     }
 
