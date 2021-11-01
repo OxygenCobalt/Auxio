@@ -22,9 +22,9 @@ This does not rule out these additions, but they are not accepted as often as ot
 Feel free to fork Auxio to add your own feature set however.
 
 #### Additions that have already been rejected:
-- Lyrics [#19]
-- Recently added list [#18]
-- Folder View/Grouping [#10]
 - ReplayGain [#7]
+- Folder View/Grouping [#10]
+- Recently added list [#18]
+- Lyrics [#19]
 - Tag editing [#33]
 - Specialized queue adding (ex. Play Next) [#44]

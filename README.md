@@ -10,7 +10,7 @@
     </a>
     <img alt="Minimum SDK" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/info/FAQ.md">FAQ</a> / <a href="/info/FORMATS.md">Formats</a> / <a href="/info/LICENSES.md">Licenses</a> / <a href="/.github/CONTRIBUTING.md">Contributing</a></h4>
+<h4 align="center"><a href="/info/FAQ.md">FAQ</a> | <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a></h4> 
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
 </p>
@@ -39,13 +39,13 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - [ExoPlayer](https://exoplayer.dev/) based playback
 - Customizable UI & Behavior
 - Genres/Artists/Albums/Songs support
-- Extensive queue system
-- Full playback persistence system
+- Intuitive queue system
+- Reliable playback state persistence
 - Edge-to-edge (Oreo+ Only)
 - Embedded covers support
 - Search Functionality
-- Audio Focus / Headset Management
-- No internet connectivity whatsoever
+- Audio/Headset focus
+- Completely private and offline
 - No rounded album covers
 
 ## To possibly come in the future:
@@ -54,7 +54,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Liked songs
 - Improved tablet layouts
 - More notification actions
-- Other things, possibly
+- And other things, probably
 
 ## Permissions
 
