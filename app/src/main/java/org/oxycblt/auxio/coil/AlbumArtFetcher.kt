@@ -28,8 +28,8 @@ import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.size.Size
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
 import okio.buffer
@@ -39,6 +39,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.logD
 import java.io.ByteArrayInputStream
 import java.lang.Exception
 
@@ -187,18 +188,37 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         for (i in 0 until metadata.length()) {
             // We can only extract pictures from two tags with this method, ID3v2's APIC or
             // FLAC's PICTURE.
-            val pic = when (val entry = metadata.get(i)) {
-                is ApicFrame -> entry.pictureData
-                is PictureFrame -> entry.pictureData
-                else -> null
+            val pic: ByteArray?
+            val type: Int
+
+            when (val entry = metadata.get(i)) {
+                is ApicFrame -> {
+                    pic = entry.pictureData
+                    type = entry.pictureType
+                }
+                is PictureFrame -> {
+                    pic = entry.pictureData
+                    type = entry.pictureType
+                }
+                else -> continue
             }
 
-            if (pic != null) {
-                // We found a cover, great.
-                // TODO: Make sure that this is a correct front cover picture and pick the first
-                //       one if one cannot be found
+            // Ensure the picture type here is a front cover image so that we don't extract
+            // an incorrect cover image.
+            // Yes, this does add some latency, but its quality covers so we can prioritize
+            // correctness over speed.
+            if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
+                logD("Front cover successfully found")
+
+                // We have a front cover image. Great.
                 stream = ByteArrayInputStream(pic)
                 break
+            } else if (stream != null) {
+                // In the case a front cover is not found, use the first image in the tag instead.
+                // This can be corrected later on if a front cover frame is found.
+                logD("Image not a front cover, assigning image of type $type for now")
+
+                stream = ByteArrayInputStream(pic)
             }
         }
 
