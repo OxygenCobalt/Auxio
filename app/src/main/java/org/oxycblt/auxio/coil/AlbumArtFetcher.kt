@@ -29,6 +29,7 @@ import coil.fetch.SourceResult
 import coil.size.Size
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
+import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
 import okio.buffer
@@ -39,6 +40,7 @@ import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
 import java.io.ByteArrayInputStream
+import java.lang.Exception
 
 /**
  * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
@@ -159,7 +161,11 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         // Coil is async, we can just spin until the loading has ended
         while (future.isDone) { /* no-op */ }
 
-        val tracks = future.get()
+        val tracks = try {
+            future.get()
+        } catch (e: Exception) {
+            null
+        }
 
         if (tracks == null || tracks.isEmpty) {
             // Unrecognized format. This is expected, as ExoPlayer only supports a

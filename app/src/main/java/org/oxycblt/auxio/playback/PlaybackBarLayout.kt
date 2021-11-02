@@ -38,10 +38,6 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * properly. The mechanism is mostly inspired by Material Files' PersistentBarLayout, however
  * this class was primarily written by me and I plan to expand this layout to become part of
  * the playback navigation process.
- *
- * TODO: Implement animation
- * TODO: Implement the swipe-up behavior. This needs to occur, as the way the main fragment
- *  saves state results in'
  */
 class PlaybackBarLayout @JvmOverloads constructor(
     context: Context,
@@ -290,7 +286,6 @@ class PlaybackBarLayout @JvmOverloads constructor(
     override fun checkLayoutParams(layoutParams: ViewGroup.LayoutParams): Boolean =
         layoutParams is LayoutParams && super.checkLayoutParams(layoutParams)
 
-    @Suppress("UNUSED")
     class LayoutParams : ViewGroup.LayoutParams {
         var isBar = false
         var shown = false
