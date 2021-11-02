@@ -73,7 +73,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         binding.mainBarLayout.setPosition(playbackModel.position.value!!)
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            binding.mainBarLayout.setSong(song)
+            binding.mainBarLayout.setSong(song, animate = true)
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->

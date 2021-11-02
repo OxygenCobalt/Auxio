@@ -179,8 +179,7 @@ class WidgetProvider : AppWidgetProvider() {
             updateAppWidget(name, RemoteViews(views))
         } else {
             // Otherwise, we try our best to backport the responsive behavior to older versions.
-            // This is mostly a guess based on RemoteView's documentation. It seems to work well
-            // enough on most launchers.
+            // This seems to work well enough on most launchers.
 
             // Each widget has independent dimensions, so we iterate through them all
             // and do this for each.

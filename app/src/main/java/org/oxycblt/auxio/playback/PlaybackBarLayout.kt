@@ -29,6 +29,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import androidx.core.view.children
 import androidx.core.view.updatePadding
+import androidx.customview.widget.ViewDragHelper
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.systemBarsCompat
 
@@ -49,6 +50,7 @@ class PlaybackBarLayout @JvmOverloads constructor(
     @StyleRes defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
     private val playbackView = CompactPlaybackView(context)
+    private var barDragHelper = ViewDragHelper.create(this, ViewDragCallback())
     private var lastInsets: WindowInsets? = null
 
     init {
@@ -76,7 +78,11 @@ class PlaybackBarLayout @JvmOverloads constructor(
         playbackView.measure(barWidthSpec, barHeightSpec)
 
         updateWindowInsets()
+        measureContent()
+    }
 
+    private fun measureContent() {
+        val barParams = playbackView.layoutParams as LayoutParams
         val barHeightAdjusted = (playbackView.measuredHeight * barParams.offset).toInt()
 
         val contentWidth = measuredWidth
@@ -110,7 +116,17 @@ class PlaybackBarLayout @JvmOverloads constructor(
                     0, height - barHeightAdjusted,
                     width, height + (barHeight - barHeightAdjusted)
                 )
-            } else {
+            }
+        }
+
+        layoutContent()
+    }
+
+    private fun layoutContent() {
+        for (child in children) {
+            val childParams = child.layoutParams as LayoutParams
+
+            if (!childParams.isBar) {
                 child.layout(0, 0, child.measuredWidth, child.measuredHeight)
             }
         }
@@ -123,6 +139,12 @@ class PlaybackBarLayout @JvmOverloads constructor(
         updateWindowInsets()
 
         return insets
+    }
+
+    override fun computeScroll() {
+        if (barDragHelper.continueSettling(true)) {
+            postInvalidateOnAnimation()
+        }
     }
 
     override fun onDetachedFromWindow() {
@@ -174,12 +196,12 @@ class PlaybackBarLayout @JvmOverloads constructor(
         }
     }
 
-    fun setSong(song: Song?) {
+    fun setSong(song: Song?, animate: Boolean = false) {
         if (song != null) {
-            showBar()
+            showBar(animate)
             playbackView.setSong(song)
         } else {
-            hideBar()
+            hideBar(animate)
         }
     }
 
@@ -195,33 +217,53 @@ class PlaybackBarLayout @JvmOverloads constructor(
         playbackView.setCallback(callback)
     }
 
-    private fun showBar() {
+    private fun showBar(animate: Boolean) {
         val barParams = playbackView.layoutParams as LayoutParams
 
-        if (barParams.offset == 1f) {
+        if (barParams.shown || barParams.offset == 1f) {
             return
         }
 
-        barParams.offset = 1f
+        barParams.shown = true
 
-        if (isLaidOut) {
-            updateWindowInsets()
+        if (animate) {
+            barDragHelper.smoothSlideViewTo(
+                playbackView, playbackView.left, height - playbackView.height
+            )
+        } else {
+            barParams.offset = 1f
+
+            if (isLaidOut) {
+                updateWindowInsets()
+                measureContent()
+                layoutContent()
+            }
         }
 
         invalidate()
     }
 
-    private fun hideBar() {
+    private fun hideBar(animate: Boolean) {
         val barParams = playbackView.layoutParams as LayoutParams
 
-        if (barParams.offset == 0f) {
+        if (barParams.shown || barParams.offset == 0f) {
             return
         }
 
-        barParams.offset = 0f
+        barParams.shown = false
 
-        if (isLaidOut) {
-            updateWindowInsets()
+        if (animate) {
+            barDragHelper.smoothSlideViewTo(
+                playbackView, playbackView.left, height
+            )
+        } else {
+            barParams.offset = 0f
+
+            if (isLaidOut) {
+                updateWindowInsets()
+                measureContent()
+                layoutContent()
+            }
         }
 
         invalidate()
@@ -251,6 +293,7 @@ class PlaybackBarLayout @JvmOverloads constructor(
     @Suppress("UNUSED")
     class LayoutParams : ViewGroup.LayoutParams {
         var isBar = false
+        var shown = false
         var offset = 0f
 
         constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -266,5 +309,43 @@ class PlaybackBarLayout @JvmOverloads constructor(
         fun onPlayPauseClick()
         fun onNavToItem()
         fun onNavToPlayback()
+    }
+
+    private inner class ViewDragCallback : ViewDragHelper.Callback() {
+        override fun tryCaptureView(child: View, pointerId: Int): Boolean = false
+
+        override fun onViewPositionChanged(
+            changedView: View,
+            left: Int,
+            top: Int,
+            dx: Int,
+            dy: Int
+        ) {
+            val childRange = getViewVerticalDragRange(changedView)
+            val childLayoutParams = changedView.layoutParams as LayoutParams
+
+            val height = height
+            childLayoutParams.offset = (height - top).toFloat() / childRange
+
+            updateWindowInsets()
+            measureContent()
+            layoutContent()
+        }
+
+        override fun getViewVerticalDragRange(child: View): Int {
+            val childParams = child.layoutParams as LayoutParams
+
+            return if (childParams.isBar) {
+                child.height
+            } else {
+                0
+            }
+        }
+
+        override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int = child.left
+
+        override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
+            return top.coerceIn(height - getViewVerticalDragRange(child)..height)
+        }
     }
 }
