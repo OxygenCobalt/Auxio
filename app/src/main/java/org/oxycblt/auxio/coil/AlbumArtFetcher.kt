@@ -142,7 +142,7 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
                 stream.use { stm ->
                     return SourceResult(
                         source = stm.source().buffer(),
-                        mimeType = context.contentResolver.getType(songUri),
+                        mimeType = null,
                         dataSource = DataSource.DISK
                     )
                 }
