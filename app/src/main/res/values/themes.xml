@@ -148,10 +148,10 @@
     </style>
 
     <style name="Theme.Auxio.Neutral" parent="Theme.Auxio.App">
-        <item name="colorPrimary">@color/control</item>
-        <item name="colorOnPrimary">@color/control</item>
-        <item name="colorPrimaryInverse">@color/control</item>
-        <item name="colorPrimaryContainer">@color/control</item>
-        <item name="colorOnPrimaryContainer">@color/control</item>
+        <item name="colorPrimary">?attr/colorControlNormal</item>
+        <item name="colorOnPrimary">?attr/colorControlNormal</item>
+        <item name="colorPrimaryInverse">?attr/colorControlNormal</item>
+        <item name="colorPrimaryContainer">?attr/colorControlNormal</item>
+        <item name="colorOnPrimaryContainer">?attr/colorControlNormal</item>
     </style>
 </resources>

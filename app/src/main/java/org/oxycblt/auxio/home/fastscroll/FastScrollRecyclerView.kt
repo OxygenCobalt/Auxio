@@ -96,7 +96,6 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     private var dragStartThumbOffset = 0
 
     private var dragging = false
-    private var didRelayout = true
     private var showingScrollbar = false
     private var showingPopup = false
 
@@ -304,19 +303,13 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
         updateScrollbarState()
 
-        if (didRelayout) {
-            didRelayout = false
+        // Measure or layout events result in a fake onScrolled call. Ignore those.
+        if (dx == 0 && dy == 0) {
             return
         }
 
         showScrollbar()
         postAutoHideScrollbar()
-    }
-
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
-
-        didRelayout = changed
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
