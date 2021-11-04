@@ -32,11 +32,10 @@ import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.size.OriginalSize
 import coil.size.Size
-import okio.source
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.MusicParent
 import java.io.Closeable
 import java.lang.Exception
 
@@ -44,10 +43,10 @@ import java.lang.Exception
  * A [Fetcher] that takes an [Artist] or [Genre] and returns a mosaic of its albums.
  * @author OxygenCobalt
  */
-class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
+class MosaicFetcher(private val context: Context) : Fetcher<MusicParent> {
     override suspend fun fetch(
         pool: BitmapPool,
-        data: Parent,
+        data: MusicParent,
         size: Size,
         options: Options
     ): FetchResult {
@@ -147,8 +146,8 @@ class MosaicFetcher(private val context: Context) : Fetcher<Parent> {
         forEach { it.use(block) }
     }
 
-    override fun key(data: Parent): String = data.hashCode().toString()
-    override fun handles(data: Parent) = data !is Album // Albums are not used here
+    override fun key(data: MusicParent): String = data.hashCode().toString()
+    override fun handles(data: MusicParent) = data !is Album // Albums are not used here
 
     companion object {
         private const val MOSAIC_BITMAP_SIZE = 512

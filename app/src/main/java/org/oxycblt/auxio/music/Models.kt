@@ -33,16 +33,23 @@ sealed class BaseModel {
     abstract val id: Long
 }
 
+/**
+ * A [BaseModel] variant that represents a music item.
+ * @property name The raw name of this track
+ * @property hash A stable, unique-ish hash for this item. Used for database work.
+ */
 sealed class Music : BaseModel() {
     abstract val name: String
-    abstract val hash: Int
+    abstract val hash: Long
 }
 
 /**
  * [BaseModel] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
+ * @property resolvedName A name resolved from it's raw form to a form suitable to be shown in
+ * a ui. Ex. unknown would become Unknown Artist, (124) would become its proper genre name, etc.
  */
-sealed class Parent : Music() {
+sealed class MusicParent : Music() {
     abstract val resolvedName: String
 }
 
@@ -79,8 +86,10 @@ data class Song(
     val seconds: Long get() = duration / 1000
     val formattedDuration: String get() = (duration / 1000).toDuration()
 
-    override val hash: Int get() {
-        var result = name.hashCode()
+    override val hash: Long get() {
+        var result = name.hashCode().toLong()
+        result = 31 * result + albumName.hashCode()
+        result = 31 * result + artistName.hashCode()
         result = 31 * result + track
         result = 31 * result + duration.hashCode()
         return result
@@ -96,7 +105,7 @@ data class Song(
 }
 
 /**
- * The data object for an album. Inherits [Parent].
+ * The data object for an album. Inherits [MusicParent].
  * @property artistName    The name of the parent artist. Do not use this outside of creating the artist from albums
  * @property year          The year this album was released. 0 if there is none in the metadata.
  * @property artist        The Album's parent [Artist]. use this instead of [artistName]
@@ -109,7 +118,7 @@ data class Album(
     val artistName: String,
     val year: Int,
     val songs: List<Song>
-) : Parent() {
+) : MusicParent() {
     init {
         songs.forEach { song ->
             song.linkAlbum(this)
@@ -126,8 +135,8 @@ data class Album(
         mArtist = artist
     }
 
-    override val hash: Int get() {
-        var result = name.hashCode()
+    override val hash: Long get() {
+        var result = name.hashCode().toLong()
         result = 31 * result + artistName.hashCode()
         result = 31 * result + year
         return result
@@ -138,7 +147,7 @@ data class Album(
 }
 
 /**
- * The data object for an artist. Inherits [Parent]
+ * The data object for an artist. Inherits [MusicParent]
  * @property albums The list of all [Album]s in this artist
  * @property genre  The most prominent genre for this artist
  * @property songs  The list of all [Song]s in this artist
@@ -148,7 +157,7 @@ data class Artist(
     override val name: String,
     override val resolvedName: String,
     val albums: List<Album>
-) : Parent() {
+) : MusicParent() {
     init {
         albums.forEach { album ->
             album.linkArtist(this)
@@ -165,18 +174,18 @@ data class Artist(
         albums.flatMap { it.songs }
     }
 
-    override val hash = name.hashCode()
+    override val hash = name.hashCode().toLong()
 }
 
 /**
- * The data object for a genre. Inherits [Parent]
+ * The data object for a genre. Inherits [MusicParent]
  * @property songs   The list of all [Song]s in this genre.
  */
 data class Genre(
     override val id: Long,
     override val name: String,
     override val resolvedName: String
-) : Parent() {
+) : MusicParent() {
     private val mSongs = mutableListOf<Song>()
     val songs: List<Song> get() = mSongs
 
@@ -188,13 +197,14 @@ data class Genre(
         song.linkGenre(this)
     }
 
-    override val hash = name.hashCode()
+    override val hash = name.hashCode().toLong()
 }
 
 /**
  * The string used for a header instance. This class is a bit complex, mostly because it revolves
  * around passing string resources that are then resolved by the view instead of passing a context
  * directly.
+ * @author OxygenCobalt
  */
 sealed class HeaderString {
     /** A single string resource. */

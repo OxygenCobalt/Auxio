@@ -137,7 +137,7 @@ class AlbumDetailFragment : DetailFragment() {
         // --- PLAYBACKVIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.mode.value == PlaybackMode.IN_ALBUM &&
+            if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
                 playbackModel.parent.value?.id == detailModel.curAlbum.value!!.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)

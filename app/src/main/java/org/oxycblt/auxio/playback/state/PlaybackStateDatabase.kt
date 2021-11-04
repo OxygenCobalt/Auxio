@@ -22,7 +22,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.core.database.getLongOrNull
 import androidx.core.database.sqlite.transaction
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.assertBackgroundThread
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
@@ -30,8 +34,7 @@ import org.oxycblt.auxio.util.queryAll
 /**
  * A SQLite database for managing the persistent playback state and queue.
  * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
- * TODO: Improve the boundary between this and [PlaybackStateManager]. This would be more
- *  efficient.
+ * LEFT-OFF: Improve hashing by making everything a long
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :
@@ -74,30 +77,30 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /**
-     * Construct a [DatabaseState] table
+     * Construct a [StateColumns] table
      */
     private fun constructStateTable(command: StringBuilder): StringBuilder {
-        command.append("${DatabaseState.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${DatabaseState.COLUMN_SONG_HASH} INTEGER NOT NULL,")
-            .append("${DatabaseState.COLUMN_POSITION} LONG NOT NULL,")
-            .append("${DatabaseState.COLUMN_PARENT_HASH} INTEGER NOT NULL,")
-            .append("${DatabaseState.COLUMN_INDEX} INTEGER NOT NULL,")
-            .append("${DatabaseState.COLUMN_MODE} INTEGER NOT NULL,")
-            .append("${DatabaseState.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
-            .append("${DatabaseState.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
-            .append("${DatabaseState.COLUMN_IN_USER_QUEUE} BOOLEAN NOT NULL)")
+        command.append("${StateColumns.COLUMN_ID} LONG PRIMARY KEY,")
+            .append("${StateColumns.COLUMN_SONG_HASH} LONG,")
+            .append("${StateColumns.COLUMN_POSITION} LONG NOT NULL,")
+            .append("${StateColumns.COLUMN_PARENT_HASH} LONG,")
+            .append("${StateColumns.COLUMN_QUEUE_INDEX} INTEGER NOT NULL,")
+            .append("${StateColumns.COLUMN_PLAYBACK_MODE} INTEGER NOT NULL,")
+            .append("${StateColumns.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
+            .append("${StateColumns.COLUMN_LOOP_MODE} INTEGER NOT NULL,")
+            .append("${StateColumns.COLUMN_IS_IN_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
     }
 
     /**
-     * Construct a [DatabaseQueueItem] table
+     * Construct a [QueueColumns] table
      */
     private fun constructQueueTable(command: StringBuilder): StringBuilder {
-        command.append("${DatabaseQueueItem.COLUMN_ID} LONG PRIMARY KEY,")
-            .append("${DatabaseQueueItem.COLUMN_SONG_HASH} INTEGER NOT NULL,")
-            .append("${DatabaseQueueItem.COLUMN_ALBUM_HASH} INTEGER NOT NULL,")
-            .append("${DatabaseQueueItem.COLUMN_IS_USER_QUEUE} BOOLEAN NOT NULL)")
+        command.append("${QueueColumns.ID} LONG PRIMARY KEY,")
+            .append("${QueueColumns.SONG_HASH} INTEGER NOT NULL,")
+            .append("${QueueColumns.ALBUM_HASH} INTEGER NOT NULL,")
+            .append("${QueueColumns.IS_USER_QUEUE} BOOLEAN NOT NULL)")
 
         return command
     }
@@ -105,9 +108,9 @@ class PlaybackStateDatabase(context: Context) :
     // --- INTERFACE FUNCTIONS ---
 
     /**
-     * Clear the previously written [DatabaseState] and write a new one.
+     * Clear the previously written [SavedState] and write a new one.
      */
-    fun writeState(state: DatabaseState) {
+    fun writeState(state: SavedState) {
         assertBackgroundThread()
 
         writableDatabase.transaction {
@@ -116,15 +119,15 @@ class PlaybackStateDatabase(context: Context) :
             this@PlaybackStateDatabase.logD("Wiped state db.")
 
             val stateData = ContentValues(10).apply {
-                put(DatabaseState.COLUMN_ID, state.id)
-                put(DatabaseState.COLUMN_SONG_HASH, state.songHash)
-                put(DatabaseState.COLUMN_POSITION, state.position)
-                put(DatabaseState.COLUMN_PARENT_HASH, state.parentHash)
-                put(DatabaseState.COLUMN_INDEX, state.index)
-                put(DatabaseState.COLUMN_MODE, state.mode)
-                put(DatabaseState.COLUMN_IS_SHUFFLING, state.isShuffling)
-                put(DatabaseState.COLUMN_LOOP_MODE, state.loopMode)
-                put(DatabaseState.COLUMN_IN_USER_QUEUE, state.inUserQueue)
+                put(StateColumns.COLUMN_ID, 0)
+                put(StateColumns.COLUMN_SONG_HASH, state.song?.hash)
+                put(StateColumns.COLUMN_POSITION, state.position)
+                put(StateColumns.COLUMN_PARENT_HASH, state.parent?.hash)
+                put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
+                put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.toInt())
+                put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
+                put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.toInt())
+                put(StateColumns.COLUMN_IS_IN_USER_QUEUE, state.isInUserQueue)
             }
 
             insert(TABLE_NAME_STATE, null, stateData)
@@ -134,39 +137,55 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /**
-     * Read the stored [DatabaseState] from the database, if there is one.
-     * @return The stored [DatabaseState], null if there isn't one.
+     * Read the stored [SavedState] from the database, if there is one.
+     * @param musicStore Required to transform database songs/parents into actual instances
+     * @return The stored [SavedState], null if there isn't one.
      */
-    fun readState(): DatabaseState? {
+    fun readState(musicStore: MusicStore): SavedState? {
         assertBackgroundThread()
 
-        var state: DatabaseState? = null
+        var state: SavedState? = null
 
         readableDatabase.queryAll(TABLE_NAME_STATE) { cursor ->
             if (cursor.count == 0) return@queryAll
 
-            val songIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_SONG_HASH)
-            val posIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_POSITION)
-            val parentIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_PARENT_HASH)
-            val indexIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_INDEX)
-            val modeIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_MODE)
-            val shuffleIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_IS_SHUFFLING)
-            val loopModeIndex = cursor.getColumnIndexOrThrow(DatabaseState.COLUMN_LOOP_MODE)
-            val inUserQueueIndex = cursor.getColumnIndexOrThrow(
-                DatabaseState.COLUMN_IN_USER_QUEUE
+            val songIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_SONG_HASH)
+            val posIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_POSITION)
+            val parentIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PARENT_HASH)
+            val indexIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_QUEUE_INDEX)
+            val modeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PLAYBACK_MODE)
+            val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_IS_SHUFFLING)
+            val loopModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_LOOP_MODE)
+            val isInUserQueueIndex = cursor.getColumnIndexOrThrow(
+                StateColumns.COLUMN_IS_IN_USER_QUEUE
             )
 
             cursor.moveToFirst()
 
-            state = DatabaseState(
-                songHash = cursor.getInt(songIndex),
+            val song = cursor.getLongOrNull(songIndex)?.let { hash ->
+                musicStore.songs.find { it.hash == hash }
+            }
+
+            val mode = PlaybackMode.fromInt(cursor.getInt(modeIndex)) ?: PlaybackMode.ALL_SONGS
+
+            val parent = cursor.getLongOrNull(parentIndex)?.let { hash ->
+                when (mode) {
+                    PlaybackMode.IN_GENRE -> musicStore.genres.find { it.hash == hash }
+                    PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.hash == hash }
+                    PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.hash == hash }
+                    PlaybackMode.ALL_SONGS -> null
+                }
+            }
+
+            state = SavedState(
+                song = song,
                 position = cursor.getLong(posIndex),
-                parentHash = cursor.getInt(parentIndex),
-                index = cursor.getInt(indexIndex),
-                mode = cursor.getInt(modeIndex),
+                parent = parent,
+                queueIndex = cursor.getInt(indexIndex),
+                playbackMode = mode,
                 isShuffling = cursor.getInt(shuffleIndex) == 1,
-                loopMode = cursor.getInt(loopModeIndex),
-                inUserQueue = cursor.getInt(inUserQueueIndex) == 1
+                loopMode = LoopMode.fromInt(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
+                isInUserQueue = cursor.getInt(isInUserQueueIndex) == 1
             )
         }
 
@@ -174,9 +193,9 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /**
-     * Write a list of [queueItems] to the database, clearing the previous queue present.
+     * Write a [SavedQueue] to the database.
      */
-    fun writeQueue(queueItems: List<DatabaseQueueItem>) {
+    fun writeQueue(queue: SavedQueue) {
         assertBackgroundThread()
 
         val database = writableDatabase
@@ -187,22 +206,29 @@ class PlaybackStateDatabase(context: Context) :
 
         logD("Wiped queue db.")
 
+        writeQueueBatch(queue.user, true, 0)
+        writeQueueBatch(queue.queue, false, queue.user.size)
+    }
+
+    private fun writeQueueBatch(queue: List<Song>, isUserQueue: Boolean, idStart: Int) {
+        logD("Beginning queue write [start: $idStart, userQueue: $isUserQueue]")
+
+        val database = writableDatabase
         var position = 0
 
-        // Try to write out the entirety of the queue.
-        while (position < queueItems.size) {
+        while (position < queue.size) {
             var i = position
 
             database.transaction {
-                while (i < queueItems.size) {
-                    val item = queueItems[i]
+                while (i < queue.size) {
+                    val song = queue[i]
                     i++
 
                     val itemData = ContentValues(4).apply {
-                        put(DatabaseQueueItem.COLUMN_ID, item.id)
-                        put(DatabaseQueueItem.COLUMN_SONG_HASH, item.songHash)
-                        put(DatabaseQueueItem.COLUMN_ALBUM_HASH, item.albumHash)
-                        put(DatabaseQueueItem.COLUMN_IS_USER_QUEUE, item.isUserQueue)
+                        put(QueueColumns.ID, idStart + i)
+                        put(QueueColumns.SONG_HASH, song.hash)
+                        put(QueueColumns.ALBUM_HASH, song.album.hash)
+                        put(QueueColumns.IS_USER_QUEUE, isUserQueue)
                     }
 
                     insert(TABLE_NAME_QUEUE, null, itemData)
@@ -218,38 +244,70 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /**
-     * Read the database for any [DatabaseQueueItem]s.
-     * @return A list of any stored [DatabaseQueueItem]s.
+     * Read a [SavedQueue] from this database.
+     * @param musicStore Required to transform database songs into actual song instances
      */
-    fun readQueue(): List<DatabaseQueueItem> {
+    fun readQueue(musicStore: MusicStore): SavedQueue {
         assertBackgroundThread()
 
-        val queueItems = mutableListOf<DatabaseQueueItem>()
+        val queue = SavedQueue(mutableListOf(), mutableListOf())
 
         readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
             if (cursor.count == 0) return@queryAll
 
-            val idIndex = cursor.getColumnIndexOrThrow(DatabaseQueueItem.COLUMN_ID)
-            val songIdIndex = cursor.getColumnIndexOrThrow(DatabaseQueueItem.COLUMN_SONG_HASH)
-            val albumIdIndex = cursor.getColumnIndexOrThrow(DatabaseQueueItem.COLUMN_ALBUM_HASH)
-            val isUserQueueIndex = cursor.getColumnIndexOrThrow(DatabaseQueueItem.COLUMN_IS_USER_QUEUE)
+            val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_HASH)
+            val albumIndex = cursor.getColumnIndexOrThrow(QueueColumns.ALBUM_HASH)
+            val isUserQueueIndex = cursor.getColumnIndexOrThrow(QueueColumns.IS_USER_QUEUE)
 
             while (cursor.moveToNext()) {
-                queueItems += DatabaseQueueItem(
-                    id = cursor.getLong(idIndex),
-                    songHash = cursor.getInt(songIdIndex),
-                    albumHash = cursor.getInt(albumIdIndex),
-                    isUserQueue = cursor.getInt(isUserQueueIndex) == 1
-                )
+                musicStore.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))?.let { song ->
+                    if (cursor.getInt(isUserQueueIndex) == 1) {
+                        queue.user.add(song)
+                    } else {
+                        queue.queue.add(song)
+                    }
+                }
             }
         }
 
-        return queueItems
+        return queue
+    }
+
+    data class SavedState(
+        val song: Song?,
+        val position: Long,
+        val parent: MusicParent?,
+        val queueIndex: Int,
+        val playbackMode: PlaybackMode,
+        val isShuffling: Boolean,
+        val loopMode: LoopMode,
+        val isInUserQueue: Boolean
+    )
+
+    data class SavedQueue(val user: MutableList<Song>, val queue: MutableList<Song>)
+
+    private object StateColumns {
+        const val COLUMN_ID = "id"
+        const val COLUMN_SONG_HASH = "song"
+        const val COLUMN_POSITION = "position"
+        const val COLUMN_PARENT_HASH = "parent"
+        const val COLUMN_QUEUE_INDEX = "queue_index"
+        const val COLUMN_PLAYBACK_MODE = "playback_mode"
+        const val COLUMN_IS_SHUFFLING = "is_shuffling"
+        const val COLUMN_LOOP_MODE = "loop_mode"
+        const val COLUMN_IS_IN_USER_QUEUE = "is_in_user_queue"
+    }
+
+    private object QueueColumns {
+        const val ID = "id"
+        const val SONG_HASH = "song"
+        const val ALBUM_HASH = "album"
+        const val IS_USER_QUEUE = "is_user_queue"
     }
 
     companion object {
         const val DB_NAME = "auxio_state_database.db"
-        const val DB_VERSION = 4
+        const val DB_VERSION = 5
 
         const val TABLE_NAME_STATE = "playback_state_table"
         const val TABLE_NAME_QUEUE = "queue_table"
@@ -273,63 +331,5 @@ class PlaybackStateDatabase(context: Context) :
                 return newInstance
             }
         }
-    }
-}
-
-/**
- * A database entity that stores a simplified representation of a song in a queue.
- * @property id The database entity's id
- * @property songHash The hash for the song represented
- * @property albumHash The hash for the album represented
- * @property isUserQueue A bool for if this queue item is a user queue item or not
- * @author OxygenCobalt
- */
-data class DatabaseQueueItem(
-    var id: Long = 0L,
-    val songHash: Int,
-    val albumHash: Int,
-    val isUserQueue: Boolean = false
-) {
-    companion object {
-        const val COLUMN_ID = "id"
-        const val COLUMN_SONG_HASH = "song"
-        const val COLUMN_ALBUM_HASH = "album"
-        const val COLUMN_IS_USER_QUEUE = "is_user_queue"
-    }
-}
-
-/**
- * A database entity that stores a compressed variant of the current playback state.
- * @property id - The database key for this state
- * @property songHash - The hash for the currently playing song
- * @property parentHash - The hash for the currently playing parent
- * @property index - The current index in the queue.
- * @property mode - The integer form of the current [org.oxycblt.auxio.playback.state.PlaybackMode]
- * @property isShuffling - A bool for if the queue was shuffled
- * @property loopMode - The integer form of the current [org.oxycblt.auxio.playback.state.LoopMode]
- * @property inUserQueue - A bool for if the state was currently playing from the user queue.
- * @author OxygenCobalt
- */
-data class DatabaseState(
-    val id: Long = 0L,
-    val songHash: Int,
-    val position: Long,
-    val parentHash: Int,
-    val index: Int,
-    val mode: Int,
-    val isShuffling: Boolean,
-    val loopMode: Int,
-    val inUserQueue: Boolean
-) {
-    companion object {
-        const val COLUMN_ID = "state_id"
-        const val COLUMN_SONG_HASH = "song"
-        const val COLUMN_POSITION = "position"
-        const val COLUMN_PARENT_HASH = "parent"
-        const val COLUMN_INDEX = "_index"
-        const val COLUMN_MODE = "mode"
-        const val COLUMN_IS_SHUFFLING = "is_shuffling"
-        const val COLUMN_LOOP_MODE = "loop_mode"
-        const val COLUMN_IN_USER_QUEUE = "is_user_queue"
     }
 }

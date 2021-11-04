@@ -33,6 +33,7 @@
                 android:background="@android:color/transparent"
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabMode="scrollable"
+                app:tabGravity="start"
                 app:tabTextAppearance="@style/TextAppearance.Auxio.TabLayout.Label"
                 app:tabTextColor="@color/sel_accented_primary"/>
 

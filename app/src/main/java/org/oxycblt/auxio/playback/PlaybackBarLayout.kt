@@ -38,6 +38,9 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * properly. The mechanism is mostly inspired by Material Files' PersistentBarLayout, however
  * this class was primarily written by me and I plan to expand this layout to become part of
  * the playback navigation process.
+ *
+ * TODO: Explain how this thing works so that others can be spared the pain of deciphering
+ *  this custom viewgroup
  */
 class PlaybackBarLayout @JvmOverloads constructor(
     context: Context,

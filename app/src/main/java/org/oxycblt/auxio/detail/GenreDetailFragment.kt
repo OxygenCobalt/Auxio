@@ -99,7 +99,7 @@ class GenreDetailFragment : DetailFragment() {
         // --- PLAYBACKVIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.mode.value == PlaybackMode.IN_GENRE &&
+            if (playbackModel.playbackMode.value == PlaybackMode.IN_GENRE &&
                 playbackModel.parent.value?.id == detailModel.curGenre.value!!.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)

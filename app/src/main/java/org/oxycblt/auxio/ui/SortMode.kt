@@ -23,7 +23,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 
 /**
@@ -99,14 +99,14 @@ enum class SortMode(@IdRes val itemId: Int) {
     }
 
     /**
-     * Sort a generic list of [Parent] instances.
+     * Sort a generic list of [MusicParent] instances.
      *
      * **Behavior:**
      * - [ASCENDING]: By name after article, ascending
      * - [DESCENDING]: By name after article, descending
      * - Same parent list is returned otherwise.
      */
-    fun <T : Parent> sortParents(parents: Collection<T>): List<T> {
+    fun <T : MusicParent> sortParents(parents: Collection<T>): List<T> {
         return when (this) {
             ASCENDING -> parents.sortedWith(
                 compareBy(String.CASE_INSENSITIVE_ORDER) { model ->

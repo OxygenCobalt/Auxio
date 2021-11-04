@@ -92,7 +92,7 @@ class MusicStore private constructor() {
     /**
      * Find a song in a faster manner using a hash for its album as well.
      */
-    fun findSongFast(songHash: Int, albumHash: Int): Song? {
+    fun findSongFast(songHash: Long, albumHash: Long): Song? {
         return albums.find { it.hash == albumHash }?.songs?.find { it.hash == songHash }
     }
 

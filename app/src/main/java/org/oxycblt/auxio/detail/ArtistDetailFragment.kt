@@ -131,7 +131,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         // Highlight songs if they are being played
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.mode.value == PlaybackMode.IN_ARTIST &&
+            if (playbackModel.playbackMode.value == PlaybackMode.IN_ARTIST &&
                 playbackModel.parent.value?.id == detailModel.curArtist.value?.id
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)

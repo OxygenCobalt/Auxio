@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
@@ -223,11 +223,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
             Player.STATE_ENDED -> {
                 if (playbackManager.loopMode == LoopMode.TRACK) {
-                    playbackManager.rewind()
-
-                    if (settingsManager.pauseOnLoop) {
-                        playbackManager.setPlaying(false)
-                    }
+                    playbackManager.loop()
                 } else {
                     playbackManager.next()
                 }
@@ -270,7 +266,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         stopForegroundAndNotification()
     }
 
-    override fun onParentUpdate(parent: Parent?) {
+    override fun onParentUpdate(parent: MusicParent?) {
         notification.setParent(parent)
 
         startForegroundOrNotify()

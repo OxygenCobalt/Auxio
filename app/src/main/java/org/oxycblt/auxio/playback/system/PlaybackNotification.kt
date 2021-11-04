@@ -29,7 +29,7 @@ import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
-import org.oxycblt.auxio.music.Parent
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.util.newBroadcastIntent
@@ -118,7 +118,7 @@ class PlaybackNotification private constructor(
     /**
      * Apply the current [parent] to the header of the notification.
      */
-    fun setParent(parent: Parent?) {
+    fun setParent(parent: MusicParent?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS

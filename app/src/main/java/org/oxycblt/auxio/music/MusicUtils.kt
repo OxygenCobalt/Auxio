@@ -29,7 +29,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getPlural
 
 /**
- * A complete array of all the hardcoded genre values for ID3 <v3, contains standard genres and
+ * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
  * winamp extensions.
  */
 private val ID3_GENRES = arrayOf(
