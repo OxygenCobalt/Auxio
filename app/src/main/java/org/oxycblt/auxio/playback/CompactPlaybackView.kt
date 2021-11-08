@@ -22,7 +22,9 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.RippleDrawable
 import android.util.AttributeSet
+import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewCompactPlaybackBinding
@@ -30,6 +32,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveDrawable
+import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * A view displaying the playback state in a compact manner. This is only meant to be used
@@ -80,6 +83,11 @@ class CompactPlaybackView @JvmOverloads constructor(
         binding.playbackPlayPause.setOnClickListener {
             mCallback?.onPlayPauseClick()
         }
+    }
+
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        updatePadding(bottom = insets.systemBarsCompat.bottom)
+        return insets
     }
 
     fun setSong(song: Song) {

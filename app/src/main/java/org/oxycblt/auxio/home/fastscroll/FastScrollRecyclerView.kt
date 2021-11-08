@@ -142,7 +142,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
             setLayoutParams(layoutParams)
 
-            background = Md2PopupBackground(context)
+            background = FastScrollPopupDrawable(context)
             elevation = resources.getDimensionPixelOffset(R.dimen.elevation_normal).toFloat()
             ellipsize = TextUtils.TruncateAt.MIDDLE
             gravity = Gravity.CENTER
@@ -335,7 +335,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         getDecoratedBoundsWithMargins(getChildAt(0), childRect)
         val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - childRect.top
 
-        // Finally, we can calculate the thumb position, which is just:
+        // Then calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
         thumbOffset = (thumbOffsetRange.toLong() * scrollOffset / scrollOffsetRange).toInt()
     }
@@ -396,25 +396,14 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     }
 
     private fun isInViewTouchTarget(view: View, x: Float, y: Float): Boolean {
-        val scrollX = scrollX
-        val scrollY = scrollY
-        return (
-            isInTouchTarget(
-                x, view.left - scrollX, view.right - scrollX, 0,
-                width
-            ) &&
-                isInTouchTarget(
-                    y, view.top - scrollY, view.bottom - scrollY, 0,
-                    height
-                )
-            )
+        return isInTouchTarget(x, view.left - scrollX, view.right - scrollX, width) &&
+            isInTouchTarget(y, view.top - scrollY, view.bottom - scrollY, height)
     }
 
     private fun isInTouchTarget(
         position: Float,
         viewStart: Int,
         viewEnd: Int,
-        parentStart: Int,
         parentEnd: Int
     ): Boolean {
         val viewSize = viewEnd - viewStart
@@ -424,16 +413,18 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         }
 
         var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
-        if (touchTargetStart < parentStart) {
-            touchTargetStart = parentStart
+
+        if (touchTargetStart < 0) {
+            touchTargetStart = 0
         }
 
         var touchTargetEnd = touchTargetStart + minTouchTargetSize
         if (touchTargetEnd > parentEnd) {
             touchTargetEnd = parentEnd
             touchTargetStart = touchTargetEnd - minTouchTargetSize
-            if (touchTargetStart < parentStart) {
-                touchTargetStart = parentStart
+
+            if (touchTargetStart < 0) {
+                touchTargetStart = 0
             }
         }
 
@@ -441,10 +432,11 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     }
 
     private fun scrollToThumbOffset(thumbOffset: Int) {
-        var newThumbOffset = thumbOffset
-        newThumbOffset = MathUtils.clamp(newThumbOffset, 0, thumbOffsetRange)
-        var scrollOffset = (scrollOffsetRange.toLong() * newThumbOffset / thumbOffsetRange).toInt()
-        scrollOffset -= paddingTop
+        val clampedThumbOffset = MathUtils.clamp(thumbOffset, 0, thumbOffsetRange)
+
+        val scrollOffset = (
+            scrollOffsetRange.toLong() * clampedThumbOffset / thumbOffsetRange
+            ).toInt() - paddingTop
 
         scrollTo(scrollOffset)
     }
@@ -454,6 +446,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
         val trueOffset = offset - paddingTop
         val itemHeight = itemHeight
+
         val firstItemPosition = 0.coerceAtLeast(trueOffset / itemHeight)
         val firstItemTop = firstItemPosition * itemHeight - trueOffset
 
@@ -557,30 +550,9 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     private val isRtl: Boolean
         get() = layoutDirection == LAYOUT_DIRECTION_RTL
 
-    private val scrollOffsetRange: Int
-        get() = scrollRange - height
-
     private val thumbOffsetRange: Int
         get() {
             return height - scrollerPadding.top - scrollerPadding.bottom - thumbHeight
-        }
-
-    private val itemCount: Int
-        get() = when (val mgr = layoutManager) {
-            is GridLayoutManager -> (mgr.itemCount - 1) / mgr.spanCount + 1
-            is LinearLayoutManager -> mgr.itemCount
-            else -> 0
-        }
-
-    private val itemHeight: Int
-        get() {
-            if (childCount == 0) {
-                return 0
-            }
-
-            val itemView = getChildAt(0)
-            getDecoratedBoundsWithMargins(itemView, childRect)
-            return childRect.height()
         }
 
     private val scrollRange: Int
@@ -600,6 +572,9 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             }
         }
 
+    private val scrollOffsetRange: Int
+        get() = scrollRange - height
+
     private val firstAdapterPos: Int
         get() {
             if (childCount == 0) {
@@ -613,6 +588,24 @@ class FastScrollRecyclerView @JvmOverloads constructor(
                 is LinearLayoutManager -> mgr.getPosition(child)
                 else -> 0
             }
+        }
+
+    private val itemHeight: Int
+        get() {
+            if (childCount == 0) {
+                return 0
+            }
+
+            val itemView = getChildAt(0)
+            getDecoratedBoundsWithMargins(itemView, childRect)
+            return childRect.height()
+        }
+
+    private val itemCount: Int
+        get() = when (val mgr = layoutManager) {
+            is GridLayoutManager -> (mgr.itemCount - 1) / mgr.spanCount + 1
+            is LinearLayoutManager -> mgr.itemCount
+            else -> 0
         }
 
     companion object {

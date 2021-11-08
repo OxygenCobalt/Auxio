@@ -46,17 +46,27 @@ import kotlin.math.sqrt
  * !!! MODIFICATIONS !!!:
  * - Use modified Auxio resources instead of AFS resources
  * - Variable names are no longer prefixed with m
- * - Suppressed deprecation warning when dealing with convexness
+ * - Made path management compat-friendly
  */
-class Md2PopupBackground(context: Context) : Drawable() {
-    private val paint: Paint = Paint()
-    private val paddingStart: Int
-    private val paddingEnd: Int
+class FastScrollPopupDrawable(context: Context) : Drawable() {
+    private val paint: Paint = Paint().apply {
+        isAntiAlias = true
+        color = R.attr.colorControlActivated.resolveAttr(context)
+        style = Paint.Style.FILL
+    }
+
     private val path = Path()
-    private val tempMatrix = Matrix()
+    private val matrix = Matrix()
+
+    private val paddingStart = context.resources.getDimensionPixelOffset(R.dimen.spacing_medium)
+    private val paddingEnd = context.resources.getDimensionPixelOffset(R.dimen.popup_padding_end)
 
     override fun draw(canvas: Canvas) {
         canvas.drawPath(path, paint)
+    }
+
+    override fun onBoundsChange(bounds: Rect) {
+        updatePath()
     }
 
     override fun onLayoutDirectionChanged(layoutDirection: Int): Boolean {
@@ -64,94 +74,86 @@ class Md2PopupBackground(context: Context) : Drawable() {
         return true
     }
 
-    override fun setAlpha(alpha: Int) {}
-    override fun setColorFilter(colorFilter: ColorFilter?) {}
-    override fun isAutoMirrored(): Boolean {
-        return true
-    }
+    @Suppress("DEPRECATION")
+    override fun getOutline(outline: Outline) {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> outline.setPath(path)
 
-    private fun needMirroring(): Boolean {
-        return DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
-    }
+            // Paths don't need to be convex on android Q, but the API was mislabeled and so
+            // we still have to use this method.
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> outline.setConvexPath(path)
 
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
-
-    override fun onBoundsChange(bounds: Rect) {
-        updatePath()
-    }
-
-    private fun updatePath() {
-        path.reset()
-        val bounds = bounds
-        var width = bounds.width().toFloat()
-        val height = bounds.height().toFloat()
-        val r = height / 2
-        val sqrt2 = sqrt(2.0).toFloat()
-        // Ensure we are convex.
-        width = (r + sqrt2 * r).coerceAtLeast(width)
-        pathArcTo(path, r, r, r, 90f, 180f)
-        val o1X = width - sqrt2 * r
-        pathArcTo(path, o1X, r, r, -90f, 45f)
-        val r2 = r / 5
-        val o2X = width - sqrt2 * r2
-        pathArcTo(path, o2X, r, r2, -45f, 90f)
-        pathArcTo(path, o1X, r, r, 45f, 45f)
-        path.close()
-        if (needMirroring()) {
-            tempMatrix.setScale(-1f, 1f, width / 2, 0f)
-        } else {
-            tempMatrix.reset()
+            else -> if (!path.isConvex) {
+                // The outline path must be convex before Q, but we may run into floating point
+                // error caused by calculations involving sqrt(2) or OEM implementation differences,
+                // so in this case we just omit the shadow instead of crashing.
+                super.getOutline(outline)
+            }
         }
-        tempMatrix.postTranslate(bounds.left.toFloat(), bounds.top.toFloat())
-        path.transform(tempMatrix)
     }
 
     override fun getPadding(padding: Rect): Boolean {
-        if (needMirroring()) {
+        if (isRtl) {
             padding[paddingEnd, 0, paddingStart] = 0
         } else {
             padding[paddingStart, 0, paddingEnd] = 0
         }
+
         return true
     }
 
-    @Suppress("DEPRECATION")
-    override fun getOutline(outline: Outline) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !path.isConvex) {
-            // The outline path must be convex before Q, but we may run into floating point error
-            // caused by calculation involving sqrt(2) or OEM implementation difference, so in this
-            // case we just omit the shadow instead of crashing.
-            super.getOutline(outline)
-            return
+    override fun isAutoMirrored(): Boolean = true
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+    override fun setAlpha(alpha: Int) {}
+    override fun setColorFilter(colorFilter: ColorFilter?) {}
+
+    private fun updatePath() {
+        path.reset()
+
+        var width = bounds.width().toFloat()
+        val height = bounds.height().toFloat()
+        val r = height / 2
+        val sqrt2 = sqrt(2.0).toFloat()
+
+        // Ensure we are convex.
+        width = (r + sqrt2 * r).coerceAtLeast(width)
+        pathArcTo(path, r, r, r, 90f, 180f)
+
+        val o1X = width - sqrt2 * r
+        pathArcTo(path, o1X, r, r, -90f, 45f)
+
+        val r2 = r / 5
+        val o2X = width - sqrt2 * r2
+        pathArcTo(path, o2X, r, r2, -45f, 90f)
+        pathArcTo(path, o1X, r, r, 45f, 45f)
+
+        path.close()
+
+        if (isRtl) {
+            matrix.setScale(-1f, 1f, width / 2, 0f)
+        } else {
+            matrix.reset()
         }
 
-        outline.setConvexPath(path)
+        matrix.postTranslate(bounds.left.toFloat(), bounds.top.toFloat())
+
+        path.transform(matrix)
     }
 
-    companion object {
-        private fun pathArcTo(
-            path: Path,
-            centerX: Float,
-            centerY: Float,
-            radius: Float,
-            startAngle: Float,
-            sweepAngle: Float
-        ) {
-            path.arcTo(
-                centerX - radius, centerY - radius, centerX + radius, centerY + radius,
-                startAngle, sweepAngle, false
-            )
-        }
+    private fun pathArcTo(
+        path: Path,
+        centerX: Float,
+        centerY: Float,
+        radius: Float,
+        startAngle: Float,
+        sweepAngle: Float
+    ) {
+        path.arcTo(
+            centerX - radius, centerY - radius, centerX + radius, centerY + radius,
+            startAngle, sweepAngle, false
+        )
     }
 
-    init {
-        paint.isAntiAlias = true
-        paint.color = R.attr.colorControlActivated.resolveAttr(context)
-        paint.style = Paint.Style.FILL
-        val resources = context.resources
-        paddingStart = resources.getDimensionPixelOffset(R.dimen.spacing_medium)
-        paddingEnd = resources.getDimensionPixelOffset(R.dimen.popup_padding_end)
-    }
+    private val isRtl: Boolean get() =
+        DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 }

@@ -140,7 +140,7 @@ fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
 
 /**
  * Resolve window insets in a version-aware manner. This can be used to apply padding to
- * a view that properly
+ * a view that properly follows all the frustrating changes that were made between 8-11.
  */
 val WindowInsets.systemBarsCompat: Rect get() {
     return when {

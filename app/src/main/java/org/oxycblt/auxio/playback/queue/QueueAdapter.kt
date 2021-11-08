@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -156,6 +157,8 @@ class QueueAdapter(
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {
             binding.song = data
+
+            binding.background.isInvisible = true
 
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()

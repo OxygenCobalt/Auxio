@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.logD
  * have to query for each genre, query all the songs in each genre, and then iterate through those
  * songs to link every song with their genre. This is not documented anywhere, and the
  * O(mom im scared) algorithm you have to run to get it working single-handedly DOUBLES Auxio's
- * loading times. At no point have the devs considered that this column is absolutely busted, and
+ * loading times. At no point have the devs considered that this column is absolutely insane, and
  * instead focused on adding infuriat- I mean nice proprietary extensions to MediaStore for their
  * own Google Play Music, and we all know how great that worked out!
  *
@@ -221,7 +221,7 @@ class MusicLoader(private val context: Context) {
         }
 
         songs = songs.distinctBy {
-            it.name to it.albumId to it.artistName to it.track to it.duration
+            it.name to it.albumName to it.artistName to it.track to it.duration
         }.toMutableList()
 
         logD("Song search finished with ${songs.size} found")

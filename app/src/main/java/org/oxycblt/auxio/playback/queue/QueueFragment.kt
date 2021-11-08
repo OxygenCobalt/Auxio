@@ -87,6 +87,4 @@ class QueueFragment : Fragment() {
 
         return binding.root
     }
-
-    // --- QUEUE DATA ---
 }

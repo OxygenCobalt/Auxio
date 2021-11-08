@@ -83,7 +83,7 @@ class ExcludedDialog : LifecycleDialog() {
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                if (excludedModel.isModified()) {
+                if (excludedModel.isModified) {
                     saveAndRestart()
                 } else {
                     dismiss()

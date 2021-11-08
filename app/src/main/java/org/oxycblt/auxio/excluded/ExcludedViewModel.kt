@@ -33,12 +33,16 @@ import kotlinx.coroutines.withContext
  * of paths. Use [Factory] to instantiate this.
  * @author OxygenCobalt
  */
-class ExcludedViewModel(context: Context) : ViewModel() {
+class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())
     val paths: LiveData<MutableList<String>> get() = mPaths
 
-    private val excludedDatabase = ExcludedDatabase.getInstance(context)
     private var dbPaths = listOf<String>()
+
+    /**
+     * Check if changes have been made to the ViewModel's paths.
+     */
+    val isModified: Boolean get() = dbPaths != paths.value
 
     init {
         loadDatabasePaths()
@@ -89,11 +93,6 @@ class ExcludedViewModel(context: Context) : ViewModel() {
         }
     }
 
-    /**
-     * Check if changes have been made to the ViewModel's paths.
-     */
-    fun isModified() = dbPaths != paths.value
-
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             check(modelClass.isAssignableFrom(ExcludedViewModel::class.java)) {
@@ -101,7 +100,7 @@ class ExcludedViewModel(context: Context) : ViewModel() {
             }
 
             @Suppress("UNCHECKED_CAST")
-            return ExcludedViewModel(context) as T
+            return ExcludedViewModel(ExcludedDatabase.getInstance(context)) as T
         }
     }
 }

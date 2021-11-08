@@ -44,10 +44,10 @@ sealed class Music : BaseModel() {
 }
 
 /**
- * [BaseModel] variant that denotes that this object is a parent of other data objects, such
+ * [Music] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
  * @property resolvedName A name resolved from it's raw form to a form suitable to be shown in
- * a ui. Ex. unknown would become Unknown Artist, (124) would become its proper genre name, etc.
+ * a ui. Ex. "unknown" would become Unknown Artist, (124) would become its proper genre name, etc.
  */
 sealed class MusicParent : Music() {
     abstract val resolvedName: String
@@ -201,9 +201,54 @@ data class Genre(
 }
 
 /**
+ * A data object used solely for the "Header" UI element.
+ * @see HeaderString
+ */
+data class Header(
+    override val id: Long,
+    val string: HeaderString
+) : BaseModel()
+
+/**
+ * A data object used for an action header. Like [Header], but with a button.
+ * @see Header
+ */
+data class ActionHeader(
+    override val id: Long,
+    val string: HeaderString,
+    @DrawableRes val icon: Int,
+    @StringRes val desc: Int,
+    val onClick: (View) -> Unit,
+) : BaseModel() {
+    // JVM can't into comparing lambdas, so we override equals/hashCode and exclude them.
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ActionHeader) return false
+
+        if (id != other.id) return false
+        if (string != other.string) return false
+        if (icon != other.icon) return false
+        if (desc != other.desc) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + string.hashCode()
+        result = 31 * result + icon
+        result = 31 * result + desc
+
+        return result
+    }
+}
+
+/**
  * The string used for a header instance. This class is a bit complex, mostly because it revolves
- * around passing string resources that are then resolved by the view instead of passing a context
- * directly.
+ * around passing string resources that are then resolved by the view. This is because ViewModel
+ * instance should preferably not have access to a Context but should still generate data,
+ * which at times can include [Header] instances that require string resources.
  * @author OxygenCobalt
  */
 sealed class HeaderString {
@@ -270,49 +315,5 @@ sealed class HeaderString {
                 is Value -> 31 * string.hashCode()
             }
         }
-    }
-}
-
-/**
- * A data object used solely for the "Header" UI element.
- * @see HeaderString
- */
-data class Header(
-    override val id: Long,
-    val string: HeaderString
-) : BaseModel()
-
-/**
- * A data object used for an action header. Like [Header], but with a button.
- * @see HeaderString
- */
-data class ActionHeader(
-    override val id: Long,
-    val string: HeaderString,
-    @DrawableRes val icon: Int,
-    @StringRes val desc: Int,
-    val onClick: (View) -> Unit,
-) : BaseModel() {
-    // JVM can't into comparing lambdas, so we override equals/hashCode and exclude them.
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ActionHeader) return false
-
-        if (id != other.id) return false
-        if (string != other.string) return false
-        if (icon != other.icon) return false
-        if (desc != other.desc) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + string.hashCode()
-        result = 31 * result + icon
-        result = 31 * result + desc
-
-        return result
     }
 }
