@@ -102,6 +102,8 @@ class WidgetProvider : AppWidgetProvider() {
                 onSuccess = { onDone(it.toBitmap()) }
             )
 
+        // If we are on Android 12 or higher, round out the album cover so that the widget is
+        // cohesive. I really don't like this, but whatever.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             builder.transformations(
                 RoundedCornersTransformation(

@@ -35,7 +35,6 @@
                         android:id="@+id/search_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:background="@android:color/transparent"
                         android:hint="@string/hint_search_library"
                         android:padding="@dimen/spacing_medium"

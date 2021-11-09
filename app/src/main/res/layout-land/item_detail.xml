@@ -38,26 +38,28 @@
 
         <TextView
             android:id="@+id/detail_subhead"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:clickable="true"
             android:focusable="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/detail_info"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_name"
             tools:text="Info A" />
 
         <TextView
             android:id="@+id/detail_info"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
-            android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
             tools:text="Info B" />

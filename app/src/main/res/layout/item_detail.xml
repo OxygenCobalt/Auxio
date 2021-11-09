@@ -24,7 +24,7 @@
         <TextView
             android:id="@+id/detail_name"
             style="@style/Widget.Auxio.TextView.Detail"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,9 +35,9 @@
 
         <TextView
             android:id="@+id/detail_subhead"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_name"
@@ -45,9 +45,9 @@
 
         <TextView
             android:id="@+id/detail_info"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"

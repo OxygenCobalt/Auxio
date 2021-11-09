@@ -20,7 +20,7 @@
     </style>
 
     <style name="TextAppearance.ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
@@ -59,7 +59,6 @@
 
     <style name="TextAppearance.Auxio.TabLayout.Label" parent="TextAppearance.Material3.LabelLarge">
         <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 
@@ -89,12 +88,12 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Primary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">?android:attr/textAppearanceListItem</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Secondary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">?android:attr/textAppearanceListItemSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
@@ -135,21 +134,21 @@
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline6
+        </item>
     </style>
 
     <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textSize">@dimen/text_size_huge</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline5</item>
         <item name="android:textAlignment">viewStart</item>
-        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Icon" parent="Widget.Auxio.TextView.Base">
         <item name="android:drawablePadding">@dimen/spacing_medium</item>
         <item name="android:padding">@dimen/spacing_medium</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Icon.Clickable" parent="Widget.Auxio.TextView.Icon">

@@ -30,7 +30,7 @@
     <dimen name="text_size_small">16sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
-    <dimen name="text_size_huge">26sp</dimen>
+    <dimen name="text_size_huge">24sp</dimen>
     <dimen name="text_size_insane">34sp</dimen>
 
     <!-- Misc -->
