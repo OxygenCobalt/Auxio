@@ -47,6 +47,7 @@ import kotlin.math.sqrt
  * - Use modified Auxio resources instead of AFS resources
  * - Variable names are no longer prefixed with m
  * - Made path management compat-friendly
+ * - Converted to kotlin
  */
 class FastScrollPopupDrawable(context: Context) : Drawable() {
     private val paint: Paint = Paint().apply {

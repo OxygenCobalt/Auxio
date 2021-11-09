@@ -38,7 +38,7 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
  *  scrolling view to use. Failure to specify this will result in the layout not working.
  */
-class EdgeAppBarLayout @JvmOverloads constructor(
+open class EdgeAppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @StyleRes defStyleAttr: Int = -1

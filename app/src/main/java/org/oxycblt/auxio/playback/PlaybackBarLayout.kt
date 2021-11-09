@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * this class was primarily written by me.
  *
  * TODO: Add a swipe-up behavior a la Phonograph. I think that would improve UX.
+ *  - We need to use a separate drag helper to prevent issues
  * TODO: Leverage this layout to make more tablet-friendly UIs
  *
  * @author OxygenCobalt

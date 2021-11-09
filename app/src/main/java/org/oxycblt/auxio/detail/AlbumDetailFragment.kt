@@ -64,7 +64,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar(R.menu.menu_album_detail) { itemId ->
+        setupToolbar(detailModel.curAlbum.value!!, R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {
                 playbackModel.addToUserQueue(detailModel.curAlbum.value!!)
                 requireContext().showToast(R.string.lbl_queue_added)

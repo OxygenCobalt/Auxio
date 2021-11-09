@@ -73,7 +73,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar()
+        setupToolbar(detailModel.curArtist.value!!)
         setupRecycler(detailAdapter) { pos ->
             // If the item is an ActionHeader we need to also make the item full-width
             val item = detailAdapter.currentList[pos]

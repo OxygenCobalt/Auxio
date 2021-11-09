@@ -64,7 +64,7 @@ class GenreDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar()
+        setupToolbar(detailModel.curGenre.value!!)
         setupRecycler(detailAdapter) { pos ->
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Genre
