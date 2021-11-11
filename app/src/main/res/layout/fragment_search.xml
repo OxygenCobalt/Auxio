@@ -35,9 +35,11 @@
                         android:id="@+id/search_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         android:background="@android:color/transparent"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
                         android:hint="@string/hint_search_library"
-                        android:padding="@dimen/spacing_medium"
                         android:imeOptions="actionSearch|flagNoExtractUi"
                         android:inputType="textFilter" />
 

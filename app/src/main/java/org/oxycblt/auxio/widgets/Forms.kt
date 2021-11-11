@@ -154,6 +154,7 @@ fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_small)
         .applyMeta(state)
+        .applyCover(context, state)
         .applyControls(context, state)
 }
 

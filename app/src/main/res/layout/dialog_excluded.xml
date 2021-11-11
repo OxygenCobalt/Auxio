@@ -28,7 +28,7 @@
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_no_dirs"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
             android:textColor="?android:attr/textColorSecondary" />
 
     </LinearLayout>

@@ -19,7 +19,7 @@
             android:layout_marginBottom="@dimen/spacing_small"
             android:clickable="false"
             android:focusable="false"
-            android:textSize="@dimen/text_size_small"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             android:paddingStart="@dimen/spacing_medium"
             app:buttonCompat="@null"
             app:layout_constraintBottom_toBottomOf="parent"

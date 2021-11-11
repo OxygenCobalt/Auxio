@@ -24,7 +24,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -35,6 +34,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -149,13 +149,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             includeFontPadding = false
             isSingleLine = true
 
-            setTextColor(android.R.attr.textColorPrimaryInverse.resolveAttr(context))
-            setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                resources.getDimensionPixelSize(
-                    R.dimen.text_size_insane
-                ).toFloat()
-            )
+            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
+            setTextColor(R.attr.colorSurface.resolveAttr(context))
         }
 
         thumbWidth = thumbDrawable.intrinsicWidth

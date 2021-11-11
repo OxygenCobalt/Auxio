@@ -24,7 +24,7 @@
         android:gravity="center"
         android:padding="@dimen/spacing_medium"
         android:text="@string/def_playback"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
         android:textColor="?android:attr/textColorPrimary"
         android:textStyle="bold" />
 

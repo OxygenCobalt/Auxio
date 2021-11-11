@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Master parent theme based off of Theme.MaterialComponents.DayNight.NoActionBar.Bridge -->
+    <!-- Master parent theme -->
     <style name="Theme.Auxio" parent="Theme.Material3.DayNight.NoActionBar" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Auxio.V27" parent="Theme.Auxio" />
@@ -35,13 +35,27 @@
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:scrollbars">none</item>
 
-        <!--
-        Work around hard-coded text highlight colors in the default Material3 theme
-        -->
+        <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
         <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
         <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
 
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
+
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Auxio.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Auxio.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Auxio.HeadlineSmall</item>
+
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Auxio.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Auxio.TitleSmall</item>
+
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Auxio.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Auxio.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Auxio.LabelSmall</item>
+
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Auxio.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
     </style>
 
     <!-- The basic black theme derived in all black accents. -->
