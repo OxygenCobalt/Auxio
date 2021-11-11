@@ -32,9 +32,10 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:tabContentStart="@dimen/spacing_medium"
-                app:tabMode="scrollable"
                 app:tabGravity="start"
-                app:tabTextColor="@color/sel_accented_primary"/>
+                app:tabMode="scrollable"
+                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarge"
+                app:tabTextColor="@color/sel_accented_primary" />
 
         </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
@@ -57,10 +58,10 @@
                 android:id="@+id/home_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_shuffle"
-                app:fabSize="normal"
                 android:layout_margin="@dimen/spacing_medium"
                 android:contentDescription="@string/desc_shuffle_all"
+                android:src="@drawable/ic_shuffle"
+                app:fabSize="normal"
                 app:tint="?attr/colorOnPrimaryContainer" />
 
         </org.oxycblt.auxio.home.FloatingActionButtonContainer>

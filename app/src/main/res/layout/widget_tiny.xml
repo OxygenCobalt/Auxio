@@ -3,60 +3,60 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
     android:background="?attr/colorSurface"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:theme="@style/Theme.Widget">
 
 
+    <LinearLayout
+        style="@style/Widget.Auxio.AppWidget.Panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/widget_cover"
+            style="@style/Widget.Auxio.Image.Normal"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            android:contentDescription="@string/desc_no_cover"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_song" />
+
         <LinearLayout
-            style="@style/Widget.Auxio.AppWidget.Panel"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/widget_cover"
-                style="@style/Widget.Auxio.Image.Normal"
-                android:contentDescription="@string/desc_no_cover"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="@dimen/spacing_medium"
-                android:src="@drawable/ic_song" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <android.widget.TextView
+                android:id="@+id/widget_song"
+                style="@style/Widget.Auxio.TextView.Primary.AppWidget"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="@string/def_widget_song" />
 
-                <android.widget.TextView
-                    android:id="@+id/widget_song"
-                    style="@style/Widget.Auxio.TextView.Primary.AppWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/def_widget_song" />
-
-                <android.widget.TextView
-                    android:id="@+id/widget_artist"
-                    style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/def_widget_artist" />
-
-            </LinearLayout>
-
-            <android.widget.ImageButton
-                android:id="@+id/widget_play_pause"
-                style="@style/Widget.Auxio.Button.AppWidget"
-                android:layout_width="wrap_content"
+            <android.widget.TextView
+                android:id="@+id/widget_artist"
+                style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/size_btn_small"
-                android:minWidth="@dimen/size_btn_small"
-                android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/sel_playing_state" />
-
+                android:text="@string/def_widget_artist" />
 
         </LinearLayout>
+
+        <android.widget.ImageButton
+            android:id="@+id/widget_play_pause"
+            style="@style/Widget.Auxio.Button.AppWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/desc_play_pause"
+            android:minWidth="@dimen/size_btn_small"
+            android:minHeight="@dimen/size_btn_small"
+            android:src="@drawable/sel_playing_state" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

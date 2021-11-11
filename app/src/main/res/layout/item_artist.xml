@@ -25,9 +25,9 @@
 
         <TextView
             android:id="@+id/artist_name"
+            style="@style/Widget.Auxio.TextView.Item.Primary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.TextView.Item.Primary"
             android:text="@{artist.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/artist_details"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,9 +38,9 @@
 
         <TextView
             android:id="@+id/artist_details"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.TextView.Item.Secondary"
             app:artistCounts="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

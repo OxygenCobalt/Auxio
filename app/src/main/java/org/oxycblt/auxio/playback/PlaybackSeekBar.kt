@@ -20,8 +20,8 @@ package org.oxycblt.auxio.playback
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.slider.Slider
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.util.inflater
@@ -36,39 +36,40 @@ class PlaybackSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleRes: Int = -1
-) : ConstraintLayout(context, attrs, defStyleRes), SeekBar.OnSeekBarChangeListener {
+) : ConstraintLayout(context, attrs, defStyleRes), Slider.OnChangeListener, Slider.OnSliderTouchListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
     private val isSeeking: Boolean get() = binding.playbackDurationCurrent.isActivated
 
     var onConfirmListener: ((Long) -> Unit)? = null
 
     init {
-        binding.seekBar.setOnSeekBarChangeListener(this)
+        binding.seekBar.addOnChangeListener(this)
+        binding.seekBar.addOnSliderTouchListener(this)
     }
 
     fun setProgress(seconds: Long) {
         // Don't update the progress while we are seeking, that will make the SeekBar jump around.
         if (!isSeeking) {
-            binding.seekBar.progress = seconds.toInt()
+            binding.seekBar.value = seconds.toFloat()
             binding.playbackDurationCurrent.text = seconds.toDuration()
         }
     }
 
     fun setDuration(seconds: Long) {
-        binding.seekBar.max = seconds.toInt()
+        binding.seekBar.valueTo = seconds.toFloat()
         binding.playbackSongDuration.text = seconds.toDuration()
     }
 
-    override fun onStartTrackingTouch(seekbar: SeekBar) {
+    override fun onStartTrackingTouch(slider: Slider) {
         binding.playbackDurationCurrent.isActivated = true
     }
 
-    override fun onStopTrackingTouch(seekbar: SeekBar) {
+    override fun onStopTrackingTouch(slider: Slider) {
         binding.playbackDurationCurrent.isActivated = false
-        onConfirmListener?.invoke(seekbar.progress.toLong())
+        onConfirmListener?.invoke(slider.value.toLong())
     }
 
-    override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
+    override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         if (fromUser) {
             // Don't actually seek yet when the user moves the progress bar, as to make our
             // player seek during every movement is both inefficient and weird.

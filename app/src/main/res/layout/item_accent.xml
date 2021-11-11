@@ -4,11 +4,11 @@
     tools:context=".settings.pref.AccentAdapter.ViewHolder">
 
     <FrameLayout
-        android:theme="@style/ThemeOverlay.Accent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/spacing_small"
-        android:paddingBottom="@dimen/spacing_small">
+        android:paddingBottom="@dimen/spacing_small"
+        android:theme="@style/ThemeOverlay.Accent">
 
         <ImageButton
             android:id="@+id/accent"

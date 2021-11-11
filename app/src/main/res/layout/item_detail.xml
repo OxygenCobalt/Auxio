@@ -35,9 +35,9 @@
 
         <TextView
             android:id="@+id/detail_subhead"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.TextView.Secondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_name"
@@ -45,9 +45,9 @@
 
         <TextView
             android:id="@+id/detail_info"
+            style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.TextView.Secondary"
             android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"

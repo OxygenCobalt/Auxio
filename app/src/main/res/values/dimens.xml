@@ -5,7 +5,7 @@
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_mid_large">24dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
-    <dimen name="spacing_mid_huge">48dp</dimen>
+    <dimen name="spacing_huge">48dp</dimen>
     <dimen name="spacing_insane">128dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
@@ -17,12 +17,13 @@
     <dimen name="size_cover_huge_land">128dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
 
-    <dimen name="size_stroke_large">2dp</dimen>
+    <dimen name="size_stroke_large">1dp</dimen>
 
     <dimen name="size_small_unb_ripple">20dp</dimen>
     <dimen name="size_unb_ripple">24dp</dimen>
 
     <dimen name="size_track_number">32dp</dimen>
+    <dimen name="size_play_fab_icon">32dp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>

@@ -24,24 +24,24 @@
                     android:id="@+id/search_text_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintEnabled="false"
                     app:endIconContentDescription="@string/desc_clear_search"
                     app:endIconDrawable="@drawable/ic_close"
                     app:endIconMode="clear_text"
                     app:endIconTint="?attr/colorControlNormal"
-                    app:errorEnabled="false">
+                    app:errorEnabled="false"
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/search_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         android:background="@android:color/transparent"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp"
                         android:hint="@string/hint_search_library"
                         android:imeOptions="actionSearch|flagNoExtractUi"
-                        android:inputType="textFilter" />
+                        android:inputType="textFilter"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

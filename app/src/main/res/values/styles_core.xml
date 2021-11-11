@@ -3,7 +3,9 @@
     <!-- Master parent theme -->
     <style name="Theme.Auxio" parent="Theme.Material3.DayNight.NoActionBar" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
-    <style name="Theme.Auxio.V27" parent="Theme.Auxio" />
+    <style name="Theme.Auxio.V27" parent="Theme.Auxio">
+        <item name="android:statusBarColor">@android:color/black</item>
+    </style>
     <!-- Android 12 configuration -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27">
         <!-- Make sure to apply more accent-friendly values on older versions -->
@@ -26,6 +28,7 @@
         <!-- Values -->
         <item name="colorAccent">?attr/colorSecondary</item>
         <item name="colorOutline">@color/overlay_stroke</item>
+        <item name="indicatorColor">?attr/colorPrimary</item>
         <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorSecondary</item>
 
@@ -56,6 +59,14 @@
         <item name="textAppearanceBodyLarge">@style/TextAppearance.Auxio.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
+
+        <!-- Work around other views actually using text appearances I modified -->
+        <item name="android:textAppearanceListItem">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="android:textAppearanceListItemSmall">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="textAppearanceListItem">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="textAppearanceListItemSmall">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
     <!-- The basic black theme derived in all black accents. -->

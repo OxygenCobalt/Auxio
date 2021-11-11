@@ -30,7 +30,7 @@
     <!-- Style for dialog buttons -->
     <style name="Widget.Auxio.Dialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarge</item>
     </style>
 
     <!-- Custom button style that eliminates the weird margin that the neutral button has -->
@@ -48,8 +48,7 @@
     <!-- Widget TextView that mimics the main Auxio Primary TextView -->
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
         <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium
-        </item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
     </style>
 
     <!-- Widget TextView that mimics the main Auxio Secondary TextView -->

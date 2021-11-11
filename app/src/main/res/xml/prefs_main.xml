@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        app:layout="@layout/item_header"
         app:isPreferenceVisible="@bool/enable_theme_settings"
+        app:layout="@layout/item_header"
         app:title="@string/set_ui">
 
         <org.oxycblt.auxio.settings.pref.IntListPreference
@@ -35,10 +35,10 @@
         app:title="@string/set_display">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="KEY_LIB_TABS"
-            app:title="@string/set_lib_tabs"
             app:summary="@string/set_lib_tabs_desc"
-            app:iconSpaceReserved="false" />
+            app:title="@string/set_lib_tabs" />
 
         <SwitchPreferenceCompat
             app:defaultValue="true"

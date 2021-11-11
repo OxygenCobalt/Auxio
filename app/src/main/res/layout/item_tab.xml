@@ -5,22 +5,22 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/Widget.Auxio.ItemLayout"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="0dp">
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/tab_icon"
-            android:layout_width="0dp"
             style="@style/Widget.Material3.CompoundButton.CheckBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginBottom="@dimen/spacing_small"
             android:clickable="false"
             android:focusable="false"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             android:paddingStart="@dimen/spacing_medium"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             app:buttonCompat="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tab_drag_handle"

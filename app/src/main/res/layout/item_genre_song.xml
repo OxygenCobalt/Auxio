@@ -53,9 +53,9 @@
 
         <TextView
             android:id="@+id/song_duration"
+            style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:ellipsize="none"
             android:gravity="end"
             android:text="@{song.formattedDuration}"

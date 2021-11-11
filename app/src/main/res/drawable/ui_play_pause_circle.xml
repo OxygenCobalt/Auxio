@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/m3_button_ripple_color_selector">
+    android:color="@color/mtrl_btn_ripple_color">
     <item android:id="@android:id/background">
         <shape
             android:shape="rectangle"

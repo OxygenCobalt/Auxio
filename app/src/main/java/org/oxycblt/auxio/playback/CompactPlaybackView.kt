@@ -25,6 +25,7 @@ import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewCompactPlaybackBinding
@@ -83,6 +84,12 @@ class CompactPlaybackView @JvmOverloads constructor(
         binding.playbackPlayPause.setOnClickListener {
             mCallback?.onPlayPauseClick()
         }
+
+        // By default, LinearProgressIndicator will not actually color the track with the proper
+        // opacity. Why? Who knows!
+        binding.playbackProgressBar.trackColor = MaterialColors.compositeARGBWithAlpha(
+            binding.playbackProgressBar.trackColor, (255 * 0.2).toInt()
+        )
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {

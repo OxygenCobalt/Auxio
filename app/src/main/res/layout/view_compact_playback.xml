@@ -30,9 +30,9 @@
 
         <TextView
             android:id="@+id/playback_song"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             style="@style/Widget.Auxio.TextView.Primary.Compact"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@{song.name}"
@@ -45,9 +45,9 @@
 
         <TextView
             android:id="@+id/playback_info"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             style="@style/Widget.Auxio.TextView.Secondary.Compact"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:ellipsize="end"
@@ -60,25 +60,26 @@
 
         <ImageButton
             android:id="@+id/playback_play_pause"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             style="@style/Widget.Auxio.Button.Unbounded"
-            android:src="@drawable/sel_playing_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
+            android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/playback_progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_stroke_large"
+            android:layout_height="wrap_content"
+            android:disabledAlpha="0.24"
             android:max="@{(int) song.seconds}"
-            style="@style/Widget.Auxio.ProgressBar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:trackColor="@color/blue_primary"
             tools:progress="70" />
 
     </merge>

@@ -21,16 +21,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/colorPrimary"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_clear"
             android:layout_gravity="end|center_vertical"
+            android:contentDescription="@string/desc_clear_queue_item"
             android:padding="@dimen/spacing_medium"
-            app:tint="?attr/colorSurface"
-            android:contentDescription="@string/desc_clear_queue_item"/>
+            android:src="@drawable/ic_clear"
+            app:tint="?attr/colorSurface" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/body"

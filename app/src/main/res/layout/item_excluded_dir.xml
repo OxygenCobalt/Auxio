@@ -5,8 +5,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/Widget.Auxio.ItemLayout"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="false"
         android:focusable="false"
         android:padding="0dp">
@@ -14,11 +14,11 @@
         <TextView
             android:id="@+id/excluded_path"
             style="@style/Widget.Auxio.TextView.Item.Primary"
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_medium"
-            android:maxLines="@null"
             android:gravity="center"
+            android:maxLines="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/excluded_clear"
             app:layout_constraintStart_toStartOf="parent"

@@ -8,14 +8,18 @@
         tools:layout_width="match_parent"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-        <SeekBar
+        <com.google.android.material.slider.Slider
             android:id="@+id/seek_bar"
-            style="@style/Widget.Auxio.SeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:paddingStart="@dimen/spacing_small"
             android:paddingEnd="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_medium"
+            app:labelBehavior="gone"
+            android:valueFrom="0"
+            android:valueTo="0"
+            app:thumbRadius="6dp"
+            app:haloRadius="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -24,8 +28,8 @@
             android:id="@+id/playback_duration_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_small"
-            android:layout_marginStart="@dimen/spacing_small"
             android:textColor="@color/sel_accented_secondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +39,8 @@
             android:id="@+id/playback_song_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="16:16" />

@@ -24,7 +24,8 @@
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface">
+        android:background="?attr/colorSurface"
+        android:clipToPadding="false">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
@@ -109,8 +110,8 @@
             android:id="@+id/playback_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:layout_marginEnd="@dimen/spacing_medium"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -144,9 +145,9 @@
             app:layout_constraintStart_toEndOf="@+id/playback_loop"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Auxio.Button.Circular"
+            style="@style/Widget.Auxio.FloatingActionButton.MidLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_play_pause"

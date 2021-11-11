@@ -3,9 +3,9 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
     android:background="?attr/colorSurface"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:theme="@style/Theme.Widget">
 
     <android.widget.LinearLayout style="@style/Widget.Auxio.AppWidget.Panel">
@@ -18,9 +18,9 @@
             <ImageView
                 android:id="@+id/widget_cover"
                 style="@style/Widget.Auxio.Image.Normal"
+                android:layout_marginEnd="@dimen/spacing_medium"
                 android:contentDescription="@string/desc_no_cover"
                 android:scaleType="centerCrop"
-                android:layout_marginEnd="@dimen/spacing_medium"
                 android:src="@drawable/ic_song" />
 
             <LinearLayout
@@ -55,45 +55,45 @@
             <android.widget.ImageButton
                 android:id="@+id/widget_loop"
                 style="@style/Widget.Auxio.Button.AppWidget"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:contentDescription="@string/desc_change_loop"
                 android:src="@drawable/ic_loop" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
-                android:layout_weight="1"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:contentDescription="@string/desc_skip_prev"
                 android:src="@drawable/ic_skip_prev" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
-                android:layout_weight="1"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:contentDescription="@string/desc_play_pause"
                 android:src="@drawable/sel_playing_state" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_next"
-                android:layout_weight="1"
                 style="@style/Widget.Auxio.Button.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:contentDescription="@string/desc_skip_next"
                 android:src="@drawable/ic_skip_next" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_shuffle"
                 style="@style/Widget.Auxio.Button.AppWidget"
-                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:contentDescription="@string/desc_shuffle"
                 android:src="@drawable/ic_shuffle" />
 

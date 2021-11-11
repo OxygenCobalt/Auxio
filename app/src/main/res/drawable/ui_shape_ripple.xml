@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Hack to make MaterialShapeDrawable cooperate with RippleDrawable. See
+<?xml version="1.0" encoding="utf-8"?><!-- Hack to make MaterialShapeDrawable cooperate with RippleDrawable. See
 CompactPlaybackView for more info. -->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="?attr/colorControlHighlight">

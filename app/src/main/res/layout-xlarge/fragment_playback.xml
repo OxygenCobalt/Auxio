@@ -24,7 +24,8 @@
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface">
+        android:background="?attr/colorSurface"
+        android:clipToPadding="false">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/playback_toolbar"
@@ -37,7 +38,7 @@
         <ImageView
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Full"
-            android:layout_margin="@dimen/spacing_mid_huge"
+            android:layout_margin="@dimen/spacing_huge"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_song"
@@ -52,8 +53,8 @@
             style="@style/Widget.Auxio.TextView.Primary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_huge"
-            android:layout_marginEnd="@dimen/spacing_mid_huge"
+            android:layout_marginStart="@dimen/spacing_huge"
+            android:layout_marginEnd="@dimen/spacing_huge"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_artist"
@@ -67,8 +68,8 @@
             style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_huge"
-            android:layout_marginEnd="@dimen/spacing_mid_huge"
+            android:layout_marginStart="@dimen/spacing_huge"
+            android:layout_marginEnd="@dimen/spacing_huge"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
             android:text="@{song.album.artist.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
@@ -81,8 +82,8 @@
             style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_huge"
-            android:layout_marginEnd="@dimen/spacing_mid_huge"
+            android:layout_marginStart="@dimen/spacing_huge"
+            android:layout_marginEnd="@dimen/spacing_huge"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:text="@{song.album.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
@@ -94,8 +95,8 @@
             android:id="@+id/playback_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_huge"
-            android:layout_marginEnd="@dimen/spacing_mid_huge"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_large"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -127,9 +128,9 @@
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Auxio.Button.Circular"
+            style="@style/Widget.Auxio.FloatingActionButton.MidLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"
