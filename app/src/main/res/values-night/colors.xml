@@ -2,7 +2,6 @@
 <resources>
     <color name="surface">@color/surface_night</color>
     <color name="surface_variant">@color/surface_day</color>
-    <color name="control">#ffffff</color>
     <color name="nav_bar">#01151515</color>
 
     <!--

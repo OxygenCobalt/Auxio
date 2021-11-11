@@ -246,7 +246,7 @@ class PlaybackBarLayout @JvmOverloads constructor(
     }
 
     /**
-     * Update the playback positon on this layout. This will be reflected in the compact view
+     * Update the playback position on this layout. This will be reflected in the compact view
      * at the bottom of the screen.
      */
     fun setPosition(position: Long) {

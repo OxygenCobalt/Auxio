@@ -165,7 +165,7 @@
     <style name="Widget.Auxio.Button.Circular" parent="">
         <item name="android:minHeight">@dimen/size_btn_large</item>
         <item name="android:minWidth">@dimen/size_btn_large</item>
-        <item name="android:background">@drawable/ui_circle_ripple</item>
+        <item name="android:background">@drawable/ui_play_pause_circle</item>
         <item name="android:contentDescription">@string/desc_play_pause</item>
         <item name="android:tint">?attr/colorSurface</item>
         <item name="android:scaleType">fitCenter</item>

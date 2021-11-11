@@ -33,7 +33,9 @@ import org.oxycblt.auxio.util.logE
 import java.lang.Exception
 
 /**
- * The main storage for music items. Use [MusicStore.getInstance] to get the single instance of it.
+ * The main storage for music items.
+ * Getting an instance of this object is more complicated as it loads asynchronously.
+ * See the companion object for more.
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {
@@ -194,7 +196,8 @@ class MusicStore private constructor() {
         }
 
         /**
-         * Maybe get a MusicStore instance.
+         * Maybe get a MusicStore instance. This is useful if you are running code while the
+         * loading process may still be going on.
          *
          * @return null if the music store instance is still loading or if the loading process has
          * encountered an error. An instance is returned otherwise.

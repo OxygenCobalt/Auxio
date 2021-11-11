@@ -47,7 +47,7 @@ import kotlin.math.abs
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
- * Zhanghi's AndroidFastScroll but slimmed down for Auxio and with a couple of enhancements.
+ * Hai Zhang's AndroidFastScroll but slimmed down for Auxio and with a couple of enhancements.
  *
  * Attributions as per the Apache 2.0 license:
  * ORIGINAL AUTHOR: Hai Zhang [https://github.com/zhanghai]

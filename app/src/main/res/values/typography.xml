@@ -8,21 +8,6 @@
     the value will be overridden if you look at the wrong way.
     -->
 
-    <style name="TextAppearance.Auxio.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-    </style>
-
     <style name="TextAppearance.Auxio.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>

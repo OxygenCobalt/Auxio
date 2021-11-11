@@ -94,7 +94,7 @@ dependencies {
     // --- THIRD PARTY ---
 
     // ExoPlayer
-    implementation "com.google.android.exoplayer:exoplayer-core:2.15.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.16.0"
 
     // Image loading
     implementation 'io.coil-kt:coil:1.4.0'
@@ -105,7 +105,7 @@ dependencies {
     // --- DEBUG ---
 
     // Lint
-    ktlint 'com.pinterest:ktlint:0.42.1'
+    ktlint 'com.pinterest:ktlint:0.43.0'
 }
 
 task ktlint(type: JavaExec, group: "verification") {

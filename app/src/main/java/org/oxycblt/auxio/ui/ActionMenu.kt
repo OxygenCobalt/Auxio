@@ -65,11 +65,11 @@ class ActionMenu(
 
     // Get viewmodels using the activity as the store owner
     private val detailModel: DetailViewModel by lazy {
-        ViewModelProvider(activity).get(DetailViewModel::class.java)
+        ViewModelProvider(activity)[DetailViewModel::class.java]
     }
 
     private val playbackModel: PlaybackViewModel by lazy {
-        ViewModelProvider(activity).get(PlaybackViewModel::class.java)
+        ViewModelProvider(activity)[PlaybackViewModel::class.java]
     }
 
     init {

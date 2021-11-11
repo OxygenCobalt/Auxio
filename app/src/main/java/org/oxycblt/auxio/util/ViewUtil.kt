@@ -35,7 +35,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
-import org.oxycblt.auxio.R
 
 /**
  * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay

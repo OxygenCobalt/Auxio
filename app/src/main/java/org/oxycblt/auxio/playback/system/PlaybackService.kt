@@ -32,11 +32,11 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.support.v4.media.session.MediaSessionCompat
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -65,7 +65,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
 
 /**
  * A service that manages the system-side aspects of playback, such as:
- * - The single [SimpleExoPlayer] instance.
+ * - The single [ExoPlayer] instance.
  * - The Media Notification
  * - Headset management
  * - Widgets
@@ -77,7 +77,7 @@ import org.oxycblt.auxio.widgets.WidgetProvider
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
 
     // Player components
-    private lateinit var player: SimpleExoPlayer
+    private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var connector: PlaybackSessionConnector
 
@@ -341,9 +341,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     // --- OTHER FUNCTIONS ---
 
     /**
-     * Create the [SimpleExoPlayer] instance.
+     * Create the [ExoPlayer] instance.
      */
-    private fun newPlayer(): SimpleExoPlayer {
+    private fun newPlayer(): ExoPlayer {
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
@@ -355,7 +355,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
         val extractorsFactory = DefaultExtractorsFactory().setConstantBitrateSeekingEnabled(true)
 
-        return SimpleExoPlayer.Builder(this, audioRenderer)
+        return ExoPlayer.Builder(this, audioRenderer)
             .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
             .build()
     }

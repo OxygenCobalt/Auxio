@@ -152,8 +152,6 @@ class WidgetProvider : AppWidgetProvider() {
             // We can't resize the widget until we can generate the views, so request an update
             // from PlaybackService.
             requestUpdate(context)
-        } else {
-            logD(newOptions?.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES) ?: "nothing")
         }
     }
 

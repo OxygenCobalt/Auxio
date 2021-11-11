@@ -36,7 +36,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
-import java.io.Closeable
 import java.lang.Exception
 
 /**
@@ -137,13 +136,6 @@ class MosaicFetcher(private val context: Context) : Fetcher<MusicParent> {
         }
 
         return mosaicBitmap
-    }
-
-    /**
-     * Iterate through a list of [Closeable]s, running [block] on each and closing it when done.
-     */
-    private fun <T : Closeable> List<T>.useForEach(block: (T) -> Unit) {
-        forEach { it.use(block) }
     }
 
     override fun key(data: MusicParent): String = data.hashCode().toString()

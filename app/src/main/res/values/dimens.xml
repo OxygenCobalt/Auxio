@@ -10,7 +10,6 @@
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_btn_small">48dp</dimen>
-    <dimen name="size_btn_medium">56dp</dimen>
     <dimen name="size_btn_large">64dp</dimen>
 
     <dimen name="size_cover_compact">48dp</dimen>
@@ -18,7 +17,6 @@
     <dimen name="size_cover_huge_land">128dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
 
-    <dimen name="size_stroke_small">1dp</dimen>
     <dimen name="size_stroke_large">2dp</dimen>
 
     <dimen name="size_small_unb_ripple">20dp</dimen>

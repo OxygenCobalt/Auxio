@@ -65,7 +65,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
             clipToPadding = false
 
-            setOnApplyWindowInsetsListener { v, insets ->
+            setOnApplyWindowInsetsListener { _, insets ->
                 updatePadding(bottom = insets.systemBarsCompat.bottom)
 
                 insets

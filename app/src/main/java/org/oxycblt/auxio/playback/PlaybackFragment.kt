@@ -60,7 +60,7 @@ class PlaybackFragment : Fragment() {
         binding.playbackModel = playbackModel
         binding.detailModel = detailModel
 
-        binding.root.setOnApplyWindowInsetsListener { v, insets ->
+        binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarsCompat
 
             binding.root.updatePadding(

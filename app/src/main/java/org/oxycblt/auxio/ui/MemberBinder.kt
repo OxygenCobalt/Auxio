@@ -23,9 +23,9 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import org.oxycblt.auxio.util.assertMainThread
 import org.oxycblt.auxio.util.inflater
 import kotlin.properties.ReadOnlyProperty
@@ -51,7 +51,7 @@ class MemberBinder<T : ViewDataBinding>(
     private val fragment: Fragment,
     private val inflate: (LayoutInflater) -> T,
     private val onDestroy: T.() -> Unit
-) : ReadOnlyProperty<Fragment, T>, LifecycleObserver {
+) : ReadOnlyProperty<Fragment, T>, LifecycleObserver, LifecycleEventObserver {
     private var fragmentBinding: T? = null
 
     init {
@@ -82,6 +82,13 @@ class MemberBinder<T : ViewDataBinding>(
         }
     }
 
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_DESTROY) {
+            fragmentBinding?.onDestroy()
+            fragmentBinding = null
+        }
+    }
+
     private inline fun Fragment.observeOwnerThroughCreation(
         crossinline viewOwner: LifecycleOwner.() -> Unit
     ) {
@@ -94,12 +101,5 @@ class MemberBinder<T : ViewDataBinding>(
                 }
             }
         })
-    }
-
-    @Suppress("UNUSED")
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun destroy() {
-        fragmentBinding?.onDestroy()
-        fragmentBinding = null
     }
 }

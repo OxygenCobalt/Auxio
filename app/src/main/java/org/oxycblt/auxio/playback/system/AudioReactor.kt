@@ -22,7 +22,7 @@ import android.content.Context
 import android.media.AudioManager
 import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ExoPlayer
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.logD
  */
 class AudioReactor(
     context: Context,
-    private val player: SimpleExoPlayer
+    private val player: ExoPlayer
 ) : AudioManager.OnAudioFocusChangeListener {
     private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()

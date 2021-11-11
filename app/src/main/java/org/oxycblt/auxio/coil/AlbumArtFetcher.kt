@@ -170,7 +170,7 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
 
         if (tracks == null || tracks.isEmpty) {
             // Unrecognized format. This is expected, as ExoPlayer only supports a
-            // subset of formats. 
+            // subset of formats.
             return null
         }
 

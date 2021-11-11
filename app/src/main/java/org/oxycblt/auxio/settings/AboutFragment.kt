@@ -54,7 +54,7 @@ class AboutFragment : Fragment() {
     ): View {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
 
-        binding.aboutContents.setOnApplyWindowInsetsListener { v, insets ->
+        binding.aboutContents.setOnApplyWindowInsetsListener { _, insets ->
             binding.aboutContents.updatePadding(bottom = insets.systemBarsCompat.bottom)
             insets
         }

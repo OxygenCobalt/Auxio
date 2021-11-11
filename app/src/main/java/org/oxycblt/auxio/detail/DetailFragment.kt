@@ -76,12 +76,12 @@ abstract class DetailFragment : Fragment() {
      * @param onMenuClick (Optional) a click listener for that menu
      */
     protected fun setupToolbar(
-        data: Music,
+        music: Music,
         @MenuRes menu: Int = -1,
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
         binding.detailToolbar.apply {
-            title = data.name
+            title = music.name
 
             if (menu != -1) {
                 inflateMenu(menu)
