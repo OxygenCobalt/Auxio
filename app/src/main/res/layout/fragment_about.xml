@@ -62,7 +62,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_medium"
-                        android:fontFamily="@font/inter_semibold"
                         android:text="@string/info_app_name"
                         android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
                         app:layout_constraintBottom_toBottomOf="@+id/about_auxio_icon"

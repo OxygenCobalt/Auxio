@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Auxio's typography. We have to heavily modify these since Material3's default styles are insane
-    and not user-friendly in the slightest.
-
-    Also, can we talk about how god-awful applying fonts through a text appearance is? It's like
-    the value will be overridden if you look at the wrong way.
-    -->
-
+    <!-- Basic Material3 typography -->
     <style name="TextAppearance.Auxio.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
@@ -29,47 +22,63 @@
     </style>
 
     <style name="TextAppearance.Auxio.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:letterSpacing">0</item>
-        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:letterSpacing">0</item>
-        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:letterSpacing">0</item>
-        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TextAppearance.Auxio.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="TextAppearance.Auxio.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
     </style>
 
     <style name="TextAppearance.Auxio.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <!--
+    Text extensions
+    Material3 TextAppearances are really inflexible, so these add some extra categories that
+    allow for better UX.
+    -->
+    <style name="TextAppearance.Auxio.TitleMidLarge" parent="TextAppearance.Auxio.TitleMedium">
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="TextAppearance.Auxio.TitleSmallish" parent="TextAppearance.Auxio.TitleSmall">
+        <item name="android:textSize">18sp</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+    </style>
+
+    <style name="TextAppearance.Auxio.LabelLarger" parent="TextAppearance.Auxio.LabelLarge">
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

@@ -11,6 +11,7 @@
         <!-- Make sure to apply more accent-friendly values on older versions -->
         <item name="colorSurface">@color/surface</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorControlNormal">?attr/colorSurfaceVariant</item>
 
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorOnSecondary">?attr/colorOnPrimary</item>
@@ -29,19 +30,18 @@
         <item name="colorAccent">?attr/colorSecondary</item>
         <item name="colorOutline">@color/overlay_stroke</item>
         <item name="indicatorColor">?attr/colorPrimary</item>
-        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <item name="colorControlActivated">?attr/colorSecondary</item>
 
-        <!-- Android component magic -->
+        <!-- Fix dumb default android behavior -->
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
-        <item name="android:fontFamily">@font/inter</item>
         <item name="android:scrollbars">none</item>
 
         <!-- Work around hard-coded text highlight colors in the default Material3 theme -->
         <item name="android:textColorHighlight">@color/overlay_text_highlight</item>
         <item name="android:textColorHighlightInverse">@color/overlay_text_highlight_inverse</item>
 
+        <!-- Material configuration -->
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
 
         <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Auxio.HeadlineLarge</item>
@@ -59,14 +59,6 @@
         <item name="textAppearanceBodyLarge">@style/TextAppearance.Auxio.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
-
-        <!-- Work around other views actually using text appearances I modified -->
-        <item name="android:textAppearanceListItem">@style/TextAppearance.Material3.TitleMedium</item>
-        <item name="android:textAppearanceListItemSmall">@style/TextAppearance.Material3.TitleMedium</item>
-        <item name="android:textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodyMedium</item>
-        <item name="textAppearanceListItem">@style/TextAppearance.Material3.TitleMedium</item>
-        <item name="textAppearanceListItemSmall">@style/TextAppearance.Material3.TitleMedium</item>
-        <item name="textAppearanceListItemSecondary">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
     <!-- The basic black theme derived in all black accents. -->

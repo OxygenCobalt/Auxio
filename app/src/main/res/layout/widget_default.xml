@@ -20,11 +20,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/inter"
         android:gravity="center"
         android:padding="@dimen/spacing_medium"
         android:text="@string/def_playback"
-        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+        android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
         android:textColor="?android:attr/textColorPrimary"
         android:textStyle="bold" />
 

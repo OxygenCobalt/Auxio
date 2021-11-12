@@ -24,11 +24,10 @@
             android:id="@+id/excluded_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_semibold"
             android:padding="@dimen/spacing_medium"
             android:text="@string/lbl_no_dirs"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
             android:textColor="?android:attr/textColorSecondary" />
 
     </LinearLayout>

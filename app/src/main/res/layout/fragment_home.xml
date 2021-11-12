@@ -34,7 +34,7 @@
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabGravity="start"
                 app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarge"
+                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger"
                 app:tabTextColor="@color/sel_accented_primary" />
 
         </org.oxycblt.auxio.ui.EdgeAppBarLayout>
