@@ -83,7 +83,6 @@
     <string name="clr_orange">Narancs</string>
     <string name="clr_brown">Barna</string>
     <string name="clr_grey">Szürke</string>
-    <string name="clr_blue_grey">Kékszürke</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">

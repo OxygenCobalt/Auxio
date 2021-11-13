@@ -82,7 +82,6 @@
     <string name="clr_orange">Portocaliu</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gri</string>
-    <string name="clr_blue_grey">Albastru Gri</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">

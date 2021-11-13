@@ -81,7 +81,6 @@
     <string name="clr_orange">Pomarańczowy</string>
     <string name="clr_brown">Brązowy</string>
     <string name="clr_grey">Szary</string>
-    <string name="clr_blue_grey">Błękitszary</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Utwory uruchamia się: %d</string>

@@ -18,13 +18,7 @@
 
 package org.oxycblt.auxio.accent
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.ColorStateList
-import android.text.Spanned
-import androidx.core.text.HtmlCompat
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.resolveStateList
 
 val ACCENT_PRIMARY_COLORS = arrayOf(
     R.color.red_primary,
@@ -41,10 +35,8 @@ val ACCENT_PRIMARY_COLORS = arrayOf(
     R.color.lime_primary,
     R.color.yellow_primary,
     R.color.orange_primary,
-    R.color.deep_orange_primary,
     R.color.brown_primary,
     R.color.grey_primary,
-    R.color.blue_grey_primary
 )
 
 val ACCENT_THEMES = arrayOf(
@@ -62,10 +54,8 @@ val ACCENT_THEMES = arrayOf(
     R.style.Theme_Auxio_Lime,
     R.style.Theme_Auxio_Yellow,
     R.style.Theme_Auxio_Orange,
-    R.style.Theme_Auxio_DeepOrange,
     R.style.Theme_Auxio_Brown,
     R.style.Theme_Auxio_Grey,
-    R.style.Theme_Auxio_BlueGrey
 )
 
 val ACCENT_BLACK_THEMES = arrayOf(
@@ -83,10 +73,8 @@ val ACCENT_BLACK_THEMES = arrayOf(
     R.style.Theme_Auxio_Black_Lime,
     R.style.Theme_Auxio_Black_Yellow,
     R.style.Theme_Auxio_Black_Orange,
-    R.style.Theme_Auxio_Black_DeepOrange,
     R.style.Theme_Auxio_Black_Brown,
     R.style.Theme_Auxio_Black_Grey,
-    R.style.Theme_Auxio_Black_BlueGrey
 )
 
 val ACCENT_NAMES = arrayOf(
@@ -104,44 +92,23 @@ val ACCENT_NAMES = arrayOf(
     R.string.clr_lime,
     R.string.clr_yellow,
     R.string.clr_orange,
-    R.string.clr_deep_orange,
     R.string.clr_brown,
     R.string.clr_grey,
-    R.string.clr_blue_grey
 )
 
 /**
  * The data object for an accent.
- * @property color The primary color resource for this accent
+ * @property name  The name of this accent
  * @property theme The theme resource for this accent
  * @property blackTheme The black theme resource for this accent
- * @property name  The name of this accent
+ * @property primary The primary color resource for this accent
  * @author OxygenCobalt
  */
 data class Accent(val index: Int) {
-    val color: Int get() = ACCENT_PRIMARY_COLORS[index]
+    val name: Int get() = ACCENT_NAMES[index]
     val theme: Int get() = ACCENT_THEMES[index]
     val blackTheme: Int get() = ACCENT_BLACK_THEMES[index]
-    val name: Int get() = ACCENT_NAMES[index]
-
-    /**
-     * Get a [ColorStateList] of the accent
-     */
-    fun getStateList(context: Context) = color.resolveStateList(context)
-
-    /**
-     * Get the name (in bold) and the hex value of a accent.
-     */
-    @SuppressLint("ResourceType")
-    fun getDetailedSummary(context: Context): Spanned {
-        val name = context.getString(name)
-        val hex = context.getString(color).uppercase()
-
-        return HtmlCompat.fromHtml(
-            context.getString(R.string.fmt_accent_desc, name, hex),
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
-    }
+    val primary: Int get() = ACCENT_PRIMARY_COLORS[index]
 
     companion object {
         @Volatile

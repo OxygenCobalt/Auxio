@@ -83,7 +83,6 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
-    <string name="clr_blue_grey">Bleu Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Titres chargés: %d</string>

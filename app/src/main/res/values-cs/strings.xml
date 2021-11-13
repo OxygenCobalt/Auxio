@@ -134,10 +134,8 @@
     <string name="clr_lime">"Limetková"</string>
     <string name="clr_yellow">"Žlutá"</string>
     <string name="clr_orange">"Oranžová"</string>
-    <string name="clr_deep_orange">"Tmavě oranžová"</string>
     <string name="clr_brown">"Hnědá"</string>
     <string name="clr_grey">"Šedá"</string>
-    <string name="clr_blue_grey">"Modrá šedá"</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">"Další z: %s"</string>

@@ -11,6 +11,7 @@
         android:paddingStart="@dimen/spacing_medium"
         android:paddingTop="@dimen/spacing_medium"
         android:paddingEnd="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_small"
         app:layoutManager="org.oxycblt.auxio.accent.AutoGridLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
         app:layout_constraintTop_toBottomOf="@+id/accent_header"

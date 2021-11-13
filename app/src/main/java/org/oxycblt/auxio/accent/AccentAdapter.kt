@@ -26,6 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
+import org.oxycblt.auxio.util.resolveColor
 import org.oxycblt.auxio.util.resolveStateList
 
 /**
@@ -62,8 +63,8 @@ class AccentAdapter(
             setSelected(accent == curAccent)
 
             binding.accent.apply {
+                backgroundTintList = ColorStateList.valueOf(accent.primary.resolveColor(context))
                 contentDescription = context.getString(accent.name)
-                backgroundTintList = accent.getStateList(context)
                 TooltipCompat.setTooltipText(this, contentDescription)
             }
 

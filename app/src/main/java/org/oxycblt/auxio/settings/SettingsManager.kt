@@ -251,7 +251,7 @@ class SettingsManager private constructor(context: Context) :
     companion object {
         const val KEY_THEME = "KEY_THEME2"
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
-        const val KEY_ACCENT = "KEY_ACCENT2"
+        const val KEY_ACCENT = "KEY_ACCENT3"
 
         const val KEY_LIB_TABS = "KEY_LIB_TABS"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"

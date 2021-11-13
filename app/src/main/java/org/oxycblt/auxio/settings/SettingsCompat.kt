@@ -56,8 +56,8 @@ fun handleThemeCompat(prefs: SharedPreferences): Int {
 }
 
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
-    if (prefs.contains(OldKeys.KEY_ACCENT)) {
-        var accent = prefs.getInt(OldKeys.KEY_ACCENT, 5)
+    if (prefs.contains(OldKeys.KEY_ACCENT1)) {
+        var accent = prefs.getInt(OldKeys.KEY_ACCENT1, 5)
 
         // Correct any accents over yellow to their correct positions
         if (accent > 12) {
@@ -74,13 +74,40 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
             accent = ACCENT_PRIMARY_COLORS.lastIndex
         }
 
+        // Move this to the [also legacy] ACCENT2 field. This makes it easier to convert in the
+        // next step.
         prefs.edit {
-            putInt(SettingsManager.KEY_ACCENT, accent)
-            remove(OldKeys.KEY_ACCENT)
+            putInt(OldKeys.KEY_ACCENT2, accent)
+            remove(OldKeys.KEY_ACCENT1)
             apply()
         }
 
         return Accent(accent)
+    }
+
+    if (prefs.contains(OldKeys.KEY_ACCENT2)) {
+        var accent = prefs.getInt(OldKeys.KEY_ACCENT2, 5)
+
+        // Blue grey was merged with Light Blue in 2.0.0
+        if (accent >= 17) {
+            accent = 6
+        }
+
+        // Deep Orange was merged with red in 2.0.0
+        if (accent == 14) {
+            accent = 0
+        }
+
+        // Correct accents beyond deep orange (Brown/Grey)
+        if (accent > 14) {
+            accent--
+        }
+
+        prefs.edit {
+            putInt(SettingsManager.KEY_ACCENT, accent)
+            remove(OldKeys.KEY_ACCENT2)
+            apply()
+        }
     }
 
     return Accent(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
@@ -119,7 +146,8 @@ private fun SharedPreferences.getStringOrNull(key: String): String? = getString(
  * Cache of the old keys used in Auxio.
  */
 private object OldKeys {
-    const val KEY_ACCENT = "KEY_ACCENT"
+    const val KEY_ACCENT1 = "KEY_ACCENT"
+    const val KEY_ACCENT2 = "KEY_ACCENT2"
     const val KEY_THEME = "KEY_THEME"
     const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
 }

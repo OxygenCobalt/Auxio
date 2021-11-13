@@ -135,10 +135,8 @@
     <string name="clr_lime">Geelgroen</string>
     <string name="clr_yellow">Geel</string>
     <string name="clr_orange">Oranje</string>
-    <string name="clr_deep_orange">Dieporanje</string>
     <string name="clr_brown">Bruin</string>
     <string name="clr_grey">Grijis</string>
-    <string name="clr_blue_grey">Blauwgrijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Volgende van: %s</string>

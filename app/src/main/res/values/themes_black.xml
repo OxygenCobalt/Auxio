@@ -56,19 +56,11 @@
         <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.DeepOrange" parent="Theme.Auxio.DeepOrange">
-        <item name="colorSurface">@android:color/black</item>
-    </style>
-
     <style name="Theme.Auxio.Black.Brown" parent="Theme.Auxio.Brown">
         <item name="colorSurface">@android:color/black</item>
     </style>
 
     <style name="Theme.Auxio.Black.Grey" parent="Theme.Auxio.Grey">
-        <item name="colorSurface">@android:color/black</item>
-    </style>
-
-    <style name="Theme.Auxio.Black.BlueGrey" parent="Theme.Auxio.BlueGrey">
         <item name="colorSurface">@android:color/black</item>
     </style>
 </resources>

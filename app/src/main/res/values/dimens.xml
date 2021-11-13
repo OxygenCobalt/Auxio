@@ -17,8 +17,6 @@
     <dimen name="size_cover_huge_land">128dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
 
-    <dimen name="size_stroke_large">1dp</dimen>
-
     <dimen name="size_small_unb_ripple">20dp</dimen>
     <dimen name="size_unb_ripple">24dp</dimen>
 
@@ -28,8 +26,6 @@
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>
     <dimen name="elevation_normal">4dp</dimen>
-
-    <dimen name="offset_thumb">4dp</dimen>
 
     <dimen name="popup_min_width">78dp</dimen>
     <dimen name="popup_padding_end">28dp</dimen>

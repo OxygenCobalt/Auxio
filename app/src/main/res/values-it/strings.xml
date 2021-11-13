@@ -84,7 +84,6 @@
     <string name="clr_orange">Arancio</string>
     <string name="clr_brown">Bruno</string>
     <string name="clr_grey">Grigio</string>
-    <string name="clr_blue_grey">Azzurro Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Brani caricate: %d</string>

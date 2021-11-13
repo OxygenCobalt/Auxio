@@ -65,7 +65,8 @@
     <string name="set_theme_auto">Automatic</string>
     <string name="set_theme_day">Light</string>
     <string name="set_theme_night">Dark</string>
-    <string name="set_accent">Accent</string>
+    <string name="set_accent">Color scheme</string>
+    <string name="set_accent_desc">Colors to be used in the app</string>
     <string name="set_black_mode">Black theme</string>
     <string name="setting_black_mode_desc">Use a pure-black dark theme</string>
 
@@ -81,7 +82,7 @@
     <string name="set_alt_shuffle">Prefer shuffle action</string>
 
     <string name="set_audio">Audio</string>
-    <string name="set_focus">Audio Focus</string>
+    <string name="set_focus">Audio focus</string>
     <string name="set_focus_desc">Pause when other audio plays [ex. Calls]</string>
     <string name="set_plug_mgt">Headset focus</string>
     <string name="set_plug_mgt_desc">Play/Pause when the headset connection changes</string>
@@ -98,7 +99,7 @@
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
-    <string name="set_excluded">Excluded Folders</string>
+    <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
 
     <!-- Error Namespace | Error Labels -->
@@ -149,7 +150,7 @@
     <string name="clr_deep_purple">Deep Purple</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Blue</string>
-    <string name="clr_light_blue">Light Blue</string>
+    <string name="clr_light_blue">Deep Blue</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Green</string>
@@ -157,10 +158,8 @@
     <string name="clr_lime">Lime</string>
     <string name="clr_yellow">Yellow</string>
     <string name="clr_orange">Orange</string>
-    <string name="clr_deep_orange">Deep Orange</string>
     <string name="clr_brown">Brown</string>
     <string name="clr_grey">Grey</string>
-    <string name="clr_blue_grey">Blue Grey</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Next From: %s</string>

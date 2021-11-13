@@ -19,19 +19,6 @@
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
 
-    <style name="Widget.Auxio.SeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressTint">?attr/colorPrimary</item>
-        <item name="android:progressBackgroundTint">?attr/colorSecondary</item>
-        <item name="android:thumbOffset">@dimen/offset_thumb</item>
-        <item name="android:thumbTint">?attr/colorPrimary</item>
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-        <item name="android:theme">@style/ThemeOverlay.SeekbarHalo</item>
-    </style>
-
-    <style name="ThemeOverlay.SeekbarHalo" parent="">
-        <item name="colorControlHighlight">@color/overlay_seekbar_halo</item>
-    </style>
-
     <style name="Widget.Auxio.Image.Compact" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>

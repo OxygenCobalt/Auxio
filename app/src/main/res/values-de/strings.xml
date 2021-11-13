@@ -133,10 +133,8 @@
     <string name="clr_lime">Lindgrün</string>
     <string name="clr_yellow">Gelb</string>
     <string name="clr_orange">Orange</string>
-    <string name="clr_deep_orange">Tieforange</string>
     <string name="clr_brown">Braun</string>
     <string name="clr_grey">Grau</string>
-    <string name="clr_blue_grey">Blaugrau</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Nächsten von: %s</string>

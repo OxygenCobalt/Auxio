@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.settings
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -32,7 +31,6 @@ import androidx.preference.children
 import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.accent.AccentDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -91,6 +89,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
      * Recursively call [handlePreference] on a preference.
      */
     private fun recursivelyHandleChildren(preference: Preference) {
+        if (!preference.isVisible) {
+            return
+        }
+
         if (preference is PreferenceCategory) {
             // If this preference is a category of its own, handle its own children
             preference.children.forEach { pref ->
@@ -108,8 +110,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         pref.apply {
             when (key) {
                 SettingsManager.KEY_THEME -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
-
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
 
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
@@ -120,8 +120,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
 
                 SettingsManager.KEY_BLACK_THEME -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
-
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         if (requireContext().isNight) {
                             requireActivity().recreate()
@@ -132,14 +130,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
 
                 SettingsManager.KEY_ACCENT -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) return
-
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         AccentDialog().show(childFragmentManager, AccentDialog.TAG)
                         true
                     }
 
-                    summary = Accent.get().getDetailedSummary(context)
+                    summary = context.getString(settingsManager.accent.name)
                 }
 
                 SettingsManager.KEY_LIB_TABS -> {

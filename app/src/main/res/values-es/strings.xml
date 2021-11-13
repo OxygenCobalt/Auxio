@@ -137,10 +137,8 @@
     <string name="clr_lime">Lima</string>
     <string name="clr_yellow">Amarillo</string>
     <string name="clr_orange">Naranja</string>
-    <string name="clr_deep_orange">Naranja Profundo</string>
     <string name="clr_brown">Café</string>
     <string name="clr_grey">Gris</string>
-    <string name="clr_blue_grey">Azul Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Siguiente de: %s</string>

@@ -1,7 +1,5 @@
 # Auxio - Frequently Asked Questions
 
-For a list of **supported formats** read [Supported Formats](FORMATS.md)
-
 This FAQ will be continually updated as new changes and updates are made to Auxio.
 
 #### Where can I download Auxio?

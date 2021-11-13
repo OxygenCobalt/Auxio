@@ -145,30 +145,30 @@
     <color name="blue_on_surface_variant">#C3C7D0</color>
     <color name="blue_surface_inverse">#E2E2E6</color>
     <color name="blue_on_surface_inverse">#1B1B1B</color>
-
-    <color name="light_blue_primary">#8BCEFF</color>
-    <color name="light_blue_on_primary">#003450</color>
-    <color name="light_blue_primary_container">#004B71</color>
-    <color name="light_blue_on_primary_container">#C8E6FF</color>
-    <color name="light_blue_primary_inverse">#006494</color>
-    <color name="light_blue_secondary">#B7C8D8</color>
-    <color name="light_blue_on_secondary">#22323F</color>
-    <color name="light_blue_secondary_container">#384956</color>
-    <color name="light_blue_on_secondary_container">#D3E4F5</color>
-    <color name="light_blue_tertiary">#CFBFE8</color>
-    <color name="light_blue_on_tertiary">#362B4B</color>
-    <color name="light_blue_tertiary_container">#4D4162</color>
-    <color name="light_blue_on_tertiary_container">#ECDCFF</color>
+    
+    <color name="light_blue_primary">#62D3FF</color>
+    <color name="light_blue_on_primary">#003546</color>
+    <color name="light_blue_primary_container">#004D64</color>
+    <color name="light_blue_on_primary_container">#BAE9FF</color>
+    <color name="light_blue_primary_inverse">#006684</color>
+    <color name="light_blue_secondary">#B4CAD6</color>
+    <color name="light_blue_on_secondary">#1F333C</color>
+    <color name="light_blue_secondary_container">#354A53</color>
+    <color name="light_blue_on_secondary_container">#D0E6F2</color>
+    <color name="light_blue_tertiary">#C5C2EA</color>
+    <color name="light_blue_on_tertiary">#2E2D4C</color>
+    <color name="light_blue_tertiary_container">#454365</color>
+    <color name="light_blue_on_tertiary_container">#E3DFFF</color>
     <color name="light_blue_error">#FFB4A9</color>
     <color name="light_blue_on_error">#680003</color>
     <color name="light_blue_error_container">#930006</color>
     <color name="light_blue_on_error_container">#FFDAD4</color>
-    <color name="light_blue_surface">#1A1C1E</color>
-    <color name="light_blue_on_surface">#E2E2E5</color>
-    <color name="light_blue_surface_variant">#41474D</color>
-    <color name="light_blue_on_surface_variant">#C1C7CE</color>
-    <color name="light_blue_surface_inverse">#E2E2E5</color>
-    <color name="light_blue_on_surface_inverse">#1A1C1E</color>
+    <color name="light_blue_surface">#191C1E</color>
+    <color name="light_blue_on_surface">#E1E2E4</color>
+    <color name="light_blue_surface_variant">#40484C</color>
+    <color name="light_blue_on_surface_variant">#C0C8CD</color>
+    <color name="light_blue_surface_inverse">#E1E2E4</color>
+    <color name="light_blue_on_surface_inverse">#191C1E</color>
 
     <color name="cyan_primary">#44D8F1</color>
     <color name="cyan_on_primary">#00363F</color>
@@ -338,30 +338,6 @@
     <color name="orange_surface_inverse">#EBE0D9</color>
     <color name="orange_on_surface_inverse">#1F1B17</color>
 
-    <color name="deep_orange_primary">#FFB49D</color>
-    <color name="deep_orange_on_primary">#611300</color>
-    <color name="deep_orange_primary_container">#881F00</color>
-    <color name="deep_orange_on_primary_container">#FFDACF</color>
-    <color name="deep_orange_primary_inverse">#B22C00</color>
-    <color name="deep_orange_secondary">#E7BDB2</color>
-    <color name="deep_orange_on_secondary">#442A22</color>
-    <color name="deep_orange_secondary_container">#5D3F37</color>
-    <color name="deep_orange_on_secondary_container">#FFDACF</color>
-    <color name="deep_orange_tertiary">#D8C58D</color>
-    <color name="deep_orange_on_tertiary">#3A2F04</color>
-    <color name="deep_orange_tertiary_container">#534619</color>
-    <color name="deep_orange_on_tertiary_container">#F6E1A6</color>
-    <color name="deep_orange_error">#FFB4A9</color>
-    <color name="deep_orange_on_error">#680003</color>
-    <color name="deep_orange_error_container">#930006</color>
-    <color name="deep_orange_on_error_container">#FFDAD4</color>
-    <color name="deep_orange_surface">#201A18</color>
-    <color name="deep_orange_on_surface">#EDE0DD</color>
-    <color name="deep_orange_surface_variant">#53433F</color>
-    <color name="deep_orange_on_surface_variant">#D8C2BC</color>
-    <color name="deep_orange_surface_inverse">#EDE0DD</color>
-    <color name="deep_orange_on_surface_inverse">#201A18</color>
-
     <color name="brown_primary">#E7BEB0</color>
     <color name="brown_on_primary">#442A20</color>
     <color name="brown_primary_container">#5D4035</color>
@@ -379,13 +355,10 @@
     <color name="brown_on_error">#680003</color>
     <color name="brown_error_container">#930006</color>
     <color name="brown_on_error_container">#FFDAD4</color>
-    <color name="brown_background">#201A18</color>
-    <color name="brown_on_background">#EDE0DC</color>
     <color name="brown_surface">#201A18</color>
     <color name="brown_on_surface">#EDE0DC</color>
     <color name="brown_surface_variant">#52433E</color>
     <color name="brown_on_surface_variant">#D8C2BB</color>
-    <color name="brown_outline">#A08C86</color>
     <color name="brown_surface_inverse">#EDE0DC</color>
     <color name="brown_on_surface_inverse">#201A18</color>
     
@@ -412,28 +385,4 @@
     <color name="grey_on_surface_variant">#C8C8C8</color>
     <color name="grey_surface_inverse">#fafafa</color>
     <color name="grey_on_surface_inverse">#191919</color>
-
-    <color name="blue_grey_primary">#62D3FF</color>
-    <color name="blue_grey_on_primary">#003546</color>
-    <color name="blue_grey_primary_container">#004D64</color>
-    <color name="blue_grey_on_primary_container">#BAE9FF</color>
-    <color name="blue_grey_primary_inverse">#006684</color>
-    <color name="blue_grey_secondary">#B4CAD6</color>
-    <color name="blue_grey_on_secondary">#1F333C</color>
-    <color name="blue_grey_secondary_container">#354A53</color>
-    <color name="blue_grey_on_secondary_container">#D0E6F2</color>
-    <color name="blue_grey_tertiary">#C5C2EA</color>
-    <color name="blue_grey_on_tertiary">#2E2D4C</color>
-    <color name="blue_grey_tertiary_container">#454365</color>
-    <color name="blue_grey_on_tertiary_container">#E3DFFF</color>
-    <color name="blue_grey_error">#FFB4A9</color>
-    <color name="blue_grey_on_error">#680003</color>
-    <color name="blue_grey_error_container">#930006</color>
-    <color name="blue_grey_on_error_container">#FFDAD4</color>
-    <color name="blue_grey_surface">#191C1E</color>
-    <color name="blue_grey_on_surface">#E1E2E4</color>
-    <color name="blue_grey_surface_variant">#40484C</color>
-    <color name="blue_grey_on_surface_variant">#C0C8CD</color>
-    <color name="blue_grey_surface_inverse">#E1E2E4</color>
-    <color name="blue_grey_on_surface_inverse">#191C1E</color>
 </resources>

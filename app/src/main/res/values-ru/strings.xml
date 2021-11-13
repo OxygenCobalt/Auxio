@@ -79,7 +79,6 @@
     <string name="clr_light_green">Жёлтый</string>
     <string name="clr_orange">Коричневый</string>
     <string name="clr_brown">Седой</string>
-    <string name="clr_blue_grey">Нейтральный</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Треки загружено: %d</string>
