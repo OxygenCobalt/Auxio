@@ -106,6 +106,7 @@
     <style name="Widget.Auxio.TextView.Secondary.Compact" parent="Widget.Auxio.TextView.Base">
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelMedium</item>
     </style>
 
@@ -147,7 +148,11 @@
     </style>
 
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
+        <!-- TODO: Report elevation bug -->
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">

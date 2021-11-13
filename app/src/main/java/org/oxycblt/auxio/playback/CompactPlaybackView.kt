@@ -85,10 +85,13 @@ class CompactPlaybackView @JvmOverloads constructor(
             mCallback?.onPlayPauseClick()
         }
 
-        // By default, LinearProgressIndicator will not actually color the track with the proper
-        // opacity. Why? Who knows!
+        // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
+        // we use colorSecondary instead of colorSurfaceVariant. This is for two reasons:
+        // 1. colorSurfaceVariant is used with the assumption that the view that is using it
+        // is not elevated and is therefore not colored. This view is elevated.
+        // 2. The way a solid color plays along with a ripple just doesnt look that good.
         binding.playbackProgressBar.trackColor = MaterialColors.compositeARGBWithAlpha(
-            binding.playbackProgressBar.trackColor, (255 * 0.2).toInt()
+            R.attr.colorSecondary.resolveAttr(context), (255 * 0.2).toInt()
         )
     }
 

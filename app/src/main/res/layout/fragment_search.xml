@@ -41,7 +41,7 @@
                         android:inputType="textFilter"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"
-                        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge" />
+                        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

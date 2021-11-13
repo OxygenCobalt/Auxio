@@ -30,6 +30,10 @@ class FloatingActionButtonContainer @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : FrameLayout(context, attrs, defStyleAttr) {
+    init {
+        clipToPadding = false
+    }
+
     override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
         return onApplyWindowInsets(insets)
     }

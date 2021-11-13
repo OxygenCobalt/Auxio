@@ -74,12 +74,11 @@
             android:id="@+id/playback_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:disabledAlpha="0.24"
             android:max="@{(int) song.seconds}"
+            app:trackColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:trackColor="@color/blue_primary"
             tools:progress="70" />
 
     </merge>

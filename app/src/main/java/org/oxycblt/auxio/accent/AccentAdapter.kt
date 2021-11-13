@@ -18,12 +18,14 @@
 
 package org.oxycblt.auxio.accent
 
+import android.content.res.ColorStateList
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveStateList
 
 /**
@@ -81,7 +83,7 @@ class AccentAdapter(
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
 
-                R.color.surface.resolveStateList(context)
+                ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
             } else {
                 android.R.color.transparent.resolveStateList(context)
             }

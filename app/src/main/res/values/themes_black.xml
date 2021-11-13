@@ -1,149 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    All the base themes/accents.
-    -->
-    <style name="Theme.Auxio.Black.Red" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/red_primary</item>
-        <item name="colorOnPrimary">@color/red_on_primary</item>
-        <item name="colorPrimaryInverse">@color/red_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/red_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/red_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Red" parent="Theme.Auxio.Red">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Pink" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/pink_primary</item>
-        <item name="colorOnPrimary">@color/pink_on_primary</item>
-        <item name="colorPrimaryInverse">@color/pink_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/pink_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/pink_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Pink" parent="Theme.Auxio.Pink">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Purple" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/purple_primary</item>
-        <item name="colorOnPrimary">@color/purple_on_primary</item>
-        <item name="colorPrimaryInverse">@color/purple_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/purple_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/purple_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Purple" parent="Theme.Auxio.Purple">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.DeepPurple" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/deep_purple_primary</item>
-        <item name="colorOnPrimary">@color/deep_purple_on_primary</item>
-        <item name="colorPrimaryInverse">@color/deep_purple_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/deep_purple_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/deep_purple_on_primary_container</item>
+    <style name="Theme.Auxio.Black.DeepPurple" parent="Theme.Auxio.DeepPurple">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Indigo" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/indigo_primary</item>
-        <item name="colorOnPrimary">@color/indigo_on_primary</item>
-        <item name="colorPrimaryInverse">@color/indigo_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/indigo_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/indigo_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Indigo" parent="Theme.Auxio.Indigo">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Blue" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/blue_primary</item>
-        <item name="colorOnPrimary">@color/blue_on_primary</item>
-        <item name="colorPrimaryInverse">@color/blue_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/blue_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/blue_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Blue" parent="Theme.Auxio.Blue">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.LightBlue" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/light_blue_primary</item>
-        <item name="colorOnPrimary">@color/light_blue_on_primary</item>
-        <item name="colorPrimaryInverse">@color/light_blue_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/light_blue_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/light_blue_on_primary_container</item>
+    <style name="Theme.Auxio.Black.LightBlue" parent="Theme.Auxio.LightBlue">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Cyan" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/cyan_primary</item>
-        <item name="colorOnPrimary">@color/cyan_on_primary</item>
-        <item name="colorPrimaryInverse">@color/cyan_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/cyan_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/cyan_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Cyan" parent="Theme.Auxio.Cyan">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Teal" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/teal_primary</item>
-        <item name="colorOnPrimary">@color/teal_on_primary</item>
-        <item name="colorPrimaryInverse">@color/teal_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/teal_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/teal_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Teal" parent="Theme.Auxio.Teal">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Green" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/green_primary</item>
-        <item name="colorOnPrimary">@color/green_on_primary</item>
-        <item name="colorPrimaryInverse">@color/green_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/green_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/green_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Green" parent="Theme.Auxio.Green">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.LightGreen" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/light_green_primary</item>
-        <item name="colorOnPrimary">@color/light_green_on_primary</item>
-        <item name="colorPrimaryInverse">@color/light_green_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/light_green_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/light_green_on_primary_container</item>
+    <style name="Theme.Auxio.Black.LightGreen" parent="Theme.Auxio.LightGreen">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Lime" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/lime_primary</item>
-        <item name="colorOnPrimary">@color/lime_on_primary</item>
-        <item name="colorPrimaryInverse">@color/lime_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/lime_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/lime_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Lime" parent="Theme.Auxio.Lime">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Yellow" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/yellow_primary</item>
-        <item name="colorOnPrimary">@color/yellow_on_primary</item>
-        <item name="colorPrimaryInverse">@color/yellow_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/yellow_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/yellow_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Yellow" parent="Theme.Auxio.Yellow">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Orange" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/orange_primary</item>
-        <item name="colorOnPrimary">@color/orange_on_primary</item>
-        <item name="colorPrimaryInverse">@color/orange_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/orange_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/orange_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Orange" parent="Theme.Auxio.Orange">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.DeepOrange" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/deep_orange_primary</item>
-        <item name="colorOnPrimary">@color/deep_orange_on_primary</item>
-        <item name="colorPrimaryInverse">@color/deep_orange_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/deep_orange_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/deep_orange_on_primary_container</item>
+    <style name="Theme.Auxio.Black.DeepOrange" parent="Theme.Auxio.DeepOrange">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Brown" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/brown_primary</item>
-        <item name="colorOnPrimary">@color/brown_on_primary</item>
-        <item name="colorPrimaryInverse">@color/brown_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/brown_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/brown_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Brown" parent="Theme.Auxio.Brown">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.Grey" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/grey_primary</item>
-        <item name="colorOnPrimary">@color/grey_on_primary</item>
-        <item name="colorPrimaryInverse">@color/grey_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/grey_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/grey_on_primary_container</item>
+    <style name="Theme.Auxio.Black.Grey" parent="Theme.Auxio.Grey">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.BlueGrey" parent="Theme.Auxio.App.Black">
-        <item name="colorPrimary">@color/blue_grey_primary</item>
-        <item name="colorOnPrimary">@color/blue_grey_on_primary</item>
-        <item name="colorPrimaryInverse">@color/blue_grey_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/blue_grey_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/blue_grey_on_primary_container</item>
+    <style name="Theme.Auxio.Black.BlueGrey" parent="Theme.Auxio.BlueGrey">
+        <item name="colorSurface">@android:color/black</item>
     </style>
 </resources>

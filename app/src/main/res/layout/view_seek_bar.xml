@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:layout_marginBottom="@dimen/spacing_small"
+            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

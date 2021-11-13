@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:text="@string/lbl_shuffle"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="@+id/detail_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_play_button"
