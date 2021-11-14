@@ -73,10 +73,10 @@
     <string name="clr_pink">Roz</string>
     <string name="clr_purple">Violet</string>
     <string name="clr_blue">Albastru</string>
-    <string name="clr_light_blue">Albastru Deschis</string>
+    <string name="clr_deep_blue">Albastru Deschis</string>
     <string name="clr_teal">Albastru Verde</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_light_green">Verde Deschis</string>
+    <string name="clr_deep_green">Verde Deschis</string>
     <string name="clr_lime">Verde Galben</string>
     <string name="clr_yellow">Galben</string>
     <string name="clr_orange">Portocaliu</string>

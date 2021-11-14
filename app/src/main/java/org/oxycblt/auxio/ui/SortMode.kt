@@ -161,15 +161,21 @@ enum class SortMode(@IdRes val itemId: Int) {
      * to storage, as it will be more efficent.
      */
     fun toInt(): Int {
-        return ordinal + INT_ASCENDING
+        return when (this) {
+            ASCENDING -> CONST_ASCENDING
+            DESCENDING -> CONST_DESCENDING
+            ARTIST -> CONST_ARTIST
+            ALBUM -> CONST_ALBUM
+            YEAR -> CONST_YEAR
+        }
     }
 
     companion object {
-        private const val INT_ASCENDING = 0xA10C
-        private const val INT_DESCENDING = 0xA10D
-        private const val INT_ARTIST = 0xA10E
-        private const val INT_ALBUM = 0xA10F
-        private const val INT_YEAR = 0xA110
+        private const val CONST_ASCENDING = 0xA10C
+        private const val CONST_DESCENDING = 0xA10D
+        private const val CONST_ARTIST = 0xA10E
+        private const val CONST_ALBUM = 0xA10F
+        private const val CONST_YEAR = 0xA110
 
         /**
          * Returns a [SortMode] depending on the integer constant, use this when restoring
@@ -177,11 +183,11 @@ enum class SortMode(@IdRes val itemId: Int) {
          */
         fun fromInt(value: Int): SortMode? {
             return when (value) {
-                INT_ASCENDING -> ASCENDING
-                INT_DESCENDING -> DESCENDING
-                INT_ARTIST -> ARTIST
-                INT_ALBUM -> ALBUM
-                INT_YEAR -> YEAR
+                CONST_ASCENDING -> ASCENDING
+                CONST_DESCENDING -> DESCENDING
+                CONST_ARTIST -> ARTIST
+                CONST_ALBUM -> ALBUM
+                CONST_YEAR -> YEAR
                 else -> null
             }
         }

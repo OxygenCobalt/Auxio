@@ -74,10 +74,10 @@
     <string name="clr_deep_purple">Sötétlila</string>
     <string name="clr_indigo">Indigókék</string>
     <string name="clr_blue">Kék</string>
-    <string name="clr_light_blue">Világoskék</string>
+    <string name="clr_deep_blue">Világoskék</string>
     <string name="clr_teal">Kékeszöld</string>
     <string name="clr_green">Zöld</string>
-    <string name="clr_light_green">Világoszöld</string>
+    <string name="clr_deep_green">Világoszöld</string>
     <string name="clr_lime">Sárgazöld</string>
     <string name="clr_yellow">Sárga</string>
     <string name="clr_orange">Narancs</string>

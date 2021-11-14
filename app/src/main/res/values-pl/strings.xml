@@ -73,9 +73,9 @@
     <string name="clr_purple">Purpura</string>
     <string name="clr_indigo">Błękit Indygowy</string>
     <string name="clr_blue">Błękit</string>
-    <string name="clr_light_blue">Jasnobłękit</string>
+    <string name="clr_deep_blue">Jasnobłękit</string>
     <string name="clr_green">Zielony</string>
-    <string name="clr_light_green">Jasnozielony</string>
+    <string name="clr_deep_green">Jasnozielony</string>
     <string name="clr_lime">Żółtyzielony</string>
     <string name="clr_yellow">Żółty</string>
     <string name="clr_orange">Pomarańczowy</string>

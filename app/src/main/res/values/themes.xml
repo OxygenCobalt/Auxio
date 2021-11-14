@@ -183,34 +183,34 @@
         <item name="colorOnSurfaceVariant">@color/blue_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.LightBlue" parent="Theme.Auxio.App">
-        <item name="colorPrimary">@color/light_blue_primary</item>
-        <item name="colorOnPrimary">@color/light_blue_on_primary</item>
-        <item name="colorPrimaryInverse">@color/light_blue_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/light_blue_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/light_blue_on_primary_container</item>
+    <style name="Theme.Auxio.DeepBlue" parent="Theme.Auxio.App">
+        <item name="colorPrimary">@color/deep_blue_primary</item>
+        <item name="colorOnPrimary">@color/deep_blue_on_primary</item>
+        <item name="colorPrimaryInverse">@color/deep_blue_primary_inverse</item>
+        <item name="colorPrimaryContainer">@color/deep_blue_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/deep_blue_on_primary_container</item>
 
-        <item name="colorSecondary">@color/light_blue_secondary</item>
-        <item name="colorOnSecondary">@color/light_blue_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/light_blue_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/light_blue_on_secondary_container</item>
+        <item name="colorSecondary">@color/deep_blue_secondary</item>
+        <item name="colorOnSecondary">@color/deep_blue_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/deep_blue_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/deep_blue_on_secondary_container</item>
 
-        <item name="colorTertiary">@color/light_blue_tertiary</item>
-        <item name="colorOnTertiary">@color/light_blue_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/light_blue_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/light_blue_on_tertiary_container</item>
+        <item name="colorTertiary">@color/deep_blue_tertiary</item>
+        <item name="colorOnTertiary">@color/deep_blue_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/deep_blue_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/deep_blue_on_tertiary_container</item>
 
-        <item name="colorError">@color/light_blue_error</item>
-        <item name="colorOnError">@color/light_blue_on_error</item>
-        <item name="colorErrorContainer">@color/light_blue_error_container</item>
-        <item name="colorOnErrorContainer">@color/light_blue_on_error_container</item>
+        <item name="colorError">@color/deep_blue_error</item>
+        <item name="colorOnError">@color/deep_blue_on_error</item>
+        <item name="colorErrorContainer">@color/deep_blue_error_container</item>
+        <item name="colorOnErrorContainer">@color/deep_blue_on_error_container</item>
 
-        <item name="colorSurface">@color/light_blue_surface</item>
-        <item name="colorOnSurface">@color/light_blue_on_surface</item>
-        <item name="colorSurfaceInverse">@color/light_blue_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/light_blue_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/light_blue_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/light_blue_on_surface_variant</item>
+        <item name="colorSurface">@color/deep_blue_surface</item>
+        <item name="colorOnSurface">@color/deep_blue_on_surface</item>
+        <item name="colorSurfaceInverse">@color/deep_blue_surface_inverse</item>
+        <item name="colorOnSurfaceInverse">@color/deep_blue_on_surface_inverse</item>
+        <item name="colorSurfaceVariant">@color/deep_blue_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/deep_blue_on_surface_variant</item>
     </style>
 
     <style name="Theme.Auxio.Cyan" parent="Theme.Auxio.App">
@@ -303,34 +303,34 @@
         <item name="colorOnSurfaceVariant">@color/green_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.LightGreen" parent="Theme.Auxio.App">
-        <item name="colorPrimary">@color/light_green_primary</item>
-        <item name="colorOnPrimary">@color/light_green_on_primary</item>
-        <item name="colorPrimaryInverse">@color/light_green_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/light_green_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/light_green_on_primary_container</item>
+    <style name="Theme.Auxio.DeepGreen" parent="Theme.Auxio.App">
+        <item name="colorPrimary">@color/deep_green_primary</item>
+        <item name="colorOnPrimary">@color/deep_green_on_primary</item>
+        <item name="colorPrimaryInverse">@color/deep_green_primary_inverse</item>
+        <item name="colorPrimaryContainer">@color/deep_green_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/deep_green_on_primary_container</item>
 
-        <item name="colorSecondary">@color/light_green_secondary</item>
-        <item name="colorOnSecondary">@color/light_green_on_secondary</item>
-        <item name="colorSecondaryContainer">@color/light_green_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/light_green_on_secondary_container</item>
+        <item name="colorSecondary">@color/deep_green_secondary</item>
+        <item name="colorOnSecondary">@color/deep_green_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/deep_green_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/deep_green_on_secondary_container</item>
 
-        <item name="colorTertiary">@color/light_green_tertiary</item>
-        <item name="colorOnTertiary">@color/light_green_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/light_green_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/light_green_on_tertiary_container</item>
+        <item name="colorTertiary">@color/deep_green_tertiary</item>
+        <item name="colorOnTertiary">@color/deep_green_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/deep_green_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/deep_green_on_tertiary_container</item>
 
-        <item name="colorError">@color/light_green_error</item>
-        <item name="colorOnError">@color/light_green_on_error</item>
-        <item name="colorErrorContainer">@color/light_green_error_container</item>
-        <item name="colorOnErrorContainer">@color/light_green_on_error_container</item>
+        <item name="colorError">@color/deep_green_error</item>
+        <item name="colorOnError">@color/deep_green_on_error</item>
+        <item name="colorErrorContainer">@color/deep_green_error_container</item>
+        <item name="colorOnErrorContainer">@color/deep_green_on_error_container</item>
 
-        <item name="colorSurface">@color/light_green_surface</item>
-        <item name="colorOnSurface">@color/light_green_on_surface</item>
-        <item name="colorSurfaceInverse">@color/light_green_surface_inverse</item>
-        <item name="colorOnSurfaceInverse">@color/light_green_on_surface_inverse</item>
-        <item name="colorSurfaceVariant">@color/light_green_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/light_green_on_surface_variant</item>
+        <item name="colorSurface">@color/deep_green_surface</item>
+        <item name="colorOnSurface">@color/deep_green_on_surface</item>
+        <item name="colorSurfaceInverse">@color/deep_green_surface_inverse</item>
+        <item name="colorOnSurfaceInverse">@color/deep_green_on_surface_inverse</item>
+        <item name="colorSurfaceVariant">@color/deep_green_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/deep_green_on_surface_variant</item>
     </style>
 
     <style name="Theme.Auxio.Lime" parent="Theme.Auxio.App">

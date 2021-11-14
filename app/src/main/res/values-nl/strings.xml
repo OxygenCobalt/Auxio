@@ -127,10 +127,10 @@
     <string name="clr_deep_purple">Donkerpaars</string>
     <string name="clr_indigo">Indigoblauw</string>
     <string name="clr_blue">Blauw</string>
-    <string name="clr_light_blue">Lichtblauw</string>
+    <string name="clr_deep_blue">Lichtblauw</string>
     <string name="clr_teal">Blauwgroen</string>
     <string name="clr_green">Groen</string>
-    <string name="clr_light_green">Lichtgroen</string>
+    <string name="clr_deep_green">Lichtgroen</string>
     <string name="clr_cyan">Cyaan</string>
     <string name="clr_lime">Geelgroen</string>
     <string name="clr_yellow">Geel</string>

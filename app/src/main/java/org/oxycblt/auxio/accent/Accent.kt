@@ -20,75 +20,20 @@ package org.oxycblt.auxio.accent
 
 import org.oxycblt.auxio.R
 
-val ACCENT_PRIMARY_COLORS = arrayOf(
-    R.color.red_primary,
-    R.color.pink_primary,
-    R.color.purple_primary,
-    R.color.deep_purple_primary,
-    R.color.indigo_primary,
-    R.color.blue_primary,
-    R.color.light_blue_primary,
-    R.color.cyan_primary,
-    R.color.teal_primary,
-    R.color.green_primary,
-    R.color.light_green_primary,
-    R.color.lime_primary,
-    R.color.yellow_primary,
-    R.color.orange_primary,
-    R.color.brown_primary,
-    R.color.grey_primary,
-)
+val ACCENT_COUNT: Int get() = ACCENT_NAMES.size
 
-val ACCENT_THEMES = arrayOf(
-    R.style.Theme_Auxio_Red,
-    R.style.Theme_Auxio_Pink,
-    R.style.Theme_Auxio_Purple,
-    R.style.Theme_Auxio_DeepPurple,
-    R.style.Theme_Auxio_Indigo,
-    R.style.Theme_Auxio_Blue,
-    R.style.Theme_Auxio_LightBlue,
-    R.style.Theme_Auxio_Cyan,
-    R.style.Theme_Auxio_Teal,
-    R.style.Theme_Auxio_Green,
-    R.style.Theme_Auxio_LightGreen,
-    R.style.Theme_Auxio_Lime,
-    R.style.Theme_Auxio_Yellow,
-    R.style.Theme_Auxio_Orange,
-    R.style.Theme_Auxio_Brown,
-    R.style.Theme_Auxio_Grey,
-)
-
-val ACCENT_BLACK_THEMES = arrayOf(
-    R.style.Theme_Auxio_Black_Red,
-    R.style.Theme_Auxio_Black_Pink,
-    R.style.Theme_Auxio_Black_Purple,
-    R.style.Theme_Auxio_Black_DeepPurple,
-    R.style.Theme_Auxio_Black_Indigo,
-    R.style.Theme_Auxio_Black_Blue,
-    R.style.Theme_Auxio_Black_LightBlue,
-    R.style.Theme_Auxio_Black_Cyan,
-    R.style.Theme_Auxio_Black_Teal,
-    R.style.Theme_Auxio_Black_Green,
-    R.style.Theme_Auxio_Black_LightGreen,
-    R.style.Theme_Auxio_Black_Lime,
-    R.style.Theme_Auxio_Black_Yellow,
-    R.style.Theme_Auxio_Black_Orange,
-    R.style.Theme_Auxio_Black_Brown,
-    R.style.Theme_Auxio_Black_Grey,
-)
-
-val ACCENT_NAMES = arrayOf(
+private val ACCENT_NAMES = arrayOf(
     R.string.clr_red,
     R.string.clr_pink,
     R.string.clr_purple,
     R.string.clr_deep_purple,
     R.string.clr_indigo,
     R.string.clr_blue,
-    R.string.clr_light_blue,
+    R.string.clr_deep_blue,
     R.string.clr_cyan,
     R.string.clr_teal,
     R.string.clr_green,
-    R.string.clr_light_green,
+    R.string.clr_deep_green,
     R.string.clr_lime,
     R.string.clr_yellow,
     R.string.clr_orange,
@@ -96,8 +41,65 @@ val ACCENT_NAMES = arrayOf(
     R.string.clr_grey,
 )
 
+private val ACCENT_THEMES = arrayOf(
+    R.style.Theme_Auxio_Red,
+    R.style.Theme_Auxio_Pink,
+    R.style.Theme_Auxio_Purple,
+    R.style.Theme_Auxio_DeepPurple,
+    R.style.Theme_Auxio_Indigo,
+    R.style.Theme_Auxio_Blue,
+    R.style.Theme_Auxio_DeepBlue,
+    R.style.Theme_Auxio_Cyan,
+    R.style.Theme_Auxio_Teal,
+    R.style.Theme_Auxio_Green,
+    R.style.Theme_Auxio_DeepGreen,
+    R.style.Theme_Auxio_Lime,
+    R.style.Theme_Auxio_Yellow,
+    R.style.Theme_Auxio_Orange,
+    R.style.Theme_Auxio_Brown,
+    R.style.Theme_Auxio_Grey,
+)
+
+private val ACCENT_BLACK_THEMES = arrayOf(
+    R.style.Theme_Auxio_Black_Red,
+    R.style.Theme_Auxio_Black_Pink,
+    R.style.Theme_Auxio_Black_Purple,
+    R.style.Theme_Auxio_Black_DeepPurple,
+    R.style.Theme_Auxio_Black_Indigo,
+    R.style.Theme_Auxio_Black_Blue,
+    R.style.Theme_Auxio_Black_DeepBlue,
+    R.style.Theme_Auxio_Black_Cyan,
+    R.style.Theme_Auxio_Black_Teal,
+    R.style.Theme_Auxio_Black_Green,
+    R.style.Theme_Auxio_Black_DeepGreen,
+    R.style.Theme_Auxio_Black_Lime,
+    R.style.Theme_Auxio_Black_Yellow,
+    R.style.Theme_Auxio_Black_Orange,
+    R.style.Theme_Auxio_Black_Brown,
+    R.style.Theme_Auxio_Black_Grey,
+)
+
+private val ACCENT_PRIMARY_COLORS = arrayOf(
+    R.color.red_primary,
+    R.color.pink_primary,
+    R.color.purple_primary,
+    R.color.deep_purple_primary,
+    R.color.indigo_primary,
+    R.color.blue_primary,
+    R.color.deep_blue_primary,
+    R.color.cyan_primary,
+    R.color.teal_primary,
+    R.color.green_primary,
+    R.color.deep_green_primary,
+    R.color.lime_primary,
+    R.color.yellow_primary,
+    R.color.orange_primary,
+    R.color.brown_primary,
+    R.color.grey_primary,
+)
+
 /**
- * The data object for an accent.
+ * The data object for an accent. In the UI this is known as a "Color Scheme."
  * @property name  The name of this accent
  * @property theme The theme resource for this accent
  * @property blackTheme The black theme resource for this accent

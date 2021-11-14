@@ -74,10 +74,10 @@
     <string name="clr_purple">Violet</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Bleu</string>
-    <string name="clr_light_blue">Bleu Clair</string>
+    <string name="clr_deep_blue">Bleu Clair</string>
     <string name="clr_teal">Bleu Vert</string>
     <string name="clr_green">Vert</string>
-    <string name="clr_light_green">Vert Clair</string>
+    <string name="clr_deep_green">Vert Clair</string>
     <string name="clr_lime">Vert Citron</string>
     <string name="clr_yellow">Jaune</string>
     <string name="clr_orange">Orange</string>

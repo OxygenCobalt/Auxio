@@ -129,11 +129,11 @@
     <string name="clr_deep_purple">Púrpura Profundo</string>
     <string name="clr_indigo">Índigo</string>
     <string name="clr_blue">Azul</string>
-    <string name="clr_light_blue">Azul Claro</string>
+    <string name="clr_deep_blue">Azul Claro</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_light_green">Verde Claro</string>
+    <string name="clr_deep_green">Verde Claro</string>
     <string name="clr_lime">Lima</string>
     <string name="clr_yellow">Amarillo</string>
     <string name="clr_orange">Naranja</string>

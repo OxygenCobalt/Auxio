@@ -17,7 +17,6 @@
         <Preference
             app:icon="@drawable/ic_accent"
             app:key="KEY_ACCENT3"
-            app:summary="@string/set_accent_desc"
             app:title="@string/set_accent" />
 
         <SwitchPreferenceCompat

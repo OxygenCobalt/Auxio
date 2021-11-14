@@ -24,7 +24,7 @@
         <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.LightBlue" parent="Theme.Auxio.LightBlue">
+    <style name="Theme.Auxio.Black.DeepBlue" parent="Theme.Auxio.DeepBlue">
         <item name="colorSurface">@android:color/black</item>
     </style>
 
@@ -40,7 +40,7 @@
         <item name="colorSurface">@android:color/black</item>
     </style>
 
-    <style name="Theme.Auxio.Black.LightGreen" parent="Theme.Auxio.LightGreen">
+    <style name="Theme.Auxio.Black.DeepGreen" parent="Theme.Auxio.DeepGreen">
         <item name="colorSurface">@android:color/black</item>
     </style>
 

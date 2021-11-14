@@ -72,11 +72,11 @@
     <string name="clr_red">Расный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
-    <string name="clr_light_blue">Голубой</string>
+    <string name="clr_deep_blue">Голубой</string>
     <string name="clr_teal">Зелёный</string>
     <string name="clr_green">Светло-Зелёный</string>
     <string name="clr_yellow">Оранжевый</string>
-    <string name="clr_light_green">Жёлтый</string>
+    <string name="clr_deep_green">Жёлтый</string>
     <string name="clr_orange">Коричневый</string>
     <string name="clr_brown">Седой</string>
 

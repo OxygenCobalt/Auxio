@@ -41,7 +41,11 @@ enum class LoopMode {
      * @return The int constant for this mode
      */
     fun toInt(): Int {
-        return CONST_NONE + ordinal
+        return when (this) {
+            NONE -> CONST_NONE
+            ALL -> CONST_ALL
+            TRACK -> CONST_TRACK
+        }
     }
 
     companion object {

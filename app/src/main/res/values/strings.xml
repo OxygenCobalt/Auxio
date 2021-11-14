@@ -59,14 +59,12 @@
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Settings</string>
-
     <string name="set_ui">Appearance</string>
     <string name="set_theme">Theme</string>
     <string name="set_theme_auto">Automatic</string>
     <string name="set_theme_day">Light</string>
     <string name="set_theme_night">Dark</string>
     <string name="set_accent">Color scheme</string>
-    <string name="set_accent_desc">Colors to be used in the app</string>
     <string name="set_black_mode">Black theme</string>
     <string name="setting_black_mode_desc">Use a pure-black dark theme</string>
 
@@ -150,11 +148,11 @@
     <string name="clr_deep_purple">Deep Purple</string>
     <string name="clr_indigo">Indigo</string>
     <string name="clr_blue">Blue</string>
-    <string name="clr_light_blue">Deep Blue</string>
+    <string name="clr_deep_blue">Deep Blue</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Teal</string>
     <string name="clr_green">Green</string>
-    <string name="clr_light_green">Light Green</string>
+    <string name="clr_deep_green">Deep Green</string>
     <string name="clr_lime">Lime</string>
     <string name="clr_yellow">Yellow</string>
     <string name="clr_orange">Orange</string>
@@ -164,7 +162,6 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_next_from">Next From: %s</string>
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
-
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Song</item>

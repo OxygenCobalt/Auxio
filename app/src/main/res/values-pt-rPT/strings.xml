@@ -74,10 +74,10 @@
     <string name="clr_pink">Rosa</string>
     <string name="clr_purple">Roxo</string>
     <string name="clr_blue">Azul</string>
-    <string name="clr_light_blue">Azul-claro</string>
+    <string name="clr_deep_blue">Azul-claro</string>
     <string name="clr_teal">Azul-verde</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_light_green">Verde-claro</string>
+    <string name="clr_deep_green">Verde-claro</string>
     <string name="clr_lime">Verde-amarelo</string>
     <string name="clr_yellow">Amarelo</string>
     <string name="clr_orange">Laranja</string>

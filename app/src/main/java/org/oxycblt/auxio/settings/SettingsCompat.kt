@@ -21,7 +21,7 @@ package org.oxycblt.auxio.settings
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import org.oxycblt.auxio.accent.ACCENT_PRIMARY_COLORS
+import org.oxycblt.auxio.accent.ACCENT_COUNT
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 
@@ -70,8 +70,8 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
 
         // If there are still any issues with indices, just correct them so a crash doesnt occur.
-        if (accent > ACCENT_PRIMARY_COLORS.lastIndex) {
-            accent = ACCENT_PRIMARY_COLORS.lastIndex
+        if (accent >= ACCENT_COUNT) {
+            accent = ACCENT_COUNT - 1
         }
 
         // Move this to the [also legacy] ACCENT2 field. This makes it easier to convert in the

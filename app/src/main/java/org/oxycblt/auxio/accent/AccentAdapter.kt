@@ -40,7 +40,7 @@ class AccentAdapter(
 ) : RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
     private var selectedViewHolder: ViewHolder? = null
 
-    override fun getItemCount(): Int = ACCENT_PRIMARY_COLORS.size
+    override fun getItemCount(): Int = ACCENT_COUNT
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemAccentBinding.inflate(parent.context.inflater))

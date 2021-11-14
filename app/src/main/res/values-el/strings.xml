@@ -65,10 +65,10 @@
     <string name="clr_pink">Ροζ</string>
     <string name="clr_purple">Ερυθροκυανός</string>
     <string name="clr_blue">Γαλάζιος</string>
-    <string name="clr_light_blue">Ανοιχτός Γαλάζιος</string>
+    <string name="clr_deep_blue">Ανοιχτός Γαλάζιος</string>
     <string name="clr_teal">Γαλάζιος Πράσινος</string>
     <string name="clr_green">Πράσινος</string>
-    <string name="clr_light_green">Ανοιχτός Πράσινος</string>
+    <string name="clr_deep_green">Ανοιχτός Πράσινος</string>
     <string name="clr_lime">Πράσινος Κίτρινος</string>
     <string name="clr_yellow">Κίτρινος</string>
     <string name="clr_orange">Πορτοκαλής</string>

@@ -75,10 +75,10 @@
     <string name="clr_purple">Viola</string>
     <string name="clr_indigo">Indaco</string>
     <string name="clr_blue">Azzurro</string>
-    <string name="clr_light_blue">Azzurro Chiaro</string>
+    <string name="clr_deep_blue">Azzurro Chiaro</string>
     <string name="clr_teal">Azzurro Verde</string>
     <string name="clr_green">Verde</string>
-    <string name="clr_light_green">Verde Chiaro</string>
+    <string name="clr_deep_green">Verde Chiaro</string>
     <string name="clr_lime">Verde Giallo</string>
     <string name="clr_yellow">Giallo</string>
     <string name="clr_orange">Arancio</string>

@@ -125,11 +125,11 @@
     <string name="clr_deep_purple">Dunkellila</string>
     <string name="clr_indigo">Indigoblau</string>
     <string name="clr_blue">Blau</string>
-    <string name="clr_light_blue">Hellblau</string>
+    <string name="clr_deep_blue">Hellblau</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Blaugrün</string>
     <string name="clr_green">Grün</string>
-    <string name="clr_light_green">Hellgrün</string>
+    <string name="clr_deep_green">Hellgrün</string>
     <string name="clr_lime">Lindgrün</string>
     <string name="clr_yellow">Gelb</string>
     <string name="clr_orange">Orange</string>

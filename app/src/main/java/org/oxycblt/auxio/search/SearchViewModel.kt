@@ -36,6 +36,7 @@ import java.text.Normalizer
 
 /**
  * The [ViewModel] for the search functionality
+ * TODO: Implement fuzzy search?
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
@@ -44,7 +45,7 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
     private var mFilterMode: DisplayMode? = null
     private var mLastQuery = ""
 
-    /** Current search results from the last [doSearch] call. */
+    /** Current search results from the last [search] call. */
     val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
     val isNavigating: Boolean get() = mIsNavigating
     val filterMode: DisplayMode? get() = mFilterMode
@@ -61,7 +62,7 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
      * Use [query] to perform a search of the music library.
      * Will push results to [searchResults].
      */
-    fun doSearch(query: String) {
+    fun search(query: String) {
         val musicStore = MusicStore.maybeGetInstance()
         mLastQuery = query
 
@@ -124,7 +125,7 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
 
         settingsManager.searchFilterMode = mFilterMode
 
-        doSearch(mLastQuery)
+        search(mLastQuery)
     }
 
     /**
@@ -183,7 +184,7 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
     // --- OVERRIDES ---
 
     override fun onLoaded(musicStore: MusicStore) {
-        doSearch(mLastQuery)
+        search(mLastQuery)
     }
 
     override fun onCleared() {

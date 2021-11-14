@@ -104,7 +104,7 @@ class SearchFragment : Fragment() {
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.doSearch(text?.toString() ?: "")
+                searchModel.search(text?.toString() ?: "")
             }
 
             // Auto-open the keyboard when this view is shown
