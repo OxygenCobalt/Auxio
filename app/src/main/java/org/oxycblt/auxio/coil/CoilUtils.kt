@@ -28,7 +28,6 @@ import coil.Coil
 import coil.fetch.Fetcher
 import coil.request.ImageRequest
 import coil.size.OriginalSize
-import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -44,7 +43,7 @@ import org.oxycblt.auxio.settings.SettingsManager
  */
 @BindingAdapter("albumArt")
 fun ImageView.bindAlbumArt(song: Song?) {
-    load(song?.album, R.drawable.ic_song, AlbumArtFetcher(context))
+    load(song?.album, R.drawable.ic_album, AlbumArtFetcher(context))
 }
 
 /**
@@ -69,13 +68,6 @@ fun ImageView.bindArtistImage(artist: Artist?) {
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre?) {
     load(genre, R.drawable.ic_genre, MosaicFetcher(context))
-
-    if (genre != null) {
-        contentDescription = context.getString(
-            R.string.desc_genre_image,
-            genre.resolvedName
-        )
-    }
 }
 
 /**
@@ -91,14 +83,7 @@ inline fun <reified T : BaseModel> ImageView.load(
     @DrawableRes error: Int,
     fetcher: Fetcher<T>,
 ) {
-    val settingsManager = SettingsManager.getInstance()
-
-    if (!settingsManager.showCovers) {
-        setImageResource(error)
-        return
-    }
-
-    Coil.imageLoader(context).enqueue(
+    val disposable = Coil.imageLoader(context).enqueue(
         ImageRequest.Builder(context)
             .target(this)
             .data(data)
@@ -118,7 +103,6 @@ inline fun <reified T : BaseModel> ImageView.load(
 fun loadBitmap(
     context: Context,
     song: Song,
-    cornerRadius: Float = 0f,
     onDone: (Bitmap?) -> Unit
 ) {
     val settingsManager = SettingsManager.getInstance()
@@ -132,7 +116,6 @@ fun loadBitmap(
         ImageRequest.Builder(context)
             .data(song.album)
             .fetcher(AlbumArtFetcher(context))
-            .transformations(RoundedCornersTransformation(cornerRadius))
             .size(OriginalSize)
             .target(
                 onError = { onDone(null) },

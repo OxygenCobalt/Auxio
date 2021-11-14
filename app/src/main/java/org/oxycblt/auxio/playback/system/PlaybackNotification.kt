@@ -46,7 +46,7 @@ class PlaybackNotification private constructor(
     mediaToken: MediaSessionCompat.Token
 ) : NotificationCompat.Builder(context, CHANNEL_ID) {
     init {
-        setSmallIcon(R.drawable.ic_notif)
+        setSmallIcon(R.drawable.ic_auxio)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)

@@ -165,12 +165,12 @@
                         style="@style/Widget.Auxio.TextView.Icon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:theme="@style/Theme.Auxio.Neutral"
-                        app:drawableStartCompat="@drawable/ic_song"
+                        app:drawableStartCompat="@drawable/ic_album"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/about_licenses"
-                        tools:text="Songs Loaded: 1616" />
+                        tools:text="Songs Loaded: 1616"
+                        app:drawableTint="?attr/colorControlNormal" />
 
                     <TextView
                         android:id="@+id/about_author"
@@ -178,7 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lbl_author"
-                        android:theme="@style/Theme.Auxio.Neutral"
+                        app:drawableTint="?attr/colorControlNormal"
                         app:drawableStartCompat="@drawable/ic_artist"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

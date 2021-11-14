@@ -24,6 +24,7 @@ import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
@@ -41,7 +42,9 @@ private fun createViews(
     return views
 }
 
-private fun RemoteViews.applyMeta(state: WidgetState): RemoteViews {
+private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteViews {
+    applyCover(context, state)
+
     setTextViewText(R.id.widget_song, state.song.name)
     setTextViewText(R.id.widget_artist, state.song.album.artist.resolvedName)
 
@@ -55,31 +58,19 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
             R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
         )
     } else {
-        setImageViewResource(R.id.widget_cover, R.drawable.ic_song)
+        logD("WHY ARE YOU NOT WORKING")
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
 
     return this
 }
-private fun RemoteViews.applyControls(context: Context, state: WidgetState): RemoteViews {
-    setOnClickPendingIntent(
-        R.id.widget_skip_prev,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_SKIP_PREV
-        )
-    )
 
+private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState): RemoteViews {
     setOnClickPendingIntent(
         R.id.widget_play_pause,
         context.newBroadcastIntent(
             PlaybackService.ACTION_PLAY_PAUSE
-        )
-    )
-
-    setOnClickPendingIntent(
-        R.id.widget_skip_next,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_SKIP_NEXT
         )
     )
 
@@ -90,6 +81,26 @@ private fun RemoteViews.applyControls(context: Context, state: WidgetState): Rem
         } else {
             R.drawable.ic_play
         }
+    )
+
+    return this
+}
+
+private fun RemoteViews.applyControls(context: Context, state: WidgetState): RemoteViews {
+    applyPlayControls(context, state)
+
+    setOnClickPendingIntent(
+        R.id.widget_skip_prev,
+        context.newBroadcastIntent(
+            PlaybackService.ACTION_SKIP_PREV
+        )
+    )
+
+    setOnClickPendingIntent(
+        R.id.widget_skip_next,
+        context.newBroadcastIntent(
+            PlaybackService.ACTION_SKIP_NEXT
+        )
     )
 
     return this
@@ -133,41 +144,59 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
     return this
 }
 
+/**
+ * The default widget is displayed whenever there is no music playing. It just shows the
+ * message "No music playing".
+ */
 fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
 }
 
+/**
+ * The tiny widget is for an edge-case situation where a 2xN widget happens to be smaller than
+ * 100dp. It just shows the cover, titles, and a button.
+ */
 fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_tiny)
-        .applyMeta(state)
+        .applyMeta(context, state)
+        .applyPlayControls(context, state)
+}
+
+/**
+ * The small widget is for 2x2 widgets and just shows the cover art and playback controls.
+ * This is generally because a Medium widget is too large for this widget size and a text-only
+ * widget is too small for this widget size.
+ */
+fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_small)
         .applyCover(context, state)
         .applyControls(context, state)
 }
 
+/**
+ * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three
+ * controls. This is the default widget configuration.
+ */
+fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_medium)
+        .applyMeta(context, state)
+        .applyControls(context, state)
+}
+
+/**
+ * The wide widget is for Nx2 widgets and is like the small widget but with more controls.
+ */
 fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_wide)
-        .applyMeta(state)
         .applyCover(context, state)
         .applyFullControls(context, state)
 }
 
-fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_small)
-        .applyMeta(state)
-        .applyCover(context, state)
-        .applyControls(context, state)
-}
-
-fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_medium)
-        .applyMeta(state)
-        .applyCover(context, state)
-        .applyControls(context, state)
-}
-
+/**
+ * The large widget is for 3x4 widgets and shows all metadata and controls.
+ */
 fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_large)
-        .applyMeta(state)
-        .applyCover(context, state)
+        .applyMeta(context, state)
         .applyFullControls(context, state)
 }

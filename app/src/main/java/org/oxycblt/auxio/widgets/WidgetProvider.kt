@@ -32,27 +32,23 @@ import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
 import coil.Coil
 import coil.request.ImageRequest
-import coil.size.OriginalSize
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.AlbumArtFetcher
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
+import kotlin.math.min
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
- * packing what could be considered multiple widgets into a single responsive widget. All types
- * are listed below:
+ * packing what could be considered multiple widgets into a single responsive widget.
  *
- * - Large widgets will show cover art and all controls
- * - Tall and thin widgets will show cover art and three controls
- * - Wide or small widgets will display a "Stylistic" view with controls and the cover art
- * - Tiny widgets [e.g landscape mode] will show cover art, text, and a play/pause control.
- *
- * There are some minor problems with this implementation [notably UI jittering when the widget
- * picks a new layout below Android 12], but this is tolerable. It may be improved in the future.
+ * This widget is also able to backport it's responsive behavior to android versions below 12,
+ * albeit with some issues, such as UI jittering and a layout not being picked when the orientation
+ * changes. This is tolerable.
  *
  * For more specific details about these sub-widgets, see Forms.kt.
  */
@@ -92,28 +88,37 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-        val builder = ImageRequest.Builder(context)
+        // Load our image so that it takes up the phone screen. This allows
+        // us to get stable rounded corners for every single widget image. This probably
+        // sacrifices quality in some way, but it's really the only good option.
+        // Hey google, maybe allow us to use our own views in widgets next time. That would
+        // be nice.
+        val metrics = context.resources.displayMetrics
+        val imageSize = min(metrics.widthPixels, metrics.heightPixels)
+
+        val coverRequest = ImageRequest.Builder(context)
             .data(song.album)
             .fetcher(AlbumArtFetcher(context))
-            .size(OriginalSize)
-            .target(
-                onError = { onDone(null) },
-                onSuccess = { onDone(it.toBitmap()) }
-            )
+            .size(imageSize)
 
         // If we are on Android 12 or higher, round out the album cover so that the widget is
         // cohesive. I really don't like this, but whatever.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            builder.transformations(
-                RoundedCornersTransformation(
-                    context.resources.getDimensionPixelSize(
-                        android.R.dimen.system_app_widget_inner_radius
-                    ).toFloat()
-                )
+            val transform = RoundedCornersTransformation(
+                context.resources.getDimensionPixelSize(
+                    android.R.dimen.system_app_widget_inner_radius
+                ).toFloat()
             )
+
+            coverRequest.transformations(transform)
         }
 
-        Coil.imageLoader(context).enqueue(builder.build())
+        coverRequest.target(
+            onError = { onDone(null) },
+            onSuccess = { onDone(it.toBitmap()) }
+        )
+
+        Coil.imageLoader(context).enqueue(coverRequest.build())
     }
 
     /*
@@ -127,7 +132,7 @@ class WidgetProvider : AppWidgetProvider() {
         )
     }
 
-    // / --- OVERRIDES ---
+    // --- OVERRIDES ---
 
     override fun onUpdate(
         context: Context,
@@ -147,7 +152,6 @@ class WidgetProvider : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-
             // We can't resize the widget until we can generate the views, so request an update
             // from PlaybackService.
             requestUpdate(context)

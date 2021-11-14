@@ -57,6 +57,10 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
     ): FetchResult {
         val settingsManager = SettingsManager.getInstance()
 
+        if (!settingsManager.showCovers) {
+            error("Covers are disabled")
+        }
+
         val result = if (settingsManager.useQualityCovers) {
             fetchQualityCovers(data.songs[0])
         } else {

@@ -83,5 +83,7 @@
         <item name="colorSecondary">?android:attr/colorAccent</item>
         <item name="colorControlNormal">?android:attr/colorControlNormal</item>
         <item name="colorControlHighlight">?android:attr/colorControlHighlight</item>
+        <item name="colorSurfaceInverse">@color/m3_sys_color_dynamic_light_inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/m3_sys_color_dynamic_light_inverse_on_surface</item>
     </style>
 </resources>

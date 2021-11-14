@@ -26,7 +26,7 @@
             app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_song" />
+            tools:src="@drawable/ic_album" />
 
         <TextView
             android:id="@+id/playback_song"

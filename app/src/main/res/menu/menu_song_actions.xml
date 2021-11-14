@@ -5,10 +5,8 @@
         android:title="@string/lbl_queue_add" />
     <item
         android:id="@+id/action_go_artist"
-        android:icon="@drawable/ic_artist"
         android:title="@string/lbl_go_artist" />
     <item
         android:id="@+id/action_go_album"
-        android:icon="@drawable/ic_album"
         android:title="@string/lbl_go_album" />
 </menu>

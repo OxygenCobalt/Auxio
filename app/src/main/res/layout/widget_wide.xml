@@ -45,7 +45,7 @@
         android:layout_alignTop="@id/widget_aspect_ratio"
         android:layout_alignEnd="@id/widget_aspect_ratio"
         android:layout_alignBottom="@id/widget_aspect_ratio"
-        android:src="@drawable/ic_song"
+        android:src="@drawable/ic_widget_album"
         tools:ignore="ContentDescription" />
 
     <android.widget.LinearLayout
@@ -57,7 +57,10 @@
         android:background="@drawable/ui_widget_panel"
         android:elevation="@dimen/elevation_normal"
         android:orientation="horizontal"
-        android:padding="@dimen/spacing_small">
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium">
 
         <android.widget.ImageButton
             android:id="@+id/widget_loop"

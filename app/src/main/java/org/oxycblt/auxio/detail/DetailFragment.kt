@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.memberBinding
@@ -71,17 +71,17 @@ abstract class DetailFragment : Fragment() {
 
     /**
      * Shortcut method for doing setup of the detail toolbar.
-     * @param music Music data to use as the toolbar title
+     * @param data Parent data to use as the toolbar title
      * @param menu Menu resource to use
      * @param onMenuClick (Optional) a click listener for that menu
      */
     protected fun setupToolbar(
-        music: Music,
+        data: MusicParent,
         @MenuRes menu: Int = -1,
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
         binding.detailToolbar.apply {
-            title = music.name
+            title = data.resolvedName
 
             if (menu != -1) {
                 inflateMenu(menu)

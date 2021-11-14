@@ -14,7 +14,8 @@
         android:alpha="0.275"
         android:contentDescription="@string/desc_no_cover"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_song" />
+        android:src="@drawable/ic_auxio"
+        android:tint="?attr/colorPrimary" />
 
     <android.widget.TextView
         android:layout_width="match_parent"

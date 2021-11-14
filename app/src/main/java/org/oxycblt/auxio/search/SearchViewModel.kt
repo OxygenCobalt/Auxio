@@ -36,7 +36,6 @@ import java.text.Normalizer
 
 /**
  * The [ViewModel] for the search functionality
- * TODO: Implement fuzzy search?
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel(), MusicStore.MusicCallback {

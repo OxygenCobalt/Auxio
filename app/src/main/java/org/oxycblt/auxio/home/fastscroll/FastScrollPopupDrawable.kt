@@ -52,7 +52,7 @@ import kotlin.math.sqrt
 class FastScrollPopupDrawable(context: Context) : Drawable() {
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
-        color = R.attr.colorControlActivated.resolveAttr(context)
+        color = R.attr.colorSecondary.resolveAttr(context)
         style = Paint.Style.FILL
     }
 
@@ -86,7 +86,7 @@ class FastScrollPopupDrawable(context: Context) : Drawable() {
 
             else -> if (!path.isConvex) {
                 // The outline path must be convex before Q, but we may run into floating point
-                // error caused by calculations involving sqrt(2) or OEM implementation differences,
+                // errors caused by calculations involving sqrt(2) or OEM implementation differences,
                 // so in this case we just omit the shadow instead of crashing.
                 super.getOutline(outline)
             }

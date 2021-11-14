@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!--
+    Special album icon where the center is filled with the surface color.
+    This is used for widgets specifically, as it creates a contiguous surface
+    that looks nicer on the small widgets while also lining up with the preview.
+
+    This does cause issues when the theme is changed on older android versions, but
+    this is tolerable.
+    -->
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-0.55 0-1 0.45-1 1s0.45 1 1 1 1-0.45 1-1-0.45-1-1-1z" />
+    <path
+        android:fillColor="?attr/colorSurface"
+        android:pathData="M 11.999988,7.5000052 C 10.26837,7.4769007 8.5915309,8.560755 7.896993,10.146219 c -0.7453054,1.607465 -0.4180795,3.637951 0.8068934,4.921183 1.166041,1.284666 3.1054606,1.767719 4.7412966,1.196892 1.694811,-0.550604 2.957738,-2.193714 3.045894,-3.974751 0.132222,-1.713727 -0.824064,-3.4451124 -2.343934,-4.2469378 -0.655277,-0.3575862 -1.401101,-0.5431647 -2.147155,-0.5426 z m 0,3.5000448 c 0.727249,-0.03179 1.254295,0.852995 0.879019,1.475902 -0.300918,0.612861 -1.237867,0.707058 -1.649512,0.15916 -0.489216,-0.537264 -0.143543,-1.499245 0.56999,-1.614362 0.06589,-0.01409 0.133207,-0.02062 0.200503,-0.0207 z" />
+</vector>
