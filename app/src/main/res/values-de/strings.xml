@@ -58,7 +58,7 @@
     <string name="set_theme_auto">Automatisch</string>
     <string name="set_theme_day">Hell</string>
     <string name="set_theme_night">Dunkel</string>
-    <string name="set_accent">Akzentfarbe</string>
+    <string name="set_accent">Farbgestaltung</string>
 
     <string name="set_display">Anzeige</string>
     <string name="set_show_covers">Albumcover anzeigen</string>
@@ -125,11 +125,11 @@
     <string name="clr_deep_purple">Dunkellila</string>
     <string name="clr_indigo">Indigoblau</string>
     <string name="clr_blue">Blau</string>
-    <string name="clr_deep_blue">Hellblau</string>
+    <string name="clr_deep_blue">Dunkelblau</string>
     <string name="clr_cyan">Cyan</string>
     <string name="clr_teal">Blaugrün</string>
     <string name="clr_green">Grün</string>
-    <string name="clr_deep_green">Hellgrün</string>
+    <string name="clr_deep_green">Dunkelgrün</string>
     <string name="clr_lime">Lindgrün</string>
     <string name="clr_yellow">Gelb</string>
     <string name="clr_orange">Orange</string>

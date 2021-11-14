@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,15 +8,19 @@
     android:orientation="vertical"
     android:theme="@style/Theme.Widget">
 
+    <!--
+    This is a throwaway layout designed for the rare edge-case where a 2xN widget is shown
+    in landscape mode.
+    -->
 
-    <LinearLayout
+    <android.widget.LinearLayout
         style="@style/Widget.Auxio.AppWidget.Panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
+        <android.widget.ImageView
             android:id="@+id/widget_cover"
             style="@style/Widget.Auxio.Image.Normal"
             android:layout_marginEnd="@dimen/spacing_medium"
@@ -24,7 +28,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_song" />
 
-        <LinearLayout
+        <android.widget.LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/def_widget_artist" />
 
-        </LinearLayout>
+        </android.widget.LinearLayout>
 
         <android.widget.ImageButton
             android:id="@+id/widget_play_pause"
@@ -56,7 +60,5 @@
             android:minHeight="@dimen/size_btn_small"
             android:src="@drawable/sel_playing_state" />
 
-
-    </LinearLayout>
-
-</LinearLayout>
+    </android.widget.LinearLayout>
+</android.widget.LinearLayout>

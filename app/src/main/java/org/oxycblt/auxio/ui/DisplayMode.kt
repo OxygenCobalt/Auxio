@@ -24,7 +24,7 @@ import org.oxycblt.auxio.R
 /**
  * An enum for determining what items to show in a given list.
  * Note: **DO NOT RE-ARRANGE THE ENUM**. The ordinals are used to store library tabs, so doing
- *  changing them would also change the meaning.
+ *  changing them would also change the meaning of tab instances.
  * @author OxygenCobalt
  */
 enum class DisplayMode(@StringRes val string: Int) {

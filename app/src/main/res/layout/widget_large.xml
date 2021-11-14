@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/background"
     android:layout_width="match_parent"
@@ -8,14 +8,17 @@
     android:theme="@style/Theme.Widget">
 
     <!--
-    We can't use ConstraintLayout on widgets due to RemoteView limitations, but
-    for this widget to work, we need to get the cover to preserve it's aspect
-    ratio. So, we use a fixed-size 1000x1000 drawable and then align the cover view
-    to that so that the bounds will scale properly.
-    This is easily one of the worst layout hacks I've done, but it works.
+    For this widget form to work, we need to scale the ImageView across a 1:1 aspect ratio.
+    However, since we are working with a RemoteViews instance, we can't just use ConstraintLayout
+    to achieve this. We can use RelativeLayout, but there's no way to force an aspect ratio with
+    that layout. However, if we create an invisible ImageView that contains a massive fixed-size
+    drawable and then clamp our main ImageView to it, we can make the view scale on a 1:1 aspect
+    ratio.
+
+    This is easily one of the worst layout hacks I've done, but it seems to work.
     -->
 
-    <ImageView
+    <android.widget.ImageView
         android:id="@+id/widget_aspect_ratio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +35,7 @@
         android:visibility="invisible"
         tools:ignore="ContentDescription" />
 
-    <ImageView
+    <android.widget.ImageView
         android:id="@+id/widget_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -45,8 +48,11 @@
 
     <android.widget.LinearLayout
         android:id="@+id/widget_panel"
-        style="@style/Widget.Auxio.AppWidget.Panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:padding="@dimen/spacing_medium"
+        android:orientation="vertical"
         android:layout_gravity="center">
 
         <android.widget.TextView
@@ -66,7 +72,7 @@
         <android.widget.LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium">
+            android:layout_marginTop="@dimen/spacing_small">
 
             <android.widget.ImageButton
                 android:id="@+id/widget_loop"
@@ -117,4 +123,4 @@
 
     </android.widget.LinearLayout>
 
-</RelativeLayout>
+</android.widget.RelativeLayout>

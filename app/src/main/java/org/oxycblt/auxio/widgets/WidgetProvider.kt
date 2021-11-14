@@ -48,8 +48,7 @@ import org.oxycblt.auxio.util.logD
  *
  * - Large widgets will show cover art and all controls
  * - Tall and thin widgets will show cover art and three controls
- * - Wide and short widgets will show cover art and all controls in a compact manner
- * - Small widgets will only show text and three controls
+ * - Wide or small widgets will display a "Stylistic" view with controls and the cover art
  * - Tiny widgets [e.g landscape mode] will show cover art, text, and a play/pause control.
  *
  * There are some minor problems with this implementation [notably UI jittering when the widget

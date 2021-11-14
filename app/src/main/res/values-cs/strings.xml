@@ -126,11 +126,11 @@
     <string name="clr_deep_purple">"Tmavě fialová"</string>
     <string name="clr_indigo">"Indigo"</string>
     <string name="clr_blue">"Modrá"</string>
-    <string name="clr_deep_blue">"Světle modrá"</string>
+    <string name="clr_deep_blue">Tmavě modrá</string>
     <string name="clr_cyan">"Azurová"</string>
     <string name="clr_teal">"Čajová"</string>
     <string name="clr_green">"Zelená"</string>
-    <string name="clr_deep_green">"Světle zelená"</string>
+    <string name="clr_deep_green">Tmavě zelená</string>
     <string name="clr_lime">"Limetková"</string>
     <string name="clr_yellow">"Žlutá"</string>
     <string name="clr_orange">"Oranžová"</string>
