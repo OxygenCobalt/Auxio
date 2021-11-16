@@ -27,11 +27,6 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.size.Size
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MediaMetadata
-import com.google.android.exoplayer2.MetadataRetriever
-import com.google.android.exoplayer2.metadata.flac.PictureFrame
-import com.google.android.exoplayer2.metadata.id3.ApicFrame
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
@@ -39,9 +34,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toAlbumArtURI
 import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.logD
 import java.io.ByteArrayInputStream
-import java.lang.Exception
 
 /**
  * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
@@ -91,14 +84,14 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         if (result != null) {
             return result
         }
-
-        // Our next fallback is to rely on ExoPlayer's largely half-baked and undocumented
-        // metadata system.
-        val exoResult = fetchExoplayerCover(song)
-
-        if (exoResult != null) {
-            return exoResult
-        }
+//
+//        // Our next fallback is to rely on ExoPlayer's largely half-baked and undocumented
+//        // metadata system.
+//        val exoResult = fetchExoplayerCover(song)
+//
+//        if (exoResult != null) {
+//            return exoResult
+//        }
 
         // If the previous two failed, we resort to MediaStore's covers despite it literally
         // going against the point of this setting. The previous two calls are just too unreliable
@@ -156,84 +149,86 @@ class AlbumArtFetcher(private val context: Context) : Fetcher<Album> {
         return null
     }
 
-    private fun fetchExoplayerCover(song: Song): FetchResult? {
-        val uri = song.id.toURI()
-
-        val future = MetadataRetriever.retrieveMetadata(
-            context, MediaItem.fromUri(song.id.toURI())
-        )
-
-        // Coil is async, we can just spin until the loading has ended
-        while (future.isDone) { /* no-op */ }
-
-        val tracks = try {
-            future.get()
-        } catch (e: Exception) {
-            null
-        }
-
-        if (tracks == null || tracks.isEmpty) {
-            // Unrecognized format. This is expected, as ExoPlayer only supports a
-            // subset of formats.
-            return null
-        }
-
-        // The metadata extraction process of ExoPlayer is normalized into a superclass.
-        // That means we have to iterate through and find the cover art ourselves.
-        val metadata = tracks[0].getFormat(0).metadata
-
-        if (metadata == null || metadata.length() == 0) {
-            // No (parsable) metadata. This is also expected.
-            return null
-        }
-
-        var stream: ByteArrayInputStream? = null
-
-        for (i in 0 until metadata.length()) {
-            // We can only extract pictures from two tags with this method, ID3v2's APIC or
-            // FLAC's PICTURE.
-            val pic: ByteArray?
-            val type: Int
-
-            when (val entry = metadata.get(i)) {
-                is ApicFrame -> {
-                    pic = entry.pictureData
-                    type = entry.pictureType
-                }
-                is PictureFrame -> {
-                    pic = entry.pictureData
-                    type = entry.pictureType
-                }
-                else -> continue
-            }
-
-            // Ensure the picture type here is a front cover image so that we don't extract
-            // an incorrect cover image.
-            // Yes, this does add some latency, but its quality covers so we can prioritize
-            // correctness over speed.
-            if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
-                logD("Front cover successfully found")
-
-                // We have a front cover image. Great.
-                stream = ByteArrayInputStream(pic)
-                break
-            } else if (stream != null) {
-                // In the case a front cover is not found, use the first image in the tag instead.
-                // This can be corrected later on if a front cover frame is found.
-                logD("Image not a front cover, assigning image of type $type for now")
-
-                stream = ByteArrayInputStream(pic)
-            }
-        }
-
-        return stream?.use { stm ->
-            return SourceResult(
-                source = stm.source().buffer(),
-                mimeType = context.contentResolver.getType(uri),
-                dataSource = DataSource.DISK
-            )
-        }
-    }
+//    Disabled until I can figure out how the hell I can get a blocking call to play along in
+//    a suspend function. I doubt it's possible.
+//    private fun fetchExoplayerCover(song: Song): FetchResult? {
+//        val uri = song.id.toURI()
+//
+//        val future = MetadataRetriever.retrieveMetadata(
+//            context, MediaItem.fromUri(song.id.toURI())
+//        )
+//
+//        // Coil is async, we can just spin until the loading has ended
+//        while (future.isDone) { /* no-op */ }
+//
+//        val tracks = try {
+//            future.get()
+//        } catch (e: Exception) {
+//            null
+//        }
+//
+//        if (tracks == null || tracks.isEmpty) {
+//            // Unrecognized format. This is expected, as ExoPlayer only supports a
+//            // subset of formats.
+//            return null
+//        }
+//
+//        // The metadata extraction process of ExoPlayer is normalized into a superclass.
+//        // That means we have to iterate through and find the cover art ourselves.
+//        val metadata = tracks[0].getFormat(0).metadata
+//
+//        if (metadata == null || metadata.length() == 0) {
+//            // No (parsable) metadata. This is also expected.
+//            return null
+//        }
+//
+//        var stream: ByteArrayInputStream? = null
+//
+//        for (i in 0 until metadata.length()) {
+//            // We can only extract pictures from two tags with this method, ID3v2's APIC or
+//            // FLAC's PICTURE.
+//            val pic: ByteArray?
+//            val type: Int
+//
+//            when (val entry = metadata.get(i)) {
+//                is ApicFrame -> {
+//                    pic = entry.pictureData
+//                    type = entry.pictureType
+//                }
+//                is PictureFrame -> {
+//                    pic = entry.pictureData
+//                    type = entry.pictureType
+//                }
+//                else -> continue
+//            }
+//
+//            // Ensure the picture type here is a front cover image so that we don't extract
+//            // an incorrect cover image.
+//            // Yes, this does add some latency, but its quality covers so we can prioritize
+//            // correctness over speed.
+//            if (type == MediaMetadata.PICTURE_TYPE_FRONT_COVER) {
+//                logD("Front cover successfully found")
+//
+//                // We have a front cover image. Great.
+//                stream = ByteArrayInputStream(pic)
+//                break
+//            } else if (stream != null) {
+//                // In the case a front cover is not found, use the first image in the tag instead.
+//                // This can be corrected later on if a front cover frame is found.
+//                logD("Image not a front cover, assigning image of type $type for now")
+//
+//                stream = ByteArrayInputStream(pic)
+//            }
+//        }
+//
+//        return stream?.use { stm ->
+//            return SourceResult(
+//                source = stm.source().buffer(),
+//                mimeType = context.contentResolver.getType(uri),
+//                dataSource = DataSource.DISK
+//            )
+//        }
+//    }
 
     override fun key(data: Album) = data.id.toString()
 }

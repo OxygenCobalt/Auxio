@@ -25,6 +25,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.Coil
+import coil.clear
 import coil.fetch.Fetcher
 import coil.request.ImageRequest
 import coil.size.OriginalSize
@@ -83,7 +84,9 @@ inline fun <reified T : BaseModel> ImageView.load(
     @DrawableRes error: Int,
     fetcher: Fetcher<T>,
 ) {
-    val disposable = Coil.imageLoader(context).enqueue(
+    clear()
+
+    Coil.imageLoader(context).enqueue(
         ImageRequest.Builder(context)
             .target(this)
             .data(data)
