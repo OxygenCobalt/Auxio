@@ -59,8 +59,8 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/spacing_small"
         android:paddingBottom="@dimen/spacing_small"
-        android:paddingStart="@dimen/spacing_medium"
-        android:paddingEnd="@dimen/spacing_medium">
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_small">
 
         <android.widget.ImageButton
             android:id="@+id/widget_loop"
