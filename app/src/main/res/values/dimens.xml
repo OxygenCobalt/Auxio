@@ -14,7 +14,8 @@
 
     <dimen name="size_cover_compact">48dp</dimen>
     <dimen name="size_cover_normal">56dp</dimen>
-    <dimen name="size_cover_huge_land">128dp</dimen>
+    <dimen name="size_cover_large">128dp</dimen>
+    <dimen name="size_cover_mid_huge">192dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
 
     <dimen name="size_small_unb_ripple">20dp</dimen>

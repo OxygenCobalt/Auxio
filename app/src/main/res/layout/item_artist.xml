@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/artist_image"
-            style="@style/Widget.Auxio.Image.Normal"
+            style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_artist_image(artist.resolvedName)}"
             app:artistImage="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -12,9 +12,7 @@
 
         <ImageView
             android:id="@+id/detail_cover"
-            style="@style/Widget.Auxio.Image.Full"
-            android:layout_width="@dimen/size_cover_huge"
-            android:layout_height="@dimen/size_cover_huge"
+            style="@style/Widget.Auxio.Image.Huge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,19 +51,19 @@
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
             tools:text="Info B" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/detail_play_button"
             style="@style/Widget.Auxio.Button.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@string/lbl_play"
             app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_info" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/detail_shuffle_button"
             style="@style/Widget.Auxio.Button.Primary"
             android:layout_width="0dp"

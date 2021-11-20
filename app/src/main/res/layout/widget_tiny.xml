@@ -22,7 +22,7 @@
 
         <android.widget.ImageView
             android:id="@+id/widget_cover"
-            style="@style/Widget.Auxio.Image.Normal"
+            style="@style/Widget.Auxio.Image.Medium"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:contentDescription="@string/desc_no_cover"
             android:scaleType="centerCrop"

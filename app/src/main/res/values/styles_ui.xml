@@ -19,19 +19,35 @@
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
 
-    <style name="Widget.Auxio.Image.Compact" parent="">
+    <style name="Widget.Auxio.Image.Small" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>
     </style>
 
-    <style name="Widget.Auxio.Image.Normal" parent="">
+    <style name="Widget.Auxio.Image.Medium" parent="">
         <item name="android:layout_width">@dimen/size_cover_normal</item>
         <item name="android:layout_height">@dimen/size_cover_normal</item>
+    </style>
+
+    <style name="Widget.Auxio.Image.Large" parent="">
+        <item name="android:layout_width">@dimen/size_cover_large</item>
+        <item name="android:layout_height">@dimen/size_cover_large</item>
+    </style>
+
+    <style name="Widget.Auxio.Image.MidHuge" parent="">
+        <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
+        <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
+    </style>
+
+    <style name="Widget.Auxio.Image.Huge" parent="">
+        <item name="android:layout_width">@dimen/size_cover_huge</item>
+        <item name="android:layout_height">@dimen/size_cover_huge</item>
     </style>
 
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
+        <item name="layout_constraintDimensionRatio">1</item>
     </style>
 
     <style name="Widget.Auxio.ItemLayout" parent="">
@@ -108,7 +124,7 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.HeadlineSmall</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleLarge</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
 

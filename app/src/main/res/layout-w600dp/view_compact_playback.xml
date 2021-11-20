@@ -23,7 +23,7 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            style="@style/Widget.Auxio.Image.Compact"
+            style="@style/Widget.Auxio.Image.Small"
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"

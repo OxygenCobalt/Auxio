@@ -10,9 +10,7 @@
 
         <ImageView
             android:id="@+id/detail_cover"
-            style="@style/Widget.Auxio.Image.Full"
-            android:layout_width="@dimen/size_cover_huge"
-            android:layout_height="@dimen/size_cover_huge"
+            style="@style/Widget.Auxio.Image.Huge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
@@ -21,11 +19,12 @@
         <TextView
             android:id="@+id/detail_name"
             style="@style/Widget.Auxio.TextView.Detail"
+            android:textAppearance="@style/TextAppearance.Auxio.HeadlineLarge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:ellipsize="end"
-            android:maxLines="4"
+            android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@+id/detail_subhead"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -40,6 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
+            android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toTopOf="@+id/detail_info"
@@ -54,26 +54,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
+            app:layout_constraintBottom_toTopOf="@+id/detail_play_button"
             tools:text="Info B" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/detail_play_button"
             style="@style/Widget.Auxio.Button.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@string/lbl_play"
+            app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
             app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_cover" />
+            app:layout_constraintStart_toEndOf="@+id/detail_cover"
+            app:layout_constraintTop_toBottomOf="@+id/detail_info" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/detail_shuffle_button"
             style="@style/Widget.Auxio.Button.Primary"
             android:layout_width="0dp"

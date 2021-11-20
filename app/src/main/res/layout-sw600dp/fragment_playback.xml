@@ -42,7 +42,6 @@
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_song"
-            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"

@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/album_cover"
-            style="@style/Widget.Auxio.Image.Normal"
+            style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_album_cover(album.name)}"
             app:albumArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/genre_image"
-            style="@style/Widget.Auxio.Image.Normal"
+            style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_genre_image(genre.resolvedName)}"
             app:genreImage="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"

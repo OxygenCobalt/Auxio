@@ -29,6 +29,10 @@
         <!-- Material configuration -->
         <item name="materialAlertDialogTheme">@style/Theme.Auxio.Dialog</item>
 
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Auxio.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Auxio.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Auxio.DisplaySmall</item>
+
         <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Auxio.HeadlineLarge</item>
         <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Auxio.HeadlineMedium</item>
         <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Auxio.HeadlineSmall</item>

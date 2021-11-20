@@ -12,7 +12,8 @@
 
         <ImageView
             android:id="@+id/detail_cover"
-            style="@style/Widget.Auxio.Image.Large"
+            style="@style/Widget.Auxio.Image.MidHuge"
+            app:layout_constraintDimensionRatio="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
@@ -23,6 +24,7 @@
             style="@style/Widget.Auxio.TextView.Detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
             android:layout_marginStart="@dimen/spacing_medium"
             android:ellipsize="end"
             android:maxLines="1"
@@ -42,9 +44,9 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:clickable="true"
             android:focusable="true"
-            android:textColor="?android:attr/textColorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/detail_info"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_name"
             tools:text="Info A" />
@@ -55,25 +57,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
-            android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
+            app:layout_constraintBottom_toTopOf="@+id/detail_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
             tools:text="Info B" />
+
 
         <Button
             android:id="@+id/detail_play_button"
             style="@style/Widget.Auxio.Button.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_small"
             android:text="@string/lbl_play"
+            app:layout_constraintBottom_toBottomOf="@+id/detail_cover"
             app:layout_constraintEnd_toStartOf="@+id/detail_shuffle_button"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_cover" />
+            app:layout_constraintStart_toEndOf="@+id/detail_cover"
+            app:layout_constraintTop_toBottomOf="@+id/detail_info" />
 
         <Button
             android:id="@+id/detail_shuffle_button"
@@ -86,6 +90,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/detail_play_button"
             app:layout_constraintTop_toTopOf="@+id/detail_play_button" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

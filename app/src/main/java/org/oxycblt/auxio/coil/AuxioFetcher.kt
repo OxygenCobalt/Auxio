@@ -45,7 +45,7 @@ abstract class AuxioFetcher : Fetcher {
     }
 
     /**
-     * Create a mosaic image from multiple image views, Code adapted from Phonograph
+     * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
     protected fun createMosaic(context: Context, streams: List<InputStream>): FetchResult? {
