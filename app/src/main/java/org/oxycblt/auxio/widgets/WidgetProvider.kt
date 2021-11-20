@@ -30,7 +30,7 @@ import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
-import coil.Coil
+import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
@@ -98,6 +98,10 @@ class WidgetProvider : AppWidgetProvider() {
         val coverRequest = ImageRequest.Builder(context)
             .data(song.album)
             .size(imageSize)
+            .target(
+                onError = { onDone(null) },
+                onSuccess = { onDone(it.toBitmap()) }
+            )
 
         // If we are on Android 12 or higher, round out the album cover so that the widget is
         // cohesive. I really don't like this, but whatever.
@@ -111,12 +115,7 @@ class WidgetProvider : AppWidgetProvider() {
             coverRequest.transformations(transform)
         }
 
-        coverRequest.target(
-            onError = { onDone(null) },
-            onSuccess = { onDone(it.toBitmap()) }
-        )
-
-        Coil.imageLoader(context).enqueue(coverRequest.build())
+        context.imageLoader.enqueue(coverRequest.build())
     }
 
     /*

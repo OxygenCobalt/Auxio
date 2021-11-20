@@ -57,7 +57,6 @@
         android:paddingBottom="@dimen/spacing_small"
         android:paddingStart="@dimen/spacing_small"
         android:paddingEnd="@dimen/spacing_small"
-        android:elevation="@dimen/elevation_normal"
         android:orientation="horizontal"
         android:background="@drawable/ui_widget_panel"
         android:layout_gravity="center">
