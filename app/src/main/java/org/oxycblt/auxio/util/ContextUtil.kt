@@ -106,12 +106,3 @@ fun Context.getPlural(@PluralsRes pluralsRes: Int, value: Int): String {
 fun Context.isLandscape(): Boolean {
     return resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 }
-
-/**
- * Determine if the tablet is XLARGE, ignoring normal tablets.
- */
-fun Context.isXLTablet(): Boolean {
-    val layout = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK
-
-    return layout == Configuration.SCREENLAYOUT_SIZE_XLARGE
-}

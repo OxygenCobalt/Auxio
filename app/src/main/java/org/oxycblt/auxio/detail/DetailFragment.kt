@@ -27,7 +27,6 @@ import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
@@ -35,7 +34,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.memberBinding
-import org.oxycblt.auxio.util.isLandscape
+import org.oxycblt.auxio.util.applySpans
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
@@ -110,16 +109,7 @@ abstract class DetailFragment : Fragment() {
             adapter = detailAdapter
             setHasFixedSize(true)
 
-            // Set up a grid if the mode is landscape
-            if (requireContext().isLandscape()) {
-                layoutManager = GridLayoutManager(requireContext(), 2).also {
-                    it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (gridLookup(position)) 2 else 1
-                        }
-                    }
-                }
-            }
+            applySpans(gridLookup)
         }
     }
 

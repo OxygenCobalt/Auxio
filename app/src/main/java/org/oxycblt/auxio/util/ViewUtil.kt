@@ -35,6 +35,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
+import org.oxycblt.auxio.R
 
 /**
  * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
@@ -57,11 +58,7 @@ fun View.applyMaterialDrawable() {
  * regardless of spans
  */
 fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
-    val spans = if (context.isLandscape()) {
-        if (context.isXLTablet()) 3 else 2
-    } else {
-        if (context.isXLTablet()) 2 else 1
-    }
+    val spans = resources.getInteger(R.integer.recycler_spans)
 
     if (spans > 1) {
         val mgr = GridLayoutManager(context, spans)
