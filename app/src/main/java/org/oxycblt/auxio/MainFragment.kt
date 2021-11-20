@@ -142,10 +142,6 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         return binding.root
     }
 
-    override fun onPlayPauseClick() {
-        playbackModel.invertPlayingStatus()
-    }
-
     override fun onNavToPlayback() {
         findNavController().navigate(
             MainFragmentDirections.actionGoToPlayback()
@@ -154,5 +150,17 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
 
     override fun onNavToItem() {
         detailModel.navToItem(playbackModel.song.value ?: return)
+    }
+
+    override fun onPrev() {
+        playbackModel.skipPrev()
+    }
+
+    override fun onPlayPauseClick() {
+        playbackModel.invertPlayingStatus()
+    }
+
+    override fun onNext() {
+        playbackModel.skipNext()
     }
 }

@@ -352,7 +352,9 @@ class PlaybackBarLayout @JvmOverloads constructor(
      * view is detached.
      */
     interface ActionCallback {
+        fun onPrev()
         fun onPlayPauseClick()
+        fun onNext()
         fun onNavToItem()
         fun onNavToPlayback()
     }

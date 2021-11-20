@@ -38,9 +38,7 @@
         <ImageView
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Full"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_insane"
-            android:layout_marginBottom="@dimen/spacing_insane"
+            android:layout_margin="@dimen/spacing_mid_large"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"

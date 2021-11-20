@@ -81,10 +81,6 @@ class PlaybackBarView @JvmOverloads constructor(
             true
         }
 
-        binding.playbackPlayPause.setOnClickListener {
-            mCallback?.onPlayPauseClick()
-        }
-
         // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
         // we use colorSecondary instead of colorSurfaceVariant. This is for two reasons:
         // 1. colorSurfaceVariant is used with the assumption that the view that is using it
@@ -115,9 +111,11 @@ class PlaybackBarView @JvmOverloads constructor(
 
     fun setCallback(callback: PlaybackBarLayout.ActionCallback) {
         mCallback = callback
+        binding.callback = callback
     }
 
     fun clearCallback() {
         mCallback = null
+        binding.callback = null
     }
 }
