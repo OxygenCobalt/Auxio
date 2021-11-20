@@ -22,6 +22,11 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
+import org.oxycblt.auxio.coil.AlbumArtFetcher
+import org.oxycblt.auxio.coil.ArtistImageFetcher
+import org.oxycblt.auxio.coil.CrossfadeTransition
+import org.oxycblt.auxio.coil.GenreImageFetcher
+import org.oxycblt.auxio.coil.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
 
 @Suppress("UNUSED")
@@ -36,9 +41,15 @@ class AuxioApp : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
+            .components {
+                add(AlbumArtFetcher.SongFactory())
+                add(AlbumArtFetcher.AlbumFactory())
+                add(ArtistImageFetcher.Factory())
+                add(GenreImageFetcher.Factory())
+                add(MusicKeyer())
+            }
+            .transitionFactory(CrossfadeTransition.Factory())
             .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
-            .crossfade(true)
-            .placeholder(android.R.color.transparent)
             .build()
     }
 }

@@ -17,9 +17,9 @@
             android:paddingEnd="@dimen/spacing_small"
             app:labelBehavior="gone"
             android:valueFrom="0"
-            android:valueTo="0"
-            app:thumbRadius="6dp"
-            app:haloRadius="14dp"
+            android:valueTo="1"
+            app:thumbRadius="@dimen/slider_thumb_radius"
+            app:haloRadius="@dimen/slider_halo_radius"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

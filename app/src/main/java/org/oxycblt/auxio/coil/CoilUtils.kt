@@ -21,21 +21,18 @@ package org.oxycblt.auxio.coil
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
-import coil.Coil
-import coil.clear
-import coil.fetch.Fetcher
+import coil.dispose
+import coil.imageLoader
+import coil.load
 import coil.request.ImageRequest
 import coil.size.OriginalSize
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
 
 // --- BINDING ADAPTERS ---
 
@@ -44,7 +41,11 @@ import org.oxycblt.auxio.settings.SettingsManager
  */
 @BindingAdapter("albumArt")
 fun ImageView.bindAlbumArt(song: Song?) {
-    load(song?.album, R.drawable.ic_album, AlbumArtFetcher(context))
+    dispose()
+
+    load(song) {
+        error(R.drawable.ic_album)
+    }
 }
 
 /**
@@ -52,7 +53,11 @@ fun ImageView.bindAlbumArt(song: Song?) {
  */
 @BindingAdapter("albumArt")
 fun ImageView.bindAlbumArt(album: Album?) {
-    load(album, R.drawable.ic_album, AlbumArtFetcher(context))
+    dispose()
+
+    load(album) {
+        error(R.drawable.ic_album)
+    }
 }
 
 /**
@@ -60,7 +65,11 @@ fun ImageView.bindAlbumArt(album: Album?) {
  */
 @BindingAdapter("artistImage")
 fun ImageView.bindArtistImage(artist: Artist?) {
-    load(artist, R.drawable.ic_artist, MosaicFetcher(context))
+    dispose()
+
+    load(artist) {
+        error(R.drawable.ic_artist)
+    }
 }
 
 /**
@@ -68,32 +77,11 @@ fun ImageView.bindArtistImage(artist: Artist?) {
  */
 @BindingAdapter("genreImage")
 fun ImageView.bindGenreImage(genre: Genre?) {
-    load(genre, R.drawable.ic_genre, MosaicFetcher(context))
-}
+    dispose()
 
-/**
- * Custom extension function similar to the stock coil load extensions, but handles whether
- * to show images and custom fetchers.
- * @param T Any datatype that inherits [BaseModel]. This can be null, but keep in mind that it will cause loading to fail.
- * @param data The data itself
- * @param error Drawable resource to use when loading failed/should not occur.
- * @param fetcher Required fetcher that uses [T] as its datatype
- */
-inline fun <reified T : BaseModel> ImageView.load(
-    data: T?,
-    @DrawableRes error: Int,
-    fetcher: Fetcher<T>,
-) {
-    clear()
-
-    Coil.imageLoader(context).enqueue(
-        ImageRequest.Builder(context)
-            .target(this)
-            .data(data)
-            .fetcher(fetcher)
-            .error(error)
-            .build()
-    )
+    load(genre?.songs?.get(0)?.album) {
+        error(R.drawable.ic_genre)
+    }
 }
 
 // --- OTHER FUNCTIONS ---
@@ -108,17 +96,9 @@ fun loadBitmap(
     song: Song,
     onDone: (Bitmap?) -> Unit
 ) {
-    val settingsManager = SettingsManager.getInstance()
-
-    if (!settingsManager.showCovers) {
-        onDone(null)
-        return
-    }
-
-    Coil.imageLoader(context).enqueue(
+    context.imageLoader.enqueue(
         ImageRequest.Builder(context)
             .data(song.album)
-            .fetcher(AlbumArtFetcher(context))
             .size(OriginalSize)
             .target(
                 onError = { onDone(null) },

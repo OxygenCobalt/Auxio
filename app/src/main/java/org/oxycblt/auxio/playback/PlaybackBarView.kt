@@ -39,7 +39,7 @@ import org.oxycblt.auxio.util.systemBarsCompat
  * A view displaying the playback state in a compact manner. This is only meant to be used
  * by [PlaybackBarLayout].
  */
-class CompactPlaybackView @JvmOverloads constructor(
+class PlaybackBarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
@@ -60,7 +60,7 @@ class CompactPlaybackView @JvmOverloads constructor(
         // MaterialShapeDrawable at runtime and allowing this code to work on API 21.
         background = R.drawable.ui_shape_ripple.resolveDrawable(context).apply {
             val backgroundDrawable = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                elevation = this@CompactPlaybackView.elevation
+                elevation = this@PlaybackBarView.elevation
                 fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
             }
 

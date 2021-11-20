@@ -133,6 +133,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
 
                     snackbar.show()
                 }
+                else -> {}
             }
         }
 

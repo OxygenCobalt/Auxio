@@ -16,7 +16,6 @@
 
     <!-- Custom dialog title theme -->
     <style name="Widget.Auxio.Dialog.TextView" parent="MaterialAlertDialog.Material3.Title.Text">
-        <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
     </style>
 

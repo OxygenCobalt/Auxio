@@ -37,6 +37,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += "-Xjvm-default=all"
     }
 
     compileOptions {
@@ -97,7 +98,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:2.16.0"
 
     // Image loading
-    implementation 'io.coil-kt:coil:1.4.0'
+    implementation 'io.coil-kt:coil:2.0.0-alpha03'
 
     // Material
     implementation "com.google.android.material:material:1.5.0-beta01"

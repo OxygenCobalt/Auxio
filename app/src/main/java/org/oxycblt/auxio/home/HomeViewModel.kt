@@ -118,6 +118,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
                 settingsManager.libGenreSort = sort
                 mGenres.value = sort.sortParents(mGenres.value!!)
             }
+            else -> {}
         }
     }
 

@@ -49,7 +49,7 @@ class PlaybackBarLayout @JvmOverloads constructor(
     @AttrRes defStyleAttr: Int = 0,
     @StyleRes defStyleRes: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
-    private val playbackView = CompactPlaybackView(context)
+    private val playbackView = PlaybackBarView(context)
     private var barDragHelper = ViewDragHelper.create(this, BarDragCallback())
     private var lastInsets: WindowInsets? = null
 

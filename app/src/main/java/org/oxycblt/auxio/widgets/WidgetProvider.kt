@@ -35,7 +35,6 @@ import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.AlbumArtFetcher
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.isLandscape
@@ -98,7 +97,6 @@ class WidgetProvider : AppWidgetProvider() {
 
         val coverRequest = ImageRequest.Builder(context)
             .data(song.album)
-            .fetcher(AlbumArtFetcher(context))
             .size(imageSize)
 
         // If we are on Android 12 or higher, round out the album cover so that the widget is

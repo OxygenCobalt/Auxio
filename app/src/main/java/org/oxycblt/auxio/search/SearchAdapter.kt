@@ -88,6 +88,7 @@ class SearchAdapter(
             is Album -> (holder as AlbumViewHolder).bind(item)
             is Song -> (holder as SongViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
+            else -> {}
         }
     }
 }

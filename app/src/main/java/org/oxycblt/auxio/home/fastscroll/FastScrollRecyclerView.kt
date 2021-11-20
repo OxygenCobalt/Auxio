@@ -68,7 +68,6 @@ import kotlin.math.abs
  * - Added drag listener
  * - TODO: Added documentation
  * - TODO: Popup will center itself to the thumb when possible
- * - TODO: Stabilize how I'm using padding
  */
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
