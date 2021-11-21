@@ -165,4 +165,32 @@
         <item name="maxImageSize">@dimen/size_play_fab_icon</item>
         <item name="fabCustomSize">@dimen/size_btn_large</item>
     </style>
+
+    <style name="Widget.MaterialComponents.Button.IconOnly">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">@dimen/size_btn_small</item>
+        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
+    <style name="Widget.MaterialComponents.Button.UnelevatedButton.IconOnly" parent="Widget.MaterialComponents.Button.IconOnly">
+        <item name="android:stateListAnimator">@animator/mtrl_btn_unelevated_state_list_anim</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Widget.MaterialComponents.Button.TextButton.IconOnly" parent="Widget.MaterialComponents.Button.UnelevatedButton.IconOnly">
+        <item name="android:textColor">@color/mtrl_text_btn_text_color_selector</item>
+        <item name="iconTint">?attr/colorControlNormal</item>
+        <item name="backgroundTint">@color/mtrl_btn_text_btn_bg_color_selector</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+
+    <style name="Widget.MaterialComponents.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.TextButton.IconOnly">
+        <item name="strokeColor">@color/mtrl_btn_stroke_color_selector</item>
+        <item name="strokeWidth">@dimen/mtrl_btn_stroke_size</item>
+    </style>
 </resources>

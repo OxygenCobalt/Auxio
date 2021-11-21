@@ -2,11 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/option_sort_asc"
-            android:title="@string/lbl_sort_asc" />
-        <item
-            android:id="@+id/option_sort_dsc"
-            android:title="@string/lbl_sort_dsc" />
+            android:id="@+id/option_sort_name"
+            android:title="@string/lbl_sort_name" />
         <item
             android:id="@+id/option_sort_artist"
             android:title="@string/lbl_sort_artist" />
@@ -16,5 +13,9 @@
         <item
             android:id="@+id/option_sort_year"
             android:title="@string/lbl_sort_year" />
+    </group>
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/option_sort_asc"
+            android:title="@string/lbl_sort_asc" />
     </group>
 </menu>

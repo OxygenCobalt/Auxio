@@ -22,6 +22,7 @@
     <string name="lbl_filter_all">All</string>
 
     <string name="lbl_sort">Sort</string>
+    <string name="lbl_sort_name">Name</string>
     <string name="lbl_sort_asc">Ascending</string>
     <string name="lbl_sort_dsc">Descending</string>
     <string name="lbl_sort_artist">Artist</string>

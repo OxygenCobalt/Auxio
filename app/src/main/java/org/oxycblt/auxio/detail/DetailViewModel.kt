@@ -33,7 +33,7 @@ import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 
 /**
  * ViewModel that stores data for the [DetailFragment]s. This includes:
@@ -64,7 +64,7 @@ class DetailViewModel : ViewModel() {
     private val mAlbumData = MutableLiveData(listOf<BaseModel>())
     val albumData: LiveData<List<BaseModel>> get() = mAlbumData
 
-    data class MenuConfig(val anchor: View, val sortMode: SortMode)
+    data class MenuConfig(val anchor: View, val sortMode: Sort)
 
     private val mShowMenu = MutableLiveData<MenuConfig?>(null)
     val showMenu: LiveData<MenuConfig?> = mShowMenu
@@ -105,10 +105,10 @@ class DetailViewModel : ViewModel() {
     }
 
     /**
-     * Mark that the menu process is done with the new [SortMode].
+     * Mark that the menu process is done with the new [Sort].
      * Pass null if there was no change.
      */
-    fun finishShowMenu(newMode: SortMode?) {
+    fun finishShowMenu(newMode: Sort?) {
         mShowMenu.value = null
 
         if (newMode != null) {
@@ -185,7 +185,7 @@ class DetailViewModel : ViewModel() {
             )
         )
 
-        data.addAll(SortMode.YEAR.sortAlbums(artist.albums))
+        data.addAll(Sort.ByYear(false).sortAlbums(artist.albums))
 
         data.add(
             ActionHeader(

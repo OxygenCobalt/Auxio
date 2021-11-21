@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.settings.tabs.Tab
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 
 /**
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
@@ -87,7 +87,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
         mRecreateTabs.value = false
     }
 
-    fun getSortForDisplay(displayMode: DisplayMode): SortMode {
+    fun getSortForDisplay(displayMode: DisplayMode): Sort {
         return when (displayMode) {
             DisplayMode.SHOW_SONGS -> settingsManager.libSongSort
             DisplayMode.SHOW_ALBUMS -> settingsManager.libAlbumSort
@@ -97,9 +97,9 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
     }
 
     /**
-     * Update the currently displayed item's [SortMode].
+     * Update the currently displayed item's [Sort].
      */
-    fun updateCurrentSort(sort: SortMode) {
+    fun updateCurrentSort(sort: Sort) {
         when (mCurTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort

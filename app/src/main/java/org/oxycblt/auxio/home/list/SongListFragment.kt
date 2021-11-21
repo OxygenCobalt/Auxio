@@ -26,7 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SongViewHolder
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
@@ -55,17 +55,17 @@ class SongListFragment : HomeListFragment() {
             val song = homeModel.songs.value!![idx]
 
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
-                SortMode.ASCENDING, SortMode.DESCENDING -> song.name.sliceArticle()
+                is Sort.ByName -> song.name.sliceArticle()
                     .first().uppercase()
 
-                SortMode.ARTIST ->
+                is Sort.ByArtist ->
                     song.album.artist.resolvedName
                         .sliceArticle().first().uppercase()
 
-                SortMode.ALBUM -> song.album.name.sliceArticle()
+                is Sort.ByAlbum -> song.album.name.sliceArticle()
                     .first().uppercase()
 
-                SortMode.YEAR -> song.album.year.toString()
+                is Sort.ByYear -> song.album.year.toString()
             }
         }
 

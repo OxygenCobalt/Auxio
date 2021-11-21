@@ -32,7 +32,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
 
@@ -123,8 +122,14 @@ abstract class DetailFragment : Fragment() {
             inflate(R.menu.menu_detail_sort)
 
             setOnMenuItemClickListener { item ->
-                item.isChecked = true
-                detailModel.finishShowMenu(SortMode.fromId(item.itemId)!!)
+                if (item.itemId == R.id.option_sort_asc) {
+                    item.isChecked = !item.isChecked
+                    detailModel.finishShowMenu(config.sortMode.ascending(item.isChecked))
+                } else {
+                    item.isChecked = true
+                    detailModel.finishShowMenu(config.sortMode.assignId(item.itemId))
+                }
+
                 true
             }
 
@@ -139,6 +144,7 @@ abstract class DetailFragment : Fragment() {
             }
 
             menu.findItem(config.sortMode.itemId).isChecked = true
+            menu.findItem(R.id.option_sort_asc).isChecked = config.sortMode.isAscending
 
             show()
         }

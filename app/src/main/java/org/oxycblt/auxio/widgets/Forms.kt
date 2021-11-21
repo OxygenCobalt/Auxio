@@ -24,7 +24,6 @@ import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
@@ -58,7 +57,6 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
             R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
         )
     } else {
-        logD("WHY ARE YOU NOT WORKING")
         setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }

@@ -47,7 +47,6 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -95,13 +94,22 @@ class HomeFragment : Fragment() {
 
                     R.id.submenu_sorting -> { }
 
+                    R.id.option_sort_asc -> {
+                        item.isChecked = !item.isChecked
+                        val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
+                            .ascending(item.isChecked)
+
+                        homeModel.updateCurrentSort(new)
+                    }
+
                     // Sorting option was selected, mark it as selected and update the mode
                     else -> {
                         item.isChecked = true
 
-                        homeModel.updateCurrentSort(
-                            requireNotNull(SortMode.fromId(item.itemId))
-                        )
+                        val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
+                            .assignId(item.itemId)
+
+                        homeModel.updateCurrentSort(requireNotNull(new))
                     }
                 }
 
@@ -208,11 +216,11 @@ class HomeFragment : Fragment() {
                 }
 
                 DisplayMode.SHOW_ARTISTS -> updateSortMenu(sortItem, tab) { id ->
-                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                    id == R.id.option_sort_asc
                 }
 
                 DisplayMode.SHOW_GENRES -> updateSortMenu(sortItem, tab) { id ->
-                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                    id == R.id.option_sort_asc
                 }
             }
 
@@ -261,6 +269,10 @@ class HomeFragment : Fragment() {
         for (option in item.subMenu) {
             if (option.itemId == toHighlight.itemId) {
                 option.isChecked = true
+            }
+
+            if (option.itemId == R.id.option_sort_asc) {
+                option.isChecked = toHighlight.isAscending
             }
 
             option.isVisible = isVisible(option.itemId)

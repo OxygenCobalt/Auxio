@@ -26,7 +26,7 @@ import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.tabs.Tab
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -125,9 +125,9 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The song sort mode on HomeFragment **/
-    var libSongSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var libSongSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_LIB_SONGS_SORT, value.toInt())
@@ -136,9 +136,9 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The album sort mode on HomeFragment **/
-    var libAlbumSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var libAlbumSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_LIB_ALBUMS_SORT, value.toInt())
@@ -147,9 +147,9 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The artist sort mode on HomeFragment **/
-    var libArtistSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var libArtistSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_LIB_ARTISTS_SORT, value.toInt())
@@ -158,20 +158,20 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The genre sort mode on HomeFragment **/
-    var libGenreSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_LIB_GENRE_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var libGenreSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
-                putInt(KEY_LIB_GENRE_SORT, value.toInt())
+                putInt(KEY_LIB_GENRES_SORT, value.toInt())
                 apply()
             }
         }
 
     /** The detail album sort mode **/
-    var detailAlbumSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var detailAlbumSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_DETAIL_ALBUM_SORT, value.toInt())
@@ -180,9 +180,9 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The detail artist sort mode **/
-    var detailArtistSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
-            ?: SortMode.YEAR
+    var detailArtistSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
+            ?: Sort.ByYear(false)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_DETAIL_ARTIST_SORT, value.toInt())
@@ -191,9 +191,9 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /** The detail genre sort mode **/
-    var detailGenreSort: SortMode
-        get() = SortMode.fromInt(sharedPrefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
-            ?: SortMode.ASCENDING
+    var detailGenreSort: Sort
+        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
+            ?: Sort.ByName(true)
         set(value) {
             sharedPrefs.edit {
                 putInt(KEY_DETAIL_GENRE_SORT, value.toInt())
@@ -249,11 +249,14 @@ class SettingsManager private constructor(context: Context) :
     }
 
     companion object {
+        // Preference keys
+        // The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with
+        // auxio_.
         const val KEY_THEME = "KEY_THEME2"
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
-        const val KEY_ACCENT = "KEY_ACCENT3"
+        const val KEY_ACCENT = "auxio_accent"
 
-        const val KEY_LIB_TABS = "KEY_LIB_TABS"
+        const val KEY_LIB_TABS = "auxio_lib_tabs"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
@@ -266,19 +269,19 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
         const val KEY_LOOP_PAUSE = "KEY_LOOP_PAUSE"
 
-        const val KEY_SAVE_STATE = "KEY_SAVE_STATE"
+        const val KEY_SAVE_STATE = "auxio_save_state"
         const val KEY_BLACKLIST = "KEY_BLACKLIST"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 
-        const val KEY_LIB_SONGS_SORT = "KEY_SONGS_SORT"
-        const val KEY_LIB_ALBUMS_SORT = "KEY_ALBUMS_SORT"
-        const val KEY_LIB_ARTISTS_SORT = "KEY_ARTISTS_SORT"
-        const val KEY_LIB_GENRE_SORT = "KEY_GENRE_SORT"
+        const val KEY_LIB_SONGS_SORT = "auxio_songs_sort"
+        const val KEY_LIB_ALBUMS_SORT = "auxio_albums_sort"
+        const val KEY_LIB_ARTISTS_SORT = "auxio_artists_sort"
+        const val KEY_LIB_GENRES_SORT = "auxio_genres_sort"
 
-        const val KEY_DETAIL_ALBUM_SORT = "KEY_ALBUM_SORT"
-        const val KEY_DETAIL_ARTIST_SORT = "KEY_ARTIST_SORT"
-        const val KEY_DETAIL_GENRE_SORT = "KEY_GENRE_SORT"
+        const val KEY_DETAIL_ALBUM_SORT = "auxio_album_sort"
+        const val KEY_DETAIL_ARTIST_SORT = "auxio_artist_sort"
+        const val KEY_DETAIL_GENRE_SORT = "auxio_genre_sort"
 
         @Volatile
         private var INSTANCE: SettingsManager? = null

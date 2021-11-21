@@ -79,7 +79,7 @@ fun ImageView.bindArtistImage(artist: Artist?) {
 fun ImageView.bindGenreImage(genre: Genre?) {
     dispose()
 
-    load(genre?.songs?.get(0)?.album) {
+    load(genre) {
         error(R.drawable.ic_genre)
     }
 }

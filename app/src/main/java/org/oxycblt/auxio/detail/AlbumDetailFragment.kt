@@ -88,7 +88,7 @@ class AlbumDetailFragment : DetailFragment() {
         detailModel.showMenu.observe(viewLifecycleOwner) { config ->
             if (config != null) {
                 showMenu(config) { id ->
-                    id == R.id.option_sort_asc || id == R.id.option_sort_dsc
+                    id == R.id.option_sort_asc
                 }
             }
         }

@@ -28,7 +28,7 @@ import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
@@ -59,13 +59,13 @@ class AlbumListFragment : HomeListFragment() {
             val album = homeModel.albums.value!![idx]
 
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
-                SortMode.ASCENDING, SortMode.DESCENDING -> album.name.sliceArticle()
+                is Sort.ByName -> album.name.sliceArticle()
                     .first().uppercase()
 
-                SortMode.ARTIST -> album.artist.resolvedName.sliceArticle()
+                is Sort.ByArtist -> album.artist.resolvedName.sliceArticle()
                     .first().uppercase()
 
-                SortMode.YEAR -> album.year.toString()
+                is Sort.ByYear -> album.year.toString()
 
                 else -> ""
             }

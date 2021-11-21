@@ -16,7 +16,7 @@
 
         <Preference
             app:icon="@drawable/ic_accent"
-            app:key="KEY_ACCENT3"
+            app:key="auxio_accent"
             app:title="@string/set_accent" />
 
         <SwitchPreferenceCompat
@@ -35,7 +35,7 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="KEY_LIB_TABS"
+            app:key="auxio_lib_tabs"
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
 
@@ -130,7 +130,7 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="KEY_SAVE_STATE"
+            app:key="auxio_save_state"
             app:summary="@string/set_save_desc"
             app:title="@string/set_save" />
 

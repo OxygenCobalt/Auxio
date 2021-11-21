@@ -26,7 +26,7 @@ import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
-import org.oxycblt.auxio.ui.SortMode
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -251,7 +251,7 @@ class MusicLoader(private val context: Context) {
         }
 
         albums.removeAll { it.songs.isEmpty() }
-        albums = SortMode.ASCENDING.sortAlbums(albums).toMutableList()
+        albums = Sort.ByName(true).sortAlbums(albums).toMutableList()
 
         logD("Songs successfully linked into ${albums.size} albums")
     }
@@ -280,7 +280,7 @@ class MusicLoader(private val context: Context) {
             )
         }
 
-        artists = SortMode.ASCENDING.sortParents(artists).toMutableList()
+        artists = Sort.ByName(true).sortParents(artists).toMutableList()
 
         logD("Albums successfully linked into ${artists.size} artists")
     }

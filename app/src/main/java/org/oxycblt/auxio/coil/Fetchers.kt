@@ -71,8 +71,7 @@ class ArtistImageFetcher private constructor(
     private val artist: Artist
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val end = min(4, artist.albums.size)
-        val results = artist.albums.mapN(end) { album ->
+        val results = artist.albums.mapAtMost(4) { album ->
             fetchArt(context, album)
         }
 
@@ -92,8 +91,7 @@ class GenreImageFetcher private constructor(
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
         val albums = genre.songs.groupBy { it.album }.keys
-        val end = min(4, albums.size)
-        val results = albums.mapN(end) { album ->
+        val results = albums.mapAtMost(4) { album ->
             fetchArt(context, album)
         }
 
@@ -108,14 +106,15 @@ class GenreImageFetcher private constructor(
 }
 
 /**
- * Map only [n] items from a collection. [transform] is called for each item that is eligible.
+ * Map at most [n] items from a collection. [transform] is called for each item that is eligible.
  * If null is returned, then that item will be skipped.
  */
-private inline fun <T : Any, R : Any> Iterable<T>.mapN(n: Int, transform: (T) -> R?): List<R> {
+private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(n: Int, transform: (T) -> R?): List<R> {
+    val until = min(size, n)
     val out = mutableListOf<R>()
 
     for (item in this) {
-        if (out.size >= n) {
+        if (out.size >= until) {
             break
         }
 
