@@ -67,7 +67,6 @@ import kotlin.math.abs
  * - Variable names are no longer prefixed with m
  * - Added drag listener
  * - TODO: Added documentation
- * - TODO: Popup will center itself to the thumb when possible
  */
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
@@ -149,7 +148,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             isSingleLine = true
 
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-            setTextColor(R.attr.colorSurface.resolveAttr(context))
+            setTextColor(R.attr.colorOnSecondary.resolveAttr(context))
         }
 
         thumbWidth = thumbDrawable.intrinsicWidth

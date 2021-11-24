@@ -118,11 +118,13 @@ class MusicLoader(private val context: Context) {
 
     @Suppress("DEPRECATION")
     private fun buildSelector() {
-        // TODO: Upgrade this to be compatible with Android Q.
         val blacklistDatabase = ExcludedDatabase.getInstance(context)
 
         val paths = blacklistDatabase.readPaths()
 
+        // DATA was deprecated on Android Q, but is set to be un-deprecated in Android 12L
+        // The only reason we'd want to change this is to add external partitions support, but
+        // that's less efficent and there's no demand for that right now.
         for (path in paths) {
             selector += " AND ${Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children

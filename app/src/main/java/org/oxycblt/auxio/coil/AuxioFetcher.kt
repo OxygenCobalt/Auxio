@@ -49,8 +49,6 @@ abstract class AuxioFetcher : Fetcher {
      * https://github.com/kabouzeid/Phonograph
      */
     protected fun createMosaic(context: Context, streams: List<InputStream>): FetchResult? {
-        logD("idiot")
-
         if (streams.size < 4) {
             return streams.getOrNull(0)?.let { stream ->
                 return SourceResult(

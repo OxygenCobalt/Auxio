@@ -28,13 +28,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.playback.PlaybackBarLayout
+import org.oxycblt.auxio.playback.PlaybackLayout
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.logD
 
@@ -42,7 +41,7 @@ import org.oxycblt.auxio.util.logD
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
  */
-class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
+class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
@@ -66,6 +65,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         binding.lifecycleOwner = viewLifecycleOwner
 
         // --- VIEWMODEL SETUP ---
+
         binding.mainBarLayout.setActionCallback(this)
 
         binding.mainBarLayout.setSong(playbackModel.song.value)
@@ -73,7 +73,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         binding.mainBarLayout.setPosition(playbackModel.position.value!!)
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            binding.mainBarLayout.setSong(song, animate = true)
+            binding.mainBarLayout.setSong(song)
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
@@ -111,7 +111,7 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
                     )
 
                     snackbar.view.apply {
-                        // Change the font family to our semibold color
+                        // Change the font family to semibold
                         findViewById<Button>(
                             com.google.android.material.R.id.snackbar_action
                         ).typeface = ResourcesCompat.getFont(requireContext(), R.font.inter_semibold)
@@ -140,12 +140,6 @@ class MainFragment : Fragment(), PlaybackBarLayout.ActionCallback {
         logD("Fragment Created.")
 
         return binding.root
-    }
-
-    override fun onNavToPlayback() {
-        findNavController().navigate(
-            MainFragmentDirections.actionGoToPlayback()
-        )
     }
 
     override fun onNavToItem() {

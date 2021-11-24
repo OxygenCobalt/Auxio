@@ -27,6 +27,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -73,12 +74,12 @@ class PlaybackFragment : Fragment() {
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener {
-                findNavController().navigateUp()
+                navigateUp()
             }
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_queue) {
-                    findNavController().navigate(PlaybackFragmentDirections.actionShowQueue())
+                    findNavController().navigate(MainFragmentDirections.actionShowQueue())
 
                     true
                 } else {
@@ -136,13 +137,23 @@ class PlaybackFragment : Fragment() {
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             if (item != null) {
-                findNavController().navigateUp()
+                navigateUp()
             }
+        }
+
+        binding.playbackPlayPause.post {
+            binding.playbackPlayPause.stateListAnimator = null
         }
 
         logD("Fragment Created.")
 
         return binding.root
+    }
+
+    private fun navigateUp() {
+        // This is a dumb and fragile hack but this fragment isn't part of the navigation stack
+        // so we can't really do much
+        (requireView().parent.parent.parent as PlaybackLayout).collapse()
     }
 
     private fun updateQueueIcon(queueItem: MenuItem) {

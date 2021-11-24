@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainFragment">
 
-    <org.oxycblt.auxio.playback.PlaybackBarLayout
+    <org.oxycblt.auxio.playback.PlaybackLayout
         android:id="@+id/main_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,5 +19,5 @@
             app:navGraph="@navigation/nav_explore"
             tools:layout="@layout/fragment_home" />
 
-    </org.oxycblt.auxio.playback.PlaybackBarLayout>
+    </org.oxycblt.auxio.playback.PlaybackLayout>
 </layout>

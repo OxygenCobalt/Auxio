@@ -24,7 +24,6 @@
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
         android:clipToPadding="false">
 
         <androidx.appcompat.widget.Toolbar
@@ -32,8 +31,7 @@
             style="@style/Widget.Auxio.Toolbar.Icon.Down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_playback"
-            app:title="@string/lbl_playback" />
+            app:menu="@menu/menu_playback" />
 
         <ImageView
             android:id="@+id/playback_cover"
@@ -129,7 +127,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Auxio.FloatingActionButton.MidLarge"
+            style="@style/Widget.Auxio.FloatingActionButton.PlayPause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_large"

@@ -19,20 +19,16 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.drawable.RippleDrawable
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import com.google.android.material.color.MaterialColors
-import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewCompactPlaybackBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
-import org.oxycblt.auxio.util.resolveDrawable
 import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
@@ -45,36 +41,10 @@ class PlaybackBarView @JvmOverloads constructor(
     defStyleAttr: Int = -1
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val binding = ViewCompactPlaybackBinding.inflate(context.inflater, this, true)
-    private var mCallback: PlaybackBarLayout.ActionCallback? = null
+    private var mCallback: PlaybackLayout.ActionCallback? = null
 
     init {
         id = R.id.playback_bar
-
-        elevation = resources.getDimensionPixelSize(R.dimen.elevation_normal).toFloat()
-
-        // To get a MaterialShapeDrawable to co-exist with a ripple drawable, we need to layer
-        // this drawable on top of the existing ripple drawable. RippleDrawable actually inherits
-        // LayerDrawable though, so we can do this. However, adding a new drawable layer directly
-        // is only available on API 23+, but we're on API 21. So we create a drawable resource with
-        // an empty drawable with a hard-coded ID, filling the drawable in with a
-        // MaterialShapeDrawable at runtime and allowing this code to work on API 21.
-        background = R.drawable.ui_shape_ripple.resolveDrawable(context).apply {
-            val backgroundDrawable = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                elevation = this@PlaybackBarView.elevation
-                fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
-            }
-
-            (this as RippleDrawable).setDrawableByLayerId(
-                android.R.id.background, backgroundDrawable
-            )
-        }
-
-        isClickable = true
-        isFocusable = true
-
-        setOnClickListener {
-            mCallback?.onNavToPlayback()
-        }
 
         setOnLongClickListener {
             mCallback?.onNavToItem()
@@ -109,7 +79,7 @@ class PlaybackBarView @JvmOverloads constructor(
         binding.playbackProgressBar.progress = position.toInt()
     }
 
-    fun setCallback(callback: PlaybackBarLayout.ActionCallback) {
+    fun setCallback(callback: PlaybackLayout.ActionCallback) {
         mCallback = callback
         binding.callback = callback
     }
