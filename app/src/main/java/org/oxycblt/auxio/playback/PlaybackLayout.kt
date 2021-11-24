@@ -208,7 +208,12 @@ class PlaybackLayout @JvmOverloads constructor(
     private fun applyState(state: PanelState) {
         // Dragging events are really complex and we don't want to mess up the state
         // while we are in one.
-        if (!isEnabled || state == panelState || panelState == PanelState.DRAGGING) {
+        if (state == panelState || panelState == PanelState.DRAGGING) {
+            return
+        }
+
+        // Disallow events that aren't showing the bar when disabled
+        if (state != PanelState.HIDDEN && state != PanelState.COLLAPSED && !isEnabled) {
             return
         }
 
@@ -426,8 +431,7 @@ class PlaybackLayout @JvmOverloads constructor(
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         if (!canSlide) {
-            dragHelper.abort()
-            return false
+            return super.onInterceptTouchEvent(ev)
         }
 
         val adx = abs(ev.x - initMotionX)
@@ -471,11 +475,6 @@ class PlaybackLayout @JvmOverloads constructor(
     override fun computeScroll() {
         // I have no idea what this does but it seems important so I keep it around
         if (dragHelper.continueSettling(true)) {
-            if (!isEnabled) {
-                dragHelper.abort()
-                return
-            }
-
             postInvalidateOnAnimation()
         }
     }
@@ -578,11 +577,6 @@ class PlaybackLayout @JvmOverloads constructor(
         (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
 
     private fun smoothSlideTo(offset: Float) {
-        if (!isEnabled) {
-            // Disabled, do nothing
-            return
-        }
-
         // Find the new top position and animate the panel to that
         val panelTop = computePanelTopPosition(offset)
 

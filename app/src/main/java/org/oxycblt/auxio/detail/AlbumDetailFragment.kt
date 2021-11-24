@@ -166,7 +166,6 @@ class AlbumDetailFragment : DetailFragment() {
         val pos = adapter.currentList.indexOfFirst { it.id == id && it is Song }
 
         if (pos != -1) {
-            logD("IDIOT.")
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(

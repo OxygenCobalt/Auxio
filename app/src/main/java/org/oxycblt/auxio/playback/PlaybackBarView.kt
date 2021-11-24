@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
@@ -47,6 +48,12 @@ class PlaybackBarView @JvmOverloads constructor(
         id = R.id.playback_bar
 
         setOnLongClickListener {
+            isPressed = true
+
+            postDelayed(1000) {
+                isPressed = false
+            }
+
             mCallback?.onNavToItem()
             true
         }
