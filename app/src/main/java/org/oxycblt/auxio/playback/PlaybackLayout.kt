@@ -527,24 +527,28 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     /**
-     * Update the view transitions done when the panel slides up.
+     * Do the nice view animations that occur whenever we slide up the playback panel.
+     * The way I transition is largely inspired by Android 12's notification panel, with the
+     * compact view fading out completely before the panel view fades in. We don't fade out the
+     * content though so we have cohesion between the other sliding transitions.
      */
     private fun updatePanelTransition() {
-        val outAlpha = min(1 - panelOffset, 1f)
-        val inAlpha = max(panelOffset, 0f)
+        val ratio = max(panelOffset, 0f)
 
-        contentView.apply {
-            alpha = outAlpha
-            isInvisible = alpha == 0f
-        }
+        val outRatio = 1 - ratio
+        val halfOutRatio = min(ratio / 0.5f, 1f)
+        val halfInRatio = max(ratio - 0.5f, 0f) / 0.5f
+
+        // Optimize out drawing for this view completely
+        contentView.isInvisible = outRatio == 0f
 
         // Slowly reduce the elevation as we slide up, eventually resulting in a neutral color
         // instead of an elevated one when fully expanded.
-        (playbackContainerView.background as MaterialShapeDrawable).alpha = (outAlpha * 255).toInt()
+        (playbackContainerView.background as MaterialShapeDrawable).alpha = (outRatio * 255).toInt()
 
         // Fade out our bar view as we slide up
         playbackBarView.apply {
-            alpha = outAlpha
+            alpha = min(1 - halfOutRatio, 1f)
             isInvisible = alpha == 0f
 
             // When edge-to-edge is enabled, the playback bar will not fade out into the
@@ -561,7 +565,7 @@ class PlaybackLayout @JvmOverloads constructor(
 
                 params.setMargins(
                     params.leftMargin,
-                    (bars.top * max(panelOffset, 0f)).toInt(),
+                    (bars.top * halfOutRatio).toInt(),
                     params.rightMargin,
                     params.bottomMargin
                 )
@@ -575,7 +579,7 @@ class PlaybackLayout @JvmOverloads constructor(
 
         // Fade in our panel as we slide up
         playbackPanelView.apply {
-            alpha = inAlpha
+            alpha = halfInRatio
             isInvisible = alpha == 0f
         }
     }
@@ -587,10 +591,11 @@ class PlaybackLayout @JvmOverloads constructor(
         (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
 
     private fun smoothSlideTo(offset: Float) {
-        // Find the new top position and animate the panel to that
-        val panelTop = computePanelTopPosition(offset)
+        val okay = dragHelper.smoothSlideViewTo(
+            playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset)
+        )
 
-        if (dragHelper.smoothSlideViewTo(playbackContainerView, playbackContainerView.left, panelTop)) {
+        if (okay) {
             postInvalidateOnAnimation()
         }
     }

@@ -109,6 +109,14 @@ class PlaybackFragment : Fragment() {
             }
         }
 
+        playbackModel.parent.observe(viewLifecycleOwner) { parent ->
+            if (parent != null) {
+                binding.playbackToolbar.subtitle = parent.resolvedName
+            } else {
+                binding.playbackToolbar.setSubtitle(R.string.lbl_all_songs)
+            }
+        }
+
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
             binding.playbackShuffle.isActivated = isShuffling
         }
