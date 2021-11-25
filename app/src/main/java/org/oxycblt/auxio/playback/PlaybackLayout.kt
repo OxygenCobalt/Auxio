@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Insets
 import android.graphics.Rect
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
@@ -25,6 +26,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.resolveAttr
+import org.oxycblt.auxio.util.resolveDrawable
 import org.oxycblt.auxio.util.systemBarsCompat
 import kotlin.math.abs
 import kotlin.math.max
@@ -34,12 +36,14 @@ import kotlin.math.min
  * This layout handles pretty much every aspect of the playback UI flow, notably the playback
  * bar and it's ability to slide up into the playback view. It's a blend of Hai Zhang's
  * PersistentBarLayout and Umano's SlidingUpPanelLayout, albeit heavily minified to remove
- * extraneous use cases and updated to support the latest SDK level.
+ * extraneous use cases and updated to support the latest SDK level and androidx tools.
  *
  * **Note:** If you want to adapt this layout into your own app. Good luck. This layout has been
- * heavily minified to Auxio's use case in particular and is really hard to understand since it
- * has a ton of state and view magic. I tried my best to document it, but it's probably not the
- * most friendly or extendable. You have been warned.
+ * reduced to Auxio's use case in particular and is really hard to understand since it has a ton
+ * of state and view magic. I tried my best to document it, but it's probably not the most friendly
+ * or extendable. You have been warned.
+ *
+ * @author OxygenCobalt (With help from Umano and Hai Zhang)
  */
 class PlaybackLayout @JvmOverloads constructor(
     context: Context,
@@ -61,6 +65,8 @@ class PlaybackLayout @JvmOverloads constructor(
     private val playbackContainerView: FrameLayout
     private val playbackBarView: PlaybackBarView
     private val playbackPanelView: FrameLayout
+
+    private val playbackContainerBg: MaterialShapeDrawable
     private val playbackFragment = PlaybackFragment()
 
     /**
@@ -94,9 +100,15 @@ class PlaybackLayout @JvmOverloads constructor(
      */
     private var panelOffset = 0f
 
+    // Miscellaneous view things
     private var initMotionX = 0f
     private var initMotionY = 0f
     private val tRect = Rect()
+
+    /** See [isDragging] */
+    private val dragStateField = ViewDragHelper::class.java.getDeclaredField("mDragState").apply {
+        isAccessible = true
+    }
 
     init {
         setWillNotDraw(false)
@@ -110,9 +122,17 @@ class PlaybackLayout @JvmOverloads constructor(
             isFocusable = false
             isFocusableInTouchMode = false
 
-            background = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+            playbackContainerBg = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
                 fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
                 elevation = resources.getDimensionPixelSize(R.dimen.elevation_normal).toFloat()
+            }
+
+            // The way we fade out the elevation overlay is not by actually reducing the elevation
+            // but by fading out the background drawable itself. To be safe, we apply this
+            // background drawable to a layer list with another colorSurface shape drawable, just
+            // in case weird things happen if background drawable is completely transparent.
+            background = (R.drawable.ui_panel_bg.resolveDrawable(context) as LayerDrawable).apply {
+                setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
             }
         }
 
@@ -205,7 +225,6 @@ class PlaybackLayout @JvmOverloads constructor(
         logD(panelState)
         if (panelState == PanelState.EXPANDED) {
             applyState(PanelState.COLLAPSED)
-            logD("I AM EXPANDED WILL COLLAPSE")
             return true
         }
 
@@ -512,10 +531,7 @@ class PlaybackLayout @JvmOverloads constructor(
             // We can't grab the drag state outside of a callback, but that's stupid and I don't
             // want to vendor ViewDragHelper so I just do reflection instead.
             val state = try {
-                this::class.java.getDeclaredField("mDragState").run {
-                    isAccessible = true
-                    get(dragHelper) as Int
-                }
+                dragStateField.get(this)
             } catch (e: Exception) {
                 ViewDragHelper.STATE_IDLE
             }
@@ -549,9 +565,9 @@ class PlaybackLayout @JvmOverloads constructor(
         // Optimize out drawing for this view completely
         contentView.isInvisible = outRatio == 0f
 
-        // Slowly reduce the elevation as we slide up, eventually resulting in a neutral color
-        // instead of an elevated one when fully expanded.
-        (playbackContainerView.background as MaterialShapeDrawable).alpha = (outRatio * 255).toInt()
+        // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
+        // neutral color instead of an elevated one when fully expanded.
+        playbackContainerBg.alpha = (outRatio * 255).toInt()
 
         // Fade out our bar view as we slide up
         playbackBarView.apply {
