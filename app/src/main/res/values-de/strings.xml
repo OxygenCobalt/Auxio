@@ -26,7 +26,7 @@
     <string name="lbl_play_album">Von Album abspielen</string>
     <string name="lbl_play_artist">Von Künstler abspielen</string>
     <string name="lbl_play_genre">Von Genre abspielen</string>
-    <string name="info_widget_name">Aktuelle Wiedergabe</string>
+    <string name="lbl_playback">Aktuelle Wiedergabe</string>
 
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>

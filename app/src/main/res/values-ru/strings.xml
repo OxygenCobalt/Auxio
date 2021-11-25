@@ -19,7 +19,7 @@
 
     <string name="lbl_play">Воспроизвести</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="info_widget_name">Сейчас воспроизводится</string>
+    <string name="lbl_playback">Сейчас воспроизводится</string>
 
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_queue_add">Добавить в очередь</string>

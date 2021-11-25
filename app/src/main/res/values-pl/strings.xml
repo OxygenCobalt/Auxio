@@ -19,7 +19,7 @@
 
     <string name="lbl_play">Graj</string>
     <string name="lbl_shuffle">Losowo</string>
-    <string name="info_widget_name">Obecnie Grane</string>
+    <string name="lbl_playback">Obecnie Grane</string>
 
     <string name="lbl_queue">Kolejka</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>

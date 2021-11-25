@@ -19,7 +19,7 @@
 
     <string name="lbl_play">Putar</string>
     <string name="lbl_shuffle">Acak</string>
-    <string name="info_widget_name">Sedang Diputar</string>
+    <string name="lbl_playback">Sedang Diputar</string>
 
     <string name="lbl_queue">Antrean</string>
     <string name="lbl_queue_add">Tambahkan ke antrean</string>

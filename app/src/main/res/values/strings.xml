@@ -4,7 +4,6 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
-    <string name="info_widget_name">Now Playing</string>
     <string name="info_widget_desc">View and control playing music</string>
 
     <!-- Label Namespace | Static Labels -->
@@ -28,6 +27,7 @@
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
 
+    <string name="lbl_playback">Now Playing</string>
     <string name="lbl_play">Play</string>
     <string name="lbl_shuffle">Shuffle</string>
     <string name="lbl_play_all">Play from all songs</string>

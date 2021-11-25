@@ -19,7 +19,7 @@
 
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">隨機播放</string>
-    <string name="info_widget_name">播放面板</string>
+    <string name="lbl_playback">播放面板</string>
 
     <string name="lbl_queue">隊列</string>
     <string name="lbl_queue_add">添加到隊列</string>

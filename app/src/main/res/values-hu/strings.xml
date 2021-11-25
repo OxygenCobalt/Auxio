@@ -19,7 +19,7 @@
 
     <string name="lbl_play">Lejátszás</string>
     <string name="lbl_shuffle">Keverés</string>
-    <string name="info_widget_name">Most Játszott</string>
+    <string name="lbl_playback">Most Játszott</string>
 
     <string name="lbl_queue">Lejátszási sor</string>
     <string name="lbl_queue_add">Lejátszás sorhoz adás</string>

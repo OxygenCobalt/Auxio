@@ -27,7 +27,7 @@
     <string name="lbl_play_album">Speel af van album </string>
     <string name="lbl_play_artist">Speel van artiest </string>
     <string name="lbl_play_genre">Speel vanuit genre </string>
-    <string name="info_widget_name">Afspeelscherm</string>
+    <string name="lbl_playback">Afspeelscherm</string>
 
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_queue_add">Toevoegen aan wachtrij</string>

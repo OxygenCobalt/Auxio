@@ -59,7 +59,7 @@
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"
-            android:label="@string/info_widget_name">
+            android:label="@string/lbl_playback">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -28,7 +28,7 @@
     <string name="lbl_play_album">"Přehrát z alba"</string>
     <string name="lbl_play_artist">"Přehrát od umělce"</string>
     <string name="lbl_play_genre">"Přehrát z žánru"</string>
-    <string name="info_widget_name">"Nyní hraje"</string>
+    <string name="lbl_playback">"Nyní hraje"</string>
     <string name="lbl_queue">"Fronta"</string>
     <string name="lbl_queue_add">"Přidat do fronty"</string>
     <string name="lbl_queue_added">"Přidáno do fronty"</string>

@@ -19,7 +19,7 @@
 
     <string name="lbl_play">Başlat</string>
     <string name="lbl_shuffle">Karıştır</string>
-    <string name="info_widget_name">Şuan çalınan</string>
+    <string name="lbl_playback">Şuan çalınan</string>
 
     <string name="lbl_queue">Kuyruk</string>
     <string name="lbl_queue_add">Kuyruğa ekle</string>
