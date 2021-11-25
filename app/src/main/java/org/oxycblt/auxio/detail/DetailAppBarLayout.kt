@@ -20,6 +20,7 @@ import org.oxycblt.auxio.ui.EdgeAppBarLayout
  * recyclerview is scrolled beyond it's first item (a.k.a the header). This is used instead of
  * CollapsingToolbarLayout since that thing is a mess with crippling bugs and state issues.
  * This just works.
+ * @author OxygenCobalt
  */
 class DetailAppBarLayout @JvmOverloads constructor(
     context: Context,

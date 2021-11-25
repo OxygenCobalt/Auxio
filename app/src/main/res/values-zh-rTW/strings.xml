@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">排序</string>
     <string name="lbl_sort_asc">升序排列</string>
-    <string name="lbl_sort_dsc">降序排列</string>
 
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">隨機播放</string>
-    <string name="lbl_playback">播放面板</string>
+    <string name="info_widget_name">播放面板</string>
 
     <string name="lbl_queue">隊列</string>
     <string name="lbl_queue_add">添加到隊列</string>

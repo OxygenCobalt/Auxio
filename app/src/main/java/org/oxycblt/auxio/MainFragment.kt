@@ -40,6 +40,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
+ * @author OxygenCobalt
+ * TODO: Handle backnav with playback view
  */
 class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
     private val playbackModel: PlaybackViewModel by activityViewModels()

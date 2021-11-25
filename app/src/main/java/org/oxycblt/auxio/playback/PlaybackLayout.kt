@@ -389,6 +389,11 @@ class PlaybackLayout @JvmOverloads constructor(
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        playbackBarView.clearCallback()
+    }
+
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
         putParcelable("superState", super.onSaveInstanceState())
         putSerializable(
@@ -525,15 +530,21 @@ class PlaybackLayout @JvmOverloads constructor(
      * Update the view transitions done when the panel slides up.
      */
     private fun updatePanelTransition() {
-        contentView.alpha = min(1 - panelOffset, 1f)
+        val outAlpha = min(1 - panelOffset, 1f)
+        val inAlpha = max(panelOffset, 0f)
+
+        contentView.apply {
+            alpha = outAlpha
+            isInvisible = alpha == 0f
+        }
 
         // Slowly reduce the elevation as we slide up, eventually resulting in a neutral color
         // instead of an elevated one when fully expanded.
-        (playbackContainerView.background as MaterialShapeDrawable).alpha = (min(1 - panelOffset, 1f) * 255).toInt()
+        (playbackContainerView.background as MaterialShapeDrawable).alpha = (outAlpha * 255).toInt()
 
         // Fade out our bar view as we slide up
         playbackBarView.apply {
-            alpha = min(1 - panelOffset, 1f)
+            alpha = outAlpha
             isInvisible = alpha == 0f
 
             // When edge-to-edge is enabled, the playback bar will not fade out into the
@@ -546,7 +557,6 @@ class PlaybackLayout @JvmOverloads constructor(
             // of the playback view. This seems to be the least obtrusive way to do this.
             lastInsets?.systemBarsCompat?.let { bars ->
                 val params = layoutParams as FrameLayout.LayoutParams
-
                 val oldTopMargin = params.topMargin
 
                 params.setMargins(
@@ -565,7 +575,7 @@ class PlaybackLayout @JvmOverloads constructor(
 
         // Fade in our panel as we slide up
         playbackPanelView.apply {
-            alpha = max(panelOffset, 0f)
+            alpha = inAlpha
             isInvisible = alpha == 0f
         }
     }

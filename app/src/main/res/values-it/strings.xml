@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Ordine</string>
     <string name="lbl_sort_asc">Ascendente</string>
-    <string name="lbl_sort_dsc">Discendente</string>
 
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Casuale</string>
-    <string name="lbl_playback">Schermata di riproduzione</string>
+    <string name="info_widget_name">Schermata di riproduzione</string>
 
     <string name="lbl_queue">Coda</string>
     <string name="lbl_queue_add">Aggiungi alla coda</string>

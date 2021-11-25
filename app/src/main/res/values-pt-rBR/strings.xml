@@ -15,11 +15,10 @@
     <string name="lbl_filter_all">Tudo</string>
 
     <string name="lbl_sort">Classificação</string>
-    <string name="lbl_sort_dsc">Descendente</string>
 
     <string name="lbl_play">Reproduzir</string>
     <string name="lbl_shuffle">Embaralhar</string>
-    <string name="lbl_playback">Tocando agora</string>
+    <string name="info_widget_name">Tocando agora</string>
 
     <string name="lbl_queue">Fila</string>
     <string name="lbl_queue_add">Adicionar à fila</string>

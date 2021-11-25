@@ -18,7 +18,7 @@
 
     <string name="lbl_play">Відтворити</string>
     <string name="lbl_shuffle">Перемішати</string>
-    <string name="lbl_playback">Відтворюється</string>
+    <string name="info_widget_name">Відтворюється</string>
 
     <string name="lbl_queue">Черга</string>
     <string name="lbl_queue_add">Додати в чергу</string>

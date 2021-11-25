@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Classificação</string>
     <string name="lbl_sort_asc">Ascendente</string>
-    <string name="lbl_sort_dsc">Descendente</string>
 
     <string name="lbl_play">Reproduzir</string>
     <string name="lbl_shuffle">Embaralhar</string>
-    <string name="lbl_playback">A reproduzir</string>
+    <string name="info_widget_name">A reproduzir</string>
 
     <string name="lbl_queue">Fila</string>
     <string name="lbl_queue_add">Adicionar à fila</string>

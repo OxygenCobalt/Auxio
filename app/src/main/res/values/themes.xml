@@ -483,11 +483,4 @@
         <item name="colorOnSurfaceVariant">@color/grey_on_surface_variant</item>
     </style>
 
-    <style name="Theme.Auxio.Neutral" parent="Theme.Auxio.App">
-        <item name="colorPrimary">?attr/colorControlNormal</item>
-        <item name="colorOnPrimary">?attr/colorControlNormal</item>
-        <item name="colorPrimaryInverse">?attr/colorControlNormal</item>
-        <item name="colorPrimaryContainer">?attr/colorControlNormal</item>
-        <item name="colorOnPrimaryContainer">?attr/colorControlNormal</item>
-    </style>
 </resources>

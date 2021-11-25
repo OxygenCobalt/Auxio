@@ -20,7 +20,6 @@
 
     <string name="lbl_sort">Sorteren</string>
     <string name="lbl_sort_asc">Oplopend</string>
-    <string name="lbl_sort_dsc">Aflopend</string>
 
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>
@@ -28,7 +27,7 @@
     <string name="lbl_play_album">Speel af van album </string>
     <string name="lbl_play_artist">Speel van artiest </string>
     <string name="lbl_play_genre">Speel vanuit genre </string>
-    <string name="lbl_playback">Afspeelscherm</string>
+    <string name="info_widget_name">Afspeelscherm</string>
 
     <string name="lbl_queue">Wachtrij</string>
     <string name="lbl_queue_add">Toevoegen aan wachtrij</string>

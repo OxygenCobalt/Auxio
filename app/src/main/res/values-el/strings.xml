@@ -18,7 +18,7 @@
 
     <string name="lbl_play">Αναπαραγωγή</string>
     <string name="lbl_shuffle">Τυχαία</string>
-    <string name="lbl_playback">Παίζει τώρα</string>
+    <string name="info_widget_name">Παίζει τώρα</string>
 
     <string name="lbl_queue">Ουρά αναπαραγωγής</string>
     <string name="lbl_queue_add">Προσθήκη στην ουρά αναπ/γής</string>

@@ -35,8 +35,7 @@ import org.oxycblt.auxio.music.Song
 import kotlin.math.min
 
 /**
- * Fetcher that returns the album art for a given [Album]. Handles settings on whether to use
- * quality covers or not.
+ * Fetcher that returns the album art for a given [Album] or [Song], depending on the factory used.
  * @author OxygenCobalt
  */
 class AlbumArtFetcher private constructor(
@@ -54,18 +53,22 @@ class AlbumArtFetcher private constructor(
     }
 
     class SongFactory : Fetcher.Factory<Song> {
-        override fun create(data: Song, options: Options, imageLoader: ImageLoader): Fetcher? {
+        override fun create(data: Song, options: Options, imageLoader: ImageLoader): Fetcher {
             return AlbumArtFetcher(options.context, data.album)
         }
     }
 
     class AlbumFactory : Fetcher.Factory<Album> {
-        override fun create(data: Album, options: Options, imageLoader: ImageLoader): Fetcher? {
+        override fun create(data: Album, options: Options, imageLoader: ImageLoader): Fetcher {
             return AlbumArtFetcher(options.context, data)
         }
     }
 }
 
+/**
+ * Fetcher that fetches the image for an [Artist]
+ * @author OxygenCobalt
+ */
 class ArtistImageFetcher private constructor(
     private val context: Context,
     private val artist: Artist
@@ -79,12 +82,16 @@ class ArtistImageFetcher private constructor(
     }
 
     class Factory : Fetcher.Factory<Artist> {
-        override fun create(data: Artist, options: Options, imageLoader: ImageLoader): Fetcher? {
+        override fun create(data: Artist, options: Options, imageLoader: ImageLoader): Fetcher {
             return ArtistImageFetcher(options.context, data)
         }
     }
 }
 
+/**
+ * Fetcher that fetches the image for a [Genre]
+ * @author OxygenCobalt
+ */
 class GenreImageFetcher private constructor(
     private val context: Context,
     private val genre: Genre
@@ -99,7 +106,7 @@ class GenreImageFetcher private constructor(
     }
 
     class Factory : Fetcher.Factory<Genre> {
-        override fun create(data: Genre, options: Options, imageLoader: ImageLoader): Fetcher? {
+        override fun create(data: Genre, options: Options, imageLoader: ImageLoader): Fetcher {
             return GenreImageFetcher(options.context, data)
         }
     }

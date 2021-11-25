@@ -72,7 +72,7 @@ class ExcludedDialog : LifecycleDialog() {
         binding.excludedRecycler.adapter = adapter
 
         // Now that the dialog exists, we get the view manually when the dialog is shown
-        // and override its click-listener so that the dialog does not auto-dismiss when we
+        // and override its click listener so that the dialog does not auto-dismiss when we
         // click the "Add"/"Save" buttons. This prevents the dialog from disappearing in the former
         // and the app from crashing in the latter.
         val dialog = requireDialog() as AlertDialog

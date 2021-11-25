@@ -161,7 +161,7 @@
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
     </style>
 
-    <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Primary">
+    <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">
         <item name="maxImageSize">@dimen/size_play_fab_icon</item>
         <item name="fabCustomSize">@dimen/size_btn_large</item>
 
@@ -171,7 +171,6 @@
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
 
-        <item name="materialThemeOverlay">@style/ThemeOverlay.Auxio.FloatingActionButton.PlayPause</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Auxio.FloatingActionButton.PlayPause</item>
     </style>
 

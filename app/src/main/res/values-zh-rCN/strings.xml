@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">排序方式</string>
     <string name="lbl_sort_asc">按首字符（正序）</string>
-    <string name="lbl_sort_dsc">按首字符（倒序）</string>
 
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">随机播放</string>
-    <string name="lbl_playback">正在播放界面</string>
+    <string name="info_widget_name">正在播放界面</string>
 
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_queue_add">加入播放队列</string>

@@ -37,11 +37,11 @@
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Full"
             android:layout_margin="@dimen/spacing_mid_large"
-            android:layout_marginEnd="8dp"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/playback_song_container"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             tools:src="@drawable/ic_album" />
@@ -76,14 +76,12 @@
             style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_large"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
             android:text="@{song.album.artist.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintStart_toStartOf="@+id/playback_song_container"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintTop_toBottomOf="@+id/playback_song_container"
             tools:text="Artist Name" />
 
@@ -92,14 +90,12 @@
             style="@style/Widget.Auxio.TextView.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_mid_large"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:text="@{song.album.name}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintStart_toStartOf="@+id/playback_song_container"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
             app:layout_constraintTop_toBottomOf="@+id/playback_artist"
             tools:text="Album Name" />
 
@@ -107,12 +103,12 @@
             android:id="@+id/playback_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_marginStart="-8dp"
+            android:layout_marginEnd="-8dp"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintStart_toStartOf="@+id/playback_song_container"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
             app:layout_constraintTop_toBottomOf="@+id/playback_album" />
 
         <ImageButton
@@ -152,8 +148,7 @@
             android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:src="@drawable/ic_pause" />
 
@@ -183,7 +178,6 @@
             app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next"
             app:tint="@color/sel_accented" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

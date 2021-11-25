@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Сортировка</string>
     <string name="lbl_sort_asc">По возрастанию</string>
-    <string name="lbl_sort_dsc">По убыванию</string>
 
     <string name="lbl_play">Воспроизвести</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="lbl_playback">Сейчас воспроизводится</string>
+    <string name="info_widget_name">Сейчас воспроизводится</string>
 
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_queue_add">Добавить в очередь</string>

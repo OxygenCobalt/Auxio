@@ -26,7 +26,7 @@ import androidx.core.view.postDelayed
 import androidx.core.view.updatePadding
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.ViewCompactPlaybackBinding
+import org.oxycblt.auxio.databinding.ViewPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
@@ -34,14 +34,14 @@ import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * A view displaying the playback state in a compact manner. This is only meant to be used
- * by [PlaybackBarLayout].
+ * by [PlaybackLayout].
  */
 class PlaybackBarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private val binding = ViewCompactPlaybackBinding.inflate(context.inflater, this, true)
+    private val binding = ViewPlaybackBarBinding.inflate(context.inflater, this, true)
     private var mCallback: PlaybackLayout.ActionCallback? = null
 
     init {

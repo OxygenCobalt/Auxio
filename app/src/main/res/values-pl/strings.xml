@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Sortowanie</string>
     <string name="lbl_sort_asc">Rosnąco</string>
-    <string name="lbl_sort_dsc">Malejąco</string>
 
     <string name="lbl_play">Graj</string>
     <string name="lbl_shuffle">Losowo</string>
-    <string name="lbl_playback">Obecnie Grane</string>
+    <string name="info_widget_name">Obecnie Grane</string>
 
     <string name="lbl_queue">Kolejka</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>

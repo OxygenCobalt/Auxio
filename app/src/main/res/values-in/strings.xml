@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Urutan</string>
     <string name="lbl_sort_asc">Naik</string>
-    <string name="lbl_sort_dsc">Turun</string>
 
     <string name="lbl_play">Putar</string>
     <string name="lbl_shuffle">Acak</string>
-    <string name="lbl_playback">Sedang Diputar</string>
+    <string name="info_widget_name">Sedang Diputar</string>
 
     <string name="lbl_queue">Antrean</string>
     <string name="lbl_queue_add">Tambahkan ke antrean</string>

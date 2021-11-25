@@ -19,7 +19,6 @@
         <TextView
             android:id="@+id/detail_name"
             style="@style/Widget.Auxio.TextView.Detail"
-            android:textAppearance="@style/TextAppearance.Auxio.HeadlineLarge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -39,7 +38,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
-            android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toTopOf="@+id/detail_info"
@@ -55,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/TextAppearance.Auxio.HeadlineSmall"
             app:layout_constraintStart_toEndOf="@+id/detail_cover"
             app:layout_constraintTop_toBottomOf="@+id/detail_subhead"
             app:layout_constraintBottom_toTopOf="@+id/detail_play_button"

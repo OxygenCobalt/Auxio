@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">분류</string>
     <string name="lbl_sort_asc">오름차순</string>
-    <string name="lbl_sort_dsc">내림차순</string>
 
     <string name="lbl_play">재생</string>
     <string name="lbl_shuffle">모든 곡 랜덤 재생</string>
-    <string name="lbl_playback">지금 재생 중</string>
+    <string name="info_widget_name">지금 재생 중</string>
 
     <string name="lbl_queue">대기열</string>
     <string name="lbl_queue_add">대기열에 추가</string>

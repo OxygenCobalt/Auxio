@@ -24,7 +24,6 @@
     <string name="lbl_sort">Sort</string>
     <string name="lbl_sort_name">Name</string>
     <string name="lbl_sort_asc">Ascending</string>
-    <string name="lbl_sort_dsc">Descending</string>
     <string name="lbl_sort_artist">Artist</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
@@ -35,7 +34,6 @@
     <string name="lbl_play_album">Play from album</string>
     <string name="lbl_play_artist">Play from artist</string>
     <string name="lbl_play_genre">Play from genre</string>
-    <string name="lbl_playback">Now Playing</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_queue_add">Add to queue</string>

@@ -4,7 +4,6 @@
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">"Jednoduchý, rozumný hudební přehrávač pro Android."</string>
     <string name="info_channel_name">"Přehrávání hudby"</string>
-    <string name="info_widget_name">"Nyní hraje"</string>
     <string name="info_widget_desc">"Zobrazit a ovládat hrající hudbu"</string>
 
     <!-- Label Namespace | Static Labels -->
@@ -20,7 +19,6 @@
     <string name="lbl_filter_all">"Vše"</string>
     <string name="lbl_sort">"Řadit"</string>
     <string name="lbl_sort_asc">"Vzestupně"</string>
-    <string name="lbl_sort_dsc">"Sestupně"</string>
     <string name="lbl_sort_artist">"Umělec"</string>
     <string name="lbl_sort_album">"Album"</string>
     <string name="lbl_sort_year">"Rok"</string>
@@ -30,7 +28,7 @@
     <string name="lbl_play_album">"Přehrát z alba"</string>
     <string name="lbl_play_artist">"Přehrát od umělce"</string>
     <string name="lbl_play_genre">"Přehrát z žánru"</string>
-    <string name="lbl_playback">"Nyní hraje"</string>
+    <string name="info_widget_name">"Nyní hraje"</string>
     <string name="lbl_queue">"Fronta"</string>
     <string name="lbl_queue_add">"Přidat do fronty"</string>
     <string name="lbl_queue_added">"Přidáno do fronty"</string>

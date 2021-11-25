@@ -19,7 +19,6 @@
 
     <string name="lbl_sort">Sortierung</string>
     <string name="lbl_sort_asc">Aufsteigend</string>
-    <string name="lbl_sort_dsc">Absteigend</string>
 
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
@@ -27,7 +26,7 @@
     <string name="lbl_play_album">Von Album abspielen</string>
     <string name="lbl_play_artist">Von Künstler abspielen</string>
     <string name="lbl_play_genre">Von Genre abspielen</string>
-    <string name="lbl_playback">Aktuelle Wiedergabe</string>
+    <string name="info_widget_name">Aktuelle Wiedergabe</string>
 
     <string name="lbl_queue">Warteschlange</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
@@ -150,7 +149,6 @@
         <item quantity="other">%d Alben</item>
     </plurals>
     <string name="info_app_desc">Ein einfacher, rationaler Musikplayer für Android.</string>
-    <string name="info_widget_name">Aktuell Wiedergabe</string>
     <string name="info_widget_desc">Spielende Musik anzeigen und kontrollieren</string>
     <string name="lbl_sort_artist">Künstler</string>
     <string name="lbl_sort_album">Album</string>

@@ -46,7 +46,7 @@ class ExcludedEntryAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun submitList(newPaths: MutableList<String>) {
         paths = newPaths
-        notifyDataSetChanged() // TODO: Consider using remove/addition
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(

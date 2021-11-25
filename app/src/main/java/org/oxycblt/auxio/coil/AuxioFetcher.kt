@@ -29,9 +29,18 @@ import org.oxycblt.auxio.util.logD
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
+/**
+ * The base implementation for all image fetchers in Auxio.
+ * @author OxygenCobalt
+ */
 abstract class AuxioFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
 
+    /**
+     * Fetch the artwork of an [album].
+     * This call respects user configuration and has proper redundancy in the case that
+     * an API fails to load.
+     */
     protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
         if (!settingsManager.showCovers) {
             return null
@@ -44,62 +53,14 @@ abstract class AuxioFetcher : Fetcher {
         }
     }
 
-    /**
-     * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
-     * https://github.com/kabouzeid/Phonograph
-     */
-    protected fun createMosaic(context: Context, streams: List<InputStream>): FetchResult? {
-        if (streams.size < 4) {
-            return streams.getOrNull(0)?.let { stream ->
-                return SourceResult(
-                    source = ImageSource(stream.source().buffer(), context),
-                    mimeType = null,
-                    dataSource = DataSource.DISK
-                )
-            }
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
+        val uri = data.id.toAlbumArtURI()
+
+        // Eliminate any chance that this blocking call might mess up the cancellation process
+        return withContext(Dispatchers.IO) {
+            context.contentResolver.openInputStream(uri)
         }
-
-        // Use a fixed 512x512 canvas for the mosaics. Preferably we would adapt this mosaic to
-        // target ImageView size, but Coil seems to start image loading before we can even get
-        // a width/height for the view, making that impractical.
-        val mosaicBitmap = Bitmap.createBitmap(
-            MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.ARGB_8888
-        )
-
-        val canvas = Canvas(mosaicBitmap)
-
-        var x = 0
-        var y = 0
-
-        // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
-        // and place it on a corner of the canvas.
-        for (stream in streams) {
-            if (y == MOSAIC_BITMAP_SIZE) {
-                break
-            }
-
-            val bitmap = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeStream(stream),
-                MOSAIC_BITMAP_INCREMENT,
-                MOSAIC_BITMAP_INCREMENT,
-                true
-            )
-
-            canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
-
-            x += MOSAIC_BITMAP_INCREMENT
-
-            if (x == MOSAIC_BITMAP_SIZE) {
-                x = 0
-                y += MOSAIC_BITMAP_INCREMENT
-            }
-        }
-
-        return DrawableResult(
-            drawable = mosaicBitmap.toDrawable(context.resources),
-            isSampled = false,
-            dataSource = DataSource.DISK
-        )
     }
 
     private suspend fun fetchQualityCovers(context: Context, album: Album): InputStream? {
@@ -139,22 +100,12 @@ abstract class AuxioFetcher : Fetcher {
         return null
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
-        val uri = data.id.toAlbumArtURI()
-
-        // Eliminate any chance that this blocking call might mess up the cancellation process
-        return withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(uri)
-        }
-    }
-
-    private suspend fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
+    private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
         val extractor = MediaMetadataRetriever()
 
         extractor.use { ext ->
-            // To be safe, just make sure that this blocking call is wrapped so it doesn't
-            // cause problems
+            // This call is time-consuming but it also doesn't seem to hold up the main thread,
+            // so it's probably fine not to wrap it.
             ext.setDataSource(context, album.songs[0].id.toURI())
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
@@ -242,6 +193,64 @@ abstract class AuxioFetcher : Fetcher {
         }
 
         return stream
+    }
+
+    /**
+     * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
+     * https://github.com/kabouzeid/Phonograph
+     */
+    protected fun createMosaic(context: Context, streams: List<InputStream>): FetchResult? {
+        if (streams.size < 4) {
+            return streams.getOrNull(0)?.let { stream ->
+                return SourceResult(
+                    source = ImageSource(stream.source().buffer(), context),
+                    mimeType = null,
+                    dataSource = DataSource.DISK
+                )
+            }
+        }
+
+        // Use a fixed 512x512 canvas for the mosaics. Preferably we would adapt this mosaic to
+        // target ImageView size, but Coil seems to start image loading before we can even get
+        // a width/height for the view, making that impractical.
+        val mosaicBitmap = Bitmap.createBitmap(
+            MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(mosaicBitmap)
+
+        var x = 0
+        var y = 0
+
+        // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
+        // and place it on a corner of the canvas.
+        for (stream in streams) {
+            if (y == MOSAIC_BITMAP_SIZE) {
+                break
+            }
+
+            val bitmap = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeStream(stream),
+                MOSAIC_BITMAP_INCREMENT,
+                MOSAIC_BITMAP_INCREMENT,
+                true
+            )
+
+            canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
+
+            x += MOSAIC_BITMAP_INCREMENT
+
+            if (x == MOSAIC_BITMAP_SIZE) {
+                x = 0
+                y += MOSAIC_BITMAP_INCREMENT
+            }
+        }
+
+        return DrawableResult(
+            drawable = mosaicBitmap.toDrawable(context.resources),
+            isSampled = false,
+            dataSource = DataSource.DISK
+        )
     }
 
     companion object {

@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Tri</string>
     <string name="lbl_sort_asc">Ascendant</string>
-    <string name="lbl_sort_dsc">Descendant</string>
 
     <string name="lbl_play">Lecture</string>
     <string name="lbl_shuffle">Aléatoire</string>
-    <string name="lbl_playback">Lecture en cours</string>
+    <string name="info_widget_name">Lecture en cours</string>
 
     <string name="lbl_queue">File d\'attente</string>
     <string name="lbl_queue_add">Ajouter à la file d\'attente</string>

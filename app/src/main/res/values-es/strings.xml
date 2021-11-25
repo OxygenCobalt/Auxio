@@ -20,7 +20,6 @@
 
     <string name="lbl_sort">Ordenar</string>
     <string name="lbl_sort_asc">Ascendente</string>
-    <string name="lbl_sort_dsc">Descendente</string>
 
     <string name="lbl_play">Reproducir</string>
     <string name="lbl_shuffle">Aleatorio</string>
@@ -28,7 +27,7 @@
     <string name="lbl_play_album">Reproducir por álbum</string>
     <string name="lbl_play_artist">Reproducir por artista</string>
     <string name="lbl_play_genre">Reproducir por género</string>
-    <string name="lbl_playback">Reproducción actual</string>
+    <string name="info_widget_name">Reproducción actual</string>
 
     <string name="lbl_queue">Cola</string>
     <string name="lbl_queue_add">Agregar a la cola</string>

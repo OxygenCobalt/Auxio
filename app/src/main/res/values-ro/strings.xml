@@ -16,11 +16,10 @@
 
     <string name="lbl_sort">Sortare</string>
     <string name="lbl_sort_asc">Crescător</string>
-    <string name="lbl_sort_dsc">Descrescător</string>
 
     <string name="lbl_play">Redă</string>
     <string name="lbl_shuffle">Amestecare</string>
-    <string name="lbl_playback">Redare Acum</string>
+    <string name="info_widget_name">Redare Acum</string>
 
     <string name="lbl_queue">Fila de așteptare</string>
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
