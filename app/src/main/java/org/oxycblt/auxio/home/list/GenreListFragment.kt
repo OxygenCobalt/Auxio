@@ -30,6 +30,10 @@ import org.oxycblt.auxio.ui.GenreViewHolder
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
+/**
+ * A [HomeListFragment] for showing a list of [Genre]s.
+ * @author
+ */
 class GenreListFragment : HomeListFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +56,7 @@ class GenreListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: (Int) -> String
+    override val listPopupProvider: (Int) -> String
         get() = { idx ->
             homeModel.genres.value!![idx].resolvedName
                 .sliceArticle().first().uppercase()

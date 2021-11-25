@@ -70,6 +70,7 @@ class DetailViewModel : ViewModel() {
     val showMenu: LiveData<MenuConfig?> = mShowMenu
 
     private val mNavToItem = MutableLiveData<BaseModel?>()
+
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
     val navToItem: LiveData<BaseModel?> get() = mNavToItem
 

@@ -34,6 +34,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
+import androidx.core.view.isInvisible
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,33 +67,44 @@ import kotlin.math.abs
  * - Redundant functions have been merged
  * - Variable names are no longer prefixed with m
  * - Added drag listener
- * - TODO: Added documentation
+ * - Added documentation
+ *
+ * @author Hai Zhang, OxygenCobalt
  */
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = -1
 ) : RecyclerView(context, attrs, defStyleAttr) {
+    /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null
+
+    /**
+     * A listener for when a drag event occurs. The value will be true if a drag has begun,
+     * and false if a drag ended.
+     */
     var onDragListener: ((Boolean) -> Unit)? = null
 
     private val minTouchTargetSize: Int = resources.getDimensionPixelSize(R.dimen.size_btn_small)
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
 
+    // Views for the track, thumb, and popup. Note that the track view is mostly vestigal
+    // and is only for bounds checking.
     private val trackView: View
     private val thumbView: View
     private val popupView: TextView
 
+    // Touch values
     private val thumbWidth: Int
     private val thumbHeight: Int
     private var thumbOffset = 0
-
     private var downX = 0f
     private var downY = 0f
     private var lastY = 0f
     private var dragStartY = 0f
     private var dragStartThumbOffset = 0
 
+    // State
     private var dragging = false
     private var showingScrollbar = false
     private var showingPopup = false
@@ -100,11 +112,9 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     private val childRect = Rect()
 
     private val hideScrollbarRunnable = Runnable {
-        if (dragging) {
-            return@Runnable
+        if (!dragging) {
+            hideScrollbar()
         }
-
-        hideScrollbar()
     }
 
     private val initialPadding = Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
@@ -174,18 +184,18 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         // We use a listener instead of overriding onTouchEvent so that we don't conflict with
         // RecyclerView touch events.
         addOnItemTouchListener(object : SimpleOnItemTouchListener() {
-            override fun onInterceptTouchEvent(
-                recyclerView: RecyclerView,
-                event: MotionEvent
-            ): Boolean {
-                return onItemTouch(event)
-            }
-
             override fun onTouchEvent(
                 recyclerView: RecyclerView,
                 event: MotionEvent
             ) {
                 onItemTouch(event)
+            }
+
+            override fun onInterceptTouchEvent(
+                recyclerView: RecyclerView,
+                event: MotionEvent
+            ): Boolean {
+                return onItemTouch(event)
             }
         })
     }
@@ -227,10 +237,9 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             ""
         }
 
-        val hasPopup = !TextUtils.isEmpty(popupText)
-        popupView.visibility = if (hasPopup) View.VISIBLE else View.INVISIBLE
+        popupView.isInvisible = popupText.isEmpty()
 
-        if (hasPopup) {
+        if (popupText.isNotEmpty()) {
             val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
             if (popupView.text != popupText) {
@@ -343,9 +352,8 @@ class FastScrollRecyclerView @JvmOverloads constructor(
                 downY = eventY
 
                 val scrollX = trackView.scrollX
-                val isInScrollbar = (
+                val isInScrollbar =
                     eventX >= thumbView.left - scrollX && eventX < thumbView.right - scrollX
-                    )
 
                 if (trackView.alpha > 0 && isInScrollbar) {
                     dragStartY = eventY
@@ -384,6 +392,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> setDragging(false)
         }
+
         lastY = eventY
         return dragging
     }
@@ -462,21 +471,21 @@ class FastScrollRecyclerView @JvmOverloads constructor(
         }
     }
 
-    private fun setDragging(dragging: Boolean) {
-        if (this.dragging == dragging) {
+    private fun setDragging(isDragging: Boolean) {
+        if (dragging == isDragging) {
             return
         }
 
-        this.dragging = dragging
+        dragging = isDragging
 
-        if (this.dragging) {
+        if (dragging) {
             parent.requestDisallowInterceptTouchEvent(true)
         }
 
-        trackView.isPressed = this.dragging
-        thumbView.isPressed = this.dragging
+        trackView.isPressed = dragging
+        thumbView.isPressed = dragging
 
-        if (this.dragging) {
+        if (dragging) {
             removeCallbacks(hideScrollbarRunnable)
             showScrollbar()
             showPopup()
@@ -485,7 +494,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             hidePopup()
         }
 
-        onDragListener?.invoke(dragging)
+        onDragListener?.invoke(isDragging)
     }
 
     // --- SCROLLBAR APPEARANCE ---

@@ -249,9 +249,8 @@ class SettingsManager private constructor(context: Context) :
     }
 
     companion object {
-        // Preference keys
-        // The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with
-        // auxio_.
+        // Note: The old way of naming keys was to prefix them with KEY_. Now it's to prefix them
+        // with auxio_.
         const val KEY_THEME = "KEY_THEME2"
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
         const val KEY_ACCENT = "auxio_accent"
@@ -270,7 +269,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_LOOP_PAUSE = "KEY_LOOP_PAUSE"
 
         const val KEY_SAVE_STATE = "auxio_save_state"
-        const val KEY_BLACKLIST = "KEY_BLACKLIST"
+        const val KEY_EXCLUDED = "auxio_excluded_dirs"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 

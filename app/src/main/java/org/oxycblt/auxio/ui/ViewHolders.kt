@@ -249,6 +249,9 @@ class HeaderViewHolder private constructor(
     }
 }
 
+/**
+ * The Shared ViewHolder for an [ActionHeader]. Instantiation should be done with [from]
+ */
 class ActionHeaderViewHolder private constructor(
     private val binding: ItemActionHeaderBinding
 ) : BaseViewHolder<ActionHeader>(binding) {

@@ -19,8 +19,6 @@
 package org.oxycblt.auxio.home.list
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,8 +32,8 @@ import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
 
 /**
- * A Base [Fragment] implementing the base features shared across all detail fragments.
- *
+ * A Base [Fragment] implementing the base features shared across all list fragments in the home UI.
+ * @author OxygenCobalt
  */
 abstract class HomeListFragment : Fragment() {
     protected val binding: FragmentHomeListBinding by memberBinding(
@@ -45,16 +43,10 @@ abstract class HomeListFragment : Fragment() {
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
-    abstract val popupProvider: (Int) -> String
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.homeRecycler.popupProvider = popupProvider
-        binding.homeRecycler.onDragListener = { dragging ->
-            homeModel.updateFastScrolling(dragging)
-        }
-    }
+    /**
+     * The popup provider to use for the fast scroller view.
+     */
+    abstract val listPopupProvider: (Int) -> String
 
     protected fun <T : BaseModel, VH : RecyclerView.ViewHolder> setupRecycler(
         @IdRes uniqueId: Int,
@@ -66,6 +58,11 @@ abstract class HomeListFragment : Fragment() {
             adapter = homeAdapter
             setHasFixedSize(true)
             applySpans()
+
+            popupProvider = listPopupProvider
+            onDragListener = { dragging ->
+                homeModel.updateFastScrolling(dragging)
+            }
         }
 
         // Make sure that this RecyclerView has data before startup

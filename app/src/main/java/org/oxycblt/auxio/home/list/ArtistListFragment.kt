@@ -30,6 +30,10 @@ import org.oxycblt.auxio.ui.ArtistViewHolder
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
+/**
+ * A [HomeListFragment] for showing a list of [Artist]s.
+ * @author
+ */
 class ArtistListFragment : HomeListFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +56,7 @@ class ArtistListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: (Int) -> String
+    override val listPopupProvider: (Int) -> String
         get() = { idx ->
             homeModel.artists.value!![idx].resolvedName
                 .sliceArticle().first().uppercase()

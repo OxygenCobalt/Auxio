@@ -27,6 +27,63 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
+/**
+ * The default widget is displayed whenever there is no music playing. It just shows the
+ * message "No music playing".
+ */
+fun createDefaultWidget(context: Context): RemoteViews {
+    return createViews(context, R.layout.widget_default)
+}
+
+/**
+ * The tiny widget is for an edge-case situation where a 2xN widget happens to be smaller than
+ * 100dp. It just shows the cover, titles, and a button.
+ */
+fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_tiny)
+        .applyMeta(context, state)
+        .applyPlayControls(context, state)
+}
+
+/**
+ * The small widget is for 2x2 widgets and just shows the cover art and playback controls.
+ * This is generally because a Medium widget is too large for this widget size and a text-only
+ * widget is too small for this widget size.
+ */
+fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_small)
+        .applyCover(context, state)
+        .applyControls(context, state)
+}
+
+/**
+ * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three
+ * controls. This is the default widget configuration.
+ */
+fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_medium)
+        .applyMeta(context, state)
+        .applyControls(context, state)
+}
+
+/**
+ * The wide widget is for Nx2 widgets and is like the small widget but with more controls.
+ */
+fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_wide)
+        .applyCover(context, state)
+        .applyFullControls(context, state)
+}
+
+/**
+ * The large widget is for 3x4 widgets and shows all metadata and controls.
+ */
+fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
+    return createViews(context, R.layout.widget_large)
+        .applyMeta(context, state)
+        .applyFullControls(context, state)
+}
+
 private fun createViews(
     context: Context,
     @LayoutRes layout: Int
@@ -140,61 +197,4 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
     setImageViewResource(R.id.widget_loop, loopRes)
 
     return this
-}
-
-/**
- * The default widget is displayed whenever there is no music playing. It just shows the
- * message "No music playing".
- */
-fun createDefaultWidget(context: Context): RemoteViews {
-    return createViews(context, R.layout.widget_default)
-}
-
-/**
- * The tiny widget is for an edge-case situation where a 2xN widget happens to be smaller than
- * 100dp. It just shows the cover, titles, and a button.
- */
-fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_tiny)
-        .applyMeta(context, state)
-        .applyPlayControls(context, state)
-}
-
-/**
- * The small widget is for 2x2 widgets and just shows the cover art and playback controls.
- * This is generally because a Medium widget is too large for this widget size and a text-only
- * widget is too small for this widget size.
- */
-fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_small)
-        .applyCover(context, state)
-        .applyControls(context, state)
-}
-
-/**
- * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three
- * controls. This is the default widget configuration.
- */
-fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_medium)
-        .applyMeta(context, state)
-        .applyControls(context, state)
-}
-
-/**
- * The wide widget is for Nx2 widgets and is like the small widget but with more controls.
- */
-fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_wide)
-        .applyCover(context, state)
-        .applyFullControls(context, state)
-}
-
-/**
- * The large widget is for 3x4 widgets and shows all metadata and controls.
- */
-fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
-    return createViews(context, R.layout.widget_large)
-        .applyMeta(context, state)
-        .applyFullControls(context, state)
 }

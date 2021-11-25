@@ -21,7 +21,7 @@
                 app:liftOnScroll="true"
                 app:liftOnScrollTargetViewId="@id/detail_recycler">
 
-                <androidx.appcompat.widget.Toolbar
+                <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/detail_toolbar"
                     style="@style/Widget.Auxio.Toolbar.Icon" />
 

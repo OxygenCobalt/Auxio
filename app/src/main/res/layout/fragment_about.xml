@@ -19,7 +19,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/about_toolbar"
-                style="@style/Widget.Auxio.Toolbar.Icon.Down"
+                style="@style/Widget.Auxio.Toolbar.Icon"
                 app:title="@string/lbl_about" />
 
         </org.oxycblt.auxio.ui.EdgeAppBarLayout>

@@ -25,6 +25,10 @@ import android.widget.FrameLayout
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.util.systemBarsCompat
 
+/**
+ * A container for a FloatingActionButton that enables edge-to-edge support.
+ * @author OxygenCobalt
+ */
 class FloatingActionButtonContainer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

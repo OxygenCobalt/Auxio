@@ -19,6 +19,8 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,7 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.BaseModel
@@ -35,7 +38,6 @@ import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
-import org.oxycblt.auxio.util.applyMaterialDrawable
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -151,7 +153,11 @@ class QueueAdapter(
         val backgroundView: View get() = binding.background
 
         init {
-            binding.body.applyMaterialDrawable()
+            binding.body.background = MaterialShapeDrawable.createWithElevationOverlay(
+                binding.root.context
+            ).apply {
+                fillColor = ColorStateList.valueOf((binding.body.background as ColorDrawable).color)
+            }
         }
 
         @SuppressLint("ClickableViewAccessibility")

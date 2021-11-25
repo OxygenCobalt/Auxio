@@ -48,6 +48,8 @@ import kotlin.math.sqrt
  * - Variable names are no longer prefixed with m
  * - Made path management compat-friendly
  * - Converted to kotlin
+ *
+ * @author Hai Zhang, OxygenCobalt
  */
 class FastScrollPopupDrawable(context: Context) : Drawable() {
     private val paint: Paint = Paint().apply {
@@ -116,7 +118,7 @@ class FastScrollPopupDrawable(context: Context) : Drawable() {
         val r = height / 2
         val sqrt2 = sqrt(2.0).toFloat()
 
-        // Ensure we are convex.
+        // Ensure we are convex
         width = (r + sqrt2 * r).coerceAtLeast(width)
         pathArcTo(path, r, r, r, 90f, 180f)
 

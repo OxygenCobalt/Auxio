@@ -22,10 +22,8 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.TypedValue
-import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -34,22 +32,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-
-/**
- * Apply a [MaterialShapeDrawable] to this view, automatically initializing the elevation overlay
- * and setting the fill color. The [View]'s current elevation will be applied to the drawable.
- * This functions assumes that the background is a [ColorDrawable] and will crash if not.
- */
-fun View.applyMaterialDrawable() {
-    check(background is ColorDrawable) { "Background was not defined as a solid color" }
-
-    background = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-        elevation = this@applyMaterialDrawable.elevation
-        fillColor = ColorStateList.valueOf((background as ColorDrawable).color)
-    }
-}
 
 /**
  * Apply the recommended spans for a [RecyclerView].

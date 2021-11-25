@@ -34,7 +34,6 @@ import org.oxycblt.auxio.util.queryAll
 /**
  * A SQLite database for managing the persistent playback state and queue.
  * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
- * LEFT-OFF: Improve hashing by making everything a long
  * @author OxygenCobalt
  */
 class PlaybackStateDatabase(context: Context) :

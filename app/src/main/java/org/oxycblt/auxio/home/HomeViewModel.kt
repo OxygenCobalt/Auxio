@@ -21,6 +21,8 @@ package org.oxycblt.auxio.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -35,7 +37,7 @@ import org.oxycblt.auxio.ui.Sort
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
  * @author OxygenCobalt
  */
-class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCallback {
+class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val settingsManager = SettingsManager.getInstance()
 
     private val mSongs = MutableLiveData(listOf<Song>())
@@ -73,7 +75,15 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
 
     init {
         settingsManager.addCallback(this)
-        MusicStore.awaitInstance(this)
+
+        viewModelScope.launch {
+            val musicStore = MusicStore.awaitInstance()
+
+            mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
+            mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
+            mArtists.value = settingsManager.libArtistSort.sortParents(musicStore.artists)
+            mGenres.value = settingsManager.libGenreSort.sortParents(musicStore.genres)
+        }
     }
 
     /**
@@ -110,14 +120,17 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
                 settingsManager.libAlbumSort = sort
                 mAlbums.value = sort.sortAlbums(mAlbums.value!!)
             }
+
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
                 mArtists.value = sort.sortParents(mArtists.value!!)
             }
+
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
                 mGenres.value = sort.sortParents(mGenres.value!!)
             }
+
             else -> {}
         }
     }
@@ -137,16 +150,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.MusicCal
         mRecreateTabs.value = true
     }
 
-    override fun onLoaded(musicStore: MusicStore) {
-        mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
-        mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
-        mArtists.value = settingsManager.libArtistSort.sortParents(musicStore.artists)
-        mGenres.value = settingsManager.libGenreSort.sortParents(musicStore.genres)
-    }
-
     override fun onCleared() {
         super.onCleared()
         settingsManager.removeCallback(this)
-        MusicStore.cancelAwaitInstance(this)
     }
 }

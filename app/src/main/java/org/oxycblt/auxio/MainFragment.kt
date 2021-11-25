@@ -78,6 +78,8 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
 
         // --- VIEWMODEL SETUP ---
 
+        // We have to control the bar view from here since using a Fragment in PlaybackLayout
+        // would result in annoying UI issues.
         binding.playbackLayout.setActionCallback(this)
 
         binding.playbackLayout.setSong(playbackModel.song.value)

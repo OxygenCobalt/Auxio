@@ -32,6 +32,10 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
+/**
+ * A [HomeListFragment] for showing a list of [Album]s.
+ * @author
+ */
 class AlbumListFragment : HomeListFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,19 +58,24 @@ class AlbumListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: (Int) -> String
+    override val listPopupProvider: (Int) -> String
         get() = { idx ->
             val album = homeModel.albums.value!![idx]
 
+            // Change how we display the popup depending on the mode.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
+                // By Name -> Use Name
                 is Sort.ByName -> album.name.sliceArticle()
                     .first().uppercase()
 
+                // By Artist -> Use Artist Name
                 is Sort.ByArtist -> album.artist.resolvedName.sliceArticle()
                     .first().uppercase()
 
+                // Year -> Use Full Year
                 is Sort.ByYear -> album.year.toString()
 
+                // Unsupported sort, error gracefully
                 else -> ""
             }
         }

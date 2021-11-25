@@ -28,8 +28,8 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 // A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0
 
-// TODO: Slate these for removal in 2.0.0. 1.4.0 was Pre-FDroid so it's extremely likely that
-//  everyone has migrated.
+// TODO: Slate these for removal eventually. There probably isn't that many left who have the
+//  old values but 2.0.0 will probably convince most of those to update too.
 
 fun handleThemeCompat(prefs: SharedPreferences): Int {
     if (prefs.contains(OldKeys.KEY_THEME)) {

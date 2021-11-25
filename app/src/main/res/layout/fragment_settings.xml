@@ -22,7 +22,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/settings_toolbar"
-                style="@style/Widget.Auxio.Toolbar.Icon.Down"
+                style="@style/Widget.Auxio.Toolbar.Icon"
                 app:title="@string/set_title" />
 
         </org.oxycblt.auxio.ui.EdgeAppBarLayout>

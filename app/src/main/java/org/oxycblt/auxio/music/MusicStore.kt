@@ -131,14 +131,9 @@ class MusicStore private constructor() {
         NO_PERMS, NO_MUSIC, FAILED
     }
 
-    interface MusicCallback {
-        fun onLoaded(musicStore: MusicStore)
-    }
-
     companion object {
         @Volatile
         private var RESPONSE: Response? = null
-        private val AWAITING = mutableListOf<MusicCallback>()
 
         /**
          * Initialize the loading process for this instance. This must be ran on a background
@@ -162,37 +157,28 @@ class MusicStore private constructor() {
                 response
             }
 
-            if (response is Response.Ok) {
-                AWAITING.forEach { it.onLoaded(response.musicStore) }
-                AWAITING.clear()
-            }
-
             return response
         }
 
         /**
-         * Await the successful creation of a [MusicStore] instance. The [callback]
-         * will be called if the instance is already loaded. It's recommended to call
-         * [cancelAwaitInstance] if the object is about to be destroyed to prevent any
-         * memory leaks.
+         * Await the successful creation of a [MusicStore] instance. The co-routine calling
+         * this will block until the successful creation of a [MusicStore], in which it will
+         * then be returned.
          */
-        fun awaitInstance(callback: MusicCallback) {
-            // FIXME: There has to be some coroutiney way to do this instead of just making
-            //  a leak-prone callback system
-            val currentInstance = maybeGetInstance()
+        suspend fun awaitInstance() = withContext(Dispatchers.Default) {
+            // We have to do a withContext call so we don't block the JVM thread
+            val musicStore: MusicStore
 
-            if (currentInstance != null) {
-                callback.onLoaded(currentInstance)
+            while (true) {
+                val response = RESPONSE
+
+                if (response is Response.Ok) {
+                    musicStore = response.musicStore
+                    break
+                }
             }
 
-            AWAITING.add(callback)
-        }
-
-        /**
-         * Remove a callback from the queue.
-         */
-        fun cancelAwaitInstance(callback: MusicCallback) {
-            AWAITING.remove(callback)
+            musicStore
         }
 
         /**

@@ -165,7 +165,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
-                SettingsManager.KEY_BLACKLIST -> {
+                SettingsManager.KEY_EXCLUDED -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         ExcludedDialog().show(childFragmentManager, ExcludedDialog.TAG)
                         true

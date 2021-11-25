@@ -30,6 +30,10 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
+/**
+ * A [HomeListFragment] for showing a list of [Song]s.
+ * @author
+ */
 class SongListFragment : HomeListFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,21 +54,26 @@ class SongListFragment : HomeListFragment() {
         return binding.root
     }
 
-    override val popupProvider: (Int) -> String
+    override val listPopupProvider: (Int) -> String
         get() = { idx ->
             val song = homeModel.songs.value!![idx]
 
+            // Change how we display the popup depending on the mode.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+                // Name -> Use name
                 is Sort.ByName -> song.name.sliceArticle()
                     .first().uppercase()
 
+                // Artist -> Use Artist Name
                 is Sort.ByArtist ->
                     song.album.artist.resolvedName
                         .sliceArticle().first().uppercase()
 
+                // Album -> Use Album Name
                 is Sort.ByAlbum -> song.album.name.sliceArticle()
                     .first().uppercase()
 
+                // Year -> Use Full Year
                 is Sort.ByYear -> song.album.year.toString()
             }
         }

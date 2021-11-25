@@ -48,6 +48,7 @@ class DetailAppBarLayout @JvmOverloads constructor(
 
         val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
 
+        // Reflect to get the actual title view to do transformations on
         val newTitleView = Toolbar::class.java.getDeclaredField("mTitleTextView").run {
             isAccessible = true
             get(toolbar) as AppCompatTextView
@@ -66,7 +67,7 @@ class DetailAppBarLayout @JvmOverloads constructor(
             return recycler
         }
 
-        val newRecycler = (parent as ViewGroup).findViewById<RecyclerView>(R.id.detail_recycler)
+        val newRecycler = (parent as ViewGroup).findViewById<RecyclerView>(liftOnScrollTargetViewId)
 
         mRecycler = newRecycler
         return newRecycler

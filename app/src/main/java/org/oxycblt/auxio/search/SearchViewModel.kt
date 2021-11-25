@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -38,7 +39,7 @@ import java.text.Normalizer
  * The [ViewModel] for the search functionality
  * @author OxygenCobalt
  */
-class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
+class SearchViewModel : ViewModel() {
     private val mSearchResults = MutableLiveData(listOf<BaseModel>())
     private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
@@ -54,7 +55,10 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
     init {
         mFilterMode = settingsManager.searchFilterMode
 
-        MusicStore.awaitInstance(this)
+        viewModelScope.launch {
+            MusicStore.awaitInstance()
+            search(mLastQuery)
+        }
     }
 
     /**
@@ -71,6 +75,7 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
             return
         }
 
+        // Searching can be quite expensive, so hop on a co-routine
         viewModelScope.launch {
             val results = mutableListOf<BaseModel>()
 
@@ -133,11 +138,18 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
      */
     private fun List<Music>.filterByOrNull(value: String): List<BaseModel>? {
         val filtered = filter {
+            // Ensure the name we match with is correct.
+            val name = if (it is MusicParent) {
+                it.resolvedName
+            } else {
+                it.name
+            }
+
             // First see if the normal item name will work. If that fails, try the "normalized"
             // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
             // shouldn't break other language's search functionality.
-            it.name.contains(value, ignoreCase = true) ||
-                it.name.normalized().contains(value, ignoreCase = true)
+            name.contains(value, ignoreCase = true) ||
+                name.normalized().contains(value, ignoreCase = true)
         }
 
         return if (filtered.isNotEmpty()) filtered else null
@@ -178,16 +190,5 @@ class SearchViewModel : ViewModel(), MusicStore.MusicCallback {
      */
     fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
-    }
-
-    // --- OVERRIDES ---
-
-    override fun onLoaded(musicStore: MusicStore) {
-        search(mLastQuery)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        MusicStore.cancelAwaitInstance(this)
     }
 }
