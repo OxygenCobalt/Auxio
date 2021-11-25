@@ -18,9 +18,6 @@
 
 package org.oxycblt.auxio.detail
 
-import android.os.Bundle
-import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.forEach
@@ -44,20 +41,10 @@ abstract class DetailFragment : Fragment() {
     protected val playbackModel: PlaybackViewModel by activityViewModels()
     protected val binding by memberBinding(FragmentDetailBinding::inflate)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-    }
-
     override fun onResume() {
         super.onResume()
 
-        callback.isEnabled = true
         detailModel.setNavigating(false)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        callback.isEnabled = false
     }
 
     override fun onStop() {
@@ -147,23 +134,6 @@ abstract class DetailFragment : Fragment() {
             menu.findItem(R.id.option_sort_asc).isChecked = config.sortMode.isAscending
 
             show()
-        }
-    }
-
-    // Override the back button so that going back will only exit the detail fragments instead of
-    // the entire app.
-    private val callback = object : OnBackPressedCallback(false) {
-
-        override fun handleOnBackPressed() {
-            val navController = findNavController()
-            // Check if it's the root of nested fragments in this NavHost
-            if (navController.currentDestination?.id == navController.graph.startDestination) {
-                isEnabled = false
-                requireActivity().onBackPressed()
-                isEnabled = true
-            } else {
-                navController.navigateUp()
-            }
         }
     }
 }

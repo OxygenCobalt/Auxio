@@ -5,10 +5,9 @@
     tools:context=".MainFragment">
 
     <org.oxycblt.auxio.playback.PlaybackLayout
-        android:id="@+id/main_bar_layout"
+        android:id="@+id/playback_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/explore_nav_host"

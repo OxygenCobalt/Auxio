@@ -24,10 +24,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -41,12 +44,12 @@ import org.oxycblt.auxio.util.logD
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
  * @author OxygenCobalt
- * TODO: Handle backnav with playback view
  */
 class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
+    private var callback: Callback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,24 +69,31 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            Callback(binding).also {
+                callback = it
+            }
+        )
+
         // --- VIEWMODEL SETUP ---
 
-        binding.mainBarLayout.setActionCallback(this)
+        binding.playbackLayout.setActionCallback(this)
 
-        binding.mainBarLayout.setSong(playbackModel.song.value)
-        binding.mainBarLayout.setPlaying(playbackModel.isPlaying.value!!)
-        binding.mainBarLayout.setPosition(playbackModel.position.value!!)
+        binding.playbackLayout.setSong(playbackModel.song.value)
+        binding.playbackLayout.setPlaying(playbackModel.isPlaying.value!!)
+        binding.playbackLayout.setPosition(playbackModel.position.value!!)
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
-            binding.mainBarLayout.setSong(song)
+            binding.playbackLayout.setSong(song)
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.mainBarLayout.setPlaying(isPlaying)
+            binding.playbackLayout.setPlaying(isPlaying)
         }
 
         playbackModel.position.observe(viewLifecycleOwner) { pos ->
-            binding.mainBarLayout.setPosition(pos)
+            binding.playbackLayout.setPosition(pos)
         }
 
         // Initialize music loading. Do it here so that it shows on every fragment that this
@@ -144,6 +154,23 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        callback?.isEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        callback?.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // This callback has access to the binding, so make sure we clear it when we're done.
+        callback = null
+    }
+
     override fun onNavToItem() {
         detailModel.navToItem(playbackModel.song.value ?: return)
     }
@@ -158,5 +185,25 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
 
     override fun onNext() {
         playbackModel.skipNext()
+    }
+
+    /**
+     * A back press callback that handles how to respond to backwards navigation in the detail
+     * fragments and the playback panel.
+     */
+    inner class Callback(private val binding: FragmentMainBinding) : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (!binding.playbackLayout.collapse()) {
+                val navController = binding.exploreNavHost.findNavController()
+
+                if (navController.currentDestination?.id == navController.graph.startDestination) {
+                    isEnabled = false
+                    requireActivity().onBackPressed()
+                    isEnabled = true
+                } else {
+                    navController.navigateUp()
+                }
+            }
+        }
     }
 }

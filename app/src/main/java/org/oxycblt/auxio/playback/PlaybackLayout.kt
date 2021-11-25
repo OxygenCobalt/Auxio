@@ -23,6 +23,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.systemBarsCompat
 import kotlin.math.abs
@@ -198,11 +199,17 @@ class PlaybackLayout @JvmOverloads constructor(
 
     /**
      * Collapse the panel if it is currently expanded.
+     * @return If the panel was collapsed or not.
      */
-    fun collapse() {
+    fun collapse(): Boolean {
+        logD(panelState)
         if (panelState == PanelState.EXPANDED) {
             applyState(PanelState.COLLAPSED)
+            logD("I AM EXPANDED WILL COLLAPSE")
+            return true
         }
+
+        return false
     }
 
     private fun applyState(state: PanelState) {

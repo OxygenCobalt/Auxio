@@ -18,17 +18,17 @@
         <action
             android:id="@+id/action_show_settings"
             app:destination="@id/settings_fragment"
-            app:enterAnim="@anim/anim_nav_slide_up"
-            app:exitAnim="@anim/anim_stationary"
-            app:popEnterAnim="@anim/anim_stationary"
-            app:popExitAnim="@anim/anim_nav_slide_down" />
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_show_about"
             app:destination="@id/about_fragment"
-            app:enterAnim="@anim/anim_nav_slide_up"
-            app:exitAnim="@anim/anim_stationary"
-            app:popEnterAnim="@anim/anim_stationary"
-            app:popExitAnim="@anim/anim_nav_slide_down" />
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
