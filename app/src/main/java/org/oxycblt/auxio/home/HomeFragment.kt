@@ -18,15 +18,11 @@
 
 package org.oxycblt.auxio.home
 
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -53,7 +49,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.resolveAttr
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
@@ -123,21 +118,6 @@ class HomeFragment : Fragment() {
             }
 
             sortItem = menu.findItem(R.id.submenu_sorting)
-
-            // Apply a nice gradient to the toolbar title view.
-            val titleView = Toolbar::class.java.getDeclaredField("mTitleTextView").run {
-                isAccessible = true
-                get(this@apply) as AppCompatTextView
-            }
-
-            titleView.paint.shader = LinearGradient(
-                0f, 0f, titleView.paint.measureText(titleView.text.toString()), titleView.textSize,
-                intArrayOf(
-                    R.attr.colorPrimary.resolveAttr(context),
-                    R.attr.colorSecondary.resolveAttr(context)
-                ),
-                null, Shader.TileMode.CLAMP
-            )
         }
 
         binding.homePager.apply {

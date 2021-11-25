@@ -136,7 +136,7 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="KEY_BLACKLIST"
+            app:key="auxio_excluded_dirs"
             app:summary="@string/set_excluded_desc"
             app:title="@string/set_excluded" />
 
