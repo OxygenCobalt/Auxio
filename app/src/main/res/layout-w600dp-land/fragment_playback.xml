@@ -31,19 +31,18 @@
             style="@style/Widget.Auxio.Toolbar.Icon.Down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_playback"
-            app:title="@string/lbl_playback" />
+            app:title="@string/lbl_playback"
+            app:menu="@menu/menu_playback" />
 
         <ImageView
             android:id="@+id/playback_cover"
-            style="@style/Widget.Auxio.Image.Large"
-            android:layout_marginStart="@dimen/spacing_mid_large"
+            style="@style/Widget.Auxio.Image.Full"
+            android:layout_margin="@dimen/spacing_mid_large"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
-            app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-            app:layout_constraintVertical_chainStyle="packed"
             tools:src="@drawable/ic_album" />
 
         <!-- TextView is wrapped in a container so that marquee doesn't break -->
@@ -58,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
-            app:layout_constraintTop_toTopOf="@+id/playback_cover"
+            app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
             app:layout_constraintVertical_chainStyle="packed">
 
             <TextView
@@ -97,7 +96,7 @@
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
             android:text="@{song.album.name}"
-            app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
+            app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -109,14 +108,13 @@
             android:id="@+id/playback_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-16dp"
-            android:layout_marginEnd="-16dp"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
-            app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/playback_cover"
-            app:layout_constraintTop_toBottomOf="@+id/playback_cover"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintTop_toBottomOf="@+id/playback_album" />
 
         <ImageButton
             android:id="@+id/playback_loop"
@@ -128,6 +126,7 @@
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
@@ -154,9 +153,10 @@
             android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
-            app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
-            tools:src="@drawable/ic_play" />
+            tools:src="@drawable/ic_pause" />
 
         <ImageButton
             android:id="@+id/playback_skip_next"
@@ -176,8 +176,8 @@
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/desc_shuffle"
             android:layout_marginEnd="@dimen/spacing_medium"
+            android:contentDescription="@string/desc_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
