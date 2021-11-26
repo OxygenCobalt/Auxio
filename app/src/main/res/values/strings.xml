@@ -22,10 +22,10 @@
 
     <string name="lbl_sort">Sort</string>
     <string name="lbl_sort_name">Name</string>
-    <string name="lbl_sort_asc">Ascending</string>
     <string name="lbl_sort_artist">Artist</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
+    <string name="lbl_sort_asc">Ascending</string>
 
     <string name="lbl_playback">Now Playing</string>
     <string name="lbl_play">Play</string>

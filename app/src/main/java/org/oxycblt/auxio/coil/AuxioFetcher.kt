@@ -126,7 +126,7 @@ abstract class AuxioFetcher : Fetcher {
             context, MediaItem.fromUri(uri)
         )
 
-        // future.get is a blocking call that makes the us spin until the future is done.
+        // future.get is a blocking call that makes us spin until the future is done.
         // This is bad for a co-routine, as it prevents cancellation and by extension
         // messes with the image loading process and causes frustrating bugs.
         // To fix this we wrap this around in a withContext call to make it suspend and make
@@ -212,10 +212,11 @@ abstract class AuxioFetcher : Fetcher {
             }
         }
 
-        // Use whatever size coil gives us to create the mosaic. If there is no size, default
-        // to a 512x512 mosaic.
+        // Use whatever size coil gives us to create the mosaic, rounding it to even so that we
+        // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
+        // 512x512 mosaic.
         val mosaicSize = when (size) {
-            is PixelSize -> size
+            is PixelSize -> PixelSize(size.width.roundEven(), size.height.roundEven())
             else -> PixelSize(512, 512)
         }
 
@@ -263,4 +264,6 @@ abstract class AuxioFetcher : Fetcher {
             dataSource = DataSource.DISK
         )
     }
+
+    private fun Int.roundEven(): Int = if (mod(2) != 0) inc() else this
 }

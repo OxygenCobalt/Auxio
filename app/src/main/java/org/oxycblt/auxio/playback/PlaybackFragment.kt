@@ -145,8 +145,6 @@ class PlaybackFragment : Fragment() {
             }
         }
 
-        logD(resources.configuration.smallestScreenWidthDp)
-
         logD("Fragment Created.")
 
         return binding.root

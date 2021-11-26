@@ -205,7 +205,7 @@ class MusicStore private constructor() {
          */
         fun requireInstance(): MusicStore {
             return requireNotNull(maybeGetInstance()) {
-                "MusicStore instance was not loaded or loading failed."
+                "Required MusicStore instance was not available."
             }
         }
 
