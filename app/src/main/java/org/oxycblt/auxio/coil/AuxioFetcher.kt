@@ -12,6 +12,8 @@ import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
+import coil.size.PixelSize
+import coil.size.Size
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
@@ -199,7 +201,7 @@ abstract class AuxioFetcher : Fetcher {
      * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
-    protected fun createMosaic(context: Context, streams: List<InputStream>): FetchResult? {
+    protected fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
         if (streams.size < 4) {
             return streams.getOrNull(0)?.let { stream ->
                 return SourceResult(
@@ -210,11 +212,17 @@ abstract class AuxioFetcher : Fetcher {
             }
         }
 
-        // Use a fixed 512x512 canvas for the mosaics. Preferably we would adapt this mosaic to
-        // target ImageView size, but Coil seems to start image loading before we can even get
-        // a width/height for the view, making that impractical.
+        // Use whatever size coil gives us to create the mosaic. If there is no size, default
+        // to a 512x512 mosaic.
+        val mosaicSize = when (size) {
+            is PixelSize -> size
+            else -> PixelSize(512, 512)
+        }
+
+        val increment = PixelSize(mosaicSize.width / 2, mosaicSize.height / 2)
+
         val mosaicBitmap = Bitmap.createBitmap(
-            MOSAIC_BITMAP_SIZE, MOSAIC_BITMAP_SIZE, Bitmap.Config.ARGB_8888
+            mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888
         )
 
         val canvas = Canvas(mosaicBitmap)
@@ -225,36 +233,34 @@ abstract class AuxioFetcher : Fetcher {
         // For each stream, create a bitmap scaled to 1/4th of the mosaics combined size
         // and place it on a corner of the canvas.
         for (stream in streams) {
-            if (y == MOSAIC_BITMAP_SIZE) {
+            if (y == mosaicSize.height) {
                 break
             }
 
             val bitmap = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeStream(stream),
-                MOSAIC_BITMAP_INCREMENT,
-                MOSAIC_BITMAP_INCREMENT,
+                increment.width,
+                increment.height,
                 true
             )
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
-            x += MOSAIC_BITMAP_INCREMENT
+            x += increment.width
 
-            if (x == MOSAIC_BITMAP_SIZE) {
+            if (x == mosaicSize.width) {
                 x = 0
-                y += MOSAIC_BITMAP_INCREMENT
+                y += increment.height
             }
         }
 
+        // It's way easier to map this into a drawable then try to serialize it into an
+        // BufferedSource. Just make sure we mark it as "sampled" so Coil doesn't try to
+        // load low-res mosaics into high-res ImageViews.
         return DrawableResult(
             drawable = mosaicBitmap.toDrawable(context.resources),
-            isSampled = false,
+            isSampled = true,
             dataSource = DataSource.DISK
         )
-    }
-
-    companion object {
-        private const val MOSAIC_BITMAP_SIZE = 512
-        private const val MOSAIC_BITMAP_INCREMENT = 256
     }
 }

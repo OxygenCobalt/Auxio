@@ -26,6 +26,7 @@ import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.request.Options
+import coil.size.Size
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
@@ -71,19 +72,20 @@ class AlbumArtFetcher private constructor(
  */
 class ArtistImageFetcher private constructor(
     private val context: Context,
-    private val artist: Artist
+    private val size: Size,
+    private val artist: Artist,
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
         val results = artist.albums.mapAtMost(4) { album ->
             fetchArt(context, album)
         }
 
-        return createMosaic(context, results)
+        return createMosaic(context, results, size)
     }
 
     class Factory : Fetcher.Factory<Artist> {
         override fun create(data: Artist, options: Options, imageLoader: ImageLoader): Fetcher {
-            return ArtistImageFetcher(options.context, data)
+            return ArtistImageFetcher(options.context, options.size, data)
         }
     }
 }
@@ -94,7 +96,8 @@ class ArtistImageFetcher private constructor(
  */
 class GenreImageFetcher private constructor(
     private val context: Context,
-    private val genre: Genre
+    private val size: Size,
+    private val genre: Genre,
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
         val albums = genre.songs.groupBy { it.album }.keys
@@ -102,12 +105,12 @@ class GenreImageFetcher private constructor(
             fetchArt(context, album)
         }
 
-        return createMosaic(context, results)
+        return createMosaic(context, results, size)
     }
 
     class Factory : Fetcher.Factory<Genre> {
         override fun create(data: Genre, options: Options, imageLoader: ImageLoader): Fetcher {
-            return GenreImageFetcher(options.context, data)
+            return GenreImageFetcher(options.context, options.size, data)
         }
     }
 }
