@@ -23,9 +23,11 @@ import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewPlaybackBarBinding
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
@@ -41,15 +43,9 @@ class PlaybackBarView @JvmOverloads constructor(
     defStyleAttr: Int = -1
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val binding = ViewPlaybackBarBinding.inflate(context.inflater, this, true)
-    private var mCallback: PlaybackLayout.ActionCallback? = null
 
     init {
         id = R.id.playback_bar
-
-        setOnLongClickListener {
-            mCallback?.onNavToItem()
-            true
-        }
 
         // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
         // we use colorSecondary instead of colorSurfaceVariant. This is for two reasons:
@@ -66,28 +62,45 @@ class PlaybackBarView @JvmOverloads constructor(
         return insets
     }
 
+    fun setup(
+        playbackModel: PlaybackViewModel,
+        detailModel: DetailViewModel,
+        viewLifecycleOwner: LifecycleOwner
+    ) {
+        setOnLongClickListener {
+            playbackModel.song.value?.let { song ->
+                detailModel.navToItem(song)
+            }
+            true
+        }
+
+        binding.playbackSkipPrev?.setOnClickListener {
+            playbackModel.skipPrev()
+        }
+
+        binding.playbackPlayPause.setOnClickListener {
+            playbackModel.invertPlayingStatus()
+        }
+
+        binding.playbackSkipNext?.setOnClickListener {
+            playbackModel.skipNext()
+        }
+
+        binding.playbackPlayPause.isActivated = playbackModel.isPlaying.value!!
+
+        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
+            binding.playbackPlayPause.isActivated = isPlaying
+        }
+
+        binding.playbackProgressBar.progress = playbackModel.position.value!!.toInt()
+
+        playbackModel.position.observe(viewLifecycleOwner) { position ->
+            binding.playbackProgressBar.progress = position.toInt()
+        }
+    }
+
     fun setSong(song: Song) {
         binding.song = song
-        binding.executePendingBindings()
-    }
-
-    fun setPlaying(isPlaying: Boolean) {
-        binding.playbackPlayPause.isActivated = isPlaying
-    }
-
-    fun setPosition(position: Long) {
-        binding.playbackProgressBar.progress = position.toInt()
-    }
-
-    fun setCallback(callback: PlaybackLayout.ActionCallback) {
-        mCallback = callback
-        binding.callback = callback
-        binding.executePendingBindings()
-    }
-
-    fun clearCallback() {
-        mCallback = null
-        binding.callback = null
         binding.executePendingBindings()
     }
 }

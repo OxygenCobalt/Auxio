@@ -10,10 +10,6 @@
             name="song"
             type="org.oxycblt.auxio.music.Song" />
 
-        <variable
-            name="callback"
-            type="org.oxycblt.auxio.playback.PlaybackLayout.ActionCallback" />
-
     </data>
 
     <merge
@@ -69,7 +65,6 @@
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:src="@drawable/ic_skip_prev"
-            android:onClick="@{() -> callback.onPrev()}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintHorizontal_bias="0.5"
@@ -84,7 +79,6 @@
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:src="@drawable/sel_playing_state"
-            android:onClick="@{() -> callback.onPlayPauseClick()}"
             app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
             app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
             app:layout_constraintHorizontal_bias="0.5"
@@ -99,7 +93,6 @@
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:src="@drawable/ic_skip_next"
-            android:onClick="@{() -> callback.onNext()}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"

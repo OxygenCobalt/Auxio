@@ -20,11 +20,12 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.customview.widget.ViewDragHelper
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveDrawable
 import org.oxycblt.auxio.util.systemBarsCompat
@@ -54,13 +55,6 @@ class PlaybackLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyle) {
     private enum class PanelState {
         EXPANDED, COLLAPSED, HIDDEN, DRAGGING
-    }
-
-    interface ActionCallback {
-        fun onNavToItem()
-        fun onPrev()
-        fun onPlayPauseClick()
-        fun onNext()
     }
 
     private lateinit var contentView: View
@@ -182,7 +176,21 @@ class PlaybackLayout @JvmOverloads constructor(
      * Update the song that this layout is showing. This will be reflected in the compact view
      * at the bottom of the screen.
      */
-    fun setSong(song: Song?) {
+    fun setup(
+        playbackModel: PlaybackViewModel,
+        detailModel: DetailViewModel,
+        viewLifecycleOwner: LifecycleOwner
+    ) {
+        setSong(playbackModel.song.value)
+
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            setSong(song)
+        }
+
+        playbackBarView.setup(playbackModel, detailModel, viewLifecycleOwner)
+    }
+
+    private fun setSong(song: Song?) {
         if (song != null) {
             playbackBarView.setSong(song)
 
@@ -196,34 +204,10 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     /**
-     * Update the playing status on this layout. This will be reflected in the compact view
-     * at the bottom of the screen.
-     */
-    fun setPlaying(isPlaying: Boolean) {
-        playbackBarView.setPlaying(isPlaying)
-    }
-
-    /**
-     * Update the playback position on this layout. This will be reflected in the compact view
-     * at the bottom of the screen.
-     */
-    fun setPosition(position: Long) {
-        playbackBarView.setPosition(position)
-    }
-
-    /**
-     * Add a callback for actions from the compact playback view in this layout.
-     */
-    fun setActionCallback(callback: ActionCallback) {
-        playbackBarView.setCallback(callback)
-    }
-
-    /**
      * Collapse the panel if it is currently expanded.
      * @return If the panel was collapsed or not.
      */
     fun collapse(): Boolean {
-        logD(panelState)
         if (panelState == PanelState.EXPANDED) {
             applyState(PanelState.COLLAPSED)
             return true
@@ -414,11 +398,6 @@ class PlaybackLayout @JvmOverloads constructor(
 
             else -> insets
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        playbackBarView.clearCallback()
     }
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {

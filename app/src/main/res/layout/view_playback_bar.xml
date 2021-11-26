@@ -10,10 +10,6 @@
             name="song"
             type="org.oxycblt.auxio.music.Song" />
 
-        <variable
-            name="callback"
-            type="org.oxycblt.auxio.playback.PlaybackLayout.ActionCallback" />
-
     </data>
 
     <merge
@@ -70,7 +66,6 @@
             android:layout_margin="@dimen/spacing_small"
             android:contentDescription="@string/desc_play_pause"
             android:src="@drawable/sel_playing_state"
-            android:onClick="@{() -> callback.onPlayPauseClick()}"
             app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

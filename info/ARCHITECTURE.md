@@ -275,8 +275,7 @@ This module not only contains the playback system described above, but also mult
 - `system` contains the system-facing playback system
 
 The most important part of this module is `PlaybackLayout`, which is a custom `ViewGroup` that implements the playback bar and it's ability to
-slide up into the full playback view. `MainFragment` controls this `ViewGroup`, more specifically the bar view, as it can't be an independent
-fragment due to a couple of annoying reasons.
+slide up into the full playback view. `MainFragment` controls this `ViewGroup`.
 
 #### `.search`
 

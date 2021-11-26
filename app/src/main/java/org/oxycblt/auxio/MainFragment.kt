@@ -34,7 +34,6 @@ import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
-import org.oxycblt.auxio.playback.PlaybackLayout
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.logD
 
@@ -43,7 +42,7 @@ import org.oxycblt.auxio.util.logD
  * the more high-level navigation features.
  * @author OxygenCobalt
  */
-class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
+class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
@@ -78,23 +77,7 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
 
         // We have to control the bar view from here since using a Fragment in PlaybackLayout
         // would result in annoying UI issues.
-        binding.playbackLayout.setActionCallback(this)
-
-        binding.playbackLayout.setSong(playbackModel.song.value)
-        binding.playbackLayout.setPlaying(playbackModel.isPlaying.value!!)
-        binding.playbackLayout.setPosition(playbackModel.position.value!!)
-
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            binding.playbackLayout.setSong(song)
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.playbackLayout.setPlaying(isPlaying)
-        }
-
-        playbackModel.position.observe(viewLifecycleOwner) { pos ->
-            binding.playbackLayout.setPosition(pos)
-        }
+        binding.playbackLayout.setup(playbackModel, detailModel, viewLifecycleOwner)
 
         // Initialize music loading. Do it here so that it shows on every fragment that this
         // one contains.
@@ -154,29 +137,6 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
     override fun onPause() {
         super.onPause()
         callback?.isEnabled = false
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        // This callback has access to the binding, so make sure we clear it when we're done.
-        callback = null
-    }
-
-    override fun onNavToItem() {
-        detailModel.navToItem(playbackModel.song.value ?: return)
-    }
-
-    override fun onPrev() {
-        playbackModel.skipPrev()
-    }
-
-    override fun onPlayPauseClick() {
-        playbackModel.invertPlayingStatus()
-    }
-
-    override fun onNext() {
-        playbackModel.skipNext()
     }
 
     /**
