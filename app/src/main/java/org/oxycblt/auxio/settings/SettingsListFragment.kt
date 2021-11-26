@@ -145,7 +145,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     }
                 }
 
-                SettingsManager.KEY_SHOW_COVERS, SettingsManager.KEY_QUALITY_COVERS -> {
+                SettingsManager.KEY_SHOW_COVERS, SettingsManager.KEY_QUALITY_COVERS,
+                SettingsManager.KEY_ROUND_COVERS -> {
                     onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                         Coil.imageLoader(requireContext()).apply {
                             this.memoryCache?.clear()

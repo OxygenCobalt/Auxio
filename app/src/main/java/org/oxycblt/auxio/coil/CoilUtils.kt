@@ -21,6 +21,7 @@ package org.oxycblt.auxio.coil
 import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.dispose
@@ -28,11 +29,14 @@ import coil.imageLoader
 import coil.load
 import coil.request.ImageRequest
 import coil.size.OriginalSize
+import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.settings.SettingsManager
 
 // --- BINDING ADAPTERS ---
 
@@ -40,47 +44,40 @@ import org.oxycblt.auxio.music.Song
  * Bind the album art for a [song].
  */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(song: Song?) {
-    dispose()
-
-    load(song) {
-        error(R.drawable.ic_album)
-    }
-}
+fun ImageView.bindAlbumArt(song: Song?) = load(song, R.drawable.ic_album)
 
 /**
  * Bind the album art for an [album].
  */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(album: Album?) {
-    dispose()
-
-    load(album) {
-        error(R.drawable.ic_album)
-    }
-}
+fun ImageView.bindAlbumArt(album: Album?) = load(album, R.drawable.ic_album)
 
 /**
  * Bind the image for an [artist]
  */
 @BindingAdapter("artistImage")
-fun ImageView.bindArtistImage(artist: Artist?) {
-    dispose()
-
-    load(artist) {
-        error(R.drawable.ic_artist)
-    }
-}
+fun ImageView.bindArtistImage(artist: Artist?) = load(artist, R.drawable.ic_artist)
 
 /**
  * Bind the image for a [genre]
  */
 @BindingAdapter("genreImage")
-fun ImageView.bindGenreImage(genre: Genre?) {
+fun ImageView.bindGenreImage(genre: Genre?) = load(genre, R.drawable.ic_genre)
+
+fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
     dispose()
 
-    load(genre) {
-        error(R.drawable.ic_genre)
+    load(music) {
+        // Round out the corners if it's enabled
+        // We don't do this by default because it's ugly and desecrates album artwork.
+        val settingsManager = SettingsManager.getInstance()
+
+        if (settingsManager.roundCovers) {
+            val radius = resources.getDimension(R.dimen.spacing_small)
+            transformations(RoundedCornersTransformation(radius))
+        }
+
+        error(error)
     }
 }
 

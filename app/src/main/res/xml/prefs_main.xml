@@ -55,6 +55,14 @@
             app:title="@string/set_quality_covers" />
 
         <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:dependency="KEY_SHOW_COVERS"
+            app:iconSpaceReserved="false"
+            app:key="auxio_round_covers"
+            app:summary="@string/set_round_covers_desc"
+            app:title="@string/set_round_covers" />
+
+        <SwitchPreferenceCompat
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"

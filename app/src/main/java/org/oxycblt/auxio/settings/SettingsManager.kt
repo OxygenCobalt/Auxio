@@ -90,6 +90,10 @@ class SettingsManager private constructor(context: Context) :
     val useQualityCovers: Boolean
         get() = sharedPrefs.getBoolean(KEY_QUALITY_COVERS, false)
 
+    /** Whether to round album covers */
+    val roundCovers: Boolean
+        get() = sharedPrefs.getBoolean(KEY_ROUND_COVERS, false)
+
     /** Whether to do Audio focus. */
     val doAudioFocus: Boolean
         get() = sharedPrefs.getBoolean(KEY_AUDIO_FOCUS, true)
@@ -258,6 +262,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_LIB_TABS = "auxio_lib_tabs"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
         const val KEY_QUALITY_COVERS = "KEY_QUALITY_COVERS"
+        const val KEY_ROUND_COVERS = "auxio_round_covers"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
 
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"

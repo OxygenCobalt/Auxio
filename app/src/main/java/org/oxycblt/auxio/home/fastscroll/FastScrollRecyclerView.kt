@@ -88,7 +88,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     private val minTouchTargetSize: Int = resources.getDimensionPixelSize(R.dimen.size_btn_small)
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
 
-    // Views for the track, thumb, and popup. Note that the track view is mostly vestigal
+    // Views for the track, thumb, and popup. Note that the track view is mostly vestigial
     // and is only for bounds checking.
     private val trackView: View
     private val thumbView: View
@@ -134,21 +134,23 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             layoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             )
+
             minimumWidth = resources.getDimensionPixelSize(
                 R.dimen.popup_min_width
             )
-
             minimumHeight = resources.getDimensionPixelSize(
                 R.dimen.size_btn_large
             )
 
-            val layoutParams = layoutParams as FrameLayout.LayoutParams
-            layoutParams.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-            layoutParams.marginEnd = resources.getDimensionPixelOffset(
-                R.dimen.spacing_small
-            )
+            (layoutParams as FrameLayout.LayoutParams).apply {
+                gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                marginEnd = resources.getDimensionPixelOffset(
+                    R.dimen.spacing_small
+                )
+            }
 
-            setLayoutParams(layoutParams)
+            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
+            setTextColor(R.attr.colorOnSecondary.resolveAttr(context))
 
             background = FastScrollPopupDrawable(context)
             elevation = resources.getDimensionPixelOffset(R.dimen.elevation_normal).toFloat()
@@ -156,9 +158,6 @@ class FastScrollRecyclerView @JvmOverloads constructor(
             gravity = Gravity.CENTER
             includeFontPadding = false
             isSingleLine = true
-
-            TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-            setTextColor(R.attr.colorOnSecondary.resolveAttr(context))
         }
 
         thumbWidth = thumbDrawable.intrinsicWidth
