@@ -11,13 +11,13 @@ Auxio is not and will never be on the play store due to it being a proprietary a
 
 This is probably caused by one of two reasons:
 
-1. If other players like Phonograph or Retro Music load it correctly, then Auxio has a bug and it should be [reported](https://github.com/OxygenCobalt/Auxio/issues).
+1. If other players like Phonograph, Retro Music, or Music Player GO load it correctly, then Auxio has a bug and it should be [reported](https://github.com/OxygenCobalt/Auxio/issues).
 2. If the aforementioned players don't work, but players like Vanilla Music and VLC do, then it's a problem with the Media APIs that Auxio relies on. There is nothing I can do about it.
 
 #### I have a large library and Auxio takes really long to load it!
 
 This is expected since reading media takes awhile, especially with libraries containing 10k songs or more.
-I do hope to mitigate this in the future by allowing one to customize the music loader to optimize for speed instead of accuracy.
+I hope to mitigate this in the future by allowing one to customize the music loader to optimize for speed instead of accuracy.
 
 #### Why ExoPlayer?
 
@@ -27,22 +27,9 @@ ability to be extended to music sources outside of local files. You can read mor
 
 #### What formats does Auxio support?
 
-As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats.html), Auxio supports the following:
-
-✅ = Supported
-
-👎 = Not supported well
-
-| Format | Supported | Comments |
-|--------|-----------|-----------
-| MP4    | ✅ | |
-| MP3    | ✅ | |
-| MKA    | ✅ | |
-| OGG    | ✅ | Containing Vorbis, Opus, and FLAC |
-| WAV    | ✅ | |
-| MPEG   | ✅ | |
-| AAC    | ✅ | |
-| FLAC   | 👎 | Supported on Android 8.1 or newer. Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac) on lower versions. |
+As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats.html), Auxio supports
+MP4, MP3, MKA, OGG, WAV, MPEG, ACC on all versions of Android. FLAC files are supported on Android 8.1
+or newer, on lower versions Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac).
 
 #### Why are accents lighter/less saturated in dark mode?
 

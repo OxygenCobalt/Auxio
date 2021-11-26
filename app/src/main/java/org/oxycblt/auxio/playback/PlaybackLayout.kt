@@ -52,7 +52,7 @@ class PlaybackLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : ViewGroup(context, attrs, defStyle) {
-    enum class PanelState {
+    private enum class PanelState {
         EXPANDED, COLLAPSED, HIDDEN, DRAGGING
     }
 
@@ -85,8 +85,7 @@ class PlaybackLayout @JvmOverloads constructor(
     private var lastInsets: WindowInsets? = null
 
     /** The current panel state. Can be [PanelState.DRAGGING]*/
-    var panelState = INIT_PANEL_STATE
-        private set
+    private var panelState = INIT_PANEL_STATE
 
     /** The last panel state before a drag event began. */
     private var lastIdlePanelState = INIT_PANEL_STATE

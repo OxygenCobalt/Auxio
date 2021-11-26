@@ -94,6 +94,10 @@ class PlaybackFragment : Fragment() {
         binding.playbackSong.isSelected = true
         binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
 
+        binding.playbackPlayPause.post {
+            binding.playbackPlayPause.stateListAnimator = null
+        }
+
         // --- VIEWMODEL SETUP --
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
@@ -139,10 +143,6 @@ class PlaybackFragment : Fragment() {
             if (item != null) {
                 navigateUp()
             }
-        }
-
-        binding.playbackPlayPause.post {
-            binding.playbackPlayPause.stateListAnimator = null
         }
 
         logD("Fragment Created.")

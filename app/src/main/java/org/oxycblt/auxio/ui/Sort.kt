@@ -203,7 +203,7 @@ sealed class Sort(open val isAscending: Boolean) {
 
     companion object {
         private const val CONST_NAME = 0xA10C
-        private const val CONST_ARTIST = 0xA10d
+        private const val CONST_ARTIST = 0xA10D
         private const val CONST_ALBUM = 0xA10E
         private const val CONST_YEAR = 0xA10F
 

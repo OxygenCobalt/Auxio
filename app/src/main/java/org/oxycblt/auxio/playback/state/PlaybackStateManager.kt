@@ -163,7 +163,7 @@ class PlaybackStateManager private constructor() {
 
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
-                val musicStore = MusicStore.requireInstance()
+                val musicStore = MusicStore.maybeGetInstance() ?: return
 
                 mParent = null
                 mQueue = musicStore.songs.toMutableList()
@@ -467,9 +467,8 @@ class PlaybackStateManager private constructor() {
      * @param useLastSong Whether to use the previous song for the index calculations.
      */
     private fun resetShuffle(keepSong: Boolean, useLastSong: Boolean) {
+        val musicStore = MusicStore.maybeGetInstance() ?: return
         val lastSong = if (useLastSong) mQueue[mIndex] else mSong
-
-        val musicStore = MusicStore.requireInstance()
 
         mQueue = when (mPlaybackMode) {
             PlaybackMode.ALL_SONGS ->
@@ -605,7 +604,7 @@ class PlaybackStateManager private constructor() {
     suspend fun restoreFromDatabase(context: Context) {
         logD("Getting state from DB.")
 
-        val musicStore = MusicStore.requireInstance()
+        val musicStore = MusicStore.maybeGetInstance() ?: return
 
         val start: Long
         val playbackState: PlaybackStateDatabase.SavedState?

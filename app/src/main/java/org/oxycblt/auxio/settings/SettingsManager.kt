@@ -23,8 +23,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.accent.Accent
+import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.settings.tabs.Tab
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 
