@@ -48,12 +48,6 @@ class PlaybackBarView @JvmOverloads constructor(
         id = R.id.playback_bar
 
         setOnLongClickListener {
-            isPressed = true
-
-            postDelayed(1000) {
-                isPressed = false
-            }
-
             mCallback?.onNavToItem()
             true
         }
@@ -89,6 +83,7 @@ class PlaybackBarView @JvmOverloads constructor(
     fun setCallback(callback: PlaybackLayout.ActionCallback) {
         mCallback = callback
         binding.callback = callback
+        binding.executePendingBindings()
     }
 
     fun clearCallback() {
