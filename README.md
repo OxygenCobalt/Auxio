@@ -42,7 +42,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Intuitive queue system
 - Reliable playback state persistence
 - Material You (Android 12+ only)
-- Edge-to-edge (Oreo+ Only)
+- Edge-to-edge (Android 8.1+ Only)
 - Embedded covers support
 - Search Functionality
 - Audio/Headset focus
