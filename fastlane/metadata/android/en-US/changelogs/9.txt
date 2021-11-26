@@ -1,0 +1,3 @@
+Auxio has a new look derived from Material You, with a new music loader that supports album artists, a completely revamped sorting system, greater library customization, and a more streamlined and cohesive user experience.
+
+For more information, please read the full changelog at https://github.com/oxygencobalt/Auxio/releases/

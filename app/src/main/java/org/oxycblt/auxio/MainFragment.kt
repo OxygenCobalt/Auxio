@@ -23,10 +23,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -106,12 +104,11 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             // Handle the loader response.
             when (response) {
-                // OK, start restoring playback now
+                // Ok, start restoring playback now
                 is MusicStore.Response.Ok -> playbackModel.setupPlayback(requireContext())
 
                 // Error, show the error to the user
                 is MusicStore.Response.Err -> {
-
                     logD("Received Error")
 
                     val errorRes = when (response.kind) {
@@ -123,13 +120,6 @@ class MainFragment : Fragment(), PlaybackLayout.ActionCallback {
                     val snackbar = Snackbar.make(
                         binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE
                     )
-
-                    snackbar.view.apply {
-                        // Change the font family to semibold
-                        findViewById<Button>(
-                            com.google.android.material.R.id.snackbar_action
-                        ).typeface = ResourcesCompat.getFont(requireContext(), R.font.inter_semibold)
-                    }
 
                     when (response.kind) {
                         MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {

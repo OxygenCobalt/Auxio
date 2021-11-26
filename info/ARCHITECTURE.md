@@ -9,7 +9,7 @@ Auxio has a couple of core systems or concepts that should be understood when wo
 #### Package Structure
 
 Auxio's package structure is strictly feature-oriented. For example, playback code is exclusively in the `playback` package,
-detail code is exclusively in the `detail` package. Sub-packages can be related to the code it contains, such as `detail.recycler`
+and detail code is exclusively in the `detail` package. Sub-packages can be related to the code it contains, such as `detail.recycler`
 for the detail UI adapters, or they can be related to a sub-feature, like `playback.queue` for the queue UI.
 
 A full run-down of Auxio's current package structure as of the latest version is shown below.
@@ -54,7 +54,7 @@ is separated into three phases:
 
 - Create variables [Bindings, Adapters, etc]
 - Set up the UI
-- Set up LiveData observers
+- Set up ViewModel instances and LiveData observers
 
 `findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, viewbinding should be
 used in all cases. If one needs to keep track of a viewbinding outside of `onCreateView`, then one can declare
@@ -110,11 +110,13 @@ Other data types represent a specific UI configuration or state:
 
 #### Music Access
 
-All music on a system is asynchronously indexed into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.
+All music on a system is asynchronously loaded into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.
 
-- ViewModels should try to await or gracefully exit if music is not available
+- ViewModels should try to await or gracefully exit the called method if `MusicStore` is not available
 - In the case that a ViewModel needs a `MusicStore` instance to function, an instance can be required. This should be done sparingly.
 - Other shared objects that rely on `MusicStore` [like `PlaybackStateManager`] will no-op if music is not available.
+
+If the loading status needs to be shown in a UI, `MusicViewModel` can be used to observe the current music loader response.
 
 #### Playback System
 
@@ -145,8 +147,7 @@ that UIs can use to interact with the playback state.
 
 `PlaybackService`'s job is to use the playback state to manage the ExoPlayer instance, the notification, the widget, and also modify the state depending on
 system events, such as when a button is pressed on a headset. It should **never** be bound to, mostly because there is no need given that
-`PlaybackViewModel` exposes the same data in a much safer fashion. `PlaybackService` also controls the `PlaybackSessionConnector`, `AudioReactor`,
-and `WidgetController` classes, which manage the `MediaSession`, Audio Focus, and Widgets respectively.
+`PlaybackViewModel` exposes the same data in a much safer fashion.
 
 #### Data Integers
 
@@ -199,7 +200,7 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA10F | Sort.Year
 ```
 
-Some datatypes [like `Tab` and `Sort`] have even more fine-grained integer representations for other information. More information can be found in
+Some datatypes [like `Tab` and `Sort`] have even more fine-grained integer representations for other data. More information can be found in
 the documentation for these datatypes.
 
 ## Package-by-package rundown
@@ -258,7 +259,7 @@ This package contains the components for the "home" UI in Auxio, or the UI that 
 - The base package contains the top-level components that manage the FloatingActionButton, AppBar, and ViewPager instances.
 - The `fastscroll` package contains the fast scroll component used in each list of music
 - The `list` package contains the individual fragments for each list of music. These are all placed in the top-level ViewPager instance.
-- The `tabs` package contains the data representation of an individual library tab and the UI's for editing them.
+- The `tabs` package contains the data representation of an individual library tab and the UIs for editing them.
 
 #### `.music`
 
@@ -270,7 +271,7 @@ data objects have to inherit `BaseModel` so that they can be placed alongside `M
 This module not only contains the playback system described above, but also multiple other components:
 
 - `queue` contains the Queue UI and it's fancy item transitions
-- `state` contains the core playback state system
+- `state` contains the core playback state and persistence system
 - `system` contains the system-facing playback system
 
 The most important part of this module is `PlaybackLayout`, which is a custom `ViewGroup` that implements the playback bar and it's ability to

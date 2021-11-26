@@ -28,8 +28,8 @@ ability to be extended to music sources outside of local files. You can read mor
 #### What formats does Auxio support?
 
 As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats.html), Auxio supports
-MP4, MP3, MKA, OGG, WAV, MPEG, ACC on all versions of Android. FLAC files are supported on Android 8.1
-or newer, on lower versions Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac).
+MP4, MP3, MKA, OGG, WAV, MPEG, ACC on all versions of Android. However, FLAC files can only be played
+on Android 8.1 and above. Below that, Auxio must be patched with the [FLAC Extension](https://github.com/google/ExoPlayer/tree/release-v2/extensions/flac).
 
 #### Why are accents lighter/less saturated in dark mode?
 

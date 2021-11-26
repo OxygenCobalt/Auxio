@@ -152,4 +152,5 @@
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbumes</item>
     </plurals>
+    <string name="def_artist">Artista desconocido</string>
 </resources>

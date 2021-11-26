@@ -41,6 +41,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Genres/Artists/Albums/Songs support
 - Intuitive queue system
 - Reliable playback state persistence
+- Material You (Android 12+ only)
 - Edge-to-edge (Oreo+ Only)
 - Embedded covers support
 - Search Functionality
@@ -52,7 +53,6 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 - Playlists
 - Liked songs
-- Improved tablet layouts
 - More notification actions
 - And other things, probably
 

@@ -48,7 +48,6 @@
                     <ImageView
                         android:id="@+id/about_auxio_icon"
                         style="@style/Widget.Auxio.Image.Small"
-                        android:layout_marginStart="@dimen/spacing_medium"
                         android:layout_marginTop="@dimen/spacing_medium"
                         android:contentDescription="@string/desc_auxio_icon"
                         android:src="@mipmap/ic_launcher"
@@ -75,8 +74,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_small"
                         android:gravity="center"
-                        android:paddingStart="@dimen/spacing_small"
-                        android:paddingEnd="@dimen/spacing_small"
+                        android:paddingStart="@dimen/spacing_medium"
+                        android:paddingEnd="@dimen/spacing_medium"
                         android:text="@string/info_app_desc"
                         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                         app:layout_constraintEnd_toEndOf="parent"

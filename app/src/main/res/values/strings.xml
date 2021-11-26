@@ -120,7 +120,7 @@
     <string name="desc_shuffle_all">Shuffle all songs</string>
 
     <string name="desc_clear_user_queue">Clear queue</string>
-    <string name="desc_clear_queue_item">Remove this queue item</string>
+    <string name="desc_clear_queue_item">Remove this queue song</string>
     <string name="desc_queue_handle">Move this queue song</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>

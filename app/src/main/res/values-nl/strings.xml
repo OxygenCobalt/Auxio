@@ -150,4 +150,5 @@
         <item quantity="one">%d Album</item>
         <item quantity="other">%d Albums</item>
     </plurals>
+    <string name="def_artist">Onbekend Artist</string>
 </resources>
