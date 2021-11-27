@@ -11,10 +11,10 @@
         <action
             android:id="@+id/action_show_queue"
             app:destination="@id/queue_fragment"
-            app:enterAnim="@anim/anim_nav_slide_up"
-            app:exitAnim="@anim/anim_stationary"
-            app:popEnterAnim="@anim/anim_stationary"
-            app:popExitAnim="@anim/anim_nav_slide_down" />
+            app:enterAnim="@anim/nav_slide_enter_anim"
+            app:exitAnim="@anim/nav_slide_exit_anim"
+            app:popEnterAnim="@anim/nav_slide_pop_enter_anim"
+            app:popExitAnim="@anim/nav_slide_pop_exit_anim" />
         <action
             android:id="@+id/action_show_settings"
             app:destination="@id/settings_fragment"

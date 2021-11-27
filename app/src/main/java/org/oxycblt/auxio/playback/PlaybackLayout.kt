@@ -543,7 +543,10 @@ class PlaybackLayout @JvmOverloads constructor(
         val halfInRatio = max(ratio - 0.5f, 0f) / 0.5f
 
         // Optimize out drawing for this view completely
-        contentView.isInvisible = outRatio == 0f
+        contentView.apply {
+            alpha = outRatio
+            isInvisible = alpha == 0f
+        }
 
         // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
         // neutral color instead of an elevated one when fully expanded.

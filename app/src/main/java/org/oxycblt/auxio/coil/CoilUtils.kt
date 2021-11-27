@@ -68,7 +68,7 @@ fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
     dispose()
 
     load(music) {
-        // Round out the corners if it's enabled
+        // Round out the corners if enabled
         // We don't do this by default because it's ugly and desecrates album artwork.
         val settingsManager = SettingsManager.getInstance()
 
