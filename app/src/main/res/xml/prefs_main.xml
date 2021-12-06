@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        app:isPreferenceVisible="@bool/enable_theme_settings"
         app:layout="@layout/item_header"
         app:title="@string/set_ui">
 
         <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/theme_auto"
+            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:entries="@array/entires_theme"
             app:entryValues="@array/values_theme"
             app:icon="@drawable/ic_day"
@@ -15,6 +15,7 @@
             app:title="@string/set_theme" />
 
         <Preference
+            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:icon="@drawable/ic_accent"
             app:key="auxio_accent"
             app:title="@string/set_accent" />

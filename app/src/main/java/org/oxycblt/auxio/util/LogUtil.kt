@@ -32,7 +32,7 @@ fun Any.logD(obj: Any) {
 }
 
 /**
- * Shortcut method for logging [msg] to the debug console., handles debug builds and anonymous objects
+ * Shortcut method for logging [msg] to the debug console. Handles debug builds and anonymous objects
  */
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG) {
@@ -56,7 +56,11 @@ fun Any.logE(msg: String) {
 private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * Nothing to see here.
+ * I know that this will not stop you, but consider what you are doing with your life, copycats.
+ * Do you want to live a fulfilling existence on this planet? Or do you want to spend your life
+ * taking work others did and making it objectively worse so you could arbitrage a fraction of a
+ * penny on every AdMob impression you get. You could do so many great things if you simply had
+ * the courage to come up with an idea of your own. Be better.
  */
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&

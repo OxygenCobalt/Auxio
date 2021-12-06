@@ -90,12 +90,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupTheme() {
-        // We only use Material You theming on Android 12 and above.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            // Update the current accent and theme
-            val settingsManager = SettingsManager.getInstance()
-            AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+        val settingsManager = SettingsManager.getInstance()
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Android 12, let dynamic colors be our accent and only enable the black theme option
+            if (isNight && settingsManager.useBlackTheme) {
+                setTheme(R.style.Theme_Auxio_Black)
+            }
+        } else {
+            // Below android 12, load the accent and enable theme customization
+            AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
             val newAccent = Accent.set(settingsManager.accent)
 
             // The black theme has a completely separate set of styles since style attributes cannot
