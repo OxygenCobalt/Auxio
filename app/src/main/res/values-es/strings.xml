@@ -60,7 +60,7 @@
     <string name="set_theme_night">Oscuro</string>
     <string name="set_accent">Acento</string>
     <string name="set_black_mode">Tema negro</string>
-    <string name="setting_black_mode_desc">Usar tema negro puro</string>
+    <string name="set_black_mode_desc">Usar tema negro puro</string>
 
     <string name="set_display">Pantalla</string>
     <string name="set_show_covers">Mostrar carátula de álbum</string>

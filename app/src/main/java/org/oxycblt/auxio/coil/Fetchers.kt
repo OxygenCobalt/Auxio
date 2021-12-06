@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.ui.Sort
 import kotlin.math.min
 
 /**
@@ -76,7 +77,10 @@ class ArtistImageFetcher private constructor(
     private val artist: Artist,
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val results = artist.albums.mapAtMost(4) { album ->
+        val albums = Sort.ByName(true)
+            .sortAlbums(artist.albums)
+
+        val results = albums.mapAtMost(4) { album ->
             fetchArt(context, album)
         }
 
@@ -100,6 +104,7 @@ class GenreImageFetcher private constructor(
     private val genre: Genre,
 ) : AuxioFetcher() {
     override suspend fun fetch(): FetchResult? {
+        // We don't need to sort here, as the way we
         val albums = genre.songs.groupBy { it.album }.keys
         val results = albums.mapAtMost(4) { album ->
             fetchArt(context, album)

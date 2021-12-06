@@ -55,7 +55,7 @@
     <string name="set_theme_night">"Tmavé"</string>
     <string name="set_accent">"Barva"</string>
     <string name="set_black_mode">"Černé téma"</string>
-    <string name="setting_black_mode_desc">"Použít kompletně černé tmavé téma"</string>
+    <string name="set_black_mode_desc">"Použít kompletně černé tmavé téma"</string>
     <string name="set_display">"Zobrazení"</string>
     <string name="set_show_covers">"Zobrazit barvy alba"</string>
     <string name="set_show_covers_desc">"Vypněte pro ušetření paměti"</string>

@@ -16,8 +16,7 @@ This is probably caused by one of two reasons:
 
 #### I have a large library and Auxio takes really long to load it!
 
-This is expected since reading media takes awhile, especially with libraries containing 10k songs or more.
-I hope to mitigate this in the future by allowing one to customize the music loader to optimize for speed instead of accuracy.
+This is expected since reading from the audio database takes awhile, especially with libraries containing 10k songs or more.
 
 #### Why ExoPlayer?
 

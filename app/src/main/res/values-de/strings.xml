@@ -154,7 +154,7 @@
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Jahr</string>
     <string name="set_black_mode">Schwarzes Thema</string>
-    <string name="setting_black_mode_desc">Ein schwarzes Thema für das dunkle verwenden</string>
+    <string name="set_black_mode_desc">Ein schwarzes Thema für das dunkle verwenden</string>
     <string name="set_loop_pause">Pause bei Wiederholung</string>
     <string name="set_loop_pause_desc">Pausiert, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>

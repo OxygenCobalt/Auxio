@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.Sort
 import java.text.Normalizer
 
 /**
@@ -77,6 +78,7 @@ class SearchViewModel : ViewModel() {
 
         // Searching can be quite expensive, so hop on a co-routine
         viewModelScope.launch {
+            val sort = Sort.ByName(true)
             val results = mutableListOf<BaseModel>()
 
             // A filter mode of null means to not filter at all.
@@ -84,28 +86,28 @@ class SearchViewModel : ViewModel() {
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->
                     results.add(Header(-1, HeaderString.Single(R.string.lbl_artists)))
-                    results.addAll(artists)
+                    results.addAll(sort.sortParents(artists))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
                     results.add(Header(-2, HeaderString.Single(R.string.lbl_albums)))
-                    results.addAll(albums)
+                    results.addAll(sort.sortAlbums(albums))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
                     results.add(Header(-3, HeaderString.Single(R.string.lbl_genres)))
-                    results.addAll(genres)
+                    results.addAll(sort.sortParents(genres))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
                     results.add(Header(-4, HeaderString.Single(R.string.lbl_songs)))
-                    results.addAll(songs)
+                    results.addAll(sort.sortSongs(songs))
                 }
             }
 
@@ -136,7 +138,7 @@ class SearchViewModel : ViewModel() {
      * Shortcut that will run a ignoreCase filter on a list and only return
      * a value if the resulting list is empty.
      */
-    private fun List<Music>.filterByOrNull(value: String): List<BaseModel>? {
+    private fun <T : Music> List<T>.filterByOrNull(value: String): List<T>? {
         val filtered = filter {
             // Ensure the name we match with is correct.
             val name = if (it is MusicParent) {

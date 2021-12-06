@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.excluded
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -32,14 +31,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.MainActivity
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
-import kotlin.system.exitProcess
 
 /**
  * Dialog that manages the currently excluded directories.
@@ -150,23 +148,10 @@ class ExcludedDialog : LifecycleDialog() {
 
     private fun saveAndRestart() {
         excludedModel.save {
-            playbackModel.savePlaybackState(requireContext(), ::hardRestart)
+            playbackModel.savePlaybackState(requireContext()) {
+                requireContext().hardRestart()
+            }
         }
-    }
-
-    private fun hardRestart() {
-        logD("Performing hard restart.")
-
-        // Instead of having to do a ton of cleanup and horrible code changes
-        // to restart this application non-destructively, I just restart the UI task [There is only
-        // one, after all] and then kill the application using exitProcess. Works well enough.
-        val intent = Intent(requireContext().applicationContext, MainActivity::class.java).setFlags(
-            Intent.FLAG_ACTIVITY_CLEAR_TASK
-        )
-
-        startActivity(intent)
-
-        exitProcess(0)
     }
 
     /**

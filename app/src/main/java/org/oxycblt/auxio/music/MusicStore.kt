@@ -68,17 +68,13 @@ class MusicStore private constructor() {
         try {
             val start = System.currentTimeMillis()
 
-            val loader = MusicLoader(context)
-            loader.load()
+            val loader = MusicLoader()
+            val library = loader.load(context) ?: return Response.Err(ErrorKind.NO_MUSIC)
 
-            if (loader.songs.isEmpty()) {
-                return Response.Err(ErrorKind.NO_MUSIC)
-            }
-
-            mSongs = loader.songs
-            mAlbums = loader.albums
-            mArtists = loader.artists
-            mGenres = loader.genres
+            mSongs = library.songs
+            mAlbums = library.albums
+            mArtists = library.artists
+            mGenres = library.genres
 
             logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms.")
         } catch (e: Exception) {

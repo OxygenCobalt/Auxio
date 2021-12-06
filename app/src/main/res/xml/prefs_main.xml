@@ -24,7 +24,7 @@
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_BLACK_THEME"
-            app:summary="@string/setting_black_mode_desc"
+            app:summary="@string/set_black_mode_desc"
             app:title="@string/set_black_mode" />
 
     </PreferenceCategory>

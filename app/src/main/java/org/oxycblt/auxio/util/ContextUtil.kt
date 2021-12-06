@@ -30,6 +30,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import org.oxycblt.auxio.MainActivity
 import kotlin.reflect.KClass
+import kotlin.system.exitProcess
 
 const val INTENT_REQUEST_CODE = 0xA0A0
 
@@ -81,6 +82,19 @@ fun Context.newMainIntent(): PendingIntent {
             PendingIntent.FLAG_IMMUTABLE
         else 0
     )
+}
+
+fun Context.hardRestart() {
+    // Instead of having to do a ton of cleanup and horrible code changes
+    // to restart this application non-destructively, I just restart the UI task [There is only
+    // one, after all] and then kill the application using exitProcess. Works well enough.
+    val intent = Intent(applicationContext, MainActivity::class.java).setFlags(
+        Intent.FLAG_ACTIVITY_CLEAR_TASK
+    )
+
+    startActivity(intent)
+
+    exitProcess(0)
 }
 
 /**

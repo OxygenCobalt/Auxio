@@ -1,37 +1,14 @@
-/*
- * Copyright (c) 2021 Auxio Project
- * MusicLoader.kt is part of Auxio.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package org.oxycblt.auxio.music
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.MediaStore
-import android.provider.MediaStore.Audio.Genres
-import android.provider.MediaStore.Audio.Media
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
-import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.util.logD
 
 /**
- * This class does pretty much all the black magic required to get a remotely sensible music
- * indexing system while still optimizing for time. I would recommend you leave this file now
+ * This class acts as the base for most the black magic required to get a remotely sensible music
+ * indexing system while still optimizing for time. I would recommend you leave this module now
  * before you lose your sanity trying to understand the hoops I had to jump through for this
  * system, but if you really want to stay, here's a debrief on why this code is so awful.
  *
@@ -90,111 +67,72 @@ import org.oxycblt.auxio.util.logD
  *
  * @author OxygenCobalt
  */
-class MusicLoader(private val context: Context) {
-    var genres = mutableListOf<Genre>()
-    var albums = mutableListOf<Album>()
-    var artists = mutableListOf<Artist>()
-    var songs = mutableListOf<Song>()
+class MusicLoader {
+    data class Library(
+        val genres: List<Genre>,
+        val artists: List<Artist>,
+        val albums: List<Album>,
+        val songs: List<Song>
+    )
 
-    private val resolver = context.contentResolver
+    fun load(context: Context): Library? {
+        val songs = loadSongs(context)
+        if (songs.isEmpty()) return null
 
-    private var selector = "${Media.IS_MUSIC}=1"
-    private var args = arrayOf<String>()
+        val albums = buildAlbums(songs)
+        val artists = buildArtists(context, albums)
+        val genres = readGenres(context, songs)
 
-    /**
-     * Begin the loading process.
-     * Resulting models are pushed to [genres], [artists], [albums], and [songs].
-     */
-    fun load() {
-        buildSelector()
-
-        loadGenres()
-        loadSongs()
-        linkGenres()
-
-        buildAlbums()
-        buildArtists()
+        return Library(
+            genres,
+            artists,
+            albums,
+            songs
+        )
     }
 
-    @Suppress("DEPRECATION")
-    private fun buildSelector() {
+    private fun loadSongs(context: Context): List<Song> {
+        var songs = mutableListOf<Song>()
         val blacklistDatabase = ExcludedDatabase.getInstance(context)
-
         val paths = blacklistDatabase.readPaths()
 
-        // DATA was deprecated on Android Q, but is set to be un-deprecated in Android 12L
+        var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
+        val args = mutableListOf<String>()
+
+        // DATA was deprecated on Android 10, but is set to be un-deprecated in Android 12L.
         // The only reason we'd want to change this is to add external partitions support, but
         // that's less efficent and there's no demand for that right now.
         for (path in paths) {
-            selector += " AND ${Media.DATA} NOT LIKE ?"
+            selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children
         }
-    }
 
-    private fun loadGenres() {
-        logD("Starting genre search...")
-
-        // First, get a cursor for every genre in the android system
-        val genreCursor = resolver.query(
-            Genres.EXTERNAL_CONTENT_URI,
+        context.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
-                Genres._ID, // 0
-                Genres.NAME // 1
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.DURATION,
             ),
-            null, null,
-            Genres.DEFAULT_SORT_ORDER
-        )
-
-        // And then process those into Genre objects
-        genreCursor?.use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(Genres._ID)
-            val nameIndex = cursor.getColumnIndexOrThrow(Genres.NAME)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idIndex)
-                // No non-broken genre would be missing a name.
-                val name = cursor.getStringOrNull(nameIndex) ?: continue
-
-                genres.add(Genre(id, name, name.getGenreNameCompat() ?: name))
-            }
-        }
-
-        logD("Genre search finished with ${genres.size} genres found.")
-    }
-
-    @SuppressLint("InlinedApi")
-    private fun loadSongs() {
-        logD("Starting song search...")
-
-        val songCursor = resolver.query(
-            Media.EXTERNAL_CONTENT_URI,
-            arrayOf(
-                Media._ID, // 0
-                Media.TITLE, // 1
-                Media.DISPLAY_NAME, // 2
-                Media.ALBUM, // 3
-                Media.ALBUM_ID, // 4
-                Media.ARTIST, // 5
-                Media.ALBUM_ARTIST, // 6
-                Media.YEAR, // 7
-                Media.TRACK, // 8
-                Media.DURATION, // 9
-            ),
-            selector, args,
-            Media.DEFAULT_SORT_ORDER
-        )
-
-        songCursor?.use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(Media._ID)
-            val titleIndex = cursor.getColumnIndexOrThrow(Media.TITLE)
-            val fileIndex = cursor.getColumnIndexOrThrow(Media.DISPLAY_NAME)
-            val albumIndex = cursor.getColumnIndexOrThrow(Media.ALBUM)
-            val albumIdIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ID)
-            val artistIndex = cursor.getColumnIndexOrThrow(Media.ARTIST)
-            val albumArtistIndex = cursor.getColumnIndexOrThrow(Media.ALBUM_ARTIST)
-            val yearIndex = cursor.getColumnIndexOrThrow(Media.YEAR)
-            val trackIndex = cursor.getColumnIndexOrThrow(Media.TRACK)
-            val durationIndex = cursor.getColumnIndexOrThrow(Media.DURATION)
+            selector, args.toTypedArray(), null
+        )?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+            val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+            val fileIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
+            val albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
+            val albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+            val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+            val albumArtistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ARTIST)
+            val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)
+            val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
+            val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
@@ -226,20 +164,19 @@ class MusicLoader(private val context: Context) {
             it.name to it.albumName to it.artistName to it.track to it.duration
         }.toMutableList()
 
-        logD("Song search finished with ${songs.size} found")
+        return songs
     }
 
-    private fun buildAlbums() {
-        logD("Linking albums")
-
+    private fun buildAlbums(songs: List<Song>): List<Album> {
         // Group up songs by their album ids and then link them with their albums
+        val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { it.albumId }
 
         songsByAlbum.forEach { entry ->
-            // Rely on the first song in this list for album information.
-            // Note: This might result in a bad year being used for an album if an album's songs
-            // have multiple years. This is fixable but is currently omitted for speed.
-            val song = entry.value[0]
+            // Use the song with the latest year as our metadata song.
+            // This allows us to replicate the LAST_YEAR field, which is useful as it means that
+            // weird years like "0" wont show up if there are alternatives.
+            val song = requireNotNull(entry.value.maxByOrNull { it.year })
 
             albums.add(
                 Album(
@@ -253,14 +190,12 @@ class MusicLoader(private val context: Context) {
         }
 
         albums.removeAll { it.songs.isEmpty() }
-        albums = Sort.ByName(true).sortAlbums(albums).toMutableList()
 
-        logD("Songs successfully linked into ${albums.size} albums")
+        return albums
     }
 
-    private fun buildArtists() {
-        logD("Linking artists")
-
+    private fun buildArtists(context: Context, albums: List<Album>): List<Artist> {
+        val artists = mutableListOf<Artist>()
         val albumsByArtist = albums.groupBy { it.artistName }
 
         albumsByArtist.forEach { entry ->
@@ -270,8 +205,8 @@ class MusicLoader(private val context: Context) {
                 entry.key
             }
 
-            // Because of our hacky album artist system, MediaStore artist IDs are unreliable.
-            // Therefore we just use the hashCode of the artist name as our ID and move on.
+            // In most cases, MediaStore artist IDs are unreliable or omitted for speed.
+            // Use the hashCode of the artist name as our ID and move on.
             artists.add(
                 Artist(
                     id = entry.key.hashCode().toLong(),
@@ -282,36 +217,42 @@ class MusicLoader(private val context: Context) {
             )
         }
 
-        artists = Sort.ByName(true).sortParents(artists).toMutableList()
-
-        logD("Albums successfully linked into ${artists.size} artists")
+        return artists
     }
 
-    private fun linkGenres() {
-        logD("Linking genres")
+    private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
+        val genres = mutableListOf<Genre>()
 
-        genres.forEach { genre ->
-            val songCursor = resolver.query(
-                Genres.Members.getContentUri("external", genre.id),
-                arrayOf(Genres.Members._ID),
-                null, null, null // Dont even bother blacklisting here as useless iters are less expensive than IO
-            )
+        // First, get a cursor for every genre in the android system
+        val genreCursor = context.contentResolver.query(
+            MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                MediaStore.Audio.Genres._ID,
+                MediaStore.Audio.Genres.NAME
+            ),
+            null, null, null
+        )
 
-            songCursor?.use { cursor ->
-                val idIndex = cursor.getColumnIndexOrThrow(Genres.Members._ID)
+        // And then process those into Genre objects
+        genreCursor?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
+            val nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
-                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idIndex)
+            while (cursor.moveToNext()) {
+                // No non-broken genre would be missing a name.
+                val id = cursor.getLong(idIndex)
+                val name = cursor.getStringOrNull(nameIndex) ?: continue
 
-                    songs.find { it.id == id }?.let { song ->
-                        genre.linkSong(song)
-                    }
-                }
+                val genre = Genre(
+                    id, name, name.getGenreNameCompat() ?: name
+                )
+
+                linkGenre(context, genre, songs)
+                genres.add(genre)
             }
         }
 
         // Songs that don't have a genre will be thrown into an unknown genre.
-
         val unknownGenre = Genre(
             id = Long.MIN_VALUE,
             name = MediaStore.UNKNOWN_STRING,
@@ -326,6 +267,28 @@ class MusicLoader(private val context: Context) {
 
         if (unknownGenre.songs.isNotEmpty()) {
             genres.add(unknownGenre)
+        }
+
+        return genres
+    }
+
+    private fun linkGenre(context: Context, genre: Genre, songs: List<Song>) {
+        val songCursor = context.contentResolver.query(
+            MediaStore.Audio.Genres.Members.getContentUri("external", genre.id),
+            arrayOf(MediaStore.Audio.Genres.Members._ID),
+            null, null, null // Dont even bother blacklisting here as useless iters are less expensive than IO
+        )
+
+        songCursor?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+
+                songs.find { it.id == id }?.let { song ->
+                    genre.linkSong(song)
+                }
+            }
         }
     }
 }
