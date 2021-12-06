@@ -89,8 +89,6 @@ class WidgetProvider : AppWidgetProvider() {
         // Load our image so that it takes up the phone screen. This allows
         // us to get stable rounded corners for every single widget image. This probably
         // sacrifices quality in some way, but it's really the only good option.
-        // Hey google, maybe allow us to use our own views in widgets next time. That would
-        // be nice.
         val metrics = context.resources.displayMetrics
         val imageSize = min(metrics.widthPixels, metrics.heightPixels)
 
@@ -102,8 +100,10 @@ class WidgetProvider : AppWidgetProvider() {
                 onSuccess = { onDone(it.toBitmap()) }
             )
 
-        // If we are on Android 12 or higher, round out the album cover so that the widget is
-        // cohesive. I really don't like this, but whatever.
+        // If we are on Android 12 or higher, round out the album cover.
+        // This is simply to maintain stylistic cohesion with other widgets.
+        // Here, we actually have to use RoundedCornersTransformation since the way
+        // we get a 1:1 aspect ratio image results in clipToOutline not working well.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val transform = RoundedCornersTransformation(
                 context.resources.getDimensionPixelSize(
