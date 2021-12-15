@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">Простой и рациональный музыкальный проигрыватель</string>
+    <string name="info_channel_name">Воспроизведение</string>
+    <string name="info_widget_desc">Просмотр и управление воспроизведением</string>
+
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Повторить попытку</string>
     <string name="lbl_grant">Разрешить</string>
@@ -7,92 +13,168 @@
     <string name="lbl_genres">Жанры</string>
     <string name="lbl_artists">Исполнители</string>
     <string name="lbl_albums">Альбомы</string>
-    <string name="lbl_songs">Треки</string>
-    <string name="lbl_all_songs">Треки</string>
+    <string name="lbl_songs">Композиции</string>
+    <string name="lbl_all_songs">Все композиции</string>
 
     <string name="lbl_search">Поиск</string>
     <string name="lbl_filter">Фильтр</string>
-    <string name="lbl_filter_all">Всё</string>
+    <string name="lbl_filter_all">Все</string>
 
     <string name="lbl_sort">Сортировка</string>
+    <string name="lbl_sort_name">Наименование</string>
+    <string name="lbl_sort_artist">Исполнитель</string>
+    <string name="lbl_sort_album">Альбом</string>
+    <string name="lbl_sort_year">Год выпуска</string>
     <string name="lbl_sort_asc">По возрастанию</string>
 
+    <string name="lbl_playback">Сейчас проигрывается</string>
     <string name="lbl_play">Воспроизвести</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="lbl_playback">Сейчас воспроизводится</string>
+    <string name="lbl_play_all">Воспроизвести из списка</string>
+    <string name="lbl_play_album">Воспроизвести из альбома</string>
+    <string name="lbl_play_artist">Воспроизвести из исполнителя</string>
+    <string name="lbl_play_genre">Воспроизвести из жанра</string>
 
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_queue_add">Добавить в очередь</string>
-    <string name="lbl_queue_added">Добавлена в очередь</string>
-    <string name="lbl_next_user_queue">Далее</string>
+    <string name="lbl_queue_added">Добавлено в очередь</string>
+    <string name="lbl_next_user_queue">Далее в очереди</string>
 
     <string name="lbl_go_artist">Перейти к исполнителю</string>
     <string name="lbl_go_album">Перейти к альбому</string>
+
+    <string name="lbl_state_saved">Положение сохранено</string>
+
+    <string name="lbl_add">Добавить</string>
+    <string name="lbl_save">Сохранить</string>
+    <string name="lbl_no_dirs">Папки отсутствуют</string>
 
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
     <string name="lbl_code">Открыть на GitHub</string>
     <string name="lbl_faq">ЧаВО</string>
     <string name="lbl_licenses">Лицензии</string>
+    <string name="lbl_author">Разработано OxygenCobalt</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Настройки</string>
-
-    <string name="set_ui">Внешний Вид</string>
+    <string name="set_ui">Внешний вид</string>
     <string name="set_theme">Тема</string>
-    <string name="set_theme_auto">Автоматически</string>
+    <string name="set_theme_auto">По умолчанию</string>
     <string name="set_theme_day">Светлая</string>
     <string name="set_theme_night">Темная</string>
-    <string name="set_accent">Акцент</string>
+    <string name="set_accent">Оттенок</string>
+    <string name="set_black_mode">Черная тема</string>
+    <string name="set_black_mode_desc">Использовать глубокий черный цвет</string>
 
-    <string name="set_quality_covers">Игнорировать хранилище обложек альбомов</string>
+    <string name="set_display">Показывать</string>
+    <string name="set_lib_tabs">Вкладки</string>
+    <string name="set_lib_tabs_desc">Выбор вкладок для отображения</string>
+    <string name="set_show_covers">Показывать обложки</string>
+    <string name="set_show_covers_desc">Влияет на потребление памяти</string>
+    <string name="set_quality_covers">Игнорировать хранилище обложек</string>
+    <string name="set_quality_covers_desc">Обложки имеют лучшее качество при большем потреблении памяти</string>
+    <string name="set_round_covers">Скругленные обложки альбомов</string>
+    <string name="set_round_covers_desc">Обложки отображаются со скругленными углами</string>
+    <string name="set_alt_action">Действие в уведомлении</string>
+    <string name="set_alt_loop">Режим повтора</string>
+    <string name="set_alt_shuffle">Режим перемешивания</string>
 
     <string name="set_audio">Аудио</string>
-    <string name="set_focus">Фокусировка аудио</string>
-    <string name="set_plug_mgt">Гарнитура</string>
+    <string name="set_focus">Звуковой фокус</string>
+    <string name="set_focus_desc">Пауза при воспроизведении других звуков</string>
+    <string name="set_plug_mgt">Действие гарнитуры</string>
+    <string name="set_plug_mgt_desc">Воспроизведение при подключении гарнитуры</string>
 
     <string name="set_behavior">Поведение</string>
-    <string name="set_keep_shuffle">Запомнить перемешивание</string>
+    <string name="set_song_mode">При выборе композиции</string>
+    <string name="set_keep_shuffle">Закрепить перемешивание</string>
+    <string name="set_keep_shuffle_desc">Закрепить состояние перемешивания при проигрывании</string>
+    <string name="set_rewind_prev">Перемотка перед возвращением</string>
+    <string name="set_rewind_prev_desc">Перемотка перед возвращением к предыдущей композиции</string>
+    <string name="set_loop_pause">Пауза при повторе</string>
+    <string name="set_loop_pause_desc">Пауза при выбранном состоянии повтора композиции</string>
+
+    <string name="set_content">Контент</string>
+    <string name="set_save">Запомнить положение</string>
+    <string name="set_save_desc">Запомнить текущее положение воспроизведения композиции</string>
+    <string name="set_excluded">Исключенные папки</string>
+    <string name="set_excluded_desc">Содержимое исключенных папок скрывается из библиотеки</string>
 
     <!-- Error Namespace | Error Labels -->
-    <string name="err_no_music">Музыка не найдена</string>
-
-    <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_track_number">Трек %d</string>
-
-    <string name="desc_play_pause">Воспроизвести/Пауза</string>
-
-    <string name="desc_clear_user_queue">Очистить очередь</string>
+    <string name="err_no_music">Композиции отсутствуют</string>
+    <string name="err_load_failed">Сбой загрузки библиотеки</string>
+    <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
+    <string name="err_no_app">Не найдено приложение для открытия ссылки</string>
+    <string name="err_bad_dir">Этот каталог не поддерживается</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Поиск в библиотеке…</string>
 
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="desc_track_number">Композиция %d</string>
+
+    <string name="desc_play_pause">Воспроизвести или остановить</string>
+    <string name="desc_skip_next">Перейти к следующей композиции</string>
+    <string name="desc_skip_prev">Вернуться к предыдущей композиции</string>
+    <string name="desc_change_loop">Изменить режим повтора</string>
+    <string name="desc_shuffle">Включить или выключить перемешивание</string>
+    <string name="desc_shuffle_all">Перемешать все композиции</string>
+
+    <string name="desc_clear_user_queue">Очистить очередь</string>
+    <string name="desc_clear_queue_item">Удалить композицию из очереди</string>
+    <string name="desc_queue_handle">Переместить композицию в очереди</string>
+    <string name="desc_tab_handle">Переместить вкладку</string>
+    <string name="desc_clear_search">Очистить поисковый запрос</string>
+    <string name="desc_blacklist_delete">Удалить исключенный каталог</string>
+
+    <string name="desc_auxio_icon">Иконка Auxio</string>
+    <string name="desc_no_cover">Обложка альбома</string>
+    <string name="desc_album_cover">Обложка альбома %s</string>
+    <string name="desc_artist_image">Изображение исполнителя %s</string>
+    <string name="desc_genre_image">Изображение жанра %s</string>
+
+    <!-- Default Namespace | Placeholder values -->
+    <string name="def_artist">Неизвестный исполнитель</string>
+    <string name="def_genre">Неизвестный жанр</string>
+    <string name="def_date">Дата отсутствует</string>
+    <string name="def_playback">Музыка не воспроизводится</string>
+    <string name="def_widget_song">Наименование композиции</string>
+    <string name="def_widget_artist">Имя исполнителя</string>
+
     <!-- Color Label namespace | Accent names -->
-    <string name="clr_red">Расный</string>
+    <string name="clr_red">Красный</string>
     <string name="clr_pink">Розовый</string>
     <string name="clr_purple">Пурпурный</string>
-    <string name="clr_deep_blue">Голубой</string>
-    <string name="clr_teal">Зелёный</string>
-    <string name="clr_green">Светло-Зелёный</string>
-    <string name="clr_yellow">Оранжевый</string>
-    <string name="clr_deep_green">Жёлтый</string>
-    <string name="clr_orange">Коричневый</string>
-    <string name="clr_brown">Седой</string>
+    <string name="clr_deep_purple">Глубокий пурпурный</string>
+    <string name="clr_indigo">Индиго</string>
+    <string name="clr_blue">Синий</string>
+    <string name="clr_deep_blue">Глубокий синий</string>
+    <string name="clr_cyan">Яркий зеленый</string>
+    <string name="clr_teal">Сине-зеленый</string>
+    <string name="clr_green">Зеленый</string>
+    <string name="clr_deep_green">Глубокий зеленый</string>
+    <string name="clr_lime">Лаймовый</string>
+    <string name="clr_yellow">Желтый</string>
+    <string name="clr_orange">Оранжевый</string>
+    <string name="clr_brown">Коричневый</string>
+    <string name="clr_grey">Серый</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Треки загружено: %d</string>
+    <string name="fmt_next_from">Далее из: %s</string>
+    <string name="fmt_songs_loaded">Всего композиций: %d</string>
 
     <plurals name="fmt_song_count">
-        <item quantity="one">%d Песня</item>
-        <item quantity="few">%d Песни</item>
-        <item quantity="many">%d Песен</item>
-        <item quantity="other">%d Треки</item>
+        <item quantity="one">%d композиция</item>
+        <item quantity="few">%d композиции</item>
+        <item quantity="many">%d композиций</item>
+        <item quantity="other">%d композиции</item>
     </plurals>
 
     <plurals name="fmt_album_count">
-        <item quantity="one">%d Альбом</item>
-        <item quantity="few">%d Альбома</item>
-        <item quantity="many">%d Альбомов</item>
-        <item quantity="other">%d Альбомы</item>
+        <item quantity="one">%d альбом</item>
+        <item quantity="few">%d альбома</item>
+        <item quantity="many">%d альбомов</item>
+        <item quantity="other">%d альбомы</item>
     </plurals>
 </resources>
