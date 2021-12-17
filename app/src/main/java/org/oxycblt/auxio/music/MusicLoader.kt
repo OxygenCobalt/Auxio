@@ -43,7 +43,7 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  * blacklisting relies on a deprecated method, and the supposedly "modern" method is SLOWER and
  * causes even more problems since I have to manage databases across version boundaries. Sometimes
  * music will have a deformed clone that I can't filter out, sometimes Genres will just break for no
- * reason, sometimes this spaghetti parser just completely breaks down and is unable to get any
+ * reason, sometimes this spaghetti parser just completely falls apart and is unable to get any
  * metadata. Everything is broken in it's own special unique way and I absolutely hate it.
  *
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged google

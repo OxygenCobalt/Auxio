@@ -35,6 +35,8 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.replaceInsetsCompat
+import org.oxycblt.auxio.util.systemBarsCompat
 
 /**
  * The single [AppCompatActivity] for Auxio.
@@ -126,16 +128,8 @@ class MainActivity : AppCompatActivity() {
                         WindowInsets.Type.systemBars(),
                         insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
                     )
-                    .build().also {
-                        val bars = it.getInsets(WindowInsets.Type.systemBars())
-
-                        // If left/right insets are present [implying phone landscape mode],
-                        // make sure that we apply them.
-                        binding.root.updatePadding(
-                            left = bars.left,
-                            right = bars.right
-                        )
-                    }
+                    .build()
+                    .applyLeftRightInsets(binding)
             }
         } else {
             // Do old edge-to-edge otherwise.
@@ -147,15 +141,21 @@ class MainActivity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
                 setOnApplyWindowInsetsListener { _, insets ->
-                    updatePadding(
-                        left = insets.systemWindowInsetLeft,
-                        right = insets.systemWindowInsetRight
-                    )
-
-                    insets
+                    insets.applyLeftRightInsets(binding)
                 }
             }
         }
+    }
+
+    private fun WindowInsets.applyLeftRightInsets(binding: ActivityMainBinding): WindowInsets {
+        val bars = systemBarsCompat
+
+        binding.root.updatePadding(
+            left = bars.left,
+            right = bars.right
+        )
+
+        return replaceInsetsCompat(0, bars.top, 0, bars.bottom)
     }
 
     companion object {

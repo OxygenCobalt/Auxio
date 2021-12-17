@@ -21,6 +21,7 @@ package org.oxycblt.auxio.util
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.Insets
 import android.graphics.Rect
 import android.os.Build
 import android.util.TypedValue
@@ -143,3 +144,24 @@ val WindowInsets.systemBarsCompat: Rect get() {
     }
 }
 
+fun WindowInsets.replaceInsetsCompat(left: Int, top: Int, right: Int, bottom: Int): WindowInsets {
+    return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            WindowInsets.Builder(this)
+                .setInsets(
+                    WindowInsets.Type.systemBars(),
+                    Insets.of(left, top, right, bottom)
+                )
+                .build()
+        }
+
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+            @Suppress("DEPRECATION")
+            replaceSystemWindowInsets(
+                left, top, right, bottom
+            )
+        }
+
+        else -> this
+    }
+}

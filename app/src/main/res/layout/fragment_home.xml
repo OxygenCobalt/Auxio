@@ -7,17 +7,13 @@
     <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/home_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
-            android:clickable="true"
-            android:clipChildren="true"
-            android:focusable="true"
             app:liftOnScroll="true">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -34,8 +30,7 @@
                 app:tabContentStart="@dimen/spacing_medium"
                 app:tabGravity="start"
                 app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger"
-                app:tabTextColor="@color/sel_accented_primary" />
+                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger" />
 
         </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
@@ -61,7 +56,6 @@
                 android:layout_margin="@dimen/spacing_medium"
                 android:contentDescription="@string/desc_shuffle_all"
                 android:src="@drawable/ic_shuffle"
-                app:fabSize="normal"
                 app:tint="?attr/colorOnPrimaryContainer" />
 
         </org.oxycblt.auxio.home.FloatingActionButtonContainer>

@@ -35,6 +35,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
 import androidx.core.view.isInvisible
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -316,7 +317,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         val bars = insets.systemBarsCompat
 
-        setPadding(
+        updatePadding(
             initialPadding.left, initialPadding.top, initialPadding.right,
             initialPadding.bottom + bars.bottom
         )

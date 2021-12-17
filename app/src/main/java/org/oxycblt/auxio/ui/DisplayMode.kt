@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.ui
 
-import androidx.annotation.StringRes
 import org.oxycblt.auxio.R
 
 /**
@@ -27,11 +26,25 @@ import org.oxycblt.auxio.R
  *  changing them would also change the meaning of tab instances.
  * @author OxygenCobalt
  */
-enum class DisplayMode(@StringRes val string: Int) {
-    SHOW_SONGS(R.string.lbl_songs),
-    SHOW_ALBUMS(R.string.lbl_albums),
-    SHOW_ARTISTS(R.string.lbl_artists),
-    SHOW_GENRES(R.string.lbl_genres);
+enum class DisplayMode {
+    SHOW_SONGS,
+    SHOW_ALBUMS,
+    SHOW_ARTISTS,
+    SHOW_GENRES;
+
+    val string: Int get() = when (this) {
+        SHOW_SONGS -> R.string.lbl_songs
+        SHOW_ALBUMS -> R.string.lbl_albums
+        SHOW_ARTISTS -> R.string.lbl_artists
+        SHOW_GENRES -> R.string.lbl_genres
+    }
+
+    val icon: Int get() = when (this) {
+        SHOW_SONGS -> R.drawable.ic_song
+        SHOW_ALBUMS -> R.drawable.ic_album
+        SHOW_ARTISTS -> R.drawable.ic_artist
+        SHOW_GENRES -> R.drawable.ic_genre
+    }
 
     companion object {
         private const val CONST_NULL = 0xA107

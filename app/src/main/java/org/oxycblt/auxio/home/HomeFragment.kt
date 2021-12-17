@@ -154,9 +154,9 @@ class HomeFragment : Fragment() {
                 override fun onPageSelected(position: Int) = homeModel.updateCurrentTab(position)
             })
 
-            TabLayoutMediator(binding.homeTabs, this) { tab, pos ->
-                tab.setText(homeModel.tabs[pos].string)
-            }.attach()
+            TabLayoutMediator(
+                binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel)
+            ).attach()
         }
 
         binding.homeFab.setOnClickListener {
