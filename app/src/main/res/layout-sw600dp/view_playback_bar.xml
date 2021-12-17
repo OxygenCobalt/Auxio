@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".playback.PlaybackBarView">
+
+    <data>
+
+        <variable
+            name="song"
+            type="org.oxycblt.auxio.music.Song" />
+
+    </data>
+
+    <merge
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+        <ImageView
+            android:id="@+id/playback_cover"
+            style="@style/Widget.Auxio.Image.Medium"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@{@string/desc_album_cover(song.name)}"
+            app:albumArt="@{song}"
+            app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_album" />
+
+        <TextView
+            android:id="@+id/playback_song"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelLarger"
+            style="@style/Widget.Auxio.TextView.Primary.Compact"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:text="@{song.name}"
+            android:layout_marginEnd="@dimen/spacing_small"
+            app:layout_constraintBottom_toTopOf="@+id/playback_info"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintTop_toTopOf="@+id/playback_cover"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Song Name" />
+
+        <TextView
+            android:id="@+id/playback_info"
+            style="@style/Widget.Auxio.TextView.Secondary.Compact"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:ellipsize="end"
+            android:text="@{@string/fmt_two(song.album.artist.resolvedName, song.album.name)}"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
+            app:layout_constraintEnd_toEndOf="@+id/playback_song"
+            app:layout_constraintStart_toEndOf="@+id/playback_cover"
+            app:layout_constraintTop_toBottomOf="@+id/playback_song"
+            tools:text="Artist Name / Album Name" />
+
+        <ImageButton
+            android:id="@+id/playback_skip_prev"
+            style="@style/Widget.Auxio.Button.Unbounded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@string/desc_play_pause"
+            android:src="@drawable/ic_skip_prev"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/playback_song"
+            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
+
+        <ImageButton
+            android:id="@+id/playback_play_pause"
+            style="@style/Widget.Auxio.Button.Unbounded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@string/desc_play_pause"
+            android:src="@drawable/sel_playing_state"
+            app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
+            app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/playback_skip_next"
+            style="@style/Widget.Auxio.Button.Unbounded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:contentDescription="@string/desc_play_pause"
+            android:src="@drawable/ic_skip_next"
+            app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
+            app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/playback_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="@{(int) song.seconds}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:trackColor="?attr/colorPrimary"
+            tools:progress="70" />
+
+    </merge>
+</layout>

@@ -8,7 +8,7 @@ class AdaptiveTabStrategy(
     context: Context,
     private val homeModel: HomeViewModel
 ) : TabLayoutMediator.TabConfigurationStrategy {
-    private val width = context.resources.configuration.screenWidthDp
+    private val width = context.resources.configuration.smallestScreenWidthDp
 
     override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
         val tabMode = homeModel.tabs[position]
