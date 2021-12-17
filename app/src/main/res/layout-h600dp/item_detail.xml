@@ -12,7 +12,7 @@
 
         <ImageView
             android:id="@+id/detail_cover"
-            style="@style/Widget.Auxio.Image.MidHuge"
+            style="@style/Widget.Auxio.Image.Huge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
