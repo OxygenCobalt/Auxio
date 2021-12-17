@@ -152,9 +152,6 @@
 
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:elevation">0dp</item>
-        <item name="elevation">0dp</item>
     </style>
 
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
@@ -167,10 +164,10 @@
 
         <!--
         Abuse this floating action button to act more like an old-school auxio button.
-        This is only done because -->
+        This is only done because the elevation show acts weird with the panel layout.
+        -->
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Auxio.FloatingActionButton.PlayPause</item>
     </style>
 

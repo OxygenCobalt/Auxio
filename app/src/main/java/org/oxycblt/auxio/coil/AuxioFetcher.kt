@@ -12,8 +12,9 @@ import coil.fetch.DrawableResult
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
-import coil.size.PixelSize
+import coil.size.Dimension
 import coil.size.Size
+import coil.size.pxOrElse
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
@@ -30,6 +31,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import android.util.Size as AndroidSize
 
 /**
  * The base implementation for all image fetchers in Auxio.
@@ -215,12 +217,8 @@ abstract class AuxioFetcher : Fetcher {
         // Use whatever size coil gives us to create the mosaic, rounding it to even so that we
         // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
         // 512x512 mosaic.
-        val mosaicSize = when (size) {
-            is PixelSize -> PixelSize(size.width.roundEven(), size.height.roundEven())
-            else -> PixelSize(512, 512)
-        }
-
-        val increment = PixelSize(mosaicSize.width / 2, mosaicSize.height / 2)
+        val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
+        val increment = AndroidSize(mosaicSize.width / 2, mosaicSize.height / 2)
 
         val mosaicBitmap = Bitmap.createBitmap(
             mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888
@@ -265,5 +263,8 @@ abstract class AuxioFetcher : Fetcher {
         )
     }
 
-    private fun Int.roundEven(): Int = if (mod(2) != 0) inc() else this
+    private fun Dimension.mosaicSize(): Int {
+        val size = pxOrElse { 512 }
+        return if (size.mod(2) != 0) size.inc() else size
+    }
 }
