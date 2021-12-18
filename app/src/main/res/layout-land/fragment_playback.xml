@@ -36,8 +36,9 @@
 
         <ImageView
             android:id="@+id/playback_cover"
-            style="@style/Widget.Auxio.Image.Large"
+            style="@style/Widget.Auxio.Image.Full"
             android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginTop="@dimen/spacing_mid_large"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
@@ -156,6 +157,7 @@
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
             app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
+            android:layout_marginBottom="@dimen/spacing_mid_large"
             tools:src="@drawable/ic_play" />
 
         <ImageButton

@@ -164,9 +164,15 @@ class PlaybackLayout @JvmOverloads constructor(
             // Make sure we add our fragment to this view. This is actually a replace operation
             // since we don't want to stack fragments but we can't ensure that this view doesn't
             // already have a fragment attached.
-            (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.playback_panel, playbackFragment)
-                .commit()
+            try {
+                (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+                    .replace(R.id.playback_panel, playbackFragment)
+                    .commit()
+            } catch (e: Exception) {
+                // Band-aid to stop the app crashing if we have to swap out the content view
+                // without warning (which we have to do sometimes because android is the worst
+                // thing ever
+            }
         }
     }
 

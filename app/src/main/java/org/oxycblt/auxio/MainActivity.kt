@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
+import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyEdgeToEdgeWindow(binding: ActivityMainBinding) {
+    private fun applyEdgeToEdgeWindow(binding: ViewBinding) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Do modern edge to edge, which happens to be around twice the size of the
             // old way of doing things. Thanks android, very cool!
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun WindowInsets.applyLeftRightInsets(binding: ActivityMainBinding): WindowInsets {
+    private fun WindowInsets.applyLeftRightInsets(binding: ViewBinding): WindowInsets {
         val bars = systemBarsCompat
 
         binding.root.updatePadding(
