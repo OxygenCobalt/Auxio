@@ -107,7 +107,7 @@
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
     <string name="err_bad_dir">This directory is not supported</string>
-    <string name="err_too_small">Auxio does not support this screen size</string>
+    <string name="err_too_small">Auxio does not support this window size</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Search your library…</string>

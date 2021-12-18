@@ -18,7 +18,7 @@ class AdaptiveTabStrategy(
                 tab.setIcon(tabMode.icon)
                     .setContentDescription(tabMode.string)
 
-            width < 600 -> tab.setText(tabMode.string)
+            width < 640 -> tab.setText(tabMode.string)
 
             else ->
                 tab.setIcon(tabMode.icon)

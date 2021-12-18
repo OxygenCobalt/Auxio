@@ -49,10 +49,11 @@
             app:layout_anchor="@id/home_pager"
             app:layout_anchorGravity="bottom|end">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <org.oxycblt.auxio.home.AdaptiveFloatingActionButton
                 android:id="@+id/home_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/Widget.Material3.FloatingActionButton.Primary"
                 android:layout_margin="@dimen/spacing_medium"
                 android:contentDescription="@string/desc_shuffle_all"
                 android:src="@drawable/ic_shuffle"

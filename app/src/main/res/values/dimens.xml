@@ -32,6 +32,9 @@
     <dimen name="slider_thumb_radius">6dp</dimen>
     <dimen name="slider_halo_radius">12dp</dimen>
 
+    <dimen name="recycler_fab_space_normal">88dp</dimen>
+    <dimen name="recycler_fab_space_large">128dp</dimen>
+
     <dimen name="widget_width_min">176dp</dimen>
     <dimen name="widget_height_min">110dp</dimen>
     <dimen name="widget_width_def">@dimen/widget_width_min</dimen>
