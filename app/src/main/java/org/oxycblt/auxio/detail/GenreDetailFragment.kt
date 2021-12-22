@@ -115,12 +115,6 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
-        playbackModel.isInUserQueue.observe(viewLifecycleOwner) { inUserQueue ->
-            if (inUserQueue) {
-                detailAdapter.highlightSong(null, binding.detailRecycler)
-            }
-        }
-
         logD("Fragment created.")
 
         return binding.root

@@ -44,14 +44,9 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
-    ): Int {
-        // Only allow dragging/swiping with the queue item ViewHolder, not the headers.
-        return if (viewHolder is QueueAdapter.QueueSongViewHolder) {
-            makeFlag(
-                ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            ) or makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
-        } else 0
-    }
+    ): Int =
+        makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN) or
+            makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START)
 
     override fun interpolateOutOfBoundsScroll(
         recyclerView: RecyclerView,
@@ -152,15 +147,18 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return playbackModel.moveQueueDataItems(
-            viewHolder.bindingAdapterPosition,
-            target.bindingAdapterPosition,
-            queueAdapter
-        )
+        val from = viewHolder.bindingAdapterPosition
+        val to = target.bindingAdapterPosition
+
+        return playbackModel.moveQueueDataItems(from, to) {
+            queueAdapter.moveItems(from, to)
+        }
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition, queueAdapter)
+        playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition) {
+            queueAdapter.removeItem(viewHolder.bindingAdapterPosition)
+        }
     }
 
     /**

@@ -36,9 +36,9 @@
     <string name="lbl_play_genre">Воспроизвести из жанра</string>
 
     <string name="lbl_queue">Очередь</string>
+    <string name="lbl_play_next">Воспроизвести далее</string>
     <string name="lbl_queue_add">Добавить в очередь</string>
     <string name="lbl_queue_added">Добавлено в очередь</string>
-    <string name="lbl_next_user_queue">Далее в очереди</string>
 
     <string name="lbl_go_artist">Перейти к исполнителю</string>
     <string name="lbl_go_album">Перейти к альбому</string>
@@ -121,7 +121,6 @@
     <string name="desc_shuffle">Включить или выключить перемешивание</string>
     <string name="desc_shuffle_all">Перемешать все композиции</string>
 
-    <string name="desc_clear_user_queue">Очистить очередь</string>
     <string name="desc_clear_queue_item">Удалить композицию из очереди</string>
     <string name="desc_queue_handle">Переместить композицию в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
@@ -161,7 +160,6 @@
     <string name="clr_grey">Серый</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_next_from">Далее из: %s</string>
     <string name="fmt_songs_loaded">Всего композиций: %d</string>
 
     <plurals name="fmt_song_count">

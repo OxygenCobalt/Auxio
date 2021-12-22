@@ -15,6 +15,7 @@ class AdaptiveFloatingActionButton @JvmOverloads constructor(
         size = SIZE_NORMAL
 
         if (resources.configuration.smallestScreenWidthDp >= 640) {
+            // Use a large FAB on large screens, as it makes it easier to touch.
             customSize = resources.getDimensionPixelSize(MaterialR.dimen.m3_large_fab_size)
             setMaxImageSize(
                 resources.getDimensionPixelSize(MaterialR.dimen.m3_large_fab_max_image_size)

@@ -29,9 +29,9 @@
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
 
     <string name="lbl_queue">Warteschlange</string>
+    <string name="lbl_play_next">Spiele als nächstes</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="lbl_queue_added">Der Warteschlange hinzugefügt</string>
-    <string name="lbl_next_user_queue">Nächstes in Warteschlange</string>
 
     <string name="lbl_go_artist">Zum Künstler gehen</string>
     <string name="lbl_go_album">Zum Album gehen</string>
@@ -106,7 +106,6 @@
     <string name="desc_change_loop">Art der Wiederholung ändern</string>
 
     <string name="desc_clear_search">Suchanfrage löschen</string>
-    <string name="desc_clear_user_queue">Warteschlange leeren</string>
 
     <string name="desc_auxio_icon">Auxio-Icon</string>
     <string name="desc_album_cover">Albumcover für %s</string>
@@ -136,7 +135,6 @@
     <string name="clr_grey">Grau</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_next_from">Nächsten von: %s</string>
     <string name="fmt_songs_loaded">Geladene Lieder: %d</string>
 
     <plurals name="fmt_song_count">

@@ -131,8 +131,10 @@ class PlaybackFragment : Fragment() {
             binding.playbackSeekBar.setProgress(pos)
         }
 
-        playbackModel.displayQueue.observe(viewLifecycleOwner) {
-            updateQueueIcon(queueItem)
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
+            // The queue icon uses a selector that will automatically tint the icon as active or
+            // inactive. We just need to set the flag.
+            queueItem.isEnabled = playbackModel.nextItemsInQueue.value!!.isNotEmpty()
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
@@ -154,14 +156,5 @@ class PlaybackFragment : Fragment() {
         // This is a dumb and fragile hack but this fragment isn't part of the navigation stack
         // so we can't really do much
         (requireView().parent.parent.parent as PlaybackLayout).collapse()
-    }
-
-    private fun updateQueueIcon(queueItem: MenuItem) {
-        val userQueue = playbackModel.userQueue.value!!
-        val nextQueue = playbackModel.nextItemsInQueue.value!!
-
-        // The queue icon uses a selector that will automatically tint the icon as active or
-        // inactive. We just need to set the flag.
-        queueItem.isEnabled = !(userQueue.isEmpty() && nextQueue.isEmpty())
     }
 }

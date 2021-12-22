@@ -22,9 +22,9 @@
     <string name="lbl_playback">Sedang Diputar</string>
 
     <string name="lbl_queue">Antrean</string>
+    <string name="lbl_play_next">Putar selanjutnya</string>
     <string name="lbl_queue_add">Tambahkan ke antrean</string>
     <string name="lbl_queue_added">Ditambahkan ke antrean</string>
-    <string name="lbl_next_user_queue">Berikutnya</string>
 
     <string name="lbl_go_artist">Pergi ke artis</string>
     <string name="lbl_go_album">Pergi ke album</string>
@@ -63,8 +63,6 @@
     <string name="desc_track_number">Trek %d</string>
 
     <string name="desc_play_pause">Putar/Jeda</string>
-
-    <string name="desc_clear_user_queue">Kosongkan antrean</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
 

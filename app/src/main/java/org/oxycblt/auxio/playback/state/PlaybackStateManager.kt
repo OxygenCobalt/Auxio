@@ -30,6 +30,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -65,11 +67,6 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onQueueUpdate(value) }
         }
-    private var mUserQueue = mutableListOf<Song>()
-        set(value) {
-            field = value
-            callbacks.forEach { it.onUserQueueUpdate(value) }
-        }
     private var mIndex = 0
         set(value) {
             field = value
@@ -98,11 +95,7 @@ class PlaybackStateManager private constructor() {
             field = value
             callbacks.forEach { it.onLoopUpdate(value) }
         }
-    private var mIsInUserQueue = false
-        set(value) {
-            field = value
-            callbacks.forEach { it.onInUserQueueUpdate(value) }
-        }
+
     private var mIsRestored = false
     private var mHasPlayed = false
 
@@ -114,8 +107,6 @@ class PlaybackStateManager private constructor() {
     val position: Long get() = mPosition
     /** The current queue determined by [parent] and [playbackMode] */
     val queue: List<Song> get() = mQueue
-    /** The queue created by the user. */
-    val userQueue: List<Song> get() = mUserQueue
     /** The current index of the queue */
     val index: Int get() = mIndex
     /** The current [PlaybackMode] */
@@ -250,8 +241,6 @@ class PlaybackStateManager private constructor() {
      * Update the playback to a new [song], doing all the required logic.
      */
     private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
-        mIsInUserQueue = false
-
         mSong = song
         mPosition = 0
 
@@ -264,29 +253,17 @@ class PlaybackStateManager private constructor() {
      * Go to the next song, along with doing all the checks that entails.
      */
     fun next() {
-        // If there's anything in the user queue, go to the first song in there instead
-        // of incrementing the index.
-        if (mUserQueue.isNotEmpty()) {
-            updatePlayback(mUserQueue[0])
-            mUserQueue.removeAt(0)
-
-            // Mark that the playback state is currently in the user queue, for later.
-            mIsInUserQueue = true
-
-            forceUserQueueUpdate()
+        // Increment the index, if it cannot be incremented any further, then
+        // loop and pause/resume playback depending on the setting
+        if (mIndex < mQueue.lastIndex) {
+            mIndex = mIndex.inc()
+            updatePlayback(mQueue[mIndex])
         } else {
-            // Increment the index, if it cannot be incremented any further, then
-            // loop and pause/resume playback depending on the setting
-            if (mIndex < mQueue.lastIndex) {
-                mIndex = mIndex.inc()
-                updatePlayback(mQueue[mIndex])
-            } else {
-                mIndex = 0
-                updatePlayback(mQueue[mIndex], shouldPlay = mLoopMode == LoopMode.ALL)
-            }
-
-            forceQueueUpdate()
+            mIndex = 0
+            updatePlayback(mQueue[mIndex], shouldPlay = mLoopMode == LoopMode.ALL)
         }
+
+        forceQueueUpdate()
     }
 
     /**
@@ -297,9 +274,8 @@ class PlaybackStateManager private constructor() {
         if (settingsManager.rewindWithPrev && mPosition >= REWIND_THRESHOLD) {
             rewind()
         } else {
-            // Only decrement the index if there's a song to move back to AND if we are not exiting
-            // the user queue.
-            if (mIndex > 0 && !mIsInUserQueue) {
+            // Only decrement the index if there's a song to move back to
+            if (mIndex > 0) {
                 mIndex = mIndex.dec()
             }
 
@@ -348,63 +324,35 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Add a [song] to the user queue.
+     * Add a [song] to the top of the queue.
      */
-    fun addToUserQueue(song: Song) {
-        mUserQueue.add(song)
-
-        forceUserQueueUpdate()
+    fun playNext(song: Song) {
+        mQueue.add(min(mIndex + 1, max(mQueue.lastIndex, 0)), song)
+        forceQueueUpdate()
     }
 
     /**
-     * Add a list of [songs] to the user queue.
+     * Add a list of [songs] to the top of the queue.
      */
-    fun addToUserQueue(songs: List<Song>) {
-        mUserQueue.addAll(songs)
-
-        forceUserQueueUpdate()
+    fun playNext(songs: List<Song>) {
+        mQueue.addAll(min(mIndex + 1, max(mQueue.lastIndex, 0)), songs)
+        forceQueueUpdate()
     }
 
     /**
-     * Remove a USER queue item at [index]. Will ignore invalid indexes.
+     * Add a [song] to the end of the queue.
      */
-    fun removeUserQueueItem(index: Int) {
-        logD("Removing item ${mUserQueue[index].name}.")
-
-        if (index > mUserQueue.size || index < 0) {
-            logE("Index is out of bounds, did not remove user queue item.")
-
-            return
-        }
-
-        mUserQueue.removeAt(index)
-
-        forceUserQueueUpdate()
+    fun addToQueue(song: Song) {
+        mQueue.add(song)
+        forceQueueUpdate()
     }
 
     /**
-     * Move a USER queue item at [from] to a position at [to]. Will ignore invalid indexes.
+     * Add a list of [songs] to the end of the queue.
      */
-    fun moveUserQueueItems(from: Int, to: Int) {
-        if (from > mUserQueue.size || from < 0 || to > mUserQueue.size || to < 0) {
-            logE("Indices were out of bounds, did not move user queue item")
-
-            return
-        }
-
-        val item = mUserQueue.removeAt(from)
-        mUserQueue.add(to, item)
-
-        forceUserQueueUpdate()
-    }
-
-    /**
-     * Clear the user queue. Forces a user queue update.
-     */
-    fun clearUserQueue() {
-        mUserQueue.clear()
-
-        forceUserQueueUpdate()
+    fun addToQueue(songs: List<Song>) {
+        mQueue.addAll(songs)
+        forceQueueUpdate()
     }
 
     /**
@@ -414,36 +362,28 @@ class PlaybackStateManager private constructor() {
         mQueue = mQueue
     }
 
-    /**
-     * Force any callbacks to recieve a user queue update.
-     */
-    private fun forceUserQueueUpdate() {
-        mUserQueue = mUserQueue
-    }
-
     // --- SHUFFLE FUNCTIONS ---
 
     /**
-     * Set whether this instance is [shuffled]. Updates the queue accordingly
+     * Set whether this instance is [shuffled]. Updates the queue accordingly.
      * @param keepSong Whether the current song should be kept as the queue is shuffled/unshuffled
      */
     fun setShuffling(shuffled: Boolean, keepSong: Boolean) {
         mIsShuffling = shuffled
 
         if (mIsShuffling) {
-            genShuffle(keepSong, mIsInUserQueue)
+            genShuffle(keepSong)
         } else {
-            resetShuffle(keepSong, mIsInUserQueue)
+            resetShuffle(keepSong)
         }
     }
 
     /**
      * Generate a new shuffled queue.
      * @param keepSong Whether the current song should be kept as the queue is shuffled
-     * @param useLastSong Whether to use the last song in the queue instead of the current one
      */
-    private fun genShuffle(keepSong: Boolean, useLastSong: Boolean) {
-        val lastSong = if (useLastSong) mQueue[0] else mSong
+    private fun genShuffle(keepSong: Boolean) {
+        val lastSong = mSong
 
         logD("Shuffling queue")
 
@@ -464,11 +404,10 @@ class PlaybackStateManager private constructor() {
     /**
      * Reset the queue to its normal, ordered state.
      * @param keepSong Whether the current song should be kept as the queue is unshuffled
-     * @param useLastSong Whether to use the previous song for the index calculations.
      */
-    private fun resetShuffle(keepSong: Boolean, useLastSong: Boolean) {
+    private fun resetShuffle(keepSong: Boolean) {
         val musicStore = MusicStore.maybeGetInstance() ?: return
-        val lastSong = if (useLastSong) mQueue[mIndex] else mSong
+        val lastSong = mSong
 
         mQueue = when (mPlaybackMode) {
             PlaybackMode.ALL_SONGS ->
@@ -585,11 +524,12 @@ class PlaybackStateManager private constructor() {
             database.writeState(
                 PlaybackStateDatabase.SavedState(
                     mSong, mPosition, mParent, mIndex,
-                    mPlaybackMode, mIsShuffling, mLoopMode, mIsInUserQueue
+                    mPlaybackMode, mIsShuffling, mLoopMode,
                 )
             )
 
-            database.writeQueue(PlaybackStateDatabase.SavedQueue(mUserQueue, mQueue))
+            // TODO: Re-add state saving
+            database.writeQueue(mQueue)
 
             this@PlaybackStateManager.logD(
                 "Save finished in ${System.currentTimeMillis() - start}ms"
@@ -608,7 +548,7 @@ class PlaybackStateManager private constructor() {
 
         val start: Long
         val playbackState: PlaybackStateDatabase.SavedState?
-        val queue: PlaybackStateDatabase.SavedQueue
+        val queue: MutableList<Song>
 
         withContext(Dispatchers.IO) {
             start = System.currentTimeMillis()
@@ -622,7 +562,7 @@ class PlaybackStateManager private constructor() {
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
         if (playbackState != null) {
-            logD("Found playback state $playbackState with queue size ${queue.user.size + queue.queue.size}")
+            logD("Found playback state $playbackState")
 
             unpackFromPlaybackState(playbackState)
             unpackQueue(queue)
@@ -649,30 +589,21 @@ class PlaybackStateManager private constructor() {
         mSong = playbackState.song
         mLoopMode = playbackState.loopMode
         mIsShuffling = playbackState.isShuffling
-        mIsInUserQueue = playbackState.isInUserQueue
 
         seekTo(playbackState.position)
     }
 
-    /**
-     * Unpack a list of queue items into a queue & user queue.
-     */
-    private fun unpackQueue(queue: PlaybackStateDatabase.SavedQueue) {
-        mUserQueue = queue.user
-        mQueue = queue.queue
+    private fun unpackQueue(queue: MutableList<Song>) {
+        mQueue = queue
 
-        // When done, get a more accurate index to prevent issues with queue songs that were saved
-        // to the db but are now deleted when the restore occurred.
-        // Not done if in user queue because that could result in a bad index being created.
-        if (!mIsInUserQueue) {
-            mSong?.let { song ->
-                val index = mQueue.indexOf(song)
-                mIndex = if (index != -1) index else mIndex
+        // Sanity check: Ensure that the
+        mSong?.let { song ->
+            while (mQueue.getOrNull(mIndex) != song) {
+                mIndex--
             }
         }
 
         forceQueueUpdate()
-        forceUserQueueUpdate()
     }
 
     /**
@@ -702,14 +633,12 @@ class PlaybackStateManager private constructor() {
         fun onParentUpdate(parent: MusicParent?) {}
         fun onPositionUpdate(position: Long) {}
         fun onQueueUpdate(queue: List<Song>) {}
-        fun onUserQueueUpdate(userQueue: List<Song>) {}
         fun onModeUpdate(mode: PlaybackMode) {}
         fun onIndexUpdate(index: Int) {}
         fun onPlayingUpdate(isPlaying: Boolean) {}
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(loopMode: LoopMode) {}
         fun onSeek(position: Long) {}
-        fun onInUserQueueUpdate(isInUserQueue: Boolean) {}
     }
 
     companion object {

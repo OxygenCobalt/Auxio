@@ -30,8 +30,7 @@ import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 
 /**
- * A [Fragment] that contains both the user queue and the next queue, with the ability to
- * edit them as well.
+ * A [Fragment] that shows the queue and enables editing as well.
  * @author OxygenCobalt
  */
 class QueueFragment : Fragment() {
@@ -68,7 +67,7 @@ class QueueFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.displayQueue.observe(viewLifecycleOwner) { queue ->
+        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { queue ->
             if (queue.isEmpty()) {
                 findNavController().navigateUp()
                 return@observe

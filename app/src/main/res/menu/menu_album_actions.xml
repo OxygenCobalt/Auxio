@@ -7,6 +7,9 @@
         android:id="@+id/action_shuffle"
         android:title="@string/lbl_shuffle" />
     <item
+        android:id="@+id/action_play_next"
+        android:title="@string/lbl_play_next" />
+    <item
         android:id="@+id/action_queue_add"
         android:title="@string/lbl_queue_add" />
     <item

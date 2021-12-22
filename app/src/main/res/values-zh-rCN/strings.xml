@@ -22,9 +22,9 @@
     <string name="lbl_playback">正在播放界面</string>
 
     <string name="lbl_queue">播放队列</string>
+    <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
     <string name="lbl_queue_added">此歌曲已加入播放队列</string>
-    <string name="lbl_next_user_queue">即将播放</string>
 
     <string name="lbl_go_artist">查看艺术家</string>
     <string name="lbl_go_album">查看专辑</string>
@@ -55,8 +55,6 @@
     <string name="desc_track_number">音轨 %d</string>
 
     <string name="desc_play_pause">播放/暂停</string>
-
-    <string name="desc_clear_user_queue">清空播放队列</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <plurals name="fmt_song_count">

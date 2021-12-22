@@ -22,9 +22,9 @@
     <string name="lbl_playback">Schermata di riproduzione</string>
 
     <string name="lbl_queue">Coda</string>
+    <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Aggiungi alla coda</string>
     <string name="lbl_queue_added">Aggiunta alla coda</string>
-    <string name="lbl_next_user_queue">A seguire</string>
 
     <string name="lbl_go_artist">Vai all\'artista</string>
     <string name="lbl_go_album">Vai all\'album</string>
@@ -62,8 +62,6 @@
     <string name="desc_track_number">Traccia %d</string>
 
     <string name="desc_play_pause">Play/Pausa</string>
-
-    <string name="desc_clear_user_queue">Svuota coda</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>

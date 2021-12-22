@@ -36,9 +36,9 @@
     <string name="lbl_play_genre">Play from genre</string>
 
     <string name="lbl_queue">Queue</string>
+    <string name="lbl_play_next">Play next</string>
     <string name="lbl_queue_add">Add to queue</string>
     <string name="lbl_queue_added">Added to queue</string>
-    <string name="lbl_next_user_queue">Next in Queue</string>
 
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
@@ -122,7 +122,6 @@
     <string name="desc_shuffle">Turn shuffle on or off</string>
     <string name="desc_shuffle_all">Shuffle all songs</string>
 
-    <string name="desc_clear_user_queue">Clear queue</string>
     <string name="desc_clear_queue_item">Remove this queue song</string>
     <string name="desc_queue_handle">Move this queue song</string>
     <string name="desc_tab_handle">Move this tab</string>
@@ -162,7 +161,6 @@
     <string name="clr_grey">Grey</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_next_from">Next From: %s</string>
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
 
     <plurals name="fmt_song_count">

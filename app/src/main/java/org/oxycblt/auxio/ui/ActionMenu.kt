@@ -144,15 +144,31 @@ class ActionMenu(
                 }
             }
 
-            R.id.action_queue_add -> {
+            R.id.action_play_next -> {
                 when (data) {
                     is Song -> {
-                        playbackModel.addToUserQueue(data)
+                        playbackModel.playNext(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
 
                     is Album -> {
-                        playbackModel.addToUserQueue(data)
+                        playbackModel.playNext(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
+
+                    else -> {}
+                }
+            }
+
+            R.id.action_queue_add -> {
+                when (data) {
+                    is Song -> {
+                        playbackModel.addToQueue(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
+
+                    is Album -> {
+                        playbackModel.addToQueue(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
 

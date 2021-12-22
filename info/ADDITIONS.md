@@ -27,4 +27,3 @@ Feel free to fork Auxio to add your own feature set however.
 - Recently added list [#18]
 - Lyrics [#19]
 - Tag editing [#33]
-- Specialized queue adding (ex. Play Next) [#44]

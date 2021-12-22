@@ -66,7 +66,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         setupToolbar(detailModel.curAlbum.value!!, R.menu.menu_album_detail) { itemId ->
             if (itemId == R.id.action_queue_add) {
-                playbackModel.addToUserQueue(detailModel.curAlbum.value!!)
+                playbackModel.playNext(detailModel.curAlbum.value!!)
                 requireContext().showToast(R.string.lbl_queue_added)
                 true
             } else {
@@ -143,12 +143,6 @@ class AlbumDetailFragment : DetailFragment() {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the viewholders if the mode isn't ALL_SONGS
-                detailAdapter.highlightSong(null, binding.detailRecycler)
-            }
-        }
-
-        playbackModel.isInUserQueue.observe(viewLifecycleOwner) { inUserQueue ->
-            if (inUserQueue) {
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }

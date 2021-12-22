@@ -22,9 +22,9 @@
     <string name="lbl_playback">Obecnie Grane</string>
 
     <string name="lbl_queue">Kolejka</string>
+    <string name="lbl_play_next">Odtwarzaj następny</string>
     <string name="lbl_queue_add">Dodaj do kolejki</string>
     <string name="lbl_queue_added">Dodany do kolejki</string>
-    <string name="lbl_next_user_queue">Za chwilę zagra</string>
 
     <string name="lbl_go_artist">Przejdź do wykonawcy</string>
     <string name="lbl_go_album">Przejdź do albumu</string>
@@ -60,8 +60,6 @@
     <string name="desc_track_number">Ścieżka %d</string>
 
     <string name="desc_play_pause">Odtwarzanie/Pauza</string>
-
-    <string name="desc_clear_user_queue">Wyczyść kolejkę</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Szukaj w bibliotece…</string>

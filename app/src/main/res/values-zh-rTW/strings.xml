@@ -22,9 +22,9 @@
     <string name="lbl_playback">播放面板</string>
 
     <string name="lbl_queue">隊列</string>
+    <string name="lbl_play_next">下一首播放</string>
     <string name="lbl_queue_add">添加到隊列</string>
     <string name="lbl_queue_added">已加入隊列</string>
-    <string name="lbl_next_user_queue">播放佇列：即將播放</string>
 
     <string name="lbl_go_artist">前往該歌手頁面</string>
     <string name="lbl_go_album">專輯</string>
@@ -60,8 +60,6 @@
     <string name="desc_track_number">音軌 %d</string>
 
     <string name="desc_play_pause">播放/暫停</string>
-
-    <string name="desc_clear_user_queue">清空播放佇列</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">搜尋音樂庫…</string>

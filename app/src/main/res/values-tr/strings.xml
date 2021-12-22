@@ -22,9 +22,9 @@
     <string name="lbl_playback">Şuan çalınan</string>
 
     <string name="lbl_queue">Kuyruk</string>
+    <string name="lbl_play_next">Sonraki şarkı</string>
     <string name="lbl_queue_add">Kuyruğa ekle</string>
     <string name="lbl_queue_added">Kuyruğa eklendi</string>
-    <string name="lbl_next_user_queue">Sırada olanlar</string>
 
     <string name="lbl_go_artist">Sanatçıya git</string>
     <string name="lbl_go_album">Albüme git</string>
@@ -62,8 +62,6 @@
     <string name="desc_track_number">Parça %d</string>
 
     <string name="desc_play_pause">Başlat/Durdur</string>
-
-    <string name="desc_clear_user_queue">Temizle Kuyruk</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
 

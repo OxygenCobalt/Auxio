@@ -39,7 +39,6 @@ import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -105,9 +104,7 @@ class QueueAdapter(
      * Used since [submitList] will cause QueueAdapter to freak out.
      */
     fun moveItems(adapterFrom: Int, adapterTo: Int) {
-        val item = data.removeAt(adapterFrom)
-        data.add(adapterTo, item)
-
+        data.add(adapterTo, data.removeAt(adapterFrom))
         notifyItemMoved(adapterFrom, adapterTo)
     }
 
@@ -117,30 +114,7 @@ class QueueAdapter(
      */
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
-
-        /*
-         * If the data from the next queue is now entirely empty [Signified by a header at the
-         * end, remove the next queue header as notify as such.
-         *
-         * If the user queue is empty [Signified by there being two headers at the beginning with
-         * nothing in between], then remove the user queue header and notify as such.
-         *
-         * Otherwise just remove the item as usual.
-         */
-        if (data[data.lastIndex] is Header) {
-            logD("Queue is empty, removing header")
-
-            val lastIndex = data.lastIndex
-            data.removeAt(lastIndex)
-            notifyItemRangeRemoved(lastIndex, 2)
-        } else if (data.lastIndex >= 1 && data[0] is ActionHeader && data[1] is Header) {
-            logD("User queue is empty, removing header")
-
-            data.removeAt(0)
-            notifyItemRangeRemoved(0, 2)
-        } else {
-            notifyItemRemoved(adapterIndex)
-        }
+        notifyItemRemoved(adapterIndex)
     }
 
     /**

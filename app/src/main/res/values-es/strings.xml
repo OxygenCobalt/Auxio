@@ -30,9 +30,9 @@
     <string name="lbl_playback">Reproducción actual</string>
 
     <string name="lbl_queue">Cola</string>
+    <string name="lbl_play_next">Siguiente</string>
     <string name="lbl_queue_add">Agregar a la cola</string>
     <string name="lbl_queue_added">Agregada a la cola</string>
-    <string name="lbl_next_user_queue">A continuación…</string>
 
     <string name="lbl_go_artist">Ir al artista</string>
     <string name="lbl_go_album">Ir al álbum</string>
@@ -108,7 +108,6 @@
     <string name="desc_skip_prev">Saltar a la última canción</string>
     <string name="desc_change_loop">Cambiar el modo de repetición</string>
 
-    <string name="desc_clear_user_queue">Limpiar cola</string>
     <string name="desc_clear_search">Borrar historial de búsqueda</string>
     <string name="desc_blacklist_delete">Eliminar directorio excluido</string>
 
@@ -140,7 +139,6 @@
     <string name="clr_grey">Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_next_from">Siguiente de: %s</string>
     <string name="fmt_songs_loaded">Canciones encontradas: %d</string>
 
     <plurals name="fmt_song_count">

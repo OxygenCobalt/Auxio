@@ -22,9 +22,9 @@
     <string name="lbl_playback">Redare Acum</string>
 
     <string name="lbl_queue">Fila de așteptare</string>
+    <string name="lbl_play_next">Redaţi următoarea</string>
     <string name="lbl_queue_add">Adăugați la lista de așteptare</string>
     <string name="lbl_queue_added">A fost adăugat la liste de așteptare</string>
-    <string name="lbl_next_user_queue">Urmează</string>
 
     <string name="lbl_go_artist">Accesaţi artistul</string>
     <string name="lbl_go_album">Accesaţi albumul</string>
@@ -64,8 +64,6 @@
     <string name="desc_track_number">Melodie %d</string>
 
     <string name="desc_play_pause">Redă/Pauză</string>
-
-    <string name="desc_clear_user_queue">Golește lista de redare</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Roșu</string>

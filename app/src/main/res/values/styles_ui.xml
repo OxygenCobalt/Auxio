@@ -171,11 +171,6 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Auxio.FloatingActionButton.PlayPause</item>
     </style>
 
-    <style name="ThemeOverlay.Auxio.FloatingActionButton.PlayPause" parent="">
-        <item name="colorContainer">?attr/colorSecondary</item>
-        <item name="colorOnContainer">?attr/colorOnSecondary</item>
-    </style>
-
     <style name="ShapeAppearance.Auxio.FloatingActionButton.PlayPause" parent="">
         <item name="cornerSize">50%</item>
     </style>

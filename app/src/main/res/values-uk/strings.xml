@@ -21,9 +21,9 @@
     <string name="lbl_playback">Відтворюється</string>
 
     <string name="lbl_queue">Черга</string>
+    <string name="lbl_play_next">Відтворити наступною</string>
     <string name="lbl_queue_add">Додати в чергу</string>
     <string name="lbl_queue_added">Додана в чергу</string>
-    <string name="lbl_next_user_queue">До наступного</string>
 
     <string name="lbl_go_artist">Перейти до виконавця</string>
     <string name="lbl_go_album">Перейти до альбому</string>
@@ -58,8 +58,6 @@
     <string name="desc_track_number">Доріжка %d</string>
 
     <string name="desc_play_pause">Відтворити/Зупинити</string>
-
-    <string name="desc_clear_user_queue">Очистити черга</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Пісні завантажено: %d</string>

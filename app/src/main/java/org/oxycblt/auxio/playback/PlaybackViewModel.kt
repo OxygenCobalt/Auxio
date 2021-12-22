@@ -21,24 +21,17 @@ package org.oxycblt.auxio.playback
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.queue.QueueAdapter
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -61,7 +54,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // Queue
     private val mQueue = MutableLiveData(listOf<Song>())
-    private val mUserQueue = MutableLiveData(listOf<Song>())
     private val mIndex = MutableLiveData(0)
     private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
@@ -69,7 +61,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsPlaying = MutableLiveData(false)
     private val mIsShuffling = MutableLiveData(false)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
-    private val mIsInUserQueue = MutableLiveData(false)
 
     // Other
     private var mIntentUri: Uri? = null
@@ -83,12 +74,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /** The current queue determined by [playbackMode] and [parent] */
     val queue: LiveData<List<Song>> get() = mQueue
-    /** The queue created by the user. */
-    val userQueue: LiveData<List<Song>> get() = mUserQueue
     /** The current [PlaybackMode] that also determines the queue */
     val playbackMode: LiveData<PlaybackMode> get() = mMode
-    /** Whether playback is originating from the user-generated queue or not  */
-    val isInUserQueue: LiveData<Boolean> = mIsInUserQueue
 
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
@@ -98,62 +85,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The queue, without the previous items. */
     val nextItemsInQueue = Transformations.map(queue) { queue ->
         queue.slice((mIndex.value!! + 1) until queue.size)
-    }
-
-    /** The combined queue data used for UIs, with header data included */
-    val displayQueue = MediatorLiveData<List<BaseModel>>().apply {
-        val combine: (userQueue: List<Song>, nextQueue: List<Song>) -> List<BaseModel> =
-            { userQueue, nextQueue ->
-                val queue = mutableListOf<BaseModel>()
-
-                if (userQueue.isNotEmpty()) {
-                    queue += ActionHeader(
-                        id = -2,
-                        string = HeaderString.Single(R.string.lbl_next_user_queue),
-                        icon = R.drawable.ic_clear,
-                        desc = R.string.desc_clear_user_queue,
-                        onClick = { playbackManager.clearUserQueue() }
-                    )
-
-                    queue += userQueue
-                }
-
-                if (nextQueue.isNotEmpty()) {
-                    val parentName = parent.value?.name
-
-                    queue += Header(
-                        id = -3,
-                        string = HeaderString.WithArg(
-                            R.string.fmt_next_from,
-                            if (parentName != null) {
-                                HeaderString.Arg.Value(parentName)
-                            } else {
-                                HeaderString.Arg.Resource(R.string.lbl_all_songs)
-                            }
-                        )
-                    )
-
-                    queue += nextQueue
-                }
-
-                queue
-            }
-
-        // Do not move these around. The transformed value must be generated through this
-        // observer call first before the userQueue source uses it assuming that it's not
-        // null.
-        addSource(nextItemsInQueue) { nextQueue ->
-            value = combine(userQueue.value!!, nextQueue)
-        }
-
-        addSource(userQueue) { userQueue ->
-            value = combine(
-                userQueue,
-                requireNotNull(nextItemsInQueue.value) {
-                    "Transformed value was not generated yet."
-                }
-            )
-        }
     }
 
     private val playbackManager = PlaybackStateManager.maybeGetInstance()
@@ -285,95 +216,65 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Remove an item at [adapterIndex], being a non-header data index.
-     * @param queueAdapter [QueueAdapter] instance to push changes to when successful.
+     * Remove a queue item using it's recyclerview adapter index. If the indices are valid,
+     * [apply] is called just before the change is committed so that the adapter can be updated.
      */
-    fun removeQueueDataItem(adapterIndex: Int, queueAdapter: QueueAdapter) {
-        var index = adapterIndex.dec()
+    fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
+        val adjusted = adapterIndex + (mQueue.value!!.size - nextItemsInQueue.value!!.size)
 
-        // If the item is in the user queue, then remove it from there after accounting for the header.
-        if (index < mUserQueue.value!!.size) {
-            queueAdapter.removeItem(adapterIndex)
-
-            playbackManager.removeUserQueueItem(index)
-        } else {
-            // Translate the indices into proper queue indices if removing an item from there.
-            index += (mQueue.value!!.size - nextItemsInQueue.value!!.size)
-
-            if (userQueue.value!!.isNotEmpty()) {
-                index -= mUserQueue.value!!.size.inc()
-            }
-
-            queueAdapter.removeItem(adapterIndex)
-
-            playbackManager.removeQueueItem(index)
+        if (adjusted in mQueue.value!!.indices) {
+            apply()
+            playbackManager.removeQueueItem(adjusted)
         }
     }
-
     /**
-     * Move a queue OR user queue item from [adapterFrom] to [adapterTo], as long as both
-     * indices are non-header data indices.
-     * @param queueAdapter [QueueAdapter] instance to push changes to when successful.
+     * Move queue items using their recyclerview adapter indices. If the indices are valid,
+     * [apply] is called just before the change is committed so that the adapter can be updated.
      */
-    fun moveQueueDataItems(
-        adapterFrom: Int,
-        adapterTo: Int,
-        queueAdapter: QueueAdapter
-    ): Boolean {
-        var from = adapterFrom.dec()
-        var to = adapterTo.dec()
+    fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
+        val delta = (mQueue.value!!.size - nextItemsInQueue.value!!.size)
 
-        if (from < mUserQueue.value!!.size) {
-            // Ignore invalid movements to out of bounds, header, or queue positions
-            if (to >= mUserQueue.value!!.size || to < 0) return false
+        val from = adapterFrom + delta
+        val to = adapterTo + delta
 
-            queueAdapter.moveItems(adapterFrom, adapterTo)
-
-            playbackManager.moveUserQueueItems(from, to)
-        } else {
-            // Ignore invalid movements to out of bounds or header positions
-            if (to < 0) return false
-
-            // Get the real queue positions from the nextInQueue positions
-            val delta = mQueue.value!!.size - nextItemsInQueue.value!!.size
-
-            from += delta
-            to += delta
-
-            if (userQueue.value!!.isNotEmpty()) {
-                // Ignore user queue positions
-                if (to <= mUserQueue.value!!.size.inc()) return false
-
-                from -= mUserQueue.value!!.size.inc()
-                to -= mUserQueue.value!!.size.inc()
-
-                // Ignore movements that are past the next songs
-                if (to <= mIndex.value!!) return false
-            }
-
-            queueAdapter.moveItems(adapterFrom, adapterTo)
-
+        if (from in mQueue.value!!.indices && to in mQueue.value!!.indices) {
+            apply()
             playbackManager.moveQueueItems(from, to)
+            return true
         }
 
-        return true
+        return false
     }
 
     /**
-     * Add a [Song] to the user queue.
+     * Add a [Song] to the top of the queue.
      */
-    fun addToUserQueue(song: Song) {
-        playbackManager.addToUserQueue(song)
+    fun playNext(song: Song) {
+        playbackManager.playNext(song)
     }
 
     /**
-     * Add an [Album] to the user queue
+     * Add an [Album] to the top of the queue.
      */
-    fun addToUserQueue(album: Album) {
-        playbackManager.addToUserQueue(settingsManager.detailAlbumSort.sortAlbum(album))
+    fun playNext(album: Album) {
+        playbackManager.playNext(settingsManager.detailAlbumSort.sortAlbum(album))
     }
 
-    // --- STATUS FUNCTIONS ---
+/**
+     * Add a [Song] to the end of the queue.
+     */
+    fun addToQueue(song: Song) {
+        playbackManager.addToQueue(song)
+    }
+
+    /**
+     * Add an [Album] to the end of the queue.
+     */
+    fun addToQueue(album: Album) {
+        playbackManager.addToQueue(settingsManager.detailAlbumSort.sortAlbum(album))
+    }
+
+// --- STATUS FUNCTIONS ---
 
     /**
      * Flip the playing status, e.g from playing to paused
@@ -405,7 +306,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     fun savePlaybackState(context: Context, onDone: () -> Unit) {
         viewModelScope.launch {
             playbackManager.saveStateToDatabase(context)
-
             onDone()
         }
     }
@@ -445,7 +345,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mParent.value = playbackManager.parent
         mQueue.value = playbackManager.queue
         mMode.value = playbackManager.playbackMode
-        mUserQueue.value = playbackManager.userQueue
         mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying
         mIsShuffling.value = playbackManager.isShuffling
@@ -474,10 +373,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mQueue.value = queue
     }
 
-    override fun onUserQueueUpdate(userQueue: List<Song>) {
-        mUserQueue.value = userQueue
-    }
-
     override fun onIndexUpdate(index: Int) {
         mIndex.value = index
     }
@@ -496,9 +391,5 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onLoopUpdate(loopMode: LoopMode) {
         mLoopMode.value = loopMode
-    }
-
-    override fun onInUserQueueUpdate(isInUserQueue: Boolean) {
-        mIsInUserQueue.value = isInUserQueue
     }
 }

@@ -30,9 +30,9 @@
     <string name="lbl_playback">Afspeelscherm</string>
 
     <string name="lbl_queue">Wachtrij</string>
+    <string name="lbl_play_next">Afspelen als volgende</string>
     <string name="lbl_queue_add">Toevoegen aan wachtrij</string>
     <string name="lbl_queue_added">Toegevoegd aan de wachtrij</string>
-    <string name="lbl_next_user_queue">Als volgende</string>
 
     <string name="lbl_go_artist">Ga naar artiest</string>
     <string name="lbl_go_album">Ga naar album</string>
@@ -106,7 +106,6 @@
     <string name="desc_skip_prev">Naar het laatste nummer gaan</string>
     <string name="desc_change_loop">Herhaalfunctie wijzigen</string>
 
-    <string name="desc_clear_user_queue">Wachtrij wissen</string>
     <string name="desc_clear_search">Zoekopdracht wissen</string>
     <string name="desc_blacklist_delete">Verwijder uitgesloten map</string>
 
@@ -138,7 +137,6 @@
     <string name="clr_grey">Grijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_next_from">Volgende van: %s</string>
     <string name="fmt_songs_loaded">Nummers geladen: %d</string>
 
     <plurals name="fmt_song_count">

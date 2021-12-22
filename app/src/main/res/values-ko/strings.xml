@@ -22,9 +22,9 @@
     <string name="lbl_playback">지금 재생 중</string>
 
     <string name="lbl_queue">대기열</string>
+    <string name="lbl_play_next">다음 곡으로 재생</string>
     <string name="lbl_queue_add">대기열에 추가</string>
     <string name="lbl_queue_added">가 대기열에 추가되었습니다</string>
-    <string name="lbl_next_user_queue">다음 곡</string>
 
     <string name="lbl_go_artist">아티스트로 가기</string>
     <string name="lbl_go_album">앨범으로 가기</string>
@@ -59,8 +59,6 @@
     <string name="desc_track_number">트랙 %d</string>
 
     <string name="desc_play_pause">재생/일시 정지</string>
-
-    <string name="desc_clear_user_queue">재생 대기열 비우기</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">저장소 검색…</string>

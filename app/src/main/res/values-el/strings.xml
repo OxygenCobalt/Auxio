@@ -21,9 +21,9 @@
     <string name="lbl_playback">Παίζει τώρα</string>
 
     <string name="lbl_queue">Ουρά αναπαραγωγής</string>
+    <string name="lbl_play_next">Επόμενο</string>
     <string name="lbl_queue_add">Προσθήκη στην ουρά αναπ/γής</string>
     <string name="lbl_queue_added">Προστέθηκε ένας τίτλος στην ουρά αναπαραγωγής</string>
-    <string name="lbl_next_user_queue">Επόμενο</string>
 
     <string name="lbl_go_artist">Πήγαινε στον καλλιτέχνη</string>
     <string name="lbl_go_album">Πήγαινε στο άλμπουμ</string>
@@ -54,8 +54,6 @@
     <string name="desc_track_number">Κομμάτι %d</string>
 
     <string name="desc_play_pause">Αναπαραγωγή/Παύση</string>
-
-    <string name="desc_clear_user_queue">Εκκαθάριση ουράς αναπαραγωγής</string>
 
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Αναζήτηση στη βιβλιοθήκη…</string>
