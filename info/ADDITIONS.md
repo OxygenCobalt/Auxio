@@ -21,9 +21,12 @@ This does not rule out these additions, but they are not accepted as often as ot
 
 Feel free to fork Auxio to add your own feature set however.
 
-#### Additions that have already been rejected:
-- ReplayGain [#7]
-- Folder View/Grouping [#10]
-- Recently added list [#18]
-- Lyrics [#19]
-- Tag editing [#33]
+#### Additions that have already been rejected (and why):
+
+- Folder View/Grouping [#10] (Out of scope)
+- Recently added list [#18] (Out of scope)
+- Lyrics [#19] (Out of scope)
+- Tag editing [#33] (Out of scope)
+- Gapless Playback [#35] (Technical issues)
+- Reduce leading instrument [#45] (Technical issues, Out of scope)
+- Opening music through a provider [#30] (Out of scope)

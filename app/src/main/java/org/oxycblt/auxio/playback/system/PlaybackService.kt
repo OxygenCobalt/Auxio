@@ -29,7 +29,6 @@ import android.content.pm.ServiceInfo
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import android.support.v4.media.session.MediaSessionCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -87,7 +86,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     // System backend components
     private lateinit var audioReactor: AudioReactor
-    private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var widgets: WidgetController
     private val systemReceiver = SystemEventReceiver()
 
@@ -131,10 +129,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         // --- SYSTEM SETUP ---
 
         audioReactor = AudioReactor(this, player)
-        wakeLock = getSystemServiceSafe(PowerManager::class).newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK, this::class.simpleName
-        )
-
         widgets = WidgetController(this)
 
         // Set up the media button callbacks
@@ -195,7 +189,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         mediaSession.release()
         audioReactor.release()
         widgets.release()
-        releaseWakelock()
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
@@ -216,10 +209,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
-            Player.STATE_READY -> {
-                startPollingPosition()
-                releaseWakelock()
-            }
+            Player.STATE_READY -> startPollingPosition()
 
             Player.STATE_ENDED -> {
                 if (playbackManager.loopMode == LoopMode.TRACK) {
@@ -231,11 +221,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
             else -> {}
         }
-    }
-
-    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        // We use the wakelock to ensure that the CPU is active while music is being loaded
-        acquireWakeLock()
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -357,6 +342,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         return ExoPlayer.Builder(this, audioRenderer)
             .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
+            .setWakeMode(C.WAKE_MODE_LOCAL)
             .build()
     }
 
@@ -432,26 +418,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
 
         isForeground = false
-    }
-
-    /**
-     * Hold the wakelock for the default amount of time [25 Seconds]
-     */
-    private fun acquireWakeLock() {
-        wakeLock.acquire(WAKELOCK_TIME)
-
-        logD("Wakelock is held.")
-    }
-
-    /**
-     * Release the wakelock if its currently being held.
-     */
-    private fun releaseWakelock() {
-        if (wakeLock.isHeld) {
-            wakeLock.release()
-
-            logD("Wakelock is released.")
-        }
     }
 
     /**

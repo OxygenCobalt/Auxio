@@ -63,15 +63,7 @@ class PlaybackStateManager private constructor() {
 
     // Queue
     private var mQueue = mutableListOf<Song>()
-        set(value) {
-            field = value
-            callbacks.forEach { it.onQueueUpdate(value) }
-        }
     private var mIndex = 0
-        set(value) {
-            field = value
-            callbacks.forEach { it.onIndexUpdate(value) }
-        }
     private var mPlaybackMode = PlaybackMode.ALL_SONGS
         set(value) {
             field = value
@@ -107,8 +99,6 @@ class PlaybackStateManager private constructor() {
     val position: Long get() = mPosition
     /** The current queue determined by [parent] and [playbackMode] */
     val queue: List<Song> get() = mQueue
-    /** The current index of the queue */
-    val index: Int get() = mIndex
     /** The current [PlaybackMode] */
     val playbackMode: PlaybackMode get() = mPlaybackMode
     /** Whether playback is paused or not */
@@ -263,7 +253,7 @@ class PlaybackStateManager private constructor() {
             updatePlayback(mQueue[mIndex], shouldPlay = mLoopMode == LoopMode.ALL)
         }
 
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -280,7 +270,7 @@ class PlaybackStateManager private constructor() {
             }
 
             updatePlayback(mQueue[mIndex])
-            forceQueueUpdate()
+            pushQueueUpdate()
         }
     }
 
@@ -300,7 +290,7 @@ class PlaybackStateManager private constructor() {
 
         mQueue.removeAt(index)
 
-        forceQueueUpdate()
+        pushQueueUpdate()
 
         return true
     }
@@ -318,7 +308,7 @@ class PlaybackStateManager private constructor() {
         val item = mQueue.removeAt(from)
         mQueue.add(to, item)
 
-        forceQueueUpdate()
+        pushQueueUpdate()
 
         return true
     }
@@ -328,7 +318,7 @@ class PlaybackStateManager private constructor() {
      */
     fun playNext(song: Song) {
         mQueue.add(min(mIndex + 1, max(mQueue.lastIndex, 0)), song)
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -336,7 +326,7 @@ class PlaybackStateManager private constructor() {
      */
     fun playNext(songs: List<Song>) {
         mQueue.addAll(min(mIndex + 1, max(mQueue.lastIndex, 0)), songs)
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -344,7 +334,7 @@ class PlaybackStateManager private constructor() {
      */
     fun addToQueue(song: Song) {
         mQueue.add(song)
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -352,14 +342,16 @@ class PlaybackStateManager private constructor() {
      */
     fun addToQueue(songs: List<Song>) {
         mQueue.addAll(songs)
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
      * Force any callbacks to receive a queue update.
      */
-    private fun forceQueueUpdate() {
-        mQueue = mQueue
+    private fun pushQueueUpdate() {
+        callbacks.forEach {
+            it.onQueueUpdate(mQueue, mIndex)
+        }
     }
 
     // --- SHUFFLE FUNCTIONS ---
@@ -398,7 +390,7 @@ class PlaybackStateManager private constructor() {
             mSong = mQueue[0]
         }
 
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -424,7 +416,7 @@ class PlaybackStateManager private constructor() {
             mIndex = mQueue.indexOf(lastSong)
         }
 
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     // --- STATE FUNCTIONS ---
@@ -603,7 +595,7 @@ class PlaybackStateManager private constructor() {
             }
         }
 
-        forceQueueUpdate()
+        pushQueueUpdate()
     }
 
     /**
@@ -632,9 +624,8 @@ class PlaybackStateManager private constructor() {
         fun onSongUpdate(song: Song?) {}
         fun onParentUpdate(parent: MusicParent?) {}
         fun onPositionUpdate(position: Long) {}
-        fun onQueueUpdate(queue: List<Song>) {}
+        fun onQueueUpdate(queue: List<Song>, index: Int) {}
         fun onModeUpdate(mode: PlaybackMode) {}
-        fun onIndexUpdate(index: Int) {}
         fun onPlayingUpdate(isPlaying: Boolean) {}
         fun onShuffleUpdate(isShuffling: Boolean) {}
         fun onLoopUpdate(loopMode: LoopMode) {}

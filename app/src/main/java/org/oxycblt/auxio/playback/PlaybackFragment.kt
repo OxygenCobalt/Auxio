@@ -131,10 +131,10 @@ class PlaybackFragment : Fragment() {
             binding.playbackSeekBar.setProgress(pos)
         }
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) {
+        playbackModel.nextUp.observe(viewLifecycleOwner) {
             // The queue icon uses a selector that will automatically tint the icon as active or
             // inactive. We just need to set the flag.
-            queueItem.isEnabled = playbackModel.nextItemsInQueue.value!!.isNotEmpty()
+            queueItem.isEnabled = playbackModel.nextUp.value!!.isNotEmpty()
         }
 
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->

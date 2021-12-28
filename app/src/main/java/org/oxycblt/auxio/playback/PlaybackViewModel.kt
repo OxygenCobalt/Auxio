@@ -22,7 +22,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -50,17 +49,16 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
     private val mSong = MutableLiveData<Song?>()
     private val mParent = MutableLiveData<MusicParent?>()
-    private val mPosition = MutableLiveData(0L)
-
-    // Queue
-    private val mQueue = MutableLiveData(listOf<Song>())
-    private val mIndex = MutableLiveData(0)
-    private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
     // States
     private val mIsPlaying = MutableLiveData(false)
     private val mIsShuffling = MutableLiveData(false)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
+    private val mPosition = MutableLiveData(0L)
+
+    // Queue
+    private val mNextUp = MutableLiveData(listOf<Song>())
+    private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
     // Other
     private var mIntentUri: Uri? = null
@@ -69,23 +67,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val song: LiveData<Song?> get() = mSong
     /** The current model that is being played from, such as an [Album] or [Artist] */
     val parent: LiveData<MusicParent?> get() = mParent
-    /** The current playback position, in seconds */
-    val position: LiveData<Long> get() = mPosition
-
-    /** The current queue determined by [playbackMode] and [parent] */
-    val queue: LiveData<List<Song>> get() = mQueue
-    /** The current [PlaybackMode] that also determines the queue */
-    val playbackMode: LiveData<PlaybackMode> get() = mMode
 
     val isPlaying: LiveData<Boolean> get() = mIsPlaying
     val isShuffling: LiveData<Boolean> get() = mIsShuffling
     /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode> get() = mLoopMode
+    /** The current playback position, in seconds */
+    val position: LiveData<Long> get() = mPosition
 
     /** The queue, without the previous items. */
-    val nextItemsInQueue = Transformations.map(queue) { queue ->
-        queue.slice((mIndex.value!! + 1) until queue.size)
-    }
+    val nextUp: LiveData<List<Song>> get() = mNextUp
+    /** The current [PlaybackMode] that also determines the queue */
+    val playbackMode: LiveData<PlaybackMode> get() = mMode
 
     private val playbackManager = PlaybackStateManager.maybeGetInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -220,9 +213,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * [apply] is called just before the change is committed so that the adapter can be updated.
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
-        val adjusted = adapterIndex + (mQueue.value!!.size - nextItemsInQueue.value!!.size)
+        val adjusted = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
 
-        if (adjusted in mQueue.value!!.indices) {
+        if (adjusted in mNextUp.value!!.indices) {
             apply()
             playbackManager.removeQueueItem(adjusted)
         }
@@ -232,12 +225,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * [apply] is called just before the change is committed so that the adapter can be updated.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
-        val delta = (mQueue.value!!.size - nextItemsInQueue.value!!.size)
+        val delta = (playbackManager.queue.size - mNextUp.value!!.size)
 
         val from = adapterFrom + delta
         val to = adapterTo + delta
 
-        if (from in mQueue.value!!.indices && to in mQueue.value!!.indices) {
+        if (from in mNextUp.value!!.indices && to in mNextUp.value!!.indices) {
             apply()
             playbackManager.moveQueueItems(from, to)
             return true
@@ -287,7 +280,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Flip the shuffle status, e.g from on to off. Will keep song by default.
      */
     fun invertShuffleStatus() {
-        playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
+        playbackManager.setShuffling(!playbackManager.isShuffling, true)
     }
 
     /**
@@ -343,9 +336,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mSong.value = playbackManager.song
         mPosition.value = playbackManager.position / 1000
         mParent.value = playbackManager.parent
-        mQueue.value = playbackManager.queue
+        mNextUp.value = playbackManager.queue
         mMode.value = playbackManager.playbackMode
-        mIndex.value = playbackManager.index
         mIsPlaying.value = playbackManager.isPlaying
         mIsShuffling.value = playbackManager.isShuffling
         mLoopMode.value = playbackManager.loopMode
@@ -369,12 +361,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mPosition.value = position / 1000
     }
 
-    override fun onQueueUpdate(queue: List<Song>) {
-        mQueue.value = queue
-    }
-
-    override fun onIndexUpdate(index: Int) {
-        mIndex.value = index
+    override fun onQueueUpdate(queue: List<Song>, index: Int) {
+        mNextUp.value = queue.slice(index.inc() until queue.size)
     }
 
     override fun onModeUpdate(mode: PlaybackMode) {

@@ -67,7 +67,7 @@ class QueueFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.nextItemsInQueue.observe(viewLifecycleOwner) { queue ->
+        playbackModel.nextUp.observe(viewLifecycleOwner) { queue ->
             if (queue.isEmpty()) {
                 findNavController().navigateUp()
                 return@observe
