@@ -36,6 +36,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
+import com.google.android.exoplayer2.TracksInfo
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -231,6 +232,29 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onPositionDiscontinuity(reason: Int) {
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
             playbackManager.setPosition(player.currentPosition)
+        }
+    }
+
+    override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
+        super.onTracksInfoChanged(tracksInfo)
+
+        for (info in tracksInfo.trackGroupInfos) {
+            if (info.isSelected) {
+                for (i in 0 until info.trackGroup.length) {
+                    if (info.isTrackSelected(i)) {
+                        val metadata = info.trackGroup.getFormat(i).metadata
+
+                        if (metadata != null) {
+                            player.volume = calculateReplayGain(metadata)
+                            logD("Applied ReplayGain adjustment: ${player.volume}")
+                        }
+
+                        break
+                    }
+                }
+
+                break
+            }
         }
     }
 
@@ -501,7 +525,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     companion object {
         private const val DISCONNECTED = 0
         private const val CONNECTED = 1
-        private const val WAKELOCK_TIME = 25000L
         private const val POS_POLL_INTERVAL = 500L
 
         const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
@@ -510,5 +533,10 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
         const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
         const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
+
+        const val RG_TRACK = "REPLAYGAIN_TRACK_GAIN"
+        const val RG_ALBUM = "REPLAYGAIN_ALBUM_GAIN"
+        const val R128_TRACK = "R128_TRACK_GAIN"
+        const val R128_ALBUM = "R128_ALBUM_GAIN"
     }
 }

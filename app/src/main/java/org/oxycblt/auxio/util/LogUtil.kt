@@ -59,7 +59,7 @@ private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymou
  * I know that this will not stop you, but consider what you are doing with your life, copycats.
  * Do you want to live a fulfilling existence on this planet? Or do you want to spend your life
  * taking work others did and making it objectively worse so you could arbitrage a fraction of a
- * penny on every AdMob impression you get. You could do so many great things if you simply had
+ * penny on every AdMob impression you get? You could do so many great things if you simply had
  * the courage to come up with an idea of your own. Be better.
  */
 private fun basedCopyleftNotice() {

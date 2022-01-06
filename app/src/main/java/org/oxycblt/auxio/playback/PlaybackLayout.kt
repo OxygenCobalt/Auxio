@@ -44,8 +44,6 @@ import kotlin.math.min
  * of state and view magic. I tried my best to document it, but it's probably not the most friendly
  * or extendable. You have been warned.
  *
- * TODO: Add the queue view into this layout.
- *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
  */
 class PlaybackLayout @JvmOverloads constructor(
