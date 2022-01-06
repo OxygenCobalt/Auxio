@@ -129,7 +129,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         // --- SYSTEM SETUP ---
 
-        audioReactor = AudioReactor(this, player)
+        audioReactor = AudioReactor(this)
         widgets = WidgetController(this)
 
         // Set up the media button callbacks
@@ -210,7 +210,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
-            Player.STATE_READY -> startPollingPosition()
+            Player.STATE_READY -> startPolling()
 
             Player.STATE_ENDED -> {
                 if (playbackManager.loopMode == LoopMode.TRACK) {
@@ -247,9 +247,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                         val metadata = info.trackGroup.getFormat(i).metadata
 
                         if (metadata != null) {
+                            audioReactor.applyReplayGain(metadata)
                             consumed = true
-                            player.volume = calculateReplayGain(metadata)
-                            logD("Applied ReplayGain adjustment: ${player.volume}")
                         }
 
                         break
@@ -262,8 +261,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         if (!consumed) {
             // Sadly we couldn't parse any ReplayGain tags. Revert to normal volume.
-            player.volume = 1f
-            logD("No parsable ReplayGain tags, returning volume to 1.")
+            audioReactor.applyReplayGain(null)
         }
     }
 
@@ -294,7 +292,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         if (isPlaying && !player.isPlaying) {
             player.play()
             audioReactor.requestFocus()
-            startPollingPosition()
+            startPolling()
         } else {
             player.pause()
         }
@@ -400,17 +398,21 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     /**
      * Start polling the position on a coroutine.
      */
-    private fun startPollingPosition() {
+    private fun startPolling() {
+        data class Poll(val pos: Long, val multiplier: Float)
+
         val pollFlow = flow {
             while (true) {
-                emit(player.currentPosition)
+                emit(Poll(player.currentPosition, audioReactor.volume))
                 delay(POS_POLL_INTERVAL)
             }
         }.conflate()
 
         serviceScope.launch {
-            pollFlow.takeWhile { player.isPlaying }.collect { pos ->
-                playbackManager.setPosition(pos)
+            pollFlow.takeWhile { player.isPlaying }.collect { poll ->
+                playbackManager.setPosition(poll.pos)
+                player.volume = audioReactor.volume
+                logD(player.volume)
             }
         }
     }
@@ -542,10 +544,5 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
         const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"
         const val ACTION_EXIT = BuildConfig.APPLICATION_ID + ".action.EXIT"
-
-        const val RG_TRACK = "REPLAYGAIN_TRACK_GAIN"
-        const val RG_ALBUM = "REPLAYGAIN_ALBUM_GAIN"
-        const val R128_TRACK = "R128_TRACK_GAIN"
-        const val R128_ALBUM = "R128_ALBUM_GAIN"
     }
 }
