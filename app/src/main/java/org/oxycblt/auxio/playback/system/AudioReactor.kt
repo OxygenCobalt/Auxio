@@ -46,6 +46,8 @@ class AudioReactor(
         .setOnAudioFocusChangeListener(this)
         .build()
 
+    private var previousVolume = player.volume
+
     private var pauseWasTransient = false
 
     /**
@@ -105,19 +107,17 @@ class AudioReactor(
     }
 
     private fun onDuck() {
-        logD("Ducking, lowering volume")
-
+        previousVolume = player.volume
         player.volume = VOLUME_DUCK
+        logD("Ducked volume to ${player.volume} [previous: $previousVolume]")
     }
 
     private fun unduck() {
-        logD("Unducking, raising volume")
-
-        player.volume = VOLUME_FULL
+        player.volume = previousVolume
+        logD("Unducked volume to ${player.volume}")
     }
 
     companion object {
         private const val VOLUME_DUCK = 0.2f
-        private const val VOLUME_FULL = 1.0f
     }
 }

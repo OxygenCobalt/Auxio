@@ -238,6 +238,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
         super.onTracksInfoChanged(tracksInfo)
 
+        var consumed = false
+
         for (info in tracksInfo.trackGroupInfos) {
             if (info.isSelected) {
                 for (i in 0 until info.trackGroup.length) {
@@ -245,6 +247,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                         val metadata = info.trackGroup.getFormat(i).metadata
 
                         if (metadata != null) {
+                            consumed = true
                             player.volume = calculateReplayGain(metadata)
                             logD("Applied ReplayGain adjustment: ${player.volume}")
                         }
@@ -255,6 +258,12 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
                 break
             }
+        }
+
+        if (!consumed) {
+            // Sadly we couldn't parse any ReplayGain tags. Revert to normal volume.
+            player.volume = 1f
+            logD("No parsable ReplayGain tags, returning volume to 1.")
         }
     }
 
