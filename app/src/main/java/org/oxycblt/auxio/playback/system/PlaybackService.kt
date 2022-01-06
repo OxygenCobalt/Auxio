@@ -46,7 +46,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
@@ -412,7 +411,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             pollFlow.takeWhile { player.isPlaying }.collect { poll ->
                 playbackManager.setPosition(poll.pos)
                 player.volume = audioReactor.volume
-                logD(player.volume)
             }
         }
     }

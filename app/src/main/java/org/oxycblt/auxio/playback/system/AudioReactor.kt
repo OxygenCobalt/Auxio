@@ -34,8 +34,7 @@ import org.oxycblt.auxio.util.logD
 import kotlin.math.pow
 
 /**
- * Object that manages the AudioFocus state.
- * Adapted from NewPipe (https://github.com/TeamNewPipe/NewPipe)
+ * Manages the current volume and playback state across ReplayGain and AudioFocus events.
  * @author OxygenCobalt
  */
 class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
@@ -76,8 +75,8 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
 
         val gain = parseReplayGain(metadata)
 
-        // Currently we consider both the album and the track gain. One might want to add
-        // configuration to handle more cases.
+        // Currently we consider both the album and the track gain.
+        // TODO: Add configuration here
         var adjust = 0f
 
         if (gain != null) {
@@ -107,12 +106,12 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
             val entry = metadata.get(i)
 
             // Sometimes the ReplayGain keys will be lowercase, so make them uppercase.
-            if (entry is TextInformationFrame && entry.description?.uppercase() in replayGainTags) {
+            if (entry is TextInformationFrame && entry.description?.uppercase() in REPLAY_GAIN_TAGS) {
                 tags.add(GainTag(entry.description!!.uppercase(), parseReplayGainFloat(entry.value)))
                 continue
             }
 
-            if (entry is VorbisComment && entry.key.uppercase() in replayGainTags) {
+            if (entry is VorbisComment && entry.key.uppercase() in REPLAY_GAIN_TAGS) {
                 tags.add(GainTag(entry.key.uppercase(), parseReplayGainFloat(entry.value)))
             }
         }
@@ -228,7 +227,7 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
         const val R128_TRACK = "R128_TRACK_GAIN"
         const val R128_ALBUM = "R128_ALBUM_GAIN"
 
-        val replayGainTags = arrayOf(
+        val REPLAY_GAIN_TAGS = arrayOf(
             RG_TRACK,
             RG_ALBUM,
             R128_ALBUM,

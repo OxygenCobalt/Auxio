@@ -27,6 +27,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.MusicParent
@@ -172,7 +173,7 @@ class PlaybackNotification private constructor(
     }
 
     companion object {
-        const val CHANNEL_ID = "CHANNEL_AUXIO_PLAYBACK"
+        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK"
         const val NOTIFICATION_ID = 0xA0A0
 
         /**

@@ -4,7 +4,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "31.0.0"
 
     defaultConfig {
@@ -13,7 +13,7 @@ android {
         versionCode 10
 
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
 
         buildFeatures {
             dataBinding true
@@ -86,7 +86,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
 
     // Media
-    // TODO: Migrate to Media3
+    // TODO: Dumpster this for Media3
     implementation "androidx.media:media:1.4.3"
 
     // Preferences
@@ -98,7 +98,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:2.16.1"
 
     // Image loading
-    implementation 'io.coil-kt:coil:2.0.0-alpha05'
+    implementation 'io.coil-kt:coil:2.0.0-alpha06'
 
     // Material
     implementation 'com.google.android.material:material:1.5.0-rc01'
