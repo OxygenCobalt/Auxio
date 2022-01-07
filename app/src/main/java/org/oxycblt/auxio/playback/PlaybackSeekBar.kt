@@ -29,6 +29,7 @@ import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
+import kotlin.math.max
 
 /**
  * A custom view that bundles together a seekbar with a current duration and a total duration.
@@ -67,7 +68,7 @@ class PlaybackSeekBar @JvmOverloads constructor(
     }
 
     fun setDuration(seconds: Long) {
-        binding.seekBar.valueTo = seconds.toFloat()
+        binding.seekBar.valueTo = max(seconds.toFloat(), 1f)
         binding.playbackSongDuration.text = seconds.toDuration()
     }
 
