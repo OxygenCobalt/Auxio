@@ -126,9 +126,13 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             false
         )
 
+        audioReactor = AudioReactor(this) { volume ->
+            logD("Updating player volume to $volume")
+            player.volume = volume
+        }
+
         // --- SYSTEM SETUP ---
 
-        audioReactor = AudioReactor(this)
         widgets = WidgetController(this)
 
         // Set up the media button callbacks
@@ -402,19 +406,16 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
      * Start polling the position on a coroutine.
      */
     private fun startPolling() {
-        data class Poll(val pos: Long, val multiplier: Float)
-
         val pollFlow = flow {
             while (true) {
-                emit(Poll(player.currentPosition, audioReactor.volume))
+                emit(player.currentPosition)
                 delay(POS_POLL_INTERVAL)
             }
         }.conflate()
 
         serviceScope.launch {
-            pollFlow.takeWhile { player.isPlaying }.collect { poll ->
-                playbackManager.setPosition(poll.pos)
-                player.volume = audioReactor.volume
+            pollFlow.takeWhile { player.isPlaying }.collect { pos ->
+                playbackManager.setPosition(pos)
             }
         }
     }

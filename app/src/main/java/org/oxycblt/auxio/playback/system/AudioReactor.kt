@@ -37,7 +37,10 @@ import kotlin.math.pow
  * Manages the current volume and playback state across ReplayGain and AudioFocus events.
  * @author OxygenCobalt
  */
-class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
+class AudioReactor(
+    context: Context,
+    private val callback: (Float) -> Unit
+) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
     private data class Gain(val track: Float, val album: Float)
 
     private val playbackManager = PlaybackStateManager.maybeGetInstance()
@@ -55,12 +58,19 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener, 
         .setOnAudioFocusChangeListener(this)
         .build()
 
-    private var multiplier = 1f
     private var pauseWasTransient = false
+    private var multiplier = 1f
+        set(value) {
+            field = value
+            callback(volume)
+        }
 
-    var volume = 0f
+    private var volume = 0f
         get() = field * multiplier
-        private set
+        set(value) {
+            field = value
+            callback(volume)
+        }
 
     init {
         settingsManager.addCallback(this)
