@@ -42,25 +42,25 @@ enum class LoopMode {
      */
     fun toInt(): Int {
         return when (this) {
-            NONE -> CONST_NONE
-            ALL -> CONST_ALL
-            TRACK -> CONST_TRACK
+            NONE -> INT_NONE
+            ALL -> INT_ALL
+            TRACK -> INT_TRACK
         }
     }
 
     companion object {
-        private const val CONST_NONE = 0xA100
-        private const val CONST_ALL = 0xA101
-        private const val CONST_TRACK = 0xA102
+        private const val INT_NONE = 0xA100
+        private const val INT_ALL = 0xA101
+        private const val INT_TRACK = 0xA102
 
         /**
          * Convert an int [constant] into a LoopMode, or null if it isnt valid.
          */
         fun fromInt(constant: Int): LoopMode? {
             return when (constant) {
-                CONST_NONE -> NONE
-                CONST_ALL -> ALL
-                CONST_TRACK -> TRACK
+                INT_NONE -> NONE
+                INT_ALL -> ALL
+                INT_TRACK -> TRACK
 
                 else -> null
             }

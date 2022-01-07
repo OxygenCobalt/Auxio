@@ -47,11 +47,11 @@ enum class DisplayMode {
     }
 
     companion object {
-        private const val CONST_NULL = 0xA107
-        private const val CONST_SHOW_GENRES = 0xA108
-        private const val CONST_SHOW_ARTISTS = 0xA109
-        private const val CONST_SHOW_ALBUMS = 0xA10A
-        private const val CONST_SHOW_SONGS = 0xA10B
+        private const val INT_NULL = 0xA107
+        private const val INT_SHOW_GENRES = 0xA108
+        private const val INT_SHOW_ARTISTS = 0xA109
+        private const val INT_SHOW_ALBUMS = 0xA10A
+        private const val INT_SHOW_SONGS = 0xA10B
 
         /**
          * Convert this enum into an integer for filtering.
@@ -60,11 +60,11 @@ enum class DisplayMode {
          */
         fun toFilterInt(value: DisplayMode?): Int {
             return when (value) {
-                SHOW_SONGS -> CONST_SHOW_SONGS
-                SHOW_ALBUMS -> CONST_SHOW_ALBUMS
-                SHOW_ARTISTS -> CONST_SHOW_ARTISTS
-                SHOW_GENRES -> CONST_SHOW_GENRES
-                null -> CONST_NULL
+                SHOW_SONGS -> INT_SHOW_SONGS
+                SHOW_ALBUMS -> INT_SHOW_ALBUMS
+                SHOW_ARTISTS -> INT_SHOW_ARTISTS
+                SHOW_GENRES -> INT_SHOW_GENRES
+                null -> INT_NULL
             }
         }
 
@@ -75,10 +75,10 @@ enum class DisplayMode {
          */
         fun fromFilterInt(value: Int): DisplayMode? {
             return when (value) {
-                CONST_SHOW_SONGS -> SHOW_SONGS
-                CONST_SHOW_ALBUMS -> SHOW_ALBUMS
-                CONST_SHOW_ARTISTS -> SHOW_ARTISTS
-                CONST_SHOW_GENRES -> SHOW_GENRES
+                INT_SHOW_SONGS -> SHOW_SONGS
+                INT_SHOW_ALBUMS -> SHOW_ALBUMS
+                INT_SHOW_ARTISTS -> SHOW_ARTISTS
+                INT_SHOW_GENRES -> SHOW_GENRES
                 else -> null
             }
         }

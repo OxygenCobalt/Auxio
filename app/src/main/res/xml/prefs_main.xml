@@ -7,7 +7,7 @@
         <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/theme_auto"
             app:isPreferenceVisible="@bool/enable_theme_settings"
-            app:entries="@array/entires_theme"
+            app:entries="@array/entries_theme"
             app:entryValues="@array/values_theme"
             app:icon="@drawable/ic_day"
             app:iconSpaceReserved="false"
@@ -86,12 +86,20 @@
             app:title="@string/set_focus" />
 
         <SwitchPreferenceCompat
-            app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PLUG_MGT"
             app:summary="@string/set_plug_mgt_desc"
             app:title="@string/set_plug_mgt" />
+
+        <org.oxycblt.auxio.settings.pref.IntListPreference
+            app:defaultValue="@integer/replay_gain_off"
+            app:key="auxio_replay_gain"
+            app:allowDividerBelow="false"
+            app:iconSpaceReserved="false"
+            app:entries="@array/entries_replay_gain"
+            app:entryValues="@array/values_replay_gain"
+            app:title="@string/set_replay_gain" />
 
     </PreferenceCategory>
 

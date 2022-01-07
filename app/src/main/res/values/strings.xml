@@ -85,6 +85,10 @@
     <string name="set_focus_desc">Pause when other audio plays [ex. Calls]</string>
     <string name="set_plug_mgt">Headset focus</string>
     <string name="set_plug_mgt_desc">Play/Pause when the headset connection changes</string>
+    <string name="set_replay_gain">ReplayGain (MP3/FLAC Only)</string>
+    <string name="set_replay_gain_off">Off</string>
+    <string name="set_replay_gain_track">Prefer track</string>
+    <string name="set_replay_gain_album">Prefer album</string>
 
     <string name="set_behavior">Behavior</string>
     <string name="set_song_mode">When a song is selected</string>

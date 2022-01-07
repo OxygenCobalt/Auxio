@@ -353,6 +353,10 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         }
     }
 
+    override fun onReplayGainUpdate(mode: ReplayGainMode) {
+        onTracksInfoChanged(player.currentTracksInfo)
+    }
+
     // --- OTHER FUNCTIONS ---
 
     /**

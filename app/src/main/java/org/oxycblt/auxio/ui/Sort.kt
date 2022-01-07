@@ -163,10 +163,10 @@ sealed class Sort(open val isAscending: Boolean) {
      */
     fun toInt(): Int {
         return when (this) {
-            is ByName -> CONST_NAME
-            is ByArtist -> CONST_ARTIST
-            is ByAlbum -> CONST_ALBUM
-            is ByYear -> CONST_YEAR
+            is ByName -> INT_NAME
+            is ByArtist -> INT_ARTIST
+            is ByAlbum -> INT_ALBUM
+            is ByYear -> INT_YEAR
         }.shl(1) or if (isAscending) 1 else 0
     }
 
@@ -202,10 +202,10 @@ sealed class Sort(open val isAscending: Boolean) {
     }
 
     companion object {
-        private const val CONST_NAME = 0xA10C
-        private const val CONST_ARTIST = 0xA10D
-        private const val CONST_ALBUM = 0xA10E
-        private const val CONST_YEAR = 0xA10F
+        private const val INT_NAME = 0xA10C
+        private const val INT_ARTIST = 0xA10D
+        private const val INT_ALBUM = 0xA10E
+        private const val INT_YEAR = 0xA10F
 
         /**
          * Convert a sort's integer representation into a [Sort] instance.
@@ -216,10 +216,10 @@ sealed class Sort(open val isAscending: Boolean) {
             val ascending = (value and 1) == 1
 
             return when (value.shr(1)) {
-                CONST_NAME -> ByName(ascending)
-                CONST_ARTIST -> ByArtist(ascending)
-                CONST_ALBUM -> ByAlbum(ascending)
-                CONST_YEAR -> ByYear(ascending)
+                INT_NAME -> ByName(ascending)
+                INT_ARTIST -> ByArtist(ascending)
+                INT_ALBUM -> ByAlbum(ascending)
+                INT_YEAR -> ByYear(ascending)
                 else -> null
             }
         }

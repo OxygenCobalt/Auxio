@@ -198,6 +198,10 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA10D | Sort.Artist
 0xA10E | Sort.Album
 0xA10F | Sort.Year
+
+0xA110 | ReplayGainMode.OFF
+0xA111 | ReplayGainMode.TRACK
+0xA112 | ReplayGainMode.ALBUM
 ```
 
 Some datatypes [like `Tab` and `Sort`] have even more fine-grained integer representations for other data. More information can be found in

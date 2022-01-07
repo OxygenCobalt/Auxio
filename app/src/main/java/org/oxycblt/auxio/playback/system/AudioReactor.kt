@@ -37,7 +37,7 @@ import kotlin.math.pow
  * Manages the current volume and playback state across ReplayGain and AudioFocus events.
  * @author OxygenCobalt
  */
-class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
+class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
     private data class Gain(val track: Float, val album: Float)
 
     private val playbackManager = PlaybackStateManager.maybeGetInstance()
@@ -62,13 +62,24 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
         get() = field * multiplier
         private set
 
+    init {
+        settingsManager.addCallback(this)
+    }
+
+    /**
+     * Request the android system for audio focus
+     */
+    fun requestFocus() {
+        AudioManagerCompat.requestAudioFocus(audioManager, request)
+    }
+
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags.
      * This is based off Vanilla Music's implementation.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (metadata == null) {
-            logD("No parsable ReplayGain tags, returning volume to 1.")
+        if (settingsManager.replayGainMode == ReplayGainMode.OFF || metadata == null) {
+            logD("ReplayGain is disabled or cannot be determined for this track, resetting volume.")
             volume = 1f
             return
         }
@@ -76,14 +87,14 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
         val gain = parseReplayGain(metadata)
 
         // Currently we consider both the album and the track gain.
-        // TODO: Add configuration here
         var adjust = 0f
 
         if (gain != null) {
-            adjust = if (gain.album != 0f) {
-                gain.album
+            // Allow the user to configure a preferred mode for ReplayGain.
+            adjust = if (settingsManager.replayGainMode == ReplayGainMode.TRACK) {
+                if (gain.track != 0f) gain.track else gain.album
             } else {
-                gain.track
+                if (gain.album != 0f) gain.album else gain.track
             }
         }
 
@@ -156,18 +167,14 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
     }
 
     /**
-     * Request the android system for audio focus
-     */
-    fun requestFocus() {
-        AudioManagerCompat.requestAudioFocus(audioManager, request)
-    }
-
-    /**
      * Abandon the current focus request, functionally "Destroying it".
      */
     fun release() {
         AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
+        settingsManager.removeCallback(this)
     }
+
+    // --- INTERNAL AUDIO FOCUS ---
 
     override fun onAudioFocusChange(focusChange: Int) {
         if (!settingsManager.doAudioFocus) {
@@ -217,6 +224,14 @@ class AudioReactor(context: Context) : AudioManager.OnAudioFocusChangeListener {
     private fun unduck() {
         multiplier = 1f
         logD("Unducked volume, now $volume")
+    }
+
+    // --- SETTINGS MANAGEMENT ---
+
+    override fun onAudioFocusUpdate(focus: Boolean) {
+        if (!focus) {
+            onGain()
+        }
     }
 
     companion object {

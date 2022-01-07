@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.playback.system.ReplayGainMode
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 
@@ -101,6 +102,11 @@ class SettingsManager private constructor(context: Context) :
     /** Whether to resume/stop playback when a headset is connected/disconnected. */
     val doPlugMgt: Boolean
         get() = sharedPrefs.getBoolean(KEY_PLUG_MANAGEMENT, true)
+
+    /** The current ReplayGain configuration */
+    val replayGainMode: ReplayGainMode
+        get() = ReplayGainMode.fromInt(sharedPrefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
+            ?: ReplayGainMode.OFF
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
@@ -236,6 +242,14 @@ class SettingsManager private constructor(context: Context) :
             KEY_LIB_TABS -> callbacks.forEach {
                 it.onLibTabsUpdate(libTabs)
             }
+
+            KEY_AUDIO_FOCUS -> callbacks.forEach {
+                it.onAudioFocusUpdate(doAudioFocus)
+            }
+
+            KEY_REPLAY_GAIN -> callbacks.forEach {
+                it.onReplayGainUpdate(replayGainMode)
+            }
         }
     }
 
@@ -250,6 +264,8 @@ class SettingsManager private constructor(context: Context) :
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
+        fun onAudioFocusUpdate(focus: Boolean) {}
+        fun onReplayGainUpdate(mode: ReplayGainMode) {}
     }
 
     companion object {
@@ -267,6 +283,7 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
+        const val KEY_REPLAY_GAIN = "auxio_replay_gain"
 
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"

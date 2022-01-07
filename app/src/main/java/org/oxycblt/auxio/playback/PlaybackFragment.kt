@@ -81,7 +81,6 @@ class PlaybackFragment : Fragment() {
             setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_queue) {
                     findNavController().navigate(MainFragmentDirections.actionShowQueue())
-
                     true
                 } else {
                     false
