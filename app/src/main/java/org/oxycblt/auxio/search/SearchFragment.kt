@@ -55,6 +55,9 @@ class SearchFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
+    private var launchedKeyboard = false
+    private var mustScrollUp = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -103,15 +106,20 @@ class SearchFragment : Fragment() {
 
         binding.searchEditText.apply {
             addTextChangedListener { text ->
+                mustScrollUp = true
                 // Run the search with the updated text as the query
                 searchModel.search(text?.toString() ?: "")
             }
 
-            // Auto-open the keyboard when this view is shown
-            requestFocus()
+            if (!launchedKeyboard) {
+                // Auto-open the keyboard when this view is shown
+                requestFocus()
 
-            postDelayed(200) {
-                imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                postDelayed(200) {
+                    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                }
+
+                launchedKeyboard = true
             }
         }
 
@@ -127,7 +135,9 @@ class SearchFragment : Fragment() {
 
         searchModel.searchResults.observe(viewLifecycleOwner) { results ->
             searchAdapter.submitList(results) {
-                // We've just scrolled back to the top, reset the lifted state
+                // I would make it so that the position is only scrolled back to the top when
+                // the query actually changes instead of one every re-creation event, but sadly
+                // that doesn't seem possible.
                 binding.searchRecycler.scrollToPosition(0)
             }
 

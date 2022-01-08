@@ -4,7 +4,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
     buildToolsVersion "31.0.0"
 
     defaultConfig {
@@ -13,7 +13,7 @@ android {
         versionCode 10
 
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 31
 
         buildFeatures {
             dataBinding true
