@@ -32,6 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/lbl_playback"
+            tools:subtitle="@string/lbl_all_songs"
             app:menu="@menu/menu_playback" />
 
         <ImageView

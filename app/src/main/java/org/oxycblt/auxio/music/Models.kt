@@ -84,7 +84,7 @@ data class Song(
     val album: Album get() = requireNotNull(mAlbum)
 
     val seconds: Long get() = duration / 1000
-    val formattedDuration: String get() = (duration / 1000).toDuration(false)
+    val formattedDuration: String get() = seconds.toDuration(false)
 
     override val hash: Long get() {
         var result = name.hashCode().toLong()
