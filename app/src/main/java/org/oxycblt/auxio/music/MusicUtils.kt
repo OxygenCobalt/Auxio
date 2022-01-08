@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.DateUtils
@@ -109,8 +110,14 @@ fun Long.toAlbumArtURI(): Uri {
 
 /**
  * Convert a [Long] of seconds into a string duration.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then
+ * --:-- will be returned if the second value is 0.
  */
-fun Long.toDuration(): String {
+fun Long.toDuration(isElapsed: Boolean): String {
+    if (!isElapsed && this == 0L) {
+        return "--:--"
+    }
+
     var durationString = DateUtils.formatElapsedTime(this)
 
     // If the duration begins with a excess zero [e.g 01:42], then cut it off.
@@ -119,6 +126,14 @@ fun Long.toDuration(): String {
     }
 
     return durationString
+}
+
+fun Int.toDate(context: Context): String {
+    return if (this == 0) {
+        context.getString(R.string.def_date)
+    } else {
+        toString()
+    }
 }
 
 // --- BINDING ADAPTERS ---

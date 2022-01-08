@@ -29,7 +29,6 @@ import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
-import kotlin.math.max
 
 /**
  * A custom view that bundles together a seekbar with a current duration and a total duration.
@@ -63,13 +62,29 @@ class PlaybackSeekBar @JvmOverloads constructor(
         // Don't update the progress while we are seeking, that will make the SeekBar jump around.
         if (!isSeeking) {
             binding.seekBar.value = seconds.toFloat()
-            binding.playbackDurationCurrent.text = seconds.toDuration()
+            binding.playbackDurationCurrent.text = seconds.toDuration(true)
         }
     }
 
     fun setDuration(seconds: Long) {
-        binding.seekBar.valueTo = max(seconds.toFloat(), 1f)
-        binding.playbackSongDuration.text = seconds.toDuration()
+        if (seconds == 0L) {
+            // One of two things occured:
+            // - Android couldn't get the total duration of the song
+            // - The duration of the song was so low as to be rounded to zero when converted
+            // to seconds.
+            // In either of these cases, the seekbar is more or less useless. Disable it.
+            binding.seekBar.apply {
+                valueTo = 1f
+                isEnabled = false
+            }
+        } else {
+            binding.seekBar.apply {
+                valueTo = seconds.toFloat()
+                isEnabled = true
+            }
+        }
+
+        binding.playbackSongDuration.text = seconds.toDuration(false)
     }
 
     override fun onStartTrackingTouch(slider: Slider) {
@@ -85,7 +100,7 @@ class PlaybackSeekBar @JvmOverloads constructor(
         if (fromUser) {
             // Don't actually seek yet when the user moves the progress bar, as to make our
             // player seek during every movement is both inefficient and weird.
-            binding.playbackDurationCurrent.text = value.toLong().toDuration()
+            binding.playbackDurationCurrent.text = value.toLong().toDuration(true)
         }
     }
 }

@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
@@ -73,7 +74,7 @@ class AlbumListFragment : HomeListFragment() {
                     .first().uppercase()
 
                 // Year -> Use Full Year
-                is Sort.ByYear -> album.year.toString()
+                is Sort.ByYear -> album.year.toDate(requireContext())
 
                 // Unsupported sort, error gracefully
                 else -> ""

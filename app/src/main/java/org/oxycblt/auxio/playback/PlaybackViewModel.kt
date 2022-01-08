@@ -333,14 +333,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state.")
 
-        mSong.value = playbackManager.song
-        mPosition.value = playbackManager.position / 1000
-        mParent.value = playbackManager.parent
-        mNextUp.value = playbackManager.queue
-        mMode.value = playbackManager.playbackMode
-        mIsPlaying.value = playbackManager.isPlaying
-        mIsShuffling.value = playbackManager.isShuffling
-        mLoopMode.value = playbackManager.loopMode
+        onSongUpdate(playbackManager.song)
+        onPositionUpdate(playbackManager.position)
+        onParentUpdate(playbackManager.parent)
+        onQueueUpdate(playbackManager.queue, playbackManager.index)
+        onModeUpdate(playbackManager.playbackMode)
+        onPlayingUpdate(playbackManager.isPlaying)
+        onShuffleUpdate(playbackManager.isShuffling)
+        onLoopUpdate(playbackManager.loopMode)
     }
 
     // --- OVERRIDES ---

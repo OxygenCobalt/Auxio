@@ -99,6 +99,8 @@ class PlaybackStateManager private constructor() {
     val position: Long get() = mPosition
     /** The current queue determined by [parent] and [playbackMode] */
     val queue: List<Song> get() = mQueue
+    /** The current position in the queue */
+    val index: Int get() = mIndex
     /** The current [PlaybackMode] */
     val playbackMode: PlaybackMode get() = mPlaybackMode
     /** Whether playback is paused or not */

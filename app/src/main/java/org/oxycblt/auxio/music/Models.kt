@@ -84,7 +84,7 @@ data class Song(
     val album: Album get() = requireNotNull(mAlbum)
 
     val seconds: Long get() = duration / 1000
-    val formattedDuration: String get() = (duration / 1000).toDuration()
+    val formattedDuration: String get() = (duration / 1000).toDuration(false)
 
     override val hash: Long get() {
         var result = name.hashCode().toLong()
@@ -129,7 +129,7 @@ data class Album(
     val artist: Artist get() = requireNotNull(mArtist)
 
     val totalDuration: String get() =
-        songs.sumOf { it.seconds }.toDuration()
+        songs.sumOf { it.seconds }.toDuration(false)
 
     fun linkArtist(artist: Artist) {
         mArtist = artist
@@ -190,7 +190,7 @@ data class Genre(
     val songs: List<Song> get() = mSongs
 
     val totalDuration: String get() =
-        songs.sumOf { it.seconds }.toDuration()
+        songs.sumOf { it.seconds }.toDuration(false)
 
     fun linkSong(song: Song) {
         mSongs.add(song)

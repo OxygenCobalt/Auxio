@@ -31,6 +31,7 @@ import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
@@ -154,7 +155,7 @@ class AlbumDetailAdapter(
 
             binding.detailInfo.text = binding.detailInfo.context.getString(
                 R.string.fmt_three,
-                data.year.toString(),
+                data.year.toDate(binding.detailInfo.context),
                 binding.detailInfo.context.getPlural(
                     R.plurals.fmt_song_count,
                     data.songs.size
