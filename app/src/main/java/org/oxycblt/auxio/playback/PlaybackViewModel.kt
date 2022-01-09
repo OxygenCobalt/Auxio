@@ -80,7 +80,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The current [PlaybackMode] that also determines the queue */
     val playbackMode: LiveData<PlaybackMode> get() = mMode
 
-    private val playbackManager = PlaybackStateManager.maybeGetInstance()
+    private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     init {

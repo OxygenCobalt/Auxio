@@ -40,7 +40,7 @@ import kotlin.math.min
  * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.system.PlaybackService].
  *
- * All access should be done with [PlaybackStateManager.maybeGetInstance].
+ * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
@@ -522,7 +522,6 @@ class PlaybackStateManager private constructor() {
                 )
             )
 
-            // TODO: Re-add state saving
             database.writeQueue(mQueue)
 
             this@PlaybackStateManager.logD(
@@ -643,7 +642,7 @@ class PlaybackStateManager private constructor() {
         /**
          * Get/Instantiate the single instance of [PlaybackStateManager].
          */
-        fun maybeGetInstance(): PlaybackStateManager {
+        fun getInstance(): PlaybackStateManager {
             val currentInstance = INSTANCE
 
             if (currentInstance != null) {

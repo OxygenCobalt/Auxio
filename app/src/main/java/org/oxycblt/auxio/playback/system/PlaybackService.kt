@@ -46,8 +46,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
@@ -74,7 +75,6 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * @author OxygenCobalt
  */
 class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
-
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
@@ -90,7 +90,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     private val systemReceiver = SystemEventReceiver()
 
     // Managers
-    private val playbackManager = PlaybackStateManager.maybeGetInstance()
+    private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     // State

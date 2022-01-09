@@ -43,7 +43,7 @@ class AudioReactor(
 ) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
     private data class Gain(val track: Float, val album: Float)
 
-    private val playbackManager = PlaybackStateManager.maybeGetInstance()
+    private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
     private val audioManager = context.getSystemServiceSafe(AudioManager::class)
 
