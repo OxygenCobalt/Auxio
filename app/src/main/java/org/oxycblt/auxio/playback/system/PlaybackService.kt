@@ -39,6 +39,7 @@ import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.TracksInfo
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
+import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.mediacodec.MediaCodecSelector
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
@@ -46,9 +47,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
@@ -371,7 +371,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
-                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener)
+                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener),
+                LibflacAudioRenderer(handler, audioListener)
             )
         }
 

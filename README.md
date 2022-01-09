@@ -61,6 +61,14 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Storage (`READ_EXTERNAL_STORAGE`): to read and play your media files
 - Services (`FOREGROUND_SERVICE`, `WAKE_LOCK`): to keep the music playing even if the app itself is in background
 
+## Building
+
+Auxio relies on a local version of ExoPlayer that enables some extra features. So, the build process is as follows:
+
+1. Change into the project directory
+2. Run `python3 prebuild.py`, which installs ExoPlayer and it's extensions.
+3. Build the project normally in Android Studio.
+
 ## Contributing
 
 Auxio accepts most contributions as long as they follow the [Contribution Guidelines](/.github/CONTRIBUTING.md).

@@ -95,7 +95,8 @@ dependencies {
     // --- THIRD PARTY ---
 
     // ExoPlayer
-    implementation "com.google.android.exoplayer:exoplayer-core:2.16.1"
+    implementation project(':exoplayer-library-core')
+    implementation project(':exoplayer-extension-flac')
 
     // Image loading
     implementation 'io.coil-kt:coil:2.0.0-alpha06'
