@@ -19,7 +19,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import com.google.android.exoplayer2.metadata.xiph.PictureFrame
+import com.google.android.exoplayer2.metadata.vorbis.PictureFrame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
