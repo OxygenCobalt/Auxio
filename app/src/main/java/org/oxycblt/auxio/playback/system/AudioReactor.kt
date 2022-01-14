@@ -43,6 +43,7 @@ class AudioReactor(
     private val callback: (Float) -> Unit
 ) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
     private data class Gain(val track: Float, val album: Float)
+    private data class GainTag(val key: String, val value: Float)
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -60,6 +61,8 @@ class AudioReactor(
         .build()
 
     private var pauseWasTransient = false
+
+    // It's good to keep the volume and the ducking multiplier separate so that we can
     private var multiplier = 1f
         set(value) {
             field = value
@@ -103,17 +106,21 @@ class AudioReactor(
                 return
             }
 
-            // User wants track gain to be preferred
+            // User wants track gain to be preferred. Default to album gain only if there
+            // is no track gain.
             ReplayGainMode.TRACK ->
                 { gain ->
                     gain.track == 0f
                 }
 
+            // User wants album gain to be preferred. Default to track gain only if there
+            // is no album gain.
             ReplayGainMode.ALBUM ->
                 { gain ->
                     gain.album != 0f
                 }
 
+            // User wants album gain to be used when in an album, track gain otherwise.
             ReplayGainMode.DYNAMIC ->
                 { _ ->
                     playbackManager.parent is Album &&
@@ -131,6 +138,7 @@ class AudioReactor(
                 gain.track
             }
         } else {
+            // No gain tags were present
             0f
         }
 
@@ -140,8 +148,6 @@ class AudioReactor(
     }
 
     private fun parseReplayGain(metadata: Metadata): Gain? {
-        data class GainTag(val key: String, val value: Float)
-
         var trackGain = 0f
         var albumGain = 0f
         var found = false
@@ -213,7 +219,7 @@ class AudioReactor(
     }
 
     /**
-     * Abandon the current focus request, functionally "Destroying it".
+     * Abandon the current focus request and any callbacks
      */
     fun release() {
         AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)

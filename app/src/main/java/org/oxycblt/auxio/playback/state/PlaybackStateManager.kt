@@ -30,8 +30,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -319,7 +317,11 @@ class PlaybackStateManager private constructor() {
      * Add a [song] to the top of the queue.
      */
     fun playNext(song: Song) {
-        mQueue.add(min(mIndex + 1, max(mQueue.lastIndex, 0)), song)
+        if (mQueue.isEmpty()) {
+            return
+        }
+
+        mQueue.add(mIndex + 1, song)
         pushQueueUpdate()
     }
 
@@ -327,7 +329,11 @@ class PlaybackStateManager private constructor() {
      * Add a list of [songs] to the top of the queue.
      */
     fun playNext(songs: List<Song>) {
-        mQueue.addAll(min(mIndex + 1, max(mQueue.lastIndex, 0)), songs)
+        if (mQueue.isEmpty()) {
+            return
+        }
+
+        mQueue.addAll(mIndex + 1, songs)
         pushQueueUpdate()
     }
 
