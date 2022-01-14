@@ -33,7 +33,7 @@ def sh(cmd):
 exoplayer_path = os.path.join(os.path.abspath(os.curdir), "deps", "exoplayer")
 
 if os.path.exists(exoplayer_path):
-    reinstall = input(INFO + "info:" + NC + " ExoPlayer is already installed. Would you like to reinstall it? [y/n] ")
+    reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
 
     if not re.match("[yY][eE][sS]|[yY]", reinstall):
         sys.exit(0)
@@ -55,31 +55,31 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk_build")):
             candidates.append(entry.path)
 
     if len(candidates) > 0:
-        print(WARN + "warn:" + NC + " NDK_PATH was not set or invalid. Multiple candidates were found however:")
+        print(WARN + "warn:" + NC + " NDK_PATH was not set or invalid. multiple candidates were found however:")
 
         for i, candidate in enumerate(candidates):
             print("[" + str(i) + "] " + candidate)
 
         try:
-            ndk_path = candidates[int(input("Enter the NDK to use [Default 0]: "))]
+            ndk_path = candidates[int(input("Enter the ndk to use [Default 0]: "))]
         except:
             ndk_path = candidates[0]
     else:
-        print(FATAL + "fatal:" + NC + " NDK_PATH is either invalid, or the Android NDK was not installed at a recognized location.")
+        print(FATAL + "fatal:" + NC + " NDK_PATH is either invalid, or the android ndk was not installed at a recognized location.")
         system.exit(1)
 
 # Now try to install ExoPlayer.
 sh("rm -rf deps")
 
-print(INFO + "info:" + NC + " Cloning ExoPlayer...")
+print(INFO + "info:" + NC + " cloning ExoPlayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
 sh("git checkout release-v2")
 
 flac_ext_jni_path = os.path.join("extensions", "flac", "src", "main", "jni")
-print(INFO + "info:" + NC + " Installing FLAC extension...")
+print(INFO + "info:" + NC + " installing FLAC extension...")
 os.chdir(flac_ext_jni_path)
 sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
 sh(ndk_path + "/ndk-build APP_ABI=all -j4")
 
-print(OK + "success:" + NC + " Completed pre-build.")
+print(OK + "success:" + NC + " completed pre-build.")

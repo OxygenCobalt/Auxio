@@ -36,12 +36,14 @@
         <item>@string/set_replay_gain_off</item>
         <item>@string/set_replay_gain_track</item>
         <item>@string/set_replay_gain_album</item>
+        <item>@string/set_replay_gain_dynamic</item>
     </array>
 
     <string-array name="values_replay_gain">
         <item>@integer/replay_gain_off</item>
         <item>@integer/replay_gain_track</item>
         <item>@integer/replay_gain_album</item>
+        <item>@integer/replay_gain_dynamic</item>
     </string-array>
 
     <integer name="theme_auto">-1</integer>
@@ -56,4 +58,5 @@
     <integer name="replay_gain_off">0xA110</integer>
     <integer name="replay_gain_track">0xA111</integer>
     <integer name="replay_gain_album">0xA112</integer>
+    <integer name="replay_gain_dynamic">0xA113</integer>
 </resources>

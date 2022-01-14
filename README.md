@@ -63,9 +63,9 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 ## Building
 
-Auxio relies on a local version of ExoPlayer that enables some extra features. So, the build process is as follows:
+Auxio relies on a custom version of ExoPlayer that enables some extra features. So, the build process is as follows:
 
-1. Change into the project directory
+1. Enter into the project directory
 2. Run `python3 prebuild.py`, which installs ExoPlayer and it's extensions.
 3. Build the project normally in Android Studio.
 

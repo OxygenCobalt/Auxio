@@ -30,6 +30,19 @@ As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats
 MP4, MP3, MKA, OGG, WAV, MPEG, AAC on all versions of Android. Auxio also supports FLAC on all versions
 of Android through the use of the ExoPlayer FLAC extension.
 
+#### ReplayGain isn't working on my music!
+
+This is for a couple reason:
+- Auxio doesn't extract ReplayGain tags for your format. This is the case with MP4 files since there's no
+defined ReplayGain standard for those.
+- Auxio doesn't recognize your ReplayGain tags. This is usually because of a non-standard tag like ID3v2's `RVAD` or
+an unrecognized name.
+
+#### What is dynamic ReplayGain?
+
+Dynamic ReplayGain is a quirk based off the FooBar2000 plugin that dynamically switches from track gain to album
+gain depending on if the current playback is from an album or not.
+
 #### Why are accents lighter/less saturated in dark mode?
 
 As per the [Material Design Guidelines](https://material.io/design/color/dark-theme.html), accents should be less

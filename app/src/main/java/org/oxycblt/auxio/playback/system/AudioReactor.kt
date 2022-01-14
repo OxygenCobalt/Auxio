@@ -27,6 +27,7 @@ import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
@@ -88,30 +89,54 @@ class AudioReactor(
      * This is based off Vanilla Music's implementation.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (settingsManager.replayGainMode == ReplayGainMode.OFF || metadata == null) {
-            logD("ReplayGain is disabled or cannot be determined for this track, resetting volume.")
+        if (metadata == null) {
+            logD("No metadata.")
             volume = 1f
             return
         }
 
+        // ReplayGain is configurable, so determine what to do based off of the mode.
+        val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
+            ReplayGainMode.OFF -> {
+                logD("ReplayGain is off.")
+                volume = 1f
+                return
+            }
+
+            // User wants track gain to be preferred
+            ReplayGainMode.TRACK ->
+                { gain ->
+                    gain.track == 0f
+                }
+
+            ReplayGainMode.ALBUM ->
+                { gain ->
+                    gain.album != 0f
+                }
+
+            ReplayGainMode.DYNAMIC ->
+                { _ ->
+                    playbackManager.parent is Album &&
+                        playbackManager.song?.album == playbackManager.parent
+                }
+        }
         val gain = parseReplayGain(metadata)
 
-        // Currently we consider both the album and the track gain.
-        var adjust = 0f
-
-        if (gain != null) {
-            // Allow the user to configure a preferred mode for ReplayGain.
-            adjust = if (settingsManager.replayGainMode == ReplayGainMode.TRACK) {
-                if (gain.track != 0f) gain.track else gain.album
+        val adjust = if (gain != null) {
+            if (useAlbumGain(gain)) {
+                logD("Using album gain.")
+                gain.album
             } else {
-                if (gain.album != 0f) gain.album else gain.track
+                logD("Using track gain.")
+                gain.track
             }
+        } else {
+            0f
         }
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
         volume = MathUtils.clamp((10f.pow((adjust / 20f))), 0f, 1f)
-        logD("Applied ReplayGain adjustment: $volume")
     }
 
     private fun parseReplayGain(metadata: Metadata): Gain? {
@@ -126,14 +151,25 @@ class AudioReactor(
         for (i in 0 until metadata.length()) {
             val entry = metadata.get(i)
 
-            // Sometimes the ReplayGain keys will be lowercase, so make them uppercase.
-            if (entry is TextInformationFrame && entry.description?.uppercase() in REPLAY_GAIN_TAGS) {
-                tags.add(GainTag(entry.description!!.uppercase(), parseReplayGainFloat(entry.value)))
-                continue
+            val key: String?
+            val value: String
+
+            when (entry) {
+                is TextInformationFrame -> {
+                    key = entry.description?.uppercase()
+                    value = entry.value
+                }
+
+                is VorbisComment -> {
+                    key = entry.key
+                    value = entry.value
+                }
+
+                else -> continue
             }
 
-            if (entry is VorbisComment && entry.key.uppercase() in REPLAY_GAIN_TAGS) {
-                tags.add(GainTag(entry.key.uppercase(), parseReplayGainFloat(entry.value)))
+            if (key in REPLAY_GAIN_TAGS) {
+                tags.add(GainTag(key!!, parseReplayGainFloat(value)))
             }
         }
 
