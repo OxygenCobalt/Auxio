@@ -21,6 +21,8 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
+**This branch is the development version of the repository. For a stable version, see the master branch.**
+
 ## Screenshots
 
 <p align="center">
@@ -38,11 +40,11 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 - [ExoPlayer](https://exoplayer.dev/) based playback
 - Customizable UI & Behavior
-- Genres/Artists/Albums/Songs support
-- Intuitive queue system
+- Genres/Artists/Albums/Songs indexing
 - Reliable playback state persistence
+- ReplayGain support (On MP3, FLAC, OGG, and OPUS)
 - Material You (Android 12+ only)
-- Edge-to-edge (Android 8.1+ Only)
+- Edge-to-edge
 - Embedded covers support
 - Search Functionality
 - Audio/Headset focus

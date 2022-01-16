@@ -4,7 +4,8 @@
     <style name="Theme.Auxio" parent="Theme.Material3.DayNight.NoActionBar" />
     <!-- Template theme that handles edge-to-edge on other styles variants -->
     <style name="Theme.Auxio.V27" parent="Theme.Auxio">
-        <item name="android:statusBarColor">@android:color/black</item>
+        <item name="android:statusBarColor">@color/chrome_translucent</item>
+        <item name="android:navigationBarColor">@color/chrome_translucent</item>
     </style>
     <!-- Android 12 configuration -->
     <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27" />

@@ -54,11 +54,7 @@ class MainActivity : AppCompatActivity() {
             this, R.layout.activity_main
         )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            applyEdgeToEdgeWindow(binding)
-        } else {
-            binding.root.fitsSystemWindows = true
-        }
+        applyEdgeToEdgeWindow(binding)
 
         logD("Activity created.")
     }

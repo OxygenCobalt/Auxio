@@ -74,7 +74,7 @@ sh("rm -rf deps")
 print(INFO + "info:" + NC + " cloning ExoPlayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
-sh("git checkout release-v2")
+sh("git checkout auxio")
 
 flac_ext_jni_path = os.path.join("extensions", "flac", "src", "main", "jni")
 print(INFO + "info:" + NC + " installing FLAC extension...")

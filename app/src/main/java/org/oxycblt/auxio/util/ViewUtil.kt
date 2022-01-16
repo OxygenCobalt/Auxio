@@ -130,7 +130,7 @@ val WindowInsets.systemBarsCompat: Rect get() {
             }
         }
 
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+        else -> {
             @Suppress("DEPRECATION")
             Rect(
                 systemWindowInsetLeft,
@@ -139,8 +139,6 @@ val WindowInsets.systemBarsCompat: Rect get() {
                 systemWindowInsetBottom
             )
         }
-
-        else -> Rect(0, 0, 0, 0)
     }
 }
 
@@ -155,13 +153,11 @@ fun WindowInsets.replaceInsetsCompat(left: Int, top: Int, right: Int, bottom: In
                 .build()
         }
 
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+        else -> {
             @Suppress("DEPRECATION")
             replaceSystemWindowInsets(
                 left, top, right, bottom
             )
         }
-
-        else -> this
     }
 }

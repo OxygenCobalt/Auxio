@@ -202,10 +202,11 @@ To prevent any strange bugs, all integer representations must be unique. A table
 0xA110 | ReplayGainMode.OFF
 0xA111 | ReplayGainMode.TRACK
 0xA112 | ReplayGainMode.ALBUM
+0xA113 | ReplayGainMode.DYNAMIC
 ```
 
 Some datatypes [like `Tab` and `Sort`] have even more fine-grained integer representations for other data. More information can be found in
-the documentation for these datatypes.
+the documentation for those datatypes.
 
 ## Package-by-package rundown
 
