@@ -43,20 +43,20 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  * blacklisting relies on a deprecated method, and the supposedly "modern" method is SLOWER and
  * causes even more problems since I have to manage databases across version boundaries. Sometimes
  * music will have a deformed clone that I can't filter out, sometimes Genres will just break for no
- * reason, sometimes this spaghetti parser just completely falls apart and is unable to get any
- * metadata. Everything is broken in it's own special unique way and I absolutely hate it.
+ * reason, and sometimes tags encoded in UTF-8 will be interpreted as anything from UTF-16 to Latin-1
+ * to Shift JIS WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY
  *
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged google
  * to fix glaring issues with MediaStore or to just take the API behind the woodshed and shoot it.
- * Largely because they have zero incentive to improve it, especially for such obscure things
- * as indexing music. As a result, some players like Vanilla and VLC just hack their own pidgin
- * version of MediaStore from their own parsers, but this is both infeasible for Auxio due to how
- * incredibly slow it is to get a file handle from the android sandbox AND how much harder it is
- * to manage a database of your own media that mirrors the filesystem perfectly. And even if I set
- * aside those crippling issues and changed my indexer to that, it would face the even larger
- * problem of how google keeps trying to kill the filesystem and force you into their
- * ContentResolver API. In the future MediaStore could be the only system we have, which is also the
- * day that greenland melts and birthdays stop happening forever.
+ * Largely because they have zero incentive to improve it given how "obscure" music listening is.
+ * As a result, some players like Vanilla and VLC just hack their own pidgin version of MediaStore
+ * from their own parsers, but this is both infeasible for Auxio due to how incredibly slow it is
+ * to get a file handle from the android sandbox AND how much harder it is to manage a database of
+ * your own media that mirrors the filesystem perfectly. And even if I set aside those crippling
+ * issues and changed my indexer to that, it would face the even larger problem of how google keeps
+ * trying to kill the filesystem and force you into their ContentResolver API. In the future
+ * MediaStore could be the only system we have, which is also the day that greenland melts and
+ * birthdays stop happening forever.
  *
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
@@ -101,7 +101,7 @@ class MusicLoader {
 
         // DATA was deprecated on Android 10, but is set to be un-deprecated in Android 12L.
         // The only reason we'd want to change this is to add external partitions support, but
-        // that's less efficent and there's no demand for that right now.
+        // that's less efficient and there's no demand for that right now.
         for (path in paths) {
             selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children

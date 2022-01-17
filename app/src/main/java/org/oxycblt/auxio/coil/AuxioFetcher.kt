@@ -161,7 +161,7 @@ abstract class AuxioFetcher : Fetcher {
 
         for (i in 0 until metadata.length()) {
             // We can only extract pictures from two tags with this method, ID3v2's APIC or
-            // FLAC's PICTURE.
+            // Vorbis picture comments.
             val pic: ByteArray?
             val type: Int
 
@@ -190,7 +190,7 @@ abstract class AuxioFetcher : Fetcher {
             } else if (stream != null) {
                 // In the case a front cover is not found, use the first image in the tag instead.
                 // This can be corrected later on if a front cover frame is found.
-                logD("Image not a front cover, assigning image of type $type for now")
+                logD("No front cover image, using image of type $type instead")
 
                 stream = ByteArrayInputStream(pic)
             }

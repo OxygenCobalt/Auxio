@@ -241,30 +241,17 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
         super.onTracksInfoChanged(tracksInfo)
 
-        var consumed = false
-
         for (info in tracksInfo.trackGroupInfos) {
             if (info.isSelected) {
                 for (i in 0 until info.trackGroup.length) {
                     if (info.isTrackSelected(i)) {
-                        val metadata = info.trackGroup.getFormat(i).metadata
-
-                        if (metadata != null) {
-                            audioReactor.applyReplayGain(metadata)
-                            consumed = true
-                        }
-
+                        audioReactor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
                         break
                     }
                 }
 
                 break
             }
-        }
-
-        if (!consumed) {
-            // Sadly we couldn't parse any ReplayGain tags. Revert to normal volume.
-            audioReactor.applyReplayGain(null)
         }
     }
 

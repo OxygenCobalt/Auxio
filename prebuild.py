@@ -61,17 +61,17 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk_build")):
             print("[" + str(i) + "] " + candidate)
 
         try:
-            ndk_path = candidates[int(input("Enter the ndk to use [Default 0]: "))]
+            ndk_path = candidates[int(input("enter the ndk to use [Default 0]: "))]
         except:
             ndk_path = candidates[0]
     else:
-        print(FATAL + "fatal:" + NC + " NDK_PATH is either invalid, or the android ndk was not installed at a recognized location.")
+        print(FATAL + "fatal:" + NC + " NDK_PATH is either not set/invalid, or the android ndk was not installed at a recognized location.")
         system.exit(1)
 
 # Now try to install ExoPlayer.
 sh("rm -rf deps")
 
-print(INFO + "info:" + NC + " cloning ExoPlayer...")
+print(INFO + "info:" + NC + " cloning exoplayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
 sh("git checkout auxio")
