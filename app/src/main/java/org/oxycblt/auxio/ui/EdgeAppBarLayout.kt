@@ -30,7 +30,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state
@@ -67,7 +67,7 @@ open class EdgeAppBarLayout @JvmOverloads constructor(
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         super.onApplyWindowInsets(insets)
 
-        updatePadding(top = insets.systemBarsCompat.top)
+        updatePadding(top = insets.systemBarInsetsCompat.top)
 
         return insets
     }

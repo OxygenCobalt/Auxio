@@ -37,7 +37,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.replaceInsetsCompat
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The single [AppCompatActivity] for Auxio.
@@ -113,17 +113,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyEdgeToEdgeWindow(binding: ViewBinding) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Do modern edge to edge, which happens to be around twice the size of the
-            // old way of doing things. Thanks android, very cool!
             logD("Doing R+ edge-to-edge.")
 
             window?.setDecorFitsSystemWindows(false)
 
+            // "Should we automatically acquire the insets we need and return them
+            // whenever the user wants them?"
+            // "Nah, let's make the user define what insets they want instead through
+            // a barely-documented API that is not brought up in a single tutorial!"
+            // "Great idea!"
             binding.root.setOnApplyWindowInsetsListener { _, insets ->
                 WindowInsets.Builder()
                     .setInsets(
                         WindowInsets.Type.systemBars(),
                         insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+                    )
+                    .setInsets(
+                        WindowInsets.Type.systemGestures(),
+                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
                     )
                     .build()
                     .applyLeftRightInsets(binding)
@@ -145,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun WindowInsets.applyLeftRightInsets(binding: ViewBinding): WindowInsets {
-        val bars = systemBarsCompat
+        val bars = systemBarInsetsCompat
 
         binding.root.updatePadding(
             left = bars.left,

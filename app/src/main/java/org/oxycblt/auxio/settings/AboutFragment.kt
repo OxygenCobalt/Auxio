@@ -38,7 +38,7 @@ import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -55,7 +55,7 @@ class AboutFragment : Fragment() {
         val binding = FragmentAboutBinding.inflate(layoutInflater)
 
         binding.aboutContents.setOnApplyWindowInsetsListener { _, insets ->
-            binding.aboutContents.updatePadding(bottom = insets.systemBarsCompat.bottom)
+            binding.aboutContents.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 

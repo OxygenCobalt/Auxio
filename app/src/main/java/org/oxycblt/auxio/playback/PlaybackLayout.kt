@@ -3,10 +3,8 @@ package org.oxycblt.auxio.playback
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
-import android.graphics.Insets
 import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -26,9 +24,10 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.replaceInsetsCompat
 import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.resolveDrawable
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -169,7 +168,7 @@ class PlaybackLayout @JvmOverloads constructor(
             } catch (e: Exception) {
                 // Band-aid to stop the app crashing if we have to swap out the content view
                 // without warning (which we have to do sometimes because android is the worst
-                // thing ever
+                // thing ever)
             }
         }
     }
@@ -379,29 +378,11 @@ class PlaybackLayout @JvmOverloads constructor(
         // We kind to do a reverse-measure to figure out how we should inset this view.
         // Find how much space is lost by the panel and then combine that with the
         // bottom inset to find how much space we should apply.
-        val bars = insets.systemBarsCompat
+        val bars = insets.systemBarInsetsCompat
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
 
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                WindowInsets.Builder(insets)
-                    .setInsets(
-                        WindowInsets.Type.systemBars(),
-                        Insets.of(bars.left, bars.top, bars.right, adjustedBottomInset)
-                    )
-                    .build()
-            }
-
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-                @Suppress("DEPRECATION")
-                insets.replaceSystemWindowInsets(
-                    bars.left, bars.top, bars.right, adjustedBottomInset
-                )
-            }
-
-            else -> insets
-        }
+        return insets.replaceInsetsCompat(bars.left, bars.top, bars.right, adjustedBottomInset)
     }
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
@@ -536,8 +517,7 @@ class PlaybackLayout @JvmOverloads constructor(
     /**
      * Do the nice view animations that occur whenever we slide up the playback panel.
      * The way I transition is largely inspired by Android 12's notification panel, with the
-     * compact view fading out completely before the panel view fades in. We don't fade out the
-     * content though so we have cohesion between the other sliding transitions.
+     * compact view fading out completely before the panel view fades in.
      */
     private fun updatePanelTransition() {
         val ratio = max(panelOffset, 0f)
@@ -546,7 +526,6 @@ class PlaybackLayout @JvmOverloads constructor(
         val halfOutRatio = min(ratio / 0.5f, 1f)
         val halfInRatio = max(ratio - 0.5f, 0f) / 0.5f
 
-        // Optimize out drawing for this view completely
         contentView.apply {
             alpha = outRatio
             isInvisible = alpha == 0f
@@ -569,7 +548,7 @@ class PlaybackLayout @JvmOverloads constructor(
             // [reminder that this view also applies the bottom window inset] and we can't
             // apply padding to the whole container layout since that would adjust the size
             // of the playback view. This seems to be the least obtrusive way to do this.
-            lastInsets?.systemBarsCompat?.let { bars ->
+            lastInsets?.systemBarInsetsCompat?.let { bars ->
                 val params = layoutParams as FrameLayout.LayoutParams
                 val oldTopMargin = params.topMargin
 

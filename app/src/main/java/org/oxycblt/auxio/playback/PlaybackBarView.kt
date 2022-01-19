@@ -19,6 +19,7 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +32,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.resolveAttr
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A view displaying the playback state in a compact manner. This is only meant to be used
@@ -48,17 +49,39 @@ class PlaybackBarView @JvmOverloads constructor(
         id = R.id.playback_bar
 
         // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
-        // we use colorSecondary instead of colorSurfaceVariant. This is for two reasons:
-        // 1. colorSurfaceVariant is used with the assumption that the view that is using it
-        // is not elevated and is therefore not colored. This view is elevated.
-        // 2. The way a solid color plays along with a ripple just doesnt look that good.
+        // we use colorSecondary instead of colorSurfaceVariant. This is because
+        // colorSurfaceVariant is used with the assumption that the view that is using it is
+        // not elevated and is therefore not colored. This view is elevated.
         binding.playbackProgressBar.trackColor = MaterialColors.compositeARGBWithAlpha(
             R.attr.colorSecondary.resolveAttr(context), (255 * 0.2).toInt()
         )
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        updatePadding(bottom = insets.systemBarsCompat.bottom)
+        // Since we swipe up this view, we need to make sure it does not collide with
+        // any gesture events. So, apply the system gesture insets if present and then
+        // only default to the system bar insets when there are no other options.
+        val gesturePadding = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                insets.getInsets(WindowInsets.Type.systemGestures()).bottom
+            }
+
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                @Suppress("DEPRECATION")
+                insets.systemGestureInsets.bottom
+            }
+
+            else -> 0
+        }
+
+        updatePadding(
+            bottom =
+            if (gesturePadding != 0)
+                gesturePadding
+            else
+                insets.systemBarInsetsCompat.bottom
+        )
+
         return insets
     }
 

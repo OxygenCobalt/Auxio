@@ -34,7 +34,7 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -62,7 +62,7 @@ class PlaybackFragment : Fragment() {
         binding.detailModel = detailModel
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
-            val bars = insets.systemBarsCompat
+            val bars = insets.systemBarInsetsCompat
 
             binding.root.updatePadding(
                 top = bars.top,

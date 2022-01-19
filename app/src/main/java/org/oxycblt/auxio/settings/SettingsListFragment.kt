@@ -40,7 +40,7 @@ import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.systemBarsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -64,7 +64,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             clipToPadding = false
 
             setOnApplyWindowInsetsListener { _, insets ->
-                updatePadding(bottom = insets.systemBarsCompat.bottom)
+                updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
 
                 insets
             }
