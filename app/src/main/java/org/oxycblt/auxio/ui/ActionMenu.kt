@@ -80,6 +80,12 @@ class ActionMenu(
         }
 
         inflate(menuRes)
+
+        // Disable any queue options if we don't have anything playing.
+        val queueEnabled = playbackModel.song.value != null
+        menu.findItem(R.id.action_play_next)?.isEnabled = queueEnabled
+        menu.findItem(R.id.action_queue_add)?.isEnabled = queueEnabled
+
         setOnMenuItemClickListener { item ->
             onMenuClick(item.itemId)
             true

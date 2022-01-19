@@ -117,11 +117,10 @@ class MainActivity : AppCompatActivity() {
 
             window?.setDecorFitsSystemWindows(false)
 
-            // "Should we automatically acquire the insets we need and return them
-            // whenever the user wants them?"
-            // "Nah, let's make the user define what insets they want instead through
-            // a barely-documented API that is not brought up in a single tutorial!"
-            // "Great idea!"
+            // Instead of automatically fetching these insets and exposing them,
+            // the R+ SDK decides to make you specify the insets yourself with a barely
+            // documented API that isn't even mentioned in any of the edge-to-edge
+            // tutorials. Thanks android, very cool!
             binding.root.setOnApplyWindowInsetsListener { _, insets ->
                 WindowInsets.Builder()
                     .setInsets(
