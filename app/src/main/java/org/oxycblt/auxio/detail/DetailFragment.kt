@@ -57,19 +57,19 @@ abstract class DetailFragment : Fragment() {
     /**
      * Shortcut method for doing setup of the detail toolbar.
      * @param data Parent data to use as the toolbar title
-     * @param menu Menu resource to use
+     * @param menuId Menu resource to use
      * @param onMenuClick (Optional) a click listener for that menu
      */
     protected fun setupToolbar(
         data: MusicParent,
-        @MenuRes menu: Int = -1,
+        @MenuRes menuId: Int = -1,
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
         binding.detailToolbar.apply {
             title = data.resolvedName
 
-            if (menu != -1) {
-                inflateMenu(menu)
+            if (menuId != -1) {
+                inflateMenu(menuId)
             }
 
             setNavigationOnClickListener {

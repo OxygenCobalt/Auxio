@@ -214,8 +214,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
         val adjusted = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
+        logD("$adjusted")
 
-        if (adjusted in mNextUp.value!!.indices) {
+        if (adjusted in playbackManager.queue.indices) {
             apply()
             playbackManager.removeQueueItem(adjusted)
         }
@@ -230,7 +231,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         val from = adapterFrom + delta
         val to = adapterTo + delta
 
-        if (from in mNextUp.value!!.indices && to in mNextUp.value!!.indices) {
+        if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
             apply()
             playbackManager.moveQueueItems(from, to)
             return true

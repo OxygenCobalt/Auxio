@@ -21,7 +21,7 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 
 I primarily built Auxio for myself, but you can use it too, I guess.
 
-**This branch is the development version of the repository. For a stable version, see the master branch.**
+**The default branch is the development version of the repository. For a stable version, see the master branch.**
 
 ## Screenshots
 

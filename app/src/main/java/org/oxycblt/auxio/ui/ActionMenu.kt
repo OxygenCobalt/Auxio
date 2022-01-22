@@ -23,6 +23,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
@@ -82,9 +83,11 @@ class ActionMenu(
         inflate(menuRes)
 
         // Disable any queue options if we don't have anything playing.
-        val queueEnabled = playbackModel.song.value != null
-        menu.findItem(R.id.action_play_next)?.isEnabled = queueEnabled
-        menu.findItem(R.id.action_queue_add)?.isEnabled = queueEnabled
+        for (item in menu.children) {
+            if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
+                item.isEnabled = playbackModel.song.value != null
+            }
+        }
 
         setOnMenuItemClickListener { item ->
             onMenuClick(item.itemId)

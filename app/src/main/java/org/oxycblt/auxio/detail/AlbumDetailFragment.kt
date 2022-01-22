@@ -23,10 +23,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -43,6 +45,8 @@ import org.oxycblt.auxio.util.showToast
 /**
  * The [DetailFragment] for an album.
  * @author OxygenCobalt
+ * TODO: Disable queue adding when there is no playback here too, however make it so that
+ *  it updates when the song changes.
  */
 class AlbumDetailFragment : DetailFragment() {
     private val args: AlbumDetailFragmentArgs by navArgs()
@@ -65,12 +69,20 @@ class AlbumDetailFragment : DetailFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupToolbar(detailModel.curAlbum.value!!, R.menu.menu_album_detail) { itemId ->
-            if (itemId == R.id.action_queue_add) {
-                playbackModel.playNext(detailModel.curAlbum.value!!)
-                requireContext().showToast(R.string.lbl_queue_added)
-                true
-            } else {
-                false
+            when (itemId) {
+                R.id.action_play_next -> {
+                    playbackModel.playNext(detailModel.curAlbum.value!!)
+                    requireContext().showToast(R.string.lbl_queue_added)
+                    true
+                }
+
+                R.id.action_queue_add -> {
+                    playbackModel.addToQueue(detailModel.curAlbum.value!!)
+                    requireContext().showToast(R.string.lbl_queue_added)
+                    true
+                }
+
+                else -> false
             }
         }
 
@@ -78,6 +90,8 @@ class AlbumDetailFragment : DetailFragment() {
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Album
         }
+
+        updateQueueActions(playbackModel.song.value, binding)
 
         // -- DETAILVIEWMODEL SETUP ---
 
@@ -137,6 +151,8 @@ class AlbumDetailFragment : DetailFragment() {
         // --- PLAYBACKVIEWMODEL SETUP ---
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
+            updateQueueActions(song, binding)
+
             if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
                 playbackModel.parent.value?.id == detailModel.curAlbum.value!!.id
             ) {
@@ -150,6 +166,17 @@ class AlbumDetailFragment : DetailFragment() {
         logD("Fragment created.")
 
         return binding.root
+    }
+
+    /**
+     * Updates the queue actions when
+     */
+    private fun updateQueueActions(song: Song?, binding: FragmentDetailBinding) {
+        for (item in binding.detailToolbar.menu.children) {
+            if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
+                item.isEnabled = song != null
+            }
+        }
     }
 
     /**
