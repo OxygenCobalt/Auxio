@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
+    <string name="info_channel_name">音乐播放</string>
+    <string name="info_widget_desc">查看和控制音乐播放</string>
+	
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
     <string name="lbl_grant">授予</string>
@@ -8,60 +14,167 @@
     <string name="lbl_artists">艺术家</string>
     <string name="lbl_albums">专辑</string>
     <string name="lbl_songs">歌曲</string>
-    <string name="lbl_all_songs">歌曲</string>
+    <string name="lbl_all_songs">全部歌曲</string>
 
     <string name="lbl_search">搜索</string>
     <string name="lbl_filter">过滤器</string>
     <string name="lbl_filter_all">全部</string>
 
     <string name="lbl_sort">排序方式</string>
-    <string name="lbl_sort_asc">按首字符（正序）</string>
+    <string name="lbl_sort_name">名称</string>
+    <string name="lbl_sort_artist">艺术家</string>
+    <string name="lbl_sort_album">专辑/string>
+    <string name="lbl_sort_year">年份</string>
+    <string name="lbl_sort_asc">首字符（正序）</string>
 
+    <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
-    <string name="lbl_shuffle">随机播放</string>
-    <string name="lbl_playback">正在播放界面</string>
+    <string name="lbl_shuffle">随机</string>
+    <string name="lbl_play_all">从全部歌曲开始播放</string>
+    <string name="lbl_play_album">从专辑开始播放</string>
+    <string name="lbl_play_artist">从艺术家开始播放</string>
+    <string name="lbl_play_genre">从流派开始播放</string>
 
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
-    <string name="lbl_queue_added">此歌曲已加入播放队列</string>
+    <string name="lbl_queue_added">已加入播放队列</string>
 
     <string name="lbl_go_artist">查看艺术家</string>
     <string name="lbl_go_album">查看专辑</string>
 
+    <string name="lbl_state_saved">已保存播放进度</string>
+
+    <string name="lbl_add">添加</string>
+    <string name="lbl_save">保存</string>
+    <string name="lbl_no_dirs">没有任何文件夹</string>
+	
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
-    <string name="lbl_code">在GitHub上查看</string>
-    <string name="lbl_licenses">第三方许可</string>
-
+    <string name="lbl_code">在 Github 上查看</string>
+    <string name="lbl_faq">FAQ</string>
+    <string name="lbl_licenses">许可证</string>
+    <string name="lbl_author">由 OxygenCobalt 开发</string>
+	
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">设置</string>
-
     <string name="set_ui">外观</string>
     <string name="set_theme">主题</string>
+    <string name="set_theme_auto">自动</string>
     <string name="set_theme_day">浅色</string>
-    <string name="set_theme_night">暗黑</string>
+    <string name="set_theme_night">深色</string>
+    <string name="set_accent">色彩方案</string>
+    <string name="set_black_mode">黑色主题</string>
+    <string name="set_black_mode_desc">使用纯黑配色主题</string>
 
-    <string name="set_quality_covers">忽略媒体储存中的专辑封面</string>
+    <string name="set_display">显示</string>
+    <string name="set_lib_tabs">媒体库标签</string>
+    <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
+    <string name="set_show_covers">显示专辑封面</string>
+    <string name="set_show_covers_desc">关闭以节省内存使用</string>
+    <string name="set_quality_covers">忽略 MediaStore 封面</string>
+    <string name="set_quality_covers_desc">提升专辑封面质量，但需要更长的加载时间并消耗更多内存</string>
+    <string name="set_round_covers">专辑封面圆角</string>
+    <string name="set_round_covers_desc">使用圆角设计的专辑封面</string>
+    <string name="set_alt_action">使用替代通知操作方案</string>
+    <string name="set_alt_loop">偏好重复播放操作</string>
+    <string name="set_alt_shuffle">偏好随机播放操作</string>
 
     <string name="set_audio">音频</string>
+    <string name="set_focus">音频焦点</string>
+    <string name="set_focus_desc">有其它音频播放（比如电话）时暂停</string>
+    <string name="set_plug_mgt">设备焦点</string>
+    <string name="set_plug_mgt_desc">设备连接状态改变时播放/暂停</string>
+    <string name="set_replay_gain">回放增益</string>
+    <string name="set_replay_gain_off">关</string>
+    <string name="set_replay_gain_track">偏好曲目</string>
+    <string name="set_replay_gain_album">偏好专辑</string>
+    <string name="set_replay_gain_dynamic">动态</string>
 
     <string name="set_behavior">行为</string>
+    <string name="set_song_mode">选中歌曲时</string>
+    <string name="set_keep_shuffle">记住随机模式</string>
+    <string name="set_keep_shuffle_desc">播放新曲目时保留随机播放模式</string>
+    <string name="set_rewind_prev">切换上一曲前先倒带</string>
+    <string name="set_rewind_prev_desc">切换至上一首歌曲前先进行倒带</string>
+    <string name="set_loop_pause">重复播放前暂停</string>
+    <string name="set_loop_pause_desc">曲目重复播放前暂停</string>
+
+    <string name="set_content">内容</string>
+    <string name="set_save">保存播放状态</string>
+    <string name="set_save_desc">立即保存当前播放状态</string>
+    <string name="set_excluded">排除文件夹</string>
+    <string name="set_excluded_desc">被排除文件夹的内容将从媒体库中隐藏</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="err_no_music">没有找到音乐</string>
+    <string name="err_load_failed">加载音乐失败</string>
+    <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
+    <string name="err_no_app">没有可以打开该链接的应用</string>
+    <string name="err_bad_dir">该目录不受支持</string>
+    <string name="err_too_small">Auxio 不支持该窗口尺寸</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">正在扫描…</string>
+    <string name="hint_search_library">在曲库中搜索…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
-    <string name="desc_track_number">音轨 %d</string>
+    <string name="desc_track_number">第 %d 首曲目</string>
 
-    <string name="desc_play_pause">播放/暂停</string>
+    <string name="desc_play_pause">播放或暂停</string>
+    <string name="desc_skip_next">切换到下一首歌</string>
+    <string name="desc_skip_prev">切换到上一首歌</string>
+    <string name="desc_change_loop">更改重复播放模式</string>
+    <string name="desc_shuffle">开启或关闭随机播放模式</string>
+    <string name="desc_shuffle_all">随机播放所有曲目</string>
+
+    <string name="desc_clear_queue_item">移除队列曲目</string>
+    <string name="desc_queue_handle">移动队列曲目</string>
+    <string name="desc_tab_handle">移动该标签</string>
+    <string name="desc_clear_search">清除搜索队列</string>
+    <string name="desc_blacklist_delete">移除排除路径</string>
+
+    <string name="desc_auxio_icon">Auxio 图标</string>
+    <string name="desc_no_cover">专辑封面</string>
+    <string name="desc_album_cover">%s 的专辑封面</string>
+    <string name="desc_artist_image">%s 的艺术家图像</string>
+    <string name="desc_genre_image">%s 的流派图像</string>
+
+    <!-- Default Namespace | Placeholder values -->
+    <string name="def_artist">未知艺术家</string>
+    <string name="def_genre">未知流派</string>
+    <string name="def_date">没有日期</string>
+    <string name="def_playback">未播放音乐</string>
+    <string name="def_widget_song">歌曲名称</string>
+    <string name="def_widget_artist">艺术家姓名</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="clr_red">红色</string>
+    <string name="clr_pink">粉色</string>
+    <string name="clr_purple">紫色</string>
+    <string name="clr_deep_purple">深紫色</string>
+    <string name="clr_indigo">靛蓝色</string>
+    <string name="clr_blue">蓝色</string>
+    <string name="clr_deep_blue">深蓝色</string>
+    <string name="clr_cyan">青色</string>
+    <string name="clr_teal">青绿色</string>
+    <string name="clr_green">绿色</string>
+    <string name="clr_deep_green">深绿色</string>
+    <string name="clr_lime">Lime</string>
+    <string name="clr_yellow">黄色</string>
+    <string name="clr_orange">橙色</string>
+    <string name="clr_brown">棕色</string>
+    <string name="clr_grey">灰色</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
+    <string name="fmt_songs_loaded">已加载 %d 首曲目</string>
+
     <plurals name="fmt_song_count">
-        <item quantity="other">%d 歌曲</item>
+        <item quantity="one">%d 首歌曲</item>
+        <item quantity="other">%d 首歌曲</item>
     </plurals>
 
     <plurals name="fmt_album_count">
-        <item quantity="other">%d 专辑</item>
+        <item quantity="one">%d 张专辑</item>
+        <item quantity="other">%d 张专辑</item>
     </plurals>
 </resources>
