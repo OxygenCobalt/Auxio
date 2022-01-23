@@ -56,6 +56,18 @@
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher" />
 
+        <!--
+        Workaround to get apps that search for media apps by checking for a BroadcastReceiver
+        to detect Auxio, as we let the media APIs handle this.
+        -->
+        <receiver android:name="androidx.media.session.MediaButtonReceiver"
+            android:label="Auxio"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"
