@@ -34,7 +34,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.util.logD
 import kotlin.math.min
 
 /**
@@ -82,11 +81,8 @@ class ArtistImageFetcher private constructor(
             .sortAlbums(artist.albums)
 
         val results = albums.mapAtMost(4) { album ->
-            logD("${artist.name} ${album.name}")
             fetchArt(context, album)
         }
-
-        logD("OK: ${artist.name}")
 
         return createMosaic(context, results, size)
     }

@@ -30,6 +30,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -102,8 +103,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     // --- SERVICE OVERRIDES ---
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        logD("Service is active.")
-
+        // Since this service exposes a media button intent, pass it off to the
+        // MediaSession if the intent really is an instance of one.
+        MediaButtonReceiver.handleIntent(mediaSession, intent)
         return START_NOT_STICKY
     }
 

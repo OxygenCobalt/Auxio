@@ -50,23 +50,28 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".playback.system.PlaybackService"
-            android:foregroundServiceType="mediaPlayback"
-            android:icon="@mipmap/ic_launcher"
-            android:roundIcon="@mipmap/ic_launcher" />
-
-        <!--
-        Workaround to get apps that search for media apps by checking for a BroadcastReceiver
-        to detect Auxio, as we let the media APIs handle this.
-        -->
-        <receiver android:name="androidx.media.session.MediaButtonReceiver"
-            android:label="Auxio"
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".playback.system.PlaybackService"
+            android:foregroundServiceType="mediaPlayback"
+            android:icon="@mipmap/ic_launcher"
+            android:exported="true"
+            android:roundIcon="@mipmap/ic_launcher">
+            <!--
+            Workaround to get apps that search for media apps by checking for a BroadcastReceiver
+            to detect Auxio, as we let the media APIs handle this.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name=".widgets.WidgetProvider"
