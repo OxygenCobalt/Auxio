@@ -50,10 +50,14 @@ abstract class AuxioFetcher : Fetcher {
             return null
         }
 
-        return if (settingsManager.useQualityCovers) {
-            fetchQualityCovers(context, album)
-        } else {
-            fetchMediaStoreCovers(context, album)
+        return try {
+            if (settingsManager.useQualityCovers) {
+                fetchQualityCovers(context, album)
+            } else {
+                fetchMediaStoreCovers(context, album)
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -205,7 +209,7 @@ abstract class AuxioFetcher : Fetcher {
      */
     protected fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
         if (streams.size < 4) {
-            return streams.getOrNull(0)?.let { stream ->
+            return streams.firstOrNull()?.let { stream ->
                 return SourceResult(
                     source = ImageSource(stream.source().buffer(), context),
                     mimeType = null,
