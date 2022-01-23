@@ -20,7 +20,7 @@
             app:key="auxio_accent"
             app:title="@string/set_accent" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
@@ -40,14 +40,14 @@
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_SHOW_COVERS"
             app:summary="@string/set_show_covers_desc"
             app:title="@string/set_show_covers" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="false"
             app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
@@ -55,7 +55,7 @@
             app:summary="@string/set_quality_covers_desc"
             app:title="@string/set_quality_covers" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="false"
             app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
@@ -63,7 +63,7 @@
             app:summary="@string/set_round_covers_desc"
             app:title="@string/set_round_covers" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
@@ -78,14 +78,14 @@
         app:layout="@layout/item_header"
         app:title="@string/set_audio">
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_AUDIO_FOCUS"
             app:summary="@string/set_focus_desc"
             app:title="@string/set_focus" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_PLUG_MGT"
@@ -116,14 +116,14 @@
             app:title="@string/set_song_mode"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_KEEP_SHUFFLE"
             app:summary="@string/set_keep_shuffle_desc"
             app:title="@string/set_keep_shuffle" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
@@ -131,7 +131,7 @@
             app:summary="@string/set_rewind_prev_desc"
             app:title="@string/set_rewind_prev" />
 
-        <SwitchPreferenceCompat
+        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
