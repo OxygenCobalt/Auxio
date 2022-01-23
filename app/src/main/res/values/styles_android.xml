@@ -16,7 +16,7 @@
 
     <!-- Custom dialog title theme -->
     <style name="Widget.Auxio.Dialog.TextView" parent="MaterialAlertDialog.Material3.Title.Text">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleLarge</item>
     </style>
 
     <!-- The style for the checked text view in the custom dialog -->
@@ -39,7 +39,7 @@
 
     <!-- Widget TextView that mimics the main Auxio Primary TextView -->
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
     </style>
 

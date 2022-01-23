@@ -18,7 +18,6 @@
 
 package org.oxycblt.auxio.music
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -202,11 +201,10 @@ data class Genre(
 
 /**
  * A data object used solely for the "Header" UI element.
- * @see HeaderString
  */
 data class Header(
     override val id: Long,
-    val string: HeaderString
+    @StringRes val string: Int
 ) : BaseModel()
 
 /**
@@ -215,7 +213,7 @@ data class Header(
  */
 data class ActionHeader(
     override val id: Long,
-    val string: HeaderString,
+    @StringRes val string: Int,
     @DrawableRes val icon: Int,
     @StringRes val desc: Int,
     val onClick: (View) -> Unit,
@@ -241,79 +239,5 @@ data class ActionHeader(
         result = 31 * result + desc
 
         return result
-    }
-}
-
-/**
- * The string used for a header instance. This class is a bit complex, mostly because it revolves
- * around passing string resources that are then resolved by the view. This is because ViewModel
- * instance should preferably not have access to a Context but should still generate data,
- * which at times can include [Header] instances that require string resources.
- * @author OxygenCobalt
- */
-sealed class HeaderString {
-    /** A single string resource. */
-    class Single(@StringRes val id: Int) : HeaderString()
-    /** A string resource with an argument. */
-    class WithArg(@StringRes val id: Int, val arg: Arg) : HeaderString()
-
-    /**
-     * Resolve this instance into a string.
-     */
-    fun resolve(context: Context): String {
-        return when (this) {
-            is Single -> context.getString(id)
-            is WithArg -> context.getString(id, arg.resolve(context))
-        }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return false
-
-        return when (this) {
-            is Single -> other is Single && other.id == id
-            is WithArg -> other is WithArg && other.id == id && other.arg == arg
-        }
-    }
-
-    override fun hashCode(): Int {
-        return when (this) {
-            is Single -> id.hashCode()
-            is WithArg -> 31 * id.hashCode() * arg.hashCode()
-        }
-    }
-
-    /**
-     * An argument for the [WithArg] header string.
-     */
-    sealed class Arg {
-        /** A string resource to be used as the argument */
-        class Resource(@StringRes val id: Int) : Arg()
-        /** A string value to be used as the argument */
-        class Value(val string: String) : Arg()
-
-        /** Resolve this argument instance into a string. */
-        fun resolve(context: Context): String {
-            return when (this) {
-                is Resource -> context.getString(id)
-                is Value -> string
-            }
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return false
-
-            return when (this) {
-                is Resource -> other is Resource && other.id == id
-                is Value -> other is Value && other.string == this.string
-            }
-        }
-
-        override fun hashCode(): Int {
-            return when (this) {
-                is Resource -> id.hashCode()
-                is Value -> 31 * string.hashCode()
-            }
-        }
     }
 }

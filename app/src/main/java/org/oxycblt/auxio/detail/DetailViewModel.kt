@@ -29,7 +29,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -160,7 +159,7 @@ class DetailViewModel : ViewModel() {
         data.add(
             ActionHeader(
                 id = -2,
-                string = HeaderString.Single(R.string.lbl_songs),
+                string = R.string.lbl_songs,
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->
@@ -182,7 +181,7 @@ class DetailViewModel : ViewModel() {
         data.add(
             Header(
                 id = -2,
-                string = HeaderString.Single(R.string.lbl_albums)
+                string = R.string.lbl_albums
             )
         )
 
@@ -191,7 +190,7 @@ class DetailViewModel : ViewModel() {
         data.add(
             ActionHeader(
                 id = -3,
-                string = HeaderString.Single(R.string.lbl_songs),
+                string = R.string.lbl_songs,
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->
@@ -212,7 +211,7 @@ class DetailViewModel : ViewModel() {
         data.add(
             ActionHeader(
                 id = -2,
-                string = HeaderString.Single(R.string.lbl_songs),
+                string = R.string.lbl_songs,
                 icon = R.drawable.ic_sort,
                 desc = R.string.lbl_sort,
                 onClick = { view ->

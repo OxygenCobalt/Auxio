@@ -24,7 +24,6 @@
             style="@style/Widget.Auxio.TextView.Detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_semibold"
             android:layout_marginStart="@dimen/spacing_medium"
             android:ellipsize="end"
             android:maxLines="1"

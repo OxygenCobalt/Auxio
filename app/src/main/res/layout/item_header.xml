@@ -20,7 +20,7 @@
             style="@style/Widget.Auxio.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{header.string.resolve(context)}"
+            android:text="@{context.getString(header.string)}"
             app:layout_constraintBottom_toTopOf="@id/header_divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

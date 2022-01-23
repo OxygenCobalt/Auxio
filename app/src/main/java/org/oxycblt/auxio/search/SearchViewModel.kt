@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.HeaderString
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
@@ -85,28 +84,28 @@ class SearchViewModel : ViewModel() {
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->
-                    results.add(Header(-1, HeaderString.Single(R.string.lbl_artists)))
+                    results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.sortParents(artists))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
-                    results.add(Header(-2, HeaderString.Single(R.string.lbl_albums)))
+                    results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.sortAlbums(albums))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
-                    results.add(Header(-3, HeaderString.Single(R.string.lbl_genres)))
+                    results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.sortParents(genres))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
-                    results.add(Header(-4, HeaderString.Single(R.string.lbl_songs)))
+                    results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.sortSongs(songs))
                 }
             }

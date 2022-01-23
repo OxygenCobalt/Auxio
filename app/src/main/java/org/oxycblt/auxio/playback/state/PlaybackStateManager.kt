@@ -284,7 +284,6 @@ class PlaybackStateManager private constructor() {
 
         if (index > mQueue.size || index < 0) {
             logE("Index is out of bounds, did not remove queue item.")
-
             return false
         }
 
@@ -301,7 +300,6 @@ class PlaybackStateManager private constructor() {
     fun moveQueueItems(from: Int, to: Int): Boolean {
         if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
-
             return false
         }
 
