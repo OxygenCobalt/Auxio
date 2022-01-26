@@ -30,7 +30,7 @@ def sh(cmd):
         print(FATAL + "fatal:" + NC + " command failed with exit code " + str(code))
         sys.exit(1)
         
-exoplayer_path = os.path.join(os.path.abspath(os.curdir), "deps", "exoplayer")
+exoplayer_path = os.path.join(os.path.abspath(os.curdir), "srclibs", "exoplayer")
 
 if os.path.exists(exoplayer_path):
     reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
@@ -69,7 +69,7 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk_build")):
         system.exit(1)
 
 # Now try to install ExoPlayer.
-sh("rm -rf deps")
+sh("rm -rf srclibs")
 
 print(INFO + "info:" + NC + " cloning exoplayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)

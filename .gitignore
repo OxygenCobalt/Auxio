@@ -3,7 +3,7 @@
 local.properties
 build/
 release/
-deps/
+srclibs/
 
 # Studio
 .idea/

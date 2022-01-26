@@ -73,7 +73,7 @@
     <string name="set_focus_desc">Pausieren wenn andere Töne abspielt wird [Bsp. Anrufe]</string>
     <string name="set_plug_mgt">Kopfhörerfokus</string>
     <string name="set_plug_mgt_desc">Abspielen/Pausieren wenn sich die Kopfhörerverbindung ändert</string>
-    <string name="set_replay_gain">ReplayGain (Nur MP3/FLAC)</string>
+    <string name="set_replay_gain">ReplayGain (Experimentell)</string>
     <string name="set_replay_gain_off">Aus</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>

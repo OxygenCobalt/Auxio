@@ -71,7 +71,6 @@ class SearchViewModel : ViewModel() {
 
         if (query.isEmpty() || musicStore == null) {
             mSearchResults.value = listOf()
-
             return
         }
 
@@ -80,7 +79,7 @@ class SearchViewModel : ViewModel() {
             val sort = Sort.ByName(true)
             val results = mutableListOf<BaseModel>()
 
-            // A filter mode of null means to not filter at all.
+            // Note: a filter mode of null means to not filter at all.
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->

@@ -144,6 +144,8 @@ class AudioReactor(
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
+        // TODO: Support positive ReplayGain values. They're more obscure but still exist.
+        //  It will likely require moving functionality from this class to an AudioProcessor
         volume = MathUtils.clamp((10f.pow((adjust / 20f))), 0f, 1f)
     }
 
@@ -191,8 +193,10 @@ class AudioReactor(
         }
 
         // Case 2: R128 ReplayGain, most commonly found on FLAC files.
-        // While technically there is the R128 base gain in Opus files, ExoPlayer doesn't
-        // have metadata parsing functionality for those, so we just ignore it.
+        // While technically there is the R128 base gain in Opus files, that is automatically
+        // applied by the media framework [which ExoPlayer relies on]. The only reason we would
+        // want to read it is to zero previous ReplayGain values for being invalid, however there
+        // is no demand to fix that edge case right now.
         tags.findLast { tag -> tag.key == R128_TRACK }?.let { tag ->
             trackGain += tag.value / 256f
             found = true

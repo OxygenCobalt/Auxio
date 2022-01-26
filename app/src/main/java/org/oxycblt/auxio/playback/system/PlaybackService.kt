@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.system
 
 import android.app.NotificationManager
 import android.app.Service
-import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -88,7 +87,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     // System backend components
     private lateinit var audioReactor: AudioReactor
     private lateinit var widgets: WidgetController
-    private val systemReceiver = SystemEventReceiver()
+    private val systemReceiver = PlaybackReceiver()
 
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
@@ -102,10 +101,13 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     // --- SERVICE OVERRIDES ---
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // Since this service exposes a media button intent, pass it off to the
-        // MediaSession if the intent really is an instance of one.
-        MediaButtonReceiver.handleIntent(mediaSession, intent)
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
+            // Workaround to get GadgetBridge and other apps that blindly query for
+            // ACTION_MEDIA_BUTTON working.
+            MediaButtonReceiver.handleIntent(mediaSession, intent)
+        }
+
         return START_NOT_STICKY
     }
 
@@ -146,18 +148,16 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         // Then the notif/headset callbacks
         IntentFilter().apply {
+            addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
+            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            addAction(AudioManager.ACTION_HEADSET_PLUG)
+
             addAction(ACTION_LOOP)
             addAction(ACTION_SHUFFLE)
             addAction(ACTION_SKIP_PREV)
             addAction(ACTION_PLAY_PAUSE)
             addAction(ACTION_SKIP_NEXT)
             addAction(ACTION_EXIT)
-
-            addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
-            addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
-            addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-            addAction(Intent.ACTION_HEADSET_PLUG)
-
             addAction(WidgetProvider.ACTION_WIDGET_UPDATE)
 
             registerReceiver(systemReceiver, this)
@@ -449,15 +449,29 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     }
 
     /**
-     * A [BroadcastReceiver] for receiving system events from notifications, widgets, or
-     * headset plug events.
+     * A [BroadcastReceiver] for receiving general playback events from the system.
      */
-    private inner class SystemEventReceiver : BroadcastReceiver() {
+    private inner class PlaybackReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
+                // --- SYSTEM EVENTS ---
+                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
+                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
+                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
+                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
+                    }
+                }
 
-                // --- NOTIFICATION CASES ---
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
+                AudioManager.ACTION_HEADSET_PLUG -> {
+                    when (intent.getIntExtra("state", -1)) {
+                        0 -> resumeFromPlug()
+                        1 -> pauseFromPlug()
+                    }
+                }
+
+                // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
                     !playbackManager.isPlaying
                 )
@@ -478,57 +492,41 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                     stopForegroundAndNotification()
                 }
 
-                // --- HEADSET CASES ---
-
-                BluetoothDevice.ACTION_ACL_CONNECTED -> resumeFromPlug()
-                BluetoothDevice.ACTION_ACL_DISCONNECTED -> pauseFromPlug()
-
-                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
-                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
-                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
-                    }
-                }
-
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
-
-                Intent.ACTION_HEADSET_PLUG -> {
-                    when (intent.getIntExtra("state", -1)) {
-                        CONNECTED -> resumeFromPlug()
-                        DISCONNECTED -> pauseFromPlug()
-                    }
-                }
-
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
-            }
-        }
 
-        /**
-         * Resume from a headset plug event, as long as its allowed.
-         */
-        private fun resumeFromPlug() {
-            if (playbackManager.song != null && settingsManager.doPlugMgt) {
-                logD("Device connected, resuming...")
-
-                playbackManager.setPlaying(true)
-            }
-        }
-
-        /**
-         * Pause from a headset plug, as long as its allowed.
-         */
-        private fun pauseFromPlug() {
-            if (playbackManager.song != null && settingsManager.doPlugMgt) {
-                logD("Device disconnected, pausing...")
-
-                playbackManager.setPlaying(false)
+                else -> handleSystemIntent(intent)
             }
         }
     }
 
+    private fun handleSystemIntent(intent: Intent) {
+        when (intent.action) {
+
+            Intent.ACTION_MEDIA_BUTTON -> MediaButtonReceiver.handleIntent(mediaSession, intent)
+        }
+    }
+
+    /**
+     * Resume from a headset plug event, as long as its allowed.
+     */
+    private fun resumeFromPlug() {
+        if (playbackManager.song != null && settingsManager.doPlugMgt) {
+            logD("Device connected, resuming...")
+            playbackManager.setPlaying(true)
+        }
+    }
+
+    /**
+     * Pause from a headset plug, as long as its allowed.
+     */
+    private fun pauseFromPlug() {
+        if (playbackManager.song != null && settingsManager.doPlugMgt) {
+            logD("Device disconnected, pausing...")
+            playbackManager.setPlaying(false)
+        }
+    }
+
     companion object {
-        private const val DISCONNECTED = 0
-        private const val CONNECTED = 1
         private const val POS_POLL_INTERVAL = 500L
 
         const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"

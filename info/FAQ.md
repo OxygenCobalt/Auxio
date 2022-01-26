@@ -37,10 +37,12 @@ This is for a couple reason:
 defined ReplayGain standard for those.
 - Auxio doesn't recognize your ReplayGain tags. This is usually because of a non-standard tag like ID3v2's `RVAD` or
 an unrecognized name.
+- Your tags use a ReplayGain value higher than 0. Due to technical limitations, Auxio does not support this right now. 
+I do plan to add it eventually.
 
 #### What is dynamic ReplayGain?
 
-Dynamic ReplayGain is a quirk based off the FooBar2000 plugin that dynamically switches from track gain to album
+Dynamic ReplayGain is a quirk setting based off the FooBar2000 plugin that dynamically switches from track gain to album
 gain depending on if the current playback is from an album or not.
 
 #### Why are accents lighter/less saturated in dark mode?
