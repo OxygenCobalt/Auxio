@@ -107,9 +107,9 @@ class AlbumDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
-        if (song == currentSong) return // Already highlighting this viewholder
+        if (song == currentSong) return // Already highlighting this ViewHolder
 
-        // Clear the current viewholder since it's invalid
+        // Clear the current ViewHolder since it's invalid
         currentHolder?.setHighlighted(false)
         currentHolder = null
         currentSong = song

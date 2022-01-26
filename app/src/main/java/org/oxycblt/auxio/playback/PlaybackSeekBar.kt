@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.playback
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
@@ -36,6 +37,7 @@ import org.oxycblt.auxio.util.resolveAttr
  * still not having gobs of whitespace everywhere.
  * @author OxygenCobalt
  */
+@SuppressLint("RestrictedApi")
 class PlaybackSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -68,7 +70,7 @@ class PlaybackSeekBar @JvmOverloads constructor(
 
     fun setDuration(seconds: Long) {
         if (seconds == 0L) {
-            // One of two things occured:
+            // One of two things occurred:
             // - Android couldn't get the total duration of the song
             // - The duration of the song was so low as to be rounded to zero when converted
             // to seconds.

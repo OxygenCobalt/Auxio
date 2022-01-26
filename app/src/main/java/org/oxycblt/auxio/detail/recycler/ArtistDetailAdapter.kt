@@ -125,7 +125,7 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightAlbum(album: Album?, recycler: RecyclerView) {
-        if (album == currentAlbum) return // Already highlighting this viewholder
+        if (album == currentAlbum) return // Already highlighting this ViewHolder
 
         // Album is no longer valid, clear out this ViewHolder.
         currentAlbumHolder?.setHighlighted(false)
@@ -154,16 +154,16 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
-        if (song == currentSong) return // Already highlighting this viewholder
+        if (song == currentSong) return // Already highlighting this ViewHolder
 
-        // Clear the current viewholder since it's invalid
+        // Clear the current ViewHolder since it's invalid
         currentSongHolder?.setHighlighted(false)
         currentSongHolder = null
         currentSong = song
 
         if (song != null) {
             // Use existing data instead of having to re-sort it.
-            // We also have to account for the album count when searching for the viewholder
+            // We also have to account for the album count when searching for the ViewHolder.
             val pos = currentList.indexOfFirst { item ->
                 item.id == song.id && item is Song
             }

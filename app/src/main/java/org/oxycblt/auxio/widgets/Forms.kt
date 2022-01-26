@@ -179,7 +179,7 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
     )
 
     // While it is technically possible to use the setColorFilter to tint these buttons, its
-    // actually less efficent than using duplicate drawables.
+    // actually less efficient than using duplicate drawables.
     // And no, we can't control state drawables with RemoteViews. Because of course we can't.
 
     val shuffleRes = when {

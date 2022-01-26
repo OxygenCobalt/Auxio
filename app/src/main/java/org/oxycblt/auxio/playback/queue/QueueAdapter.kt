@@ -73,7 +73,7 @@ class QueueAdapter(
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
 
-            else -> error("Invalid viewholder item type $viewType.")
+            else -> error("Invalid ViewHolder item type $viewType.")
         }
     }
 

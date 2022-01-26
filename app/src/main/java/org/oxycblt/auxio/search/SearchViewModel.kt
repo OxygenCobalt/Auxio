@@ -152,7 +152,7 @@ class SearchViewModel : ViewModel() {
                 name.normalized().contains(value, ignoreCase = true)
         }
 
-        return if (filtered.isNotEmpty()) filtered else null
+        return filtered.ifEmpty { null }
     }
 
     private fun String.normalized(): String {

@@ -39,7 +39,7 @@ class SettingsManager private constructor(context: Context) :
     private val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
-        // Poke the song playback mode pref so that it migrates [if it hasnt already]
+        // Poke the song playback mode pref so that it migrates [if it hasn't already]
         handleSongPlayModeCompat(sharedPrefs)
 
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)

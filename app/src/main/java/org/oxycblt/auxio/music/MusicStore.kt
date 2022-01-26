@@ -96,7 +96,7 @@ class MusicStore private constructor() {
 
     /**
      * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content uri.
-     * @return The corresponding [Song] for this [uri], null if there isnt one.
+     * @return The corresponding [Song] for this [uri], null if there isn't one.
      */
     fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
         val cur = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)

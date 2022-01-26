@@ -86,11 +86,11 @@
 
     <plurals name="fmt_song_count">
         <item quantity="one">%s Titre</item>
-        <item quantity="other">%s Titres</item>
+        <item quantity="many">%s Titres</item>
     </plurals>
 
     <plurals name="fmt_album_count">
         <item quantity="one">%s Album</item>
-        <item quantity="other">%s Albums</item>
+        <item quantity="many">%s Albums</item>
     </plurals>
 </resources>

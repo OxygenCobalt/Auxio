@@ -54,7 +54,7 @@ enum class LoopMode {
         private const val INT_TRACK = 0xA102
 
         /**
-         * Convert an int [constant] into a LoopMode, or null if it isnt valid.
+         * Convert an int [constant] into a LoopMode, or null if it isn't valid.
          */
         fun fromInt(constant: Int): LoopMode? {
             return when (constant) {

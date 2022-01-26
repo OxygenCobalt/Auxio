@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         startService(Intent(this, PlaybackService::class.java))
 
-        // onNewIntent doesnt automatically call on startup, so call it here.
+        // onNewIntent doesn't automatically call on startup, so call it here.
         onNewIntent(intent)
     }
 

@@ -153,7 +153,7 @@ class PlaybackStateManager private constructor() {
             PlaybackMode.IN_GENRE -> {
                 val genre = song.genre
 
-                // Dont do this if the genre is null
+                // Don't do this if the genre is null
                 if (genre != null) {
                     mParent = genre
                     mQueue = genre.songs.toMutableList()
@@ -366,7 +366,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Set whether this instance is [shuffled]. Updates the queue accordingly.
-     * @param keepSong Whether the current song should be kept as the queue is shuffled/unshuffled
+     * @param keepSong Whether the current song should be kept as the queue is shuffled/un-shuffled
      */
     fun setShuffling(shuffled: Boolean, keepSong: Boolean) {
         mIsShuffling = shuffled
@@ -403,7 +403,7 @@ class PlaybackStateManager private constructor() {
 
     /**
      * Reset the queue to its normal, ordered state.
-     * @param keepSong Whether the current song should be kept as the queue is unshuffled
+     * @param keepSong Whether the current song should be kept as the queue is un-shuffled
      */
     private fun resetShuffle(keepSong: Boolean) {
         val musicStore = MusicStore.maybeGetInstance() ?: return

@@ -64,7 +64,7 @@ class ActionMenu(
 ) : PopupMenu(activity, anchor) {
     private val context = activity.applicationContext
 
-    // Get viewmodels using the activity as the store owner
+    // Get ViewModels using the activity as the store owner
     private val detailModel: DetailViewModel by lazy {
         ViewModelProvider(activity)[DetailViewModel::class.java]
     }

@@ -63,7 +63,7 @@ class TabCustomizeDialog : LifecycleDialog() {
             getTabs = { pendingTabs },
             onTabSwitch = { tab ->
                 // Don't find the specific tab [Which might be outdated due to the nature
-                // of how viewholders are bound], but instead simply look for the mode in
+                // of how ViewHolders are bound], but instead simply look for the mode in
                 // the list of pending tabs and update that instead.
                 val index = pendingTabs.indexOfFirst { it.mode == tab.mode }
 

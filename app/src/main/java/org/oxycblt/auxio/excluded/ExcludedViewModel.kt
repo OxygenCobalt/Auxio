@@ -49,7 +49,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     }
 
     /**
-     * Add a path to this viewmodel. It will not write the path to the database unless
+     * Add a path to this ViewModel. It will not write the path to the database unless
      * [save] is called.
      */
     fun addPath(path: String) {
@@ -60,7 +60,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     }
 
     /**
-     * Remove a path from this viewmodel, it will not remove this path from the database unless
+     * Remove a path from this ViewModel, it will not remove this path from the database unless
      * [save] is called.
      */
     fun removePath(path: String) {

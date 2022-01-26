@@ -14,6 +14,13 @@
 
     <queries />
 
+    <!--
+    Note: We have to simultaneously define the fullBackupContent and dataExtractionRules
+    fields, as there is no way to make version-specific manifests. This should be okay,
+    as devices before Android 12 should just use fullBackupContent and devices beyond it
+    should use dataExtractionRules.
+    -->
+
     <application
         android:name=".AuxioApp"
         android:allowBackup="true"
@@ -22,7 +29,9 @@
         android:label="@string/info_app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Auxio.App">
+        android:theme="@style/Theme.Auxio.App"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:ignore="UnusedAttribute">
 
         <activity
             android:name=".MainActivity"
@@ -51,7 +60,7 @@
         </activity>
 
         <!--
-        Workaround to get apps that blindly query for apps handling media buttons working
+        Workaround to get apps that blindly query for ACTION_MEDIA_BUTTON working
         -->
         <receiver
             android:name=".playback.system.MediaButtonReceiver"

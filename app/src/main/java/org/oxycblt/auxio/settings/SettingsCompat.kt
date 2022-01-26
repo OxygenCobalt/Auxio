@@ -69,7 +69,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
             accent = 16
         }
 
-        // If there are still any issues with indices, just correct them so a crash doesnt occur.
+        // If there are still any issues with indices, just correct them so a crash doesn't occur.
         if (accent >= ACCENT_COUNT) {
             accent = ACCENT_COUNT - 1
         }

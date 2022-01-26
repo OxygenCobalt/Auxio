@@ -105,7 +105,7 @@ class ExcludedDialog : LifecycleDialog() {
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder.setTitle(R.string.set_excluded)
 
-        // Dont set the click listener here, we do some custom black magic in onCreateView instead.
+        // Don't set the click listener here, we do some custom black magic in onCreateView instead.
         builder.setNeutralButton(R.string.lbl_add, null)
         builder.setPositiveButton(R.string.lbl_save, null)
         builder.setNegativeButton(android.R.string.cancel, null)
@@ -136,9 +136,9 @@ class ExcludedDialog : LifecycleDialog() {
         // Turn it into a semi-usable path
         val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
 
-        // Only the main drive is supported, since thats all we can get from MediaColumns.DATA
-        // Unless I change the system to use the drive/directory system, but thats limited to
-        // Android 10
+        // Only the main drive is supported, since that's all we can get from MediaColumns.DATA
+        // Unless I change the system to use the drive/directory system, that is. But there's no
+        // demand for that.
         if (typeAndPath[0] == "primary") {
             return getRootPath() + "/" + typeAndPath.last()
         }

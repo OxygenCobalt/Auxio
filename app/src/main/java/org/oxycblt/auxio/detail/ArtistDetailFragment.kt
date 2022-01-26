@@ -136,7 +136,7 @@ class ArtistDetailFragment : DetailFragment() {
             ) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
-                // Clear the viewholders if the mode isn't ALL_SONGS
+                // Clear the ViewHolders if the mode isn't ALL_SONGS
                 detailAdapter.highlightSong(null, binding.detailRecycler)
             }
         }

@@ -49,7 +49,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Search Functionality
 - Audio/Headset focus
 - Completely private and offline
-- No rounded album covers
+- No rounded album covers (Unless you want them. Then you can.)
 
 ## To possibly come in the future:
 

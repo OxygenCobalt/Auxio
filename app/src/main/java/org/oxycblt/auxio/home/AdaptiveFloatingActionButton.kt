@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.R as MaterialR
 
+@Suppress("PrivateResource")
 class AdaptiveFloatingActionButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

@@ -112,7 +112,8 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // lag behind the body view, resulting in a noticeable pixel offset when dragging. To fix
         // this, we make this a separate view and make this view invisible whenever the item is
         // not being swiped. We cannot merge this view with the FrameLayout, as that will cause
-        // another weird pixel desync issue that is less visible but still incredibly annoying.
+        // another weird pixel desynchronization issue that is less visible but still incredibly
+        // annoying.
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             holder.backgroundView.isInvisible = dX == 0f
         }

@@ -80,7 +80,7 @@ class AccentAdapter(
             binding.accent.isEnabled = !isSelected
 
             binding.accent.imageTintList = if (isSelected) {
-                // Switch out the currently selected viewholder with this one.
+                // Switch out the currently selected ViewHolder with this one.
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
 

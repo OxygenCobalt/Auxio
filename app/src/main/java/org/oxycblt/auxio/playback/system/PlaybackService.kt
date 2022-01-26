@@ -146,7 +146,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         connector = PlaybackSessionConnector(this, player, mediaSession)
 
-        // Then the notif/headset callbacks
+        // Then the notification/headset callbacks
         IntentFilter().apply {
             addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)

@@ -18,7 +18,7 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  *
  * You think that if you wanted to query a song's genre from a media database, you could just
  * put "genre" in the query and it would return it, right? But not with MediaStore! No, that's
- * too straightfoward for this class that was dropped on it's head as a baby. So instead, you
+ * too straightforward for this class that was dropped on it's head as a baby. So instead, you
  * have to query for each genre, query all the songs in each genre, and then iterate through those
  * songs to link every song with their genre. This is not documented anywhere, and the
  * O(mom im scared) algorithm you have to run to get it working single-handedly DOUBLES Auxio's
@@ -28,7 +28,7 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  *
  * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
  * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files?
- * I sure didn't, until I decided to upgrade my music collection to ID3v2.4 and Xiph only to see
+ * I sure didn't, until I decided to upgrade my music collection to ID3v2.4 and FLAC only to see
  * that their metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or
  * DATE tag. Once again, this is because internally android uses an ancient in-house metadata
  * parser to get everything indexed, and so far they have not bothered to modernize this parser
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  * been around for 21 years. It can drink now. All of my what.
  *
  * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
- * table, so we have to go for the less efficent "make a big query on all the songs lol" method
+ * table, so we have to go for the less efficient "make a big query on all the songs lol" method
  * so that songs don't end up fragmented across artists. Pretty much every OEM has added some
  * extension or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH)
  * crippling the normal tables so that you're railroaded into their music app. The way I do
@@ -67,6 +67,7 @@ import org.oxycblt.auxio.excluded.ExcludedDatabase
  *
  * @author OxygenCobalt
  */
+@Suppress("InlinedApi")
 class MusicLoader {
     data class Library(
         val genres: List<Genre>,
@@ -273,10 +274,11 @@ class MusicLoader {
     }
 
     private fun linkGenre(context: Context, genre: Genre, songs: List<Song>) {
+        // Don't even bother blacklisting here as useless iterations are less expensive than IO
         val songCursor = context.contentResolver.query(
             MediaStore.Audio.Genres.Members.getContentUri("external", genre.id),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
-            null, null, null // Dont even bother blacklisting here as useless iters are less expensive than IO
+            null, null, null
         )
 
         songCursor?.use { cursor ->

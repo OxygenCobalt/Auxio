@@ -544,10 +544,10 @@ class PlaybackLayout @JvmOverloads constructor(
             // playback menu's toolbar properly as PlaybackFragment will apply it's window insets.
             // Therefore, we slowly increase the bar view's margins so that it fully disappears
             // near the toolbar instead of in the system bars, which just looks nicer.
-            // The reason why we can't pad the bar is that it might result in the padding desyncing
-            // [reminder that this view also applies the bottom window inset] and we can't
-            // apply padding to the whole container layout since that would adjust the size
-            // of the playback view. This seems to be the least obtrusive way to do this.
+            // The reason why we can't pad the bar is that it might result in the padding
+            // desynchronizing [reminder that this view also applies the bottom window inset]
+            // and we can't apply padding to the whole container layout since that would adjust
+            // the size of the playback view. This seems to be the least obtrusive way to do this.
             lastInsets?.systemBarInsetsCompat?.let { bars ->
                 val params = layoutParams as FrameLayout.LayoutParams
                 val oldTopMargin = params.topMargin
