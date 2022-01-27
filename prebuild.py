@@ -16,8 +16,6 @@ INFO="\033[1;94m"
 OK="\033[1;92m"
 NC="\033[0m"
 
-print('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
-
 system = platform.system()
 
 # We do some shell scripting later on, so we can't support windows.
@@ -31,8 +29,10 @@ def sh(cmd):
     if code != 0:
         print(FATAL + "fatal:" + NC + " command failed with exit code " + str(code))
         sys.exit(1)
-        
-exoplayer_path = os.path.join(os.path.abspath(os.curdir), "app", "srclibs", "exoplayer")
+
+start_path = os.path.join(os.path.abspath(os.curdir))
+libs_path = os.path.join(start_path, "app", "src", "libs")
+exoplayer_path = os.path.join(start_path, "app", "srclibs", "exoplayer")
 
 if os.path.exists(exoplayer_path):
     reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
@@ -72,6 +72,7 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
 
 # Now try to install ExoPlayer.
 sh("rm -rf " + exoplayer_path)
+sh("rm -rf " + libs_path)
 
 print(INFO + "info:" + NC + " cloning exoplayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
@@ -84,5 +85,21 @@ ndk_build_path = os.path.join(ndk_path, "ndk-build")
 os.chdir(flac_ext_jni_path)
 sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
 sh(ndk_build_path + " APP_ABI=all -j4")
+
+print(INFO + "info:" + NC + " assembling libraries")
+extractor_aar_path = os.path.join(
+    exoplayer_path, "library", "extractor", "buildout",
+    "outputs", "aar", "library-extractor-release.aar"
+)
+flac_ext_aar_path = os.path.join(
+    exoplayer_path, "extensions", "flac", "buildout",
+    "outputs", "aar", "extension-flac-release.aar"
+)
+os.chdir(exoplayer_path)
+sh("./gradlew library-extractor:bundleReleaseAar")
+sh("./gradlew extension-flac:bundleReleaseAar")
+os.chdir(start_path)
+sh("cp " + extractor_aar_path + " " + libs_path)
+sh("cp " + flac_ext_aar_path + " " + libs_path)
 
 print(OK + "success:" + NC + " completed pre-build.")

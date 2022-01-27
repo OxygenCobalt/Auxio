@@ -1,4 +1,2 @@
 include ':app'
 rootProject.name = "Auxio"
-gradle.ext.exoplayerModulePrefix = 'exoplayer-'
-apply from: file("app/srclibs/exoplayer/core_settings.gradle")
