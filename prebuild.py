@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # This script automatically installs exoplayer with the necessary components.
-# This is written in version-agnostic python3, because I'd rather
-# not have to deal with the insanity of bash.
+# This is written in version-agnostic python 3, because I'd rather not have to 
+# deal with the insanity of bash.
 import os
 import platform
 import sys
@@ -15,6 +15,8 @@ WARN="\033[1;91m"
 INFO="\033[1;94m"
 OK="\033[1;92m"
 NC="\033[0m"
+
+print('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
 
 system = platform.system()
 
@@ -30,7 +32,7 @@ def sh(cmd):
         print(FATAL + "fatal:" + NC + " command failed with exit code " + str(code))
         sys.exit(1)
         
-exoplayer_path = os.path.join(os.path.abspath(os.curdir), "srclibs", "exoplayer")
+exoplayer_path = os.path.join(os.path.abspath(os.curdir), "app", "srclibs", "exoplayer")
 
 if os.path.exists(exoplayer_path):
     reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
@@ -40,7 +42,7 @@ if os.path.exists(exoplayer_path):
 
 ndk_path = os.getenv("NDK_PATH")
 
-if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk_build")):
+if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
     # We don't have a proper path. Do some digging on the Android SDK directory
     # to see if we can find it.
     if system == "Linux":
@@ -61,15 +63,15 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk_build")):
             print("[" + str(i) + "] " + candidate)
 
         try:
-            ndk_path = candidates[int(input("enter the ndk to use [Default 0]: "))]
+            ndk_path = candidates[int(input("enter the ndk to use [default 0]: "))]
         except:
             ndk_path = candidates[0]
     else:
-        print(FATAL + "fatal:" + NC + " NDK_PATH is either not set/invalid, or the android ndk was not installed at a recognized location.")
+        print(FATAL + "fatal:" + NC + " the android ndk was not installed at a recognized location.")
         system.exit(1)
 
 # Now try to install ExoPlayer.
-sh("rm -rf srclibs")
+sh("rm -rf " + exoplayer_path)
 
 print(INFO + "info:" + NC + " cloning exoplayer...")
 sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
@@ -78,8 +80,9 @@ sh("git checkout auxio")
 
 print(INFO + "info:" + NC + " installing flac extension...")
 flac_ext_jni_path = os.path.join("extensions", "flac", "src", "main", "jni")
+ndk_build_path = os.path.join(ndk_path, "ndk-build")
 os.chdir(flac_ext_jni_path)
 sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
-sh(ndk_path + "/ndk-build APP_ABI=all -j4")
+sh(ndk_build_path + " APP_ABI=all -j4")
 
 print(OK + "success:" + NC + " completed pre-build.")

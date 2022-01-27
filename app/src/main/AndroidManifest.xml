@@ -60,7 +60,8 @@
         </activity>
 
         <!--
-        Workaround to get apps that blindly query for ACTION_MEDIA_BUTTON working
+        Workaround to get apps that blindly query for ACTION_MEDIA_BUTTON working.
+        See the class for more info.
         -->
         <receiver
             android:name=".playback.system.MediaButtonReceiver"
