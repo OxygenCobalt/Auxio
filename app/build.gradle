@@ -93,6 +93,14 @@ dependencies {
     // --- THIRD PARTY ---
 
     // Exoplayer
+    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE CUSTOM AAR BLOBS.
+    // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
+    def exoplayerVersion = '2.16.1'
+    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+    }
+    implementation fileTree(dir: "libs", include: ["library-*.aar"])
+    implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
     implementation 'io.coil-kt:coil:2.0.0-alpha06'
@@ -104,16 +112,6 @@ dependencies {
 
     // Lint
     ktlint 'com.pinterest:ktlint:0.43.2'
-
-    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE CUSTOM EXTRACTOR AND FLAC
-    // EXTENSION BLOBS. IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    def exoplayer_version = "2.16.1"
-    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayer_version") {
-        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
-    }
-
-    implementation fileTree(dir: "libs", include: ["extension-*.aar"])
-    implementation fileTree(dir: "libs", include: ["library-*.aar"])
 }
 
 task ktlint(type: JavaExec, group: "verification") {

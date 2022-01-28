@@ -31,10 +31,10 @@ def sh(cmd):
         sys.exit(1)
 
 start_path = os.path.join(os.path.abspath(os.curdir))
-libs_path = os.path.join(start_path, "app", "src", "libs")
-exoplayer_path = os.path.join(start_path, "app", "srclibs", "exoplayer")
+libs_path = os.path.join(start_path, "app", "libs")
+exoplayer_path = os.path.join(start_path, "app", "build", "srclibs", "exoplayer")
 
-if os.path.exists(exoplayer_path):
+if os.path.exists(libs_path):
     reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
 
     if not re.match("[yY][eE][sS]|[yY]", reinstall):
@@ -99,6 +99,7 @@ os.chdir(exoplayer_path)
 sh("./gradlew library-extractor:bundleReleaseAar")
 sh("./gradlew extension-flac:bundleReleaseAar")
 os.chdir(start_path)
+sh("mkdir " + libs_path)
 sh("cp " + extractor_aar_path + " " + libs_path)
 sh("cp " + flac_ext_aar_path + " " + libs_path)
 
