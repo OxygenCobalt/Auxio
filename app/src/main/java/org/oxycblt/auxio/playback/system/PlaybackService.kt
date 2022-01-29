@@ -493,16 +493,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 }
 
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
-
-                else -> handleSystemIntent(intent)
             }
-        }
-    }
-
-    private fun handleSystemIntent(intent: Intent) {
-        when (intent.action) {
-
-            Intent.ACTION_MEDIA_BUTTON -> MediaButtonReceiver.handleIntent(mediaSession, intent)
         }
     }
 

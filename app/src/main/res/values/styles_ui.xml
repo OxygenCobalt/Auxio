@@ -120,7 +120,7 @@
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleSmallish</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">

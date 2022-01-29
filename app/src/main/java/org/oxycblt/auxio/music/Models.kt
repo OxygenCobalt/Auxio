@@ -204,7 +204,7 @@ data class Genre(
  */
 data class Header(
     override val id: Long,
-    @StringRes val string: Int,
+    @StringRes val string: Int
 ) : BaseModel()
 
 /**
