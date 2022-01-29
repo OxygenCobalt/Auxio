@@ -1,0 +1,1 @@
+Auxio 2.1.0 enhances the playback experience, implementing a single-queue system, ReplayGain functionality, and better support on older devices. For more information, please read the full changelog at https://github.com/OxygenCobalt/Auxio/releases/tag/v2.0.0.

@@ -91,13 +91,16 @@ extractor_aar_path = os.path.join(
     exoplayer_path, "library", "extractor", "buildout",
     "outputs", "aar", "library-extractor-release.aar"
 )
+
 flac_ext_aar_path = os.path.join(
     exoplayer_path, "extensions", "flac", "buildout",
     "outputs", "aar", "extension-flac-release.aar"
 )
+
 os.chdir(exoplayer_path)
 sh("./gradlew library-extractor:bundleReleaseAar")
 sh("./gradlew extension-flac:bundleReleaseAar")
+
 os.chdir(start_path)
 sh("mkdir " + libs_path)
 sh("cp " + extractor_aar_path + " " + libs_path)

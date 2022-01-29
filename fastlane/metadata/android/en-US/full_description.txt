@@ -4,13 +4,13 @@ Auxio is a local music player with a fast, reliable UI/UX without the many usele
 
 - ExoPlayer based playback
 - Customizable UI & Behavior
-- Genres/Artists/Albums/Songs support
-- Intuitive queue system
+- Genres/Artists/Albums/Songs indexing
 - Reliable playback state persistence
-- Material You support (12+ only)
-- Edge-to-edge (8.1+ Only)
+- ReplayGain support (On MP3, FLAC, OGG, and OPUS)
+- Material You (Android 12+ only)
+- Edge-to-edge
 - Embedded covers support
 - Search Functionality
 - Audio/Headset focus
 - Completely private and offline
-- No rounded album covers
+- No rounded album covers (Unless you want them. Then you can.)
