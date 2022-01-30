@@ -54,16 +54,6 @@ sealed class MusicParent : Music() {
 
 /**
  * The data object for a song. Inherits [BaseModel].
- * @property fileName The raw filename for this track
- * @property albumId  The Song's Album ID.
- * Never use this outside of when attaching a song to its album.
- * @property track    The Song's Track number
- * @property duration The duration of the song, in millis.
- * @property album    The Song's parent album. Use this instead of [albumId].
- * @property genre    The Song's [Genre].
- * These are not ensured to be linked due to possible quirks in the genre loading system.
- * @property seconds  The Song's duration in seconds
- * @property formattedDuration The Song's duration as a duration string.
  */
 data class Song(
     override val id: Long,
@@ -71,7 +61,8 @@ data class Song(
     val fileName: String,
     val albumName: String,
     val albumId: Long,
-    val artistName: String,
+    val artistName: String?,
+    val albumArtistName: String?,
     val year: Int,
     val track: Int,
     val duration: Long
@@ -94,6 +85,14 @@ data class Song(
         return result
     }
 
+    /** An album name resolved to this song in particular. */
+    val resolvedAlbumName: String get() =
+        album.resolvedName
+
+    /** An artist name resolved to this song in particular. */
+    val resolvedArtistName: String get() =
+        artistName ?: album.artist.resolvedName
+
     fun linkAlbum(album: Album) {
         mAlbum = album
     }
@@ -105,11 +104,6 @@ data class Song(
 
 /**
  * The data object for an album. Inherits [MusicParent].
- * @property artistName    The name of the parent artist. Do not use this outside of creating the artist from albums
- * @property year          The year this album was released. 0 if there is none in the metadata.
- * @property artist        The Album's parent [Artist]. use this instead of [artistName]
- * @property songs         The Album's child [Song]s.
- * @property totalDuration The combined duration of all of the album's child songs, formatted.
  */
 data class Album(
     override val id: Long,
@@ -130,9 +124,11 @@ data class Album(
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration(false)
 
-    fun linkArtist(artist: Artist) {
-        mArtist = artist
-    }
+    override val resolvedName: String
+        get() = name
+
+    val resolvedArtistName: String get() =
+        artist.resolvedName
 
     override val hash: Long get() {
         var result = name.hashCode().toLong()
@@ -141,14 +137,15 @@ data class Album(
         return result
     }
 
-    override val resolvedName: String
-        get() = name
+    fun linkArtist(artist: Artist) {
+        mArtist = artist
+    }
 }
 
 /**
- * The data object for an artist. Inherits [MusicParent]
+ * The data object for an *album* artist. Inherits [MusicParent]. This differs from the actual
+ * performers.
  * @property albums The list of all [Album]s in this artist
- * @property genre  The most prominent genre for this artist
  * @property songs  The list of all [Song]s in this artist
  */
 data class Artist(
@@ -163,16 +160,7 @@ data class Artist(
         }
     }
 
-    val genre: Genre? by lazy {
-        // Get the genre that corresponds to the most songs in this artist, which would be
-        // the most "Prominent" genre.
-        songs.groupBy { it.genre }.entries.maxByOrNull { it.value.size }?.key
-    }
-
-    val songs: List<Song> by lazy {
-        albums.flatMap { it.songs }
-    }
-
+    val songs = albums.flatMap { it.songs }
     override val hash = name.hashCode().toLong()
 }
 

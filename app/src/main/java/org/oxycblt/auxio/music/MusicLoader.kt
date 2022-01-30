@@ -142,12 +142,10 @@ class MusicLoader {
                 val album = cursor.getString(albumIndex)
                 val albumId = cursor.getLong(albumIdIndex)
 
-                // MediaStore does not have support for artists in the album field, so we have to
-                // detect it on a song-by-song basis. This is another massive bottleneck in the music
-                // loader since we have to do a massive query to get what we want, but theres not
-                // a lot I can do that doesn't degrade UX.
-                val artist = cursor.getStringOrNull(albumArtistIndex)
-                    ?: cursor.getString(artistIndex)
+                val artist = cursor.getString(artistIndex).let {
+                    if (it != MediaStore.UNKNOWN_STRING) it else null
+                }
+                val albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
                 val year = cursor.getInt(yearIndex)
                 val track = cursor.getInt(trackIndex)
@@ -155,7 +153,8 @@ class MusicLoader {
 
                 songs.add(
                     Song(
-                        id, title, fileName, album, albumId, artist, year, track, duration
+                        id, title, fileName, album, albumId, artist,
+                        albumArtist, year, track, duration
                     )
                 )
             }
@@ -181,11 +180,11 @@ class MusicLoader {
 
             albums.add(
                 Album(
-                    id = entry.key,
-                    name = song.albumName,
-                    artistName = song.artistName,
-                    songs = entry.value,
-                    year = song.year
+                    // When assigning an artist to an album, use the album artist first, then the
+                    // normal artist, and then the internal representation of an unknown artist name.
+                    entry.key, song.albumName,
+                    song.albumArtistName ?: song.artistName ?: MediaStore.UNKNOWN_STRING,
+                    song.year, entry.value
                 )
             )
         }
@@ -210,10 +209,8 @@ class MusicLoader {
             // Use the hashCode of the artist name as our ID and move on.
             artists.add(
                 Artist(
-                    id = entry.key.hashCode().toLong(),
-                    name = entry.key,
-                    resolvedName = resolvedName,
-                    albums = entry.value
+                    entry.key.hashCode().toLong(), entry.key,
+                    resolvedName, entry.value
                 )
             )
         }
@@ -243,10 +240,12 @@ class MusicLoader {
                 // No non-broken genre would be missing a name.
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getStringOrNull(nameIndex) ?: continue
+                val resolvedName = when (name) {
+                    MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_genre)
+                    else -> name.getGenreNameCompat() ?: name
+                }
 
-                val genre = Genre(
-                    id, name, name.getGenreNameCompat() ?: name
-                )
+                val genre = Genre(id, name, resolvedName)
 
                 linkGenre(context, genre, songs)
                 genres.add(genre)

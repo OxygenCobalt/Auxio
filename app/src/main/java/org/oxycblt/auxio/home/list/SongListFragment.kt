@@ -60,6 +60,8 @@ class SongListFragment : HomeListFragment() {
             val song = homeModel.songs.value!![idx]
 
             // Change how we display the popup depending on the mode.
+            // We don't use the more correct resolve(Model)Name here, as sorts are largely
+            // based off the names of the parent objects and not the child objects.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
                 // Name -> Use name
                 is Sort.ByName -> song.name.sliceArticle()

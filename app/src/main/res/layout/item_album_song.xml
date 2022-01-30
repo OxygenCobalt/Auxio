@@ -25,7 +25,6 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
             android:textSize="20sp"
-            android:fontFamily="sans-serif"
             android:textColor="@color/sel_accented_secondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -114,7 +114,7 @@ class PlaybackSessionConnector(
             return
         }
 
-        val artistName = song.album.artist.resolvedName
+        val artistName = song.resolvedArtistName
 
         val builder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
@@ -123,7 +123,7 @@ class PlaybackSessionConnector(
             .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, artistName)
             .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, artistName)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, artistName)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.name)
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.resolvedAlbumName)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
         // Load the cover asynchronously. This is the entire reason I don't use a plain

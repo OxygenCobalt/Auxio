@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:ellipsize="end"
-            android:text="@{@string/fmt_two(song.album.artist.resolvedName, song.album.name)}"
+            android:text="@{@string/fmt_two(song.resolvedArtistName, song.resolvedAlbumName)}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toEndOf="@+id/playback_song"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"

@@ -79,12 +79,12 @@ class PlaybackNotification private constructor(
      */
     fun setMetadata(song: Song, onDone: () -> Unit) {
         setContentTitle(song.name)
-        setContentText(song.album.artist.resolvedName)
+        setContentText(song.resolvedArtistName)
 
         // On older versions of android [API <24], show the song's album on the subtext instead of
         // the current mode, as that makes more sense for the old style of media notifications.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            setSubText(song.album.name)
+            setSubText(song.resolvedAlbumName)
         }
 
         // loadBitmap() is concurrent, so only call back to the object calling this function when

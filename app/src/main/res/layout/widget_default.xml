@@ -25,6 +25,7 @@
         android:padding="@dimen/spacing_medium"
         android:text="@string/def_playback"
         android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
+        android:fontFamily="sans-serif-medium"
         android:textColor="?android:attr/textColorPrimary" />
 
 </FrameLayout>

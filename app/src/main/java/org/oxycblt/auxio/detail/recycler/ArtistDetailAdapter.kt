@@ -198,8 +198,12 @@ class ArtistDetailAdapter(
 
             binding.detailName.text = data.resolvedName
 
-            binding.detailSubhead.text = data.genre?.resolvedName
-                ?: context.getString(R.string.def_genre)
+            // Get the genre that corresponds to the most songs in this artist, which would be
+            // the most "Prominent" genre.
+            binding.detailSubhead.text = data.songs
+                .groupBy { it.genre?.resolvedName }
+                .entries.maxByOrNull { it.value.size }
+                ?.key ?: context.getString(R.string.def_genre)
 
             binding.detailInfo.text = context.getString(
                 R.string.fmt_counts,

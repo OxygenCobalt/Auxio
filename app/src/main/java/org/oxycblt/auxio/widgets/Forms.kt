@@ -102,7 +102,7 @@ private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteV
     applyCover(context, state)
 
     setTextViewText(R.id.widget_song, state.song.name)
-    setTextViewText(R.id.widget_artist, state.song.album.artist.resolvedName)
+    setTextViewText(R.id.widget_artist, state.song.resolvedArtistName)
 
     return this
 }
@@ -111,7 +111,8 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
     if (state.albumArt != null) {
         setImageViewBitmap(R.id.widget_cover, state.albumArt)
         setContentDescription(
-            R.id.widget_cover, context.getString(R.string.desc_album_cover, state.song.album.name)
+            R.id.widget_cover,
+            context.getString(R.string.desc_album_cover, state.song.resolvedAlbumName)
         )
     } else {
         setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
