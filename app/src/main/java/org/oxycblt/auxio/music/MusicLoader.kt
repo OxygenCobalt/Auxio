@@ -170,6 +170,8 @@ class MusicLoader {
 
     private fun buildAlbums(songs: List<Song>): List<Album> {
         // Group up songs by their album ids and then link them with their albums
+        // TODO: Figure out how to group up songs by album in a way that does not accidentally
+        //  split songs by album.
         val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { it.albumId }
 
