@@ -145,6 +145,7 @@ class MusicLoader {
                 val artist = cursor.getString(artistIndex).let {
                     if (it != MediaStore.UNKNOWN_STRING) it else null
                 }
+
                 val albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
                 val year = cursor.getInt(yearIndex)
@@ -198,21 +199,33 @@ class MusicLoader {
         val artists = mutableListOf<Artist>()
         val albumsByArtist = albums.groupBy { it.artistName }
 
-        albumsByArtist.forEach { entry ->
-            val resolvedName = if (entry.key == MediaStore.UNKNOWN_STRING) {
-                context.getString(R.string.def_artist)
-            } else {
-                entry.key
+        for (entry in albumsByArtist) {
+            val name = entry.key
+            val resolvedName = when (name) {
+                MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_artist)
+                else -> name
+            }
+            val artistAlbums = entry.value.toMutableList()
+
+            // Music files from the same artist may format the artist differently, such as being
+            // in uppercase/lowercase forms. If we have already built an artist that has a
+            // functionally identical name to this one, then simply merge the artists instead
+            // of removing them.
+            val previousArtistIndex = artists.indexOfFirst { artist ->
+                artist.name.lowercase() == name.lowercase()
             }
 
             // In most cases, MediaStore artist IDs are unreliable or omitted for speed.
             // Use the hashCode of the artist name as our ID and move on.
-            artists.add(
-                Artist(
-                    entry.key.hashCode().toLong(), entry.key,
-                    resolvedName, entry.value
+            if (previousArtistIndex > -1) {
+                val previousArtist = artists[previousArtistIndex]
+                artists[previousArtistIndex] = Artist(
+                    previousArtist.name.hashCode().toLong(), previousArtist.name,
+                    previousArtist.resolvedName, previousArtist.albums + artistAlbums
                 )
-            )
+            } else {
+                artists.add(Artist(name.hashCode().toLong(), name, resolvedName, artistAlbums))
+            }
         }
 
         return artists
@@ -237,8 +250,8 @@ class MusicLoader {
             val nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
             while (cursor.moveToNext()) {
-                // No non-broken genre would be missing a name.
                 val id = cursor.getLong(idIndex)
+                // No non-broken genre would be missing a name.
                 val name = cursor.getStringOrNull(nameIndex) ?: continue
                 val resolvedName = when (name) {
                     MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_genre)
