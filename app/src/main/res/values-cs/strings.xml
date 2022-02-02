@@ -140,10 +140,12 @@
         <item quantity="one">"%d skladba"</item>
         <item quantity="few">"%d skladby"</item>
         <item quantity="many">"%d skladeb"</item>
+        <item quantity="other">"%d skladeb"</item>
     </plurals>
     <plurals name="fmt_album_count">
         <item quantity="one">"%d album"</item>
         <item quantity="few">"%d alba"</item>
         <item quantity="many">"%d alb"</item>
+        <item quantity="other">"%d alb"</item>
     </plurals>
 </resources>
