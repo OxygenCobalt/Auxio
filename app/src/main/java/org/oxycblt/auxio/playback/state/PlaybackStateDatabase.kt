@@ -116,9 +116,9 @@ class PlaybackStateDatabase(context: Context) :
 
             val stateData = ContentValues(10).apply {
                 put(StateColumns.COLUMN_ID, 0)
-                put(StateColumns.COLUMN_SONG_HASH, state.song?.hash)
+                put(StateColumns.COLUMN_SONG_HASH, state.song?.id)
                 put(StateColumns.COLUMN_POSITION, state.position)
-                put(StateColumns.COLUMN_PARENT_HASH, state.parent?.hash)
+                put(StateColumns.COLUMN_PARENT_HASH, state.parent?.id)
                 put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
                 put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.toInt())
                 put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
@@ -154,17 +154,17 @@ class PlaybackStateDatabase(context: Context) :
 
             cursor.moveToFirst()
 
-            val song = cursor.getLongOrNull(songIndex)?.let { hash ->
-                musicStore.songs.find { it.hash == hash }
+            val song = cursor.getLongOrNull(songIndex)?.let { id ->
+                musicStore.songs.find { it.id == id }
             }
 
             val mode = PlaybackMode.fromInt(cursor.getInt(modeIndex)) ?: PlaybackMode.ALL_SONGS
 
-            val parent = cursor.getLongOrNull(parentIndex)?.let { hash ->
+            val parent = cursor.getLongOrNull(parentIndex)?.let { id ->
                 when (mode) {
-                    PlaybackMode.IN_GENRE -> musicStore.genres.find { it.hash == hash }
-                    PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.hash == hash }
-                    PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.hash == hash }
+                    PlaybackMode.IN_GENRE -> musicStore.genres.find { it.id == id }
+                    PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.id == id }
+                    PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.id == id }
                     PlaybackMode.ALL_SONGS -> null
                 }
             }
@@ -216,8 +216,8 @@ class PlaybackStateDatabase(context: Context) :
 
                     val itemData = ContentValues(4).apply {
                         put(QueueColumns.ID, idStart + i)
-                        put(QueueColumns.SONG_HASH, song.hash)
-                        put(QueueColumns.ALBUM_HASH, song.album.hash)
+                        put(QueueColumns.SONG_HASH, song.id)
+                        put(QueueColumns.ALBUM_HASH, song.album.id)
                     }
 
                     insert(TABLE_NAME_QUEUE, null, itemData)

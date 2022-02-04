@@ -25,8 +25,6 @@ import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.toAlbumArtURI
-import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import java.io.ByteArrayInputStream
@@ -63,7 +61,7 @@ abstract class AuxioFetcher : Fetcher {
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
-        val uri = data.id.toAlbumArtURI()
+        val uri = data.albumCoverUri
 
         // Eliminate any chance that this blocking call might mess up the cancellation process
         return withContext(Dispatchers.IO) {
@@ -114,7 +112,7 @@ abstract class AuxioFetcher : Fetcher {
         extractor.use { ext ->
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.
-            ext.setDataSource(context, album.songs[0].id.toURI())
+            ext.setDataSource(context, album.songs[0].uri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
@@ -126,7 +124,7 @@ abstract class AuxioFetcher : Fetcher {
     }
 
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
-        val uri = album.songs[0].id.toURI()
+        val uri = album.songs[0].uri
 
         val future = MetadataRetriever.retrieveMetadata(
             context, MediaItem.fromUri(uri)

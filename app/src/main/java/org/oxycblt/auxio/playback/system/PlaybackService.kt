@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toURI
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
@@ -261,7 +260,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onSongUpdate(song: Song?) {
         if (song != null) {
-            player.setMediaItem(MediaItem.fromUri(song.id.toURI()))
+            player.setMediaItem(MediaItem.fromUri(song.uri))
             player.prepare()
 
             notification.setMetadata(song, ::startForegroundOrNotify)

@@ -18,10 +18,7 @@
 
 package org.oxycblt.auxio.music
 
-import android.content.ContentUris
 import android.content.Context
-import android.net.Uri
-import android.provider.MediaStore
 import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.core.text.isDigitsOnly
@@ -92,20 +89,6 @@ fun String.getGenreNameCompat(): String? {
 
     // Current name is fine.
     return null
-}
-
-/**
- * Convert an id to its corresponding URI
- */
-fun Long.toURI(): Uri {
-    return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
-}
-
-/**
- * Get the URI for an album's cover art, corresponds to MediaStore.
- */
-fun Long.toAlbumArtURI(): Uri {
-    return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), this)
 }
 
 /**

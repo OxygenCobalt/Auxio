@@ -104,9 +104,17 @@ to a name that can be used in UIs.
 while `ActionHeader` corresponds to an action with a dedicated icon, such as with sorting.
 
 Other data types represent a specific UI configuration or state:
-
 - Sealed classes like `Sort` and `HeaderString` contain data with them that can be modified.
 - Enums like `DisplayMode` and `LoopMode` only contain static data, such as a string resource.
+
+Things to keep in mind while working with music data:
+- `id` is not derived from the `MediaStore` ID of the music data. It is actually a hash of the unique fields of the music data.
+Attempting to use it as a `MediaStore` ID will result in errors.
+- Any field beginning with `_mediaStore` is off-limits. These fields are meant for use within MusicLoader and generally provide
+poor UX to the user.
+- Generally, `name` is used when saving music data to storage, while `resolvedName` is used when displaying music data to the user.
+    - For `Song` instances in particular, prefer `resolvedAlbumName` and `resolvedArtistName` over `album.resolvedName` and `album.artist.resolvedName`
+    - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`
 
 #### Music Access
 

@@ -1,10 +1,14 @@
 package org.oxycblt.auxio.music
 
+import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
+import org.oxycblt.auxio.util.logE
+import java.lang.Exception
 
 /**
  * This class acts as the base for most the black magic required to get a remotely sensible music
@@ -84,6 +88,16 @@ class MusicLoader {
         val artists = buildArtists(context, albums)
         val genres = readGenres(context, songs)
 
+        // Sanity check: Ensure that all songs are well-formed.
+        for (song in songs) {
+            try {
+                song.album.artist
+            } catch (e: Exception) {
+                logE("Found malformed song: ${song.name}")
+                throw e
+            }
+        }
+
         return Library(
             genres,
             artists,
@@ -156,109 +170,112 @@ class MusicLoader {
 
                 songs.add(
                     Song(
-                        id,
                         title,
                         fileName,
-                        album,
-                        albumId,
+                        duration,
+                        track,
+                        id,
                         artist,
                         albumArtist,
+                        albumId,
+                        album,
                         year,
-                        track,
-                        duration
                     )
                 )
             }
         }
 
         songs = songs.distinctBy {
-            it.name to it.albumName to it.artistName to it.track to it.duration
+            it.name to it._mediaStoreAlbumName to it._mediaStoreArtistName to it._mediaStoreAlbumArtistName to it.track to it.duration
         }.toMutableList()
 
         return songs
     }
 
     private fun buildAlbums(songs: List<Song>): List<Album> {
-        // Group up songs by their album ids and then link them with their albums
+        // When assigning an artist to an album, use the album artist first, then the
+        // normal artist, and then the internal representation of an unknown artist name.
+        fun Song.resolveAlbumArtistName() = _mediaStoreAlbumArtistName ?: _mediaStoreArtistName
+            ?: MediaStore.UNKNOWN_STRING
+
+        // Group up songs by their lowercase artist and album name. This serves two purposes:
+        // 1. Sometimes artist names can be styled differently, e.g "Rammstein" vs. "RAMMSTEIN".
+        // This makes sure both of those are resolved into a single artist called "Rammstein"
+        // 2. Sometimes MediaStore will split album IDs up if the songs differ in format. This
+        // ensures that all songs are unified under a single album.
+        // This does come with some costs, it's far slower than using the album ID itself, and it
+        // may result in an unrelated album art being selected depending on the song chosen as
+        // the template, but it seems to work pretty well.
         val albums = mutableListOf<Album>()
-        val songsByAlbum = songs.groupBy { it.albumId }
+        val songsByAlbum = songs.groupBy { song ->
+            val albumName = song._mediaStoreAlbumName
+            val artistName = song.resolveAlbumArtistName()
+            Pair(albumName.lowercase(), artistName.lowercase())
+        }
 
         for (entry in songsByAlbum) {
-            val albumId = entry.key
             val albumSongs = entry.value
 
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            val templateSong = requireNotNull(albumSongs.maxByOrNull { it.year })
-            val albumName = templateSong.albumName
+            val templateSong = requireNotNull(albumSongs.maxByOrNull { it._mediaStoreYear })
+            val albumName = templateSong._mediaStoreAlbumName
+            val albumYear = templateSong._mediaStoreYear
+            val albumCoverUri = ContentUris.withAppendedId(
+                Uri.parse("content://media/external/audio/albumart"),
+                templateSong._mediaStoreAlbumId
+            )
+            val artistName = templateSong.resolveAlbumArtistName()
 
-            // When assigning an artist to an album, use the album artist first, then the
-            // normal artist, and then the internal representation of an unknown artist name.
-            val artistName = templateSong.albumArtistName
-                ?: templateSong.artistName ?: MediaStore.UNKNOWN_STRING
-
-            val albumYear = templateSong.year
-
-            // Search for duplicate albums first. This serves two purposes:
-            // 1. It collapses differently styled artists [ex. Rammstein vs. RAMMSTEIN] into
-            // a single grouped artist
-            // 2. It also unifies albums that exist across several file formats [excluding
-            // when the titles are mangled by MediaStore insanity]
-            val previousAlbumIndex = albums.indexOfFirst { album ->
-                album.name.lowercase() == albumName.lowercase() &&
-                    album.artistName.lowercase() == artistName.lowercase()
-            }
-
-            if (previousAlbumIndex > -1) {
-                val previousAlbum = albums[previousAlbumIndex]
-                albums[previousAlbumIndex] = Album(
-                    previousAlbum.id,
-                    previousAlbum.name,
-                    previousAlbum.artistName,
-                    previousAlbum.year,
-                    previousAlbum.songs + albumSongs
+            albums.add(
+                Album(
+                    albumName,
+                    albumYear,
+                    albumCoverUri,
+                    albumSongs,
+                    artistName,
                 )
-            } else {
-                albums.add(
-                    Album(
-                        albumId,
-                        albumName,
-                        artistName,
-                        albumYear,
-                        albumSongs
-                    )
-                )
-            }
+            )
         }
-
-        albums.removeAll { it.songs.isEmpty() }
 
         return albums
     }
 
     private fun buildArtists(context: Context, albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it.artistName }
+        val albumsByArtist = albums.groupBy { it._mediaStoreArtistName }
 
         for (entry in albumsByArtist) {
-            val name = entry.key
-            val resolvedName = when (name) {
+            val artistName = entry.key
+            val resolvedName = when (artistName) {
                 MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_artist)
-                else -> name
+                else -> artistName
             }
             val artistAlbums = entry.value
 
             // Due to the black magic we do to get a good artist field, the ID is unreliable.
             // Take a hash of the artist name instead.
-            artists.add(
-                Artist(
-                    name.hashCode().toLong(),
-                    name,
-                    resolvedName,
-                    artistAlbums
+            val previousArtistIndex = artists.indexOfFirst { artist ->
+                artist.name.lowercase() == artistName.lowercase()
+            }
+
+            if (previousArtistIndex > -1) {
+                val previousArtist = artists[previousArtistIndex]
+                artists[previousArtistIndex] = Artist(
+                    previousArtist.name,
+                    previousArtist.resolvedName,
+                    previousArtist.albums + artistAlbums
                 )
-            )
+            } else {
+                artists.add(
+                    Artist(
+                        artistName,
+                        resolvedName,
+                        artistAlbums
+                    )
+                )
+            }
         }
 
         return artists
@@ -291,7 +308,7 @@ class MusicLoader {
                     else -> name.getGenreNameCompat() ?: name
                 }
 
-                val genre = Genre(id, name, resolvedName)
+                val genre = Genre(name, resolvedName, id)
 
                 linkGenre(context, genre, songs)
                 genres.add(genre)
@@ -300,9 +317,9 @@ class MusicLoader {
 
         // Songs that don't have a genre will be thrown into an unknown genre.
         val unknownGenre = Genre(
-            id = Long.MIN_VALUE,
             name = MediaStore.UNKNOWN_STRING,
-            resolvedName = context.getString(R.string.def_genre)
+            resolvedName = context.getString(R.string.def_genre),
+            Long.MIN_VALUE
         )
 
         songs.forEach { song ->
@@ -321,7 +338,7 @@ class MusicLoader {
     private fun linkGenre(context: Context, genre: Genre, songs: List<Song>) {
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
         val songCursor = context.contentResolver.query(
-            MediaStore.Audio.Genres.Members.getContentUri("external", genre.id),
+            MediaStore.Audio.Genres.Members.getContentUri("external", genre._mediaStoreId),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
             null, null, null
         )
@@ -332,7 +349,7 @@ class MusicLoader {
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
 
-                songs.find { it.id == id }?.let { song ->
+                songs.find { it._mediaStoreId == id }?.let { song ->
                     genre.linkSong(song)
                 }
             }
