@@ -142,6 +142,8 @@ class MusicLoader {
                 val album = cursor.getString(albumIndex)
                 val albumId = cursor.getLong(albumIdIndex)
 
+                // If the artist field is <unknown>, make it null. This makes handling the
+                // insanity of the artist field easier later on.
                 val artist = cursor.getString(artistIndex).let {
                     if (it != MediaStore.UNKNOWN_STRING) it else null
                 }
@@ -154,8 +156,16 @@ class MusicLoader {
 
                 songs.add(
                     Song(
-                        id, title, fileName, album, albumId, artist,
-                        albumArtist, year, track, duration
+                        id,
+                        title,
+                        fileName,
+                        album,
+                        albumId,
+                        artist,
+                        albumArtist,
+                        year,
+                        track,
+                        duration
                     )
                 )
             }
@@ -170,26 +180,56 @@ class MusicLoader {
 
     private fun buildAlbums(songs: List<Song>): List<Album> {
         // Group up songs by their album ids and then link them with their albums
-        // TODO: Figure out how to group up songs by album in a way that does not accidentally
-        //  split songs by album.
         val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { it.albumId }
 
-        songsByAlbum.forEach { entry ->
+        for (entry in songsByAlbum) {
+            val albumId = entry.key
+            val albumSongs = entry.value
+
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            val song = requireNotNull(entry.value.maxByOrNull { it.year })
+            val templateSong = requireNotNull(albumSongs.maxByOrNull { it.year })
+            val albumName = templateSong.albumName
 
-            albums.add(
-                Album(
-                    // When assigning an artist to an album, use the album artist first, then the
-                    // normal artist, and then the internal representation of an unknown artist name.
-                    entry.key, song.albumName,
-                    song.albumArtistName ?: song.artistName ?: MediaStore.UNKNOWN_STRING,
-                    song.year, entry.value
+            // When assigning an artist to an album, use the album artist first, then the
+            // normal artist, and then the internal representation of an unknown artist name.
+            val artistName = templateSong.albumArtistName
+                ?: templateSong.artistName ?: MediaStore.UNKNOWN_STRING
+
+            val albumYear = templateSong.year
+
+            // Search for duplicate albums first. This serves two purposes:
+            // 1. It collapses differently styled artists [ex. Rammstein vs. RAMMSTEIN] into
+            // a single grouped artist
+            // 2. It also unifies albums that exist across several file formats [excluding
+            // when the titles are mangled by MediaStore insanity]
+            val previousAlbumIndex = albums.indexOfFirst { album ->
+                album.name.lowercase() == albumName.lowercase() &&
+                    album.artistName.lowercase() == artistName.lowercase()
+            }
+
+            if (previousAlbumIndex > -1) {
+                val previousAlbum = albums[previousAlbumIndex]
+                albums[previousAlbumIndex] = Album(
+                    previousAlbum.id,
+                    previousAlbum.name,
+                    previousAlbum.artistName,
+                    previousAlbum.year,
+                    previousAlbum.songs + albumSongs
                 )
-            )
+            } else {
+                albums.add(
+                    Album(
+                        albumId,
+                        albumName,
+                        artistName,
+                        albumYear,
+                        albumSongs
+                    )
+                )
+            }
         }
 
         albums.removeAll { it.songs.isEmpty() }
@@ -207,27 +247,18 @@ class MusicLoader {
                 MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_artist)
                 else -> name
             }
-            val artistAlbums = entry.value.toMutableList()
+            val artistAlbums = entry.value
 
-            // Music files from the same artist may format the artist differently, such as being
-            // in uppercase/lowercase forms. If we have already built an artist that has a
-            // functionally identical name to this one, then simply merge the artists instead
-            // of removing them.
-            val previousArtistIndex = artists.indexOfFirst { artist ->
-                artist.name.lowercase() == name.lowercase()
-            }
-
-            // In most cases, MediaStore artist IDs are unreliable or omitted for speed.
-            // Use the hashCode of the artist name as our ID and move on.
-            if (previousArtistIndex > -1) {
-                val previousArtist = artists[previousArtistIndex]
-                artists[previousArtistIndex] = Artist(
-                    previousArtist.name.hashCode().toLong(), previousArtist.name,
-                    previousArtist.resolvedName, previousArtist.albums + artistAlbums
+            // Due to the black magic we do to get a good artist field, the ID is unreliable.
+            // Take a hash of the artist name instead.
+            artists.add(
+                Artist(
+                    name.hashCode().toLong(),
+                    name,
+                    resolvedName,
+                    artistAlbums
                 )
-            } else {
-                artists.add(Artist(name.hashCode().toLong(), name, resolvedName, artistAlbums))
-            }
+            )
         }
 
         return artists

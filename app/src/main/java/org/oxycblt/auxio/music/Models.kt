@@ -143,10 +143,8 @@ data class Album(
 }
 
 /**
- * The data object for an *album* artist. Inherits [MusicParent]. This differs from the actual
- * performers.
- * @property albums The list of all [Album]s in this artist
- * @property songs  The list of all [Song]s in this artist
+ * The [MusicParent] for an *album* artist. This reflects a group of songs with the same(ish)
+ * album artist or artist field, not the individual performers of an artist.
  */
 data class Artist(
     override val id: Long,
@@ -166,7 +164,6 @@ data class Artist(
 
 /**
  * The data object for a genre. Inherits [MusicParent]
- * @property songs   The list of all [Song]s in this genre.
  */
 data class Genre(
     override val id: Long,
