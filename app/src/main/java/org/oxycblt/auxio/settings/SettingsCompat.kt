@@ -81,8 +81,6 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
             remove(OldKeys.KEY_ACCENT1)
             apply()
         }
-
-        return Accent(accent)
     }
 
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {
