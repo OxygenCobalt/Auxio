@@ -103,6 +103,8 @@
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
+    <string name="set_reload">Reload music</string>
+    <string name="set_reload_desc">Reload the music library (Will restart app)</string>
     <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
 

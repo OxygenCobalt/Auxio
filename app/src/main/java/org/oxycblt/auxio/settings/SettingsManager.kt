@@ -291,6 +291,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_LOOP_PAUSE = "KEY_LOOP_PAUSE"
 
         const val KEY_SAVE_STATE = "auxio_save_state"
+        const val KEY_RELOAD = "auxio_reload"
         const val KEY_EXCLUDED = "auxio_excluded_dirs"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"

@@ -37,6 +37,7 @@ import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.pref.IntListPrefDialog
 import org.oxycblt.auxio.settings.pref.IntListPreference
+import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -159,6 +160,16 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
                         playbackModel.savePlaybackState(requireContext()) {
                             requireContext().showToast(R.string.lbl_state_saved)
+                        }
+
+                        true
+                    }
+                }
+
+                SettingsManager.KEY_RELOAD -> {
+                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        playbackModel.savePlaybackState(requireContext()) {
+                            requireContext().hardRestart()
                         }
 
                         true
