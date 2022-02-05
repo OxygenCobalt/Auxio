@@ -115,7 +115,7 @@
     <string name="err_too_small">اوكسيو لا يدعم حجم النافذة هذه</string>
 
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">البحث في مكتبتك...</string>
+    <string name="hint_search_library">البحث في مكتبتك…</string>
 
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">المقطع %d</string>
@@ -168,12 +168,20 @@
     <string name="fmt_songs_loaded">الاغنية المُحملة: %d</string>
 
     <plurals name="fmt_song_count">
+        <item quantity="zero">%d اغاني</item>
         <item quantity="one">%d اغنية</item>
+        <item quantity="two">%d اغاني</item>
+        <item quantity="few">%d اغاني</item>
+        <item quantity="many">%d اغاني</item>
         <item quantity="other">%d اغاني</item>
     </plurals>
 
     <plurals name="fmt_album_count">
+        <item quantity="zero">ألبومات d%</item>
         <item quantity="one">%d البوم</item>
-        <item quantity="other">%d البومات</item>
+        <item quantity="two">%d ألبومات</item>
+        <item quantity="few">%d ألبومات</item>
+        <item quantity="many">%d ألبومات</item>
+        <item quantity="other">%d ألبومات</item>
     </plurals>
 </resources>
