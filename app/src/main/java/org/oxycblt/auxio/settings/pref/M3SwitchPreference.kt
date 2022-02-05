@@ -10,6 +10,10 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.resolveDrawable
 import org.oxycblt.auxio.util.resolveStateList
 
+/**
+ * A [SwitchPreferenceCompat] that emulates the M3 switches until the design team
+ * actually bothers to add them to MDC.
+ */
 class M3SwitchPreference @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

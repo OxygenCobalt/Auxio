@@ -6,7 +6,6 @@
     <style name="Widget.Auxio.Toolbar" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:theme">@style/ThemeOverlay.Material3.ActionBar</item>
     </style>
 
     <!-- Toolbar sub-style with a nav icon -->

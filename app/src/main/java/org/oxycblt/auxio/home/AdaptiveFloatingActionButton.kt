@@ -5,6 +5,10 @@ import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.R as MaterialR
 
+/**
+ * A FloatingActionButton that automatically switches to a normal or large FAB depending on the
+ * screen size.
+ */
 @Suppress("PrivateResource")
 class AdaptiveFloatingActionButton @JvmOverloads constructor(
     context: Context,

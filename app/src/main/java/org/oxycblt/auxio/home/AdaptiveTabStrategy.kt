@@ -4,6 +4,12 @@ import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+/**
+ * A tag configuration strategy that automatically adapts the tab layout to the screen size.
+ * - On small screens, use only an icon
+ * - On medium screens, use only text
+ * - On large screens, use text and an icon
+ */
 class AdaptiveTabStrategy(
     context: Context,
     private val homeModel: HomeViewModel
