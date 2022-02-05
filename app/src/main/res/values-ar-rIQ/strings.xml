@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- Info namespace | App labels -->
+    <string name="info_app_desc">مشغل موسيقى بسيط ومعقول لنظام الاندرويد.</string>
+    <string name="info_channel_name">تشغيل الموسيقى</string>
+    <string name="info_widget_desc">عرض وتحكم بشتغيل الموسيقى</string>
+
+    <!-- Label Namespace | Static Labels -->
+    <string name="lbl_retry">إعادة المحاولة</string>
+    <string name="lbl_grant">منح</string>
+
+    <string name="lbl_genres">انواع</string>
+    <string name="lbl_artists">فنانين</string>
+    <string name="lbl_albums">البومات</string>
+    <string name="lbl_songs">اغاني</string>
+    <string name="lbl_all_songs">جميع الاغاني</string>
+
+    <string name="lbl_search">بحث</string>
+    <string name="lbl_filter">تصفية</string>
+    <string name="lbl_filter_all">الكل</string>
+
+    <string name="lbl_sort">فرز</string>
+    <string name="lbl_sort_name">اسم</string>
+    <string name="lbl_sort_artist">فنان</string>
+    <string name="lbl_sort_album">البوم</string>
+    <string name="lbl_sort_year">سنة</string>
+    <string name="lbl_sort_asc">تصاعدي</string>
+
+    <string name="lbl_playback">يعمل الآن</string>
+    <string name="lbl_play">تشغيل</string>
+    <string name="lbl_shuffle">خلط</string>
+    <string name="lbl_play_all">تشغيل من جميع الاغاني</string>
+    <string name="lbl_play_album">تشغيل من البوم</string>
+    <string name="lbl_play_artist">تشغيل من فنان</string>
+    <string name="lbl_play_genre">تشغيل من نوع</string>
+
+    <string name="lbl_queue">طابور</string>
+    <string name="lbl_play_next">شغل تالياً</string>
+    <string name="lbl_queue_add">أضف إلى الطابور</string>
+    <string name="lbl_queue_added">تمت الإضافة إلى الطابور</string>
+
+    <string name="lbl_go_artist">أذهب إلى الفنان</string>
+    <string name="lbl_go_album">أذهب إلى الالبوم</string>
+
+    <string name="lbl_state_saved">تم حفظ الحالة</string>
+
+    <string name="lbl_add">أضف</string>
+    <string name="lbl_save">احفظ</string>
+    <string name="lbl_no_dirs">لا مجلد</string>
+
+    <string name="lbl_about">حول</string>
+    <string name="lbl_version">الإصدار</string>
+    <string name="lbl_code">عرض على جيتهاب</string>
+    <string name="lbl_faq">اسئلة وأجوبة</string>
+    <string name="lbl_licenses">التراخيص</string>
+    <string name="lbl_author">تمت برمجة التطبيق من قبل OxygenCobalt</string>
+
+    <!-- Settings namespace | Settings-related labels -->
+    <string name="set_title">الإعدادات</string>
+    <string name="set_ui">المظهر</string>
+    <string name="set_theme">السمة</string>
+    <string name="set_theme_auto">تلقائي</string>
+    <string name="set_theme_day">فاتح</string>
+    <string name="set_theme_night">مظلم</string>
+    <string name="set_accent">نظام الألوان</string>
+    <string name="set_black_mode">السمة السوداء</string>
+    <string name="set_black_mode_desc">استخدام اللون الاسود القاتم في الوضع المظلم</string>
+
+    <string name="set_display">عرض</string>
+    <string name="set_lib_tabs">تبويتات المكتبة</string>
+    <string name="set_lib_tabs_desc">تغيير ظهور وترتيب تبويتات المكتبة</string>
+    <string name="set_show_covers">عرض اغلفة الالبومات</string>
+    <string name="set_show_covers_desc">أطفاء لتقليل استخدام الذاكرة</string>
+    <string name="set_quality_covers">تجاهل اغلفة وسائط التخزين</string>
+    <string name="set_quality_covers_desc">يزيد من جودة غلاف الالبوم، لكن يؤذي إلى زيادة وقت التحميل واستخدام اعلى للذاكرة</string>
+    <string name="set_round_covers">اغلفة البوم مدورة</string>
+    <string name="set_round_covers_desc">جعل اغلفة الابومات ذات زوايا مدورة</string>
+    <string name="set_alt_action">استخدام نشاط بديل للإشعار</string>
+    <string name="set_alt_loop">تفضيل نشاط وضع التكرار</string>
+    <string name="set_alt_shuffle">تفضيل نشاط الخلط</string>
+
+    <string name="set_audio">صوتيات</string>
+    <string name="set_focus">تركيز الصوت</string>
+    <string name="set_focus_desc">ايقاف مؤقت عند تشغيل صوت آخر (كالمكالمات)</string>
+    <string name="set_plug_mgt">تركيز السماعة</string>
+    <string name="set_plug_mgt_desc">تشغيل/ايقاف مؤقت عند حدوث تغيير في اتصال السماعة</string>
+    <string name="set_replay_gain">صخب الصوت (تجريبي)</string>
+    <string name="set_replay_gain_off">اطفاء</string>
+    <string name="set_replay_gain_track">تفضيل المقطع</string>
+    <string name="set_replay_gain_album">تفضيل الالبوم</string>
+    <string name="set_replay_gain_dynamic">ديناميكي</string>
+
+    <string name="set_behavior">سلوك</string>
+    <string name="set_song_mode">عند اختيار اغنية</string>
+    <string name="set_keep_shuffle">تذكر الخلط</string>
+    <string name="set_keep_shuffle_desc">إبقاء وضع الخلط عند تشغيل اغنية جديدة</string>
+    <string name="set_rewind_prev">تشجيع قبل التخطي للخلف</string>
+    <string name="set_rewind_prev_desc">ترجيع قبل التخطي إلى الاغنية السابقة</string>
+    <string name="set_loop_pause">ايقاف مؤقت عند التكرار</string>
+    <string name="set_loop_pause_desc">ايقاف مؤقت عند تكرار تشغيل اغنية</string>
+
+    <string name="set_content">محتوى</string>
+    <string name="set_save">حفظ حالة التشغيل</string>
+    <string name="set_save_desc">حفظ حالة التشغيل الحالية الآن</string>
+    <string name="set_excluded">استبعاد مجلدات</string>
+    <string name="set_excluded_desc">محتوى المجلدات المستبعدة يتم اخفائها من مكتبتك</string>
+
+    <!-- Error Namespace | Error Labels -->
+    <string name="err_no_music">لم يتم ايجاد موسيقى</string>
+    <string name="err_load_failed">فشل تحميل الموسيقى</string>
+    <string name="err_no_perms">اوكسيو يحتاج إلى صلاحيات لقراءة للاطلاع على مكتبتك للموسيقى</string>
+    <string name="err_no_app">لا يوجد تطبيق لفتح هذا الرابط</string>
+    <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
+    <string name="err_too_small">اوكسيو لا يدعم حجم النافذة هذه</string>
+
+    <!-- Hint Namespace | EditText Hints -->
+    <string name="hint_search_library">البحث في مكتبتك...</string>
+
+    <!-- Description Namespace | Accessibility Strings -->
+    <string name="desc_track_number">المقطع %d</string>
+    <string name="desc_play_pause">تشغيل او ايقاف مؤقت</string>
+    <string name="desc_skip_next">تخطي للأغنية التالية</string>
+    <string name="desc_skip_prev">تخطي للاغنية الاخيرة</string>
+    <string name="desc_change_loop">تغيير وضع التكرار</string>
+    <string name="desc_shuffle">تشغيل او اطفاء الخلط</string>
+    <string name="desc_shuffle_all">خلط جميع الاغاني</string>
+
+    <string name="desc_clear_queue_item">إزالة اغنية من الطابور</string>
+    <string name="desc_queue_handle">نقل اغنية من الطابور</string>
+    <string name="desc_tab_handle">تحريك التبويت</string>
+    <string name="desc_clear_search">إزالة كلمة البحث</string>
+    <string name="desc_blacklist_delete">إزالة المجلد المستبعد</string>
+
+    <string name="desc_auxio_icon">ايقونة اوكسيو</string>
+    <string name="desc_no_cover">غلاف الالبوم</string>
+    <string name="desc_album_cover">غلاف الالبوم لـ %s</string>
+    <string name="desc_artist_image">صورة الفنان لـ %s</string>
+    <string name="desc_genre_image">صورة النوع لـ %s</string>
+
+    <!-- Default Namespace | Placeholder values -->
+    <string name="def_artist">فنان غير معروف</string>
+    <string name="def_genre">نوع غير معروف</string>
+    <string name="def_date">لا تاريخ</string>
+    <string name="def_playback">لا يعمل موسيقى</string>
+    <string name="def_widget_song">اسم الاغنية</string>
+    <string name="def_widget_artist">اسم الفنان</string>
+
+    <!-- Color Label namespace | Accent names -->
+    <string name="clr_red">احمر</string>
+    <string name="clr_pink">وردي</string>
+    <string name="clr_purple">ارجواني</string>
+    <string name="clr_deep_purple">ارجواني غامق</string>
+    <string name="clr_indigo">نيلي</string>
+    <string name="clr_blue">ازرق</string>
+    <string name="clr_deep_blue">ازرق غامق</string>
+    <string name="clr_cyan">ازرق سماوي</string>
+    <string name="clr_teal">ازرق نهري</string>
+    <string name="clr_green">اخضر</string>
+    <string name="clr_deep_green">اخضر غامق</string>
+    <string name="clr_lime">كلسي</string>
+    <string name="clr_yellow">اصفر</string>
+    <string name="clr_orange">برتقالي</string>
+    <string name="clr_brown">بني</string>
+    <string name="clr_grey">رمادي</string>
+
+    <!-- Format Namespace | Value formatting/plurals -->
+    <string name="fmt_songs_loaded">الاغنية المُحملة: %d</string>
+
+    <plurals name="fmt_song_count">
+        <item quantity="one">%d اغنية</item>
+        <item quantity="other">%d اغاني</item>
+    </plurals>
+
+    <plurals name="fmt_album_count">
+        <item quantity="one">%d البوم</item>
+        <item quantity="other">%d البومات</item>
+    </plurals>
+</resources>
