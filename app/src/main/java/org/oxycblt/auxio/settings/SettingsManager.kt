@@ -20,6 +20,7 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.accent.Accent
@@ -39,9 +40,6 @@ class SettingsManager private constructor(context: Context) :
     private val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
-        // Poke the song playback mode pref so that it migrates [if it hasn't already]
-        handleSongPlayModeCompat(sharedPrefs)
-
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
     }
 
@@ -49,7 +47,7 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current theme */
     val theme: Int
-        get() = handleThemeCompat(sharedPrefs)
+        get() = sharedPrefs.getInt(KEY_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
     /** Whether the dark theme should be black or not */
     val useBlackTheme: Boolean
@@ -110,7 +108,8 @@ class SettingsManager private constructor(context: Context) :
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
-        get() = handleSongPlayModeCompat(sharedPrefs)
+        get() = PlaybackMode.fromInt(sharedPrefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
+        ?: PlaybackMode.ALL_SONGS
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean

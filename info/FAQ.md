@@ -33,7 +33,7 @@ This is expected since reading from the audio database takes awhile, especially 
 #### Auxio does not detect new music!
 
 This is a current limitation with the music loader. To remedy this, go to Settings -> Reload music whenever new songs are added.
-I hope to make the loader do this automatically eventually.
+I hope to make the app rescan music on the fly eventually.
 
 #### ReplayGain isn't working on my music!
 

@@ -31,58 +31,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 // TODO: Slate these for removal eventually. There probably isn't that many left who have the
 //  old values but 2.0.0 will probably convince most of those to update too.
 
-fun handleThemeCompat(prefs: SharedPreferences): Int {
-    if (prefs.contains(OldKeys.KEY_THEME)) {
-        // Before the creation of IntListPreference, I used strings to represent the themes.
-        // I no longer need to do this.
-        val newValue = when (prefs.getStringOrNull(OldKeys.KEY_THEME)) {
-            EntryValues.THEME_AUTO -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            EntryValues.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-            EntryValues.THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
-
-            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-
-        prefs.edit {
-            putInt(SettingsManager.KEY_THEME, newValue)
-            remove(OldKeys.KEY_THEME)
-            apply()
-        }
-
-        return newValue
-    }
-
-    return prefs.getInt(SettingsManager.KEY_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-}
-
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
-    if (prefs.contains(OldKeys.KEY_ACCENT1)) {
-        var accent = prefs.getInt(OldKeys.KEY_ACCENT1, 5)
-
-        // Correct any accents over yellow to their correct positions
-        if (accent > 12) {
-            accent--
-        }
-
-        // Correct neutral accents to the closest accent [Grey]
-        if (accent == 18) {
-            accent = 16
-        }
-
-        // If there are still any issues with indices, just correct them so a crash doesn't occur.
-        if (accent >= ACCENT_COUNT) {
-            accent = ACCENT_COUNT - 1
-        }
-
-        // Move this to the [also legacy] ACCENT2 field. This makes it easier to convert in the
-        // next step.
-        prefs.edit {
-            putInt(OldKeys.KEY_ACCENT2, accent)
-            remove(OldKeys.KEY_ACCENT1)
-            apply()
-        }
-    }
-
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {
         var accent = prefs.getInt(OldKeys.KEY_ACCENT2, 5)
 
@@ -111,55 +60,9 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     return Accent(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
 }
 
-fun handleSongPlayModeCompat(prefs: SharedPreferences): PlaybackMode {
-    if (prefs.contains(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
-        val mode = when (prefs.getStringOrNull(OldKeys.KEY_SONG_PLAYBACK_MODE)) {
-            EntryValues.IN_GENRE -> PlaybackMode.IN_GENRE
-            EntryValues.IN_ARTIST -> PlaybackMode.IN_ARTIST
-            EntryValues.IN_ALBUM -> PlaybackMode.IN_ALBUM
-            EntryValues.ALL_SONGS -> PlaybackMode.ALL_SONGS
-
-            else -> PlaybackMode.ALL_SONGS
-        }
-
-        prefs.edit {
-            putInt(SettingsManager.KEY_SONG_PLAYBACK_MODE, mode.toInt())
-            remove(OldKeys.KEY_SONG_PLAYBACK_MODE)
-            apply()
-        }
-
-        return mode
-    }
-
-    return PlaybackMode.fromInt(prefs.getInt(SettingsManager.KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
-        ?: PlaybackMode.ALL_SONGS
-}
-
-/**
- * A verbose shortcut for getString(key, null). Used during string pref migrations
- */
-private fun SharedPreferences.getStringOrNull(key: String): String? = getString(key, null)
-
 /**
  * Cache of the old keys used in Auxio.
  */
 private object OldKeys {
-    const val KEY_ACCENT1 = "KEY_ACCENT"
     const val KEY_ACCENT2 = "KEY_ACCENT2"
-    const val KEY_THEME = "KEY_THEME"
-    const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE"
-}
-
-/**
- * Static cache of old string values used in Auxio
- */
-private object EntryValues {
-    const val THEME_AUTO = "AUTO"
-    const val THEME_LIGHT = "LIGHT"
-    const val THEME_DARK = "DARK"
-
-    const val IN_GENRE = "IN_GENRE"
-    const val IN_ARTIST = "IN_ARTIST"
-    const val IN_ALBUM = "IN_ALBUM"
-    const val ALL_SONGS = "ALL_SONGS"
 }
