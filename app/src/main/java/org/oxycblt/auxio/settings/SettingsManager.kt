@@ -109,7 +109,7 @@ class SettingsManager private constructor(context: Context) :
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
         get() = PlaybackMode.fromInt(sharedPrefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
-        ?: PlaybackMode.ALL_SONGS
+            ?: PlaybackMode.ALL_SONGS
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean

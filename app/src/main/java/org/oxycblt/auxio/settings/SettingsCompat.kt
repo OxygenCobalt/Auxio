@@ -19,17 +19,11 @@
 package org.oxycblt.auxio.settings
 
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import org.oxycblt.auxio.accent.ACCENT_COUNT
 import org.oxycblt.auxio.accent.Accent
-import org.oxycblt.auxio.playback.state.PlaybackMode
 
 // A couple of utils for migrating from old settings values to the new
 // formats used in 1.3.2 & 1.4.0
-
-// TODO: Slate these for removal eventually. There probably isn't that many left who have the
-//  old values but 2.0.0 will probably convince most of those to update too.
 
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {

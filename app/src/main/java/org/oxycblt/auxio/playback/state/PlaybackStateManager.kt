@@ -566,6 +566,7 @@ class PlaybackStateManager private constructor() {
             unpackFromPlaybackState(playbackState)
             unpackQueue(queue)
             doParentSanityCheck()
+            doIndexSanityCheck()
         }
 
         logD("Restore finished in ${System.currentTimeMillis() - start}ms")
@@ -606,7 +607,7 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * Do the sanity check to make sure the parent was not lost in the restore process.
+     * Do a sanity check to make sure the parent was not lost in the restore process.
      */
     private fun doParentSanityCheck() {
         // Check if the parent was lost while in the DB.
@@ -619,6 +620,52 @@ class PlaybackStateManager private constructor() {
                 PlaybackMode.IN_GENRE -> mQueue.firstOrNull()?.genre
                 PlaybackMode.ALL_SONGS -> null
             }
+        }
+    }
+
+    /**
+     * Do a sanity check to make sure that the index lines up with the current song.
+     */
+    private fun doIndexSanityCheck() {
+        if (mSong != null && mSong != mQueue[mIndex]) {
+            val correctedIndex = mQueue.wobblyIndexOfFirst(mIndex, mSong)
+
+            if (correctedIndex > -1) {
+                logD("Correcting malformed index to $correctedIndex")
+                mIndex = correctedIndex
+            }
+        }
+    }
+
+    /**
+     * Finds the index of an item through a sort-of "wobbly" search where it progressively searches
+     * for item away from the [start] index, instead of from position zero. This is useful, as it
+     * increases the likelihood that the correct index was found instead of the index of a
+     * duplicate.
+     */
+    private fun <T> List<T>.wobblyIndexOfFirst(start: Int, item: T): Int {
+        if (start !in indices) {
+            return -1
+        }
+
+        var idx = start
+        var multiplier = -1
+        var delta = -1
+
+        while (true) {
+            idx += delta
+
+            if (idx !in indices) {
+                if (-idx !in indices) {
+                    return -1
+                }
+            } else if (this.getOrNull(idx) == item) {
+                return idx
+            }
+
+            delta = -delta
+            multiplier = -multiplier
+            delta += multiplier
         }
     }
 
