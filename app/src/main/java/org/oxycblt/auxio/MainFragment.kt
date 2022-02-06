@@ -166,7 +166,7 @@ class MainFragment : Fragment() {
             if (!binding.playbackLayout.collapse()) {
                 val navController = binding.exploreNavHost.findNavController()
 
-                if (navController.currentDestination?.id == navController.graph.startDestination) {
+                if (navController.currentDestination?.id == navController.graph.startDestinationId) {
                     isEnabled = false
                     requireActivity().onBackPressed()
                     isEnabled = true

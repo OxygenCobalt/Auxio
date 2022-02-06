@@ -18,6 +18,7 @@
 
 package org.oxycblt.auxio.settings.pref
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
@@ -95,8 +96,9 @@ class IntListPreference @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("PrivateResource")
     private inner class IntListSummaryProvider : SummaryProvider<IntListPreference> {
-        override fun provideSummary(preference: IntListPreference?): CharSequence {
+        override fun provideSummary(preference: IntListPreference): CharSequence {
             val index = getValueIndex()
 
             if (index != -1) {

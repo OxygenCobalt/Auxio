@@ -75,7 +75,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.prefs_main, rootKey)
     }
 
-    override fun onDisplayPreferenceDialog(preference: Preference?) {
+    override fun onDisplayPreferenceDialog(preference: Preference) {
         if (preference is IntListPreference) {
             IntListPrefDialog.from(preference).show(childFragmentManager, IntListPrefDialog.TAG)
         } else {

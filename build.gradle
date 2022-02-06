@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.6.10'
-    ext.navigation_version = "2.3.5"
+    ext.navigation_version = "2.5.0-alpha01" // TODO: Downgrade back to 2.4.1 when it is out
 
     repositories {
         google()

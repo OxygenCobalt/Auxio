@@ -122,7 +122,6 @@ class ExcludedDialog : LifecycleDialog() {
         if (path != null) {
             excludedModel.addPath(path)
         } else {
-            // TODO: Maybe tolerate this?
             requireContext().showToast(R.string.err_bad_dir)
         }
     }

@@ -45,8 +45,6 @@ import org.oxycblt.auxio.util.showToast
 /**
  * The [DetailFragment] for an album.
  * @author OxygenCobalt
- * TODO: Disable queue adding when there is no playback here too, however make it so that
- *  it updates when the song changes.
  */
 class AlbumDetailFragment : DetailFragment() {
     private val args: AlbumDetailFragmentArgs by navArgs()
