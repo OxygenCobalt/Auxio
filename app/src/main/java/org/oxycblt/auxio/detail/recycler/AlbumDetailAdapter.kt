@@ -20,6 +20,7 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
@@ -178,13 +179,19 @@ class AlbumDetailAdapter(
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         override fun onBind(data: Song) {
             binding.song = data
-
             binding.songName.requestLayout()
+
+            // Hide the track number view if the track is zero, as generally a track number of
+            // zero implies that the song does not have a track number.
+            val usePlaceholder = data.track < 1
+            binding.songTrack.isInvisible = usePlaceholder
+            binding.songTrackPlaceholder.isInvisible = !usePlaceholder
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
             binding.songName.isActivated = isHighlighted
             binding.songTrack.isActivated = isHighlighted
+            binding.songTrackPlaceholder.isActivated = isHighlighted
         }
     }
 
