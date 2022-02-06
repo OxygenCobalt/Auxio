@@ -1,13 +1,10 @@
 # Architecture
-
 This document is designed to provide an overview of Auxio's architecture and design decisions. It will be updated as Auxio changes.
 
 ## Core Facets
-
 Auxio has a couple of core systems or concepts that should be understood when working with the codebase.
 
 #### Package Structure
-
 Auxio's package structure is strictly feature-oriented. For example, playback code is exclusively in the `playback` package,
 and detail code is exclusively in the `detail` package. Sub-packages can be related to the code it contains, such as `detail.recycler`
 for the detail UI adapters, or they can be related to a sub-feature, like `playback.queue` for the queue UI.
@@ -41,7 +38,6 @@ org.oxycblt.auxio  # Main UIs
 Each package is gone over in more detail later on.
 
 #### UI Structure
-
 Auxio only has one activity, `MainActivity`. Do not try to add more activities to the codebase. Instead, a new UI
 should be added as a new `Fragment` implementation and added to one of the two navigation graphs:
 
@@ -74,7 +70,6 @@ the attributes directly unless absolutely necessary. Usually it's okay to apply 
 to duplicate layouts simply because they apply to different data objects, such as the detail UIs.
 
 #### Object communication
-
 Auxio's codebase is mostly centered around 4 different types of code that communicates with each-other.
 
 - UIs: Fragments, RecyclerView items, and Activities are part of this class. All of them should have little data logic
@@ -91,7 +86,6 @@ Ideally, UIs should only be talking to ViewModels, ViewModels should only be tal
 should only be talking to other shared objects.  All objects can use the utility functions where appropriate.
 
 #### Data objects
-
 Auxio represents data in multiple ways.
 
 `BaseModel` is the base class for most music and UI data in Auxio, with a single ID field meant to mark it as unique.
@@ -117,7 +111,6 @@ poor UX to the user.
     - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`
 
 #### Music Access
-
 All music on a system is asynchronously loaded into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.
 
 - ViewModels should try to await or gracefully exit the called method if `MusicStore` is not available
@@ -127,7 +120,6 @@ All music on a system is asynchronously loaded into the shared object `MusicStor
 If the loading status needs to be shown in a UI, `MusicViewModel` can be used to observe the current music loader response.
 
 #### Playback System
-
 Auxio's playback system is somewhat unorthodox, as it avoids much of the android-provided APIs in favor of a more controllable and sensible system.
 The diagram below highlights the overall structure and connections:
 
@@ -158,7 +150,6 @@ system events, such as when a button is pressed on a headset. It should **never*
 `PlaybackViewModel` exposes the same data in a much safer fashion.
 
 #### Data Integers
-
 Integer representations of data/UI elements are used heavily in Auxio, primarily for efficiency.
 To prevent any strange bugs, all integer representations must be unique. A table of all current integers used are shown below:
 
@@ -219,19 +210,16 @@ the documentation for those datatypes.
 ## Package-by-package rundown
 
 #### `org.oxycblt.auxio`
-
 This is the root package and contains the application instance and the landing UIs. This should be kept sparse with most other code being placed
 into a package.
 
 #### `.accent`
-
 This package is responsible for Auxio's color schemes, internally known as accents due to legacy code.
 It contains an object that represents the attributes of an accent, but this should be avoided in favor of
 resolving color attributes directly, such as `colorPrimary`. This package also contains the UIs for picking
 an accent.
 
 #### `.coil`
-
 [Coil](https://github.com/coil-kt/coil) is the image loader used by Auxio. All image loading is done through these four functions/binding adapters:
 
 - `app:albumArt`: Binding Adapter that will load the cover art for a song or album
@@ -245,7 +233,6 @@ Internally, multiple fetchers are provided to transform `Music` instances into i
 the necessary methods for loading album artwork and creating the mosaics shown in artist/genre images.
 
 #### `.detail`
-
 Contains all the detail UIs for some data types in Auxio. All detail user interfaces share the same base layout (A Single RecyclerView) and
 only change the adapter/data being used. The adapters display both the header with information and the child items of the item itself, usually
 with a data list similar to this:
@@ -258,7 +245,6 @@ Each adapter instance also handles the highlighting of the currently playing ite
 navigation [Such as when a user presses "Go to artist"]
 
 #### `.excluded`
-
 This package is responsible for the excluded directory system. It contains the database of excluded directories and the dialog that appears when
 editing them.
 
@@ -266,7 +252,6 @@ editing them.
 compatibility with previous versions of Auxio.
 
 #### `.home`
-
 This package contains the components for the "home" UI in Auxio, or the UI that the user first sees when they open the app.
 
 - The base package contains the top-level components that manage the FloatingActionButton, AppBar, and ViewPager instances.
@@ -275,12 +260,10 @@ This package contains the components for the "home" UI in Auxio, or the UI that 
 - The `tabs` package contains the data representation of an individual library tab and the UIs for editing them.
 
 #### `.music`
-
 This package contains all `BaseModel` implementations and the music loading implementation. This also includes `Header`/`ActionHeader`, as those
 data objects have to inherit `BaseModel` so that they can be placed alongside `Music` instances in `RecyclerView` instances.
 
 #### `.playback`
-
 This module not only contains the playback system described above, but also multiple other components:
 
 - `queue` contains the Queue UI and it's fancy item transitions
@@ -291,19 +274,16 @@ The most important part of this module is `PlaybackLayout`, which is a custom `V
 slide up into the full playback view. `MainFragment` controls this `ViewGroup`.
 
 #### `.search`
-
 Package for Auxio's search functionality, `SearchViewHolder` handles the data results and filtering while `SearchFragment`/`SearchAdapter` handles the
 display of the results and user input.
 
 #### `.settings`
-
 The settings system is primarily based off of `SettingsManager`, a wrapper around `SharedPreferences`. This allows settings to be read/written in a
 much simpler/safer manner and without a context being needed. The Settings UI is largely contained in `SettingsListFragment`, while the `pref`
 sub-package contains `IntListPreference`, which allows Auxio's integer representations to be used with the preference UI. The about dialog
 also resides in this package.
 
 #### `.ui`
-
 Shared views and view configuration models. This contains:
 
 - Customized views such as `EdgeAppBarLayout` and `EdgeRecyclerView`, which add some extra functionality not provided by default
@@ -312,11 +292,9 @@ Shared views and view configuration models. This contains:
 - `memberBinding` and `MemberBinder`, which allows for ViewBindings to be used as a member variable without memory leaks or nullability issues.
 
 #### `.util`
-
 Shared utilities. This is primarily for QoL when developing Auxio. Documentation is provided on each method.
 
 #### `.widgets`
-
 This package contains Auxio's AppWidget implementation, which deviates from other AppWidget implementations by packing multiple
 different layouts into a single widget and then switching between them depending on the widget size.
 

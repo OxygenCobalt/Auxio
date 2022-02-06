@@ -20,6 +20,7 @@ artist they are grouped up in
 
 #### Dev/Meta:
 - Removed 1.4.X compat
+- Added new changelog document
 
 ## v2.1.0
 #### What's New:

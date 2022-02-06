@@ -98,8 +98,6 @@ class AudioReactor(
             return
         }
 
-        logD("$metadata")
-
         // ReplayGain is configurable, so determine what to do based off of the mode.
         val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
             ReplayGainMode.OFF -> {

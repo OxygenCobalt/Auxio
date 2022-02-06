@@ -1,7 +1,6 @@
 # Auxio contribution guidelines
 
 ## Crashes & Bugs
-
 Log them in the [Issues](https://github.com/OxygenCobalt/Auxio/issues) tab.
 
 Please keep in mind when reporting an issue:
@@ -17,8 +16,7 @@ If you do make an issue, Make sure to provide:
 If you have knowledge of Android/Kotlin in general, you could also go about fixing the bug yourself and opening a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls).
 
 ## Feature Requests
-
-These should also be logged in the  [Issues](https://github.com/OxygenCobalt/Auxio/issues) tab.
+These should also be logged in the [Issues](https://github.com/OxygenCobalt/Auxio/issues) tab.
 
 Please keep in mind when requesting a feature:
 - **Has it already been requested?** Make sure request for this feature is not already here.
@@ -34,17 +32,14 @@ If you have the knowledge, you can also implement the feature yourself and creat
 Its also recommended that you read about [Auxio's Architecture](../info/ARCHITECTURE.md) as well to make changes better and more efficient.
 
 ## Translations
-
-I still need to setup weblate, so currently you should open a [Pull Request](https://github.com/OxygenCobalt/Auxio/pulls) to add translations to the strings.xml for your specific language.
+I don't really see the use in weblate, so currently you should see the [Translations Megathread]](https://github.com/OxygenCobalt/Auxio/issues/3) to see how to propose translations.
 
 ## Code Contributions
-
 If you have knowledge of Android/Kotlin, feel free to to contribute to the project.
-
 - If you want to help out with an existing bug report, comment on the issue that you want to fix saying that you are going to try your hand at it.
 - If you want to add something, its recommended to open up an issue for what you want to change before you start working on it. That way I can determine if the addition will be merged in the first place, and generally gives a heads-up overall.
 - Do not bring non-free software into the project, such as Binary Blobs.
-- Stick to [F-Droid Contribution Guidelines](https://f-droid.org/wiki/page/Inclusion_Policy)
+- Stick to [F-Droid Including Guidelines](https://f-droid.org/wiki/page/Inclusion_Policy)
 - Make sure you stick to Auxio's styling with [ktlint](https://github.com/pinterest/ktlint). `ktlintformat` should run on every build.
 - Please ***FULLY TEST*** your changes before creating a PR. Untested code will not be merged.
 - Java code will **NOT** be accepted. Kotlin only.
