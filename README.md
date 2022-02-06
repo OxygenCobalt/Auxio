@@ -10,7 +10,7 @@
     </a>
     <img alt="Minimum SDK" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/info/FAQ.md">FAQ</a> | <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a></h4> 
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="/info/FAQ.md">FAQ</a> |  <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
 </p>
@@ -40,7 +40,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 - [ExoPlayer](https://exoplayer.dev/) based playback
 - Customizable UI & Behavior
-- Genres/Artists/Albums/Songs indexing
+- Advanced media indexer that prioritizes correct metadata
 - Reliable playback state persistence
 - ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
 - Material You (Android 12+ only)

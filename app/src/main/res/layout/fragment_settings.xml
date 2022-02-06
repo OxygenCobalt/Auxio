@@ -20,7 +20,7 @@
             android:focusable="true"
             app:liftOnScroll="true">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/settings_toolbar"
                 style="@style/Widget.Auxio.Toolbar.Icon"
                 app:title="@string/set_title" />

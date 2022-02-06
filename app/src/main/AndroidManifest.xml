@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- Workaround for ExoPlayer requiring unnecessary permissions -->
+    <!-- Work around ExoPlayer requiring unnecessary permissions -->
     <uses-permission
         android:name="android.permission.ACCESS_NETWORK_STATE"
         tools:node="remove" />
@@ -20,7 +20,6 @@
     as devices before Android 12 should just use fullBackupContent and devices beyond it
     should use dataExtractionRules.
     -->
-
     <application
         android:name=".AuxioApp"
         android:allowBackup="true"

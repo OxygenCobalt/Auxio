@@ -111,7 +111,8 @@ class PlaybackFragment : Fragment() {
         }
 
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            binding.playbackToolbar.subtitle = parent?.name ?: getString(R.string.lbl_all_songs)
+            binding.playbackToolbar.subtitle = parent?.resolvedName
+                ?: getString(R.string.lbl_all_songs)
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->

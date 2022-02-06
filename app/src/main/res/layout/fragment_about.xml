@@ -17,7 +17,7 @@
             android:background="?attr/colorSurface"
             app:liftOnScroll="true">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/about_toolbar"
                 style="@style/Widget.Auxio.Toolbar.Icon"
                 app:title="@string/lbl_about" />
@@ -39,7 +39,8 @@
                 app:cardCornerRadius="0dp"
                 app:cardElevation="0dp"
                 app:strokeColor="@color/mtrl_btn_stroke_color_selector"
-                app:strokeWidth="1dp">
+                app:strokeWidth="1dp"
+                tools:ignore="PrivateResource">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
