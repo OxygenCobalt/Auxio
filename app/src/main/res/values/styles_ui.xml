@@ -163,7 +163,7 @@
 
         <!--
         Abuse this floating action button to act more like an old-school auxio button.
-        This is only done because the elevation show acts weird with the panel layout.
+        This is only done because elevation acts weird with the panel layout.
         -->
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>

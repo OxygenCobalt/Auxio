@@ -20,9 +20,9 @@ package org.oxycblt.auxio.accent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.util.pxOfDp
 import kotlin.math.max
 
 /**
@@ -38,9 +38,7 @@ class AutoGridLayoutManager(
 ) : GridLayoutManager(context, attrs, defStyleAttr, defStyleRes) {
     // We use 72dp here since that's the rough size of the accent item.
     // This will need to be modified if this is used beyond the accent dialog.
-    private var columnWidth = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP, 72F, context.resources.displayMetrics
-    ).toInt()
+    private var columnWidth = context.pxOfDp(72f)
 
     private var lastWidth = -1
     private var lastHeight = -1

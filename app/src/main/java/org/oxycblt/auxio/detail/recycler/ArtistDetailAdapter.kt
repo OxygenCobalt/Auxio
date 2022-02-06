@@ -38,7 +38,7 @@ import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
-import org.oxycblt.auxio.util.getPlural
+import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -207,8 +207,8 @@ class ArtistDetailAdapter(
 
             binding.detailInfo.text = context.getString(
                 R.string.fmt_counts,
-                context.getPlural(R.plurals.fmt_album_count, data.albums.size),
-                context.getPlural(R.plurals.fmt_song_count, data.songs.size)
+                context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
+                context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
             )
 
             binding.detailPlayButton.setOnClickListener {

@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.getDimenSafe
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -90,7 +91,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             val bg = holder.bodyView.background as MaterialShapeDrawable
-            val elevation = recyclerView.resources.getDimension(R.dimen.elevation_small)
+            val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
 
             holder.itemView.animate()
                 .translationZ(elevation)

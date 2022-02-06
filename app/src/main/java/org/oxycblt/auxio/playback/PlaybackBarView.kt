@@ -30,8 +30,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.resolveAttr
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -53,7 +53,7 @@ class PlaybackBarView @JvmOverloads constructor(
         // colorSurfaceVariant is used with the assumption that the view that is using it is
         // not elevated and is therefore not colored. This view is elevated.
         binding.playbackProgressBar.trackColor = MaterialColors.compositeARGBWithAlpha(
-            R.attr.colorSecondary.resolveAttr(context), (255 * 0.2).toInt()
+            context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt()
         )
     }
 

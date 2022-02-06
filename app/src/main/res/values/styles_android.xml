@@ -39,12 +39,15 @@
 
     <!-- Widget TextView that mimics the main Auxio Primary TextView -->
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
+        <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
     </style>
 
     <!-- Widget TextView that mimics the main Auxio Secondary TextView -->
     <style name="Widget.Auxio.TextView.Secondary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
     </style>

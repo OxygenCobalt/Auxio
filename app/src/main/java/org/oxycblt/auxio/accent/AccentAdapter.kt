@@ -18,16 +18,15 @@
 
 package org.oxycblt.auxio.accent
 
-import android.content.res.ColorStateList
 import android.view.ViewGroup
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
+import org.oxycblt.auxio.util.getAttrColorSafe
+import org.oxycblt.auxio.util.getColorSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.resolveAttr
-import org.oxycblt.auxio.util.resolveColor
-import org.oxycblt.auxio.util.resolveStateList
+import org.oxycblt.auxio.util.stateList
 
 /**
  * An adapter that displays the list of all possible accents, and highlights the current one.
@@ -63,7 +62,7 @@ class AccentAdapter(
             setSelected(accent == curAccent)
 
             binding.accent.apply {
-                backgroundTintList = ColorStateList.valueOf(accent.primary.resolveColor(context))
+                backgroundTintList = context.getColorSafe(accent.primary).stateList
                 contentDescription = context.getString(accent.name)
                 TooltipCompat.setTooltipText(this, contentDescription)
             }
@@ -84,9 +83,9 @@ class AccentAdapter(
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
 
-                ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
+                context.getAttrColorSafe(R.attr.colorSurface).stateList
             } else {
-                android.R.color.transparent.resolveStateList(context)
+                context.getColorSafe(android.R.color.transparent).stateList
             }
         }
     }

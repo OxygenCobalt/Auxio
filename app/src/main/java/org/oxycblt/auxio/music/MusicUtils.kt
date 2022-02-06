@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.core.text.isDigitsOnly
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getPlural
+import org.oxycblt.auxio.util.getPluralSafe
 
 /**
  * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
@@ -128,7 +128,7 @@ fun Int.toDate(context: Context): String {
 fun TextView.bindArtistCounts(artist: Artist) {
     text = context.getString(
         R.string.fmt_counts,
-        context.getPlural(R.plurals.fmt_album_count, artist.albums.size),
-        context.getPlural(R.plurals.fmt_song_count, artist.songs.size)
+        context.getPluralSafe(R.plurals.fmt_album_count, artist.albums.size),
+        context.getPluralSafe(R.plurals.fmt_song_count, artist.songs.size)
     )
 }

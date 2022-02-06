@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.color.MaterialColors
@@ -28,8 +27,9 @@ import com.google.android.material.slider.Slider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
+import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.resolveAttr
+import org.oxycblt.auxio.util.stateList
 
 /**
  * A custom view that bundles together a seekbar with a current duration and a total duration.
@@ -53,11 +53,9 @@ class PlaybackSeekBar @JvmOverloads constructor(
         binding.seekBar.addOnSliderTouchListener(this)
 
         // Override the inactive color so that it lines up with the playback progress bar.
-        binding.seekBar.trackInactiveTintList = ColorStateList.valueOf(
-            MaterialColors.compositeARGBWithAlpha(
-                R.attr.colorSecondary.resolveAttr(context), (255 * 0.2).toInt()
-            )
-        )
+        binding.seekBar.trackInactiveTintList = MaterialColors.compositeARGBWithAlpha(
+            context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt()
+        ).stateList
     }
 
     fun setProgress(seconds: Long) {

@@ -7,8 +7,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreferenceCompat
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.resolveDrawable
-import org.oxycblt.auxio.util.resolveStateList
+import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
  * A [SwitchPreferenceCompat] that emulates the M3 switches until the design team
@@ -31,10 +31,10 @@ class M3SwitchPreference @JvmOverloads constructor(
 
             if (switch is SwitchCompat) {
                 switch.apply {
-                    trackDrawable = R.drawable.ui_m3_switch_track.resolveDrawable(context)
-                    trackTintList = R.color.sel_m3_switch_track.resolveStateList(context)
-                    thumbDrawable = R.drawable.ui_m3_switch_thumb.resolveDrawable(context)
-                    thumbTintList = R.color.sel_m3_switch_thumb.resolveStateList(context)
+                    trackDrawable = context.getDrawableSafe(R.drawable.ui_m3_switch_track)
+                    trackTintList = context.getColorStateListSafe(R.color.sel_m3_switch_track)
+                    thumbDrawable = context.getDrawableSafe(R.drawable.ui_m3_switch_thumb)
+                    thumbTintList = context.getColorStateListSafe(R.color.sel_m3_switch_thumb)
                 }
 
                 needToUpdateSwitch = false

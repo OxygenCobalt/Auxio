@@ -34,7 +34,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.util.getPlural
+import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -145,7 +145,7 @@ class GenreDetailAdapter(
             binding.detailName.text = data.resolvedName
 
             binding.detailSubhead.apply {
-                text = context.getPlural(R.plurals.fmt_song_count, data.songs.size)
+                text = context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
             }
 
             binding.detailInfo.text = data.totalDuration

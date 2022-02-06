@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
@@ -40,6 +39,7 @@ import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.stateList
 
 /**
  * The single adapter for both the Next Queue and the User Queue.
@@ -130,7 +130,7 @@ class QueueAdapter(
             binding.body.background = MaterialShapeDrawable.createWithElevationOverlay(
                 binding.root.context
             ).apply {
-                fillColor = ColorStateList.valueOf((binding.body.background as ColorDrawable).color)
+                fillColor = (binding.body.background as ColorDrawable).color.stateList
             }
         }
 

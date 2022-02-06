@@ -42,8 +42,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.canScroll
-import org.oxycblt.auxio.util.resolveAttr
-import org.oxycblt.auxio.util.resolveDrawable
+import org.oxycblt.auxio.util.getAttrColorSafe
+import org.oxycblt.auxio.util.getDimenOffsetSafe
+import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.getDrawableSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import kotlin.math.abs
 
@@ -86,7 +88,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
      */
     var onDragListener: ((Boolean) -> Unit)? = null
 
-    private val minTouchTargetSize: Int = resources.getDimensionPixelSize(R.dimen.size_btn_small)
+    private val minTouchTargetSize: Int = context.getDimenSizeSafe(R.dimen.size_btn_small)
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
 
     // Views for the track, thumb, and popup. Note that the track view is mostly vestigial
@@ -122,7 +124,7 @@ class FastScrollRecyclerView @JvmOverloads constructor(
     private val scrollerPadding = Rect(0, 0, 0, 0)
 
     init {
-        val thumbDrawable = R.drawable.ui_scroll_thumb.resolveDrawable(context)
+        val thumbDrawable = context.getDrawableSafe(R.drawable.ui_scroll_thumb)
 
         trackView = View(context)
         thumbView = View(context).apply {
@@ -136,25 +138,19 @@ class FastScrollRecyclerView @JvmOverloads constructor(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             )
 
-            minimumWidth = resources.getDimensionPixelSize(
-                R.dimen.popup_min_width
-            )
-            minimumHeight = resources.getDimensionPixelSize(
-                R.dimen.size_btn_large
-            )
+            minimumWidth = context.getDimenSizeSafe(R.dimen.popup_min_width)
+            minimumHeight = context.getDimenSizeSafe(R.dimen.size_btn_large)
 
             (layoutParams as FrameLayout.LayoutParams).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                marginEnd = resources.getDimensionPixelOffset(
-                    R.dimen.spacing_small
-                )
+                marginEnd = context.getDimenOffsetSafe(R.dimen.spacing_small)
             }
 
             TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-            setTextColor(R.attr.colorOnSecondary.resolveAttr(context))
+            setTextColor(context.getAttrColorSafe(R.attr.colorOnSecondary))
 
             background = FastScrollPopupDrawable(context)
-            elevation = resources.getDimensionPixelOffset(R.dimen.elevation_normal).toFloat()
+            elevation = context.getDimenSizeSafe(R.dimen.elevation_normal).toFloat()
             ellipsize = TextUtils.TruncateAt.MIDDLE
             gravity = Gravity.CENTER
             includeFontPadding = false

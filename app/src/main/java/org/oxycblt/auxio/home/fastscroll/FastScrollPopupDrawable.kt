@@ -31,7 +31,8 @@ import android.os.Build
 import android.view.View
 import androidx.core.graphics.drawable.DrawableCompat
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.resolveAttr
+import org.oxycblt.auxio.util.getAttrColorSafe
+import org.oxycblt.auxio.util.getDimenOffsetSafe
 import kotlin.math.sqrt
 
 /**
@@ -54,15 +55,15 @@ import kotlin.math.sqrt
 class FastScrollPopupDrawable(context: Context) : Drawable() {
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
-        color = R.attr.colorSecondary.resolveAttr(context)
+        color = context.getAttrColorSafe(R.attr.colorSecondary)
         style = Paint.Style.FILL
     }
 
     private val path = Path()
     private val matrix = Matrix()
 
-    private val paddingStart = context.resources.getDimensionPixelOffset(R.dimen.spacing_medium)
-    private val paddingEnd = context.resources.getDimensionPixelOffset(R.dimen.popup_padding_end)
+    private val paddingStart = context.getDimenOffsetSafe(R.dimen.spacing_medium)
+    private val paddingEnd = context.getDimenOffsetSafe(R.dimen.popup_padding_end)
 
     override fun draw(canvas: Canvas) {
         canvas.drawPath(path, paint)

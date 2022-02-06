@@ -1,7 +1,6 @@
 package org.oxycblt.auxio.playback
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
@@ -24,9 +23,12 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.getAttrColorSafe
+import org.oxycblt.auxio.util.getDimenSafe
+import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceInsetsCompat
-import org.oxycblt.auxio.util.resolveAttr
-import org.oxycblt.auxio.util.resolveDrawable
+import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import kotlin.math.abs
 import kotlin.math.max
@@ -96,6 +98,7 @@ class PlaybackLayout @JvmOverloads constructor(
     private var initMotionX = 0f
     private var initMotionY = 0f
     private val tRect = Rect()
+    private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
 
     /** See [isDragging] */
     private val dragStateField = ViewDragHelper::class.java.getDeclaredField("mDragState").apply {
@@ -115,15 +118,15 @@ class PlaybackLayout @JvmOverloads constructor(
             isFocusableInTouchMode = false
 
             playbackContainerBg = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                fillColor = ColorStateList.valueOf(R.attr.colorSurface.resolveAttr(context))
-                elevation = resources.getDimensionPixelSize(R.dimen.elevation_normal).toFloat()
+                fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
+                elevation = context.pxOfDp(elevationNormal).toFloat()
             }
 
             // The way we fade out the elevation overlay is not by actually reducing the elevation
             // but by fading out the background drawable itself. To be safe, we apply this
             // background drawable to a layer list with another colorSurface shape drawable, just
             // in case weird things happen if background drawable is completely transparent.
-            background = (R.drawable.ui_panel_bg.resolveDrawable(context) as LayerDrawable).apply {
+            background = (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
                 setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
             }
         }
@@ -534,6 +537,7 @@ class PlaybackLayout @JvmOverloads constructor(
         // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
         // neutral color instead of an elevated one when fully expanded.
         playbackContainerBg.alpha = (outRatio * 255).toInt()
+        playbackContainerView.translationZ = elevationNormal * outRatio
 
         // Fade out our bar view as we slide up
         playbackBarView.apply {

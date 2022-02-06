@@ -18,22 +18,20 @@
 
 package org.oxycblt.auxio.util
 
-import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Insets
 import android.graphics.Rect
 import android.os.Build
-import android.util.TypedValue
 import android.view.WindowInsets
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
+
+/**
+ * Converts this color to a single-color [ColorStateList].
+ */
+val @receiver:ColorRes Int.stateList get() = ColorStateList.valueOf(this)
 
 /**
  * Apply the recommended spans for a [RecyclerView].
@@ -63,60 +61,6 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
  * Returns whether a recyclerview can scroll.
  */
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
-
-/**
- * Resolve a color.
- * @param context [Context] required
- * @return The resolved color, black if the resolving process failed.
- */
-@ColorInt
-fun @receiver:ColorRes Int.resolveColor(context: Context): Int {
-    return try {
-        ContextCompat.getColor(context, this)
-    } catch (e: Resources.NotFoundException) {
-        logE("Attempted color load failed: ${e.stackTraceToString()}")
-
-        // Default to the emergency color [Black] if the loading fails.
-        ContextCompat.getColor(context, android.R.color.black)
-    }
-}
-
-/**
- * Resolve a color and turn it into a [ColorStateList]
- * @param context [Context] required
- * @return The resolved color as a [ColorStateList]
- * @see resolveColor
- */
-fun @receiver:ColorRes Int.resolveStateList(context: Context) =
-    ContextCompat.getColorStateList(context, this)
-
-/*
- * Resolve a color and turn it into a [ColorStateList]
- * @param context [Context] required
- * @return The resolved color as a [ColorStateList]
- * @see resolveColor
- */
-fun @receiver:DrawableRes Int.resolveDrawable(context: Context) =
-    requireNotNull(ContextCompat.getDrawable(context, this))
-
-/**
- * Resolve this int into a color as if it was an attribute
- */
-@ColorInt
-fun @receiver:AttrRes Int.resolveAttr(context: Context): Int {
-    // First resolve the attribute into its ID
-    val resolvedAttr = TypedValue()
-    context.theme.resolveAttribute(this, resolvedAttr, true)
-
-    // Then convert it to a proper color
-    val color = if (resolvedAttr.resourceId != 0) {
-        resolvedAttr.resourceId
-    } else {
-        resolvedAttr.data
-    }
-
-    return color.resolveColor(context)
-}
 
 /**
  * Resolve window insets in a version-aware manner. This can be used to apply padding to

@@ -36,6 +36,7 @@ import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import kotlin.math.min
@@ -106,9 +107,8 @@ class WidgetProvider : AppWidgetProvider() {
         // we get a 1:1 aspect ratio image results in clipToOutline not working well.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val transform = RoundedCornersTransformation(
-                context.resources.getDimensionPixelSize(
-                    android.R.dimen.system_app_widget_inner_radius
-                ).toFloat()
+                context.getDimenSizeSafe(android.R.dimen.system_app_widget_inner_radius)
+                    .toFloat()
             )
 
             coverRequest.transformations(transform)
@@ -199,7 +199,7 @@ class WidgetProvider : AppWidgetProvider() {
                 var height: Int
 
                 // Landscape/Portrait modes use different dimen bounds
-                if (context.isLandscape()) {
+                if (context.isLandscape) {
                     width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
                     height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
                 } else {
