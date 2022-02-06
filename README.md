@@ -42,7 +42,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Customizable UI & Behavior
 - Genres/Artists/Albums/Songs indexing
 - Reliable playback state persistence
-- ReplayGain support (On MP3, FLAC, OGG, and OPUS)
+- ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
 - Material You (Android 12+ only)
 - Edge-to-edge
 - Embedded covers support

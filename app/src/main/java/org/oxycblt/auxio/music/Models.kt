@@ -137,7 +137,7 @@ data class Album(
     val _mediaStoreArtistName: String,
 ) : MusicParent() {
     init {
-        songs.forEach { song ->
+        for (song in songs) {
             song.mediaStoreLinkAlbum(this)
         }
     }
@@ -181,7 +181,7 @@ data class Artist(
     val albums: List<Album>
 ) : MusicParent() {
     init {
-        albums.forEach { album ->
+        for (album in albums) {
             album.mediaStoreLinkArtist(this)
         }
     }
@@ -198,23 +198,19 @@ data class Artist(
 data class Genre(
     override val name: String,
     override val resolvedName: String,
-    /** Internal field. Do not use. */
-    val _mediaStoreId: Long
+    val songs: List<Song>
 ) : MusicParent() {
+    init {
+        for (song in songs) {
+            song.mediaStoreLinkGenre(this)
+        }
+    }
+
     override val id = name.hashCode().toLong()
 
     /** The formatted total duration of this genre */
     val totalDuration: String get() =
         songs.sumOf { it.seconds }.toDuration(false)
-
-    private val mSongs = mutableListOf<Song>()
-    val songs: List<Song> get() = mSongs
-
-    /** Internal method. Do not use. */
-    fun linkSong(song: Song) {
-        mSongs.add(song)
-        song.mediaStoreLinkGenre(this)
-    }
 }
 
 /**

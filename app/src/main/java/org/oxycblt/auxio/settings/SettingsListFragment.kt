@@ -55,11 +55,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferenceScreen.children.forEach { pref ->
-            recursivelyHandleChildren(pref)
-        }
-
         preferenceManager.onDisplayPreferenceDialogListener = this
+        preferenceScreen.children.forEach(::recursivelyHandlePreference)
 
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
             clipToPadding = false
@@ -87,28 +84,18 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     }
 
     /**
-     * Recursively call [handlePreference] on a preference.
+     * Recursively handle a preference, doing any specific actions on it.
      */
-    private fun recursivelyHandleChildren(preference: Preference) {
-        if (!preference.isVisible) {
-            return
-        }
+    private fun recursivelyHandlePreference(preference: Preference) {
+        if (!preference.isVisible) return
 
         if (preference is PreferenceCategory) {
-            // If this preference is a category of its own, handle its own children
-            preference.children.forEach { pref ->
-                recursivelyHandleChildren(pref)
+            for (child in preference.children) {
+                recursivelyHandlePreference(child)
             }
-        } else {
-            handlePreference(preference)
         }
-    }
 
-    /**
-     * Handle a preference, doing any specific actions on it.
-     */
-    private fun handlePreference(pref: Preference) {
-        pref.apply {
+        preference.apply {
             when (key) {
                 SettingsManager.KEY_THEME -> {
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())

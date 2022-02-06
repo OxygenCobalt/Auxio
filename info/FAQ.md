@@ -38,8 +38,7 @@ I hope to make the app rescan music on the fly eventually.
 #### ReplayGain isn't working on my music!
 
 This is for a couple reason:
-- Auxio doesn't extract ReplayGain tags for your format. This is the case with MP4 files since there's no
-defined ReplayGain standard for those.
+- Auxio doesn't extract ReplayGain tags for your format.
 - Auxio doesn't recognize your ReplayGain tags. This is usually because of a non-standard tag like ID3v2's `RVAD` or
 an unrecognized name.
 - Your tags use a ReplayGain value higher than 0. Due to technical limitations, Auxio does not support this right now. 

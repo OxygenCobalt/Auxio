@@ -64,7 +64,7 @@ sealed class Tab(open val mode: DisplayMode) {
             var sequence = 0b0100
             var shift = SEQUENCE_LEN * 4
 
-            distinct.forEach { tab ->
+            for (tab in distinct) {
                 val bin = when (tab) {
                     is Visible -> 1.shl(3) or tab.mode.ordinal
                     is Invisible -> tab.mode.ordinal
@@ -107,10 +107,9 @@ sealed class Tab(open val mode: DisplayMode) {
             // Make sure there are no duplicate tabs
             val distinct = tabs.distinctBy { it.mode }
 
-            // For safety, use the default configuration if something went wrong
-            // and we have an empty or larger-than-expected tab array.
+            // For safety, return null if we have an empty or larger-than-expected tab array.
             if (distinct.isEmpty() || distinct.size < SEQUENCE_LEN) {
-                logE("Sequence size was ${distinct.size}, which is invalid. Using defaults instead")
+                logE("Sequence size was ${distinct.size}, which is invalid.")
                 return null
             }
 

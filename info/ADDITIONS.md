@@ -29,4 +29,5 @@ Feel free to fork Auxio to add your own feature set however.
 - Tag editing [#33] (Out of scope)
 - Gapless Playback [#35] (Technical issues)
 - Reduce leading instrument [#45] (Technical issues, Out of scope)
+- Disabling track numbers [#73] (Out of scope)
 - Opening music through a provider [#30] (Out of scope)

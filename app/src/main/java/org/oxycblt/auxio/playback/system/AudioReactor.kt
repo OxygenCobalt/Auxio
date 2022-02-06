@@ -98,6 +98,8 @@ class AudioReactor(
             return
         }
 
+        logD("$metadata")
+
         // ReplayGain is configurable, so determine what to do based off of the mode.
         val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
             ReplayGainMode.OFF -> {
@@ -144,8 +146,8 @@ class AudioReactor(
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
-        // TODO: Support positive ReplayGain values. They're more obscure but still exist.
-        //  It will likely require moving functionality from this class to an AudioProcessor
+        // While positive ReplayGain values *could* be theoretically added, it's such
+        // a niche use-case that to be worth the effort required. Maybe if someone requests it.
         volume = MathUtils.clamp((10f.pow((adjust / 20f))), 0f, 1f)
     }
 

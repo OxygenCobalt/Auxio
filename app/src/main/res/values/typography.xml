@@ -4,7 +4,7 @@
     <style name="TextAppearance.Auxio.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.Auxio.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
@@ -22,7 +22,7 @@
     <style name="TextAppearance.Auxio.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.Auxio.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
@@ -40,7 +40,7 @@
     <style name="TextAppearance.Auxio.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
@@ -58,21 +58,21 @@
     <style name="TextAppearance.Auxio.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
     
@@ -97,19 +97,14 @@
         <item name="android:letterSpacing">0.03</item>
     </style>
 
-    <!--
-    Text extensions
-    Material3 TextAppearances are really inflexible, so these add some extra categories that
-    allow for better UX.
-    -->
     <style name="TextAppearance.Auxio.TitleMidLarge" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelLarger" parent="TextAppearance.Auxio.LabelLarge">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/text_size_ext_label_larger</item>
     </style>
 </resources>

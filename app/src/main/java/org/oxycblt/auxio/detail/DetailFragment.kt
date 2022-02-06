@@ -20,7 +20,7 @@ package org.oxycblt.auxio.detail
 
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.forEach
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -125,7 +125,7 @@ abstract class DetailFragment : Fragment() {
             }
 
             if (showItem != null) {
-                menu.forEach { item ->
+                for (item in menu.children) {
                     item.isVisible = showItem(item.itemId)
                 }
             }
