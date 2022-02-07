@@ -1,5 +1,8 @@
 # Changelog
-## dev [2.1.1 or 2.2.0]
+
+## dev [v2.2.1 or v2.3.0]
+
+## v2.2.0
 #### What's New:
 - Added arabic translations [courtesy of hasanpasha]
 - Better russian translations [courtesy of lisiczka43]
@@ -17,10 +20,12 @@ artist they are grouped up in
 - Fixed crash on some devices configured to use French or Czech translations
 - Malformed indicies should now be corrected when the playback state is restored
 - Fixed issue where track numbers would not be shown in the native language's numeric format
+- Fixed issue where the preference view would apply the M3 switches inconsistently
 
 #### Dev/Meta:
 - Removed 1.4.X compat
 - Added new changelog document
+- Reworked contribution info and templates
 
 ## v2.1.0
 #### What's New:

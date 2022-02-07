@@ -1,0 +1,1 @@
+Auxio 2.2.0 improves music loading even further, respecting individual artist tags while eliminating needlessly fragmented artists and albums. For more information, please see https://github.com/OxygenCobalt/Auxio/releases/tag/v2.2.0.
