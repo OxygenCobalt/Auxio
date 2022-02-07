@@ -20,13 +20,11 @@ class M3SwitchPreference @JvmOverloads constructor(
     defStyleAttr: Int = R.attr.switchPreferenceCompatStyle,
     defStyleRes: Int = 0
 ) : SwitchPreferenceCompat(context, attrs, defStyleAttr, defStyleRes) {
-    // Lollipop cannot into ColorStateList, disable this feature on that version
-    private var needToUpdateSwitch = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        if (needToUpdateSwitch) {
+        // Lollipop cannot into ColorStateList, disable this feature on that version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val switch = holder.findViewById(androidx.preference.R.id.switchWidget)
 
             if (switch is SwitchCompat) {
@@ -36,8 +34,6 @@ class M3SwitchPreference @JvmOverloads constructor(
                     thumbDrawable = context.getDrawableSafe(R.drawable.ui_m3_switch_thumb)
                     thumbTintList = context.getColorStateListSafe(R.color.sel_m3_switch_thumb)
                 }
-
-                needToUpdateSwitch = false
             }
         }
     }
