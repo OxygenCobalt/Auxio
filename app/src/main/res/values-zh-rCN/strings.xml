@@ -103,6 +103,8 @@
     <string name="set_content">内容</string>
     <string name="set_save">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
+    <string name="set_reload">重新加载音乐</string>
+    <string name="set_reload_desc">将会重启应用</string>
     <string name="set_excluded">排除文件夹</string>
     <string name="set_excluded_desc">被排除文件夹的内容将从媒体库中隐藏</string>
 
@@ -143,6 +145,7 @@
     <string name="def_artist">未知艺术家</string>
     <string name="def_genre">未知流派</string>
     <string name="def_date">没有日期</string>
+    <string name="def_track">无曲目编号</string>
     <string name="def_playback">未播放音乐</string>
     <string name="def_widget_song">歌曲名称</string>
     <string name="def_widget_artist">艺术家姓名</string>
@@ -169,10 +172,12 @@
     <string name="fmt_songs_loaded">已加载 %d 首曲目</string>
 
     <plurals name="fmt_song_count">
+	<item quantity="one">%d 首歌曲</item>
         <item quantity="other">"%d 首歌曲"</item>
     </plurals>
 
     <plurals name="fmt_album_count">
+        <item quantity="one">%d 张专辑</item>
         <item quantity="other">"%d 张专辑"</item>
     </plurals>
 </resources>
