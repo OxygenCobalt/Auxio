@@ -40,8 +40,7 @@
                         android:imeOptions="actionSearch|flagNoExtractUi"
                         android:inputType="textFilter"
                         android:paddingStart="0dp"
-                        android:paddingEnd="0dp"
-                        android:textAppearance="@style/TextAppearance.Auxio.TitleMedium" />
+                        android:paddingEnd="0dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

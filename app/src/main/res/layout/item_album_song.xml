@@ -38,7 +38,7 @@
             android:minWidth="@dimen/size_track_number"
             android:text="@{@string/fmt_track(song.track)}"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
             android:textColor="@color/sel_accented_secondary"
             android:textSize="@dimen/text_size_ext_title_mid_larger"
             app:layout_constraintBottom_toBottomOf="parent"
