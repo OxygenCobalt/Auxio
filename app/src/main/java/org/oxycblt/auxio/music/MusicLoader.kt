@@ -92,6 +92,7 @@ class MusicLoader {
         for (song in songs) {
             try {
                 song.album.artist
+                song.genre
             } catch (e: Exception) {
                 logE("Found malformed song: ${song.name}")
                 throw e
@@ -187,18 +188,13 @@ class MusicLoader {
         }
 
         songs = songs.distinctBy {
-            it.name to it._mediaStoreAlbumName to it._mediaStoreArtistName to it._mediaStoreAlbumArtistName to it.track to it.duration
+            it.name to it.internalMediaStoreAlbumName to it.internalMediaStoreArtistName to it.internalMediaStoreAlbumArtistName to it.track to it.duration
         }.toMutableList()
 
         return songs
     }
 
     private fun buildAlbums(songs: List<Song>): List<Album> {
-        // When assigning an artist to an album, use the album artist first, then the
-        // normal artist, and then the internal representation of an unknown artist name.
-        fun Song.resolveAlbumArtistName() = _mediaStoreAlbumArtistName ?: _mediaStoreArtistName
-            ?: MediaStore.UNKNOWN_STRING
-
         // Group up songs by their lowercase artist and album name. This serves two purposes:
         // 1. Sometimes artist names can be styled differently, e.g "Rammstein" vs. "RAMMSTEIN".
         // This makes sure both of those are resolved into a single artist called "Rammstein"
@@ -209,9 +205,7 @@ class MusicLoader {
         // the template, but it seems to work pretty well.
         val albums = mutableListOf<Album>()
         val songsByAlbum = songs.groupBy { song ->
-            val albumName = song._mediaStoreAlbumName
-            val artistName = song.resolveAlbumArtistName()
-            Pair(albumName.lowercase(), artistName.lowercase())
+            song.internalGroupingId
         }
 
         for (entry in songsByAlbum) {
@@ -220,14 +214,14 @@ class MusicLoader {
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            val templateSong = requireNotNull(albumSongs.maxByOrNull { it._mediaStoreYear })
-            val albumName = templateSong._mediaStoreAlbumName
-            val albumYear = templateSong._mediaStoreYear
+            val templateSong = requireNotNull(albumSongs.maxByOrNull { it.internalMediaStoreYear })
+            val albumName = templateSong.internalMediaStoreAlbumName
+            val albumYear = templateSong.internalMediaStoreYear
             val albumCoverUri = ContentUris.withAppendedId(
                 Uri.parse("content://media/external/audio/albumart"),
-                templateSong._mediaStoreAlbumId
+                templateSong.internalMediaStoreAlbumId
             )
-            val artistName = templateSong.resolveAlbumArtistName()
+            val artistName = templateSong.internalGroupingArtistName
 
             albums.add(
                 Album(
@@ -245,7 +239,7 @@ class MusicLoader {
 
     private fun buildArtists(context: Context, albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it._mediaStoreArtistName }
+        val albumsByArtist = albums.groupBy { it.internalGroupingArtistName }
 
         for (entry in albumsByArtist) {
             val artistName = entry.key
@@ -318,7 +312,7 @@ class MusicLoader {
             }
         }
 
-        val songsWithoutGenres = songs.filter { it.genre == null }
+        val songsWithoutGenres = songs.filter { it.internalMissingGenre }
 
         if (songsWithoutGenres.isNotEmpty()) {
             // Songs that don't have a genre will be thrown into an unknown genre.
@@ -350,7 +344,7 @@ class MusicLoader {
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
 
-                songs.find { it._mediaStoreId == id }?.let { song ->
+                songs.find { it.internalMediaStoreId == id }?.let { song ->
                     genreSongs.add(song)
                 }
             }

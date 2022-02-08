@@ -65,17 +65,17 @@ data class Song(
     /** The track number of this song. */
     val track: Int,
     /** Internal field. Do not use. */
-    val _mediaStoreId: Long,
+    val internalMediaStoreId: Long,
     /** Internal field. Do not use. */
-    val _mediaStoreArtistName: String?,
+    val internalMediaStoreArtistName: String?,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumArtistName: String?,
+    val internalMediaStoreAlbumArtistName: String?,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumId: Long,
+    val internalMediaStoreAlbumId: Long,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumName: String,
+    val internalMediaStoreAlbumName: String,
     /** Internal field. Do not use. */
-    val _mediaStoreYear: Int
+    val internalMediaStoreYear: Int
 ) : Music() {
     override val id: Long get() {
         var result = name.hashCode().toLong()
@@ -88,7 +88,7 @@ data class Song(
 
     /** The URI for this song. */
     val uri: Uri get() = ContentUris.withAppendedId(
-        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, internalMediaStoreId
     )
     /** The duration of this song, in seconds (rounded down) */
     val seconds: Long get() = duration / 1000
@@ -100,8 +100,8 @@ data class Song(
     val album: Album get() = requireNotNull(mAlbum)
 
     var mGenre: Genre? = null
-    /** The genre of this song. May be null due to MediaStore insanity. */
-    val genre: Genre? get() = mGenre
+    /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
+    val genre: Genre get() = requireNotNull(mGenre)
 
     /** An album name resolved to this song in particular. */
     val resolvedAlbumName: String get() =
@@ -109,15 +109,29 @@ data class Song(
 
     /** An artist name resolved to this song in particular. */
     val resolvedArtistName: String get() =
-        _mediaStoreArtistName ?: album.artist.resolvedName
+        internalMediaStoreArtistName ?: album.artist.resolvedName
+
+    /** Internal field. Do not use. */
+    val internalGroupingId: Int get() {
+        var result = internalGroupingArtistName.lowercase().hashCode()
+        result = 31 * result + internalMediaStoreAlbumName.lowercase().hashCode()
+        return result
+    }
+
+    /** Internal field. Do not use. */
+    val internalGroupingArtistName: String get() = internalMediaStoreAlbumArtistName
+        ?: internalMediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
+
+    /** Internal field. Do not use. **/
+    val internalMissingGenre: Boolean get() = mGenre == null
 
     /** Internal method. Do not use. */
-    fun mediaStoreLinkAlbum(album: Album) {
+    fun internalLinkAlbum(album: Album) {
         mAlbum = album
     }
 
     /** Internal method. Do not use. */
-    fun mediaStoreLinkGenre(genre: Genre) {
+    fun internalLinkGenre(genre: Genre) {
         mGenre = genre
     }
 }
@@ -134,11 +148,11 @@ data class Album(
     /** The songs of this album. */
     val songs: List<Song>,
     /** Internal field. Do not use. */
-    val _mediaStoreArtistName: String,
+    val internalGroupingArtistName: String,
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song.mediaStoreLinkAlbum(this)
+            song.internalLinkAlbum(this)
         }
     }
 
@@ -165,7 +179,7 @@ data class Album(
         artist.resolvedName
 
     /** Internal method. Do not use. */
-    fun mediaStoreLinkArtist(artist: Artist) {
+    fun internalLinkArtist(artist: Artist) {
         mArtist = artist
     }
 }
@@ -182,7 +196,7 @@ data class Artist(
 ) : MusicParent() {
     init {
         for (album in albums) {
-            album.mediaStoreLinkArtist(this)
+            album.internalLinkArtist(this)
         }
     }
 
@@ -202,7 +216,7 @@ data class Genre(
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song.mediaStoreLinkGenre(this)
+            song.internalLinkGenre(this)
         }
     }
 
