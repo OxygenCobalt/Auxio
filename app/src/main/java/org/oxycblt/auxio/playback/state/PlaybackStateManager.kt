@@ -519,8 +519,6 @@ class PlaybackStateManager private constructor() {
 
             val database = PlaybackStateDatabase.getInstance(context)
 
-            logD("$mPlaybackMode")
-
             database.writeState(
                 PlaybackStateDatabase.SavedState(
                     mSong, mPosition, mParent, mIndex,
@@ -595,14 +593,6 @@ class PlaybackStateManager private constructor() {
 
     private fun unpackQueue(queue: MutableList<Song>) {
         mQueue = queue
-
-        // Sanity check: Ensure that the
-        mSong?.let { song ->
-            while (mQueue.getOrNull(mIndex) != song) {
-                mIndex--
-            }
-        }
-
         pushQueueUpdate()
     }
 
@@ -633,6 +623,7 @@ class PlaybackStateManager private constructor() {
             if (correctedIndex > -1) {
                 logD("Correcting malformed index to $correctedIndex")
                 mIndex = correctedIndex
+                pushQueueUpdate()
             }
         }
     }

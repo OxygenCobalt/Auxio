@@ -72,7 +72,6 @@ import java.lang.Exception
  *
  * @author OxygenCobalt
  */
-@Suppress("InlinedApi")
 class MusicLoader {
     data class Library(
         val genres: List<Genre>,
@@ -107,6 +106,7 @@ class MusicLoader {
         )
     }
 
+    @Suppress("InlinedApi")
     private fun loadSongs(context: Context): List<Song> {
         var songs = mutableListOf<Song>()
         val blacklistDatabase = ExcludedDatabase.getInstance(context)
@@ -285,7 +285,7 @@ class MusicLoader {
     private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
 
-        val genreCursor = context.contentResolver.query(
+        val genreCursor = context.applicationContext.contentResolver.query(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.Genres._ID,
@@ -338,7 +338,7 @@ class MusicLoader {
         val genreSongs = mutableListOf<Song>()
 
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
-        val songCursor = context.contentResolver.query(
+        val songCursor = context.applicationContext.contentResolver.query(
             MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
             null, null, null
@@ -356,7 +356,7 @@ class MusicLoader {
             }
         }
 
-        // Some genres might be empty due to MediaStore empty.
+        // Some genres might be empty due to MediaStore insanity.
         // If that is the case, we drop them.
         return genreSongs.ifEmpty { null }
     }

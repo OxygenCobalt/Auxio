@@ -1,11 +1,12 @@
 # Changelog
 
 ## dev [v2.2.1 or v2.3.0]
+- Updated chinese translations [courtesy of cccClyde]
 
 ## v2.2.0
 #### What's New:
-- Added arabic translations [courtesy of hasanpasha]
-- Better russian translations [courtesy of lisiczka43]
+- Added Arabic translations [Courtesy of hasanpasha]
+- Improved Russian translations [Courtesy of lisiczka43]
 - Added option to reload the music library
 
 #### What's Improved:
@@ -18,9 +19,10 @@ artist they are grouped up in
 
 #### What's Fixed:
 - Fixed crash on some devices configured to use French or Czech translations
-- Malformed indicies should now be corrected when the playback state is restored
+- Malformed indices should now be corrected when the playback state is restored
 - Fixed issue where track numbers would not be shown in the native language's numeric format
 - Fixed issue where the preference view would apply the M3 switches inconsistently
+- Fixed issue where the now playing indicator on the playback screen would use an internal name
 
 #### Dev/Meta:
 - Removed 1.4.X compat

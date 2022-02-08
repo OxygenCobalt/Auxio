@@ -177,7 +177,7 @@
     </plurals>
 
     <plurals name="fmt_album_count">
-        <item quantity="zero">ألبومات d%</item>
+        <item quantity="zero">%d ألبومات</item>
         <item quantity="one">%d البوم</item>
         <item quantity="two">%d ألبومات</item>
         <item quantity="few">%d ألبومات</item>
