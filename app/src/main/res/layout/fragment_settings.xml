@@ -13,9 +13,7 @@
 
         <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/settings_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
+            style="@style/Widget.Auxio.AppBarLayout"
             android:clickable="true"
             android:focusable="true"
             app:liftOnScroll="true">
