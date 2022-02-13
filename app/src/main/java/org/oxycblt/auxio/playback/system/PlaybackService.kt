@@ -465,8 +465,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
                 AudioManager.ACTION_HEADSET_PLUG -> {
                     when (intent.getIntExtra("state", -1)) {
-                        0 -> resumeFromPlug()
-                        1 -> pauseFromPlug()
+                        0 -> pauseFromPlug()
+                        1 -> resumeFromPlug()
                     }
                 }
 

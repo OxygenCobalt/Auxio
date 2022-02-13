@@ -151,17 +151,8 @@ class PlaybackStateManager private constructor() {
             }
 
             PlaybackMode.IN_GENRE -> {
-                val genre = song.genre
-
-                // Don't do this if the genre is null
-                if (genre != null) {
-                    mParent = genre
-                    mQueue = genre.songs.toMutableList()
-                } else {
-                    playSong(song, PlaybackMode.ALL_SONGS)
-
-                    return
-                }
+                mParent = song.genre
+                mQueue = song.genre.songs.toMutableList()
             }
 
             PlaybackMode.IN_ARTIST -> {
@@ -463,7 +454,6 @@ class PlaybackStateManager private constructor() {
      */
     fun seekTo(position: Long) {
         mPosition = position
-
         callbacks.forEach { it.onSeek(position) }
     }
 

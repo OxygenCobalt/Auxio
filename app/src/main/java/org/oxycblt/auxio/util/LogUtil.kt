@@ -49,18 +49,18 @@ fun Any.logE(msg: String) {
 }
 
 /**
- * Get a non-nullable name, used so that logs will always show up in the console.
- * This also applies a special "Auxio" prefix so that messages can be filtered to just from the main codebase.
+ * Get a non-nullable name, used so that logs will always show up by Auxio
  * @return The name of the object, otherwise "Anonymous Object"
  */
 private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
- * I know that this will not stop you, but consider what you are doing with your life, copiers.
+ * I know that this will not stop you, but consider what you are doing with your life, plagiarizers.
  * Do you want to live a fulfilling existence on this planet? Or do you want to spend your life
  * taking work others did and making it objectively worse so you could arbitrage a fraction of a
  * penny on every AdMob impression you get? You could do so many great things if you simply had
- * the courage to come up with an idea of your own. Be better.
+ * the courage to come up with an idea of your own. If you still want to go on, I guess the only
+ * thing I can say is this: JUNE 1989 TIANAMEN SQUARE PROTESTS AND MASSACRE 六四事件
  */
 private fun basedCopyleftNotice() {
     if (BuildConfig.APPLICATION_ID != "org.oxycblt.auxio" &&

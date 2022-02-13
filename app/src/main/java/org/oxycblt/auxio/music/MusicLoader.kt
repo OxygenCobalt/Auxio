@@ -7,7 +7,6 @@ import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import java.lang.Exception
 
@@ -125,7 +124,7 @@ class MusicLoader {
             args += "$path%" // Append % so that the selector properly detects children
         }
 
-        context.contentResolver.query(
+        context.applicationContext.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.AudioColumns._ID,
@@ -178,8 +177,6 @@ class MusicLoader {
                 val dirs = cursor.getString(dataIndex).run {
                     substring(0 until lastIndexOfAny(listOf(fileName)))
                 }
-
-                logD("SONG NAME: $title ALBUM: $album ARTIST: $artist ALBUM ARTIST: $albumArtist")
 
                 songs.add(
                     Song(
@@ -235,8 +232,6 @@ class MusicLoader {
                 templateSong.internalMediaStoreAlbumId
             )
             val artistName = templateSong.internalGroupingArtistName
-
-            logD("ALBUM NAME: $albumName PREFERRED ARTIST: $artistName")
 
             albums.add(
                 Album(
@@ -294,7 +289,7 @@ class MusicLoader {
     private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
 
-        val genreCursor = context.contentResolver.query(
+        val genreCursor = context.applicationContext.contentResolver.query(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.Genres._ID,
@@ -347,7 +342,7 @@ class MusicLoader {
         val genreSongs = mutableListOf<Song>()
 
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
-        val songCursor = context.contentResolver.query(
+        val songCursor = context.applicationContext.contentResolver.query(
             MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
             null, null, null

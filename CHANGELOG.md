@@ -3,7 +3,11 @@
 ## dev [v2.2.1 or v2.3.0]
 #### What's Improved
 - Updated chinese translations [courtesy of cccClyde]
+- Use proper M3 top app bars
 - Use body typography in correct places
+
+#### What's Fixed
+- Fixed issue where playback would start unexpectedly when opening the app
 
 ## v2.2.0
 #### What's New:
