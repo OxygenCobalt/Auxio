@@ -22,7 +22,7 @@
     <!-- The style for the checked text view in the custom dialog -->
     <style name="Widget.Auxio.Dialog.CheckedTextView" parent="Widget.Material3.CheckedTextView">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyLarge</item>
         <item name="android:background">@null</item>
     </style>
 
@@ -40,16 +40,14 @@
     <!-- Widget TextView that mimics the main Auxio Primary TextView -->
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
         <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
+        <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.TitleMedium</item>
     </style>
 
     <!-- Widget TextView that mimics the main Auxio Secondary TextView -->
     <style name="Widget.Auxio.TextView.Secondary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
-        <item name="android:textStyle">normal</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyLarge</item>
     </style>
 
     <!-- Hack to make sure that ripples work the best that they can on all Android Versions -->

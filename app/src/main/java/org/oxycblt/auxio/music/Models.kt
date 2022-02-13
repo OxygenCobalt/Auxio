@@ -60,6 +60,8 @@ data class Song(
     override val name: String,
     /** The file name of this song, excluding the full path. */
     val fileName: String,
+    /** The parent directories of this song. More or less the complement to [fileName]. */
+    val dirs: String,
     /** The total duration of this song, in millis. */
     val duration: Long,
     /** The track number of this song. */

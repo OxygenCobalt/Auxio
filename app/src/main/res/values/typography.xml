@@ -49,8 +49,7 @@
     </style>
 
     <!--
-    Title styles are often used for headings, list items, or non-interactive elements.
-    Basically, any UI element with two lines of text or more.
+    Title styles are often used for titles,
     -->
     <style name="TextAppearance.Auxio.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/inter_semibold</item>
@@ -63,18 +62,21 @@
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <!--
@@ -95,37 +97,37 @@
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 
     <style name="TextAppearance.Auxio.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
         <item name="fontFamily">@font/inter_semibold</item>
         <item name="android:fontFamily">@font/inter_semibold</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="android:letterSpacing">0.015</item>
     </style>
 
     <!--
-    The body typeface is used for UI elements with only one line of text or tertiary UI elements.
+    The body typeface is used for secondary and/or singular UI elements.
     -->
     <style name="TextAppearance.Auxio.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.025</item>
+        <item name="android:letterSpacing">0.015</item>
     </style>
     
     <style name="TextAppearance.Auxio.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.020</item>
+        <item name="android:letterSpacing">0.025</item>
     </style>
     
     <style name="TextAppearance.Auxio.BodySmall" parent="TextAppearance.Material3.BodySmall">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:letterSpacing">0.015</item>
+        <item name="android:letterSpacing">0.020</item>
     </style>
 </resources>

@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import java.lang.Exception
 
@@ -124,7 +125,7 @@ class MusicLoader {
             args += "$path%" // Append % so that the selector properly detects children
         }
 
-        context.applicationContext.contentResolver.query(
+        context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.AudioColumns._ID,
@@ -137,6 +138,7 @@ class MusicLoader {
                 MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.DATA
             ),
             selector, args.toTypedArray(), null
         )?.use { cursor ->
@@ -150,6 +152,7 @@ class MusicLoader {
             val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
             val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
             val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
+            val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
@@ -170,10 +173,19 @@ class MusicLoader {
                 val track = cursor.getInt(trackIndex)
                 val duration = cursor.getLong(durationIndex)
 
+                // More efficient to slice away DISPLAY_NAME from the full path then to
+                // grok the path components from DATA itself.
+                val dirs = cursor.getString(dataIndex).run {
+                    substring(0 until lastIndexOfAny(listOf(fileName)))
+                }
+
+                logD("SONG NAME: $title ALBUM: $album ARTIST: $artist ALBUM ARTIST: $albumArtist")
+
                 songs.add(
                     Song(
                         title,
                         fileName,
+                        dirs,
                         duration,
                         track,
                         id,
@@ -188,7 +200,8 @@ class MusicLoader {
         }
 
         songs = songs.distinctBy {
-            it.name to it.internalMediaStoreAlbumName to it.internalMediaStoreArtistName to it.internalMediaStoreAlbumArtistName to it.track to it.duration
+            it.name to it.internalMediaStoreAlbumName to it.internalMediaStoreArtistName to
+                it.internalMediaStoreAlbumArtistName to it.track to it.duration
         }.toMutableList()
 
         return songs
@@ -222,6 +235,8 @@ class MusicLoader {
                 templateSong.internalMediaStoreAlbumId
             )
             val artistName = templateSong.internalGroupingArtistName
+
+            logD("ALBUM NAME: $albumName PREFERRED ARTIST: $artistName")
 
             albums.add(
                 Album(
@@ -279,7 +294,7 @@ class MusicLoader {
     private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
 
-        val genreCursor = context.applicationContext.contentResolver.query(
+        val genreCursor = context.contentResolver.query(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.Genres._ID,
@@ -332,7 +347,7 @@ class MusicLoader {
         val genreSongs = mutableListOf<Song>()
 
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
-        val songCursor = context.applicationContext.contentResolver.query(
+        val songCursor = context.contentResolver.query(
             MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
             null, null, null

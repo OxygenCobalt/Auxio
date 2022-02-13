@@ -85,7 +85,7 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Secondary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleSmall</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
@@ -105,7 +105,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyLarge</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Primary.Compact" parent="Widget.Auxio.TextView.Base">

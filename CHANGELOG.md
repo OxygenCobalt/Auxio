@@ -1,7 +1,9 @@
 # Changelog
 
 ## dev [v2.2.1 or v2.3.0]
+#### What's Improved
 - Updated chinese translations [courtesy of cccClyde]
+- Use body typography in correct places
 
 ## v2.2.0
 #### What's New:
