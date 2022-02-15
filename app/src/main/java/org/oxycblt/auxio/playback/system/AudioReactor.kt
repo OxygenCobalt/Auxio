@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.media.AudioManager
+import android.os.Build
 import androidx.core.math.MathUtils
 import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
@@ -233,7 +234,7 @@ class AudioReactor(
     // --- INTERNAL AUDIO FOCUS ---
 
     override fun onAudioFocusChange(focusChange: Int) {
-        if (!settingsManager.doAudioFocus) {
+        if (!settingsManager.doAudioFocus && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             // Don't do audio focus if its not enabled
             return
         }

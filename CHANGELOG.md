@@ -9,6 +9,9 @@
 #### What's Fixed
 - Fixed issue where playback would start unexpectedly when opening the app
 
+#### What's Changed
+- Disabled audio focus customization on Android 12 [#75]
+
 ## v2.2.0
 #### What's New:
 - Added Arabic translations [Courtesy of hasanpasha]

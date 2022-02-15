@@ -127,7 +127,6 @@ class PlaybackFragment : Fragment() {
             }
 
             binding.playbackLoop.setImageResource(resId)
-            binding.playbackLoop.isActivated = loopMode != LoopMode.NONE
         }
 
         playbackModel.position.observe(viewLifecycleOwner) { pos ->

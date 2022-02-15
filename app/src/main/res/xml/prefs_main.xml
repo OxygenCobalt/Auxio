@@ -82,6 +82,7 @@
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_AUDIO_FOCUS"
+            app:isPreferenceVisible="@bool/enable_audio_focus_setting"
             app:summary="@string/set_focus_desc"
             app:title="@string/set_focus" />
 
