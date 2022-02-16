@@ -3,8 +3,9 @@
 ## dev [v2.2.1 or v2.3.0]
 #### What's Improved
 - Updated chinese translations [courtesy of cccClyde]
-- Use proper M3 top app bars
+- Use proper material you top app bars
 - Use body typography in correct places
+- Manifest should expose Auxio's file opening functionality better
 
 #### What's Fixed
 - Fixed issue where playback would start unexpectedly when opening the app
