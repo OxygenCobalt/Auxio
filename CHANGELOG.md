@@ -1,11 +1,13 @@
 # Changelog
 
-## dev [v2.2.1 or v2.3.0]
+## dev [v2.2.2 or 2.3.0]
+
+## v2.2.1
 #### What's Improved
 - Updated chinese translations [courtesy of cccClyde]
 - Use proper material you top app bars
 - Use body typography in correct places
-- Manifest should expose Auxio's file opening functionality better
+- Expose file opening functionality better
 
 #### What's Fixed
 - Fixed issue where playback would start unexpectedly when opening the app

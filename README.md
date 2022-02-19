@@ -3,14 +3,14 @@
 <h4 align="center">A simple, rational music player for android.</h4>
 <p align="center">
     <a href="https://github.com/oxygencobalt/Auxio/releases/">
-        <img alt="GitHub release" src="https://img.shields.io/static/v1?label=Tag&message=v2.2.0&color=0D5AF5">
+        <img alt="GitHub release" src="https://img.shields.io/static/v1?label=Tag&message=v2.2.1&color=0D5AF5">
     </a>
     <a href="https://www.gnu.org/licenses/gpl-3.0">
         <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg">
     </a>
     <img alt="Minimum SDK" src="https://img.shields.io/badge/API-21%2B-32B5ED">
 </p>
-<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="/info/FAQ.md">FAQ</a> |  <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a>
+<h4 align="center"><a href="/CHANGELOG.md">Changelog</a> | <a href="/info/FAQ.md">FAQ</a> |  <a href="/info/LICENSES.md">Licenses</a> | <a href="/.github/CONTRIBUTING.md">Contributing</a> | <a href="/info/ARCHITECTURE.md">Architecture</a></h4>
 <p align="center">
     <a href="https://f-droid.org/app/org.oxycblt.auxio"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="170"></a>
 </p>
