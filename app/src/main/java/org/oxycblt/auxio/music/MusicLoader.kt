@@ -259,8 +259,8 @@ class MusicLoader {
             }
             val artistAlbums = entry.value
 
-            // Due to the black magic we do to get a good artist field, the ID is unreliable.
-            // Take a hash of the artist name instead.
+            // Album deduplication does not eliminate every case of fragmented artists, do
+            // we deduplicate in the artist creation step as well.
             val previousArtistIndex = artists.indexOfFirst { artist ->
                 artist.name.lowercase() == artistName.lowercase()
             }

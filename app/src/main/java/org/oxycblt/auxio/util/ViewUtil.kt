@@ -63,7 +63,7 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 
 /**
- * Resolve window insets in a version-aware manner. This can be used to apply padding to
+ * Resolve system bar insets in a version-aware manner. This can be used to apply padding to
  * a view that properly follows all the frustrating changes that were made between 8-11.
  */
 val WindowInsets.systemBarInsetsCompat: Rect get() {
@@ -86,7 +86,11 @@ val WindowInsets.systemBarInsetsCompat: Rect get() {
     }
 }
 
-fun WindowInsets.replaceInsetsCompat(left: Int, top: Int, right: Int, bottom: Int): WindowInsets {
+/**
+ * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
+ * for child views in a way that follows all of the frustrating changes that were made between 8-11.
+ */
+fun WindowInsets.replaceSystemBarInsetsCompat(left: Int, top: Int, right: Int, bottom: Int): WindowInsets {
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
             WindowInsets.Builder(this)

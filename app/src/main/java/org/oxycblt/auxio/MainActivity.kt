@@ -36,7 +36,7 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.replaceInsetsCompat
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             right = bars.right
         )
 
-        return replaceInsetsCompat(0, bars.top, 0, bars.bottom)
+        return replaceSystemBarInsetsCompat(0, bars.top, 0, bars.bottom)
     }
 
     companion object {

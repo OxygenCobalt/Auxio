@@ -101,7 +101,7 @@ data class Song(
     /** The album of this song. */
     val album: Album get() = requireNotNull(mAlbum)
 
-    var mGenre: Genre? = null
+    private var mGenre: Genre? = null
     /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
     val genre: Genre get() = requireNotNull(mGenre)
 

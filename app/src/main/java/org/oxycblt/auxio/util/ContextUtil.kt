@@ -75,8 +75,7 @@ fun Context.getPluralSafe(@PluralsRes pluralsRes: Int, value: Int): String {
     return try {
         resources.getQuantityString(pluralsRes, value, value)
     } catch (e: Exception) {
-        logE("plural load failed")
-        return "<plural error>"
+        handleResourceFailure(e, "plural", "<plural error>")
     }
 }
 

@@ -26,7 +26,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
-import org.oxycblt.auxio.util.replaceInsetsCompat
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import kotlin.math.abs
@@ -383,7 +383,7 @@ class PlaybackLayout @JvmOverloads constructor(
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
 
-        return insets.replaceInsetsCompat(bars.left, bars.top, bars.right, adjustedBottomInset)
+        return insets.replaceSystemBarInsetsCompat(bars.left, bars.top, bars.right, adjustedBottomInset)
     }
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
