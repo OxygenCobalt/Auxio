@@ -37,6 +37,7 @@ import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.stateList
@@ -132,6 +133,8 @@ class QueueAdapter(
             ).apply {
                 fillColor = (binding.body.background as ColorDrawable).color.stateList
             }
+
+            binding.root.disableDropShadowCompat()
         }
 
         @SuppressLint("ClickableViewAccessibility")

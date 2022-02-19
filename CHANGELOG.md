@@ -2,6 +2,9 @@
 
 ## dev [v2.2.2 or 2.3.0]
 
+#### Dev/Meta
+- Enabled elevation drop shadows below Android P for consistency
+
 ## v2.2.1
 #### What's Improved
 - Updated chinese translations [courtesy of cccClyde]

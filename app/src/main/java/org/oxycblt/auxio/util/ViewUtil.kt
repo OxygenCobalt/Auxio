@@ -22,6 +22,7 @@ import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.graphics.Rect
 import android.os.Build
+import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.ColorRes
 import androidx.recyclerview.widget.GridLayoutManager
@@ -61,6 +62,18 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
  * Returns whether a recyclerview can scroll.
  */
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
+
+/**
+ * Disables drop shadows on a view programmatically in a version-compatible manner.
+ * This only works on Android 9 and above. Below that version, shadows will remain visible.
+ */
+fun View.disableDropShadowCompat() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        val transparent = context.getColorSafe(android.R.color.transparent)
+        outlineAmbientShadowColor = transparent
+        outlineSpotShadowColor = transparent
+    }
+}
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to

@@ -23,9 +23,11 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
-import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -98,6 +100,8 @@ class PlaybackLayout @JvmOverloads constructor(
     private var initMotionY = 0f
     private val tRect = Rect()
 
+    private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
+
     /** See [isDragging] */
     private val dragStateField = ViewDragHelper::class.java.getDeclaredField("mDragState").apply {
         isAccessible = true
@@ -117,7 +121,7 @@ class PlaybackLayout @JvmOverloads constructor(
 
             playbackContainerBg = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
                 fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-                elevation = context.getDimenSizeSafe(R.dimen.elevation_normal).toFloat()
+                elevation = context.pxOfDp(elevationNormal).toFloat()
             }
 
             // The way we fade out the elevation overlay is not by actually reducing the elevation
@@ -127,6 +131,8 @@ class PlaybackLayout @JvmOverloads constructor(
             background = (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
                 setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
             }
+
+            disableDropShadowCompat()
         }
 
         playbackBarView = PlaybackBarView(context).apply {
@@ -535,6 +541,7 @@ class PlaybackLayout @JvmOverloads constructor(
         // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
         // neutral color instead of an elevated one when fully expanded.
         playbackContainerBg.alpha = (outRatio * 255).toInt()
+        playbackContainerView.translationZ = elevationNormal * outRatio
 
         // Fade out our bar view as we slide up
         playbackBarView.apply {
