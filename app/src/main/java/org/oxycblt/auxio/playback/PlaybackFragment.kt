@@ -126,7 +126,10 @@ class PlaybackFragment : Fragment() {
                 LoopMode.TRACK -> R.drawable.ic_loop_one
             }
 
-            binding.playbackLoop.setImageResource(resId)
+            binding.playbackLoop.apply {
+                isActivated = loopMode != LoopMode.NONE
+                setImageResource(resId)
+            }
         }
 
         playbackModel.position.observe(viewLifecycleOwner) { pos ->

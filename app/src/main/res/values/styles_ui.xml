@@ -152,11 +152,7 @@
     <!-- BUTTON STYLES -->
 
     <style name="Widget.Auxio.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-        <item name="android:minWidth">@dimen/size_btn_small</item>
-        <item name="android:background">@drawable/ui_unbounded_ripple</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_small</item>
+        <item name="android:padding">0dp</item>
     </style>
 
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
@@ -168,7 +164,7 @@
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">
-        <item name="maxImageSize">@dimen/size_play_fab_icon</item>
+        <item name="maxImageSize">@dimen/size_playback_icon</item>
         <item name="fabCustomSize">@dimen/size_btn_large</item>
 
         <!--
@@ -177,7 +173,6 @@
         -->
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Auxio.FloatingActionButton.PlayPause</item>
     </style>
 
     <style name="ShapeAppearance.Auxio.FloatingActionButton.PlayPause" parent="">

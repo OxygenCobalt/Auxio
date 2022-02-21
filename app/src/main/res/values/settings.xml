@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Preference values -->
-    <declare-styleable name="IntListPreference">
-        <attr name="entries" format="reference" />
-        <attr name="entryValues" format="reference" />
-    </declare-styleable>
-
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
         <item>@string/set_theme_day</item>

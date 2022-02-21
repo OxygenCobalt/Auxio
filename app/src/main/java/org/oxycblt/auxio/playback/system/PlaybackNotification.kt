@@ -142,7 +142,7 @@ class PlaybackNotification private constructor(
         loopMode: LoopMode
     ): NotificationCompat.Action {
         val drawableRes = when (loopMode) {
-            LoopMode.NONE -> R.drawable.ic_loop_off
+            LoopMode.NONE -> R.drawable.ic_remote_loop_off
             LoopMode.ALL -> R.drawable.ic_loop
             LoopMode.TRACK -> R.drawable.ic_loop_one
         }
@@ -154,7 +154,7 @@ class PlaybackNotification private constructor(
         context: Context,
         isShuffled: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_shuffle_off
+        val drawableRes = if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
 
         return buildAction(context, PlaybackService.ACTION_SHUFFLE, drawableRes)
     }

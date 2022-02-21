@@ -113,7 +113,7 @@
             app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
             app:layout_constraintTop_toBottomOf="@+id/playback_album" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_loop"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -122,12 +122,13 @@
             android:contentDescription="@string/desc_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
+            app:hasIndicator="true"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
             app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -154,7 +155,7 @@
             app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
             tools:src="@drawable/ic_pause" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -167,12 +168,13 @@
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
+            app:hasIndicator="true"
             android:contentDescription="@string/desc_shuffle"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"

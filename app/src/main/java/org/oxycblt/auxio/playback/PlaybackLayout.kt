@@ -108,8 +108,6 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     init {
-        setWillNotDraw(false)
-
         // Set up our playback views. Doing this allows us to abstract away the implementation
         // of these views from the user of this layout [MainFragment].
         playbackContainerView = FrameLayout(context).apply {

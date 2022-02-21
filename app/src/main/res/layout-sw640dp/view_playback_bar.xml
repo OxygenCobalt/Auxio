@@ -59,7 +59,7 @@
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
             tools:text="Artist Name / Album Name" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
             app:layout_constraintStart_toEndOf="@+id/playback_song"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_play_pause"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
             app:layout_constraintStart_toEndOf="@+id/playback_skip_prev"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"

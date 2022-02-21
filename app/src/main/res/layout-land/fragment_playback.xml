@@ -120,7 +120,7 @@
             app:layout_constraintTop_toBottomOf="@+id/playback_cover"
             app:layout_constraintVertical_chainStyle="packed" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_loop"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -129,11 +129,12 @@
             android:contentDescription="@string/desc_change_loop"
             android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
+            app:hasIndicator="true"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
             app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_prev"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -161,7 +162,7 @@
             android:layout_marginBottom="@dimen/spacing_mid_large"
             tools:src="@drawable/ic_play" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_next"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -174,7 +175,7 @@
             app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
             app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_shuffle"
             style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
@@ -183,6 +184,7 @@
             android:layout_marginEnd="@dimen/spacing_medium"
             android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
+            app:hasIndicator="true"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
             app:layout_constraintTop_toTopOf="@+id/playback_skip_next"

@@ -179,17 +179,22 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
         )
     )
 
-    // While it is technically possible to use the setColorFilter to tint these buttons, its
-    // actually less efficient than using duplicate drawables.
-    // And no, we can't control state drawables with RemoteViews. Because of course we can't.
-
+    // RemoteView is so restrictive that emulating auxio's playback icons in a sensible way is
+    // more or less impossible, including:
+    // 1. Setting foreground drawables
+    // 2. Applying custom image matrices
+    // 3. Tinting icons at all
+    //
+    // So, we have to do the dumbest possible method of duplicating each drawable and hard-coding
+    // indicators, tints, and icon sizes. And then google wonders why nobody uses widgets on
+    // android.
     val shuffleRes = when {
-        state.isShuffled -> R.drawable.ic_shuffle_on
-        else -> R.drawable.ic_shuffle
+        state.isShuffled -> R.drawable.ic_remote_shuffle_on
+        else -> R.drawable.ic_remote_shuffle_off
     }
 
     val loopRes = when (state.loopMode) {
-        LoopMode.NONE -> R.drawable.ic_loop
+        LoopMode.NONE -> R.drawable.ic_remote_loop_off
         LoopMode.ALL -> R.drawable.ic_loop_on
         LoopMode.TRACK -> R.drawable.ic_loop_one
     }

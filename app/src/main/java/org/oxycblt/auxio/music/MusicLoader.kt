@@ -45,7 +45,7 @@ import java.lang.Exception
  * so that songs don't end up fragmented across artists. Pretty much every OEM has added some
  * extension or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH)
  * crippling the normal tables so that you're railroaded into their music app. The way I do
- * blacklisting relies on a deprecated method, and the supposedly "modern" method is SLOWER and
+ * blacklisting relies on a semi-deprecated method, and the supposedly "modern" method is SLOWER and
  * causes even more problems since I have to manage databases across version boundaries. Sometimes
  * music will have a deformed clone that I can't filter out, sometimes Genres will just break for
  * no reason, and sometimes tags encoded in UTF-8 will be interpreted as anything from UTF-16 to
@@ -119,6 +119,8 @@ class MusicLoader {
         // DATA was deprecated on Android 10, but is set to be un-deprecated in Android 12L.
         // The only reason we'd want to change this is to add external partitions support, but
         // that's less efficient and there's no demand for that right now.
+        // TODO: Determine if grokking the actual DATA value outside of SQL is more or less
+        //  efficient than the current system
         for (path in paths) {
             selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children
@@ -196,6 +198,7 @@ class MusicLoader {
             }
         }
 
+        // Deduplicate songs to prevent (most) deformed music clones
         songs = songs.distinctBy {
             it.name to it.internalMediaStoreAlbumName to it.internalMediaStoreArtistName to
                 it.internalMediaStoreAlbumArtistName to it.track to it.duration
@@ -261,6 +264,8 @@ class MusicLoader {
 
             // Album deduplication does not eliminate every case of fragmented artists, do
             // we deduplicate in the artist creation step as well.
+            // Note that we actually don't do this in groupBy. This is generally because we
+            // only want to default to a lowercase artist name when we have no other choice.
             val previousArtistIndex = artists.indexOfFirst { artist ->
                 artist.name.lowercase() == artistName.lowercase()
             }

@@ -60,11 +60,16 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <!-- Widget button that follows the weird widget restrictions -->
-    <style name="Widget.Auxio.Button.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
+    <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
+    <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/spacing_small</item>
+    </style>
+
+    <!-- A variant of PlaybackButton that is intended for buttons that show indicators -->
+    <style name="Widget.Auxio.PlaybackButton.Indicator.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
+        <item name="android:minHeight">@dimen/size_btn_small</item>
     </style>
 
     <!-- Widget panel -->
