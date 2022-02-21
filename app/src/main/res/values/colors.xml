@@ -386,4 +386,8 @@
     <color name="grey_on_surface_variant">#484848</color>
     <color name="grey_surface_inverse">#1f1f1f</color>
     <color name="grey_on_surface_inverse">#F0F0F0</color>
+
+    <color name="widget_surface">@color/material_dynamic_primary95</color>
+    <color name="widget_surface_inverse">@color/material_dynamic_neutral80</color>
+    <color name="widget_on_surface_inverse">@color/material_dynamic_neutral95</color>
 </resources>

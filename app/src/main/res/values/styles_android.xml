@@ -67,11 +67,6 @@
         <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
-    <!-- A variant of PlaybackButton that is intended for buttons that show indicators -->
-    <style name="Widget.Auxio.PlaybackButton.Indicator.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-    </style>
-
     <!-- Widget panel -->
     <style name="Widget.Auxio.AppWidget.Panel" parent="">
         <item name="android:layout_height">wrap_content</item>

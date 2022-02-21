@@ -41,14 +41,16 @@ class PlaybackButton @JvmOverloads constructor(
         scaleType = ScaleType.MATRIX
         setBackgroundResource(R.drawable.ui_large_unbounded_ripple)
 
-        context.obtainStyledAttributes(attrs, R.styleable.PlaybackButton).use { arr ->
-            val hasIndicator = arr.getBoolean(R.styleable.PlaybackButton_hasIndicator, false)
-            indicatorDrawable = if (hasIndicator) {
-                context.getDrawableSafe(R.drawable.ui_indicator)
-            } else {
-                null
-            }
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.PlaybackButton)
+
+        val hasIndicator = styledAttrs.getBoolean(R.styleable.PlaybackButton_hasIndicator, false)
+        indicatorDrawable = if (hasIndicator) {
+            context.getDrawableSafe(R.drawable.ui_indicator)
+        } else {
+            null
         }
+
+        styledAttrs.recycle()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
