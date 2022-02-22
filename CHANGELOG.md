@@ -5,6 +5,9 @@
 #### What's Improved
 - Shuffle and Repeat mode buttons now have more contrast when they are turned on
 
+#### What's Changed
+- All cover art is now cropped to a 1:1 aspect ratio
+
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency
 - Reworked dynamic color usage

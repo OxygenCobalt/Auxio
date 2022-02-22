@@ -164,18 +164,16 @@
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">
-        <item name="maxImageSize">@dimen/size_playback_icon</item>
-        <item name="fabCustomSize">@dimen/size_btn_large</item>
-
         <!--
         Abuse this floating action button to act more like an old-school auxio button.
-        This is only done because elevation acts weird with the panel layout.
+        This is for two reasons:
+        1. We upscale the play icon to 32dp, so the total FAB size also needs to increase to
+        compensate.
+        2. For some reason elevation behaves strangely in the playback panel, so we disable it.
         -->
+        <item name="maxImageSize">@dimen/size_playback_icon</item>
+        <item name="fabCustomSize">@dimen/size_btn_large</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-    </style>
-
-    <style name="ShapeAppearance.Auxio.FloatingActionButton.PlayPause" parent="">
-        <item name="cornerSize">50%</item>
     </style>
 </resources>

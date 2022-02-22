@@ -68,11 +68,11 @@ fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
 
     // We don't round album covers by default as it desecrates album artwork, but we do provide
     // an option if one wants it.
-    // As for why we use clipToOutline instead of coil's RoundedCornersTransformation, the transform
-    // uses the dimensions of the image to create the corners, which results in inconsistent corners
-    // across loaded cover art.
+    // As for why we use clipToOutline instead of coils RoundedCornersTransformation, the radii
+    // of an image's corners is dependent on the actual dimensions of the image, which would force
+    // us to resize all images to a fixed size. clipToOutline is pretty much always cheaper as long
+    // as we have a perfectly-square image.
     val settingsManager = SettingsManager.getInstance()
-
     if (settingsManager.roundCovers && background == null) {
         setBackgroundResource(R.drawable.ui_rounded_cutout)
         clipToOutline = true
@@ -83,6 +83,7 @@ fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
 
     load(music) {
         error(error)
+        transformations(SquareFrameTransform())
     }
 }
 
@@ -102,6 +103,7 @@ fun loadBitmap(
         ImageRequest.Builder(context)
             .data(song.album)
             .size(Size.ORIGINAL)
+            .transformations(SquareFrameTransform())
             .target(
                 onError = { onDone(null) },
                 onSuccess = { onDone(it.toBitmap()) }

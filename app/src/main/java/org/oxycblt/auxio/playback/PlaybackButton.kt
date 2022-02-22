@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageButton
 import org.oxycblt.auxio.R
@@ -32,7 +31,13 @@ class PlaybackButton @JvmOverloads constructor(
     private val centerMatrix = Matrix()
     private val matrixSrc = RectF()
     private val matrixDst = RectF()
-    private val indicatorDrawable: Drawable?
+
+    private val indicatorDrawable = context.getDrawableSafe(R.drawable.ui_indicator)
+    var hasIndicator = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     init {
         val size = context.getDimenSizeSafe(R.dimen.size_btn_small)
@@ -42,14 +47,7 @@ class PlaybackButton @JvmOverloads constructor(
         setBackgroundResource(R.drawable.ui_large_unbounded_ripple)
 
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.PlaybackButton)
-
-        val hasIndicator = styledAttrs.getBoolean(R.styleable.PlaybackButton_hasIndicator, false)
-        indicatorDrawable = if (hasIndicator) {
-            context.getDrawableSafe(R.drawable.ui_indicator)
-        } else {
-            null
-        }
-
+        hasIndicator = styledAttrs.getBoolean(R.styleable.PlaybackButton_hasIndicator, false)
         styledAttrs.recycle()
     }
 
@@ -74,20 +72,18 @@ class PlaybackButton @JvmOverloads constructor(
             }
         }
 
-        indicatorDrawable?.let { indicator ->
-            val x = (measuredWidth - indicator.intrinsicWidth) / 2
-            val y = ((measuredHeight - iconSize) / 2) + iconSize
+        val x = (measuredWidth - indicatorDrawable.intrinsicWidth) / 2
+        val y = ((measuredHeight - iconSize) / 2) + iconSize
 
-            indicator.bounds.set(
-                x, y, x + indicator.intrinsicWidth, y + indicator.intrinsicHeight
-            )
-        }
+        indicatorDrawable.bounds.set(
+            x, y, x + indicatorDrawable.intrinsicWidth, y + indicatorDrawable.intrinsicHeight
+        )
     }
 
     override fun onDrawForeground(canvas: Canvas) {
         super.onDrawForeground(canvas)
 
-        if (indicatorDrawable != null && isActivated) {
+        if (hasIndicator && isActivated) {
             indicatorDrawable.draw(canvas)
         }
     }

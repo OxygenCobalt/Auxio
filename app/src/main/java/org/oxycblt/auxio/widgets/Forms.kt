@@ -179,15 +179,8 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
         )
     )
 
-    // RemoteView is so restrictive that emulating auxio's playback icons in a sensible way is
-    // more or less impossible, including:
-    // 1. Setting foreground drawables
-    // 2. Applying custom image matrices
-    // 3. Tinting icons at all
-    //
-    // So, we have to do the dumbest possible method of duplicating each drawable and hard-coding
-    // indicators, tints, and icon sizes. And then google wonders why nobody uses widgets on
-    // android.
+    // Like notifications, use the remote variants of icons since we really don't want to hack
+    // indicators.
     val shuffleRes = when {
         state.isShuffled -> R.drawable.ic_remote_shuffle_on
         else -> R.drawable.ic_remote_shuffle_off

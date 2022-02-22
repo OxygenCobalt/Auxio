@@ -34,6 +34,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.coil.SquareFrameTransform
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getDimenSizeSafe
@@ -87,31 +88,34 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-        // Load our image so that it takes up the phone screen. This allows
-        // us to get stable rounded corners for every single widget image. This probably
-        // sacrifices quality in some way, but it's really the only good option.
-        val metrics = context.resources.displayMetrics
-        val imageSize = min(metrics.widthPixels, metrics.heightPixels)
-
         val coverRequest = ImageRequest.Builder(context)
             .data(song.album)
-            .size(imageSize)
             .target(
                 onError = { onDone(null) },
                 onSuccess = { onDone(it.toBitmap()) }
             )
 
-        // If we are on Android 12 or higher, round out the album cover.
-        // This is simply to maintain stylistic cohesion with other widgets.
-        // Here, we actually have to use RoundedCornersTransformation since the way
-        // we get a 1:1 aspect ratio image results in clipToOutline not working well.
+        // The widget has two distinct styles that we must transform the album art to accommodate:
+        // - Before Android 12, the widget has hard edges, so we don't need to round out the album
+        //   art.
+        // - After Android 12, the widget has round edges, so we need to round out the album art.
+        //   I dislike this, but it's mainly for stylistic cohesion.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Use RoundedCornersTransformation. This is because our hack to get a 1:1 aspect
+            // ratio on widget ImageViews doesn't actually result in a square ImageView, so
+            // clipToOutline won't work.
             val transform = RoundedCornersTransformation(
                 context.getDimenSizeSafe(android.R.dimen.system_app_widget_inner_radius)
                     .toFloat()
             )
 
-            coverRequest.transformations(transform)
+            // The output of RoundedCornersTransformation is dimension-dependent, so scale up the
+            // image to the screen size to ensure consistent radii.
+            val metrics = context.resources.displayMetrics
+            coverRequest.transformations(SquareFrameTransform(), transform)
+                .size(min(metrics.widthPixels, metrics.heightPixels))
+        } else {
+            coverRequest.transformations(SquareFrameTransform())
         }
 
         context.imageLoader.enqueue(coverRequest.build())
@@ -214,7 +218,6 @@ class WidgetProvider : AppWidgetProvider() {
 
                 // Find the layout with the greatest area that fits entirely within
                 // the widget. This is what we will use.
-
                 val candidates = mutableListOf<SizeF>()
 
                 for (size in views.keys) {
