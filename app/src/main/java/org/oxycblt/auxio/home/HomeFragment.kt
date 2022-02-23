@@ -159,11 +159,9 @@ class HomeFragment : Fragment() {
             ).attach()
         }
 
-        binding.homeFab.setOnClickListener {
-            playbackModel.shuffleAll()
-        }
+        binding.homeShuffleFab.setup(playbackModel)
 
-        // --- VIEWMODEL SETUP ---
+// --- VIEWMODEL SETUP ---
 
         // There is no way a fast scrolling event can continue across a re-create. Reset it.
         homeModel.updateFastScrolling(false)
@@ -171,12 +169,12 @@ class HomeFragment : Fragment() {
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             // Handle the loader response.
             when (response) {
-                is MusicStore.Response.Ok -> binding.homeFab.show()
+                is MusicStore.Response.Ok -> binding.homeShuffleFab.show()
 
                 // While loading or during an error, make sure we keep the shuffle fab hidden so
                 // that any kind of playback is impossible. PlaybackStateManager also relies on this
                 // invariant, so please don't change it.
-                else -> binding.homeFab.hide()
+                else -> binding.homeShuffleFab.hide()
             }
         }
 
@@ -188,9 +186,9 @@ class HomeFragment : Fragment() {
             }
 
             if (scrolling) {
-                binding.homeFab.hide()
+                binding.homeShuffleFab.hide()
             } else {
-                binding.homeFab.show()
+                binding.homeShuffleFab.show()
             }
         }
 

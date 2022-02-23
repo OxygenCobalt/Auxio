@@ -30,7 +30,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A container for a FloatingActionButton that enables edge-to-edge support.
  * @author OxygenCobalt
  */
-class FloatingActionButtonContainer @JvmOverloads constructor(
+class EdgeFabContainer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
@@ -45,7 +45,6 @@ class FloatingActionButtonContainer @JvmOverloads constructor(
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
-
         return insets
     }
 }

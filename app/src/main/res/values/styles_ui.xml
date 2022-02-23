@@ -167,9 +167,14 @@
         compensate.
         2. For some reason elevation behaves strangely in the playback panel, so we disable it.
         -->
-        <item name="maxImageSize">@dimen/size_playback_icon</item>
+        <item name="fabSize">normal</item>
         <item name="fabCustomSize">@dimen/size_btn_large</item>
+        <item name="maxImageSize">@dimen/size_playback_icon</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="fabSize">normal</item>
     </style>
 </resources>
