@@ -30,7 +30,7 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -49,7 +49,7 @@ class AlbumDetailAdapter(
     private val detailModel: DetailViewModel,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentSong: Song? = null
     private var currentHolder: Highlightable? = null
 

@@ -30,8 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
@@ -50,7 +50,7 @@ import org.oxycblt.auxio.util.stateList
 class QueueAdapter(
     private val touchHelper: ItemTouchHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var data = mutableListOf<BaseModel>()
+    private var data = mutableListOf<Item>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
 
     override fun getItemCount(): Int = data.size
@@ -89,7 +89,7 @@ class QueueAdapter(
      * Submit data using [AsyncListDiffer].
      * **Only use this if you have no idea what changes occurred to the data**
      */
-    fun submitList(newData: MutableList<BaseModel>) {
+    fun submitList(newData: MutableList<Item>) {
         if (data != newData) {
             data = newData
             listDiffer.submitList(newData)

@@ -25,8 +25,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
@@ -41,13 +41,13 @@ import java.text.Normalizer
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel() {
-    private val mSearchResults = MutableLiveData(listOf<BaseModel>())
+    private val mSearchResults = MutableLiveData(listOf<Item>())
     private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
     private var mLastQuery = ""
 
     /** Current search results from the last [search] call. */
-    val searchResults: LiveData<List<BaseModel>> get() = mSearchResults
+    val searchResults: LiveData<List<Item>> get() = mSearchResults
     val isNavigating: Boolean get() = mIsNavigating
     val filterMode: DisplayMode? get() = mFilterMode
 
@@ -81,7 +81,7 @@ class SearchViewModel : ViewModel() {
         // Searching can be quite expensive, so get on a co-routine
         viewModelScope.launch {
             val sort = Sort.ByName(true)
-            val results = mutableListOf<BaseModel>()
+            val results = mutableListOf<Item>()
 
             // Note: a filter mode of null means to not filter at all.
 

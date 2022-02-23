@@ -32,21 +32,21 @@ import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.inflater
 
 /**
  * A [RecyclerView.ViewHolder] that streamlines a lot of the common things across all viewholders.
- * @param T The datatype, inheriting [BaseModel] for this ViewHolder.
+ * @param T The datatype, inheriting [Item] for this ViewHolder.
  * @param binding Basic [ViewDataBinding] required to set up click listeners & sizing.
  * @param doOnClick (Optional) Function that calls on a click.
  * @param doOnLongClick (Optional) Functions that calls on a long-click.
  * @author OxygenCobalt
  */
-abstract class BaseViewHolder<T : BaseModel>(
+abstract class BaseViewHolder<T : Item>(
     private val binding: ViewDataBinding,
     private val doOnClick: ((data: T) -> Unit)? = null,
     private val doOnLongClick: ((view: View, data: T) -> Unit)? = null
@@ -59,7 +59,7 @@ abstract class BaseViewHolder<T : BaseModel>(
     }
 
     /**
-     * Bind the viewholder with whatever [BaseModel] instance that has been specified.
+     * Bind the viewholder with whatever [Item] instance that has been specified.
      * Will call [onBind] on the inheriting ViewHolder.
      * @param data Data that the viewholder should be bound with
      */

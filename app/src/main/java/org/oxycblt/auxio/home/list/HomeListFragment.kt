@@ -26,7 +26,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
@@ -48,7 +48,7 @@ abstract class HomeListFragment : Fragment() {
      */
     abstract val listPopupProvider: (Int) -> String
 
-    protected fun <T : BaseModel, VH : RecyclerView.ViewHolder> setupRecycler(
+    protected fun <T : Item, VH : RecyclerView.ViewHolder> setupRecycler(
         @IdRes uniqueId: Int,
         homeAdapter: HomeAdapter<T, VH>,
         homeData: LiveData<List<T>>,
@@ -71,7 +71,7 @@ abstract class HomeListFragment : Fragment() {
         }
     }
 
-    abstract class HomeAdapter<T : BaseModel, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+    abstract class HomeAdapter<T : Item, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
         protected var data = listOf<T>()
 
         @SuppressLint("NotifyDataSetChanged")

@@ -11,6 +11,7 @@
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency
 - Reworked dynamic color usage
+- Reworked logging
 
 ## v2.2.1
 #### What's Improved

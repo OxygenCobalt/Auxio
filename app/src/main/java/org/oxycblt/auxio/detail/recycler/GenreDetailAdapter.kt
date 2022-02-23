@@ -27,8 +27,8 @@ import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
 import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.bindGenreInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -45,7 +45,7 @@ class GenreDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentSong: Song? = null
     private var currentHolder: Highlightable? = null
 

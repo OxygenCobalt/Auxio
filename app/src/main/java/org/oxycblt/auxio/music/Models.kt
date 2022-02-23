@@ -28,33 +28,37 @@ import androidx.annotation.StringRes
 // --- MUSIC MODELS ---
 
 /**
- * The base data object for all music.
- * @property id A unique ID for this object. ***THIS IS NOT A MEDIASTORE ID!**
+ * The template for all items in Auxio.
  */
-sealed class BaseModel {
+sealed class Item {
+    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
     abstract val id: Long
 }
 
 /**
- * A [BaseModel] variant that represents a music item.
- * @property name The raw name of this track
+ * A [Item] variant that represents a music item.
+ * @property name
  */
-sealed class Music : BaseModel() {
+sealed class Music : Item() {
+    /** The raw name of this item. */
     abstract val name: String
 }
 
 /**
  * [Music] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
- * @property resolvedName A name resolved from it's raw form to a form suitable to be shown in
- * a ui. Ex. "unknown" would become Unknown Artist, (124) would become its proper genre name, etc.
+ * @property resolvedName
  */
 sealed class MusicParent : Music() {
+    /**
+     * A name resolved from it's raw form to a form suitable to be shown in a ui.
+     * Ex. "unknown" would become Unknown Artist, (124) would become its proper genre name, etc.
+     */
     abstract val resolvedName: String
 }
 
 /**
- * The data object for a song. Inherits [BaseModel].
+ * The data object for a song. Inherits [Item].
  */
 data class Song(
     override val name: String,
@@ -243,7 +247,7 @@ data class Header(
     override val id: Long,
     /** The string resource used for the header. */
     @StringRes val string: Int
-) : BaseModel()
+) : Item()
 
 /**
  * A data object used for an action header. Like [Header], but with a button.
@@ -259,7 +263,7 @@ data class ActionHeader(
     @StringRes val desc: Int,
     /** A callback for when this item is clicked. */
     val onClick: (View) -> Unit,
-) : BaseModel() {
+) : Item() {
     // All lambdas are not equal to each-other, so we override equals/hashCode and exclude them.
 
     override fun equals(other: Any?): Boolean {

@@ -30,8 +30,8 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.bindArtistInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -49,8 +49,8 @@ class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val doOnClick: (data: Album) -> Unit,
     private val doOnSongClick: (data: Song) -> Unit,
-    private val doOnLongClick: (view: View, data: BaseModel) -> Unit,
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+    private val doOnLongClick: (view: View, data: Item) -> Unit,
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentAlbum: Album? = null
     private var currentAlbumHolder: Highlightable? = null
 

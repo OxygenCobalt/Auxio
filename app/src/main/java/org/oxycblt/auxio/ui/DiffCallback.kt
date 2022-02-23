@@ -19,14 +19,14 @@
 package org.oxycblt.auxio.ui
 
 import androidx.recyclerview.widget.DiffUtil
-import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Item
 
 /**
- * A re-usable diff callback for all [BaseModel] implementations.
+ * A re-usable diff callback for all [Item] implementations.
  * **Use this instead of creating a DiffCallback for each adapter.**
  * @author OxygenCobalt
  */
-class DiffCallback<T : BaseModel> : DiffUtil.ItemCallback<T>() {
+class DiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
         return oldItem.hashCode() == newItem.hashCode()
     }
