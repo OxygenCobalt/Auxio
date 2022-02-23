@@ -21,6 +21,7 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.WindowInsets
+import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 
@@ -33,7 +34,7 @@ import androidx.core.view.children
 class EdgeCoordinatorLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : CoordinatorLayout(context, attrs, defStyleAttr) {
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         for (child in children) {

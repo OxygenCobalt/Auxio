@@ -204,7 +204,7 @@ to when using gesture navigation
 - Fixed issue where the scroll thumb would briefly display on the Songs UI
 - Fixed issue where fast scrolling could be triggered outside the bounds of the indicators
 - Fixed issue where the wrong playing item would be highlighted if the names were identical
-- Fixed a crash when the thumb was moved above the fast scroller [Backported to 1.3.3, included in this release officially]
+- Fixed a crash when the thumb was moved above the fast scroller [Back-ported to 1.3.3, included in this release officially]
 
 #### Dev/Meta
 - Migrated fully to material design

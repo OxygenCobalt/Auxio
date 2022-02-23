@@ -151,10 +151,6 @@
 
     <!-- BUTTON STYLES -->
 
-    <style name="Widget.Auxio.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:padding">0dp</item>
-    </style>
-
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
     </style>

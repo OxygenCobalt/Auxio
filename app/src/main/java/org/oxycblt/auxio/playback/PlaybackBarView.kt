@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class PlaybackBarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val binding = ViewPlaybackBarBinding.inflate(context.inflater, this, true)
 

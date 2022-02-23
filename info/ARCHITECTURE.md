@@ -52,13 +52,13 @@ is separated into three phases:
 - Set up the UI
 - Set up ViewModel instances and LiveData observers
 
-`findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, viewbinding should be
-used in all cases. If one needs to keep track of a viewbinding outside of `onCreateView`, then one can declare
+`findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, view-binding should be
+used in all cases. If one needs to keep track of a view-binding outside of `onCreateView`, then one can declare
 a binding `by memberBinding(BindingClass::inflate)` in order to have a binding that properly disposes itself
 on lifecycle events.
 
 At times it may be more appropriate to use a `View` instead of a full blown fragment. This is okay as long as
-viewbinding is still used.
+view-binding is still used.
 
 When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder` to standardize the binding process
 and automate some code shared across all ViewHolders. The only exceptions to this case are for ViewHolders that

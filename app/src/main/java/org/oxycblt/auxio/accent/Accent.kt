@@ -101,7 +101,7 @@ private val ACCENT_PRIMARY_COLORS = arrayOf(
 /**
  * The data object for an accent. In the UI this is known as a "Color Scheme."
  * This can be nominally used to gleam some attributes about a given color scheme, but this
- * is not recommended. Attributes are usually the better option in nearly all cases.
+ * is not recommended. Attributes are the better option in nearly all cases.
  *
  * @property name  The name of this accent
  * @property theme The theme resource for this accent

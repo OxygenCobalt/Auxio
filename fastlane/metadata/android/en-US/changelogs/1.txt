@@ -1,5 +1,5 @@
 - Redesigned the detail UIs
-- Navigation is much more fluid and straightfoward
+- Navigation is much more fluid and straightforward
 - Search has been moved to a dedicated tab
 - Added search filtering
 - Fixed issue where audio focus would resume playback when it shouldn't

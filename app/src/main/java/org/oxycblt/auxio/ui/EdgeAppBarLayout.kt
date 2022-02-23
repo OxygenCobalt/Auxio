@@ -24,7 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
-import androidx.annotation.StyleRes
+import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 open class EdgeAppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @StyleRes defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : AppBarLayout(context, attrs, defStyleAttr) {
     private var scrollingChild: View? = null
     private val tConsumed = IntArray(2)

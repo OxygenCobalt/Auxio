@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StyleRes
+import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -28,7 +28,7 @@ import java.lang.Exception
 class DetailAppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @StyleRes defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : EdgeAppBarLayout(context, attrs, defStyleAttr) {
     private var mTitleView: AppCompatTextView? = null
     private var mRecycler: RecyclerView? = null
@@ -109,7 +109,7 @@ class DetailAppBarLayout @JvmOverloads constructor(
                 titleView?.alpha = it.animatedValue as Float
             }
 
-            duration = resources.getInteger(R.integer.app_bar_elevation_anim_duration).toLong()
+            duration = resources.getInteger(R.integer.detail_app_bar_title_anim_duration).toLong()
 
             start()
         }

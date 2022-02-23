@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.stateList
 class PlaybackSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleRes: Int = -1
+    defStyleRes: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleRes), Slider.OnChangeListener, Slider.OnSliderTouchListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
     private val isSeeking: Boolean get() = binding.playbackDurationCurrent.isActivated

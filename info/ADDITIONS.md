@@ -7,7 +7,7 @@ These will likely be accepted as long as they do not cause too much harm to the 
 ## New Customizations/Options
 While I do like adding new behavior/UI customizations, these will be looked at more closely as certain additions can cause harm to the apps UI/UX while not providing alot of benefit. These tend to be accepted however.
 
-## Feature Addtions and UI Changes
+## Feature Additions and UI Changes
 These arent as likely to be accepted. As I said, I do not want Auxio to become overly bloated with features that are rarely used, therefore I only tend to accept features that:
 
 - Benefit **my own** usage
@@ -22,6 +22,6 @@ Feel free to fork Auxio to add your own feature set however.
 - Recently added list [#18] (Out of scope)
 - Lyrics [#19] (Out of scope)
 - Tag editing [#33] (Out of scope)
-- Gapless Playback [#35] (Technical issues)
+- Gapless Playback [#35] (Technical issues, may change in the future)
 - Reduce leading instrument [#45] (Technical issues, Out of scope)
 - Opening music through a provider [#30] (Out of scope)

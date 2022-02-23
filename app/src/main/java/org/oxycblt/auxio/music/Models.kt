@@ -28,7 +28,7 @@ import androidx.annotation.StringRes
 // --- MUSIC MODELS ---
 
 /**
- * The template for all items in Auxio.
+ * The base for all items in Auxio.
  */
 sealed class Item {
     /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
@@ -36,7 +36,7 @@ sealed class Item {
 }
 
 /**
- * A [Item] variant that represents a music item.
+ * [Item] variant that represents a music item.
  * @property name
  */
 sealed class Music : Item() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
+    <dimen name="spacing_tiny">4dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_mid_large">24dp</dimen>
@@ -15,9 +16,6 @@
     <dimen name="size_cover_large">128dp</dimen>
     <dimen name="size_cover_mid_huge">192dp</dimen>
     <dimen name="size_cover_huge">256dp</dimen>
-
-    <dimen name="size_small_unbounded_ripple">20dp</dimen>
-    <dimen name="size_large_unbounded_ripple">24dp</dimen>
 
     <dimen name="size_track_number">32dp</dimen>
     <dimen name="size_playback_icon">32dp</dimen>

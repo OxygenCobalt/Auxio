@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.AttributeSet
+import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSizeSafe
@@ -25,7 +26,7 @@ import org.oxycblt.auxio.util.getDrawableSafe
 class PlaybackButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
     private val iconSize = context.getDimenSizeSafe(R.dimen.size_playback_icon)
     private val centerMatrix = Matrix()
@@ -33,7 +34,7 @@ class PlaybackButton @JvmOverloads constructor(
     private val matrixDst = RectF()
 
     private val indicatorDrawable = context.getDrawableSafe(R.drawable.ui_indicator)
-    var hasIndicator = false
+    private var hasIndicator = false
         set(value) {
             field = value
             invalidate()

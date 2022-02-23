@@ -22,6 +22,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.WindowInsets
 import android.widget.FrameLayout
+import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -32,7 +33,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class FloatingActionButtonContainer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     init {
         clipToPadding = false

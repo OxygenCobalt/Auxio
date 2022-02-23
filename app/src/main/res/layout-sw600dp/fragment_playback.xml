@@ -102,7 +102,6 @@
 
         <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_loop"
-            style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_large"
@@ -117,7 +116,6 @@
 
         <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_prev"
-            style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_large"
@@ -144,7 +142,6 @@
 
         <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_skip_next"
-            style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"
@@ -157,7 +154,6 @@
 
         <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_shuffle"
-            style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_large"

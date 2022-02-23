@@ -32,6 +32,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
 import androidx.core.view.isInvisible
@@ -77,7 +78,7 @@ import kotlin.math.abs
 class FastScrollRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
     /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null

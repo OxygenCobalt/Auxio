@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="detail_app_bar_title_anim_duration">150</integer>
+
     <!-- Preference values -->
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>
