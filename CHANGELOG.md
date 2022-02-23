@@ -10,6 +10,7 @@
 
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency
+- Switches now have a disabled state
 - Reworked dynamic color usage
 - Reworked logging
 
