@@ -69,6 +69,7 @@ fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
  */
 fun View.disableDropShadowCompat() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        logD("Disabling drop shadows")
         val transparent = context.getColorSafe(android.R.color.transparent)
         outlineAmbientShadowColor = transparent
         outlineSpotShadowColor = transparent

@@ -34,7 +34,7 @@ fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
  */
 fun assertBackgroundThread() {
     check(Looper.myLooper() != Looper.getMainLooper()) {
-        "This operation must be ran on a background thread."
+        "This operation must be ran on a background thread"
     }
 }
 

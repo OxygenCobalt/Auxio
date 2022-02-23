@@ -27,6 +27,7 @@ import okio.source
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import android.util.Size as AndroidSize
@@ -55,6 +56,7 @@ abstract class AuxioFetcher : Fetcher {
                 fetchMediaStoreCovers(context, album)
             }
         } catch (e: Exception) {
+            logW("Unable to extract album art due to an error")
             null
         }
     }
@@ -80,7 +82,6 @@ abstract class AuxioFetcher : Fetcher {
         // music app which relies on proprietary OneUI extensions instead of AOSP. That means
         // we have to have another layer of redundancy to retain quality. Thanks samsung. Prick.
         val result = fetchAospMetadataCovers(context, album)
-
         if (result != null) {
             return result
         }
@@ -88,7 +89,6 @@ abstract class AuxioFetcher : Fetcher {
         // Our next fallback is to rely on ExoPlayer's largely half-baked and undocumented
         // metadata system.
         val exoResult = fetchExoplayerCover(context, album)
-
         if (exoResult != null) {
             return exoResult
         }
@@ -97,7 +97,6 @@ abstract class AuxioFetcher : Fetcher {
         // going against the point of this setting. The previous two calls are just too unreliable
         // and we can't do any filesystem traversing due to scoped storage.
         val mediaStoreResult = fetchMediaStoreCovers(context, album)
-
         if (mediaStoreResult != null) {
             return mediaStoreResult
         }
@@ -192,7 +191,7 @@ abstract class AuxioFetcher : Fetcher {
             } else if (stream != null) {
                 // In the case a front cover is not found, use the first image in the tag instead.
                 // This can be corrected later on if a front cover frame is found.
-                logD("No front cover image, using image of type $type instead")
+                logW("No front cover image, using image of type $type instead")
 
                 stream = ByteArrayInputStream(pic)
             }
@@ -223,9 +222,10 @@ abstract class AuxioFetcher : Fetcher {
         val increment = AndroidSize(mosaicSize.width / 2, mosaicSize.height / 2)
 
         val mosaicBitmap = Bitmap.createBitmap(
-            mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888
+            mosaicSize.width,
+            mosaicSize.height,
+            Bitmap.Config.ARGB_8888
         )
-
         val canvas = Canvas(mosaicBitmap)
 
         var x = 0

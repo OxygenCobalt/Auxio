@@ -55,7 +55,6 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
 
         writableDatabase.transaction {
             delete(TABLE_NAME, null, null)
-
             logD("Deleted paths db")
 
             for (path in paths) {
@@ -66,6 +65,8 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
                     }
                 )
             }
+
+            logD("Successfully wrote ${paths.size} paths to db")
         }
     }
 
@@ -76,17 +77,20 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
         assertBackgroundThread()
 
         val paths = mutableListOf<String>()
-
         readableDatabase.queryAll(TABLE_NAME) { cursor ->
             while (cursor.moveToNext()) {
                 paths.add(cursor.getString(0))
             }
         }
 
+        logD("Successfully read ${paths.size} paths from db")
+
         return paths
     }
 
     companion object {
+        // Blacklist is still used here for compatibility reasons, please don't get
+        // your pants in a twist about it.
         const val DB_VERSION = 1
         const val DB_NAME = "auxio_blacklist_database.db"
 

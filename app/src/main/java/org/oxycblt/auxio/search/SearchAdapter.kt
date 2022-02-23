@@ -52,7 +52,6 @@ class SearchAdapter(
             is Album -> AlbumViewHolder.ITEM_TYPE
             is Song -> SongViewHolder.ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
-
             else -> -1
         }
     }
@@ -77,7 +76,7 @@ class SearchAdapter(
 
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            else -> error("Invalid ViewHolder item type.")
+            else -> error("Invalid ViewHolder item type")
         }
     }
 

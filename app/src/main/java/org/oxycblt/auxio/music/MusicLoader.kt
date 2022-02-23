@@ -7,8 +7,8 @@ import android.provider.MediaStore
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
-import java.lang.Exception
 
 /**
  * This class acts as the base for most the black magic required to get a remotely sensible music
@@ -26,7 +26,7 @@ import java.lang.Exception
  * have to query for each genre, query all the songs in each genre, and then iterate through those
  * songs to link every song with their genre. This is not documented anywhere, and the
  * O(mom im scared) algorithm you have to run to get it working single-handedly DOUBLES Auxio's
- * loading times. At no point have the devs considered that this column is absolutely insane, and
+ * loading times. At no point have the devs considered that this system is absolutely insane, and
  * instead focused on adding infuriat- I mean nice proprietary extensions to MediaStore for their
  * own Google Play Music, and of course every Google Play Music user knew how great that turned
  * out!
@@ -88,14 +88,14 @@ class MusicLoader {
         val artists = buildArtists(context, albums)
         val genres = readGenres(context, songs)
 
-        // Sanity check: Ensure that all songs are well-formed.
+        // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
         for (song in songs) {
-            try {
-                song.album.artist
-                song.genre
-            } catch (e: Exception) {
+            if (song.internalIsMissingAlbum ||
+                song.internalIsMissingArtist ||
+                song.internalIsMissingGenre
+            ) {
                 logE("Found malformed song: ${song.name}")
-                throw e
+                throw IllegalStateException()
             }
         }
 
@@ -204,6 +204,8 @@ class MusicLoader {
                 it.internalMediaStoreAlbumArtistName to it.track to it.duration
         }.toMutableList()
 
+        logD("Successfully loaded ${songs.size} songs")
+
         return songs
     }
 
@@ -247,6 +249,8 @@ class MusicLoader {
             )
         }
 
+        logD("Successfully built ${albums.size} albums")
+
         return albums
     }
 
@@ -264,14 +268,15 @@ class MusicLoader {
 
             // Album deduplication does not eliminate every case of fragmented artists, do
             // we deduplicate in the artist creation step as well.
-            // Note that we actually don't do this in groupBy. This is generally because we
-            // only want to default to a lowercase artist name when we have no other choice.
+            // Note that we actually don't do this in groupBy. This is generally because using
+            // a template song may not result in the best possible artist name in all cases.
             val previousArtistIndex = artists.indexOfFirst { artist ->
                 artist.name.lowercase() == artistName.lowercase()
             }
 
             if (previousArtistIndex > -1) {
                 val previousArtist = artists[previousArtistIndex]
+                logD("Merging duplicate artist into pre-existing artist ${previousArtist.name}")
                 artists[previousArtistIndex] = Artist(
                     previousArtist.name,
                     previousArtist.resolvedName,
@@ -287,6 +292,8 @@ class MusicLoader {
                 )
             }
         }
+
+        logD("Successfully built ${artists.size} artists")
 
         return artists
     }
@@ -327,7 +334,7 @@ class MusicLoader {
             }
         }
 
-        val songsWithoutGenres = songs.filter { it.internalMissingGenre }
+        val songsWithoutGenres = songs.filter { it.internalIsMissingGenre }
 
         if (songsWithoutGenres.isNotEmpty()) {
             // Songs that don't have a genre will be thrown into an unknown genre.
@@ -339,6 +346,8 @@ class MusicLoader {
 
             genres.add(unknownGenre)
         }
+
+        logD("Successfully loaded ${genres.size} genres")
 
         return genres
     }

@@ -51,7 +51,7 @@
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:ellipsize="end"
-            android:text="@{@string/fmt_two(song.resolvedArtistName, song.resolvedAlbumName)}"
+            app:songInfo="@{song}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"

@@ -31,7 +31,7 @@ import androidx.preference.children
 import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.accent.AccentDialog
+import org.oxycblt.auxio.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.excluded.ExcludedDialog
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -68,7 +68,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             }
         }
 
-        logD("Fragment created.")
+        logD("Fragment created")
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -119,7 +119,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
                 SettingsManager.KEY_ACCENT -> {
                     onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        AccentDialog().show(childFragmentManager, AccentDialog.TAG)
+                        AccentCustomizeDialog().show(childFragmentManager, AccentCustomizeDialog.TAG)
                         true
                     }
 
@@ -182,7 +182,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
             AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_day
             AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_night
-
             else -> R.drawable.ic_auto
         }
     }

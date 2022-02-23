@@ -58,7 +58,6 @@ class AlbumDetailAdapter(
             is Album -> ALBUM_DETAIL_ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> ALBUM_SONG_ITEM_TYPE
-
             else -> -1
         }
     }
@@ -86,7 +85,6 @@ class AlbumDetailAdapter(
             is Album -> (holder as AlbumDetailViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-
             else -> {
             }
         }
@@ -127,7 +125,6 @@ class AlbumDetailAdapter(
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
                     currentHolder = it as Highlightable
-
                     currentHolder?.setHighlighted(true)
                 }
             }

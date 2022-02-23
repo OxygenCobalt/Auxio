@@ -55,7 +55,7 @@ class MusicStore private constructor() {
      * Load/Sort the entire music library. Should always be ran on a coroutine.
      */
     private fun load(context: Context): Response {
-        logD("Starting initial music load...")
+        logD("Starting initial music load")
 
         val notGranted = ContextCompat.checkSelfPermission(
             context, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -76,11 +76,10 @@ class MusicStore private constructor() {
             mArtists = library.artists
             mGenres = library.genres
 
-            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms.")
+            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms")
         } catch (e: Exception) {
-            logE("Something went horribly wrong.")
+            logE("Something went horribly wrong")
             logE(e.stackTraceToString())
-
             return Response.Err(ErrorKind.FAILED)
         }
 
@@ -117,6 +116,7 @@ class MusicStore private constructor() {
     /**
      * A response that [MusicStore] returns when loading music.
      * And before you ask, yes, I do like rust.
+     * TODO: Replace this with the kotlin builtin
      */
     sealed class Response {
         class Ok(val musicStore: MusicStore) : Response()
@@ -201,7 +201,7 @@ class MusicStore private constructor() {
          */
         fun requireInstance(): MusicStore {
             return requireNotNull(maybeGetInstance()) {
-                "Required MusicStore instance was not available."
+                "Required MusicStore instance was not available"
             }
         }
 

@@ -77,13 +77,16 @@ class ExcludedDialog : LifecycleDialog() {
 
         dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
+                logD("Opening launcher")
                 launcher.launch(null)
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
                 if (excludedModel.isModified) {
+                    logD("Committing changes")
                     saveAndRestart()
                 } else {
+                    logD("Dropping changes")
                     dismiss()
                 }
             }
@@ -93,11 +96,10 @@ class ExcludedDialog : LifecycleDialog() {
 
         excludedModel.paths.observe(viewLifecycleOwner) { paths ->
             adapter.submitList(paths)
-
             binding.excludedEmpty.isVisible = paths.isEmpty()
         }
 
-        logD("Dialog created.")
+        logD("Dialog created")
 
         return binding.root
     }
@@ -114,6 +116,7 @@ class ExcludedDialog : LifecycleDialog() {
     private fun addDocTreePath(uri: Uri?) {
         // A null URI means that the user left the file picker without picking a directory
         if (uri == null) {
+            logD("No URI given (user closed the dialog)")
             return
         }
 
@@ -142,6 +145,7 @@ class ExcludedDialog : LifecycleDialog() {
             return getRootPath() + "/" + typeAndPath.last()
         }
 
+        logD("Unsupported volume ${typeAndPath[0]}")
         return null
     }
 
@@ -156,7 +160,6 @@ class ExcludedDialog : LifecycleDialog() {
     /**
      * Get *just* the root path, nothing else is really needed.
      */
-    @Suppress("DEPRECATION")
     private fun getRootPath(): String {
         return Environment.getExternalStorageDirectory().absolutePath
     }

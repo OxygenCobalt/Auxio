@@ -48,10 +48,10 @@ class PlaybackStateDatabase(context: Context) :
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = nuke(db)
 
     private fun nuke(db: SQLiteDatabase) {
+        logD("Nuking database")
         db.apply {
             execSQL("DROP TABLE IF EXISTS $TABLE_NAME_STATE")
             execSQL("DROP TABLE IF EXISTS $TABLE_NAME_QUEUE")
-
             onCreate(this)
         }
     }
@@ -104,34 +104,6 @@ class PlaybackStateDatabase(context: Context) :
     // --- INTERFACE FUNCTIONS ---
 
     /**
-     * Clear the previously written [SavedState] and write a new one.
-     */
-    fun writeState(state: SavedState) {
-        assertBackgroundThread()
-
-        writableDatabase.transaction {
-            delete(TABLE_NAME_STATE, null, null)
-
-            this@PlaybackStateDatabase.logD("Wiped state db.")
-
-            val stateData = ContentValues(10).apply {
-                put(StateColumns.COLUMN_ID, 0)
-                put(StateColumns.COLUMN_SONG_HASH, state.song?.id)
-                put(StateColumns.COLUMN_POSITION, state.position)
-                put(StateColumns.COLUMN_PARENT_HASH, state.parent?.id)
-                put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
-                put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.toInt())
-                put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
-                put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.toInt())
-            }
-
-            insert(TABLE_NAME_STATE, null, stateData)
-        }
-
-        logD("Wrote state to database.")
-    }
-
-    /**
      * Read the stored [SavedState] from the database, if there is one.
      * @param musicStore Required to transform database songs/parents into actual instances
      * @return The stored [SavedState], null if there isn't one.
@@ -178,9 +150,67 @@ class PlaybackStateDatabase(context: Context) :
                 isShuffling = cursor.getInt(shuffleIndex) == 1,
                 loopMode = LoopMode.fromInt(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
             )
+
+            logD("Successfully read playback state: $state")
         }
 
         return state
+    }
+
+    /**
+     * Clear the previously written [SavedState] and write a new one.
+     */
+    fun writeState(state: SavedState) {
+        assertBackgroundThread()
+
+        writableDatabase.transaction {
+            delete(TABLE_NAME_STATE, null, null)
+
+            this@PlaybackStateDatabase.logD("Wiped state db")
+
+            val stateData = ContentValues(10).apply {
+                put(StateColumns.COLUMN_ID, 0)
+                put(StateColumns.COLUMN_SONG_HASH, state.song?.id)
+                put(StateColumns.COLUMN_POSITION, state.position)
+                put(StateColumns.COLUMN_PARENT_HASH, state.parent?.id)
+                put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
+                put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.toInt())
+                put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
+                put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.toInt())
+            }
+
+            insert(TABLE_NAME_STATE, null, stateData)
+        }
+
+        logD("Wrote state to database")
+    }
+
+    /**
+     * Read a list of queue items from this database.
+     * @param musicStore Required to transform database songs into actual song instances
+     */
+    fun readQueue(musicStore: MusicStore): MutableList<Song> {
+        assertBackgroundThread()
+
+        val queue = mutableListOf<Song>()
+
+        readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
+            if (cursor.count == 0) return@queryAll
+
+            val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_HASH)
+            val albumIndex = cursor.getColumnIndexOrThrow(QueueColumns.ALBUM_HASH)
+
+            while (cursor.moveToNext()) {
+                musicStore.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))
+                    ?.let { song ->
+                        queue.add(song)
+                    }
+            }
+        }
+
+        logD("Successfully read queue of ${queue.size} songs")
+
+        return queue
     }
 
     /**
@@ -190,12 +220,11 @@ class PlaybackStateDatabase(context: Context) :
         assertBackgroundThread()
 
         val database = writableDatabase
-
         database.transaction {
             delete(TABLE_NAME_QUEUE, null, null)
         }
 
-        logD("Wiped queue db.")
+        logD("Wiped queue db")
 
         writeQueueBatch(queue, queue.size)
     }
@@ -230,32 +259,6 @@ class PlaybackStateDatabase(context: Context) :
 
             logD("Wrote batch of songs. Position is now at $position")
         }
-    }
-
-    /**
-     * Read a list of queue items from this database.
-     * @param musicStore Required to transform database songs into actual song instances
-     */
-    fun readQueue(musicStore: MusicStore): MutableList<Song> {
-        assertBackgroundThread()
-
-        val queue = mutableListOf<Song>()
-
-        readableDatabase.queryAll(TABLE_NAME_QUEUE) { cursor ->
-            if (cursor.count == 0) return@queryAll
-
-            val songIndex = cursor.getColumnIndexOrThrow(QueueColumns.SONG_HASH)
-            val albumIndex = cursor.getColumnIndexOrThrow(QueueColumns.ALBUM_HASH)
-
-            while (cursor.moveToNext()) {
-                musicStore.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))
-                    ?.let { song ->
-                        queue.add(song)
-                    }
-            }
-        }
-
-        return queue
     }
 
     data class SavedState(

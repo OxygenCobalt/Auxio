@@ -100,6 +100,9 @@ private val ACCENT_PRIMARY_COLORS = arrayOf(
 
 /**
  * The data object for an accent. In the UI this is known as a "Color Scheme."
+ * This can be nominally used to gleam some attributes about a given color scheme, but this
+ * is not recommended. Attributes are usually the better option in nearly all cases.
+ *
  * @property name  The name of this accent
  * @property theme The theme resource for this accent
  * @property blackTheme The black theme resource for this accent
@@ -111,36 +114,4 @@ data class Accent(val index: Int) {
     val theme: Int get() = ACCENT_THEMES[index]
     val blackTheme: Int get() = ACCENT_BLACK_THEMES[index]
     val primary: Int get() = ACCENT_PRIMARY_COLORS[index]
-
-    companion object {
-        @Volatile
-        private var CURRENT: Accent? = null
-
-        /**
-         * Get the current accent.
-         * @return The current accent
-         * @throws IllegalStateException When the accent has not been set.
-         */
-        fun get(): Accent {
-            val cur = CURRENT
-
-            if (cur != null) {
-                return cur
-            }
-
-            error("Accent must be set before retrieving it.")
-        }
-
-        /**
-         * Set the current accent.
-         * @return The new accent
-         */
-        fun set(accent: Accent): Accent {
-            synchronized(this) {
-                CURRENT = accent
-            }
-
-            return accent
-        }
-    }
 }

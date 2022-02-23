@@ -41,7 +41,7 @@
             style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{@string/fmt_two(album.resolvedArtistName, @plurals/fmt_song_count(album.songs.size, album.songs.size))}"
+            app:albumInfo="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"

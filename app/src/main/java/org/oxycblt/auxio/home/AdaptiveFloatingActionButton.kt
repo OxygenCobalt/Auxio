@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.logD
 import com.google.android.material.R as MaterialR
 
 /**
@@ -20,7 +21,10 @@ class AdaptiveFloatingActionButton @JvmOverloads constructor(
     init {
         size = SIZE_NORMAL
 
+        // Use a large FAB on large screens, as it makes it easier to touch.
         if (resources.configuration.smallestScreenWidthDp >= 640) {
+            logD("Using large FAB configuration")
+
             val largeFabSize = context.getDimenSizeSafe(
                 MaterialR.dimen.m3_large_fab_size
             )
@@ -29,7 +33,6 @@ class AdaptiveFloatingActionButton @JvmOverloads constructor(
                 MaterialR.dimen.m3_large_fab_max_image_size
             )
 
-            // Use a large FAB on large screens, as it makes it easier to touch.
             customSize = largeFabSize
             setMaxImageSize(largeImageSize)
         }

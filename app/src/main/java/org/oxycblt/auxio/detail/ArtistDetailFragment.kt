@@ -35,6 +35,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * The [DetailFragment] for an artist.
@@ -98,25 +99,33 @@ class ArtistDetailFragment : DetailFragment() {
             when (item) {
                 is Artist -> {
                     if (item.id == detailModel.curArtist.value?.id) {
+                        logD("Navigating to the top of this artist")
                         binding.detailRecycler.scrollToPosition(0)
                         detailModel.finishNavToItem()
                     } else {
+                        logD("Navigating to another artist")
                         findNavController().navigate(
                             ArtistDetailFragmentDirections.actionShowArtist(item.id)
                         )
                     }
                 }
 
-                is Album -> findNavController().navigate(
-                    ArtistDetailFragmentDirections.actionShowAlbum(item.id)
-                )
-
-                is Song -> findNavController().navigate(
-                    ArtistDetailFragmentDirections.actionShowAlbum(item.album.id)
-                )
-
-                else -> {
+                is Album -> {
+                    logD("Navigating to another album")
+                    findNavController().navigate(
+                        ArtistDetailFragmentDirections.actionShowAlbum(item.id)
+                    )
                 }
+
+                is Song -> {
+                    logD("Navigating to another album")
+                    findNavController().navigate(
+                        ArtistDetailFragmentDirections.actionShowAlbum(item.album.id)
+                    )
+                }
+
+                null -> {}
+                else -> logW("Unsupported navigation item ${item::class.java}")
             }
         }
 
@@ -141,7 +150,7 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
-        logD("Fragment created.")
+        logD("Fragment created")
 
         return binding.root
     }

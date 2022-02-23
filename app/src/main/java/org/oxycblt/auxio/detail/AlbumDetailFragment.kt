@@ -40,6 +40,7 @@ import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -111,10 +112,11 @@ class AlbumDetailFragment : DetailFragment() {
                 // fragment should be launched otherwise.
                 is Song -> {
                     if (detailModel.curAlbum.value!!.id == item.album.id) {
+                        logD("Navigating to a song in this album")
                         scrollToItem(item.id, detailAdapter)
-
                         detailModel.finishNavToItem()
                     } else {
+                        logD("Navigating to another album")
                         findNavController().navigate(
                             AlbumDetailFragmentDirections.actionShowAlbum(item.album.id)
                         )
@@ -125,9 +127,11 @@ class AlbumDetailFragment : DetailFragment() {
                 // detail fragment.
                 is Album -> {
                     if (detailModel.curAlbum.value!!.id == item.id) {
+                        logD("Navigating to the top of this album")
                         binding.detailRecycler.scrollToPosition(0)
                         detailModel.finishNavToItem()
                     } else {
+                        logD("Navigating to another album")
                         findNavController().navigate(
                             AlbumDetailFragmentDirections.actionShowAlbum(item.id)
                         )
@@ -136,13 +140,14 @@ class AlbumDetailFragment : DetailFragment() {
 
                 // Always launch a new ArtistDetailFragment.
                 is Artist -> {
+                    logD("Navigating to another artist")
                     findNavController().navigate(
                         AlbumDetailFragmentDirections.actionShowArtist(item.id)
                     )
                 }
 
-                else -> {
-                }
+                null -> {}
+                else -> logW("Unsupported navigation item ${item::class.java}")
             }
         }
 
@@ -161,7 +166,7 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        logD("Fragment created.")
+        logD("Fragment created")
 
         return binding.root
     }

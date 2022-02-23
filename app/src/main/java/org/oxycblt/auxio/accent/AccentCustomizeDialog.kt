@@ -34,9 +34,9 @@ import org.oxycblt.auxio.util.logD
  * Dialog responsible for showing the list of accents to select.
  * @author OxygenCobalt
  */
-class AccentDialog : LifecycleDialog() {
+class AccentCustomizeDialog : LifecycleDialog() {
     private val settingsManager = SettingsManager.getInstance()
-    private var pendingAccent = Accent.get()
+    private var pendingAccent = settingsManager.accent
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,18 +53,18 @@ class AccentDialog : LifecycleDialog() {
 
         binding.accentRecycler.apply {
             adapter = AccentAdapter(pendingAccent) { accent ->
+                logD("Switching selected accent to $accent")
                 pendingAccent = accent
             }
         }
 
-        logD("Dialog created.")
+        logD("Dialog created")
 
         return binding.root
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         outState.putInt(KEY_PENDING_ACCENT, pendingAccent.index)
     }
 
@@ -72,9 +72,9 @@ class AccentDialog : LifecycleDialog() {
         builder.setTitle(R.string.set_accent)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            if (pendingAccent != Accent.get()) {
+            if (pendingAccent != settingsManager.accent) {
+                logD("Applying new accent")
                 settingsManager.accent = pendingAccent
-
                 requireActivity().recreate()
             }
 

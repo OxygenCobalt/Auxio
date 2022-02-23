@@ -180,7 +180,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         settingsManager.addCallback(this)
 
-        logD("Service created.")
+        logD("Service created")
     }
 
     override fun onDestroy() {
@@ -207,7 +207,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             serviceJob.cancel()
         }
 
-        logD("Service destroyed.")
+        logD("Service destroyed")
     }
 
     // --- PLAYER EVENT LISTENER OVERRIDES ---
@@ -260,22 +260,21 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onSongUpdate(song: Song?) {
         if (song != null) {
+            logD("Setting player to ${song.name}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
             player.prepare()
-
             notification.setMetadata(song, ::startForegroundOrNotify)
-
             return
         }
 
         // Clear if there's nothing to play.
+        logD("Nothing playing, stopping playback")
         player.stop()
         stopForegroundAndNotification()
     }
 
     override fun onParentUpdate(parent: MusicParent?) {
         notification.setParent(parent)
-
         startForegroundOrNotify()
     }
 
@@ -295,7 +294,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onLoopUpdate(loopMode: LoopMode) {
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(loopMode)
-
             startForegroundOrNotify()
         }
     }
@@ -303,7 +301,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onShuffleUpdate(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
             notification.setShuffle(isShuffling)
-
             startForegroundOrNotify()
         }
     }
@@ -334,7 +331,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
             connector.onSongUpdate(song)
-
             notification.setMetadata(song, ::startForegroundOrNotify)
         }
     }
@@ -449,6 +445,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     /**
      * A [BroadcastReceiver] for receiving general playback events from the system.
+     * TODO: Don't fire when the service initially starts?
      */
     private inner class PlaybackReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -501,7 +498,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
      */
     private fun resumeFromPlug() {
         if (playbackManager.song != null && settingsManager.doPlugMgt) {
-            logD("Device connected, resuming...")
+            logD("Device connected, resuming")
             playbackManager.setPlaying(true)
         }
     }
@@ -511,7 +508,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
      */
     private fun pauseFromPlug() {
         if (playbackManager.song != null && settingsManager.doPlugMgt) {
-            logD("Device disconnected, pausing...")
+            logD("Device disconnected, pausing")
             playbackManager.setPlaying(false)
         }
     }

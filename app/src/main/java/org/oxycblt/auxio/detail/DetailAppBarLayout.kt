@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.EdgeAppBarLayout
+import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.logTraceOrThrow
+import java.lang.Exception
 
 /**
  * An [EdgeAppBarLayout] variant that also shows the name of the toolbar whenever the detail
@@ -39,9 +42,8 @@ class DetailAppBarLayout @JvmOverloads constructor(
         (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
     }
 
-    private fun findTitleView(): AppCompatTextView {
+    private fun findTitleView(): AppCompatTextView? {
         val titleView = mTitleView
-
         if (titleView != null) {
             return titleView
         }
@@ -49,13 +51,18 @@ class DetailAppBarLayout @JvmOverloads constructor(
         val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
 
         // Reflect to get the actual title view to do transformations on
-        val newTitleView = Toolbar::class.java.getDeclaredField("mTitleTextView").run {
-            isAccessible = true
-            get(toolbar) as AppCompatTextView
+        val newTitleView = try {
+            Toolbar::class.java.getDeclaredField("mTitleTextView").run {
+                isAccessible = true
+                get(toolbar) as AppCompatTextView
+            }
+        } catch (e: Exception) {
+            logE("Could not get toolbar title view (likely an internal code change)")
+            e.logTraceOrThrow()
+            return null
         }
 
         newTitleView.alpha = 0f
-
         mTitleView = newTitleView
         return newTitleView
     }
@@ -95,11 +102,11 @@ class DetailAppBarLayout @JvmOverloads constructor(
             to = 0f
         }
 
-        if (titleView.alpha == to) return
+        if (titleView?.alpha == to) return
 
         mTitleAnimator = ValueAnimator.ofFloat(from, to).apply {
             addUpdateListener {
-                titleView.alpha = it.animatedValue as Float
+                titleView?.alpha = it.animatedValue as Float
             }
 
             duration = resources.getInteger(R.integer.app_bar_elevation_anim_duration).toLong()

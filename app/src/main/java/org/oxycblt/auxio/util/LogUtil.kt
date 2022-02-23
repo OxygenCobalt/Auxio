@@ -42,10 +42,29 @@ fun Any.logD(msg: String) {
 }
 
 /**
+ * Shortcut method for logging [msg] as a warning to the console. Handles anonymous objects
+ */
+fun Any.logW(msg: String) {
+    Log.w(getName(), msg)
+}
+
+/**
  * Shortcut method for logging [msg] as an error to the console. Handles anonymous objects
  */
 fun Any.logE(msg: String) {
     Log.e(getName(), msg)
+}
+
+/**
+ * Logs an error in production while still throwing it in debug mode. This is useful for
+ * non-showstopper bugs that I would still prefer to be caught in debug mode.
+ */
+fun Throwable.logTraceOrThrow() {
+    if (BuildConfig.DEBUG) {
+        throw this
+    } else {
+        logE(stackTraceToString())
+    }
 }
 
 /**

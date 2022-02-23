@@ -27,6 +27,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.util.logD
 
 /**
  * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal
@@ -73,10 +74,13 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      */
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
+            val start = System.currentTimeMillis()
             excludedDatabase.writePaths(mPaths.value!!)
             dbPaths = mPaths.value!!
-
             onDone()
+            this@ExcludedViewModel.logD(
+                "Path save completed successfully in ${System.currentTimeMillis() - start}ms"
+            )
         }
     }
 
@@ -85,11 +89,14 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      */
     private fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
+            val start = System.currentTimeMillis()
             dbPaths = excludedDatabase.readPaths()
-
             withContext(Dispatchers.Main) {
                 mPaths.value = dbPaths.toMutableList()
             }
+            this@ExcludedViewModel.logD(
+                "Path load completed successfully in ${System.currentTimeMillis() - start}ms"
+            )
         }
     }
 

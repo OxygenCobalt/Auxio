@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.viewbinding.ViewBinding
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         applyEdgeToEdgeWindow(binding)
 
-        logD("Activity created.")
+        logD("Activity created")
     }
 
     override fun onStart() {
@@ -94,26 +93,29 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // Android 12, let dynamic colors be our accent and only enable the black theme option
             if (isNight && settingsManager.useBlackTheme) {
+                logD("Applying black theme [dynamic colors]")
                 setTheme(R.style.Theme_Auxio_Black)
             }
         } else {
             // Below android 12, load the accent and enable theme customization
             AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
-            val newAccent = Accent.set(settingsManager.accent)
+            val accent = settingsManager.accent
 
             // The black theme has a completely separate set of styles since style attributes cannot
             // be modified at runtime.
             if (isNight && settingsManager.useBlackTheme) {
-                setTheme(newAccent.blackTheme)
+                logD("Applying black theme [with accent $accent]")
+                setTheme(accent.blackTheme)
             } else {
-                setTheme(newAccent.theme)
+                logD("Applying normal theme [with accent $accent]")
+                setTheme(accent.theme)
             }
         }
     }
 
     private fun applyEdgeToEdgeWindow(binding: ViewBinding) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            logD("Doing R+ edge-to-edge.")
+            logD("Doing R+ edge-to-edge")
 
             window?.setDecorFitsSystemWindows(false)
 
@@ -136,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // Do old edge-to-edge otherwise.
-            logD("Doing legacy edge-to-edge.")
+            logD("Doing legacy edge-to-edge")
 
             @Suppress("DEPRECATION")
             binding.root.apply {

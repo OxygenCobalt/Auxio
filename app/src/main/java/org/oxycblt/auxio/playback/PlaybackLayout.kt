@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
@@ -225,6 +226,8 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     private fun applyState(state: PanelState) {
+        logD("Applying panel state $state")
+
         // Dragging events are really complex and we don't want to mess up the state
         // while we are in one.
         if (state == panelState || panelState == PanelState.DRAGGING) {
@@ -357,10 +360,8 @@ class PlaybackLayout @JvmOverloads constructor(
         // bottom navigation is consumed by a bar. To fix this, we modify the bottom insets
         // to reflect the presence of the panel [at least in it's collapsed state]
         playbackContainerView.dispatchApplyWindowInsets(insets)
-
         lastInsets = insets
         applyContentWindowInsets()
-
         return insets
     }
 
@@ -370,7 +371,6 @@ class PlaybackLayout @JvmOverloads constructor(
      */
     private fun applyContentWindowInsets() {
         val insets = lastInsets
-
         if (insets != null) {
             contentView.dispatchApplyWindowInsets(adjustInsets(insets))
         }
@@ -386,8 +386,9 @@ class PlaybackLayout @JvmOverloads constructor(
         val bars = insets.systemBarInsetsCompat
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
-
-        return insets.replaceSystemBarInsetsCompat(bars.left, bars.top, bars.right, adjustedBottomInset)
+        return insets.replaceSystemBarInsetsCompat(
+            bars.left, bars.top, bars.right, adjustedBottomInset
+        )
     }
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
@@ -586,6 +587,8 @@ class PlaybackLayout @JvmOverloads constructor(
         (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
 
     private fun smoothSlideTo(offset: Float) {
+        logD("Smooth sliding to $offset")
+
         val okay = dragHelper.smoothSlideViewTo(
             playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset)
         )

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
+import org.oxycblt.auxio.util.logD
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
@@ -43,13 +44,11 @@ abstract class DetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         detailModel.setNavigating(false)
     }
 
     override fun onStop() {
         super.onStop()
-
         // Cancel all pending menus when this fragment stops to prevent bugs/crashes
         detailModel.finishShowMenu(null)
     }
@@ -94,7 +93,6 @@ abstract class DetailFragment : Fragment() {
         binding.detailRecycler.apply {
             adapter = detailAdapter
             setHasFixedSize(true)
-
             applySpans(gridLookup)
         }
     }
@@ -105,6 +103,8 @@ abstract class DetailFragment : Fragment() {
      * @param showItem Which menu items to keep
      */
     protected fun showMenu(config: DetailViewModel.MenuConfig, showItem: ((Int) -> Boolean)? = null) {
+        logD("Launching menu [$config]")
+
         PopupMenu(config.anchor.context, config.anchor).apply {
             inflate(R.menu.menu_detail_sort)
 

@@ -224,7 +224,6 @@ class PlaybackStateManager private constructor() {
     private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
         mSong = song
         mPosition = 0
-
         setPlaying(shouldPlay)
     }
 
@@ -271,18 +270,14 @@ class PlaybackStateManager private constructor() {
      * Remove a queue item at [index]. Will ignore invalid indexes.
      */
     fun removeQueueItem(index: Int): Boolean {
-        logD("Removing item ${mQueue[index].name}.")
-
         if (index > mQueue.size || index < 0) {
-            logE("Index is out of bounds, did not remove queue item.")
-
+            logE("Index is out of bounds, did not remove queue item")
             return false
         }
 
+        logD("Removing item ${mQueue[index].name}")
         mQueue.removeAt(index)
-
         pushQueueUpdate()
-
         return true
     }
 
@@ -292,15 +287,12 @@ class PlaybackStateManager private constructor() {
     fun moveQueueItems(from: Int, to: Int): Boolean {
         if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
-
             return false
         }
 
-        val item = mQueue.removeAt(from)
-        mQueue.add(to, item)
-
+        logD("Moving item $from to position $to")
+        mQueue.add(to, mQueue.removeAt(from))
         pushQueueUpdate()
-
         return true
     }
 
@@ -501,7 +493,7 @@ class PlaybackStateManager private constructor() {
      * @param context [Context] required
      */
     suspend fun saveStateToDatabase(context: Context) {
-        logD("Saving state to DB.")
+        logD("Saving state to DB")
 
         // Pack the entire state and save it to the database.
         withContext(Dispatchers.IO) {
@@ -519,7 +511,7 @@ class PlaybackStateManager private constructor() {
             database.writeQueue(mQueue)
 
             this@PlaybackStateManager.logD(
-                "Save finished in ${System.currentTimeMillis() - start}ms"
+                "State save completed successfully in ${System.currentTimeMillis() - start}ms"
             )
         }
     }
@@ -529,10 +521,9 @@ class PlaybackStateManager private constructor() {
      * @param context [Context] required.
      */
     suspend fun restoreFromDatabase(context: Context) {
-        logD("Getting state from DB.")
+        logD("Getting state from DB")
 
         val musicStore = MusicStore.maybeGetInstance() ?: return
-
         val start: Long
         val playbackState: PlaybackStateDatabase.SavedState?
         val queue: MutableList<Song>
@@ -549,15 +540,13 @@ class PlaybackStateManager private constructor() {
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
         if (playbackState != null) {
-            logD("Found playback state $playbackState")
-
             unpackFromPlaybackState(playbackState)
             unpackQueue(queue)
             doParentSanityCheck()
             doIndexSanityCheck()
         }
 
-        logD("Restore finished in ${System.currentTimeMillis() - start}ms")
+        logD("State load completed successfully in ${System.currentTimeMillis() - start}ms")
 
         markRestored()
     }
@@ -592,7 +581,7 @@ class PlaybackStateManager private constructor() {
     private fun doParentSanityCheck() {
         // Check if the parent was lost while in the DB.
         if (mSong != null && mParent == null && mPlaybackMode != PlaybackMode.ALL_SONGS) {
-            logD("Parent lost, attempting restore.")
+            logD("Parent lost, attempting restore")
 
             mParent = when (mPlaybackMode) {
                 PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album

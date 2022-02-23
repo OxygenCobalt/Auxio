@@ -92,7 +92,6 @@ class PlaybackFragment : Fragment() {
         // Make marquee of song title work
         binding.playbackSong.isSelected = true
         binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
-
         binding.playbackPlayPause.post {
             binding.playbackPlayPause.stateListAnimator = null
         }
@@ -101,11 +100,11 @@ class PlaybackFragment : Fragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                logD("Updating song display to ${song.name}.")
+                logD("Updating song display to ${song.name}")
                 binding.song = song
                 binding.playbackSeekBar.setDuration(song.seconds)
             } else {
-                logD("No song is being played, leaving.")
+                logD("No song is being played, leaving")
                 findNavController().navigateUp()
             }
         }
@@ -152,7 +151,7 @@ class PlaybackFragment : Fragment() {
             }
         }
 
-        logD("Fragment Created.")
+        logD("Fragment Created")
 
         return binding.root
     }

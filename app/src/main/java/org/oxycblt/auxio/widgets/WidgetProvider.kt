@@ -40,6 +40,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import kotlin.math.min
 
 /**
@@ -87,6 +88,10 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
+    /**
+     * Custom function for loading bitmaps to the widget in a way that works with the
+     * widget ImageView instances.
+     */
     private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
         val coverRequest = ImageRequest.Builder(context)
             .data(song.album)
@@ -152,6 +157,8 @@ class WidgetProvider : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            logD("Requesting new view from PlaybackService")
+
             // We can't resize the widget until we can generate the views, so request an update
             // from PlaybackService.
             requestUpdate(context)
@@ -234,7 +241,7 @@ class WidgetProvider : AppWidgetProvider() {
                     continue
                 } else {
                     // Default to the smallest view if no layout fits
-                    logD("No widget layout found")
+                    logW("No good widget layout found")
 
                     val minimum = requireNotNull(
                         views.minByOrNull { it.key.width * it.key.height }?.value

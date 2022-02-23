@@ -33,6 +33,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import kotlin.math.pow
 
 /**
@@ -85,6 +86,7 @@ class AudioReactor(
      * Request the android system for audio focus
      */
     fun requestFocus() {
+        logD("Requesting audio focus")
         AudioManagerCompat.requestAudioFocus(audioManager, request)
     }
 
@@ -94,7 +96,7 @@ class AudioReactor(
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {
-            logD("No metadata.")
+            logW("No metadata could be extracted from this track")
             volume = 1f
             return
         }
@@ -102,7 +104,7 @@ class AudioReactor(
         // ReplayGain is configurable, so determine what to do based off of the mode.
         val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
             ReplayGainMode.OFF -> {
-                logD("ReplayGain is off.")
+                logD("ReplayGain is off")
                 volume = 1f
                 return
             }
@@ -132,10 +134,10 @@ class AudioReactor(
 
         val adjust = if (gain != null) {
             if (useAlbumGain(gain)) {
-                logD("Using album gain.")
+                logD("Using album gain")
                 gain.album
             } else {
-                logD("Using track gain.")
+                logD("Using track gain")
                 gain.track
             }
         } else {

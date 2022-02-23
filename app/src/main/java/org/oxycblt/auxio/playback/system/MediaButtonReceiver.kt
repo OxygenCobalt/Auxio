@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import org.oxycblt.auxio.util.logD
 
 /**
  * Some apps like to party like it's 2011 and just blindly query for the ACTION_MEDIA_BUTTON
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 class MediaButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
+            logD("Received external media button intent")
             intent.component = ComponentName(context, PlaybackService::class.java)
             ContextCompat.startForegroundService(context, intent)
         }

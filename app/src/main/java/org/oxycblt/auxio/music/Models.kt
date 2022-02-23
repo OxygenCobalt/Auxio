@@ -124,8 +124,12 @@ data class Song(
     val internalGroupingArtistName: String get() = internalMediaStoreAlbumArtistName
         ?: internalMediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
 
+    /** Internal field. Do not use. */
+    val internalIsMissingAlbum: Boolean get() = mAlbum == null
+    /** Internal field. Do not use. */
+    val internalIsMissingArtist: Boolean get() = mAlbum?.internalIsMissingArtist ?: true
     /** Internal field. Do not use. **/
-    val internalMissingGenre: Boolean get() = mGenre == null
+    val internalIsMissingGenre: Boolean get() = mGenre == null
 
     /** Internal method. Do not use. */
     fun internalLinkAlbum(album: Album) {
@@ -179,6 +183,9 @@ data class Album(
     /** The artist name, resolved to this album in particular. */
     val resolvedArtistName: String get() =
         artist.resolvedName
+
+    /** Internal field. Do not use. */
+    val internalIsMissingArtist: Boolean = mArtist != null
 
     /** Internal method. Do not use. */
     fun internalLinkArtist(artist: Artist) {

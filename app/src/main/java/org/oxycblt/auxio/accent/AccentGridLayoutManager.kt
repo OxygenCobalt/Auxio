@@ -30,7 +30,7 @@ import kotlin.math.max
  * of the RecyclerView.
  * Adapted from this StackOverflow answer: https://stackoverflow.com/a/30256880/14143986
  */
-class AutoGridLayoutManager(
+class AccentGridLayoutManager(
     context: Context,
     attrs: AttributeSet,
     defStyleAttr: Int,

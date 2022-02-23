@@ -29,6 +29,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.util.logD
 
 /**
  * The dialog for customizing library tabs. This dialog does not rely on any specific ViewModel
@@ -49,7 +50,6 @@ class TabCustomizeDialog : LifecycleDialog() {
         if (savedInstanceState != null) {
             // Restore any pending tab configurations
             val tabs = Tab.fromSequence(savedInstanceState.getInt(KEY_TABS))
-
             if (tabs != null) {
                 pendingTabs = tabs
             }
@@ -66,10 +66,9 @@ class TabCustomizeDialog : LifecycleDialog() {
                 // of how ViewHolders are bound], but instead simply look for the mode in
                 // the list of pending tabs and update that instead.
                 val index = pendingTabs.indexOfFirst { it.mode == tab.mode }
-
                 if (index != -1) {
                     val curTab = pendingTabs[index]
-
+                    logD("Updating tab $curTab to $tab")
                     pendingTabs[index] = when (curTab) {
                         is Tab.Visible -> Tab.Invisible(curTab.mode)
                         is Tab.Invisible -> Tab.Visible(curTab.mode)
@@ -93,7 +92,6 @@ class TabCustomizeDialog : LifecycleDialog() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         outState.putInt(KEY_TABS, Tab.toSequence(pendingTabs))
     }
 
@@ -101,6 +99,7 @@ class TabCustomizeDialog : LifecycleDialog() {
         builder.setTitle(R.string.set_lib_tabs)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            logD("Committing tab changes")
             settingsManager.libTabs = pendingTabs
         }
 

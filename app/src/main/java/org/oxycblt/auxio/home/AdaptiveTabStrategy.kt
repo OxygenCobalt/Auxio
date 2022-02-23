@@ -3,6 +3,7 @@ package org.oxycblt.auxio.home
 import android.content.Context
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.oxycblt.auxio.util.logD
 
 /**
  * A tag configuration strategy that automatically adapts the tab layout to the screen size.
@@ -20,15 +21,22 @@ class AdaptiveTabStrategy(
         val tabMode = homeModel.tabs[position]
 
         when {
-            width < 370 ->
+            width < 370 -> {
+                logD("Using icon-only configuration")
                 tab.setIcon(tabMode.icon)
                     .setContentDescription(tabMode.string)
+            }
 
-            width < 640 -> tab.setText(tabMode.string)
+            width < 640 -> {
+                logD("Using text-only configuration")
+                tab.setText(tabMode.string)
+            }
 
-            else ->
+            else -> {
+                logD("Using icon-and-text configuration")
                 tab.setIcon(tabMode.icon)
                     .setText(tabMode.string)
+            }
         }
     }
 }

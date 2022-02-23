@@ -331,7 +331,7 @@ class SettingsManager private constructor(context: Context) :
                 return instance
             }
 
-            error("SettingsManager must be initialized with init() before getting its instance.")
+            error("SettingsManager must be initialized with init() before getting its instance")
         }
     }
 }

@@ -73,7 +73,7 @@ class MemberBinder<T : ViewDataBinding>(
         val lifecycle = fragment.viewLifecycleOwner.lifecycle
 
         check(lifecycle.currentState.isAtLeast(Lifecycle.State.INITIALIZED)) {
-            "Fragment views are destroyed."
+            "Fragment views are destroyed"
         }
 
         // Otherwise create the binding and return that.

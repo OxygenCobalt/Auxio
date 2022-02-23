@@ -33,12 +33,12 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.bindArtistInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
-import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -64,7 +64,6 @@ class ArtistDetailAdapter(
             is Song -> ARTIST_SONG_ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
-
             else -> -1
         }
     }
@@ -174,7 +173,6 @@ class ArtistDetailAdapter(
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
                     currentSongHolder = it as Highlightable
-
                     currentSongHolder?.setHighlighted(true)
                 }
             }
@@ -205,11 +203,7 @@ class ArtistDetailAdapter(
                 .entries.maxByOrNull { it.value.size }
                 ?.key ?: context.getString(R.string.def_genre)
 
-            binding.detailInfo.text = context.getString(
-                R.string.fmt_counts,
-                context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
-                context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
-            )
+            binding.detailInfo.bindArtistInfo(data)
 
             binding.detailPlayButton.setOnClickListener {
                 playbackModel.playArtist(data, false)

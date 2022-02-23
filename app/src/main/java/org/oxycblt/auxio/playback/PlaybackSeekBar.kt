@@ -29,6 +29,7 @@ import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
 
 /**
@@ -73,6 +74,7 @@ class PlaybackSeekBar @JvmOverloads constructor(
             // - The duration of the song was so low as to be rounded to zero when converted
             // to seconds.
             // In either of these cases, the seekbar is more or less useless. Disable it.
+            logD("Duration is 0, entering disabled state")
             binding.seekBar.apply {
                 valueTo = 1f
                 isEnabled = false

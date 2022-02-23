@@ -70,11 +70,9 @@ class QueueAdapter(
             QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(parent.context.inflater)
             )
-
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
-
-            else -> error("Invalid ViewHolder item type $viewType.")
+            else -> error("Invalid ViewHolder item type $viewType")
         }
     }
 
@@ -83,8 +81,7 @@ class QueueAdapter(
             is Song -> (holder as QueueSongViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-
-            else -> logE("Bad data given to QueueAdapter.")
+            else -> logE("Bad data given to QueueAdapter")
         }
     }
 
@@ -95,7 +92,6 @@ class QueueAdapter(
     fun submitList(newData: MutableList<BaseModel>) {
         if (data != newData) {
             data = newData
-
             listDiffer.submitList(newData)
         }
     }

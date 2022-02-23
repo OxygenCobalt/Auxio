@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.logD
 import java.text.Normalizer
 
 /**
@@ -70,11 +71,14 @@ class SearchViewModel : ViewModel() {
         mLastQuery = query
 
         if (query.isEmpty() || musicStore == null) {
+            logD("No music/query, ignoring search")
             mSearchResults.value = listOf()
             return
         }
 
-        // Searching can be quite expensive, so hop on a co-routine
+        logD("Performing search for $query")
+
+        // Searching can be quite expensive, so get on a co-routine
         viewModelScope.launch {
             val sort = Sort.ByName(true)
             val results = mutableListOf<BaseModel>()
@@ -126,6 +130,8 @@ class SearchViewModel : ViewModel() {
 
             else -> null
         }
+
+        logD("Updating filter mode to $mFilterMode")
 
         settingsManager.searchFilterMode = mFilterMode
 

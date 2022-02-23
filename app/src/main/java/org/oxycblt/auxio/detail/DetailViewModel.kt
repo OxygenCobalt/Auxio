@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.logD
 
 /**
  * ViewModel that stores data for the [DetailFragment]s. This includes:
@@ -77,12 +78,10 @@ class DetailViewModel : ViewModel() {
         private set
 
     private var currentMenuContext: DisplayMode? = null
-
     private val settingsManager = SettingsManager.getInstance()
 
     fun setGenre(id: Long) {
         if (mCurGenre.value?.id == id) return
-
         val musicStore = MusicStore.requireInstance()
         mCurGenre.value = musicStore.genres.find { it.id == id }
         refreshGenreData()
@@ -90,7 +89,6 @@ class DetailViewModel : ViewModel() {
 
     fun setArtist(id: Long) {
         if (mCurArtist.value?.id == id) return
-
         val musicStore = MusicStore.requireInstance()
         mCurArtist.value = musicStore.artists.find { it.id == id }
         refreshArtistData()
@@ -98,7 +96,6 @@ class DetailViewModel : ViewModel() {
 
     fun setAlbum(id: Long) {
         if (mCurAlbum.value?.id == id) return
-
         val musicStore = MusicStore.requireInstance()
         mCurAlbum.value = musicStore.albums.find { it.id == id }
         refreshAlbumData()
@@ -112,6 +109,7 @@ class DetailViewModel : ViewModel() {
         mShowMenu.value = null
 
         if (newMode != null) {
+            logD("Applying new sort mode")
             when (currentMenuContext) {
                 DisplayMode.SHOW_ALBUMS -> {
                     settingsManager.detailAlbumSort = newMode
@@ -154,7 +152,9 @@ class DetailViewModel : ViewModel() {
     }
 
     private fun refreshGenreData() {
-        val data = mutableListOf<BaseModel>(curGenre.value!!)
+        logD("Refreshing genre data")
+        val genre = requireNotNull(curGenre.value)
+        val data = mutableListOf<BaseModel>(genre)
 
         data.add(
             ActionHeader(
@@ -175,7 +175,8 @@ class DetailViewModel : ViewModel() {
     }
 
     private fun refreshArtistData() {
-        val artist = curArtist.value!!
+        logD("Refreshing artist data")
+        val artist = requireNotNull(curArtist.value)
         val data = mutableListOf<BaseModel>(artist)
 
         data.add(
@@ -206,7 +207,9 @@ class DetailViewModel : ViewModel() {
     }
 
     private fun refreshAlbumData() {
-        val data = mutableListOf<BaseModel>(curAlbum.value!!)
+        logD("Refreshing album data")
+        val album = requireNotNull(curAlbum.value)
+        val data = mutableListOf<BaseModel>(album)
 
         data.add(
             ActionHeader(

@@ -25,6 +25,8 @@ import androidx.core.text.isDigitsOnly
 import androidx.databinding.BindingAdapter
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getPluralSafe
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
@@ -98,6 +100,7 @@ fun String.getGenreNameCompat(): String? {
  */
 fun Long.toDuration(isElapsed: Boolean): String {
     if (!isElapsed && this == 0L) {
+        logD("Non-elapsed duration is zero, using --:--")
         return "--:--"
     }
 
@@ -121,14 +124,53 @@ fun Int.toDate(context: Context): String {
 
 // --- BINDING ADAPTERS ---
 
-/**
- * Bind the album + song counts for an artist
- */
-@BindingAdapter("artistCounts")
-fun TextView.bindArtistCounts(artist: Artist) {
+@BindingAdapter("songInfo")
+fun TextView.bindSongInfo(song: Song?) {
+    if (song == null) {
+        logW("Song was null, not applying info")
+        return
+    }
+
+    text = context.getString(
+        R.string.fmt_two,
+        song.resolvedArtistName,
+        song.resolvedAlbumName
+    )
+}
+
+@BindingAdapter("albumInfo")
+fun TextView.bindAlbumInfo(album: Album?) {
+    if (album == null) {
+        logW("Album was null, not applying info")
+        return
+    }
+
+    text = context.getString(
+        R.string.fmt_two, album.resolvedArtistName,
+        context.getPluralSafe(R.plurals.fmt_song_count, album.songs.size)
+    )
+}
+
+@BindingAdapter("artistInfo")
+fun TextView.bindArtistInfo(artist: Artist?) {
+    if (artist == null) {
+        logW("Artist was null, not applying info")
+        return
+    }
+
     text = context.getString(
         R.string.fmt_counts,
         context.getPluralSafe(R.plurals.fmt_album_count, artist.albums.size),
         context.getPluralSafe(R.plurals.fmt_song_count, artist.songs.size)
     )
+}
+
+@BindingAdapter("genreInfo")
+fun TextView.bindGenreInfo(genre: Genre?) {
+    if (genre == null) {
+        logW("Genre was null, not applying info")
+        return
+    }
+
+    text = context.getPluralSafe(R.plurals.fmt_song_count, genre.songs.size)
 }
