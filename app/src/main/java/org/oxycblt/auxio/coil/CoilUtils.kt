@@ -35,7 +35,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
 
 // --- BINDING ADAPTERS ---
 
@@ -65,21 +64,6 @@ fun ImageView.bindGenreImage(genre: Genre?) = load(genre, R.drawable.ic_genre)
 
 fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
     dispose()
-
-    // We don't round album covers by default as it desecrates album artwork, but we do provide
-    // an option if one wants it.
-    // As for why we use clipToOutline instead of coils RoundedCornersTransformation, the radii
-    // of an image's corners is dependent on the actual dimensions of the image, which would force
-    // us to resize all images to a fixed size. clipToOutline is pretty much always cheaper as long
-    // as we have a perfectly-square image.
-    val settingsManager = SettingsManager.getInstance()
-    if (settingsManager.roundCovers && background == null) {
-        setBackgroundResource(R.drawable.ui_rounded_cutout)
-        clipToOutline = true
-    } else if (!settingsManager.roundCovers && background != null) {
-        background = null
-        clipToOutline = false
-    }
 
     load(music) {
         error(error)

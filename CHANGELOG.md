@@ -3,6 +3,7 @@
 ## dev [v2.2.2 or 2.3.0]
 
 #### What's Improved
+- Rounded images are more nuanced
 - Shuffle and Repeat mode buttons now have more contrast when they are turned on
 
 #### What's Changed

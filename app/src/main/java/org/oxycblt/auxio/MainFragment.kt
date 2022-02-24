@@ -79,10 +79,6 @@ class MainFragment : Fragment() {
             // but for some insane reason google decided to cripple the window APIs one could use
             // to limit it's size. So, we just have our own special layout that is shown whenever
             // the screen is too small because of course we have to.
-            // Another fun fact: smallestScreenWidthDp is completely bugged and uses the total
-            // screen size, even when the window is smaller. This basically borks split screen
-            // even more than it already does. Fun!
-
             if (requireActivity().isInMultiWindowMode) {
                 val config = resources.configuration
 

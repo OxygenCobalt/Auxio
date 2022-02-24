@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorSurface">
 
-            <ImageView
+            <org.oxycblt.auxio.coil.RoundableImageView
                 android:id="@+id/album_cover"
                 style="@style/Widget.Auxio.Image.Small"
                 android:layout_margin="@dimen/spacing_medium"

@@ -159,7 +159,9 @@ class HomeFragment : Fragment() {
             ).attach()
         }
 
-        binding.homeShuffleFab.setup(playbackModel)
+        binding.homeFab.setOnClickListener {
+            playbackModel.shuffleAll()
+        }
 
 // --- VIEWMODEL SETUP ---
 
@@ -169,12 +171,12 @@ class HomeFragment : Fragment() {
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             // Handle the loader response.
             when (response) {
-                is MusicStore.Response.Ok -> binding.homeShuffleFab.show()
+                is MusicStore.Response.Ok -> binding.homeFab.show()
 
                 // While loading or during an error, make sure we keep the shuffle fab hidden so
                 // that any kind of playback is impossible. PlaybackStateManager also relies on this
                 // invariant, so please don't change it.
-                else -> binding.homeShuffleFab.hide()
+                else -> binding.homeFab.hide()
             }
         }
 
@@ -186,9 +188,9 @@ class HomeFragment : Fragment() {
             }
 
             if (scrolling) {
-                binding.homeShuffleFab.hide()
+                binding.homeFab.hide()
             } else {
-                binding.homeShuffleFab.show()
+                binding.homeFab.show()
             }
         }
 

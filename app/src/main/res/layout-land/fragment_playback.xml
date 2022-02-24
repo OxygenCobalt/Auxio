@@ -35,7 +35,7 @@
             tools:subtitle="@string/lbl_all_songs"
             app:title="@string/lbl_playback" />
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Full"
             android:layout_marginStart="@dimen/spacing_mid_large"
