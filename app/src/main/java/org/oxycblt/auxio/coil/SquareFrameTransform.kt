@@ -37,4 +37,8 @@ class SquareFrameTransform : Transformation {
 
         return dst
     }
+
+    companion object {
+        val INSTANCE = SquareFrameTransform()
+    }
 }

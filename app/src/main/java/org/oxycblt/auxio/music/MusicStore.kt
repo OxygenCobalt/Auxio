@@ -36,6 +36,7 @@ import java.lang.Exception
  * The main storage for music items.
  * Getting an instance of this object is more complicated as it loads asynchronously.
  * See the companion object for more.
+ * TODO: Add automatic rescanning [major change]
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {

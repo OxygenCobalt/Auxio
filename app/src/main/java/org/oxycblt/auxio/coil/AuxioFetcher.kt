@@ -35,6 +35,7 @@ import android.util.Size as AndroidSize
 /**
  * The base implementation for all image fetchers in Auxio.
  * @author OxygenCobalt
+ * TODO: Artist images
  */
 abstract class AuxioFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
@@ -204,7 +205,7 @@ abstract class AuxioFetcher : Fetcher {
      * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
-    protected fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
+    protected suspend fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
         if (streams.size < 4) {
             return streams.firstOrNull()?.let { stream ->
                 return SourceResult(
@@ -219,7 +220,9 @@ abstract class AuxioFetcher : Fetcher {
         // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
         // 512x512 mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
-        val increment = AndroidSize(mosaicSize.width / 2, mosaicSize.height / 2)
+        val mosaicFrameSize = Size(
+            Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2)
+        )
 
         val mosaicBitmap = Bitmap.createBitmap(
             mosaicSize.width,
@@ -238,20 +241,20 @@ abstract class AuxioFetcher : Fetcher {
                 break
             }
 
-            val bitmap = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeStream(stream),
-                increment.width,
-                increment.height,
-                true
-            )
+            // Run the bitmap through a transform to make sure it's square
+            val bitmap = SquareFrameTransform.INSTANCE
+                .transform(
+                    BitmapFactory.decodeStream(stream),
+                    mosaicFrameSize
+                )
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
-            x += increment.width
+            x += bitmap.width
 
             if (x == mosaicSize.width) {
                 x = 0
-                y += increment.height
+                y += bitmap.height
             }
         }
 

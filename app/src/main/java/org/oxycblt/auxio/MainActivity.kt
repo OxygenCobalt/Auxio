@@ -40,6 +40,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The single [AppCompatActivity] for Auxio.
+ * TODO: Add a new view for crashes with a stack trace
+ * TODO: Custom language support
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()
@@ -104,10 +106,10 @@ class MainActivity : AppCompatActivity() {
             // The black theme has a completely separate set of styles since style attributes cannot
             // be modified at runtime.
             if (isNight && settingsManager.useBlackTheme) {
-                logD("Applying black theme [with accent $accent]")
+                logD("Applying black theme [accent $accent]")
                 setTheme(accent.blackTheme)
             } else {
-                logD("Applying normal theme [with accent $accent]")
+                logD("Applying normal theme [accent $accent]")
                 setTheme(accent.theme)
             }
         }

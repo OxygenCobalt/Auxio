@@ -55,6 +55,7 @@ import org.oxycblt.auxio.util.logTraceOrThrow
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective item.
  * @author OxygenCobalt
+ * TODO: Make tabs invisible when there is only one
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -163,7 +164,7 @@ class HomeFragment : Fragment() {
             playbackModel.shuffleAll()
         }
 
-// --- VIEWMODEL SETUP ---
+        // --- VIEWMODEL SETUP ---
 
         // There is no way a fast scrolling event can continue across a re-create. Reset it.
         homeModel.updateFastScrolling(false)

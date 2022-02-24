@@ -64,10 +64,9 @@ fun ImageView.bindGenreImage(genre: Genre?) = load(genre, R.drawable.ic_genre)
 
 fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
     dispose()
-
     load(music) {
         error(error)
-        transformations(SquareFrameTransform())
+        transformations(SquareFrameTransform.INSTANCE)
     }
 }
 

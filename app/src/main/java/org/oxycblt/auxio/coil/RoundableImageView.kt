@@ -10,6 +10,11 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorSafe
 import org.oxycblt.auxio.util.stateList
 
+/**
+ * An [AppCompatImageView] that applies the specified cornerRadius attribute if the user
+ * has enabled the "Round album covers" option. We don't round album covers by default as
+ * it desecrates album artwork, but if the user desires it we do have an option to enable it.
+ */
 class RoundableImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -17,7 +22,7 @@ class RoundableImageView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     init {
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.RoundableImageView)
-        val cornerRadius = styledAttrs.getDimension(R.styleable.RoundableImageView_cornerRadius, 0.0f)
+        val cornerRadius = styledAttrs.getDimension(R.styleable.RoundableImageView_cornerRadius, 0f)
         styledAttrs.recycle()
 
         background = MaterialShapeDrawable().apply {
@@ -29,8 +34,6 @@ class RoundableImageView @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        // We don't round album covers by default as it desecrates album artwork, but we do
-        // provide an option if one wants it.
         // As for why we use clipToOutline instead of coils RoundedCornersTransformation, the radii
         // of an image's corners is dependent on the actual dimensions of the image, which would
         // force us to resize all images to a fixed size. clipToOutline is pretty much always

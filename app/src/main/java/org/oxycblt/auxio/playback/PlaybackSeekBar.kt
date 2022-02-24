@@ -36,6 +36,7 @@ import org.oxycblt.auxio.util.stateList
  * A custom view that bundles together a seekbar with a current duration and a total duration.
  * The sub-views are specifically laid out so that the seekbar has an adequate touch height while
  * still not having gobs of whitespace everywhere.
+ * TODO: Add smooth seeking [i.e seeking in sub-second values]
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
