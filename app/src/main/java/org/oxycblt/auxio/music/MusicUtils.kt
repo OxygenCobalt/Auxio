@@ -131,11 +131,7 @@ fun TextView.bindSongInfo(song: Song?) {
         return
     }
 
-    text = context.getString(
-        R.string.fmt_two,
-        song.resolvedArtistName,
-        song.resolvedAlbumName
-    )
+    text = song.resolvedArtistName
 }
 
 @BindingAdapter("albumInfo")
@@ -145,10 +141,7 @@ fun TextView.bindAlbumInfo(album: Album?) {
         return
     }
 
-    text = context.getString(
-        R.string.fmt_two, album.resolvedArtistName,
-        context.getPluralSafe(R.plurals.fmt_song_count, album.songs.size)
-    )
+    text = album.resolvedArtistName
 }
 
 @BindingAdapter("artistInfo")

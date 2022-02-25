@@ -24,7 +24,7 @@ import coil.ImageLoaderFactory
 import coil.request.CachePolicy
 import org.oxycblt.auxio.coil.AlbumArtFetcher
 import org.oxycblt.auxio.coil.ArtistImageFetcher
-import org.oxycblt.auxio.coil.ErrorCrossfadeFactory
+import org.oxycblt.auxio.coil.CrossfadeFactory
 import org.oxycblt.auxio.coil.GenreImageFetcher
 import org.oxycblt.auxio.coil.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
@@ -48,7 +48,7 @@ class AuxioApp : Application(), ImageLoaderFactory {
                 add(GenreImageFetcher.Factory())
                 add(MusicKeyer())
             }
-            .transitionFactory(ErrorCrossfadeFactory())
+            .transitionFactory(CrossfadeFactory())
             .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
             .build()
     }

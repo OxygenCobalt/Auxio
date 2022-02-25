@@ -7,10 +7,13 @@
 - Shuffle and Repeat mode buttons now have more contrast when they are turned on
 
 #### What's Fixed
-- Fixed crash on certain devices running Android 10 and lower when a differing theme from the system theme was used.
+- Fixed crash on certain devices running Android 10 and lower when a differing theme
+from the system theme was used.
 
 #### What's Changed
 - All cover art is now cropped to a 1:1 aspect ratio
+- Song items no longer show an album in favor of a duration
+- Album items no longer show a song count
 
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency

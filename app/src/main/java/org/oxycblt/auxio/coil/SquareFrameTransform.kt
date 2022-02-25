@@ -16,6 +16,8 @@ class SquareFrameTransform : Transformation {
         get() = "SquareFrameTransform"
 
     override suspend fun transform(input: Bitmap, size: Size): Bitmap {
+        // Find the smaller dimension and then take a center portion of the image that
+        // has that size.
         val dstSize = min(input.width, input.height)
         val x = (input.width - dstSize) / 2
         val y = (input.height - dstSize) / 2

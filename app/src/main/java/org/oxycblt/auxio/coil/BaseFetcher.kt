@@ -37,7 +37,7 @@ import android.util.Size as AndroidSize
  * @author OxygenCobalt
  * TODO: Artist images
  */
-abstract class AuxioFetcher : Fetcher {
+abstract class BaseFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
 
     /**
@@ -193,7 +193,6 @@ abstract class AuxioFetcher : Fetcher {
                 // In the case a front cover is not found, use the first image in the tag instead.
                 // This can be corrected later on if a front cover frame is found.
                 logW("No front cover image, using image of type $type instead")
-
                 stream = ByteArrayInputStream(pic)
             }
         }

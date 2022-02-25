@@ -34,10 +34,11 @@ class RoundableImageView @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        // As for why we use clipToOutline instead of coils RoundedCornersTransformation, the radii
-        // of an image's corners is dependent on the actual dimensions of the image, which would
-        // force us to resize all images to a fixed size. clipToOutline is pretty much always
-        // cheaper as long as we have a perfectly-square image.
+        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
+        // could theoretically be used to round corners, the corner radius is dependent on the
+        // dimensions of the image, which will result in inconsistent corners across different
+        // album covers unless we resize all covers to be the same size. clipToOutline is both
+        // cheaper and more elegant.
         val settingsManager = SettingsManager.getInstance()
         clipToOutline = settingsManager.roundCovers
     }
