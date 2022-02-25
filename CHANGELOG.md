@@ -6,6 +6,9 @@
 - Rounded images are more nuanced
 - Shuffle and Repeat mode buttons now have more contrast when they are turned on
 
+#### What's Fixed
+- Fixed crash on certain devices running Android 10 and lower when a differing theme from the system theme was used.
+
 #### What's Changed
 - All cover art is now cropped to a 1:1 aspect ratio
 
@@ -14,6 +17,7 @@
 - Switches now have a disabled state
 - Reworked dynamic color usage
 - Reworked logging
+- Upgrade ExoPlayer to v2.17.0 [Eliminates custom fork]
 
 ## v2.2.1
 #### What's Improved

@@ -23,13 +23,13 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 
@@ -40,7 +40,6 @@ import org.oxycblt.auxio.util.logD
 abstract class DetailFragment : Fragment() {
     protected val detailModel: DetailViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
-    protected val binding by memberBinding(FragmentDetailBinding::inflate)
 
     override fun onResume() {
         super.onResume()
@@ -61,6 +60,7 @@ abstract class DetailFragment : Fragment() {
      */
     protected fun setupToolbar(
         data: MusicParent,
+        binding: FragmentDetailBinding,
         @MenuRes menuId: Int = -1,
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
@@ -87,6 +87,7 @@ abstract class DetailFragment : Fragment() {
      * Shortcut method for recyclerview setup
      */
     protected fun setupRecycler(
+        binding: FragmentDetailBinding,
         detailAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         gridLookup: (Int) -> Boolean
     ) {

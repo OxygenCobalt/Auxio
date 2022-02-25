@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -51,6 +52,7 @@ class ArtistDetailFragment : DetailFragment() {
     ): View {
         detailModel.setArtist(args.artistId)
 
+        val binding = FragmentDetailBinding.inflate(layoutInflater)
         val detailAdapter = ArtistDetailAdapter(
             playbackModel,
             doOnClick = { data ->
@@ -74,8 +76,8 @@ class ArtistDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar(detailModel.curArtist.value!!)
-        setupRecycler(detailAdapter) { pos ->
+        setupToolbar(detailModel.curArtist.value!!, binding)
+        setupRecycler(binding, detailAdapter) { pos ->
             // If the item is an ActionHeader we need to also make the item full-width
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Artist

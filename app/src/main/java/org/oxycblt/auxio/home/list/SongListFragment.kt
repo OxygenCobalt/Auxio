@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.ui.DisplayMode
@@ -41,6 +42,10 @@ class SongListFragment : HomeListFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentHomeListBinding.inflate(layoutInflater)
+
+        // / --- UI SETUP ---
+
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = SongsAdapter(
@@ -50,7 +55,7 @@ class SongListFragment : HomeListFragment() {
             ::newMenu
         )
 
-        setupRecycler(R.id.home_song_list, adapter, homeModel.songs)
+        setupRecycler(R.id.home_song_list, binding, adapter, homeModel.songs)
 
         return binding.root
     }

@@ -57,6 +57,7 @@ class AlbumDetailFragment : DetailFragment() {
     ): View {
         detailModel.setAlbum(args.albumId)
 
+        val binding = FragmentDetailBinding.inflate(layoutInflater)
         val detailAdapter = AlbumDetailAdapter(
             playbackModel, detailModel,
             doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
@@ -67,7 +68,7 @@ class AlbumDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar(detailModel.curAlbum.value!!, R.menu.menu_album_detail) { itemId ->
+        setupToolbar(detailModel.curAlbum.value!!, binding, R.menu.menu_album_detail) { itemId ->
             when (itemId) {
                 R.id.action_play_next -> {
                     playbackModel.playNext(detailModel.curAlbum.value!!)
@@ -85,7 +86,7 @@ class AlbumDetailFragment : DetailFragment() {
             }
         }
 
-        setupRecycler(detailAdapter) { pos ->
+        setupRecycler(binding, detailAdapter) { pos ->
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Album
         }
@@ -113,7 +114,7 @@ class AlbumDetailFragment : DetailFragment() {
                 is Song -> {
                     if (detailModel.curAlbum.value!!.id == item.album.id) {
                         logD("Navigating to a song in this album")
-                        scrollToItem(item.id, detailAdapter)
+                        scrollToItem(item.id, binding, detailAdapter)
                         detailModel.finishNavToItem()
                     } else {
                         logD("Navigating to another album")
@@ -185,7 +186,11 @@ class AlbumDetailFragment : DetailFragment() {
     /**
      * Scroll to an song using its [id].
      */
-    private fun scrollToItem(id: Long, adapter: AlbumDetailAdapter) {
+    private fun scrollToItem(
+        id: Long,
+        binding: FragmentDetailBinding,
+        adapter: AlbumDetailAdapter
+    ) {
         // Calculate where the item for the currently played song is
         val pos = adapter.currentList.indexOfFirst { it.id == id && it is Song }
 

@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.ui.GenreViewHolder
@@ -40,6 +41,10 @@ class GenreListFragment : HomeListFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentHomeListBinding.inflate(layoutInflater)
+
+        // / --- UI SETUP ---
+
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = GenreAdapter(
@@ -51,7 +56,7 @@ class GenreListFragment : HomeListFragment() {
             ::newMenu
         )
 
-        setupRecycler(R.id.home_genre_list, adapter, homeModel.genres)
+        setupRecycler(R.id.home_genre_list, binding, adapter, homeModel.genres)
 
         return binding.root
     }

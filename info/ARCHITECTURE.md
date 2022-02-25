@@ -53,9 +53,7 @@ is separated into three phases:
 - Set up ViewModel instances and LiveData observers
 
 `findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, view-binding should be
-used in all cases. If one needs to keep track of a view-binding outside of `onCreateView`, then one can declare
-a binding `by memberBinding(BindingClass::inflate)` in order to have a binding that properly disposes itself
-on lifecycle events.
+used in all cases. Avoid usages of databinding outside of the `onCreateView` step unless absolutely necessary.
 
 At times it may be more appropriate to use a `View` instead of a full blown fragment. This is okay as long as
 view-binding is still used.
@@ -290,7 +288,6 @@ Shared views and view configuration models. This contains:
 - Customized views such as `EdgeAppBarLayout` and `EdgeRecyclerView`, which add some extra functionality not provided by default
 - Configuration models like `DisplayMode` and `Sort`, which are used in many places but aren't tied to a specific feature.
 - `newMenu` and `ActionMenu`, which automates menu creation for most data types
-- `memberBinding` and `MemberBinder`, which allows for ViewBindings to be used as a member variable without memory leaks or nullability issues.
 
 #### `.util`
 Shared utilities. This is primarily for QoL when developing Auxio. Documentation is provided on each method.

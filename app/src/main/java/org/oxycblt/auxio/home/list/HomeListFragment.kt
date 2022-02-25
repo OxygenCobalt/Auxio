@@ -28,7 +28,6 @@ import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.applySpans
 
 /**
@@ -36,10 +35,6 @@ import org.oxycblt.auxio.util.applySpans
  * @author OxygenCobalt
  */
 abstract class HomeListFragment : Fragment() {
-    protected val binding: FragmentHomeListBinding by memberBinding(
-        FragmentHomeListBinding::inflate
-    )
-
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
@@ -50,6 +45,7 @@ abstract class HomeListFragment : Fragment() {
 
     protected fun <T : Item, VH : RecyclerView.ViewHolder> setupRecycler(
         @IdRes uniqueId: Int,
+        binding: FragmentHomeListBinding,
         homeAdapter: HomeAdapter<T, VH>,
         homeData: LiveData<List<T>>,
     ) {

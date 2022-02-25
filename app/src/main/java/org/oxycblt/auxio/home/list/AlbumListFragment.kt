@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.toDate
@@ -43,6 +44,10 @@ class AlbumListFragment : HomeListFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentHomeListBinding.inflate(layoutInflater)
+
+        // / --- UI SETUP ---
+
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = AlbumAdapter(
@@ -54,7 +59,7 @@ class AlbumListFragment : HomeListFragment() {
             ::newMenu
         )
 
-        setupRecycler(R.id.home_album_list, adapter, homeModel.albums)
+        setupRecycler(R.id.home_album_list, binding, adapter, homeModel.albums)
 
         return binding.root
     }

@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -51,6 +52,7 @@ class GenreDetailFragment : DetailFragment() {
     ): View {
         detailModel.setGenre(args.genreId)
 
+        val binding = FragmentDetailBinding.inflate(inflater)
         val detailAdapter = GenreDetailAdapter(
             playbackModel,
             doOnClick = { song ->
@@ -65,8 +67,8 @@ class GenreDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar(detailModel.curGenre.value!!)
-        setupRecycler(detailAdapter) { pos ->
+        setupToolbar(detailModel.curGenre.value!!, binding)
+        setupRecycler(binding, detailAdapter) { pos ->
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Genre
         }
