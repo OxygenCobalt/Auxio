@@ -8,7 +8,6 @@ import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logE
 
 /**
  * This class acts as the base for most the black magic required to get a remotely sensible music
@@ -94,8 +93,12 @@ class MusicLoader {
                 song.internalIsMissingArtist ||
                 song.internalIsMissingGenre
             ) {
-                logE("Found malformed song: ${song.name}")
-                throw IllegalStateException()
+                throw IllegalStateException(
+                    "Found malformed song: ${song.name} [" +
+                        "album: ${!song.internalIsMissingAlbum} " +
+                        "artist: ${!song.internalIsMissingArtist} " +
+                        "genre: ${!song.internalIsMissingGenre}]"
+                )
             }
         }
 
@@ -126,6 +129,7 @@ class MusicLoader {
             args += "$path%" // Append % so that the selector properly detects children
         }
 
+        // TODO: Figure out the semantics of the track field to prevent odd 4-digit numbers
         context.applicationContext.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(

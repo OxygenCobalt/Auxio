@@ -48,6 +48,7 @@ import kotlin.math.min
  * or extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
+ * TODO: Find a better way to handle PlaybackFragment in general (navigation, creation)
  */
 class PlaybackLayout @JvmOverloads constructor(
     context: Context,
@@ -109,6 +110,8 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     init {
+        setWillNotDraw(false)
+
         // Set up our playback views. Doing this allows us to abstract away the implementation
         // of these views from the user of this layout [MainFragment].
         playbackContainerView = FrameLayout(context).apply {

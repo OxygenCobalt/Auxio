@@ -38,7 +38,6 @@ class DetailAppBarLayout @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
         (layoutParams as CoordinatorLayout.LayoutParams).behavior = Behavior(context)
     }
 

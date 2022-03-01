@@ -42,6 +42,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * The single [AppCompatActivity] for Auxio.
  * TODO: Add a new view for crashes with a stack trace
  * TODO: Custom language support
+ * TODO: Rework menus [perhaps add multi-select]
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()
@@ -81,7 +82,6 @@ class MainActivity : AppCompatActivity() {
             if (action == Intent.ACTION_VIEW && !isConsumed) {
                 // Mark the intent as used so this does not fire again
                 intent.putExtra(KEY_INTENT_USED, true)
-
                 intent.data?.let { fileUri ->
                     playbackModel.playWithUri(fileUri, this)
                 }

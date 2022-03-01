@@ -58,7 +58,7 @@ sealed class MusicParent : Music() {
 }
 
 /**
- * The data object for a song. Inherits [Item].
+ * The data object for a song.
  */
 data class Song(
     override val name: String,
@@ -147,7 +147,7 @@ data class Song(
 }
 
 /**
- * The data object for an album. Inherits [MusicParent].
+ * The data object for an album.
  */
 data class Album(
     override val name: String,
@@ -220,7 +220,7 @@ data class Artist(
 }
 
 /**
- * The data object for a genre. Inherits [MusicParent]
+ * The data object for a genre.
  */
 data class Genre(
     override val name: String,

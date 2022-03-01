@@ -93,6 +93,8 @@ class AudioReactor(
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags.
      * This is based off Vanilla Music's implementation.
+     * TODO: Add ReplayGain pre-amp
+     * TODO: Add positive ReplayGain values
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {
@@ -130,6 +132,7 @@ class AudioReactor(
                         playbackManager.song?.album == playbackManager.parent
                 }
         }
+
         val gain = parseReplayGain(metadata)
 
         val adjust = if (gain != null) {
@@ -147,8 +150,6 @@ class AudioReactor(
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
-        // While positive ReplayGain values *could* be theoretically added, it's such
-        // a niche use-case that to be worth the effort required. Maybe if someone requests it.
         volume = MathUtils.clamp((10f.pow((adjust / 20f))), 0f, 1f)
     }
 
@@ -180,7 +181,7 @@ class AudioReactor(
             }
 
             if (key in REPLAY_GAIN_TAGS) {
-                tags.add(GainTag(key!!, parseReplayGainFloat(value)))
+                tags.add(GainTag(requireNotNull(key), parseReplayGainFloat(value)))
             }
         }
 

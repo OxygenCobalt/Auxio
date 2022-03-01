@@ -39,7 +39,9 @@ class RoundableImageView @JvmOverloads constructor(
         // dimensions of the image, which will result in inconsistent corners across different
         // album covers unless we resize all covers to be the same size. clipToOutline is both
         // cheaper and more elegant.
-        val settingsManager = SettingsManager.getInstance()
-        clipToOutline = settingsManager.roundCovers
+        if (!isInEditMode) {
+            val settingsManager = SettingsManager.getInstance()
+            clipToOutline = settingsManager.roundCovers
+        }
     }
 }
