@@ -102,7 +102,7 @@ sealed class Sort(open val isAscending: Boolean) {
             is ByName -> songs.stringSort { it.name }
 
             else -> sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
-                album.songs.intSort(true) { it.track }
+                album.songs.intSort(true) { it.track ?: 0 }
             }
         }
     }
@@ -121,7 +121,7 @@ sealed class Sort(open val isAscending: Boolean) {
             is ByArtist -> sortParents(albums.groupBy { it.artist }.keys)
                 .flatMap { ByYear(false).sortAlbums(it.albums) }
 
-            is ByYear -> albums.intSort { it.year }
+            is ByYear -> albums.intSort { it.year ?: 0 }
         }
     }
 
@@ -139,7 +139,7 @@ sealed class Sort(open val isAscending: Boolean) {
      * @see sortSongs
      */
     fun sortAlbum(album: Album): List<Song> {
-        return album.songs.intSort { it.track }
+        return album.songs.intSort { it.track ?: 0 }
     }
 
     /**

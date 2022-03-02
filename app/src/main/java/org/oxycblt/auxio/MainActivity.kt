@@ -43,6 +43,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Add a new view for crashes with a stack trace
  * TODO: Custom language support
  * TODO: Rework menus [perhaps add multi-select]
+ * TODO: Phase out databinding
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

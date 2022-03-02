@@ -4,7 +4,9 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.logD
@@ -33,7 +35,7 @@ import org.oxycblt.auxio.util.logD
  * It's not even ergonomics that makes this API bad. It's base implementation is completely borked
  * as well. Did you know that MediaStore doesn't accept dates that aren't from ID3v2.3 MP3 files?
  * I sure didn't, until I decided to upgrade my music collection to ID3v2.4 and FLAC only to see
- * that their metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or
+ * that the metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or
  * DATE tag. Once again, this is because internally android uses an ancient in-house metadata
  * parser to get everything indexed, and so far they have not bothered to modernize this parser
  * or even switch it to something more powerful like Taglib, not even in Android 12. ID3v2.4 has
@@ -65,7 +67,7 @@ import org.oxycblt.auxio.util.logD
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
  * Because go screw yourself for wanting to listen to music you own. Be a good consoomer and listen
- * to your AlgoPop StreamMix™ instead.
+ * to your AlgoPop StreamMix™.
  *
  * I wish I was born in the neolithic.
  *
@@ -129,74 +131,80 @@ class MusicLoader {
             args += "$path%" // Append % so that the selector properly detects children
         }
 
-        // TODO: Figure out the semantics of the track field to prevent odd 4-digit numbers
         context.applicationContext.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
                 MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
                 MediaStore.Audio.AudioColumns.ALBUM_ARTIST,
-                MediaStore.Audio.AudioColumns.YEAR,
-                MediaStore.Audio.AudioColumns.TRACK,
-                MediaStore.Audio.AudioColumns.DURATION,
-                MediaStore.Audio.AudioColumns.DATA
             ),
             selector, args.toTypedArray(), null
         )?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
             val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
             val fileIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+            val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+            val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
+            val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
             val albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
             val albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
             val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
             val albumArtistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ARTIST)
-            val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
-            val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-            val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
-            val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
+                val title = cursor.getString(titleIndex)
                 val fileName = cursor.getString(fileIndex)
-                val title = cursor.getString(titleIndex) ?: fileName
+
+                // CD_TRACK_NUMBER formats tracks as NN/TT or NN where N is the track number and
+                // T Is the total. Parse out the NN and ignore the rest. This has to be a highly
+                // redundant process, as there seems to be a weird amount of edge-cases.
+                val track = cursor.getStringOrNull(trackIndex)?.run {
+                    split("/").getOrNull(0)?.toIntOrNull()
+                }
+
+                val duration = cursor.getLong(durationIndex)
+                val year = cursor.getIntOrNull(yearIndex)
+
                 val album = cursor.getString(albumIndex)
                 val albumId = cursor.getLong(albumIdIndex)
 
                 // If the artist field is <unknown>, make it null. This makes handling the
                 // insanity of the artist field easier later on.
-                val artist = cursor.getString(artistIndex).let {
-                    if (it != MediaStore.UNKNOWN_STRING) it else null
+                val artist = cursor.getStringOrNull(artistIndex)?.run {
+                    if (this == MediaStore.UNKNOWN_STRING) {
+                        null
+                    } else {
+                        this
+                    }
                 }
 
                 val albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
-                val year = cursor.getInt(yearIndex)
-                val track = cursor.getInt(trackIndex)
-                val duration = cursor.getLong(durationIndex)
-
-                // More efficient to slice away DISPLAY_NAME from the full path then to
-                // grok the path components from DATA itself.
-                val dirs = cursor.getString(dataIndex).run {
-                    substring(0 until lastIndexOfAny(listOf(fileName)))
-                }
+                // Note: Directory parsing is currently disabled until artist images are added.
+                // val dirs = cursor.getStringOrNull(dataIndex)?.run {
+                //     substringBeforeLast("/", "").ifEmpty { null }
+                // }
 
                 songs.add(
                     Song(
                         title,
                         fileName,
-                        dirs,
                         duration,
                         track,
                         id,
+                        year,
+                        album,
+                        albumId,
                         artist,
                         albumArtist,
-                        albumId,
-                        album,
-                        year,
                     )
                 )
             }
@@ -233,7 +241,9 @@ class MusicLoader {
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            val templateSong = requireNotNull(albumSongs.maxByOrNull { it.internalMediaStoreYear })
+            val templateSong = requireNotNull(
+                albumSongs.maxByOrNull { it.internalMediaStoreYear ?: 0 }
+            )
             val albumName = templateSong.internalMediaStoreAlbumName
             val albumYear = templateSong.internalMediaStoreYear
             val albumCoverUri = ContentUris.withAppendedId(
@@ -325,7 +335,7 @@ class MusicLoader {
                 // so we skip genres that have them.
                 val id = cursor.getLong(idIndex)
                 val name = cursor.getStringOrNull(nameIndex) ?: continue
-                val resolvedName = name.getGenreNameCompat() ?: name
+                val resolvedName = name.genreNameCompat ?: name
                 val genreSongs = queryGenreSongs(context, id, songs) ?: continue
 
                 genres.add(
@@ -371,7 +381,6 @@ class MusicLoader {
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
-
                 songs.find { it.internalMediaStoreId == id }?.let { song ->
                     genreSongs.add(song)
                 }
@@ -381,5 +390,69 @@ class MusicLoader {
         // Some genres might be empty due to MediaStore insanity.
         // If that is the case, we drop them.
         return genreSongs.ifEmpty { null }
+    }
+
+    private val String.genreNameCompat: String? get() {
+        if (isDigitsOnly()) {
+            // ID3v1, just parse as an integer
+            return legacyGenreTable.getOrNull(toInt())
+        }
+
+        if (startsWith('(') && endsWith(')')) {
+            // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
+            // Any genres formatted as "(CHARS)" will be ignored.
+            val genreInt = substring(1 until lastIndex).toIntOrNull()
+            if (genreInt != null) {
+                return legacyGenreTable.getOrNull(genreInt)
+            }
+        }
+
+        // Current name is fine.
+        return null
+    }
+
+    companion object {
+        /**
+         * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
+         * winamp extensions.
+         */
+        private val legacyGenreTable = arrayOf(
+            // ID3 Standard
+            "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop",
+            "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock",
+            "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack",
+            "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance",
+            "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise",
+            "AlternRock", "Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop",
+            "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic",
+            "Pop-Folk", "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta",
+            "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret",
+            "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal",
+            "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock",
+
+            // Winamp Extensions
+            "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin",
+            "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock",
+            "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus",
+            "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music",
+            "Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam",
+            "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul",
+            "Freestyle", "Duet", "Punk Rock", "Drum Solo", "A capella", "Euro-House", "Dance Hall",
+            "Goa", "Drum & Bass", "Club-House", "Hardcore", "Terror", "Indie", "Britpop",
+            "Negerpunk", "Polsk Punk", "Beat", "Christian Gangsta", "Heavy Metal", "Black Metal",
+            "Crossover", "Contemporary Christian", "Christian Rock", "Merengue", "Salsa",
+            "Thrash Metal", "Anime", "JPop", "Synthpop",
+
+            // Winamp 5.6+ extensions, used by EasyTAG and friends
+            // The only reason I include this set is because post-rock is a based genre and
+            // deserves a slot.
+            "Abstract", "Art Rock", "Baroque", "Bhangra", "Big Beat", "Breakbeat", "Chillout",
+            "Downtempo", "Dub", "EBM", "Eclectic", "Electro", "Electroclash", "Emo", "Experimental",
+            "Garage", "Global", "IDM", "Illbient", "Industro-Goth", "Jam Band", "Krautrock",
+            "Leftfield", "Lounge", "Math Rock", "New Romantic", "Nu-Breakz", "Post-Punk",
+            "Post-Rock", "Psytrance", "Shoegaze", "Space Rock", "Trop Rock", "World Music",
+            "Neoclassical", "Audiobook", "Audio Theatre", "Neue Deutsche Welle", "Podcast",
+            "Indie Rock", "G-Funk", "Dubstep", "Garage Rock", "Psybient"
+        )
     }
 }

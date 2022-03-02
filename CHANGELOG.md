@@ -11,12 +11,13 @@
 
 #### What's Fixed
 - Fixed crash on certain devices running Android 10 and lower when a differing theme
-from the system theme was used.
+from the system theme was used [#80]
+- Fixed music loading failure that would occur when certain paths were parsed [#84]
+- Fixed incorrect track numbers when the tag was formatted as NN/TT [#88]
+- Fixed years deliberately set as "0" showing up as "No Date"
 
 #### What's Changed
 - All cover art is now cropped to a 1:1 aspect ratio
-- Song items no longer show an album in favor of a duration
-- Album items no longer show a song count
 
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency

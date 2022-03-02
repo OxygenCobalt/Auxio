@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
@@ -99,14 +98,15 @@ class MusicStore private constructor() {
      * @return The corresponding [Song] for this [uri], null if there isn't one.
      */
     fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        val cur = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-
-        cur?.use { cursor ->
+        resolver.query(
+            uri,
+            arrayOf(OpenableColumns.DISPLAY_NAME),
+            null, null, null
+        )?.use { cursor ->
             cursor.moveToFirst()
-
-            // Make studio shut up about "invalid ranges" that don't exist
-            @SuppressLint("Range")
-            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            val fileName = cursor.getString(
+                cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+            )
 
             return songs.find { it.fileName == fileName }
         }
@@ -146,11 +146,9 @@ class MusicStore private constructor() {
 
             val response = withContext(Dispatchers.IO) {
                 val response = MusicStore().load(context)
-
                 synchronized(this) {
                     RESPONSE = response
                 }
-
                 response
             }
 

@@ -25,7 +25,6 @@ import android.view.ViewGroup
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
@@ -82,7 +81,8 @@ class SongListFragment : HomeListFragment() {
                     .first().uppercase()
 
                 // Year -> Use Full Year
-                is Sort.ByYear -> song.album.year.toDate(requireContext())
+                is Sort.ByYear -> song.album.year?.toString()
+                    ?: getString(R.string.def_date)
             }
         }
 

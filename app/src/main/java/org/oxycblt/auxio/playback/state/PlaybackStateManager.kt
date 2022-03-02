@@ -530,9 +530,7 @@ class PlaybackStateManager private constructor() {
 
         withContext(Dispatchers.IO) {
             start = System.currentTimeMillis()
-
             val database = PlaybackStateDatabase.getInstance(context)
-
             playbackState = database.readState(musicStore)
             queue = database.readQueue(musicStore)
         }

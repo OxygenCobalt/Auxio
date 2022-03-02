@@ -107,16 +107,14 @@ abstract class BaseFetcher : Fetcher {
     }
 
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
-        val extractor = MediaMetadataRetriever()
-
-        extractor.use { ext ->
+        MediaMetadataRetriever().use { ext ->
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.
             ext.setDataSource(context, album.songs[0].uri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
-            // If its null [a.k.a there is no embedded cover], than just ignore it and move on
+            // If its null [i.e there is no embedded cover], than just ignore it and move on
             return ext.embeddedPicture?.let { coverBytes ->
                 ByteArrayInputStream(coverBytes)
             }
@@ -125,7 +123,6 @@ abstract class BaseFetcher : Fetcher {
 
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
         val uri = album.songs[0].uri
-
         val future = MetadataRetriever.retrieveMetadata(
             context, MediaItem.fromUri(uri)
         )
@@ -240,7 +237,8 @@ abstract class BaseFetcher : Fetcher {
                 break
             }
 
-            // Run the bitmap through a transform to make sure it's square
+            // Run the bitmap through a transform to make sure it's a square of the desired
+            // resolution.
             val bitmap = SquareFrameTransform.INSTANCE
                 .transform(
                     BitmapFactory.decodeStream(stream),

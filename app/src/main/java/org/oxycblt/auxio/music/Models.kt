@@ -64,30 +64,28 @@ data class Song(
     override val name: String,
     /** The file name of this song, excluding the full path. */
     val fileName: String,
-    /** The parent directories of this song. More or less the complement to [fileName]. */
-    val dirs: String,
     /** The total duration of this song, in millis. */
     val duration: Long,
-    /** The track number of this song. */
-    val track: Int,
+    /** The track number of this song, null if there isn't any. */
+    val track: Int?,
     /** Internal field. Do not use. */
     val internalMediaStoreId: Long,
+    /** Internal field. Do not use. */
+    val internalMediaStoreYear: Int?,
+    /** Internal field. Do not use. */
+    val internalMediaStoreAlbumName: String,
+    /** Internal field. Do not use. */
+    val internalMediaStoreAlbumId: Long,
     /** Internal field. Do not use. */
     val internalMediaStoreArtistName: String?,
     /** Internal field. Do not use. */
     val internalMediaStoreAlbumArtistName: String?,
-    /** Internal field. Do not use. */
-    val internalMediaStoreAlbumId: Long,
-    /** Internal field. Do not use. */
-    val internalMediaStoreAlbumName: String,
-    /** Internal field. Do not use. */
-    val internalMediaStoreYear: Int
 ) : Music() {
     override val id: Long get() {
         var result = name.hashCode().toLong()
         result = 31 * result + album.name.hashCode()
         result = 31 * result + album.artist.name.hashCode()
-        result = 31 * result + track
+        result = 31 * result + (track ?: 0)
         result = 31 * result + duration.hashCode()
         return result
     }
@@ -152,7 +150,7 @@ data class Song(
 data class Album(
     override val name: String,
     /** The latest year of the songs in this album. */
-    val year: Int,
+    val year: Int?,
     /** The URI for the cover art corresponding to this album. */
     val albumCoverUri: Uri,
     /** The songs of this album. */
@@ -169,7 +167,7 @@ data class Album(
     override val id: Long get() {
         var result = name.hashCode().toLong()
         result = 31 * result + artist.name.hashCode()
-        result = 31 * result + year
+        result = 31 * result + (year ?: 0)
         return result
     }
 
