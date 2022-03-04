@@ -29,6 +29,10 @@ import org.oxycblt.auxio.coil.GenreImageFetcher
 import org.oxycblt.auxio.coil.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
 
+/**
+ * TODO: Phase out databinding
+ * TODO: Rework sealed classes to minimize whens and maximize overrides
+ */
 @Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {

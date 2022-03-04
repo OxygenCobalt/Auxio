@@ -149,7 +149,7 @@ data class Song(
  */
 data class Album(
     override val name: String,
-    /** The latest year of the songs in this album. */
+    /** The latest year of the songs in this album. Null if none of the songs had metadata. */
     val year: Int?,
     /** The URI for the cover art corresponding to this album. */
     val albumCoverUri: Uri,

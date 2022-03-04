@@ -241,6 +241,7 @@ class MusicLoader {
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
+            // TODO: Weigh songs with null years lower than songs with zero years
             val templateSong = requireNotNull(
                 albumSongs.maxByOrNull { it.internalMediaStoreYear ?: 0 }
             )

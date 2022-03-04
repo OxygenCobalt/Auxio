@@ -15,6 +15,7 @@ from the system theme was used [#80]
 - Fixed music loading failure that would occur when certain paths were parsed [#84]
 - Fixed incorrect track numbers when the tag was formatted as NN/TT [#88]
 - Fixed years deliberately set as "0" showing up as "No Date"
+- Fixed headset management unexpectedly starting audio when the app initially opens
 
 #### What's Changed
 - All cover art is now cropped to a 1:1 aspect ratio

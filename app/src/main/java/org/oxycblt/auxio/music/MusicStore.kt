@@ -69,7 +69,8 @@ class MusicStore private constructor() {
             val start = System.currentTimeMillis()
 
             val loader = MusicLoader()
-            val library = loader.load(context) ?: return Response.Err(ErrorKind.NO_MUSIC)
+            val library = loader.load(context)
+                ?: return Response.Err(ErrorKind.NO_MUSIC)
 
             mSongs = library.songs
             mAlbums = library.albums
@@ -78,7 +79,7 @@ class MusicStore private constructor() {
 
             logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms")
         } catch (e: Exception) {
-            logE("Something went horribly wrong")
+            logE("Music loading failed.")
             logE(e.stackTraceToString())
             return Response.Err(ErrorKind.FAILED)
         }

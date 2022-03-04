@@ -439,7 +439,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     private fun stopForegroundAndNotification() {
         stopForeground(true)
         notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
-
         isForeground = false
     }
 
@@ -448,6 +447,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
      * TODO: Don't fire when the service initially starts?
      */
     private inner class PlaybackReceiver : BroadcastReceiver() {
+        private var handledInitialHeadsetPlug = false
+
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 // --- SYSTEM EVENTS ---
@@ -461,10 +462,14 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 AudioManager.ACTION_HEADSET_PLUG -> {
-                    when (intent.getIntExtra("state", -1)) {
-                        0 -> pauseFromPlug()
-                        1 -> resumeFromPlug()
+                    if (handledInitialHeadsetPlug) {
+                        when (intent.getIntExtra("state", -1)) {
+                            0 -> pauseFromPlug()
+                            1 -> resumeFromPlug()
+                        }
                     }
+
+                    handledInitialHeadsetPlug = true
                 }
 
                 // --- AUXIO EVENTS ---
