@@ -51,6 +51,7 @@ class PlaybackNotification private constructor(
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
+        setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
         setContentIntent(context.newMainIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 

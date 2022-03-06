@@ -72,8 +72,6 @@
     <string name="set_audio">Audio</string>
     <string name="set_focus">Audiofocus</string>
     <string name="set_focus_desc">Pauze wanneer andere audio speelt (ex. Gesprekken)</string>
-    <string name="set_plug_mgt">Headset-pluggen</string>
-    <string name="set_plug_mgt_desc">Afspelen/Pauzeren wanneer de headsetaansluiting verandert</string>
 
     <string name="set_behavior">Gedrag</string>
     <string name="set_song_mode">Wanneer een liedje is geselecteerd</string>

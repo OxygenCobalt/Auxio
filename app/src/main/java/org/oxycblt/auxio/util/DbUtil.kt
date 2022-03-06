@@ -37,12 +37,3 @@ fun assertBackgroundThread() {
         "This operation must be ran on a background thread"
     }
 }
-
-/**
- * Assert that we are on a foreground thread.
- */
-fun assertMainThread() {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
-        "This operation must be ran on the main thread"
-    }
-}

@@ -30,7 +30,7 @@
     </string-array>
 
     <array name="entries_replay_gain">
-        <item>@string/set_replay_gain_off</item>
+        <item>@string/set_off</item>
         <item>@string/set_replay_gain_track</item>
         <item>@string/set_replay_gain_album</item>
         <item>@string/set_replay_gain_dynamic</item>

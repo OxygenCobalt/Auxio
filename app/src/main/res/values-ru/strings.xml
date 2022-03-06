@@ -83,10 +83,8 @@
     <string name="set_audio">Звук</string>
     <string name="set_focus">Аудио-фокус</string>
     <string name="set_focus_desc">Ставить на паузу при звонках</string>
-    <string name="set_plug_mgt">Гарнитурный фокус</string>
-    <string name="set_plug_mgt_desc">Ставить на паузу при отключении гарнитуры</string>
 	<string name="set_replay_gain">ReplayGain (экспериментально)</string>
-    <string name="set_replay_gain_off">Выкл.</string>
+    <string name="set_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>
     <string name="set_replay_gain_dynamic">Динамический</string>

@@ -83,10 +83,8 @@
     <string name="set_audio">音频</string>
     <string name="set_focus">音频焦点</string>
     <string name="set_focus_desc">有其它音频播放（比如电话）时暂停</string>
-    <string name="set_plug_mgt">设备焦点</string>
-    <string name="set_plug_mgt_desc">设备连接状态改变时播放/暂停</string>
     <string name="set_replay_gain">回放增益</string>
-    <string name="set_replay_gain_off">关</string>
+    <string name="set_off">关</string>
     <string name="set_replay_gain_track">偏好曲目</string>
     <string name="set_replay_gain_album">偏好专辑</string>
     <string name="set_replay_gain_dynamic">动态</string>

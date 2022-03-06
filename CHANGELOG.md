@@ -19,6 +19,7 @@ from the system theme was used [#80]
 
 #### What's Changed
 - All cover art is now cropped to a 1:1 aspect ratio
+- Headset focus has been replaced with headset autoplay. It can no longer be disabled.
 
 #### Dev/Meta
 - Enabled elevation drop shadows below Android P for consistency

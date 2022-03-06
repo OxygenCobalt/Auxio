@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">A simple, rational music player for android.</string>
     <string name="info_channel_name">Music Playback</string>
-    <string name="info_widget_desc">View and control playing music</string>
+    <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Retry</string>
@@ -83,10 +82,9 @@
     <string name="set_audio">Audio</string>
     <string name="set_focus">Audio focus</string>
     <string name="set_focus_desc">Pause when other audio plays (ex. Calls)</string>
-    <string name="set_plug_mgt">Headset focus</string>
-    <string name="set_plug_mgt_desc">Play/Pause when the headset connection changes</string>
+    <string name="set_headset_autoplay">Headset autoplay</string>
+    <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
     <string name="set_replay_gain">ReplayGain (Experimental)</string>
-    <string name="set_replay_gain_off">Off</string>
     <string name="set_replay_gain_track">Prefer track</string>
     <string name="set_replay_gain_album">Prefer album</string>
     <string name="set_replay_gain_dynamic">Dynamic</string>
@@ -107,6 +105,8 @@
     <string name="set_reload_desc">Will restart app</string>
     <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
+
+    <string name="set_off">Off</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>

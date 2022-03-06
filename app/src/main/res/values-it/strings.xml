@@ -50,7 +50,6 @@
 
     <string name="set_audio">Audio</string>
     <string name="set_focus">Focus audio</string>
-    <string name="set_plug_mgt">Inserimento cuffie</string>
 
     <string name="set_behavior">Comportamento</string>
     <string name="set_keep_shuffle">Ricorda casuale</string>

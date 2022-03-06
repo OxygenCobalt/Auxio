@@ -71,10 +71,8 @@
     <string name="set_audio">Audio</string>
     <string name="set_focus">Audiofokus</string>
     <string name="set_focus_desc">Pausieren wenn andere Töne abspielt wird [Bsp. Anrufe]</string>
-    <string name="set_plug_mgt">Kopfhörerfokus</string>
-    <string name="set_plug_mgt_desc">Abspielen/Pausieren wenn sich die Kopfhörerverbindung ändert</string>
     <string name="set_replay_gain">ReplayGain (Experimentell)</string>
-    <string name="set_replay_gain_off">Aus</string>
+    <string name="set_off">Aus</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>
 
@@ -151,7 +149,7 @@
         <item quantity="other">%d Alben</item>
     </plurals>
     <string name="info_app_desc">Ein einfacher, rationaler Musikplayer für Android.</string>
-    <string name="info_widget_desc">Spielende Musik anzeigen und kontrollieren</string>
+    <string name="info_widget_desc">Musikwiedergabe anzeigen und kontrollieren</string>
     <string name="lbl_sort_artist">Künstler</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Jahr</string>
@@ -173,5 +171,4 @@
     <string name="desc_clear_queue_item">Lied in der Warteschlange löschen</string>
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
-
 </resources>
