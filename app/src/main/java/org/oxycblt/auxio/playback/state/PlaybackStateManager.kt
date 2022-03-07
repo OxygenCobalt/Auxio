@@ -596,11 +596,10 @@ class PlaybackStateManager private constructor() {
      * Do a sanity check to make sure that the index lines up with the current song.
      */
     private fun doIndexSanityCheck() {
-        // Note: Be careful with how we handle the queue since a possible index desync
-        // could easily result in an OOB issue.
+        // Be careful with how we handle the queue since a possible index de-sync
+        // could easily result in an OOB crash.
         if (mSong != null && mSong != mQueue.getOrNull(mIndex)) {
             val correctedIndex = mQueue.wobblyIndexOfFirst(mIndex, mSong)
-
             if (correctedIndex > -1) {
                 logD("Correcting malformed index to $correctedIndex")
                 mIndex = correctedIndex

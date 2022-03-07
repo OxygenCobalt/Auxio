@@ -112,7 +112,6 @@ class MusicLoader {
         )
     }
 
-    @Suppress("InlinedApi")
     private fun loadSongs(context: Context): List<Song> {
         var songs = mutableListOf<Song>()
         val blacklistDatabase = ExcludedDatabase.getInstance(context)
@@ -137,7 +136,7 @@ class MusicLoader {
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
                 MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER,
+                MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.ALBUM,
@@ -150,7 +149,7 @@ class MusicLoader {
             val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
             val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
             val fileIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
-            val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+            val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
             val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
             val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
             val albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
@@ -163,12 +162,12 @@ class MusicLoader {
                 val title = cursor.getString(titleIndex)
                 val fileName = cursor.getString(fileIndex)
 
-                // CD_TRACK_NUMBER formats tracks as NN/TT or NN where N is the track number and
-                // T Is the total. Parse out the NN and ignore the rest. This has to be a highly
-                // redundant process, as there seems to be a weird amount of edge-cases.
-                val track = cursor.getStringOrNull(trackIndex)?.run {
-                    split("/").getOrNull(0)?.toIntOrNull()
-                }
+                // The TRACK field is for some reason formatted as DTTT, where D is the disk
+                // and T is the track. This is dumb and insane and forces me to mangle track
+                // numbers above 1000 but there is nothing we can do that won't break the app
+                // below API 30.
+                // TODO: Disk number support?
+                val track = cursor.getIntOrNull(trackIndex)?.mod(1000)
 
                 val duration = cursor.getLong(durationIndex)
                 val year = cursor.getIntOrNull(yearIndex)
