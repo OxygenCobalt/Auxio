@@ -142,13 +142,18 @@ class QueueAdapter(
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()
 
+            // Roll our own drag handlers as the default ones suck
             binding.songDragHandle.setOnTouchListener { _, motionEvent ->
                 binding.songDragHandle.performClick()
-
                 if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                     touchHelper.startDrag(this)
                     true
                 } else false
+            }
+
+            binding.body.setOnLongClickListener {
+                touchHelper.startDrag(this)
+                true
             }
         }
     }

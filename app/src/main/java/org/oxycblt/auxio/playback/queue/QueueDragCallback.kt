@@ -128,7 +128,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // When an elevated item is cleared, we reset the elevation using another animation.
         val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 
-        if (holder.itemView.translationZ != 0.0f) {
+        if (holder.itemView.translationZ != 0f) {
             logD("Dropping queue item")
 
             val bg = holder.bodyView.background as MaterialShapeDrawable
@@ -164,6 +164,8 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
             queueAdapter.removeItem(viewHolder.bindingAdapterPosition)
         }
     }
+
+    override fun isLongPressDragEnabled(): Boolean = false
 
     /**
      * Add the queue adapter to this callback.

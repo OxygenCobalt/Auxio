@@ -43,14 +43,12 @@ class QueueFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
-
         val callback = QueueDragCallback(playbackModel)
-
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper)
-        var lastShuffle = playbackModel.isShuffling.value
-
         callback.addQueueAdapter(queueAdapter)
+
+        var lastShuffle = playbackModel.isShuffling.value
 
         // --- UI SETUP ---
 
