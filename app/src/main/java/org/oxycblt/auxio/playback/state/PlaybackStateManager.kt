@@ -40,6 +40,8 @@ import org.oxycblt.auxio.util.logE
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
+ *
+ * TODO: Rework this to possibly handle gapless playback and more refined queue management.
  */
 class PlaybackStateManager private constructor() {
     // Playback
@@ -594,7 +596,9 @@ class PlaybackStateManager private constructor() {
      * Do a sanity check to make sure that the index lines up with the current song.
      */
     private fun doIndexSanityCheck() {
-        if (mSong != null && mSong != mQueue[mIndex]) {
+        // Note: Be careful with how we handle the queue since a possible index desync
+        // could easily result in an OOB issue.
+        if (mSong != null && mSong != mQueue.getOrNull(mIndex)) {
             val correctedIndex = mQueue.wobblyIndexOfFirst(mIndex, mSong)
 
             if (correctedIndex > -1) {

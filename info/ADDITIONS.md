@@ -9,7 +9,6 @@ While I do like adding new behavior/UI customizations, these will be looked at m
 
 ## Feature Additions and UI Changes
 These arent as likely to be accepted. As I said, I do not want Auxio to become overly bloated with features that are rarely used, therefore I only tend to accept features that:
-
 - Benefit **my own** usage
 - Are in line with Auxio's purpose as a music player
 
@@ -25,3 +24,4 @@ Feel free to fork Auxio to add your own feature set however.
 - Gapless Playback [#35] (Technical issues, may change in the future)
 - Reduce leading instrument [#45] (Technical issues, Out of scope)
 - Opening music through a provider [#30] (Out of scope)
+- Cuesheet support [#83]
