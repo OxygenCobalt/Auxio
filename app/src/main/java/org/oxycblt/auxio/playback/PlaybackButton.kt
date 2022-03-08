@@ -21,7 +21,7 @@ import org.oxycblt.auxio.util.getDrawableSafe
  *
  * This view also enables use of an "indicator", which is a dot that can denote when a
  * button is active. This is useful for the shuffle/loop buttons, as at times highlighting
- * them is not enough to
+ * them is not enough to differentiate them.
  */
 class PlaybackButton @JvmOverloads constructor(
     context: Context,
@@ -73,6 +73,7 @@ class PlaybackButton @JvmOverloads constructor(
             }
         }
 
+        // Put the indicator right below the icon.
         val x = (measuredWidth - indicatorDrawable.intrinsicWidth) / 2
         val y = ((measuredHeight - iconSize) / 2) + iconSize
 
@@ -81,9 +82,11 @@ class PlaybackButton @JvmOverloads constructor(
         )
     }
 
-    override fun onDrawForeground(canvas: Canvas) {
-        super.onDrawForeground(canvas)
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
 
+        // I would use onDrawForeground but apparently that isn't called by Lollipop devices.
+        // This is not referenced in the documentation at all.
         if (hasIndicator && isActivated) {
             indicatorDrawable.draw(canvas)
         }

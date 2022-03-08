@@ -30,8 +30,11 @@ import org.oxycblt.auxio.coil.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
 
 /**
- * TODO: Phase out databinding
- * TODO: Rework sealed classes to minimize whens and maximize overrides
+ * TODO: Plan for a general UI rework
+ *       - Refactor fragment class
+ *       - Remove databinding and dedup layouts
+ *       - Rework RecyclerView management and item dragging
+ *       - Rework sealed classes to minimize whens and maximize overrides
  */
 @Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {

@@ -130,6 +130,8 @@ class MusicLoader {
             args += "$path%" // Append % so that the selector properly detects children
         }
 
+        // TODO: Move all references to contentResolver into a single variable so we can
+        //  avoid accidentally removing the applicationContext fix
         context.applicationContext.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -142,7 +144,7 @@ class MusicLoader {
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
-                MediaStore.Audio.AudioColumns.ALBUM_ARTIST,
+                AUDIO_COLUMN_ALBUM_ARTIST
             ),
             selector, args.toTypedArray(), null
         )?.use { cursor ->
@@ -155,7 +157,7 @@ class MusicLoader {
             val albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
             val albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
             val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
-            val albumArtistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ARTIST)
+            val albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idIndex)
@@ -412,6 +414,15 @@ class MusicLoader {
     }
 
     companion object {
+        /**
+         * The album_artist MediaStore field has existed since at least API 21, but until API
+         * 30 it was a proprietary extension for Google Play Music and was not documented.
+         * Since this field probably works on all versions Auxio supports, we suppress the
+         * warning about using a possibly-unsupported constant.
+         */
+        @Suppress("InlinedApi")
+        const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
+
         /**
          * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
          * winamp extensions.
