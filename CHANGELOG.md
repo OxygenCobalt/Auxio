@@ -1,6 +1,8 @@
 # Changelog
 
-## dev [v2.2.2 or 2.3.0]
+## dev [v2.2.3, v2.3.0, or v3.0.0]
+
+## v2.2.2
 #### What's New
 - New spanish translations and metadata [courtesy of n-berenice]
 
