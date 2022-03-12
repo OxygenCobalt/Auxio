@@ -23,8 +23,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
@@ -41,6 +41,10 @@ class SongListFragment : HomeListFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentHomeListBinding.inflate(layoutInflater)
+
+        // / --- UI SETUP ---
+
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = SongsAdapter(
@@ -50,7 +54,7 @@ class SongListFragment : HomeListFragment() {
             ::newMenu
         )
 
-        setupRecycler(R.id.home_song_list, adapter, homeModel.songs)
+        setupRecycler(R.id.home_song_list, binding, adapter, homeModel.songs)
 
         return binding.root
     }
@@ -77,7 +81,8 @@ class SongListFragment : HomeListFragment() {
                     .first().uppercase()
 
                 // Year -> Use Full Year
-                is Sort.ByYear -> song.album.year.toDate(requireContext())
+                is Sort.ByYear -> song.album.year?.toString()
+                    ?: getString(R.string.def_date)
             }
         }
 

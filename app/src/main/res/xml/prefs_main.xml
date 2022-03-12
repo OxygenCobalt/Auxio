@@ -82,15 +82,16 @@
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="KEY_AUDIO_FOCUS"
+            app:isPreferenceVisible="@bool/enable_audio_focus_setting"
             app:summary="@string/set_focus_desc"
             app:title="@string/set_focus" />
 
         <org.oxycblt.auxio.settings.pref.M3SwitchPreference
-            app:defaultValue="true"
+            app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="KEY_PLUG_MGT"
-            app:summary="@string/set_plug_mgt_desc"
-            app:title="@string/set_plug_mgt" />
+            app:key="auxio_headset_autoplay"
+            app:summary="@string/set_headset_autoplay_desc"
+            app:title="@string/set_headset_autoplay" />
 
         <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/replay_gain_off"

@@ -28,33 +28,37 @@ import androidx.annotation.StringRes
 // --- MUSIC MODELS ---
 
 /**
- * The base data object for all music.
- * @property id A unique ID for this object. ***THIS IS NOT A MEDIASTORE ID!**
+ * The base for all items in Auxio.
  */
-sealed class BaseModel {
+sealed class Item {
+    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
     abstract val id: Long
 }
 
 /**
- * A [BaseModel] variant that represents a music item.
- * @property name The raw name of this track
+ * [Item] variant that represents a music item.
+ * @property name
  */
-sealed class Music : BaseModel() {
+sealed class Music : Item() {
+    /** The raw name of this item. */
     abstract val name: String
 }
 
 /**
  * [Music] variant that denotes that this object is a parent of other data objects, such
  * as an [Album] or [Artist]
- * @property resolvedName A name resolved from it's raw form to a form suitable to be shown in
- * a ui. Ex. "unknown" would become Unknown Artist, (124) would become its proper genre name, etc.
+ * @property resolvedName
  */
 sealed class MusicParent : Music() {
+    /**
+     * A name resolved from it's raw form to a form suitable to be shown in a ui.
+     * Ex. "unknown" would become Unknown Artist, (124) would become its proper genre name, etc.
+     */
     abstract val resolvedName: String
 }
 
 /**
- * The data object for a song. Inherits [BaseModel].
+ * The data object for a song.
  */
 data class Song(
     override val name: String,
@@ -62,33 +66,33 @@ data class Song(
     val fileName: String,
     /** The total duration of this song, in millis. */
     val duration: Long,
-    /** The track number of this song. */
-    val track: Int,
+    /** The track number of this song, null if there isn't any. */
+    val track: Int?,
     /** Internal field. Do not use. */
-    val _mediaStoreId: Long,
+    val internalMediaStoreId: Long,
     /** Internal field. Do not use. */
-    val _mediaStoreArtistName: String?,
+    val internalMediaStoreYear: Int?,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumArtistName: String?,
+    val internalMediaStoreAlbumName: String,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumId: Long,
+    val internalMediaStoreAlbumId: Long,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumName: String,
+    val internalMediaStoreArtistName: String?,
     /** Internal field. Do not use. */
-    val _mediaStoreYear: Int
+    val internalMediaStoreAlbumArtistName: String?,
 ) : Music() {
     override val id: Long get() {
         var result = name.hashCode().toLong()
         result = 31 * result + album.name.hashCode()
         result = 31 * result + album.artist.name.hashCode()
-        result = 31 * result + track
+        result = 31 * result + (track ?: 0)
         result = 31 * result + duration.hashCode()
         return result
     }
 
     /** The URI for this song. */
     val uri: Uri get() = ContentUris.withAppendedId(
-        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, internalMediaStoreId
     )
     /** The duration of this song, in seconds (rounded down) */
     val seconds: Long get() = duration / 1000
@@ -99,9 +103,9 @@ data class Song(
     /** The album of this song. */
     val album: Album get() = requireNotNull(mAlbum)
 
-    var mGenre: Genre? = null
-    /** The genre of this song. May be null due to MediaStore insanity. */
-    val genre: Genre? get() = mGenre
+    private var mGenre: Genre? = null
+    /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
+    val genre: Genre get() = requireNotNull(mGenre)
 
     /** An album name resolved to this song in particular. */
     val resolvedAlbumName: String get() =
@@ -109,43 +113,61 @@ data class Song(
 
     /** An artist name resolved to this song in particular. */
     val resolvedArtistName: String get() =
-        _mediaStoreArtistName ?: album.artist.resolvedName
+        internalMediaStoreArtistName ?: album.artist.resolvedName
+
+    /** Internal field. Do not use. */
+    val internalGroupingId: Int get() {
+        var result = internalGroupingArtistName.lowercase().hashCode()
+        result = 31 * result + internalMediaStoreAlbumName.lowercase().hashCode()
+        return result
+    }
+
+    /** Internal field. Do not use. */
+    val internalGroupingArtistName: String get() = internalMediaStoreAlbumArtistName
+        ?: internalMediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
+
+    /** Internal field. Do not use. */
+    val internalIsMissingAlbum: Boolean get() = mAlbum == null
+    /** Internal field. Do not use. */
+    val internalIsMissingArtist: Boolean get() = mAlbum?.internalIsMissingArtist ?: true
+    /** Internal field. Do not use. **/
+    val internalIsMissingGenre: Boolean get() = mGenre == null
 
     /** Internal method. Do not use. */
-    fun mediaStoreLinkAlbum(album: Album) {
+    fun internalLinkAlbum(album: Album) {
         mAlbum = album
     }
 
     /** Internal method. Do not use. */
-    fun mediaStoreLinkGenre(genre: Genre) {
+    fun internalLinkGenre(genre: Genre) {
         mGenre = genre
     }
 }
 
 /**
- * The data object for an album. Inherits [MusicParent].
+ * The data object for an album.
  */
 data class Album(
     override val name: String,
-    /** The latest year of the songs in this album. */
-    val year: Int,
+    /** The latest year of the songs in this album. Null if none of the songs had metadata. */
+    val year: Int?,
     /** The URI for the cover art corresponding to this album. */
     val albumCoverUri: Uri,
     /** The songs of this album. */
     val songs: List<Song>,
     /** Internal field. Do not use. */
-    val _mediaStoreArtistName: String,
+    val internalGroupingArtistName: String,
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song.mediaStoreLinkAlbum(this)
+            song.internalLinkAlbum(this)
         }
     }
 
     override val id: Long get() {
         var result = name.hashCode().toLong()
         result = 31 * result + artist.name.hashCode()
-        result = 31 * result + year
+        result = 31 * result + (year ?: 0)
         return result
     }
 
@@ -164,8 +186,11 @@ data class Album(
     val resolvedArtistName: String get() =
         artist.resolvedName
 
+    /** Internal field. Do not use. */
+    val internalIsMissingArtist: Boolean = mArtist != null
+
     /** Internal method. Do not use. */
-    fun mediaStoreLinkArtist(artist: Artist) {
+    fun internalLinkArtist(artist: Artist) {
         mArtist = artist
     }
 }
@@ -182,7 +207,7 @@ data class Artist(
 ) : MusicParent() {
     init {
         for (album in albums) {
-            album.mediaStoreLinkArtist(this)
+            album.internalLinkArtist(this)
         }
     }
 
@@ -193,7 +218,7 @@ data class Artist(
 }
 
 /**
- * The data object for a genre. Inherits [MusicParent]
+ * The data object for a genre.
  */
 data class Genre(
     override val name: String,
@@ -202,7 +227,7 @@ data class Genre(
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song.mediaStoreLinkGenre(this)
+            song.internalLinkGenre(this)
         }
     }
 
@@ -220,7 +245,7 @@ data class Header(
     override val id: Long,
     /** The string resource used for the header. */
     @StringRes val string: Int
-) : BaseModel()
+) : Item()
 
 /**
  * A data object used for an action header. Like [Header], but with a button.
@@ -236,7 +261,7 @@ data class ActionHeader(
     @StringRes val desc: Int,
     /** A callback for when this item is clicked. */
     val onClick: (View) -> Unit,
-) : BaseModel() {
+) : Item() {
     // All lambdas are not equal to each-other, so we override equals/hashCode and exclude them.
 
     override fun equals(other: Any?): Boolean {

@@ -23,6 +23,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.logD
 
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
@@ -53,6 +54,8 @@ class WidgetController(private val context: Context) :
      * Release this instance, removing the callbacks and resetting all widgets
      */
     fun release() {
+        logD("Releasing instance")
+
         widget.reset(context)
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)

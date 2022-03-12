@@ -29,6 +29,7 @@ import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.util.logD
 
 /**
  * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player],
@@ -158,6 +159,8 @@ class PlaybackSessionConnector(
     // --- MISC ---
 
     private fun invalidateSessionState() {
+        logD("Updating media session state")
+
         // Position updates arrive faster when you upload STATE_PAUSED for some insane reason.
         val state = PlaybackStateCompat.Builder()
             .setActions(ACTIONS)

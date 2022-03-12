@@ -70,13 +70,18 @@ class TabAdapter(
                 isChecked = tab is Tab.Visible
             }
 
+            // Roll our own drag handlers as the default ones suck
             binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
                 binding.tabDragHandle.performClick()
-
                 if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                     touchHelper.startDrag(this)
                     true
                 } else false
+            }
+
+            binding.root.setOnLongClickListener {
+                touchHelper.startDrag(this)
+                true
             }
         }
     }

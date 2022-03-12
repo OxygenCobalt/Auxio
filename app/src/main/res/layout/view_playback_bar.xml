@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Small"
             android:layout_margin="@dimen/spacing_small"
@@ -51,16 +51,15 @@
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:ellipsize="end"
-            android:text="@{@string/fmt_two(song.resolvedArtistName, song.resolvedAlbumName)}"
+            app:songInfo="@{song}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
             app:layout_constraintTop_toBottomOf="@+id/playback_song"
             tools:text="Artist Name / Album Name" />
 
-        <ImageButton
+        <org.oxycblt.auxio.playback.PlaybackButton
             android:id="@+id/playback_play_pause"
-            style="@style/Widget.Auxio.Button.Unbounded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_small"

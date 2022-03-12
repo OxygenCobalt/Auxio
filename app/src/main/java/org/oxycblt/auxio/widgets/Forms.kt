@@ -53,7 +53,7 @@ fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_small)
         .applyCover(context, state)
-        .applyControls(context, state)
+        .applyBasicControls(context, state)
 }
 
 /**
@@ -63,7 +63,7 @@ fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
 fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_medium)
         .applyMeta(context, state)
-        .applyControls(context, state)
+        .applyBasicControls(context, state)
 }
 
 /**
@@ -142,7 +142,7 @@ private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState):
     return this
 }
 
-private fun RemoteViews.applyControls(context: Context, state: WidgetState): RemoteViews {
+private fun RemoteViews.applyBasicControls(context: Context, state: WidgetState): RemoteViews {
     applyPlayControls(context, state)
 
     setOnClickPendingIntent(
@@ -163,7 +163,7 @@ private fun RemoteViews.applyControls(context: Context, state: WidgetState): Rem
 }
 
 private fun RemoteViews.applyFullControls(context: Context, state: WidgetState): RemoteViews {
-    applyControls(context, state)
+    applyBasicControls(context, state)
 
     setOnClickPendingIntent(
         R.id.widget_loop,
@@ -179,17 +179,15 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
         )
     )
 
-    // While it is technically possible to use the setColorFilter to tint these buttons, its
-    // actually less efficient than using duplicate drawables.
-    // And no, we can't control state drawables with RemoteViews. Because of course we can't.
-
+    // Like notifications, use the remote variants of icons since we really don't want to hack
+    // indicators.
     val shuffleRes = when {
-        state.isShuffled -> R.drawable.ic_shuffle_on
-        else -> R.drawable.ic_shuffle
+        state.isShuffled -> R.drawable.ic_remote_shuffle_on
+        else -> R.drawable.ic_remote_shuffle_off
     }
 
     val loopRes = when (state.loopMode) {
-        LoopMode.NONE -> R.drawable.ic_loop
+        LoopMode.NONE -> R.drawable.ic_remote_loop_off
         LoopMode.ALL -> R.drawable.ic_loop_on
         LoopMode.TRACK -> R.drawable.ic_loop_one
     }

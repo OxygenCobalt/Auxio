@@ -16,6 +16,7 @@
             android:paddingStart="@dimen/spacing_small"
             android:paddingEnd="@dimen/spacing_small"
             app:labelBehavior="gone"
+            app:labelStyle="@style/TextAppearance.Auxio.BodySmall"
             android:valueFrom="0"
             android:valueTo="1"
             app:thumbRadius="@dimen/slider_thumb_radius"

@@ -77,12 +77,10 @@ class AccentAdapter(
             val context = binding.accent.context
 
             binding.accent.isEnabled = !isSelected
-
             binding.accent.imageTintList = if (isSelected) {
                 // Switch out the currently selected ViewHolder with this one.
                 selectedViewHolder?.setSelected(false)
                 selectedViewHolder = this
-
                 context.getAttrColorSafe(R.attr.colorSurface).stateList
             } else {
                 context.getColorSafe(android.R.color.transparent).stateList

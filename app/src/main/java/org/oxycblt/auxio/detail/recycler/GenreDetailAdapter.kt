@@ -27,14 +27,14 @@ import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemGenreSongBinding
 import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.bindGenreInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -45,7 +45,7 @@ class GenreDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentSong: Song? = null
     private var currentHolder: Highlightable? = null
 
@@ -54,7 +54,6 @@ class GenreDetailAdapter(
             is Genre -> GENRE_DETAIL_ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> GENRE_SONG_ITEM_TYPE
-
             else -> -1
         }
     }
@@ -121,7 +120,6 @@ class GenreDetailAdapter(
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
                     currentHolder = it as Highlightable
-
                     currentHolder?.setHighlighted(true)
                 }
             }
@@ -143,11 +141,7 @@ class GenreDetailAdapter(
             }
 
             binding.detailName.text = data.resolvedName
-
-            binding.detailSubhead.apply {
-                text = context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
-            }
-
+            binding.detailSubhead.bindGenreInfo(data)
             binding.detailInfo.text = data.totalDuration
 
             binding.detailPlayButton.setOnClickListener {

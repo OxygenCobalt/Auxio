@@ -18,25 +18,28 @@
 
 package org.oxycblt.auxio.settings.pref
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
+import androidx.preference.Preference
 import org.oxycblt.auxio.R
-import androidx.preference.R as prefR
 
 class IntListPreference @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = prefR.attr.dialogPreferenceStyle,
+    defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
     defStyleRes: Int = 0
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
+    // Reflect into Preference to get the (normally inaccessible) default value.
+    private val defValueField = Preference::class.java.getDeclaredField("mDefaultValue").apply {
+        isAccessible = true
+    }
+
     val entries: Array<CharSequence>
     val values: IntArray
-
     private var currentValue: Int? = null
-    private val defValue: Int
+    private val defValue: Int get() = defValueField.get(this) as Int
 
     init {
         val prefAttrs = context.obtainStyledAttributes(
@@ -48,8 +51,6 @@ class IntListPreference @JvmOverloads constructor(
         values = context.resources.getIntArray(
             prefAttrs.getResourceId(R.styleable.IntListPreference_entryValues, -1)
         )
-
-        defValue = prefAttrs.getInt(prefR.styleable.Preference_defaultValue, Int.MIN_VALUE)
 
         prefAttrs.recycle()
 
@@ -96,7 +97,6 @@ class IntListPreference @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint("PrivateResource")
     private inner class IntListSummaryProvider : SummaryProvider<IntListPreference> {
         override fun provideSummary(preference: IntListPreference): CharSequence {
             val index = getValueIndex()
@@ -105,7 +105,8 @@ class IntListPreference @JvmOverloads constructor(
                 return entries[index]
             }
 
-            return context.getString(prefR.string.not_set)
+            // Usually an invalid state, don't bother translating
+            return "<not set>"
         }
     }
 }

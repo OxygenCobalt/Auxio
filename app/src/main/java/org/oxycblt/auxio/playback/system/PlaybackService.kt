@@ -180,7 +180,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         settingsManager.addCallback(this)
 
-        logD("Service created.")
+        logD("Service created")
     }
 
     override fun onDestroy() {
@@ -207,7 +207,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             serviceJob.cancel()
         }
 
-        logD("Service destroyed.")
+        logD("Service destroyed")
     }
 
     // --- PLAYER EVENT LISTENER OVERRIDES ---
@@ -260,22 +260,21 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     override fun onSongUpdate(song: Song?) {
         if (song != null) {
+            logD("Setting player to ${song.name}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
             player.prepare()
-
             notification.setMetadata(song, ::startForegroundOrNotify)
-
             return
         }
 
         // Clear if there's nothing to play.
+        logD("Nothing playing, stopping playback")
         player.stop()
         stopForegroundAndNotification()
     }
 
     override fun onParentUpdate(parent: MusicParent?) {
         notification.setParent(parent)
-
         startForegroundOrNotify()
     }
 
@@ -295,7 +294,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onLoopUpdate(loopMode: LoopMode) {
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(loopMode)
-
             startForegroundOrNotify()
         }
     }
@@ -303,7 +301,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onShuffleUpdate(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
             notification.setShuffle(isShuffling)
-
             startForegroundOrNotify()
         }
     }
@@ -334,7 +331,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
             connector.onSongUpdate(song)
-
             notification.setMetadata(song, ::startForegroundOrNotify)
         }
     }
@@ -443,7 +439,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     private fun stopForegroundAndNotification() {
         stopForeground(true)
         notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
-
         isForeground = false
     }
 
@@ -451,24 +446,35 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
      * A [BroadcastReceiver] for receiving general playback events from the system.
      */
     private inner class PlaybackReceiver : BroadcastReceiver() {
+        private var initialHeadsetPlugEventHandled = false
+
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 // --- SYSTEM EVENTS ---
+
+                // Technically the MediaSession seems to handle bluetooth events on their
+                // own, but keep this around as a fallback in the case that the former fails
+                // for whatever reason.
                 AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
                     when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> resumeFromPlug()
                         AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
+                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> maybeResumeFromPlug()
                     }
                 }
 
-                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
-
+                // MediaSession does not handle wired headsets for some reason, so also include
+                // this. Gotta love Android having two actions for more or less the same thing.
                 AudioManager.ACTION_HEADSET_PLUG -> {
                     when (intent.getIntExtra("state", -1)) {
-                        0 -> resumeFromPlug()
-                        1 -> pauseFromPlug()
+                        0 -> pauseFromPlug()
+                        1 -> maybeResumeFromPlug()
                     }
+
+                    initialHeadsetPlugEventHandled = true
                 }
+
+                // I have never seen this ever happen but it might be useful
+                AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
@@ -494,25 +500,35 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
             }
         }
-    }
 
-    /**
-     * Resume from a headset plug event, as long as its allowed.
-     */
-    private fun resumeFromPlug() {
-        if (playbackManager.song != null && settingsManager.doPlugMgt) {
-            logD("Device connected, resuming...")
-            playbackManager.setPlaying(true)
+        /**
+         * Resume from a headset plug event in the case that the quirk is enabled.
+         * This functionality remains a quirk for two reasons:
+         * 1. Automatically resuming more or less overrides all other audio streams, which
+         * is not that friendly
+         * 2. There is a bug where playback will always start when this service starts, mostly
+         * due to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but
+         * I fear that it may not work on OEM skins that for whatever reason don't make this
+         * action fire.
+         */
+        private fun maybeResumeFromPlug() {
+            if (playbackManager.song != null &&
+                settingsManager.headsetAutoplay &&
+                initialHeadsetPlugEventHandled
+            ) {
+                logD("Device connected, resuming")
+                playbackManager.setPlaying(true)
+            }
         }
-    }
 
-    /**
-     * Pause from a headset plug, as long as its allowed.
-     */
-    private fun pauseFromPlug() {
-        if (playbackManager.song != null && settingsManager.doPlugMgt) {
-            logD("Device disconnected, pausing...")
-            playbackManager.setPlaying(false)
+        /**
+         * Pause from a headset plug.
+         */
+        private fun pauseFromPlug() {
+            if (playbackManager.song != null) {
+                logD("Device disconnected, pausing")
+                playbackManager.setPlaying(false)
+            }
         }
     }
 

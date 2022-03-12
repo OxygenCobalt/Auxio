@@ -24,9 +24,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.AlbumViewHolder
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.ui.SongViewHolder
 class SearchAdapter(
     private val doOnClick: (data: Music) -> Unit,
     private val doOnLongClick: (view: View, data: Music) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback<BaseModel>()) {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback<Item>()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -52,7 +52,6 @@ class SearchAdapter(
             is Album -> AlbumViewHolder.ITEM_TYPE
             is Song -> SongViewHolder.ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
-
             else -> -1
         }
     }
@@ -77,7 +76,7 @@ class SearchAdapter(
 
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
 
-            else -> error("Invalid ViewHolder item type.")
+            else -> error("Invalid ViewHolder item type")
         }
     }
 

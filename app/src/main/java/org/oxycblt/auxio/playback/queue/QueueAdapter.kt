@@ -30,13 +30,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.stateList
@@ -49,7 +50,7 @@ import org.oxycblt.auxio.util.stateList
 class QueueAdapter(
     private val touchHelper: ItemTouchHelper
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var data = mutableListOf<BaseModel>()
+    private var data = mutableListOf<Item>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
 
     override fun getItemCount(): Int = data.size
@@ -69,11 +70,9 @@ class QueueAdapter(
             QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
                 ItemQueueSongBinding.inflate(parent.context.inflater)
             )
-
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
-
-            else -> error("Invalid ViewHolder item type $viewType.")
+            else -> error("Invalid ViewHolder item type $viewType")
         }
     }
 
@@ -82,8 +81,7 @@ class QueueAdapter(
             is Song -> (holder as QueueSongViewHolder).bind(item)
             is Header -> (holder as HeaderViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-
-            else -> logE("Bad data given to QueueAdapter.")
+            else -> logE("Bad data given to QueueAdapter")
         }
     }
 
@@ -91,10 +89,9 @@ class QueueAdapter(
      * Submit data using [AsyncListDiffer].
      * **Only use this if you have no idea what changes occurred to the data**
      */
-    fun submitList(newData: MutableList<BaseModel>) {
+    fun submitList(newData: MutableList<Item>) {
         if (data != newData) {
             data = newData
-
             listDiffer.submitList(newData)
         }
     }
@@ -132,6 +129,8 @@ class QueueAdapter(
             ).apply {
                 fillColor = (binding.body.background as ColorDrawable).color.stateList
             }
+
+            binding.root.disableDropShadowCompat()
         }
 
         @SuppressLint("ClickableViewAccessibility")
@@ -143,13 +142,18 @@ class QueueAdapter(
             binding.songName.requestLayout()
             binding.songInfo.requestLayout()
 
+            // Roll our own drag handlers as the default ones suck
             binding.songDragHandle.setOnTouchListener { _, motionEvent ->
                 binding.songDragHandle.performClick()
-
                 if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
                     touchHelper.startDrag(this)
                     true
                 } else false
+            }
+
+            binding.body.setOnLongClickListener {
+                touchHelper.startDrag(this)
+                true
             }
         }
     }

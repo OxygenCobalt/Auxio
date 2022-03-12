@@ -32,7 +32,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.ui.memberBinding
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -40,20 +39,23 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A [Fragment] that displays more information about the song, along with more media controls.
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
  * @author OxygenCobalt
+ * TODO: Handle RTL correctly in the playback buttons
  */
 class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private val binding by memberBinding(FragmentPlaybackBinding::inflate) {
-        playbackSong.isSelected = false // Clear marquee to prevent a memory leak
-    }
+    private var mLastBinding: FragmentPlaybackBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentPlaybackBinding.inflate(layoutInflater)
         val queueItem: MenuItem
+
+        // See onDestroyView for why we do this
+        mLastBinding = binding
 
         // --- UI SETUP ---
 
@@ -93,6 +95,7 @@ class PlaybackFragment : Fragment() {
         binding.playbackSong.isSelected = true
         binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
 
+        // Abuse the play/pause FAB (see style definition for more info)
         binding.playbackPlayPause.post {
             binding.playbackPlayPause.stateListAnimator = null
         }
@@ -101,11 +104,11 @@ class PlaybackFragment : Fragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                logD("Updating song display to ${song.name}.")
+                logD("Updating song display to ${song.name}")
                 binding.song = song
                 binding.playbackSeekBar.setDuration(song.seconds)
             } else {
-                logD("No song is being played, leaving.")
+                logD("No song is being played, leaving")
                 findNavController().navigateUp()
             }
         }
@@ -126,7 +129,10 @@ class PlaybackFragment : Fragment() {
                 LoopMode.TRACK -> R.drawable.ic_loop_one
             }
 
-            binding.playbackLoop.setImageResource(resId)
+            binding.playbackLoop.apply {
+                isActivated = loopMode != LoopMode.NONE
+                setImageResource(resId)
+            }
         }
 
         playbackModel.position.observe(viewLifecycleOwner) { pos ->
@@ -149,9 +155,18 @@ class PlaybackFragment : Fragment() {
             }
         }
 
-        logD("Fragment Created.")
+        logD("Fragment Created")
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // playbackSong will leak if we don't disable marquee, keep the binding around
+        // so that we can turn it off when we destroy the view.
+        mLastBinding?.playbackSong?.isSelected = false
+        mLastBinding = null
     }
 
     private fun navigateUp() {

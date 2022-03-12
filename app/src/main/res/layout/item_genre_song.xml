@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/album_cover"
             style="@style/Widget.Auxio.Image.Small"
             android:contentDescription="@{@string/desc_album_cover(song.name)}"
@@ -44,7 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:text="@{@string/fmt_two(song.resolvedArtistName, song.resolvedAlbumName)}"
+            app:songInfo="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/song_duration"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
@@ -53,7 +53,7 @@
 
         <TextView
             android:id="@+id/song_duration"
-            style="@style/Widget.Auxio.TextView.Item.Secondary"
+            style="@style/Widget.Auxio.TextView.Item.Tertiary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="none"

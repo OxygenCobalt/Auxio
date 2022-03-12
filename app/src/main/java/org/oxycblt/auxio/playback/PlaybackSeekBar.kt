@@ -29,19 +29,21 @@ import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
 
 /**
  * A custom view that bundles together a seekbar with a current duration and a total duration.
  * The sub-views are specifically laid out so that the seekbar has an adequate touch height while
  * still not having gobs of whitespace everywhere.
+ * TODO: Add smooth seeking [i.e seeking in sub-second values]
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
 class PlaybackSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleRes: Int = -1
+    defStyleRes: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleRes), Slider.OnChangeListener, Slider.OnSliderTouchListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
     private val isSeeking: Boolean get() = binding.playbackDurationCurrent.isActivated
@@ -73,6 +75,7 @@ class PlaybackSeekBar @JvmOverloads constructor(
             // - The duration of the song was so low as to be rounded to zero when converted
             // to seconds.
             // In either of these cases, the seekbar is more or less useless. Disable it.
+            logD("Duration is 0, entering disabled state")
             binding.seekBar.apply {
                 valueTo = 1f
                 isEnabled = false

@@ -23,11 +23,13 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.pxOfDp
-import org.oxycblt.auxio.util.replaceInsetsCompat
+import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import kotlin.math.abs
@@ -46,6 +48,7 @@ import kotlin.math.min
  * or extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
+ * TODO: Find a better way to handle PlaybackFragment in general (navigation, creation)
  */
 class PlaybackLayout @JvmOverloads constructor(
     context: Context,
@@ -98,6 +101,7 @@ class PlaybackLayout @JvmOverloads constructor(
     private var initMotionX = 0f
     private var initMotionY = 0f
     private val tRect = Rect()
+
     private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
 
     /** See [isDragging] */
@@ -129,6 +133,8 @@ class PlaybackLayout @JvmOverloads constructor(
             background = (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
                 setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
             }
+
+            disableDropShadowCompat()
         }
 
         playbackBarView = PlaybackBarView(context).apply {
@@ -223,6 +229,8 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     private fun applyState(state: PanelState) {
+        logD("Applying panel state $state")
+
         // Dragging events are really complex and we don't want to mess up the state
         // while we are in one.
         if (state == panelState || panelState == PanelState.DRAGGING) {
@@ -355,10 +363,8 @@ class PlaybackLayout @JvmOverloads constructor(
         // bottom navigation is consumed by a bar. To fix this, we modify the bottom insets
         // to reflect the presence of the panel [at least in it's collapsed state]
         playbackContainerView.dispatchApplyWindowInsets(insets)
-
         lastInsets = insets
         applyContentWindowInsets()
-
         return insets
     }
 
@@ -368,7 +374,6 @@ class PlaybackLayout @JvmOverloads constructor(
      */
     private fun applyContentWindowInsets() {
         val insets = lastInsets
-
         if (insets != null) {
             contentView.dispatchApplyWindowInsets(adjustInsets(insets))
         }
@@ -384,8 +389,9 @@ class PlaybackLayout @JvmOverloads constructor(
         val bars = insets.systemBarInsetsCompat
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
-
-        return insets.replaceInsetsCompat(bars.left, bars.top, bars.right, adjustedBottomInset)
+        return insets.replaceSystemBarInsetsCompat(
+            bars.left, bars.top, bars.right, adjustedBottomInset
+        )
     }
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
@@ -584,6 +590,8 @@ class PlaybackLayout @JvmOverloads constructor(
         (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
 
     private fun smoothSlideTo(offset: Float) {
+        logD("Smooth sliding to $offset")
+
         val okay = dragHelper.smoothSlideViewTo(
             playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset)
         )

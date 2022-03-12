@@ -111,7 +111,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playAlbum(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
-            logE("Album is empty, Not playing.")
+            logE("Album is empty, Not playing")
 
             return
         }
@@ -125,7 +125,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playArtist(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
-            logE("Artist is empty, Not playing.")
+            logE("Artist is empty, Not playing")
 
             return
         }
@@ -139,7 +139,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playGenre(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
-            logE("Genre is empty, Not playing.")
+            logE("Genre is empty, Not playing")
 
             return
         }
@@ -156,7 +156,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         if (playbackManager.isRestored && MusicStore.loaded()) {
             playWithUriInternal(uri, context)
         } else {
-            logD("Cant play this URI right now, waiting...")
+            logD("Cant play this URI right now, waiting")
 
             mIntentUri = uri
         }
@@ -213,12 +213,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * [apply] is called just before the change is committed so that the adapter can be updated.
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
-        val adjusted = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
-        logD("$adjusted")
-
-        if (adjusted in playbackManager.queue.indices) {
+        val index = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
+        if (index in playbackManager.queue.indices) {
             apply()
-            playbackManager.removeQueueItem(adjusted)
+            playbackManager.removeQueueItem(index)
         }
     }
     /**
@@ -227,10 +225,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
         val delta = (playbackManager.queue.size - mNextUp.value!!.size)
-
         val from = adapterFrom + delta
         val to = adapterTo + delta
-
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
             apply()
             playbackManager.moveQueueItems(from, to)
@@ -332,7 +328,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * [PlaybackStateManager] instance.
      */
     private fun restorePlaybackState() {
-        logD("Attempting to restore playback state.")
+        logD("Attempting to restore playback state")
 
         onSongUpdate(playbackManager.song)
         onPositionUpdate(playbackManager.position)

@@ -1,11 +1,54 @@
 # Changelog
 
-## dev [v2.2.1 or v2.3.0]
+## dev [v2.2.3, v2.3.0, or v3.0.0]
+
+## v2.2.2
+#### What's New
+- New spanish translations and metadata [courtesy of n-berenice]
+
+#### What's Improved
+- Rounded images are more nuanced
+- Shuffle and Repeat mode buttons now have more contrast when they are turned on
+
+#### What's Fixed
+- Fixed crash on certain devices running Android 10 and lower when a differing theme
+from the system theme was used [#80]
+- Fixed music loading failure that would occur when certain paths were parsed [#84]
+- Fixed incorrect track numbers when the tag was formatted as NN/TT [#88]
+- Fixed years deliberately set as "0" showing up as "No Date"
+- Fixed headset management unexpectedly starting audio when the app initially opens
+- Fixed crash that would occur during a playback restore with specific queue states [#89]
+- Partially fixed buggy behavior when multiple queue items were dragged in quick
+succession
+
+#### What's Changed
+- All cover art is now cropped to a 1:1 aspect ratio
+- Headset focus has been replaced with headset autoplay. It can no longer be disabled.
+
+#### Dev/Meta
+- Enabled elevation drop shadows below Android P for consistency
+- Switches now have a disabled state
+- Reworked dynamic color usage
+- Reworked logging
+- Upgrade ExoPlayer to v2.17.0 [Eliminates custom fork]
+
+## v2.2.1
+#### What's Improved
+- Updated chinese translations [courtesy of cccClyde]
+- Use proper material you top app bars
+- Use body typography in correct places
+- Expose file opening functionality better
+
+#### What's Fixed
+- Fixed issue where playback would start unexpectedly when opening the app
+
+#### What's Changed
+- Disabled audio focus customization on Android 12 [#75]
 
 ## v2.2.0
 #### What's New:
-- Added arabic translations [courtesy of hasanpasha]
-- Better russian translations [courtesy of lisiczka43]
+- Added Arabic translations [Courtesy of hasanpasha]
+- Improved Russian translations [Courtesy of lisiczka43]
 - Added option to reload the music library
 
 #### What's Improved:
@@ -18,9 +61,10 @@ artist they are grouped up in
 
 #### What's Fixed:
 - Fixed crash on some devices configured to use French or Czech translations
-- Malformed indicies should now be corrected when the playback state is restored
+- Malformed indices should now be corrected when the playback state is restored
 - Fixed issue where track numbers would not be shown in the native language's numeric format
 - Fixed issue where the preference view would apply the M3 switches inconsistently
+- Fixed issue where the now playing indicator on the playback screen would use an internal name
 
 #### Dev/Meta:
 - Removed 1.4.X compat
@@ -178,7 +222,7 @@ to when using gesture navigation
 - Fixed issue where the scroll thumb would briefly display on the Songs UI
 - Fixed issue where fast scrolling could be triggered outside the bounds of the indicators
 - Fixed issue where the wrong playing item would be highlighted if the names were identical
-- Fixed a crash when the thumb was moved above the fast scroller [Backported to 1.3.3, included in this release officially]
+- Fixed a crash when the thumb was moved above the fast scroller [Back-ported to 1.3.3, included in this release officially]
 
 #### Dev/Meta
 - Migrated fully to material design

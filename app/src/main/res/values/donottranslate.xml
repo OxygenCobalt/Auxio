@@ -6,6 +6,5 @@
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_two" translatable="false">%1$s • %2$s</string>
     <string name="fmt_three" translatable="false">%1$s • %2$s • %3$s</string>
-    <string name="fmt_counts" translatable="false">%1$s, %2$s</string>
     <string name="fmt_track" translatable="false">%d</string>
 </resources>

@@ -2,6 +2,11 @@
 <resources>
     <!-- SHARED RE-USABLE UI STYLES -->
 
+    <style name="Widget.Auxio.AppBarLayout" parent="Widget.Material3.AppBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <!-- Base toolbar style -->
     <style name="Widget.Auxio.Toolbar" parent="">
         <item name="android:layout_width">match_parent</item>
@@ -21,32 +26,38 @@
     <style name="Widget.Auxio.Image.Small" parent="">
         <item name="android:layout_width">@dimen/size_cover_compact</item>
         <item name="android:layout_height">@dimen/size_cover_compact</item>
+        <item name="cornerRadius">@dimen/size_corners_small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Medium" parent="">
         <item name="android:layout_width">@dimen/size_cover_normal</item>
         <item name="android:layout_height">@dimen/size_cover_normal</item>
+        <item name="cornerRadius">@dimen/size_corners_small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Large" parent="">
         <item name="android:layout_width">@dimen/size_cover_large</item>
         <item name="android:layout_height">@dimen/size_cover_large</item>
+        <item name="cornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
+            <item name="cornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
         <item name="android:layout_width">@dimen/size_cover_huge</item>
         <item name="android:layout_height">@dimen/size_cover_huge</item>
+        <item name="cornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Full" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="layout_constraintDimensionRatio">1</item>
+        <item name="cornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="Widget.Auxio.ItemLayout" parent="">
@@ -80,7 +91,12 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Secondary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleSmall</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyMedium</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="Widget.Auxio.TextView.Item.Tertiary" parent="Widget.Auxio.TextView.Item.Base">
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
@@ -95,7 +111,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.BodyLarge</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Primary.Compact" parent="Widget.Auxio.TextView.Base">
@@ -141,14 +157,6 @@
 
     <!-- BUTTON STYLES -->
 
-    <style name="Widget.Auxio.Button.Unbounded" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-        <item name="android:minWidth">@dimen/size_btn_small</item>
-        <item name="android:background">@drawable/ui_unbounded_ripple</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_small</item>
-    </style>
-
     <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
     </style>
@@ -158,19 +166,21 @@
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">
-        <item name="maxImageSize">@dimen/size_play_fab_icon</item>
-        <item name="fabCustomSize">@dimen/size_btn_large</item>
-
         <!--
         Abuse this floating action button to act more like an old-school auxio button.
-        This is only done because elevation acts weird with the panel layout.
+        This is for two reasons:
+        1. We upscale the play icon to 32dp, so the total FAB size also needs to increase to
+        compensate.
+        2. For some reason elevation behaves strangely in the playback panel, so we disable it.
         -->
+        <item name="fabSize">normal</item>
+        <item name="fabCustomSize">@dimen/size_btn_large</item>
+        <item name="maxImageSize">@dimen/size_playback_icon</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Auxio.FloatingActionButton.PlayPause</item>
     </style>
 
-    <style name="ShapeAppearance.Auxio.FloatingActionButton.PlayPause" parent="">
-        <item name="cornerSize">50%</item>
+    <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="fabSize">normal</item>
     </style>
 </resources>

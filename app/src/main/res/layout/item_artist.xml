@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/artist_image"
             style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_artist_image(artist.resolvedName)}"
@@ -41,7 +41,7 @@
             style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:artistCounts="@{artist}"
+            app:artistInfo="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_image"

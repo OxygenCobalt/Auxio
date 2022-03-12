@@ -19,7 +19,6 @@
 package org.oxycblt.auxio.music
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
@@ -36,6 +35,7 @@ import java.lang.Exception
  * The main storage for music items.
  * Getting an instance of this object is more complicated as it loads asynchronously.
  * See the companion object for more.
+ * TODO: Add automatic rescanning [major change]
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {
@@ -55,7 +55,7 @@ class MusicStore private constructor() {
      * Load/Sort the entire music library. Should always be ran on a coroutine.
      */
     private fun load(context: Context): Response {
-        logD("Starting initial music load...")
+        logD("Starting initial music load")
 
         val notGranted = ContextCompat.checkSelfPermission(
             context, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -69,18 +69,18 @@ class MusicStore private constructor() {
             val start = System.currentTimeMillis()
 
             val loader = MusicLoader()
-            val library = loader.load(context) ?: return Response.Err(ErrorKind.NO_MUSIC)
+            val library = loader.load(context)
+                ?: return Response.Err(ErrorKind.NO_MUSIC)
 
             mSongs = library.songs
             mAlbums = library.albums
             mArtists = library.artists
             mGenres = library.genres
 
-            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms.")
+            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms")
         } catch (e: Exception) {
-            logE("Something went horribly wrong.")
+            logE("Music loading failed.")
             logE(e.stackTraceToString())
-
             return Response.Err(ErrorKind.FAILED)
         }
 
@@ -99,14 +99,15 @@ class MusicStore private constructor() {
      * @return The corresponding [Song] for this [uri], null if there isn't one.
      */
     fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        val cur = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-
-        cur?.use { cursor ->
+        resolver.query(
+            uri,
+            arrayOf(OpenableColumns.DISPLAY_NAME),
+            null, null, null
+        )?.use { cursor ->
             cursor.moveToFirst()
-
-            // Make studio shut up about "invalid ranges" that don't exist
-            @SuppressLint("Range")
-            val fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            val fileName = cursor.getString(
+                cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+            )
 
             return songs.find { it.fileName == fileName }
         }
@@ -117,6 +118,7 @@ class MusicStore private constructor() {
     /**
      * A response that [MusicStore] returns when loading music.
      * And before you ask, yes, I do like rust.
+     * TODO: Replace this with the kotlin builtin
      */
     sealed class Response {
         class Ok(val musicStore: MusicStore) : Response()
@@ -145,11 +147,9 @@ class MusicStore private constructor() {
 
             val response = withContext(Dispatchers.IO) {
                 val response = MusicStore().load(context)
-
                 synchronized(this) {
                     RESPONSE = response
                 }
-
                 response
             }
 
@@ -201,7 +201,7 @@ class MusicStore private constructor() {
          */
         fun requireInstance(): MusicStore {
             return requireNotNull(maybeGetInstance()) {
-                "Required MusicStore instance was not available."
+                "Required MusicStore instance was not available"
             }
         }
 

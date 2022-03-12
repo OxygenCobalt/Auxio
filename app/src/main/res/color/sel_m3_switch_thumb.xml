@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorOnSurface" android:alpha="0.12" android:state_enabled="false" />
     <item android:color="?attr/colorOnPrimary" android:state_checked="true" />
     <item android:color="?attr/colorSurfaceVariant" />
 </selector>

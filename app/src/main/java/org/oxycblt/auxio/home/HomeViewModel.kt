@@ -32,6 +32,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.logD
 
 /**
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
@@ -78,7 +79,6 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
 
         viewModelScope.launch {
             val musicStore = MusicStore.awaitInstance()
-
             mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
             mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
             mArtists.value = settingsManager.libArtistSort.sortParents(musicStore.artists)
@@ -90,6 +90,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
      * Update the current tab based off of the new ViewPager position.
      */
     fun updateCurrentTab(pos: Int) {
+        logD("Updating current tab to ${tabs[pos]}")
         mCurTab.value = tabs[pos]
     }
 
@@ -110,6 +111,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
      * Update the currently displayed item's [Sort].
      */
     fun updateCurrentSort(sort: Sort) {
+        logD("Updating ${mCurTab.value} sort to $sort")
         when (mCurTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort

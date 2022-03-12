@@ -52,13 +52,11 @@ is separated into three phases:
 - Set up the UI
 - Set up ViewModel instances and LiveData observers
 
-`findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, viewbinding should be
-used in all cases. If one needs to keep track of a viewbinding outside of `onCreateView`, then one can declare
-a binding `by memberBinding(BindingClass::inflate)` in order to have a binding that properly disposes itself
-on lifecycle events.
+`findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, view-binding should be
+used in all cases. Avoid usages of databinding outside of the `onCreateView` step unless absolutely necessary.
 
 At times it may be more appropriate to use a `View` instead of a full blown fragment. This is okay as long as
-viewbinding is still used.
+view-binding is still used.
 
 When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder` to standardize the binding process
 and automate some code shared across all ViewHolders. The only exceptions to this case are for ViewHolders that
@@ -98,14 +96,15 @@ to a name that can be used in UIs.
 while `ActionHeader` corresponds to an action with a dedicated icon, such as with sorting.
 
 Other data types represent a specific UI configuration or state:
-- Sealed classes like `Sort` and `HeaderString` contain data with them that can be modified.
+- Sealed classes like `Sort` contain data with them that can be modified.
 - Enums like `DisplayMode` and `LoopMode` only contain static data, such as a string resource.
 
 Things to keep in mind while working with music data:
 - `id` is not derived from the `MediaStore` ID of the music data. It is actually a hash of the unique fields of the music data.
 Attempting to use it as a `MediaStore` ID will result in errors.
-- Any field beginning with `_mediaStore` is off-limits. These fields are meant for use within `MusicLoader` and generally provide
-poor UX to the user.
+- Any field or method beginning with `internal` is off-limits. These fields are meant for use within `MusicLoader` and generally
+provide poor UX to the user. The only reason they are public is to make the loading process not have to rely on separate "Raw"
+objects.
 - Generally, `name` is used when saving music data to storage, while `resolvedName` is used when displaying music data to the user.
     - For `Song` instances in particular, prefer `resolvedAlbumName` and `resolvedArtistName` over `album.resolvedName` and `album.artist.resolvedName`
     - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`
@@ -289,7 +288,6 @@ Shared views and view configuration models. This contains:
 - Customized views such as `EdgeAppBarLayout` and `EdgeRecyclerView`, which add some extra functionality not provided by default
 - Configuration models like `DisplayMode` and `Sort`, which are used in many places but aren't tied to a specific feature.
 - `newMenu` and `ActionMenu`, which automates menu creation for most data types
-- `memberBinding` and `MemberBinder`, which allows for ViewBindings to be used as a member variable without memory leaks or nullability issues.
 
 #### `.util`
 Shared utilities. This is primarily for QoL when developing Auxio. Documentation is provided on each method.

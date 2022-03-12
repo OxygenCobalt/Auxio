@@ -74,7 +74,7 @@ class AboutFragment : Fragment() {
             )
         }
 
-        logD("Dialog created.")
+        logD("Dialog created")
 
         return binding.root
     }
@@ -83,6 +83,8 @@ class AboutFragment : Fragment() {
      * Go through the process of opening a [link] in a browser.
      */
     private fun openLinkInBrowser(link: String) {
+        logD("Opening $link")
+
         val browserIntent = Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(
             Intent.FLAG_ACTIVITY_NEW_TASK
         )

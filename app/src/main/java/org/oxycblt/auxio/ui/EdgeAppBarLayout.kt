@@ -24,12 +24,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowInsets
-import androidx.annotation.StyleRes
+import androidx.annotation.AttrRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
-import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 open class EdgeAppBarLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @StyleRes defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : AppBarLayout(context, attrs, defStyleAttr) {
     private var scrollingChild: View? = null
     private val tConsumed = IntArray(2)
@@ -51,7 +51,6 @@ open class EdgeAppBarLayout @JvmOverloads constructor(
 
         if (child != null) {
             val coordinator = parent as CoordinatorLayout
-
             (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
                 coordinator, this, coordinator, 0, 0, tConsumed, 0
             )
@@ -66,15 +65,12 @@ open class EdgeAppBarLayout @JvmOverloads constructor(
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         super.onApplyWindowInsets(insets)
-
         updatePadding(top = insets.systemBarInsetsCompat.top)
-
         return insets
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-
         viewTreeObserver.removeOnPreDrawListener(onPreDraw)
     }
 
@@ -94,9 +90,10 @@ open class EdgeAppBarLayout @JvmOverloads constructor(
             if (liftOnScrollTargetViewId != ResourcesCompat.ID_NULL) {
                 scrollingChild = (parent as ViewGroup).findViewById(liftOnScrollTargetViewId)
             } else {
-                logE("liftOnScrollTargetViewId was not specified. ignoring scroll events.")
+                logW("liftOnScrollTargetViewId was not specified. ignoring scroll events")
             }
         }
+
         return scrollingChild
     }
 }

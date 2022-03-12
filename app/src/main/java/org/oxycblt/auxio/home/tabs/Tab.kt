@@ -109,7 +109,7 @@ sealed class Tab(open val mode: DisplayMode) {
 
             // For safety, return null if we have an empty or larger-than-expected tab array.
             if (distinct.isEmpty() || distinct.size < SEQUENCE_LEN) {
-                logE("Sequence size was ${distinct.size}, which is invalid.")
+                logE("Sequence size was ${distinct.size}, which is invalid")
                 return null
             }
 

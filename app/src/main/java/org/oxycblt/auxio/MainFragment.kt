@@ -36,11 +36,13 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls
  * the more high-level navigation features.
  * @author OxygenCobalt
+ * TODO: Add a new view with a stack trace whenever the music loading process fails.
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -78,10 +80,6 @@ class MainFragment : Fragment() {
             // but for some insane reason google decided to cripple the window APIs one could use
             // to limit it's size. So, we just have our own special layout that is shown whenever
             // the screen is too small because of course we have to.
-            // Another fun fact: smallestScreenWidthDp is completely bugged and uses the total
-            // screen size, even when the window is smaller. This basically borks split screen
-            // even more than it already does. Fun!
-
             if (requireActivity().isInMultiWindowMode) {
                 val config = resources.configuration
 
@@ -110,7 +108,7 @@ class MainFragment : Fragment() {
 
                 // Error, show the error to the user
                 is MusicStore.Response.Err -> {
-                    logD("Received Error")
+                    logW("Received Error")
 
                     val errorRes = when (response.kind) {
                         MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
@@ -142,7 +140,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        logD("Fragment Created.")
+        logD("Fragment Created")
 
         return binding.root
     }

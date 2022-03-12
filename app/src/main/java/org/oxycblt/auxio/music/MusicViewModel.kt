@@ -24,6 +24,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.oxycblt.auxio.util.logD
 
 class MusicViewModel : ViewModel() {
     private val mLoaderResponse = MutableLiveData<MusicStore.Response?>(null)
@@ -37,6 +38,7 @@ class MusicViewModel : ViewModel() {
      */
     fun loadMusic(context: Context) {
         if (mLoaderResponse.value != null || isBusy) {
+            logD("Loader is busy/already completed, not reloading")
             return
         }
 
@@ -45,15 +47,14 @@ class MusicViewModel : ViewModel() {
 
         viewModelScope.launch {
             val result = MusicStore.initInstance(context)
-
-            isBusy = false
             mLoaderResponse.value = result
+            isBusy = false
         }
     }
 
     fun reloadMusic(context: Context) {
+        logD("Reloading music library")
         mLoaderResponse.value = null
-
         loadMusic(context)
     }
 }

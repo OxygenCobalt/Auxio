@@ -28,6 +28,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.logD
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
@@ -42,14 +43,12 @@ class QueueFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentQueueBinding.inflate(inflater)
-
         val callback = QueueDragCallback(playbackModel)
-
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper)
-        var lastShuffle = playbackModel.isShuffling.value
-
         callback.addQueueAdapter(queueAdapter)
+
+        var lastShuffle = playbackModel.isShuffling.value
 
         // --- UI SETUP ---
 
@@ -77,9 +76,11 @@ class QueueFragment : Fragment() {
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
+            // Try to prevent the queue adapter from going spastic during reshuffle events
+            // by just scrolling back to the top.
             if (isShuffling != lastShuffle) {
+                logD("Reshuffle event, scrolling to top")
                 lastShuffle = isShuffling
-
                 binding.queueRecycler.scrollToPosition(0)
             }
         }

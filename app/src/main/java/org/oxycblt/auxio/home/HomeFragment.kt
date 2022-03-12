@@ -49,11 +49,14 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.logTraceOrThrow
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
  * views for each respective item.
  * @author OxygenCobalt
+ * TODO: Make tabs invisible when there is only one
+ * TODO: Add duration and song count sorts
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -77,16 +80,19 @@ class HomeFragment : Fragment() {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_search -> {
+                        logD("Navigating to search")
                         findNavController().navigate(HomeFragmentDirections.actionShowSearch())
                     }
 
                     R.id.action_settings -> {
+                        logD("Navigating to settings")
                         parentFragment?.parentFragment?.findNavController()?.navigate(
                             MainFragmentDirections.actionShowSettings()
                         )
                     }
 
                     R.id.action_about -> {
+                        logD("Navigating to about")
                         parentFragment?.parentFragment?.findNavController()?.navigate(
                             MainFragmentDirections.actionShowAbout()
                         )
@@ -96,20 +102,16 @@ class HomeFragment : Fragment() {
 
                     R.id.option_sort_asc -> {
                         item.isChecked = !item.isChecked
-
                         val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
                             .ascending(item.isChecked)
-
                         homeModel.updateCurrentSort(new)
                     }
 
                     // Sorting option was selected, mark it as selected and update the mode
                     else -> {
                         item.isChecked = true
-
                         val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
                             .assignId(item.itemId)
-
                         homeModel.updateCurrentSort(requireNotNull(new))
                     }
                 }
@@ -141,8 +143,8 @@ class HomeFragment : Fragment() {
                     set(recycler, slop * 3) // 3x seems to be the best fit here
                 }
             } catch (e: Exception) {
-                logE("Unable to reduce ViewPager sensitivity")
-                logE(e.stackTraceToString())
+                logE("Unable to reduce ViewPager sensitivity (likely an internal code change)")
+                e.logTraceOrThrow()
             }
 
             // We know that there will only be a fixed amount of tabs, so we manually set this
@@ -174,7 +176,7 @@ class HomeFragment : Fragment() {
                 is MusicStore.Response.Ok -> binding.homeFab.show()
 
                 // While loading or during an error, make sure we keep the shuffle fab hidden so
-                // that any kind of loading is impossible. PlaybackStateManager also relies on this
+                // that any kind of playback is impossible. PlaybackStateManager also relies on this
                 // invariant, so please don't change it.
                 else -> binding.homeFab.hide()
             }
@@ -207,7 +209,7 @@ class HomeFragment : Fragment() {
         homeModel.curTab.observe(viewLifecycleOwner) { t ->
             val tab = requireNotNull(t)
 
-            // Make sure that we update the scrolling view and allowed menu items before whenever
+            // Make sure that we update the scrolling view and allowed menu items whenever
             // the tab changes.
             when (tab) {
                 DisplayMode.SHOW_SONGS -> updateSortMenu(sortItem, tab)
@@ -229,8 +231,9 @@ class HomeFragment : Fragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            // The AppBarLayout gets confused and collapses when we navigate too fast, wait for it
-            // to draw before we continue.
+            // The AppBarLayout gets confused when we navigate too fast, wait for it to draw
+            // before we navigate.
+            // This is only here just in case a collapsing toolbar is re-added.
             binding.homeAppbar.post {
                 when (item) {
                     is Song -> findNavController().navigate(
@@ -255,7 +258,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        logD("Fragment Created.")
+        logD("Fragment Created")
 
         return binding.root
     }

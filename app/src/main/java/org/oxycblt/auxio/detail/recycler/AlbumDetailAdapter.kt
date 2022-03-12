@@ -30,9 +30,8 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.BaseModel
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDate
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
@@ -49,7 +48,7 @@ class AlbumDetailAdapter(
     private val detailModel: DetailViewModel,
     private val doOnClick: (data: Song) -> Unit,
     private val doOnLongClick: (view: View, data: Song) -> Unit
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentSong: Song? = null
     private var currentHolder: Highlightable? = null
 
@@ -58,7 +57,6 @@ class AlbumDetailAdapter(
             is Album -> ALBUM_DETAIL_ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
             is Song -> ALBUM_SONG_ITEM_TYPE
-
             else -> -1
         }
     }
@@ -86,7 +84,6 @@ class AlbumDetailAdapter(
             is Album -> (holder as AlbumDetailViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-
             else -> {
             }
         }
@@ -127,7 +124,6 @@ class AlbumDetailAdapter(
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
                     currentHolder = it as Highlightable
-
                     currentHolder?.setHighlighted(true)
                 }
             }
@@ -148,21 +144,19 @@ class AlbumDetailAdapter(
 
             binding.detailSubhead.apply {
                 text = data.artist.resolvedName
-
                 setOnClickListener {
                     detailModel.navToItem(data.artist)
                 }
             }
 
-            binding.detailInfo.text = binding.detailInfo.context.getString(
-                R.string.fmt_three,
-                data.year.toDate(binding.detailInfo.context),
-                binding.detailInfo.context.getPluralSafe(
-                    R.plurals.fmt_song_count,
-                    data.songs.size
-                ),
-                data.totalDuration
-            )
+            binding.detailInfo.apply {
+                text = context.getString(
+                    R.string.fmt_three,
+                    data.year?.toString() ?: context.getString(R.string.def_date),
+                    context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size),
+                    data.totalDuration
+                )
+            }
 
             binding.detailPlayButton.setOnClickListener {
                 playbackModel.playAlbum(data, false)
@@ -183,7 +177,7 @@ class AlbumDetailAdapter(
 
             // Hide the track number view if the track is zero, as generally a track number of
             // zero implies that the song does not have a track number.
-            val usePlaceholder = data.track < 1
+            val usePlaceholder = data.track == null
             binding.songTrack.isInvisible = usePlaceholder
             binding.songTrackPlaceholder.isInvisible = !usePlaceholder
         }

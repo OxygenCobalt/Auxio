@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * A simple [ItemTouchHelper.Callback] that handles dragging items in the tab customization menu.
  * Unlike QueueAdapter's ItemTouchHelper, this one is bare and simple.
+ * TODO: Consider unifying the shared behavior between this and QueueDragCallback into a single
+ *  class.
  */
 class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.Callback() {
     private val tabs: Array<Tab> get() = getTabs()
@@ -69,6 +71,9 @@ class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.C
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+    // We use a custom drag handle, so disable the long press action.
+    override fun isLongPressDragEnabled(): Boolean = false
 
     /**
      * Add the tab adapter to this callback.

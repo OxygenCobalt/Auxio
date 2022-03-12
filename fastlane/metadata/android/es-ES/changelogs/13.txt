@@ -1,0 +1,3 @@
+Auxio 2.2.0 mejora la carga de música aún más, respetando etiquetas de artistas individuales a la vez que elimina álbumes y artistas fragmentados. Para mas información visite https://github.com/OxygenCobalt/Auxio/releases/tag/v2.2.0.
+
+Esta versión es un parche que arregla errores de experiencia menores que aparecieron en la versión anterior.

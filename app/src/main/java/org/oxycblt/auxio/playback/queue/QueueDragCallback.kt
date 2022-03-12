@@ -27,6 +27,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.util.getDimenSafe
+import org.oxycblt.auxio.util.logD
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -86,13 +87,13 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // themselves when being dragged. Too bad google's implementation of this doesn't even
         // work! To emulate it on my own, I check if this child is in a drag state and then animate
         // an elevation change.
-
         val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+            logD("Lifting queue item")
+
             val bg = holder.bodyView.background as MaterialShapeDrawable
             val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
-
             holder.itemView.animate()
                 .translationZ(elevation)
                 .setDuration(100)
@@ -127,9 +128,10 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // When an elevated item is cleared, we reset the elevation using another animation.
         val holder = viewHolder as QueueAdapter.QueueSongViewHolder
 
-        if (holder.itemView.translationZ != 0.0f) {
-            val bg = holder.bodyView.background as MaterialShapeDrawable
+        if (holder.itemView.translationZ != 0f) {
+            logD("Dropping queue item")
 
+            val bg = holder.bodyView.background as MaterialShapeDrawable
             holder.itemView.animate()
                 .translationZ(0.0f)
                 .setDuration(100)
@@ -162,6 +164,8 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
             queueAdapter.removeItem(viewHolder.bindingAdapterPosition)
         }
     }
+
+    override fun isLongPressDragEnabled(): Boolean = false
 
     /**
      * Add the queue adapter to this callback.

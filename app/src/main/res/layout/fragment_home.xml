@@ -11,9 +11,7 @@
 
         <org.oxycblt.auxio.ui.EdgeAppBarLayout
             android:id="@+id/home_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
+            style="@style/Widget.Auxio.AppBarLayout"
             app:liftOnScroll="true">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -42,24 +40,23 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:layout="@layout/fragment_home_list" />
 
-        <org.oxycblt.auxio.home.FloatingActionButtonContainer
+        <org.oxycblt.auxio.home.EdgeFabContainer
             android:id="@+id/home_fab_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_anchor="@id/home_pager"
             app:layout_anchorGravity="bottom|end">
 
-            <org.oxycblt.auxio.home.AdaptiveFloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/home_fab"
+                style="@style/Widget.Auxio.FloatingActionButton.Adaptive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.FloatingActionButton.Primary"
                 android:layout_margin="@dimen/spacing_medium"
                 android:contentDescription="@string/desc_shuffle_all"
-                android:src="@drawable/ic_shuffle"
-                app:tint="?attr/colorOnPrimaryContainer" />
+                android:src="@drawable/ic_shuffle" />
 
-        </org.oxycblt.auxio.home.FloatingActionButtonContainer>
+        </org.oxycblt.auxio.home.EdgeFabContainer>
 
     </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
 </layout>

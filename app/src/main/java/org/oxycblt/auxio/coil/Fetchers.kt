@@ -43,7 +43,7 @@ import kotlin.math.min
 class AlbumArtFetcher private constructor(
     private val context: Context,
     private val album: Album
-) : AuxioFetcher() {
+) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         return fetchArt(context, album)?.let { stream ->
             SourceResult(
@@ -75,11 +75,10 @@ class ArtistImageFetcher private constructor(
     private val context: Context,
     private val size: Size,
     private val artist: Artist,
-) : AuxioFetcher() {
+) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         val albums = Sort.ByName(true)
             .sortAlbums(artist.albums)
-
         val results = albums.mapAtMost(4) { album ->
             fetchArt(context, album)
         }
@@ -102,7 +101,7 @@ class GenreImageFetcher private constructor(
     private val context: Context,
     private val size: Size,
     private val genre: Genre,
-) : AuxioFetcher() {
+) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         // We don't need to sort here, as the way we
         val albums = genre.songs.groupBy { it.album }.keys

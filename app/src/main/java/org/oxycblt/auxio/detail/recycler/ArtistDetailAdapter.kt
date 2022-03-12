@@ -30,15 +30,15 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.BaseModel
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.bindArtistInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
-import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 
 /**
@@ -49,8 +49,8 @@ class ArtistDetailAdapter(
     private val playbackModel: PlaybackViewModel,
     private val doOnClick: (data: Album) -> Unit,
     private val doOnSongClick: (data: Song) -> Unit,
-    private val doOnLongClick: (view: View, data: BaseModel) -> Unit,
-) : ListAdapter<BaseModel, RecyclerView.ViewHolder>(DiffCallback()) {
+    private val doOnLongClick: (view: View, data: Item) -> Unit,
+) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
     private var currentAlbum: Album? = null
     private var currentAlbumHolder: Highlightable? = null
 
@@ -64,7 +64,6 @@ class ArtistDetailAdapter(
             is Song -> ARTIST_SONG_ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
-
             else -> -1
         }
     }
@@ -174,7 +173,6 @@ class ArtistDetailAdapter(
             recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
                 recycler.getChildViewHolder(child)?.let {
                     currentSongHolder = it as Highlightable
-
                     currentSongHolder?.setHighlighted(true)
                 }
             }
@@ -201,15 +199,11 @@ class ArtistDetailAdapter(
             // Get the genre that corresponds to the most songs in this artist, which would be
             // the most "Prominent" genre.
             binding.detailSubhead.text = data.songs
-                .groupBy { it.genre?.resolvedName }
+                .groupBy { it.genre.resolvedName }
                 .entries.maxByOrNull { it.value.size }
                 ?.key ?: context.getString(R.string.def_genre)
 
-            binding.detailInfo.text = context.getString(
-                R.string.fmt_counts,
-                context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
-                context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
-            )
+            binding.detailInfo.bindArtistInfo(data)
 
             binding.detailPlayButton.setOnClickListener {
                 playbackModel.playArtist(data, false)

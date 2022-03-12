@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * The [DetailFragment] for a genre.
@@ -50,6 +52,7 @@ class GenreDetailFragment : DetailFragment() {
     ): View {
         detailModel.setGenre(args.genreId)
 
+        val binding = FragmentDetailBinding.inflate(inflater)
         val detailAdapter = GenreDetailAdapter(
             playbackModel,
             doOnClick = { song ->
@@ -64,8 +67,8 @@ class GenreDetailFragment : DetailFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupToolbar(detailModel.curGenre.value!!)
-        setupRecycler(detailAdapter) { pos ->
+        setupToolbar(detailModel.curGenre.value!!, binding)
+        setupRecycler(binding, detailAdapter) { pos ->
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Genre
         }
@@ -79,20 +82,29 @@ class GenreDetailFragment : DetailFragment() {
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             when (item) {
                 // All items will launch new detail fragments.
-                is Artist -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowArtist(item.id)
-                )
-
-                is Album -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowAlbum(item.id)
-                )
-
-                is Song -> findNavController().navigate(
-                    GenreDetailFragmentDirections.actionShowAlbum(item.album.id)
-                )
-
-                else -> {
+                is Artist -> {
+                    logD("Navigating to another artist")
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowArtist(item.id)
+                    )
                 }
+
+                is Album -> {
+                    logD("Navigating to another album")
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowAlbum(item.id)
+                    )
+                }
+
+                is Song -> {
+                    logD("Navigating to another song")
+                    findNavController().navigate(
+                        GenreDetailFragmentDirections.actionShowAlbum(item.album.id)
+                    )
+                }
+
+                null -> {}
+                else -> logW("Unsupported navigation command ${item::class.java}")
             }
         }
 
@@ -115,7 +127,7 @@ class GenreDetailFragment : DetailFragment() {
             }
         }
 
-        logD("Fragment created.")
+        logD("Fragment created")
 
         return binding.root
     }

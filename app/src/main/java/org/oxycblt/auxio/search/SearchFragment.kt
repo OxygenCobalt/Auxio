@@ -114,7 +114,6 @@ class SearchFragment : Fragment() {
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
                 requestFocus()
-
                 postDelayed(200) {
                     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
                 }
@@ -162,7 +161,7 @@ class SearchFragment : Fragment() {
             imm.hide()
         }
 
-        logD("Fragment created.")
+        logD("Fragment created")
 
         return binding.root
     }

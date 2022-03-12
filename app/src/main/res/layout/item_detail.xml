@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/spacing_medium">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/detail_cover"
             style="@style/Widget.Auxio.Image.MidHuge"
             app:layout_constraintEnd_toEndOf="parent"

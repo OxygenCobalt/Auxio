@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/genre_image"
             style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_genre_image(genre.resolvedName)}"
@@ -41,7 +41,7 @@
             style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{@plurals/fmt_song_count(genre.songs.size(), genre.songs.size())}"
+            app:genreInfo="@{genre}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/genre_image"

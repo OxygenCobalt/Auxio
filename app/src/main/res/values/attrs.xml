@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundableImageView">
+        <attr name="cornerRadius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="PlaybackButton">
+        <attr name="hasIndicator" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="IntListPreference">
+        <attr name="entries" format="reference" />
+        <attr name="entryValues" format="reference" />
+    </declare-styleable>
+</resources>

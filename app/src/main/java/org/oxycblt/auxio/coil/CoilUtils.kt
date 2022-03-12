@@ -35,7 +35,6 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
 
 // --- BINDING ADAPTERS ---
 
@@ -65,24 +64,9 @@ fun ImageView.bindGenreImage(genre: Genre?) = load(genre, R.drawable.ic_genre)
 
 fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
     dispose()
-
-    // We don't round album covers by default as it desecrates album artwork, but we do provide
-    // an option if one wants it.
-    // As for why we use clipToOutline instead of coil's RoundedCornersTransformation, the transform
-    // uses the dimensions of the image to create the corners, which results in inconsistent corners
-    // across loaded cover art.
-    val settingsManager = SettingsManager.getInstance()
-
-    if (settingsManager.roundCovers && background == null) {
-        setBackgroundResource(R.drawable.ui_rounded_cutout)
-        clipToOutline = true
-    } else if (!settingsManager.roundCovers && background != null) {
-        background = null
-        clipToOutline = false
-    }
-
     load(music) {
         error(error)
+        transformations(SquareFrameTransform.INSTANCE)
     }
 }
 
@@ -102,6 +86,7 @@ fun loadBitmap(
         ImageRequest.Builder(context)
             .data(song.album)
             .size(Size.ORIGINAL)
+            .transformations(SquareFrameTransform())
             .target(
                 onError = { onDone(null) },
                 onSuccess = { onDone(it.toBitmap()) }

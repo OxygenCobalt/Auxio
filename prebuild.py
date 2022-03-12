@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
-# This script automatically installs exoplayer with the necessary components.
-# This is written in version-agnostic python 3, because I'd rather not have to 
-# deal with the insanity of bash.
+
+# This script automatically assembles any required ExoPlayer extensions or components as
+# an AAR blob. This method is not only faster than depending on ExoPlayer outright as we 
+# only need to build our components once, it's also easier to use with Android Studio, which
+# tends to get bogged down when we include a massive source repository as part of the gradle
+# project. This script may change from time to time depending on the components or extensions
+# that I leverage. It's recommended to re-run it after every release to ensure consistent
+# behavior.
+
+# As for why I wrote this in Python and not Bash, it's because Bash really does not have
+# the capabilities for a nice, seamless pre-build process.
+
 import os
 import platform
 import sys
 import subprocess
 import re
 
+# WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION AND 
+# THE GRADLE DEPENDENCY. IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
+EXO_VERSION = "2.17.0"
 FLAC_VERSION = "1.3.2"
 
 FATAL="\033[1;31m"
@@ -16,32 +28,38 @@ INFO="\033[1;94m"
 OK="\033[1;92m"
 NC="\033[0m"
 
-system = platform.system()
-
 # We do some shell scripting later on, so we can't support windows.
+system = platform.system()
 if system not in ["Linux", "Darwin"]:
     print("fatal: unsupported platform " + system)
     sys.exit(1)
 
 def sh(cmd):
+    print(INFO + "execute: " + NC + cmd)
     code = subprocess.call(["sh", "-c", "set -e; " + cmd])
-
     if code != 0:
         print(FATAL + "fatal:" + NC + " command failed with exit code " + str(code))
         sys.exit(1)
 
 start_path = os.path.join(os.path.abspath(os.curdir))
 libs_path = os.path.join(start_path, "app", "libs")
-exoplayer_path = os.path.join(start_path, "app", "build", "srclibs", "exoplayer")
-
 if os.path.exists(libs_path):
-    reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. would you like to reinstall it? [y/n] ")
-
+    reinstall = input(INFO + "info:" + NC + " exoplayer is already installed. " + 
+        "would you like to reinstall it? [y/n] ")
     if not re.match("[yY][eE][sS]|[yY]", reinstall):
         sys.exit(0)
 
-ndk_path = os.getenv("NDK_PATH")
+exoplayer_path = os.path.join(start_path, "app", "build", "srclibs", "exoplayer")
 
+# Ensure that there is always an SDK environment variable.
+# Technically there is also an sdk.dir field in local.properties, but that does
+# not work when you clone a project without a local.properties.
+if os.getenv("ANDROID_HOME") is None and os.getenv("ANDROID_SDK_ROOT") is None:
+    print(FATAL + "fatal:" + NC + " sdk location not found. please define " +
+        "ANDROID_HOME/ANDROID_SDK_ROOT before continuing.")
+    sys.exit(1)
+
+ndk_path = os.getenv("NDK_PATH")
 if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
     # We don't have a proper path. Do some digging on the Android SDK directory
     # to see if we can find it.
@@ -51,14 +69,13 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
         ndk_root = os.path.join(os.getenv("HOME"), "Library", "Android", "sdk", "ndk")
 
     candidates = []
-
     for entry in os.scandir(ndk_root):
         if entry.is_dir():
             candidates.append(entry.path)
 
     if len(candidates) > 0:
-        print(WARN + "warn:" + NC + " NDK_PATH was not set or invalid. multiple candidates were found however:")
-
+        print(WARN + "warn:" + NC + " NDK_PATH was not set or invalid. multiple " + 
+            "candidates were found however:")
         for i, candidate in enumerate(candidates):
             print("[" + str(i) + "] " + candidate)
 
@@ -67,43 +84,36 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
         except:
             ndk_path = candidates[0]
     else:
-        print(FATAL + "fatal:" + NC + " the android ndk was not installed at a recognized location.")
+        print(FATAL + "fatal:" + NC + " the android ndk was not installed at a " + 
+            "recognized location.")
         system.exit(1)
+
+ndk_build_path = os.path.join(ndk_path, "ndk-build")
 
 # Now try to install ExoPlayer.
 sh("rm -rf " + exoplayer_path)
 sh("rm -rf " + libs_path)
 
 print(INFO + "info:" + NC + " cloning exoplayer...")
-sh("git clone https://github.com/oxygencobalt/ExoPlayer.git " + exoplayer_path)
+sh("git clone https://github.com/google/ExoPlayer.git " + exoplayer_path)
 os.chdir(exoplayer_path)
-sh("git checkout auxio")
+sh("git checkout r" + EXO_VERSION)
 
-print(INFO + "info:" + NC + " installing flac extension...")
+print(INFO + "info:" + NC + " assembling flac extension...")
+flac_ext_aar_path = os.path.join(exoplayer_path, "extensions", "flac", 
+    "buildout", "outputs", "aar", "extension-flac-release.aar")
 flac_ext_jni_path = os.path.join("extensions", "flac", "src", "main", "jni")
-ndk_build_path = os.path.join(ndk_path, "ndk-build")
+
 os.chdir(flac_ext_jni_path)
-sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
+sh('curl "https://ftp.osuosl.org/pub/xiph/releases/flac/flac-' + FLAC_VERSION + 
+    '.tar.xz" | tar xJ && mv "flac-' + FLAC_VERSION + '" flac')
 sh(ndk_build_path + " APP_ABI=all -j4")
 
-print(INFO + "info:" + NC + " assembling libraries")
-extractor_aar_path = os.path.join(
-    exoplayer_path, "library", "extractor", "buildout",
-    "outputs", "aar", "library-extractor-release.aar"
-)
-
-flac_ext_aar_path = os.path.join(
-    exoplayer_path, "extensions", "flac", "buildout",
-    "outputs", "aar", "extension-flac-release.aar"
-)
-
 os.chdir(exoplayer_path)
-sh("./gradlew library-extractor:bundleReleaseAar")
 sh("./gradlew extension-flac:bundleReleaseAar")
 
 os.chdir(start_path)
 sh("mkdir " + libs_path)
-sh("cp " + extractor_aar_path + " " + libs_path)
 sh("cp " + flac_ext_aar_path + " " + libs_path)
 
-print(OK + "success:" + NC + " completed pre-build.")
+print(OK + "success:" + NC + " completed pre-build")

@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId "org.oxycblt.auxio"
-        versionName "2.2.0"
-        versionCode 12
+        versionName "2.2.2"
+        versionCode 14
 
         minSdkVersion 21
         targetSdkVersion 32
@@ -73,7 +73,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.1.0-beta01"
 
     // Lifecycle
-    def lifecycle_version = "2.4.0"
+    def lifecycle_version = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-common:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -85,7 +85,7 @@ dependencies {
 
     // Media
     // TODO: Dumpster this for Media3
-    implementation "androidx.media:media:1.4.3"
+    implementation "androidx.media:media:1.5.0"
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.0"
@@ -93,32 +93,28 @@ dependencies {
     // --- THIRD PARTY ---
 
     // Exoplayer
-    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE CUSTOM AAR BLOBS.
+    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    def exoplayerVersion = '2.16.1'
-    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion") {
-        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
-    }
-    implementation fileTree(dir: "libs", include: ["library-*.aar"])
+    def exoplayerVersion = '2.17.0'
+    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion")
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
-    implementation 'io.coil-kt:coil:2.0.0-alpha06'
+    implementation 'io.coil-kt:coil:2.0.0-alpha09'
 
     // Material
-    implementation 'com.google.android.material:material:1.6.0-alpha02'
+    implementation 'com.google.android.material:material:1.6.0-alpha03'
 
     // --- DEBUG ---
 
     // Lint
-    ktlint 'com.pinterest:ktlint:0.43.2'
+    ktlint 'com.pinterest:ktlint:0.44.0'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
     mainClass.set("com.pinterest.ktlint.Main")
     classpath = configurations.ktlint
-
     args "src/**/*.kt"
 }
 check.dependsOn ktlint
@@ -127,6 +123,5 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     mainClass.set("com.pinterest.ktlint.Main")
     classpath = configurations.ktlint
-
     args "-F", "src/**/*.kt"
 }

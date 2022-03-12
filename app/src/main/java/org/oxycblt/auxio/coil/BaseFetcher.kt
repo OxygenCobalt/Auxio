@@ -18,8 +18,8 @@ import coil.size.pxOrElse
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
+import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
-import com.google.android.exoplayer2.metadata.vorbis.PictureFrame
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -27,6 +27,7 @@ import okio.source
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import android.util.Size as AndroidSize
@@ -34,8 +35,9 @@ import android.util.Size as AndroidSize
 /**
  * The base implementation for all image fetchers in Auxio.
  * @author OxygenCobalt
+ * TODO: Artist images
  */
-abstract class AuxioFetcher : Fetcher {
+abstract class BaseFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
 
     /**
@@ -55,6 +57,7 @@ abstract class AuxioFetcher : Fetcher {
                 fetchMediaStoreCovers(context, album)
             }
         } catch (e: Exception) {
+            logW("Unable to extract album art due to an error")
             null
         }
     }
@@ -80,7 +83,6 @@ abstract class AuxioFetcher : Fetcher {
         // music app which relies on proprietary OneUI extensions instead of AOSP. That means
         // we have to have another layer of redundancy to retain quality. Thanks samsung. Prick.
         val result = fetchAospMetadataCovers(context, album)
-
         if (result != null) {
             return result
         }
@@ -88,7 +90,6 @@ abstract class AuxioFetcher : Fetcher {
         // Our next fallback is to rely on ExoPlayer's largely half-baked and undocumented
         // metadata system.
         val exoResult = fetchExoplayerCover(context, album)
-
         if (exoResult != null) {
             return exoResult
         }
@@ -97,7 +98,6 @@ abstract class AuxioFetcher : Fetcher {
         // going against the point of this setting. The previous two calls are just too unreliable
         // and we can't do any filesystem traversing due to scoped storage.
         val mediaStoreResult = fetchMediaStoreCovers(context, album)
-
         if (mediaStoreResult != null) {
             return mediaStoreResult
         }
@@ -107,16 +107,14 @@ abstract class AuxioFetcher : Fetcher {
     }
 
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
-        val extractor = MediaMetadataRetriever()
-
-        extractor.use { ext ->
+        MediaMetadataRetriever().use { ext ->
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.
             ext.setDataSource(context, album.songs[0].uri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
-            // If its null [a.k.a there is no embedded cover], than just ignore it and move on
+            // If its null [i.e there is no embedded cover], than just ignore it and move on
             return ext.embeddedPicture?.let { coverBytes ->
                 ByteArrayInputStream(coverBytes)
             }
@@ -125,7 +123,6 @@ abstract class AuxioFetcher : Fetcher {
 
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
         val uri = album.songs[0].uri
-
         val future = MetadataRetriever.retrieveMetadata(
             context, MediaItem.fromUri(uri)
         )
@@ -192,8 +189,7 @@ abstract class AuxioFetcher : Fetcher {
             } else if (stream != null) {
                 // In the case a front cover is not found, use the first image in the tag instead.
                 // This can be corrected later on if a front cover frame is found.
-                logD("No front cover image, using image of type $type instead")
-
+                logW("No front cover image, using image of type $type instead")
                 stream = ByteArrayInputStream(pic)
             }
         }
@@ -205,7 +201,7 @@ abstract class AuxioFetcher : Fetcher {
      * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
-    protected fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
+    protected suspend fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
         if (streams.size < 4) {
             return streams.firstOrNull()?.let { stream ->
                 return SourceResult(
@@ -220,12 +216,15 @@ abstract class AuxioFetcher : Fetcher {
         // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
         // 512x512 mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
-        val increment = AndroidSize(mosaicSize.width / 2, mosaicSize.height / 2)
-
-        val mosaicBitmap = Bitmap.createBitmap(
-            mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888
+        val mosaicFrameSize = Size(
+            Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2)
         )
 
+        val mosaicBitmap = Bitmap.createBitmap(
+            mosaicSize.width,
+            mosaicSize.height,
+            Bitmap.Config.ARGB_8888
+        )
         val canvas = Canvas(mosaicBitmap)
 
         var x = 0
@@ -238,20 +237,21 @@ abstract class AuxioFetcher : Fetcher {
                 break
             }
 
-            val bitmap = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeStream(stream),
-                increment.width,
-                increment.height,
-                true
-            )
+            // Run the bitmap through a transform to make sure it's a square of the desired
+            // resolution.
+            val bitmap = SquareFrameTransform.INSTANCE
+                .transform(
+                    BitmapFactory.decodeStream(stream),
+                    mosaicFrameSize
+                )
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
-            x += increment.width
+            x += bitmap.width
 
             if (x == mosaicSize.width) {
                 x = 0
-                y += increment.height
+                y += bitmap.height
             }
         }
 

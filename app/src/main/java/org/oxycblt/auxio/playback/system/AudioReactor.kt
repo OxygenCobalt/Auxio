@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.media.AudioManager
+import android.os.Build
 import androidx.core.math.MathUtils
 import androidx.media.AudioAttributesCompat
 import androidx.media.AudioFocusRequestCompat
@@ -32,6 +33,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import kotlin.math.pow
 
 /**
@@ -84,16 +86,19 @@ class AudioReactor(
      * Request the android system for audio focus
      */
     fun requestFocus() {
+        logD("Requesting audio focus")
         AudioManagerCompat.requestAudioFocus(audioManager, request)
     }
 
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags.
      * This is based off Vanilla Music's implementation.
+     * TODO: Add ReplayGain pre-amp
+     * TODO: Add positive ReplayGain values
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {
-            logD("No metadata.")
+            logW("No metadata could be extracted from this track")
             volume = 1f
             return
         }
@@ -101,7 +106,7 @@ class AudioReactor(
         // ReplayGain is configurable, so determine what to do based off of the mode.
         val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
             ReplayGainMode.OFF -> {
-                logD("ReplayGain is off.")
+                logD("ReplayGain is off")
                 volume = 1f
                 return
             }
@@ -127,14 +132,15 @@ class AudioReactor(
                         playbackManager.song?.album == playbackManager.parent
                 }
         }
+
         val gain = parseReplayGain(metadata)
 
         val adjust = if (gain != null) {
             if (useAlbumGain(gain)) {
-                logD("Using album gain.")
+                logD("Using album gain")
                 gain.album
             } else {
-                logD("Using track gain.")
+                logD("Using track gain")
                 gain.track
             }
         } else {
@@ -144,8 +150,6 @@ class AudioReactor(
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
-        // While positive ReplayGain values *could* be theoretically added, it's such
-        // a niche use-case that to be worth the effort required. Maybe if someone requests it.
         volume = MathUtils.clamp((10f.pow((adjust / 20f))), 0f, 1f)
     }
 
@@ -177,7 +181,7 @@ class AudioReactor(
             }
 
             if (key in REPLAY_GAIN_TAGS) {
-                tags.add(GainTag(key!!, parseReplayGainFloat(value)))
+                tags.add(GainTag(requireNotNull(key), parseReplayGainFloat(value)))
             }
         }
 
@@ -233,7 +237,7 @@ class AudioReactor(
     // --- INTERNAL AUDIO FOCUS ---
 
     override fun onAudioFocusChange(focusChange: Int) {
-        if (!settingsManager.doAudioFocus) {
+        if (!settingsManager.doAudioFocus && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             // Don't do audio focus if its not enabled
             return
         }

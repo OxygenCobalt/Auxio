@@ -39,7 +39,6 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.MainActivity
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
@@ -75,8 +74,7 @@ fun Context.getPluralSafe(@PluralsRes pluralsRes: Int, value: Int): String {
     return try {
         resources.getQuantityString(pluralsRes, value, value)
     } catch (e: Exception) {
-        logE("plural load failed")
-        return "<plural error>"
+        handleResourceFailure(e, "plural", "<plural error>")
     }
 }
 
@@ -191,16 +189,9 @@ fun Context.pxOfDp(@Dimension dp: Float): Int {
 }
 
 private fun <T> Context.handleResourceFailure(e: Exception, what: String, default: T): T {
-    logE("$what load failed.")
-
-    if (BuildConfig.DEBUG) {
-        // I'd rather be aware of a sudden crash when debugging.
-        throw e
-    } else {
-        // Not so much when the app is in production.
-        logE(e.stackTraceToString())
-        return default
-    }
+    logE("$what load failed")
+    e.logTraceOrThrow()
+    return default
 }
 
 /**

@@ -37,27 +37,27 @@ import org.oxycblt.auxio.ui.Sort
 class SettingsManager private constructor(context: Context) :
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
-        sharedPrefs.registerOnSharedPreferenceChangeListener(this)
+        prefs.registerOnSharedPreferenceChangeListener(this)
     }
 
     // --- VALUES ---
 
     /** The current theme */
     val theme: Int
-        get() = sharedPrefs.getInt(KEY_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        get() = prefs.getInt(KEY_THEME, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
     /** Whether the dark theme should be black or not */
     val useBlackTheme: Boolean
-        get() = sharedPrefs.getBoolean(KEY_BLACK_THEME, false)
+        get() = prefs.getBoolean(KEY_BLACK_THEME, false)
 
     /** The current accent. */
     var accent: Accent
-        get() = handleAccentCompat(sharedPrefs)
+        get() = handleAccentCompat(prefs)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_ACCENT, value.index)
                 apply()
             }
@@ -68,14 +68,14 @@ class SettingsManager private constructor(context: Context) :
      * False if loop, true if shuffle.
      */
     val useAltNotifAction: Boolean
-        get() = sharedPrefs.getBoolean(KEY_USE_ALT_NOTIFICATION_ACTION, false)
+        get() = prefs.getBoolean(KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     /** The current library tabs preferred by the user. */
     var libTabs: Array<Tab>
-        get() = Tab.fromSequence(sharedPrefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
+        get() = Tab.fromSequence(prefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
             ?: Tab.fromSequence(Tab.SEQUENCE_DEFAULT)!!
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_LIB_TABS, Tab.toSequence(value))
                 apply()
             }
@@ -83,51 +83,51 @@ class SettingsManager private constructor(context: Context) :
 
     /** Whether to load embedded covers */
     val showCovers: Boolean
-        get() = sharedPrefs.getBoolean(KEY_SHOW_COVERS, true)
+        get() = prefs.getBoolean(KEY_SHOW_COVERS, true)
 
     /** Whether to ignore MediaStore covers */
     val useQualityCovers: Boolean
-        get() = sharedPrefs.getBoolean(KEY_QUALITY_COVERS, false)
+        get() = prefs.getBoolean(KEY_QUALITY_COVERS, false)
 
     /** Whether to round album covers */
     val roundCovers: Boolean
-        get() = sharedPrefs.getBoolean(KEY_ROUND_COVERS, false)
+        get() = prefs.getBoolean(KEY_ROUND_COVERS, false)
 
     /** Whether to do Audio focus. */
     val doAudioFocus: Boolean
-        get() = sharedPrefs.getBoolean(KEY_AUDIO_FOCUS, true)
+        get() = prefs.getBoolean(KEY_AUDIO_FOCUS, true)
 
-    /** Whether to resume/stop playback when a headset is connected/disconnected. */
-    val doPlugMgt: Boolean
-        get() = sharedPrefs.getBoolean(KEY_PLUG_MANAGEMENT, true)
+    /** Whether to resume playback when a headset is connected (may not work well in all cases) */
+    val headsetAutoplay: Boolean
+        get() = prefs.getBoolean(KEY_HEADSET_AUTOPLAY, false)
 
     /** The current ReplayGain configuration */
     val replayGainMode: ReplayGainMode
-        get() = ReplayGainMode.fromInt(sharedPrefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
+        get() = ReplayGainMode.fromInt(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
             ?: ReplayGainMode.OFF
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
-        get() = PlaybackMode.fromInt(sharedPrefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
+        get() = PlaybackMode.fromInt(prefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
             ?: PlaybackMode.ALL_SONGS
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
-        get() = sharedPrefs.getBoolean(KEY_KEEP_SHUFFLE, true)
+        get() = prefs.getBoolean(KEY_KEEP_SHUFFLE, true)
 
     /** Whether to rewind when the back button is pressed. */
     val rewindWithPrev: Boolean
-        get() = sharedPrefs.getBoolean(KEY_PREV_REWIND, true)
+        get() = prefs.getBoolean(KEY_PREV_REWIND, true)
 
     /** Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats */
     val pauseOnLoop: Boolean
-        get() = sharedPrefs.getBoolean(KEY_LOOP_PAUSE, false)
+        get() = prefs.getBoolean(KEY_LOOP_PAUSE, false)
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
-        get() = DisplayMode.fromFilterInt(sharedPrefs.getInt(KEY_SEARCH_FILTER_MODE, Int.MIN_VALUE))
+        get() = DisplayMode.fromFilterInt(prefs.getInt(KEY_SEARCH_FILTER_MODE, Int.MIN_VALUE))
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_SEARCH_FILTER_MODE, DisplayMode.toFilterInt(value))
                 apply()
             }
@@ -135,10 +135,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The song sort mode on HomeFragment **/
     var libSongSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_LIB_SONGS_SORT, value.toInt())
                 apply()
             }
@@ -146,10 +146,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The album sort mode on HomeFragment **/
     var libAlbumSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_LIB_ALBUMS_SORT, value.toInt())
                 apply()
             }
@@ -157,10 +157,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The artist sort mode on HomeFragment **/
     var libArtistSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_LIB_ARTISTS_SORT, value.toInt())
                 apply()
             }
@@ -168,10 +168,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The genre sort mode on HomeFragment **/
     var libGenreSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_LIB_GENRES_SORT, value.toInt())
                 apply()
             }
@@ -179,10 +179,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The detail album sort mode **/
     var detailAlbumSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_DETAIL_ALBUM_SORT, value.toInt())
                 apply()
             }
@@ -190,10 +190,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The detail artist sort mode **/
     var detailArtistSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
             ?: Sort.ByYear(false)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_DETAIL_ARTIST_SORT, value.toInt())
                 apply()
             }
@@ -201,10 +201,10 @@ class SettingsManager private constructor(context: Context) :
 
     /** The detail genre sort mode **/
     var detailGenreSort: Sort
-        get() = Sort.fromInt(sharedPrefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
+        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
             ?: Sort.ByName(true)
         set(value) {
-            sharedPrefs.edit {
+            prefs.edit {
                 putInt(KEY_DETAIL_GENRE_SORT, value.toInt())
                 apply()
             }
@@ -281,7 +281,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
 
         const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
-        const val KEY_PLUG_MANAGEMENT = "KEY_PLUG_MGT"
+        const val KEY_HEADSET_AUTOPLAY = "auxio_headset_autoplay"
         const val KEY_REPLAY_GAIN = "auxio_replay_gain"
 
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
@@ -331,7 +331,7 @@ class SettingsManager private constructor(context: Context) :
                 return instance
             }
 
-            error("SettingsManager must be initialized with init() before getting its instance.")
+            error("SettingsManager must be initialized with init() before getting its instance")
         }
     }
 }

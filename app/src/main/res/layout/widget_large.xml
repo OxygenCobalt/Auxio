@@ -31,7 +31,7 @@
         android:layout_marginEnd="@dimen/spacing_medium"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/ui_widget_aspect_ratio"
+        android:src="@drawable/ui_remote_aspect_ratio"
         android:visibility="invisible"
         tools:ignore="ContentDescription" />
 
@@ -76,7 +76,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_loop"
-                style="@style/Widget.Auxio.Button.AppWidget"
+                style="@style/Widget.Auxio.PlaybackButton.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -85,7 +85,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
-                style="@style/Widget.Auxio.Button.AppWidget"
+                style="@style/Widget.Auxio.PlaybackButton.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -94,7 +94,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
-                style="@style/Widget.Auxio.Button.AppWidget"
+                style="@style/Widget.Auxio.PlaybackButton.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -103,7 +103,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_next"
-                style="@style/Widget.Auxio.Button.AppWidget"
+                style="@style/Widget.Auxio.PlaybackButton.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -112,7 +112,7 @@
 
             <android.widget.ImageButton
                 android:id="@+id/widget_shuffle"
-                style="@style/Widget.Auxio.Button.AppWidget"
+                style="@style/Widget.Auxio.PlaybackButton.AppWidget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

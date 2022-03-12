@@ -22,8 +22,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import org.oxycblt.auxio.accent.Accent
 
-// A couple of utils for migrating from old settings values to the new
-// formats used in 1.3.2 & 1.4.0
+// A couple of utils for migrating from old settings values to the new formats
 
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {

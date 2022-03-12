@@ -40,6 +40,8 @@ import org.oxycblt.auxio.util.logE
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
+ *
+ * TODO: Rework this to possibly handle gapless playback and more refined queue management.
  */
 class PlaybackStateManager private constructor() {
     // Playback
@@ -151,17 +153,8 @@ class PlaybackStateManager private constructor() {
             }
 
             PlaybackMode.IN_GENRE -> {
-                val genre = song.genre
-
-                // Don't do this if the genre is null
-                if (genre != null) {
-                    mParent = genre
-                    mQueue = genre.songs.toMutableList()
-                } else {
-                    playSong(song, PlaybackMode.ALL_SONGS)
-
-                    return
-                }
+                mParent = song.genre
+                mQueue = song.genre.songs.toMutableList()
             }
 
             PlaybackMode.IN_ARTIST -> {
@@ -233,7 +226,6 @@ class PlaybackStateManager private constructor() {
     private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
         mSong = song
         mPosition = 0
-
         setPlaying(shouldPlay)
     }
 
@@ -280,18 +272,14 @@ class PlaybackStateManager private constructor() {
      * Remove a queue item at [index]. Will ignore invalid indexes.
      */
     fun removeQueueItem(index: Int): Boolean {
-        logD("Removing item ${mQueue[index].name}.")
-
         if (index > mQueue.size || index < 0) {
-            logE("Index is out of bounds, did not remove queue item.")
-
+            logE("Index is out of bounds, did not remove queue item")
             return false
         }
 
+        logD("Removing item ${mQueue[index].name}")
         mQueue.removeAt(index)
-
         pushQueueUpdate()
-
         return true
     }
 
@@ -301,15 +289,12 @@ class PlaybackStateManager private constructor() {
     fun moveQueueItems(from: Int, to: Int): Boolean {
         if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
-
             return false
         }
 
-        val item = mQueue.removeAt(from)
-        mQueue.add(to, item)
-
+        logD("Moving item $from to position $to")
+        mQueue.add(to, mQueue.removeAt(from))
         pushQueueUpdate()
-
         return true
     }
 
@@ -463,7 +448,6 @@ class PlaybackStateManager private constructor() {
      */
     fun seekTo(position: Long) {
         mPosition = position
-
         callbacks.forEach { it.onSeek(position) }
     }
 
@@ -511,15 +495,13 @@ class PlaybackStateManager private constructor() {
      * @param context [Context] required
      */
     suspend fun saveStateToDatabase(context: Context) {
-        logD("Saving state to DB.")
+        logD("Saving state to DB")
 
         // Pack the entire state and save it to the database.
         withContext(Dispatchers.IO) {
             val start = System.currentTimeMillis()
 
             val database = PlaybackStateDatabase.getInstance(context)
-
-            logD("$mPlaybackMode")
 
             database.writeState(
                 PlaybackStateDatabase.SavedState(
@@ -531,7 +513,7 @@ class PlaybackStateManager private constructor() {
             database.writeQueue(mQueue)
 
             this@PlaybackStateManager.logD(
-                "Save finished in ${System.currentTimeMillis() - start}ms"
+                "State save completed successfully in ${System.currentTimeMillis() - start}ms"
             )
         }
     }
@@ -541,19 +523,16 @@ class PlaybackStateManager private constructor() {
      * @param context [Context] required.
      */
     suspend fun restoreFromDatabase(context: Context) {
-        logD("Getting state from DB.")
+        logD("Getting state from DB")
 
         val musicStore = MusicStore.maybeGetInstance() ?: return
-
         val start: Long
         val playbackState: PlaybackStateDatabase.SavedState?
         val queue: MutableList<Song>
 
         withContext(Dispatchers.IO) {
             start = System.currentTimeMillis()
-
             val database = PlaybackStateDatabase.getInstance(context)
-
             playbackState = database.readState(musicStore)
             queue = database.readQueue(musicStore)
         }
@@ -561,15 +540,13 @@ class PlaybackStateManager private constructor() {
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception
 
         if (playbackState != null) {
-            logD("Found playback state $playbackState")
-
             unpackFromPlaybackState(playbackState)
             unpackQueue(queue)
             doParentSanityCheck()
             doIndexSanityCheck()
         }
 
-        logD("Restore finished in ${System.currentTimeMillis() - start}ms")
+        logD("State load completed successfully in ${System.currentTimeMillis() - start}ms")
 
         markRestored()
     }
@@ -595,14 +572,6 @@ class PlaybackStateManager private constructor() {
 
     private fun unpackQueue(queue: MutableList<Song>) {
         mQueue = queue
-
-        // Sanity check: Ensure that the
-        mSong?.let { song ->
-            while (mQueue.getOrNull(mIndex) != song) {
-                mIndex--
-            }
-        }
-
         pushQueueUpdate()
     }
 
@@ -612,7 +581,7 @@ class PlaybackStateManager private constructor() {
     private fun doParentSanityCheck() {
         // Check if the parent was lost while in the DB.
         if (mSong != null && mParent == null && mPlaybackMode != PlaybackMode.ALL_SONGS) {
-            logD("Parent lost, attempting restore.")
+            logD("Parent lost, attempting restore")
 
             mParent = when (mPlaybackMode) {
                 PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
@@ -627,12 +596,14 @@ class PlaybackStateManager private constructor() {
      * Do a sanity check to make sure that the index lines up with the current song.
      */
     private fun doIndexSanityCheck() {
-        if (mSong != null && mSong != mQueue[mIndex]) {
+        // Be careful with how we handle the queue since a possible index de-sync
+        // could easily result in an OOB crash.
+        if (mSong != null && mSong != mQueue.getOrNull(mIndex)) {
             val correctedIndex = mQueue.wobblyIndexOfFirst(mIndex, mSong)
-
             if (correctedIndex > -1) {
                 logD("Correcting malformed index to $correctedIndex")
                 mIndex = correctedIndex
+                pushQueueUpdate()
             }
         }
     }

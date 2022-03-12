@@ -21,6 +21,7 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.WindowInsets
+import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -31,7 +32,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class EdgeRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = -1
+    @AttrRes defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         updatePadding(bottom = insets.systemBarInsetsCompat.bottom)

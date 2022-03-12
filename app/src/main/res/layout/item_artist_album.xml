@@ -13,7 +13,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
 
-        <ImageView
+        <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/album_cover"
             style="@style/Widget.Auxio.Image.Medium"
             android:contentDescription="@{@string/desc_album_cover(album.name)}"

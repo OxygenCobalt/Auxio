@@ -385,4 +385,8 @@
     <color name="grey_on_surface_variant">#C8C8C8</color>
     <color name="grey_surface_inverse">#fafafa</color>
     <color name="grey_on_surface_inverse">#191919</color>
+
+    <color name="widget_surface">@color/material_dynamic_secondary20</color>
+    <color name="widget_surface_inverse">@color/material_dynamic_neutral90</color>
+    <color name="widget_on_surface_inverse">@color/material_dynamic_neutral20</color>
 </resources>
