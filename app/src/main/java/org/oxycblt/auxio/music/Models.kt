@@ -37,7 +37,8 @@ sealed class Item {
 
 /**
  * [Item] variant that represents a music item.
- * @property name
+ * TODO: Make name the actual display name and move raw names (including file names) to a new
+ *  field called rawName.
  */
 sealed class Music : Item() {
     /** The raw name of this item. */
@@ -116,8 +117,8 @@ data class Song(
         internalMediaStoreArtistName ?: album.artist.resolvedName
 
     /** Internal field. Do not use. */
-    val internalGroupingId: Int get() {
-        var result = internalGroupingArtistName.lowercase().hashCode()
+    val internalAlbumGroupingId: Long get() {
+        var result = internalGroupingArtistName.lowercase().hashCode().toLong()
         result = 31 * result + internalMediaStoreAlbumName.lowercase().hashCode()
         return result
     }
@@ -187,7 +188,11 @@ data class Album(
         artist.resolvedName
 
     /** Internal field. Do not use. */
-    val internalIsMissingArtist: Boolean = mArtist != null
+    val internalArtistGroupingId: Long get() =
+        internalGroupingArtistName.lowercase().hashCode().toLong()
+
+    /** Internal field. Do not use. */
+    val internalIsMissingArtist: Boolean get() = mArtist == null
 
     /** Internal method. Do not use. */
     fun internalLinkArtist(artist: Artist) {

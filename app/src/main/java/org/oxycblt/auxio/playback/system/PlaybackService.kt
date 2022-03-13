@@ -510,6 +510,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
          * due to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but
          * I fear that it may not work on OEM skins that for whatever reason don't make this
          * action fire.
+         * TODO: Figure out how players like Retro are able to get autoplay working with
+         *  bluetooth headsets
          */
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
@@ -523,6 +525,8 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
         /**
          * Pause from a headset plug.
+         * TODO: Find a way to centralize this stuff into a single BroadcastReciever instead
+         *  of the weird disjointed arrangement between MediaSession and this.
          */
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {

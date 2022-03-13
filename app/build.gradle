@@ -64,11 +64,11 @@ dependencies {
     // General
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "androidx.activity:activity-ktx:1.4.0"
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     // UI
     implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation "androidx.constraintlayout:constraintlayout:2.1.3"
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
     implementation "androidx.viewpager2:viewpager2:1.1.0-beta01"
 
@@ -95,20 +95,20 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    def exoplayerVersion = '2.17.0'
-    implementation("com.google.android.exoplayer:exoplayer-core:$exoplayerVersion")
+    def exoplayerVersion = "2.17.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading
-    implementation 'io.coil-kt:coil:2.0.0-alpha09'
+    implementation "io.coil-kt:coil:2.0.0-rc01"
 
     // Material
-    implementation 'com.google.android.material:material:1.6.0-alpha03'
+    implementation "com.google.android.material:material:1.6.0-alpha03"
 
     // --- DEBUG ---
 
     // Lint
-    ktlint 'com.pinterest:ktlint:0.44.0'
+    ktlint "com.pinterest:ktlint:0.44.0"
 }
 
 task ktlint(type: JavaExec, group: "verification") {

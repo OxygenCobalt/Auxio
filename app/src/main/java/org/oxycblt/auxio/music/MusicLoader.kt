@@ -1,5 +1,6 @@
 package org.oxycblt.auxio.music
 
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -8,7 +9,7 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.excluded.ExcludedDatabase
+import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -112,27 +113,39 @@ class MusicLoader {
         )
     }
 
-    private fun loadSongs(context: Context): List<Song> {
-        var songs = mutableListOf<Song>()
-        val blacklistDatabase = ExcludedDatabase.getInstance(context)
-        val paths = blacklistDatabase.readPaths()
+    /**
+     * Gets a content resolver in a way that does not mangle metadata on
+     * certain OEM skins. See https://github.com/OxygenCobalt/Auxio/issues/50
+     * for more info.
+     */
+    private val Context.contentResolverSafe: ContentResolver get() =
+        applicationContext.contentResolver
 
+    /**
+     * Does the initial query over the song database, including excluded directory
+     * checks. The songs returned by this function are **not** well-formed. The
+     * companion [buildAlbums], [buildArtists], and [readGenres] functions must be
+     * called with the returned list so that all songs are properly linked up.
+     */
+    private fun loadSongs(context: Context): List<Song> {
+        val blacklistDatabase = ExcludedDatabase.getInstance(context)
         var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
         val args = mutableListOf<String>()
 
-        // DATA was deprecated on Android 10, but is set to be un-deprecated in Android 12L.
-        // The only reason we'd want to change this is to add external partitions support, but
-        // that's less efficient and there's no demand for that right now.
+        // Apply the excluded directories by filtering out specific DATA values.
+        // DATA was deprecated in Android 10, but it was un-deprecated in Android 12L,
+        // so it's probably okay to use it. The only reason we would want to use
+        // another method is for external partitions support, but there is no demand for that.
         // TODO: Determine if grokking the actual DATA value outside of SQL is more or less
         //  efficient than the current system
-        for (path in paths) {
+        for (path in blacklistDatabase.readPaths()) {
             selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children
         }
 
-        // TODO: Move all references to contentResolver into a single variable so we can
-        //  avoid accidentally removing the applicationContext fix
-        context.applicationContext.contentResolver.query(
+        var songs = mutableListOf<Song>()
+
+        context.contentResolverSafe.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.AudioColumns._ID,
@@ -166,7 +179,7 @@ class MusicLoader {
 
                 // The TRACK field is for some reason formatted as DTTT, where D is the disk
                 // and T is the track. This is dumb and insane and forces me to mangle track
-                // numbers above 1000 but there is nothing we can do that won't break the app
+                // numbers above 1000, but there is nothing we can do that won't break the app
                 // below API 30.
                 // TODO: Disk number support?
                 val track = cursor.getIntOrNull(trackIndex)?.mod(1000)
@@ -222,19 +235,22 @@ class MusicLoader {
         return songs
     }
 
+    /**
+     * Group songs up into their respective albums. Instead of using the unreliable album or
+     * artist databases, we instead group up songs by their *lowercase* artist and album name
+     * to create albums. This serves two purposes:
+     * 1. Sometimes artist names can be styled differently, e.g "Rammstein" vs. "RAMMSTEIN".
+     * This makes sure both of those are resolved into a single artist called "Rammstein"
+     * 2. Sometimes MediaStore will split album IDs up if the songs differ in format. This
+     * ensures that all songs are unified under a single album.
+     *
+     * This does come with some costs, it's far slower than using the album ID itself, and
+     * it may result in an unrelated album art being selected depending on the song chosen
+     * as the template, but it seems to work pretty well.
+     */
     private fun buildAlbums(songs: List<Song>): List<Album> {
-        // Group up songs by their lowercase artist and album name. This serves two purposes:
-        // 1. Sometimes artist names can be styled differently, e.g "Rammstein" vs. "RAMMSTEIN".
-        // This makes sure both of those are resolved into a single artist called "Rammstein"
-        // 2. Sometimes MediaStore will split album IDs up if the songs differ in format. This
-        // ensures that all songs are unified under a single album.
-        // This does come with some costs, it's far slower than using the album ID itself, and it
-        // may result in an unrelated album art being selected depending on the song chosen as
-        // the template, but it seems to work pretty well.
         val albums = mutableListOf<Album>()
-        val songsByAlbum = songs.groupBy { song ->
-            song.internalGroupingId
-        }
+        val songsByAlbum = songs.groupBy { it.internalAlbumGroupingId }
 
         for (entry in songsByAlbum) {
             val albumSongs = entry.value
@@ -270,43 +286,30 @@ class MusicLoader {
         return albums
     }
 
+    /**
+     * Group up albums into artists. This also requires a de-duplication step due to some
+     * edge cases where [buildAlbums] could not detect duplicates.
+     */
     private fun buildArtists(context: Context, albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it.internalGroupingArtistName }
+        val albumsByArtist = albums.groupBy { it.internalArtistGroupingId }
 
         for (entry in albumsByArtist) {
-            val artistName = entry.key
-            val resolvedName = when (artistName) {
+            val templateAlbum = entry.value[0]
+            val artistName = templateAlbum.internalGroupingArtistName
+            val resolvedName = when (templateAlbum.internalGroupingArtistName) {
                 MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_artist)
                 else -> artistName
             }
             val artistAlbums = entry.value
 
-            // Album deduplication does not eliminate every case of fragmented artists, do
-            // we deduplicate in the artist creation step as well.
-            // Note that we actually don't do this in groupBy. This is generally because using
-            // a template song may not result in the best possible artist name in all cases.
-            val previousArtistIndex = artists.indexOfFirst { artist ->
-                artist.name.lowercase() == artistName.lowercase()
-            }
-
-            if (previousArtistIndex > -1) {
-                val previousArtist = artists[previousArtistIndex]
-                logD("Merging duplicate artist into pre-existing artist ${previousArtist.name}")
-                artists[previousArtistIndex] = Artist(
-                    previousArtist.name,
-                    previousArtist.resolvedName,
-                    previousArtist.albums + artistAlbums
+            artists.add(
+                Artist(
+                    artistName,
+                    resolvedName,
+                    artistAlbums
                 )
-            } else {
-                artists.add(
-                    Artist(
-                        artistName,
-                        resolvedName,
-                        artistAlbums
-                    )
-                )
-            }
+            )
         }
 
         logD("Successfully built ${artists.size} artists")
@@ -314,20 +317,21 @@ class MusicLoader {
         return artists
     }
 
+    /**
+     * Read all genres and link them up to the given songs. This is the code that
+     * requires me to make dozens of useless queries just to link genres up.
+     */
     private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
 
-        val genreCursor = context.applicationContext.contentResolver.query(
+        context.contentResolverSafe.query(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Audio.Genres._ID,
                 MediaStore.Audio.Genres.NAME
             ),
             null, null, null
-        )
-
-        // And then process those into Genre objects
-        genreCursor?.use { cursor ->
+        )?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
             val nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
@@ -351,7 +355,6 @@ class MusicLoader {
         }
 
         val songsWithoutGenres = songs.filter { it.internalIsMissingGenre }
-
         if (songsWithoutGenres.isNotEmpty()) {
             // Songs that don't have a genre will be thrown into an unknown genre.
             val unknownGenre = Genre(
@@ -368,17 +371,42 @@ class MusicLoader {
         return genres
     }
 
+    /**
+     * Decodes the genre name from an ID3(v2) constant. See [genreConstantTable] for the
+     * genre constant map that Auxio uses.
+     */
+    private val String.genreNameCompat: String? get() {
+        if (isDigitsOnly()) {
+            // ID3v1, just parse as an integer
+            return genreConstantTable.getOrNull(toInt())
+        }
+
+        if (startsWith('(') && endsWith(')')) {
+            // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
+            // Any genres formatted as "(CHARS)" will be ignored.
+            val genreInt = substring(1 until lastIndex).toIntOrNull()
+            if (genreInt != null) {
+                return genreConstantTable.getOrNull(genreInt)
+            }
+        }
+
+        // Current name is fine.
+        return null
+    }
+
+    /**
+     * Queries the genre songs for [genreId]. Some genres are insane and don't contain songs
+     * for some reason, so if that's the case then this function will return null.
+     */
     private fun queryGenreSongs(context: Context, genreId: Long, songs: List<Song>): List<Song>? {
         val genreSongs = mutableListOf<Song>()
 
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
-        val songCursor = context.applicationContext.contentResolver.query(
+        context.contentResolverSafe.query(
             MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
             arrayOf(MediaStore.Audio.Genres.Members._ID),
             null, null, null
-        )
-
-        songCursor?.use { cursor ->
+        )?.use { cursor ->
             val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
 
             while (cursor.moveToNext()) {
@@ -389,28 +417,7 @@ class MusicLoader {
             }
         }
 
-        // Some genres might be empty due to MediaStore insanity.
-        // If that is the case, we drop them.
         return genreSongs.ifEmpty { null }
-    }
-
-    private val String.genreNameCompat: String? get() {
-        if (isDigitsOnly()) {
-            // ID3v1, just parse as an integer
-            return legacyGenreTable.getOrNull(toInt())
-        }
-
-        if (startsWith('(') && endsWith(')')) {
-            // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
-            // Any genres formatted as "(CHARS)" will be ignored.
-            val genreInt = substring(1 until lastIndex).toIntOrNull()
-            if (genreInt != null) {
-                return legacyGenreTable.getOrNull(genreInt)
-            }
-        }
-
-        // Current name is fine.
-        return null
     }
 
     companion object {
@@ -421,13 +428,13 @@ class MusicLoader {
          * warning about using a possibly-unsupported constant.
          */
         @Suppress("InlinedApi")
-        const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
+        private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
         /**
-         * A complete array of all the hardcoded genre values for ID3(v2), contains standard genres and
-         * winamp extensions.
+         * A complete table of all the constant genre values for ID3(v2), including non-standard
+         * extensions.
          */
-        private val legacyGenreTable = arrayOf(
+        private val genreConstantTable = arrayOf(
             // ID3 Standard
             "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop",
             "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock",
@@ -441,7 +448,7 @@ class MusicLoader {
             "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal",
             "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock",
 
-            // Winamp Extensions
+            // Winamp extensions, more or less a de-facto standard
             "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin",
             "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock",
             "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus",
@@ -454,9 +461,8 @@ class MusicLoader {
             "Crossover", "Contemporary Christian", "Christian Rock", "Merengue", "Salsa",
             "Thrash Metal", "Anime", "JPop", "Synthpop",
 
-            // Winamp 5.6+ extensions, used by EasyTAG and friends
-            // The only reason I include this set is because post-rock is a based genre and
-            // deserves a slot.
+            // Winamp 5.6+ extensions, also used by EasyTAG.
+            // I only include this because post-rock is a based genre and deserves a slot.
             "Abstract", "Art Rock", "Baroque", "Bhangra", "Big Beat", "Breakbeat", "Chillout",
             "Downtempo", "Dub", "EBM", "Eclectic", "Electro", "Electroclash", "Emo", "Experimental",
             "Garage", "Global", "IDM", "Illbient", "Industro-Goth", "Jam Band", "Krautrock",

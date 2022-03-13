@@ -118,7 +118,7 @@ class MusicStore private constructor() {
     /**
      * A response that [MusicStore] returns when loading music.
      * And before you ask, yes, I do like rust.
-     * TODO: Replace this with the kotlin builtin
+     * TODO: Add the exception to the "FAILED" ErrorKind
      */
     sealed class Response {
         class Ok(val musicStore: MusicStore) : Response()

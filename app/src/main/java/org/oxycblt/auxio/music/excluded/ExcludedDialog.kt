@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.excluded
+package org.oxycblt.auxio.music.excluded
 
 import android.net.Uri
 import android.os.Bundle
@@ -141,6 +141,8 @@ class ExcludedDialog : LifecycleDialog() {
         // Only the main drive is supported, since that's all we can get from MediaColumns.DATA
         // Unless I change the system to use the drive/directory system, that is. But there's no
         // demand for that.
+        // TODO: You are going to split the queries into pre-Q and post-Q versions, so perhaps
+        //  you should try to add external partition support again.
         if (typeAndPath[0] == "primary") {
             return getRootPath() + "/" + typeAndPath.last()
         }

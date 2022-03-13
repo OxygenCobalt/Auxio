@@ -44,6 +44,10 @@ import org.oxycblt.auxio.util.logE
  * **PLEASE Use this instead of [PlaybackStateManager], UI's are extremely volatile and this provides
  * an interface that properly sanitizes input and abstracts functions unlike the master class.**
  * @author OxygenCobalt
+ *
+ * TODO: Completely rework this module to support the new music rescan system,
+ *  proper android auto and external exposing, and so on.
+ *  - DO NOT REWRITE IT! THAT'S BAD AND WILL PROBABLY RE-INTRODUCE A TON OF BUGS.
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
@@ -170,7 +174,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         logD("Playing with uri $uri")
 
         val musicStore = MusicStore.maybeGetInstance() ?: return
-
         musicStore.findSongForUri(uri, context.contentResolver)?.let { song ->
             playSong(song)
         }

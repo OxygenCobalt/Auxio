@@ -27,14 +27,14 @@ import org.oxycblt.auxio.music.Item
  * @author OxygenCobalt
  */
 class DiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
-    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        return oldItem.hashCode() == newItem.hashCode()
-    }
-
     override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
         // Prevent ID collisions from occurring between datatypes.
         if (oldItem.javaClass != newItem.javaClass) return false
 
         return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        return oldItem.hashCode() == newItem.hashCode()
     }
 }

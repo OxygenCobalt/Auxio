@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.oxycblt.auxio.excluded
+package org.oxycblt.auxio.music.excluded
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -32,6 +32,7 @@ import org.oxycblt.auxio.util.logD
 /**
  * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal
  * of paths. Use [Factory] to instantiate this.
+ * TODO: Unify with MusicViewModel
  * @author OxygenCobalt
  */
 class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {

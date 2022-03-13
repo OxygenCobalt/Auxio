@@ -17,12 +17,12 @@ org.oxycblt.auxio  # Main UIs
 ├──.coil           # Image loading components
 ├──.detail         # Album/Artist/Genre detail UIs
 │  └──.recycler    # RecyclerView components for detail UIs 
-├──.excluded       # Excluded Directories UI + Systems
 ├──.home           # Home UI
 │  ├──.fastscroll  # Fast scroller UI
 │  ├──.list        # Home item lists
 │  └──.tabs        # Home tab customization
 ├──.music          # Music data and loading
+│  └──.excluded    # Excluded Directories UI + Systems
 ├──.playback       # Playback UI + Systems
 │  ├──.queue       # Queue UI
 │  ├──.state       # Playback state backend
@@ -86,10 +86,10 @@ should only be talking to other shared objects.  All objects can use the utility
 #### Data objects
 Auxio represents data in multiple ways.
 
-`BaseModel` is the base class for most music and UI data in Auxio, with a single ID field meant to mark it as unique.
+`Item` is the base class for most music and UI data in Auxio, with a single ID field meant to mark it as unique.
 
 It has the following implementations:
-- `Music` is a `BaseModel` that represents music. It adds a `name` field that represents the raw name of the music (from `MediaStore`).
+- `Music` is a `Item` that represents music. It adds a `name` field that represents the raw name of the music (from `MediaStore`).
 - `MusicParent` is a type of `Music` that contains children. It adds a `resolveName` field that converts the raw `MediaStore` name
 to a name that can be used in UIs.
 - `Header` and `ActionHeader` are UI data objects that represent a header item. `Header` corresponds to a simple header with no action,

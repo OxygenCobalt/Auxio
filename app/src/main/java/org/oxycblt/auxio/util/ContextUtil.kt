@@ -245,11 +245,8 @@ fun Context.hardRestart() {
     // Instead of having to do a ton of cleanup and horrible code changes
     // to restart this application non-destructively, I just restart the UI task [There is only
     // one, after all] and then kill the application using exitProcess. Works well enough.
-    val intent = Intent(applicationContext, MainActivity::class.java).setFlags(
-        Intent.FLAG_ACTIVITY_CLEAR_TASK
-    )
-
+    val intent = Intent(applicationContext, MainActivity::class.java)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     startActivity(intent)
-
     exitProcess(0)
 }

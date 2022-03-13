@@ -40,8 +40,6 @@ import org.oxycblt.auxio.util.logE
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
- *
- * TODO: Rework this to possibly handle gapless playback and more refined queue management.
  */
 class PlaybackStateManager private constructor() {
     // Playback
