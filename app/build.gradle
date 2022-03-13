@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-kapt"
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: "com.diffplug.spotless"
 
 android {
     compileSdkVersion 32
@@ -45,12 +46,8 @@ android {
     }
 }
 
-configurations {
-    ktlint
-}
-
 afterEvaluate {
-    preDebugBuild.dependsOn ktlintFormat
+    preDebugBuild.dependsOn spotlessApply
 }
 
 dependencies {
@@ -104,24 +101,13 @@ dependencies {
 
     // Material
     implementation "com.google.android.material:material:1.6.0-alpha03"
-
-    // --- DEBUG ---
-
-    // Lint
-    ktlint "com.pinterest:ktlint:0.44.0"
 }
 
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
-    mainClass.set("com.pinterest.ktlint.Main")
-    classpath = configurations.ktlint
-    args "src/**/*.kt"
-}
-check.dependsOn ktlint
+spotless {
+    kotlin {
+        target "src/**/*.kt"
 
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations."
-    mainClass.set("com.pinterest.ktlint.Main")
-    classpath = configurations.ktlint
-    args "-F", "src/**/*.kt"
+        ktfmt('0.30').dropboxStyle()
+        licenseHeaderFile("NOTICE")
+    }
 }

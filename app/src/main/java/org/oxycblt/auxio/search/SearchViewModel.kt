@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SearchViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.search
 
 import androidx.annotation.IdRes
@@ -23,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.text.Normalizer
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Header
@@ -34,7 +34,6 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
-import java.text.Normalizer
 
 /**
  * The [ViewModel] for the search functionality
@@ -47,9 +46,12 @@ class SearchViewModel : ViewModel() {
     private var mLastQuery = ""
 
     /** Current search results from the last [search] call. */
-    val searchResults: LiveData<List<Item>> get() = mSearchResults
-    val isNavigating: Boolean get() = mIsNavigating
-    val filterMode: DisplayMode? get() = mFilterMode
+    val searchResults: LiveData<List<Item>>
+        get() = mSearchResults
+    val isNavigating: Boolean
+        get() = mIsNavigating
+    val filterMode: DisplayMode?
+        get() = mFilterMode
 
     private val settingsManager = SettingsManager.getInstance()
 
@@ -63,8 +65,7 @@ class SearchViewModel : ViewModel() {
     }
 
     /**
-     * Use [query] to perform a search of the music library.
-     * Will push results to [searchResults].
+     * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
     fun search(query: String) {
         val musicStore = MusicStore.maybeGetInstance()
@@ -118,18 +119,17 @@ class SearchViewModel : ViewModel() {
     }
 
     /**
-     * Update the current filter mode with a menu [id].
-     * New value will be pushed to [filterMode].
+     * Update the current filter mode with a menu [id]. New value will be pushed to [filterMode].
      */
     fun updateFilterModeWithId(@IdRes id: Int) {
-        mFilterMode = when (id) {
-            R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
-            R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
-            R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
-            R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
-
-            else -> null
-        }
+        mFilterMode =
+            when (id) {
+                R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
+                R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
+                R.id.option_filter_artists -> DisplayMode.SHOW_ARTISTS
+                R.id.option_filter_genres -> DisplayMode.SHOW_GENRES
+                else -> null
+            }
 
         logD("Updating filter mode to $mFilterMode")
 
@@ -139,17 +139,18 @@ class SearchViewModel : ViewModel() {
     }
 
     /**
-     * Shortcut that will run a ignoreCase filter on a list and only return
-     * a value if the resulting list is empty.
+     * Shortcut that will run a ignoreCase filter on a list and only return a value if the resulting
+     * list is empty.
      */
     private fun <T : Music> List<T>.filterByOrNull(value: String): List<T>? {
         val filtered = filter {
             // Ensure the name we match with is correct.
-            val name = if (it is MusicParent) {
-                it.resolvedName
-            } else {
-                it.name
-            }
+            val name =
+                if (it is MusicParent) {
+                    it.resolvedName
+                } else {
+                    it.name
+                }
 
             // First see if the normal item name will work. If that fails, try the "normalized"
             // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
@@ -182,8 +183,8 @@ class SearchViewModel : ViewModel() {
             when (Character.getType(cp)) {
                 // Character.NON_SPACING_MARK and Character.COMBINING_SPACING_MARK were added
                 // by normalizer
-                6, 8 -> continue
-
+                6,
+                8 -> continue
                 else -> sb.appendCodePoint(cp)
             }
         }
@@ -191,9 +192,7 @@ class SearchViewModel : ViewModel() {
         return sb.toString()
     }
 
-    /**
-     * Update the current navigation status to [isNavigating]
-     */
+    /** Update the current navigation status to [isNavigating] */
     fun setNavigating(isNavigating: Boolean) {
         mIsNavigating = isNavigating
     }

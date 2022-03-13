@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SettingsManager.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings
 
 import android.content.Context
@@ -64,16 +63,17 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /**
-     * Whether to display the LoopMode or the shuffle status on the notification.
-     * False if loop, true if shuffle.
+     * Whether to display the LoopMode or the shuffle status on the notification. False if loop,
+     * true if shuffle.
      */
     val useAltNotifAction: Boolean
         get() = prefs.getBoolean(KEY_USE_ALT_NOTIFICATION_ACTION, false)
 
     /** The current library tabs preferred by the user. */
     var libTabs: Array<Tab>
-        get() = Tab.fromSequence(prefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
-            ?: Tab.fromSequence(Tab.SEQUENCE_DEFAULT)!!
+        get() =
+            Tab.fromSequence(prefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
+                ?: Tab.fromSequence(Tab.SEQUENCE_DEFAULT)!!
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_TABS, Tab.toSequence(value))
@@ -103,13 +103,15 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current ReplayGain configuration */
     val replayGainMode: ReplayGainMode
-        get() = ReplayGainMode.fromInt(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
-            ?: ReplayGainMode.OFF
+        get() =
+            ReplayGainMode.fromInt(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
+                ?: ReplayGainMode.OFF
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
-        get() = PlaybackMode.fromInt(prefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
-            ?: PlaybackMode.ALL_SONGS
+        get() =
+            PlaybackMode.fromInt(prefs.getInt(KEY_SONG_PLAYBACK_MODE, Int.MIN_VALUE))
+                ?: PlaybackMode.ALL_SONGS
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean
@@ -119,7 +121,9 @@ class SettingsManager private constructor(context: Context) :
     val rewindWithPrev: Boolean
         get() = prefs.getBoolean(KEY_PREV_REWIND, true)
 
-    /** Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats */
+    /**
+     * Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats
+     */
     val pauseOnLoop: Boolean
         get() = prefs.getBoolean(KEY_LOOP_PAUSE, false)
 
@@ -133,10 +137,9 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The song sort mode on HomeFragment **/
+    /** The song sort mode on HomeFragment */
     var libSongSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_SONGS_SORT, value.toInt())
@@ -144,10 +147,9 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The album sort mode on HomeFragment **/
+    /** The album sort mode on HomeFragment */
     var libAlbumSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_ALBUMS_SORT, value.toInt())
@@ -155,10 +157,9 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The artist sort mode on HomeFragment **/
+    /** The artist sort mode on HomeFragment */
     var libArtistSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_ARTISTS_SORT, value.toInt())
@@ -166,10 +167,9 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The genre sort mode on HomeFragment **/
+    /** The genre sort mode on HomeFragment */
     var libGenreSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() = Sort.fromInt(prefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_GENRES_SORT, value.toInt())
@@ -177,10 +177,10 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The detail album sort mode **/
+    /** The detail album sort mode */
     var detailAlbumSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() =
+            Sort.fromInt(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_DETAIL_ALBUM_SORT, value.toInt())
@@ -188,10 +188,10 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The detail artist sort mode **/
+    /** The detail artist sort mode */
     var detailArtistSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
-            ?: Sort.ByYear(false)
+        get() =
+            Sort.fromInt(prefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE)) ?: Sort.ByYear(false)
         set(value) {
             prefs.edit {
                 putInt(KEY_DETAIL_ARTIST_SORT, value.toInt())
@@ -199,10 +199,10 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
-    /** The detail genre sort mode **/
+    /** The detail genre sort mode */
     var detailGenreSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
-            ?: Sort.ByName(true)
+        get() =
+            Sort.fromInt(prefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
                 putInt(KEY_DETAIL_GENRE_SORT, value.toInt())
@@ -226,29 +226,13 @@ class SettingsManager private constructor(context: Context) :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach {
-                it.onNotifActionUpdate(useAltNotifAction)
-            }
-
-            KEY_SHOW_COVERS -> callbacks.forEach {
-                it.onShowCoverUpdate(showCovers)
-            }
-
-            KEY_QUALITY_COVERS -> callbacks.forEach {
-                it.onQualityCoverUpdate(useQualityCovers)
-            }
-
-            KEY_LIB_TABS -> callbacks.forEach {
-                it.onLibTabsUpdate(libTabs)
-            }
-
-            KEY_AUDIO_FOCUS -> callbacks.forEach {
-                it.onAudioFocusUpdate(doAudioFocus)
-            }
-
-            KEY_REPLAY_GAIN -> callbacks.forEach {
-                it.onReplayGainUpdate(replayGainMode)
-            }
+            KEY_USE_ALT_NOTIFICATION_ACTION ->
+                callbacks.forEach { it.onNotifActionUpdate(useAltNotifAction) }
+            KEY_SHOW_COVERS -> callbacks.forEach { it.onShowCoverUpdate(showCovers) }
+            KEY_QUALITY_COVERS -> callbacks.forEach { it.onQualityCoverUpdate(useQualityCovers) }
+            KEY_LIB_TABS -> callbacks.forEach { it.onLibTabsUpdate(libTabs) }
+            KEY_AUDIO_FOCUS -> callbacks.forEach { it.onAudioFocusUpdate(doAudioFocus) }
+            KEY_REPLAY_GAIN -> callbacks.forEach { it.onReplayGainUpdate(replayGainMode) }
         }
     }
 
@@ -304,26 +288,21 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_DETAIL_ARTIST_SORT = "auxio_artist_sort"
         const val KEY_DETAIL_GENRE_SORT = "auxio_genre_sort"
 
-        @Volatile
-        private var INSTANCE: SettingsManager? = null
+        @Volatile private var INSTANCE: SettingsManager? = null
 
         /**
-         * Init the single instance of [SettingsManager]. Done so that every object
-         * can have access to it regardless of if it has a context.
+         * Init the single instance of [SettingsManager]. Done so that every object can have access
+         * to it regardless of if it has a context.
          */
         fun init(context: Context): SettingsManager {
             if (INSTANCE == null) {
-                synchronized(this) {
-                    INSTANCE = SettingsManager(context)
-                }
+                synchronized(this) { INSTANCE = SettingsManager(context) }
             }
 
             return getInstance()
         }
 
-        /**
-         * Get the single instance of [SettingsManager].
-         */
+        /** Get the single instance of [SettingsManager]. */
         fun getInstance(): SettingsManager {
             val instance = INSTANCE
 

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AlbumDetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import android.content.Context
@@ -58,11 +57,12 @@ class AlbumDetailFragment : DetailFragment() {
         detailModel.setAlbum(args.albumId)
 
         val binding = FragmentDetailBinding.inflate(layoutInflater)
-        val detailAdapter = AlbumDetailAdapter(
-            playbackModel, detailModel,
-            doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
-            doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ALBUM) }
-        )
+        val detailAdapter =
+            AlbumDetailAdapter(
+                playbackModel,
+                detailModel,
+                doOnClick = { playbackModel.playSong(it, PlaybackMode.IN_ALBUM) },
+                doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ALBUM) })
 
         // --- UI SETUP ---
 
@@ -75,13 +75,11 @@ class AlbumDetailFragment : DetailFragment() {
                     requireContext().showToast(R.string.lbl_queue_added)
                     true
                 }
-
                 R.id.action_queue_add -> {
                     playbackModel.addToQueue(detailModel.curAlbum.value!!)
                     requireContext().showToast(R.string.lbl_queue_added)
                     true
                 }
-
                 else -> false
             }
         }
@@ -95,15 +93,11 @@ class AlbumDetailFragment : DetailFragment() {
 
         // -- DETAILVIEWMODEL SETUP ---
 
-        detailModel.albumData.observe(viewLifecycleOwner) { data ->
-            detailAdapter.submitList(data)
-        }
+        detailModel.albumData.observe(viewLifecycleOwner) { data -> detailAdapter.submitList(data) }
 
         detailModel.showMenu.observe(viewLifecycleOwner) { config ->
             if (config != null) {
-                showMenu(config) { id ->
-                    id == R.id.option_sort_asc
-                }
+                showMenu(config) { id -> id == R.id.option_sort_asc }
             }
         }
 
@@ -118,9 +112,8 @@ class AlbumDetailFragment : DetailFragment() {
                         detailModel.finishNavToItem()
                     } else {
                         logD("Navigating to another album")
-                        findNavController().navigate(
-                            AlbumDetailFragmentDirections.actionShowAlbum(item.album.id)
-                        )
+                        findNavController()
+                            .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.album.id))
                     }
                 }
 
@@ -133,20 +126,17 @@ class AlbumDetailFragment : DetailFragment() {
                         detailModel.finishNavToItem()
                     } else {
                         logD("Navigating to another album")
-                        findNavController().navigate(
-                            AlbumDetailFragmentDirections.actionShowAlbum(item.id)
-                        )
+                        findNavController()
+                            .navigate(AlbumDetailFragmentDirections.actionShowAlbum(item.id))
                     }
                 }
 
                 // Always launch a new ArtistDetailFragment.
                 is Artist -> {
                     logD("Navigating to another artist")
-                    findNavController().navigate(
-                        AlbumDetailFragmentDirections.actionShowArtist(item.id)
-                    )
+                    findNavController()
+                        .navigate(AlbumDetailFragmentDirections.actionShowArtist(item.id))
                 }
-
                 null -> {}
                 else -> logW("Unsupported navigation item ${item::class.java}")
             }
@@ -158,8 +148,7 @@ class AlbumDetailFragment : DetailFragment() {
             updateQueueActions(song, binding)
 
             if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
-                playbackModel.parent.value?.id == detailModel.curAlbum.value!!.id
-            ) {
+                playbackModel.parent.value?.id == detailModel.curAlbum.value!!.id) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the ViewHolders if the mode isn't ALL_SONGS
@@ -172,9 +161,7 @@ class AlbumDetailFragment : DetailFragment() {
         return binding.root
     }
 
-    /**
-     * Updates the queue actions when
-     */
+    /** Updates the queue actions when */
     private fun updateQueueActions(song: Song?, binding: FragmentDetailBinding) {
         for (item in binding.detailToolbar.menu.children) {
             if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
@@ -183,9 +170,7 @@ class AlbumDetailFragment : DetailFragment() {
         }
     }
 
-    /**
-     * Scroll to an song using its [id].
-     */
+    /** Scroll to an song using its [id]. */
     private fun scrollToItem(
         id: Long,
         binding: FragmentDetailBinding,
@@ -198,8 +183,7 @@ class AlbumDetailFragment : DetailFragment() {
             binding.detailRecycler.post {
                 // Make sure to increment the position to make up for the detail header
                 binding.detailRecycler.layoutManager?.startSmoothScroll(
-                    CenterSmoothScroller(requireContext(), pos)
-                )
+                    CenterSmoothScroller(requireContext(), pos))
 
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in
@@ -210,13 +194,11 @@ class AlbumDetailFragment : DetailFragment() {
     }
 
     /**
-     * [LinearSmoothScroller] subclass that centers the item on the screen instead of
-     * snapping to the top or bottom.
+     * [LinearSmoothScroller] subclass that centers the item on the screen instead of snapping to
+     * the top or bottom.
      */
-    private class CenterSmoothScroller(
-        context: Context,
-        target: Int
-    ) : LinearSmoothScroller(context) {
+    private class CenterSmoothScroller(context: Context, target: Int) :
+        LinearSmoothScroller(context) {
         init {
             targetPosition = target
         }

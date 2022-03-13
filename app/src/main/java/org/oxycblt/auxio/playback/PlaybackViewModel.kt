@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -41,13 +40,14 @@ import org.oxycblt.auxio.util.logE
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
  *
- * **PLEASE Use this instead of [PlaybackStateManager], UI's are extremely volatile and this provides
- * an interface that properly sanitizes input and abstracts functions unlike the master class.**
+ * **PLEASE Use this instead of [PlaybackStateManager], UI's are extremely volatile and this
+ * provides an interface that properly sanitizes input and abstracts functions unlike the master
+ * class.**
  * @author OxygenCobalt
  *
- * TODO: Completely rework this module to support the new music rescan system,
- *  proper android auto and external exposing, and so on.
- *  - DO NOT REWRITE IT! THAT'S BAD AND WILL PROBABLY RE-INTRODUCE A TON OF BUGS.
+ * TODO: Completely rework this module to support the new music rescan system, proper android auto
+ * and external exposing, and so on.
+ * - DO NOT REWRITE IT! THAT'S BAD AND WILL PROBABLY RE-INTRODUCE A TON OF BUGS.
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // Playback
@@ -68,21 +68,29 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private var mIntentUri: Uri? = null
 
     /** The current song. */
-    val song: LiveData<Song?> get() = mSong
+    val song: LiveData<Song?>
+        get() = mSong
     /** The current model that is being played from, such as an [Album] or [Artist] */
-    val parent: LiveData<MusicParent?> get() = mParent
+    val parent: LiveData<MusicParent?>
+        get() = mParent
 
-    val isPlaying: LiveData<Boolean> get() = mIsPlaying
-    val isShuffling: LiveData<Boolean> get() = mIsShuffling
+    val isPlaying: LiveData<Boolean>
+        get() = mIsPlaying
+    val isShuffling: LiveData<Boolean>
+        get() = mIsShuffling
     /** The current repeat mode, see [LoopMode] for more information */
-    val loopMode: LiveData<LoopMode> get() = mLoopMode
+    val loopMode: LiveData<LoopMode>
+        get() = mLoopMode
     /** The current playback position, in seconds */
-    val position: LiveData<Long> get() = mPosition
+    val position: LiveData<Long>
+        get() = mPosition
 
     /** The queue, without the previous items. */
-    val nextUp: LiveData<List<Song>> get() = mNextUp
+    val nextUp: LiveData<List<Song>>
+        get() = mNextUp
     /** The current [PlaybackMode] that also determines the queue */
-    val playbackMode: LiveData<PlaybackMode> get() = mMode
+    val playbackMode: LiveData<PlaybackMode>
+        get() = mMode
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -102,8 +110,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- PLAYING FUNCTIONS ---
 
     /**
-     * Play a [song] with the [mode] specified. [mode] will default to the preferred song
-     * playback mode of the user if not specified.
+     * Play a [song] with the [mode] specified. [mode] will default to the preferred song playback
+     * mode of the user if not specified.
      */
     fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
         playbackManager.playSong(song, mode)
@@ -152,8 +160,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     /**
-     * Play using a file [uri].
-     * This will not play instantly during the initial startup sequence.
+     * Play using a file [uri]. This will not play instantly during the initial startup sequence.
      */
     fun playWithUri(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
@@ -166,54 +173,41 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    /**
-     * Play with a file URI.
-     * This is called after [playWithUri] once its deemed safe to do so.
-     */
+    /** Play with a file URI. This is called after [playWithUri] once its deemed safe to do so. */
     private fun playWithUriInternal(uri: Uri, context: Context) {
         logD("Playing with uri $uri")
 
         val musicStore = MusicStore.maybeGetInstance() ?: return
-        musicStore.findSongForUri(uri, context.contentResolver)?.let { song ->
-            playSong(song)
-        }
+        musicStore.findSongForUri(uri, context.contentResolver)?.let { song -> playSong(song) }
     }
 
-    /**
-     * Shuffle all songs
-     */
+    /** Shuffle all songs */
     fun shuffleAll() {
         playbackManager.shuffleAll()
     }
 
     // --- POSITION FUNCTIONS ---
 
-    /**
-     * Update the position and push it to [PlaybackStateManager]
-     */
+    /** Update the position and push it to [PlaybackStateManager] */
     fun setPosition(progress: Long) {
         playbackManager.seekTo((progress * 1000))
     }
 
     // --- QUEUE FUNCTIONS ---
 
-    /**
-     * Skip to the next song.
-     */
+    /** Skip to the next song. */
     fun skipNext() {
         playbackManager.next()
     }
 
-    /**
-     * Skip to the previous song.
-     */
+    /** Skip to the previous song. */
     fun skipPrev() {
         playbackManager.prev()
     }
 
     /**
-     * Remove a queue item using it's recyclerview adapter index. If the indices are valid,
-     * [apply] is called just before the change is committed so that the adapter can be updated.
+     * Remove a queue item using it's recyclerview adapter index. If the indices are valid, [apply]
+     * is called just before the change is committed so that the adapter can be updated.
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
         val index = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
@@ -223,8 +217,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
     /**
-     * Move queue items using their recyclerview adapter indices. If the indices are valid,
-     * [apply] is called just before the change is committed so that the adapter can be updated.
+     * Move queue items using their recyclerview adapter indices. If the indices are valid, [apply]
+     * is called just before the change is committed so that the adapter can be updated.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
         val delta = (playbackManager.queue.size - mNextUp.value!!.size)
@@ -239,53 +233,39 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         return false
     }
 
-    /**
-     * Add a [Song] to the top of the queue.
-     */
+    /** Add a [Song] to the top of the queue. */
     fun playNext(song: Song) {
         playbackManager.playNext(song)
     }
 
-    /**
-     * Add an [Album] to the top of the queue.
-     */
+    /** Add an [Album] to the top of the queue. */
     fun playNext(album: Album) {
         playbackManager.playNext(settingsManager.detailAlbumSort.sortAlbum(album))
     }
 
-/**
-     * Add a [Song] to the end of the queue.
-     */
+    /** Add a [Song] to the end of the queue. */
     fun addToQueue(song: Song) {
         playbackManager.addToQueue(song)
     }
 
-    /**
-     * Add an [Album] to the end of the queue.
-     */
+    /** Add an [Album] to the end of the queue. */
     fun addToQueue(album: Album) {
         playbackManager.addToQueue(settingsManager.detailAlbumSort.sortAlbum(album))
     }
 
-// --- STATUS FUNCTIONS ---
+    // --- STATUS FUNCTIONS ---
 
-    /**
-     * Flip the playing status, e.g from playing to paused
-     */
+    /** Flip the playing status, e.g from playing to paused */
     fun invertPlayingStatus() {
         playbackManager.setPlaying(!playbackManager.isPlaying)
     }
 
-    /**
-     * Flip the shuffle status, e.g from on to off. Will keep song by default.
-     */
+    /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
     fun invertShuffleStatus() {
         playbackManager.setShuffling(!playbackManager.isShuffling, true)
     }
 
-    /**
-     * Increment the loop status, e.g from off to loop once
-     */
+    /** Increment the loop status, e.g from off to loop once */
     fun incrementLoopStatus() {
         playbackManager.setLoopMode(playbackManager.loopMode.increment())
     }
@@ -293,8 +273,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
-     * Force save the current [PlaybackStateManager] state to the database.
-     * Called by SettingsListFragment.
+     * Force save the current [PlaybackStateManager] state to the database. Called by
+     * SettingsListFragment.
      */
     fun savePlaybackState(context: Context, onDone: () -> Unit) {
         viewModelScope.launch {
@@ -320,15 +300,13 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             playbackManager.markRestored()
         } else if (!playbackManager.isRestored) {
             // Otherwise just restore
-            viewModelScope.launch {
-                playbackManager.restoreFromDatabase(context)
-            }
+            viewModelScope.launch { playbackManager.restoreFromDatabase(context) }
         }
     }
 
     /**
-     * Attempt to restore the current playback state from an existing
-     * [PlaybackStateManager] instance.
+     * Attempt to restore the current playback state from an existing [PlaybackStateManager]
+     * instance.
      */
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state")

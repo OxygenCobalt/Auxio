@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackStateManager.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.state
 
 import android.content.Context
@@ -35,8 +34,10 @@ import org.oxycblt.auxio.util.logE
  * Master class (and possible god object) for the playback state.
  *
  * This should ***NOT*** be used outside of the playback module.
- * - If you want to use the playback state in the UI, use [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
- * - If you want to use the playback state with the ExoPlayer instance or system-side things, use [org.oxycblt.auxio.playback.system.PlaybackService].
+ * - If you want to use the playback state in the UI, use
+ * [org.oxycblt.auxio.playback.PlaybackViewModel] as it can withstand volatile UIs.
+ * - If you want to use the playback state with the ExoPlayer instance or system-side things, use
+ * [org.oxycblt.auxio.playback.system.PlaybackService].
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
@@ -90,27 +91,38 @@ class PlaybackStateManager private constructor() {
     private var mHasPlayed = false
 
     /** The currently playing song. Null if there isn't one */
-    val song: Song? get() = mSong
+    val song: Song?
+        get() = mSong
     /** The parent the queue is based on, null if all_songs */
-    val parent: MusicParent? get() = mParent
+    val parent: MusicParent?
+        get() = mParent
     /** The current playback progress */
-    val position: Long get() = mPosition
+    val position: Long
+        get() = mPosition
     /** The current queue determined by [parent] and [playbackMode] */
-    val queue: List<Song> get() = mQueue
+    val queue: List<Song>
+        get() = mQueue
     /** The current position in the queue */
-    val index: Int get() = mIndex
+    val index: Int
+        get() = mIndex
     /** The current [PlaybackMode] */
-    val playbackMode: PlaybackMode get() = mPlaybackMode
+    val playbackMode: PlaybackMode
+        get() = mPlaybackMode
     /** Whether playback is paused or not */
-    val isPlaying: Boolean get() = mIsPlaying
+    val isPlaying: Boolean
+        get() = mIsPlaying
     /** Whether the queue is shuffled */
-    val isShuffling: Boolean get() = mIsShuffling
+    val isShuffling: Boolean
+        get() = mIsShuffling
     /** The current [LoopMode] */
-    val loopMode: LoopMode get() = mLoopMode
+    val loopMode: LoopMode
+        get() = mLoopMode
     /** Whether this instance has already been restored */
-    val isRestored: Boolean get() = mIsRestored
+    val isRestored: Boolean
+        get() = mIsRestored
     /** Whether playback has begun in this instance during **PlaybackService's Lifecycle.** */
-    val hasPlayed: Boolean get() = mHasPlayed
+    val hasPlayed: Boolean
+        get() = mHasPlayed
 
     private val settingsManager = SettingsManager.getInstance()
 
@@ -119,16 +131,14 @@ class PlaybackStateManager private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
     /**
-     * Add a [PlaybackStateManager.Callback] to this instance.
-     * Make sure to remove the callback with [removeCallback] when done.
+     * Add a [PlaybackStateManager.Callback] to this instance. Make sure to remove the callback with
+     * [removeCallback] when done.
      */
     fun addCallback(callback: Callback) {
         callbacks.add(callback)
     }
 
-    /**
-     * Remove a [PlaybackStateManager.Callback] bound to this instance.
-     */
+    /** Remove a [PlaybackStateManager.Callback] bound to this instance. */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
@@ -149,17 +159,14 @@ class PlaybackStateManager private constructor() {
                 mParent = null
                 mQueue = musicStore.songs.toMutableList()
             }
-
             PlaybackMode.IN_GENRE -> {
                 mParent = song.genre
                 mQueue = song.genre.songs.toMutableList()
             }
-
             PlaybackMode.IN_ARTIST -> {
                 mParent = song.album.artist
                 mQueue = song.album.artist.songs.toMutableList()
             }
-
             PlaybackMode.IN_ALBUM -> {
                 mParent = song.album
                 mQueue = song.album.songs.toMutableList()
@@ -188,12 +195,10 @@ class PlaybackStateManager private constructor() {
                 mQueue = parent.songs.toMutableList()
                 mPlaybackMode = PlaybackMode.IN_ALBUM
             }
-
             is Artist -> {
                 mQueue = parent.songs.toMutableList()
                 mPlaybackMode = PlaybackMode.IN_ARTIST
             }
-
             is Genre -> {
                 mQueue = parent.songs.toMutableList()
                 mPlaybackMode = PlaybackMode.IN_GENRE
@@ -204,9 +209,7 @@ class PlaybackStateManager private constructor() {
         updatePlayback(mQueue[0])
     }
 
-    /**
-     * Shuffle all songs.
-     */
+    /** Shuffle all songs. */
     fun shuffleAll() {
         val musicStore = MusicStore.maybeGetInstance() ?: return
 
@@ -218,9 +221,7 @@ class PlaybackStateManager private constructor() {
         updatePlayback(mQueue[0])
     }
 
-    /**
-     * Update the playback to a new [song], doing all the required logic.
-     */
+    /** Update the playback to a new [song], doing all the required logic. */
     private fun updatePlayback(song: Song, shouldPlay: Boolean = true) {
         mSong = song
         mPosition = 0
@@ -229,9 +230,7 @@ class PlaybackStateManager private constructor() {
 
     // --- QUEUE FUNCTIONS ---
 
-    /**
-     * Go to the next song, along with doing all the checks that entails.
-     */
+    /** Go to the next song, along with doing all the checks that entails. */
     fun next() {
         // Increment the index, if it cannot be incremented any further, then
         // loop and pause/resume playback depending on the setting
@@ -246,9 +245,7 @@ class PlaybackStateManager private constructor() {
         pushQueueUpdate()
     }
 
-    /**
-     * Go to the previous song, doing any checks that are needed.
-     */
+    /** Go to the previous song, doing any checks that are needed. */
     fun prev() {
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
         if (settingsManager.rewindWithPrev && mPosition >= REWIND_THRESHOLD) {
@@ -266,9 +263,7 @@ class PlaybackStateManager private constructor() {
 
     // --- QUEUE EDITING FUNCTIONS ---
 
-    /**
-     * Remove a queue item at [index]. Will ignore invalid indexes.
-     */
+    /** Remove a queue item at [index]. Will ignore invalid indexes. */
     fun removeQueueItem(index: Int): Boolean {
         if (index > mQueue.size || index < 0) {
             logE("Index is out of bounds, did not remove queue item")
@@ -281,9 +276,7 @@ class PlaybackStateManager private constructor() {
         return true
     }
 
-    /**
-     * Move a queue item at [from] to a position at [to]. Will ignore invalid indexes.
-     */
+    /** Move a queue item at [from] to a position at [to]. Will ignore invalid indexes. */
     fun moveQueueItems(from: Int, to: Int): Boolean {
         if (from > mQueue.size || from < 0 || to > mQueue.size || to < 0) {
             logE("Indices were out of bounds, did not move queue item")
@@ -296,9 +289,7 @@ class PlaybackStateManager private constructor() {
         return true
     }
 
-    /**
-     * Add a [song] to the top of the queue.
-     */
+    /** Add a [song] to the top of the queue. */
     fun playNext(song: Song) {
         if (mQueue.isEmpty()) {
             return
@@ -308,9 +299,7 @@ class PlaybackStateManager private constructor() {
         pushQueueUpdate()
     }
 
-    /**
-     * Add a list of [songs] to the top of the queue.
-     */
+    /** Add a list of [songs] to the top of the queue. */
     fun playNext(songs: List<Song>) {
         if (mQueue.isEmpty()) {
             return
@@ -320,29 +309,21 @@ class PlaybackStateManager private constructor() {
         pushQueueUpdate()
     }
 
-    /**
-     * Add a [song] to the end of the queue.
-     */
+    /** Add a [song] to the end of the queue. */
     fun addToQueue(song: Song) {
         mQueue.add(song)
         pushQueueUpdate()
     }
 
-    /**
-     * Add a list of [songs] to the end of the queue.
-     */
+    /** Add a list of [songs] to the end of the queue. */
     fun addToQueue(songs: List<Song>) {
         mQueue.addAll(songs)
         pushQueueUpdate()
     }
 
-    /**
-     * Force any callbacks to receive a queue update.
-     */
+    /** Force any callbacks to receive a queue update. */
     private fun pushQueueUpdate() {
-        callbacks.forEach {
-            it.onQueueUpdate(mQueue, mIndex)
-        }
+        callbacks.forEach { it.onQueueUpdate(mQueue, mIndex) }
     }
 
     // --- SHUFFLE FUNCTIONS ---
@@ -392,16 +373,17 @@ class PlaybackStateManager private constructor() {
         val musicStore = MusicStore.maybeGetInstance() ?: return
         val lastSong = mSong
 
-        mQueue = when (mPlaybackMode) {
-            PlaybackMode.ALL_SONGS ->
-                settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
-            PlaybackMode.IN_ALBUM ->
-                settingsManager.detailAlbumSort.sortAlbum(mParent as Album).toMutableList()
-            PlaybackMode.IN_ARTIST ->
-                settingsManager.detailArtistSort.sortArtist(mParent as Artist).toMutableList()
-            PlaybackMode.IN_GENRE ->
-                settingsManager.detailGenreSort.sortGenre(mParent as Genre).toMutableList()
-        }
+        mQueue =
+            when (mPlaybackMode) {
+                PlaybackMode.ALL_SONGS ->
+                    settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
+                PlaybackMode.IN_ALBUM ->
+                    settingsManager.detailAlbumSort.sortAlbum(mParent as Album).toMutableList()
+                PlaybackMode.IN_ARTIST ->
+                    settingsManager.detailArtistSort.sortArtist(mParent as Artist).toMutableList()
+                PlaybackMode.IN_GENRE ->
+                    settingsManager.detailGenreSort.sortGenre(mParent as Genre).toMutableList()
+            }
 
         if (keepSong) {
             mIndex = mQueue.indexOf(lastSong)
@@ -412,9 +394,7 @@ class PlaybackStateManager private constructor() {
 
     // --- STATE FUNCTIONS ---
 
-    /**
-     * Set whether this instance is currently [playing].
-     */
+    /** Set whether this instance is currently [playing]. */
     fun setPlaying(playing: Boolean) {
         if (mIsPlaying != playing) {
             if (playing) {
@@ -449,39 +429,29 @@ class PlaybackStateManager private constructor() {
         callbacks.forEach { it.onSeek(position) }
     }
 
-    /**
-     * Rewind to the beginning of a song.
-     */
+    /** Rewind to the beginning of a song. */
     fun rewind() {
         seekTo(0)
         setPlaying(true)
     }
 
-    /**
-     * Loop playback around to the beginning.
-     */
+    /** Loop playback around to the beginning. */
     fun loop() {
         seekTo(0)
         setPlaying(!settingsManager.pauseOnLoop)
     }
 
-    /**
-     * Set the [LoopMode] to [mode].
-     */
+    /** Set the [LoopMode] to [mode]. */
     fun setLoopMode(mode: LoopMode) {
         mLoopMode = mode
     }
 
-    /**
-     * Mark whether this instance has played or not
-     */
+    /** Mark whether this instance has played or not */
     fun setHasPlayed(hasPlayed: Boolean) {
         mHasPlayed = hasPlayed
     }
 
-    /**
-     * Mark this instance as restored.
-     */
+    /** Mark this instance as restored. */
     fun markRestored() {
         mIsRestored = true
     }
@@ -503,16 +473,19 @@ class PlaybackStateManager private constructor() {
 
             database.writeState(
                 PlaybackStateDatabase.SavedState(
-                    mSong, mPosition, mParent, mIndex,
-                    mPlaybackMode, mIsShuffling, mLoopMode,
-                )
-            )
+                    mSong,
+                    mPosition,
+                    mParent,
+                    mIndex,
+                    mPlaybackMode,
+                    mIsShuffling,
+                    mLoopMode,
+                ))
 
             database.writeQueue(mQueue)
 
             this@PlaybackStateManager.logD(
-                "State save completed successfully in ${System.currentTimeMillis() - start}ms"
-            )
+                "State save completed successfully in ${System.currentTimeMillis() - start}ms")
         }
     }
 
@@ -549,9 +522,7 @@ class PlaybackStateManager private constructor() {
         markRestored()
     }
 
-    /**
-     * Unpack a [playbackState] into this instance.
-     */
+    /** Unpack a [playbackState] into this instance. */
     private fun unpackFromPlaybackState(playbackState: PlaybackStateDatabase.SavedState) {
         // Turn the simplified information from PlaybackState into usable data.
 
@@ -573,26 +544,23 @@ class PlaybackStateManager private constructor() {
         pushQueueUpdate()
     }
 
-    /**
-     * Do a sanity check to make sure the parent was not lost in the restore process.
-     */
+    /** Do a sanity check to make sure the parent was not lost in the restore process. */
     private fun doParentSanityCheck() {
         // Check if the parent was lost while in the DB.
         if (mSong != null && mParent == null && mPlaybackMode != PlaybackMode.ALL_SONGS) {
             logD("Parent lost, attempting restore")
 
-            mParent = when (mPlaybackMode) {
-                PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
-                PlaybackMode.IN_ARTIST -> mQueue.firstOrNull()?.album?.artist
-                PlaybackMode.IN_GENRE -> mQueue.firstOrNull()?.genre
-                PlaybackMode.ALL_SONGS -> null
-            }
+            mParent =
+                when (mPlaybackMode) {
+                    PlaybackMode.IN_ALBUM -> mQueue.firstOrNull()?.album
+                    PlaybackMode.IN_ARTIST -> mQueue.firstOrNull()?.album?.artist
+                    PlaybackMode.IN_GENRE -> mQueue.firstOrNull()?.genre
+                    PlaybackMode.ALL_SONGS -> null
+                }
         }
     }
 
-    /**
-     * Do a sanity check to make sure that the index lines up with the current song.
-     */
+    /** Do a sanity check to make sure that the index lines up with the current song. */
     private fun doIndexSanityCheck() {
         // Be careful with how we handle the queue since a possible index de-sync
         // could easily result in an OOB crash.
@@ -639,9 +607,8 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * The interface for receiving updates from [PlaybackStateManager].
-     * Add the callback to [PlaybackStateManager] using [addCallback],
-     * remove them on destruction with [removeCallback].
+     * The interface for receiving updates from [PlaybackStateManager]. Add the callback to
+     * [PlaybackStateManager] using [addCallback], remove them on destruction with [removeCallback].
      */
     interface Callback {
         fun onSongUpdate(song: Song?) {}
@@ -658,12 +625,9 @@ class PlaybackStateManager private constructor() {
     companion object {
         private const val REWIND_THRESHOLD = 3000L
 
-        @Volatile
-        private var INSTANCE: PlaybackStateManager? = null
+        @Volatile private var INSTANCE: PlaybackStateManager? = null
 
-        /**
-         * Get/Instantiate the single instance of [PlaybackStateManager].
-         */
+        /** Get/Instantiate the single instance of [PlaybackStateManager]. */
         fun getInstance(): PlaybackStateManager {
             val currentInstance = INSTANCE
 

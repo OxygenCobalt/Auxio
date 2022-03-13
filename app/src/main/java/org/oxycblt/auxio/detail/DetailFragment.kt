@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * DetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import androidx.annotation.MenuRes
@@ -70,21 +69,15 @@ abstract class DetailFragment : Fragment() {
                 inflateMenu(menuId)
             }
 
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
+            setNavigationOnClickListener { findNavController().navigateUp() }
 
             onMenuClick?.let { onClick ->
-                setOnMenuItemClickListener { item ->
-                    onClick(item.itemId)
-                }
+                setOnMenuItemClickListener { item -> onClick(item.itemId) }
             }
         }
     }
 
-    /**
-     * Shortcut method for recyclerview setup
-     */
+    /** Shortcut method for recyclerview setup */
     protected fun setupRecycler(
         binding: FragmentDetailBinding,
         detailAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
@@ -99,10 +92,14 @@ abstract class DetailFragment : Fragment() {
 
     /**
      * Shortcut method for spinning up the sorting [PopupMenu]
-     * @param config The initial configuration to apply to the menu. This is provided by [DetailViewModel.showMenu].
+     * @param config The initial configuration to apply to the menu. This is provided by
+     * [DetailViewModel.showMenu].
      * @param showItem Which menu items to keep
      */
-    protected fun showMenu(config: DetailViewModel.MenuConfig, showItem: ((Int) -> Boolean)? = null) {
+    protected fun showMenu(
+        config: DetailViewModel.MenuConfig,
+        showItem: ((Int) -> Boolean)? = null
+    ) {
         logD("Launching menu [$config]")
 
         PopupMenu(config.anchor.context, config.anchor).apply {
@@ -120,9 +117,7 @@ abstract class DetailFragment : Fragment() {
                 true
             }
 
-            setOnDismissListener {
-                detailModel.finishShowMenu(null)
-            }
+            setOnDismissListener { detailModel.finishShowMenu(null) }
 
             if (showItem != null) {
                 for (item in menu.children) {

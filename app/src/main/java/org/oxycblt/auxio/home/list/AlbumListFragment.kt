@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AlbumListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -49,14 +48,12 @@ class AlbumListFragment : HomeListFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = AlbumAdapter(
-            doOnClick = { album ->
-                findNavController().navigate(
-                    HomeFragmentDirections.actionShowAlbum(album.id)
-                )
-            },
-            ::newMenu
-        )
+        val adapter =
+            AlbumAdapter(
+                doOnClick = { album ->
+                    findNavController().navigate(HomeFragmentDirections.actionShowAlbum(album.id))
+                },
+                ::newMenu)
 
         setupRecycler(R.id.home_album_list, binding, adapter, homeModel.albums)
 
@@ -70,16 +67,13 @@ class AlbumListFragment : HomeListFragment() {
             // Change how we display the popup depending on the mode.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
                 // By Name -> Use Name
-                is Sort.ByName -> album.name.sliceArticle()
-                    .first().uppercase()
+                is Sort.ByName -> album.name.sliceArticle().first().uppercase()
 
                 // By Artist -> Use Artist Name
-                is Sort.ByArtist -> album.artist.resolvedName.sliceArticle()
-                    .first().uppercase()
+                is Sort.ByArtist -> album.artist.resolvedName.sliceArticle().first().uppercase()
 
                 // Year -> Use Full Year
-                is Sort.ByYear -> album.year?.toString()
-                    ?: getString(R.string.def_date)
+                is Sort.ByYear -> album.year?.toString() ?: getString(R.string.def_date)
 
                 // Unsupported sort, error gracefully
                 else -> ""

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * DiffCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.music.Item
 
 /**
- * A re-usable diff callback for all [Item] implementations.
- * **Use this instead of creating a DiffCallback for each adapter.**
+ * A re-usable diff callback for all [Item] implementations. **Use this instead of creating a
+ * DiffCallback for each adapter.**
  * @author OxygenCobalt
  */
 class DiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MainFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home
 
 import android.os.Bundle
@@ -52,11 +51,10 @@ import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
 
 /**
- * The main "Launching Point" fragment of Auxio, allowing navigation to the detail
- * views for each respective item.
- * @author OxygenCobalt
- * TODO: Make tabs invisible when there is only one
- * TODO: Add duration and song count sorts
+ * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
+ * respective item.
+ * @author OxygenCobalt TODO: Make tabs invisible when there is only one TODO: Add duration and song
+ * count sorts
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -83,35 +81,37 @@ class HomeFragment : Fragment() {
                         logD("Navigating to search")
                         findNavController().navigate(HomeFragmentDirections.actionShowSearch())
                     }
-
                     R.id.action_settings -> {
                         logD("Navigating to settings")
-                        parentFragment?.parentFragment?.findNavController()?.navigate(
-                            MainFragmentDirections.actionShowSettings()
-                        )
+                        parentFragment
+                            ?.parentFragment
+                            ?.findNavController()
+                            ?.navigate(MainFragmentDirections.actionShowSettings())
                     }
-
                     R.id.action_about -> {
                         logD("Navigating to about")
-                        parentFragment?.parentFragment?.findNavController()?.navigate(
-                            MainFragmentDirections.actionShowAbout()
-                        )
+                        parentFragment
+                            ?.parentFragment
+                            ?.findNavController()
+                            ?.navigate(MainFragmentDirections.actionShowAbout())
                     }
-
-                    R.id.submenu_sorting -> { }
-
+                    R.id.submenu_sorting -> {}
                     R.id.option_sort_asc -> {
                         item.isChecked = !item.isChecked
-                        val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
-                            .ascending(item.isChecked)
+                        val new =
+                            homeModel
+                                .getSortForDisplay(homeModel.curTab.value!!)
+                                .ascending(item.isChecked)
                         homeModel.updateCurrentSort(new)
                     }
 
                     // Sorting option was selected, mark it as selected and update the mode
                     else -> {
                         item.isChecked = true
-                        val new = homeModel.getSortForDisplay(homeModel.curTab.value!!)
-                            .assignId(item.itemId)
+                        val new =
+                            homeModel
+                                .getSortForDisplay(homeModel.curTab.value!!)
+                                .assignId(item.itemId)
                         homeModel.updateCurrentSort(requireNotNull(new))
                     }
                 }
@@ -129,12 +129,14 @@ class HomeFragment : Fragment() {
             // scroll events being registered as horizontal scroll events. Reflect into the
             // internal recyclerview and change the touch slope so that touch actions will
             // act more as a scroll than as a swipe.
-            // Derived from: https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
+            // Derived from:
+            // https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
             try {
-                val recycler = ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
-                    isAccessible = true
-                    get(binding.homePager)
-                }
+                val recycler =
+                    ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
+                        isAccessible = true
+                        get(binding.homePager)
+                    }
 
                 RecyclerView::class.java.getDeclaredField("mTouchSlop").apply {
                     isAccessible = true
@@ -152,18 +154,17 @@ class HomeFragment : Fragment() {
             // page transitions.
             offscreenPageLimit = homeModel.tabs.size
 
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) = homeModel.updateCurrentTab(position)
-            })
+            registerOnPageChangeCallback(
+                object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) =
+                        homeModel.updateCurrentTab(position)
+                })
 
-            TabLayoutMediator(
-                binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel)
-            ).attach()
+            TabLayoutMediator(binding.homeTabs, this, AdaptiveTabStrategy(context, homeModel))
+                .attach()
         }
 
-        binding.homeFab.setOnClickListener {
-            playbackModel.shuffleAll()
-        }
+        binding.homeFab.setOnClickListener { playbackModel.shuffleAll() }
 
         // --- VIEWMODEL SETUP ---
 
@@ -213,18 +214,12 @@ class HomeFragment : Fragment() {
             // the tab changes.
             when (tab) {
                 DisplayMode.SHOW_SONGS -> updateSortMenu(sortItem, tab)
-
-                DisplayMode.SHOW_ALBUMS -> updateSortMenu(sortItem, tab) { id ->
-                    id != R.id.option_sort_album
-                }
-
-                DisplayMode.SHOW_ARTISTS -> updateSortMenu(sortItem, tab) { id ->
-                    id == R.id.option_sort_asc
-                }
-
-                DisplayMode.SHOW_GENRES -> updateSortMenu(sortItem, tab) { id ->
-                    id == R.id.option_sort_asc
-                }
+                DisplayMode.SHOW_ALBUMS ->
+                    updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
+                DisplayMode.SHOW_ARTISTS ->
+                    updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
+                DisplayMode.SHOW_GENRES ->
+                    updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
             }
 
             binding.homeAppbar.liftOnScrollTargetViewId = tab.viewId
@@ -236,24 +231,19 @@ class HomeFragment : Fragment() {
             // This is only here just in case a collapsing toolbar is re-added.
             binding.homeAppbar.post {
                 when (item) {
-                    is Song -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowAlbum(item.album.id)
-                    )
-
-                    is Album -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowAlbum(item.id)
-                    )
-
-                    is Artist -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowArtist(item.id)
-                    )
-
-                    is Genre -> findNavController().navigate(
-                        HomeFragmentDirections.actionShowGenre(item.id)
-                    )
-
-                    else -> {
-                    }
+                    is Song ->
+                        findNavController()
+                            .navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))
+                    is Album ->
+                        findNavController()
+                            .navigate(HomeFragmentDirections.actionShowAlbum(item.id))
+                    is Artist ->
+                        findNavController()
+                            .navigate(HomeFragmentDirections.actionShowArtist(item.id))
+                    is Genre ->
+                        findNavController()
+                            .navigate(HomeFragmentDirections.actionShowGenre(item.id))
+                    else -> {}
                 }
             }
         }
@@ -283,12 +273,14 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val DisplayMode.viewId: Int get() = when (this) {
-        DisplayMode.SHOW_SONGS -> R.id.home_song_list
-        DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
-        DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
-        DisplayMode.SHOW_GENRES -> R.id.home_genre_list
-    }
+    private val DisplayMode.viewId: Int
+        get() =
+            when (this) {
+                DisplayMode.SHOW_SONGS -> R.id.home_song_list
+                DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
+                DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
+                DisplayMode.SHOW_GENRES -> R.id.home_genre_list
+            }
 
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {

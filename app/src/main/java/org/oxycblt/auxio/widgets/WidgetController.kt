@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * WidgetController.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
@@ -28,12 +27,11 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
  * widget state based off of that. This cannot be rolled into [WidgetProvider] directly, as it may
- * result in memory leaks if [PlaybackStateManager]/[SettingsManager] gets created and bound
- * to without being released.
+ * result in memory leaks if [PlaybackStateManager]/[SettingsManager] gets created and bound to
+ * without being released.
  */
 class WidgetController(private val context: Context) :
-    PlaybackStateManager.Callback,
-    SettingsManager.Callback {
+    PlaybackStateManager.Callback, SettingsManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
     private val widget = WidgetProvider()

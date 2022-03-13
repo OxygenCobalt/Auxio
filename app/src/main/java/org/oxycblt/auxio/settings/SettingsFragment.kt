@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SettingsFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
@@ -39,9 +38,7 @@ class SettingsFragment : Fragment() {
         val binding = FragmentSettingsBinding.inflate(inflater)
 
         binding.settingsToolbar.apply {
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
+            setNavigationOnClickListener { findNavController().navigateUp() }
         }
 
         binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view

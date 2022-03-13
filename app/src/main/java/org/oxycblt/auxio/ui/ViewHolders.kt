@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SortHeaderViewHolder.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -53,22 +52,18 @@ abstract class BaseViewHolder<T : Item>(
 ) : RecyclerView.ViewHolder(binding.root) {
     init {
         // Force the layout to *actually* be the screen width
-        binding.root.layoutParams = RecyclerView.LayoutParams(
-            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-        )
+        binding.root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
     }
 
     /**
-     * Bind the viewholder with whatever [Item] instance that has been specified.
-     * Will call [onBind] on the inheriting ViewHolder.
+     * Bind the viewholder with whatever [Item] instance that has been specified. Will call [onBind]
+     * on the inheriting ViewHolder.
      * @param data Data that the viewholder should be bound with
      */
     fun bind(data: T) {
-        doOnClick?.let { onClick ->
-            binding.root.setOnClickListener {
-                onClick(data)
-            }
-        }
+        doOnClick?.let { onClick -> binding.root.setOnClickListener { onClick(data) } }
 
         doOnLongClick?.let { onLongClick ->
             binding.root.setOnLongClickListener { view ->
@@ -84,16 +79,15 @@ abstract class BaseViewHolder<T : Item>(
     }
 
     /**
-     * Function that performs binding operations unique to the inheriting viewholder.
-     * Add any specialized code to an override of this instead of [BaseViewHolder] itself.
+     * Function that performs binding operations unique to the inheriting viewholder. Add any
+     * specialized code to an override of this instead of [BaseViewHolder] itself.
      */
     protected abstract fun onBind(data: T)
 }
 
-/**
- * The Shared ViewHolder for a [Song]. Instantiation should be done with [from].
- */
-class SongViewHolder private constructor(
+/** The Shared ViewHolder for a [Song]. Instantiation should be done with [from]. */
+class SongViewHolder
+private constructor(
     private val binding: ItemSongBinding,
     doOnClick: (data: Song) -> Unit,
     doOnLongClick: (view: View, data: Song) -> Unit
@@ -109,26 +103,21 @@ class SongViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA000
 
-        /**
-         * Create an instance of [SongViewHolder]
-         */
+        /** Create an instance of [SongViewHolder] */
         fun from(
             context: Context,
             doOnClick: (data: Song) -> Unit,
             doOnLongClick: (view: View, data: Song) -> Unit
         ): SongViewHolder {
             return SongViewHolder(
-                ItemSongBinding.inflate(context.inflater),
-                doOnClick, doOnLongClick
-            )
+                ItemSongBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
 
-/**
- * The Shared ViewHolder for a [Album]. Instantiation should be done with [from].
- */
-class AlbumViewHolder private constructor(
+/** The Shared ViewHolder for a [Album]. Instantiation should be done with [from]. */
+class AlbumViewHolder
+private constructor(
     private val binding: ItemAlbumBinding,
     doOnClick: (data: Album) -> Unit,
     doOnLongClick: (view: View, data: Album) -> Unit
@@ -142,26 +131,21 @@ class AlbumViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA001
 
-        /**
-         * Create an instance of [AlbumViewHolder]
-         */
+        /** Create an instance of [AlbumViewHolder] */
         fun from(
             context: Context,
             doOnClick: (data: Album) -> Unit,
             doOnLongClick: (view: View, data: Album) -> Unit
         ): AlbumViewHolder {
             return AlbumViewHolder(
-                ItemAlbumBinding.inflate(context.inflater),
-                doOnClick, doOnLongClick
-            )
+                ItemAlbumBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
 
-/**
- * The Shared ViewHolder for a [Artist]. Instantiation should be done with [from].
- */
-class ArtistViewHolder private constructor(
+/** The Shared ViewHolder for a [Artist]. Instantiation should be done with [from]. */
+class ArtistViewHolder
+private constructor(
     private val binding: ItemArtistBinding,
     doOnClick: (Artist) -> Unit,
     doOnLongClick: (view: View, data: Artist) -> Unit
@@ -175,26 +159,21 @@ class ArtistViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA002
 
-        /**
-         * Create an instance of [ArtistViewHolder]
-         */
+        /** Create an instance of [ArtistViewHolder] */
         fun from(
             context: Context,
             doOnClick: (Artist) -> Unit,
             doOnLongClick: (view: View, data: Artist) -> Unit
         ): ArtistViewHolder {
             return ArtistViewHolder(
-                ItemArtistBinding.inflate(context.inflater),
-                doOnClick, doOnLongClick
-            )
+                ItemArtistBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
 
-/**
- * The Shared ViewHolder for a [Genre]. Instantiation should be done with [from].
- */
-class GenreViewHolder private constructor(
+/** The Shared ViewHolder for a [Genre]. Instantiation should be done with [from]. */
+class GenreViewHolder
+private constructor(
     private val binding: ItemGenreBinding,
     doOnClick: (Genre) -> Unit,
     doOnLongClick: (view: View, data: Genre) -> Unit
@@ -208,28 +187,21 @@ class GenreViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA003
 
-        /**
-         * Create an instance of [GenreViewHolder]
-         */
+        /** Create an instance of [GenreViewHolder] */
         fun from(
             context: Context,
             doOnClick: (Genre) -> Unit,
             doOnLongClick: (view: View, data: Genre) -> Unit
         ): GenreViewHolder {
             return GenreViewHolder(
-                ItemGenreBinding.inflate(context.inflater),
-                doOnClick, doOnLongClick
-            )
+                ItemGenreBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
 
-/**
- * The Shared ViewHolder for a [Header]. Instantiation should be done with [from]
- */
-class HeaderViewHolder private constructor(
-    private val binding: ItemHeaderBinding
-) : BaseViewHolder<Header>(binding) {
+/** The Shared ViewHolder for a [Header]. Instantiation should be done with [from] */
+class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
+    BaseViewHolder<Header>(binding) {
 
     override fun onBind(data: Header) {
         binding.header = data
@@ -238,23 +210,16 @@ class HeaderViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA004
 
-        /**
-         * Create an instance of [HeaderViewHolder]
-         */
+        /** Create an instance of [HeaderViewHolder] */
         fun from(context: Context): HeaderViewHolder {
-            return HeaderViewHolder(
-                ItemHeaderBinding.inflate(context.inflater)
-            )
+            return HeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
         }
     }
 }
 
-/**
- * The Shared ViewHolder for an [ActionHeader]. Instantiation should be done with [from]
- */
-class ActionHeaderViewHolder private constructor(
-    private val binding: ItemActionHeaderBinding
-) : BaseViewHolder<ActionHeader>(binding) {
+/** The Shared ViewHolder for an [ActionHeader]. Instantiation should be done with [from] */
+class ActionHeaderViewHolder private constructor(private val binding: ItemActionHeaderBinding) :
+    BaseViewHolder<ActionHeader>(binding) {
 
     override fun onBind(data: ActionHeader) {
         binding.header = data
@@ -271,9 +236,7 @@ class ActionHeaderViewHolder private constructor(
     companion object {
         const val ITEM_TYPE = 0xA005
 
-        /**
-         * Create an instance of [ActionHeaderViewHolder]
-         */
+        /** Create an instance of [ActionHeaderViewHolder] */
         fun from(context: Context): ActionHeaderViewHolder {
             return ActionHeaderViewHolder(ItemActionHeaderBinding.inflate(context.inflater))
         }

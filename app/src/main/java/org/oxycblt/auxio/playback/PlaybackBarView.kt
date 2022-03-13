@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * CompactPlaybackView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -35,14 +34,13 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * A view displaying the playback state in a compact manner. This is only meant to be used
- * by [PlaybackLayout].
+ * A view displaying the playback state in a compact manner. This is only meant to be used by
+ * [PlaybackLayout].
  */
-class PlaybackBarView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+class PlaybackBarView
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    ConstraintLayout(context, attrs, defStyleAttr) {
     private val binding = ViewPlaybackBarBinding.inflate(context.inflater, this, true)
 
     init {
@@ -52,35 +50,29 @@ class PlaybackBarView @JvmOverloads constructor(
         // we use colorSecondary instead of colorSurfaceVariant. This is because
         // colorSurfaceVariant is used with the assumption that the view that is using it is
         // not elevated and is therefore not colored. This view is elevated.
-        binding.playbackProgressBar.trackColor = MaterialColors.compositeARGBWithAlpha(
-            context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt()
-        )
+        binding.playbackProgressBar.trackColor =
+            MaterialColors.compositeARGBWithAlpha(
+                context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt())
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         // Since we swipe up this view, we need to make sure it does not collide with
         // any gesture events. So, apply the system gesture insets if present and then
         // only default to the system bar insets when there are no other options.
-        val gesturePadding = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                insets.getInsets(WindowInsets.Type.systemGestures()).bottom
+        val gesturePadding =
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                    insets.getInsets(WindowInsets.Type.systemGestures()).bottom
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                    @Suppress("DEPRECATION") insets.systemGestureInsets.bottom
+                }
+                else -> 0
             }
-
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION")
-                insets.systemGestureInsets.bottom
-            }
-
-            else -> 0
-        }
 
         updatePadding(
             bottom =
-            if (gesturePadding != 0)
-                gesturePadding
-            else
-                insets.systemBarInsetsCompat.bottom
-        )
+                if (gesturePadding != 0) gesturePadding else insets.systemBarInsetsCompat.bottom)
 
         return insets
     }
@@ -91,23 +83,15 @@ class PlaybackBarView @JvmOverloads constructor(
         viewLifecycleOwner: LifecycleOwner
     ) {
         setOnLongClickListener {
-            playbackModel.song.value?.let { song ->
-                detailModel.navToItem(song)
-            }
+            playbackModel.song.value?.let { song -> detailModel.navToItem(song) }
             true
         }
 
-        binding.playbackSkipPrev?.setOnClickListener {
-            playbackModel.skipPrev()
-        }
+        binding.playbackSkipPrev?.setOnClickListener { playbackModel.skipPrev() }
 
-        binding.playbackPlayPause.setOnClickListener {
-            playbackModel.invertPlayingStatus()
-        }
+        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlayingStatus() }
 
-        binding.playbackSkipNext?.setOnClickListener {
-            playbackModel.skipNext()
-        }
+        binding.playbackSkipNext?.setOnClickListener { playbackModel.skipNext() }
 
         binding.playbackPlayPause.isActivated = playbackModel.isPlaying.value!!
 

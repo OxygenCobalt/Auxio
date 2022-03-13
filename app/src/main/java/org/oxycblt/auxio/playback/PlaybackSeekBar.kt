@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackSeeker.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback
 
 import android.annotation.SuppressLint
@@ -33,20 +32,22 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
 
 /**
- * A custom view that bundles together a seekbar with a current duration and a total duration.
- * The sub-views are specifically laid out so that the seekbar has an adequate touch height while
- * still not having gobs of whitespace everywhere.
- * TODO: Add smooth seeking [i.e seeking in sub-second values]
+ * A custom view that bundles together a seekbar with a current duration and a total duration. The
+ * sub-views are specifically laid out so that the seekbar has an adequate touch height while still
+ * not having gobs of whitespace everywhere. TODO: Add smooth seeking [i.e seeking in sub-second
+ * values]
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
-class PlaybackSeekBar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleRes: Int = 0
-) : ConstraintLayout(context, attrs, defStyleRes), Slider.OnChangeListener, Slider.OnSliderTouchListener {
+class PlaybackSeekBar
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0) :
+    ConstraintLayout(context, attrs, defStyleRes),
+    Slider.OnChangeListener,
+    Slider.OnSliderTouchListener {
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
-    private val isSeeking: Boolean get() = binding.playbackDurationCurrent.isActivated
+    private val isSeeking: Boolean
+        get() = binding.playbackDurationCurrent.isActivated
 
     var onConfirmListener: ((Long) -> Unit)? = null
 
@@ -55,9 +56,10 @@ class PlaybackSeekBar @JvmOverloads constructor(
         binding.seekBar.addOnSliderTouchListener(this)
 
         // Override the inactive color so that it lines up with the playback progress bar.
-        binding.seekBar.trackInactiveTintList = MaterialColors.compositeARGBWithAlpha(
-            context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt()
-        ).stateList
+        binding.seekBar.trackInactiveTintList =
+            MaterialColors.compositeARGBWithAlpha(
+                    context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt())
+                .stateList
     }
 
     fun setProgress(seconds: Long) {

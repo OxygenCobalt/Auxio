@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * QueueAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
@@ -47,9 +46,8 @@ import org.oxycblt.auxio.util.stateList
  * @param touchHelper The [ItemTouchHelper] ***containing*** [QueueDragCallback] to be used
  * @author OxygenCobalt
  */
-class QueueAdapter(
-    private val touchHelper: ItemTouchHelper
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class QueueAdapter(private val touchHelper: ItemTouchHelper) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data = mutableListOf<Item>()
     private var listDiffer = AsyncListDiffer(this, DiffCallback())
 
@@ -60,16 +58,14 @@ class QueueAdapter(
             is Song -> QUEUE_SONG_ITEM_TYPE
             is Header -> HeaderViewHolder.ITEM_TYPE
             is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
-
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            QUEUE_SONG_ITEM_TYPE -> QueueSongViewHolder(
-                ItemQueueSongBinding.inflate(parent.context.inflater)
-            )
+            QUEUE_SONG_ITEM_TYPE ->
+                QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type $viewType")
@@ -86,8 +82,8 @@ class QueueAdapter(
     }
 
     /**
-     * Submit data using [AsyncListDiffer].
-     * **Only use this if you have no idea what changes occurred to the data**
+     * Submit data using [AsyncListDiffer]. **Only use this if you have no idea what changes
+     * occurred to the data**
      */
     fun submitList(newData: MutableList<Item>) {
         if (data != newData) {
@@ -96,39 +92,32 @@ class QueueAdapter(
         }
     }
 
-    /**
-     * Move Items.
-     * Used since [submitList] will cause QueueAdapter to freak out.
-     */
+    /** Move Items. Used since [submitList] will cause QueueAdapter to freak out. */
     fun moveItems(adapterFrom: Int, adapterTo: Int) {
         data.add(adapterTo, data.removeAt(adapterFrom))
         notifyItemMoved(adapterFrom, adapterTo)
     }
 
-    /**
-     * Remove an item.
-     * Used since [submitList] will cause QueueAdapter to freak out.
-     */
+    /** Remove an item. Used since [submitList] will cause QueueAdapter to freak out. */
     fun removeItem(adapterIndex: Int) {
         data.removeAt(adapterIndex)
         notifyItemRemoved(adapterIndex)
     }
 
-    /**
-     * Generic ViewHolder for a queue song
-     */
+    /** Generic ViewHolder for a queue song */
     inner class QueueSongViewHolder(
         private val binding: ItemQueueSongBinding,
     ) : BaseViewHolder<Song>(binding) {
-        val bodyView: View get() = binding.body
-        val backgroundView: View get() = binding.background
+        val bodyView: View
+            get() = binding.body
+        val backgroundView: View
+            get() = binding.background
 
         init {
-            binding.body.background = MaterialShapeDrawable.createWithElevationOverlay(
-                binding.root.context
-            ).apply {
-                fillColor = (binding.body.background as ColorDrawable).color.stateList
-            }
+            binding.body.background =
+                MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
+                    fillColor = (binding.body.background as ColorDrawable).color.stateList
+                }
 
             binding.root.disableDropShadowCompat()
         }

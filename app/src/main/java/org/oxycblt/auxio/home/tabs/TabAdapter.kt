@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * TabAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.tabs
 
 import android.annotation.SuppressLint
@@ -31,7 +30,8 @@ class TabAdapter(
     private val getTabs: () -> Array<Tab>,
     private val onTabSwitch: (Tab) -> Unit,
 ) : RecyclerView.Adapter<TabAdapter.TabViewHolder>() {
-    private val tabs: Array<Tab> get() = getTabs()
+    private val tabs: Array<Tab>
+        get() = getTabs()
 
     override fun getItemCount(): Int = Tab.SEQUENCE_LEN
 
@@ -43,13 +43,12 @@ class TabAdapter(
         holder.bind(tabs[position])
     }
 
-    inner class TabViewHolder(
-        private val binding: ItemTabBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class TabViewHolder(private val binding: ItemTabBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-            )
+            binding.root.layoutParams =
+                RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         }
 
         @SuppressLint("ClickableViewAccessibility")

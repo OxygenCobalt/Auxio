@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * IntListPreference.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings.pref
 
 import android.content.Context
@@ -25,32 +24,34 @@ import androidx.preference.DialogPreference
 import androidx.preference.Preference
 import org.oxycblt.auxio.R
 
-class IntListPreference @JvmOverloads constructor(
+class IntListPreference
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = androidx.preference.R.attr.dialogPreferenceStyle,
     defStyleRes: Int = 0
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
     // Reflect into Preference to get the (normally inaccessible) default value.
-    private val defValueField = Preference::class.java.getDeclaredField("mDefaultValue").apply {
-        isAccessible = true
-    }
+    private val defValueField =
+        Preference::class.java.getDeclaredField("mDefaultValue").apply { isAccessible = true }
 
     val entries: Array<CharSequence>
     val values: IntArray
     private var currentValue: Int? = null
-    private val defValue: Int get() = defValueField.get(this) as Int
+    private val defValue: Int
+        get() = defValueField.get(this) as Int
 
     init {
-        val prefAttrs = context.obtainStyledAttributes(
-            attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes
-        )
+        val prefAttrs =
+            context.obtainStyledAttributes(
+                attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
 
         entries = prefAttrs.getTextArray(R.styleable.IntListPreference_entries)
 
-        values = context.resources.getIntArray(
-            prefAttrs.getResourceId(R.styleable.IntListPreference_entryValues, -1)
-        )
+        values =
+            context.resources.getIntArray(
+                prefAttrs.getResourceId(R.styleable.IntListPreference_entryValues, -1))
 
         prefAttrs.recycle()
 
@@ -80,9 +81,7 @@ class IntListPreference @JvmOverloads constructor(
         return -1
     }
 
-    /**
-     * Set a value using the index of it in [values]
-     */
+    /** Set a value using the index of it in [values] */
     fun setValueIndex(index: Int) {
         setValue(values[index])
     }

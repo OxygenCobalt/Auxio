@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MusicViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.content.Context
@@ -33,8 +32,8 @@ class MusicViewModel : ViewModel() {
     private var isBusy = false
 
     /**
-     * Initiate the loading process. This is done here since HomeFragment will be the first
-     * fragment navigated to and because SnackBars will have the best UX here.
+     * Initiate the loading process. This is done here since HomeFragment will be the first fragment
+     * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
         if (mLoaderResponse.value != null || isBusy) {

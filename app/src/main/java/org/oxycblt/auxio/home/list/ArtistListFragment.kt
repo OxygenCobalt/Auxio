@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AlbumListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -47,14 +46,12 @@ class ArtistListFragment : HomeListFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = ArtistAdapter(
-            doOnClick = { artist ->
-                findNavController().navigate(
-                    HomeFragmentDirections.actionShowArtist(artist.id)
-                )
-            },
-            ::newMenu
-        )
+        val adapter =
+            ArtistAdapter(
+                doOnClick = { artist ->
+                    findNavController().navigate(HomeFragmentDirections.actionShowArtist(artist.id))
+                },
+                ::newMenu)
 
         setupRecycler(R.id.home_artist_list, binding, adapter, homeModel.artists)
 
@@ -63,8 +60,7 @@ class ArtistListFragment : HomeListFragment() {
 
     override val listPopupProvider: (Int) -> String
         get() = { idx ->
-            homeModel.artists.value!![idx].resolvedName
-                .sliceArticle().first().uppercase()
+            homeModel.artists.value!![idx].resolvedName.sliceArticle().first().uppercase()
         }
 
     class ArtistAdapter(

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AccentAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.accent
 
 import android.view.ViewGroup
@@ -33,10 +32,8 @@ import org.oxycblt.auxio.util.stateList
  * @author OxygenCobalt
  * @param onSelect What to do when an accent is selected.
  */
-class AccentAdapter(
-    private var curAccent: Accent,
-    private val onSelect: (accent: Accent) -> Unit
-) : RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
+class AccentAdapter(private var curAccent: Accent, private val onSelect: (accent: Accent) -> Unit) :
+    RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
     private var selectedViewHolder: ViewHolder? = null
 
     override fun getItemCount(): Int = ACCENT_COUNT
@@ -54,9 +51,8 @@ class AccentAdapter(
         onSelect(accent)
     }
 
-    inner class ViewHolder(
-        private val binding: ItemAccentBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemAccentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(accent: Accent) {
             setSelected(accent == curAccent)
@@ -77,14 +73,15 @@ class AccentAdapter(
             val context = binding.accent.context
 
             binding.accent.isEnabled = !isSelected
-            binding.accent.imageTintList = if (isSelected) {
-                // Switch out the currently selected ViewHolder with this one.
-                selectedViewHolder?.setSelected(false)
-                selectedViewHolder = this
-                context.getAttrColorSafe(R.attr.colorSurface).stateList
-            } else {
-                context.getColorSafe(android.R.color.transparent).stateList
-            }
+            binding.accent.imageTintList =
+                if (isSelected) {
+                    // Switch out the currently selected ViewHolder with this one.
+                    selectedViewHolder?.setSelected(false)
+                    selectedViewHolder = this
+                    context.getAttrColorSafe(R.attr.colorSurface).stateList
+                } else {
+                    context.getColorSafe(android.R.color.transparent).stateList
+                }
         }
     }
 }

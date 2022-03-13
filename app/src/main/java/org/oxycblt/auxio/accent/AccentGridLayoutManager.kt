@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AutoGridLayoutManager.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,20 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.accent
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.util.pxOfDp
 import kotlin.math.max
+import org.oxycblt.auxio.util.pxOfDp
 
 /**
  * A sub-class of [GridLayoutManager] that automatically sets the spans so that they fit the width
- * of the RecyclerView.
- * Adapted from this StackOverflow answer: https://stackoverflow.com/a/30256880/14143986
+ * of the RecyclerView. Adapted from this StackOverflow answer:
+ * https://stackoverflow.com/a/30256880/14143986
  */
 class AccentGridLayoutManager(
     context: Context,

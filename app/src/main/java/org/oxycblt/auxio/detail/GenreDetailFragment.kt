@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * GenreDetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -53,15 +52,11 @@ class GenreDetailFragment : DetailFragment() {
         detailModel.setGenre(args.genreId)
 
         val binding = FragmentDetailBinding.inflate(inflater)
-        val detailAdapter = GenreDetailAdapter(
-            playbackModel,
-            doOnClick = { song ->
-                playbackModel.playSong(song, PlaybackMode.IN_GENRE)
-            },
-            doOnLongClick = { view, data ->
-                newMenu(view, data, ActionMenu.FLAG_IN_GENRE)
-            }
-        )
+        val detailAdapter =
+            GenreDetailAdapter(
+                playbackModel,
+                doOnClick = { song -> playbackModel.playSong(song, PlaybackMode.IN_GENRE) },
+                doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_GENRE) })
 
         // --- UI SETUP ---
 
@@ -75,34 +70,26 @@ class GenreDetailFragment : DetailFragment() {
 
         // --- DETAILVIEWMODEL SETUP ---
 
-        detailModel.genreData.observe(viewLifecycleOwner) { data ->
-            detailAdapter.submitList(data)
-        }
+        detailModel.genreData.observe(viewLifecycleOwner) { data -> detailAdapter.submitList(data) }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             when (item) {
                 // All items will launch new detail fragments.
                 is Artist -> {
                     logD("Navigating to another artist")
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowArtist(item.id)
-                    )
+                    findNavController()
+                        .navigate(GenreDetailFragmentDirections.actionShowArtist(item.id))
                 }
-
                 is Album -> {
                     logD("Navigating to another album")
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowAlbum(item.id)
-                    )
+                    findNavController()
+                        .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.id))
                 }
-
                 is Song -> {
                     logD("Navigating to another song")
-                    findNavController().navigate(
-                        GenreDetailFragmentDirections.actionShowAlbum(item.album.id)
-                    )
+                    findNavController()
+                        .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.id))
                 }
-
                 null -> {}
                 else -> logW("Unsupported navigation command ${item::class.java}")
             }
@@ -112,8 +99,7 @@ class GenreDetailFragment : DetailFragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.playbackMode.value == PlaybackMode.IN_GENRE &&
-                playbackModel.parent.value?.id == detailModel.curGenre.value!!.id
-            ) {
+                playbackModel.parent.value?.id == detailModel.curGenre.value!!.id) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the ViewHolders if the mode isn't ALL_SONGS

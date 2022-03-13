@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * Md2PopupBackground.java is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+ 
 package org.oxycblt.auxio.home.fastscroll
 
 import android.content.Context
@@ -30,19 +30,18 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import androidx.core.graphics.drawable.DrawableCompat
+import kotlin.math.sqrt
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenOffsetSafe
-import kotlin.math.sqrt
 
 /**
- * The custom drawable used as FastScrollRecyclerView's popup background.
- * This is an adaptation from AndroidFastScroll's MD2 theme.
+ * The custom drawable used as FastScrollRecyclerView's popup background. This is an adaptation from
+ * AndroidFastScroll's MD2 theme.
  *
- * Attributions as per the Apache 2.0 license:
- * ORIGINAL AUTHOR: Hai Zhang [https://github.com/zhanghai]
- * PROJECT: Android Fast Scroll [https://github.com/zhanghai/AndroidFastScroll]
- * MODIFIER: OxygenCobalt [https://github.com/]
+ * Attributions as per the Apache 2.0 license: ORIGINAL AUTHOR: Hai Zhang
+ * [https://github.com/zhanghai] PROJECT: Android Fast Scroll
+ * [https://github.com/zhanghai/AndroidFastScroll] MODIFIER: OxygenCobalt [https://github.com/]
  *
  * !!! MODIFICATIONS !!!:
  * - Use modified Auxio resources instead of AFS resources
@@ -53,11 +52,12 @@ import kotlin.math.sqrt
  * @author Hai Zhang, OxygenCobalt
  */
 class FastScrollPopupDrawable(context: Context) : Drawable() {
-    private val paint: Paint = Paint().apply {
-        isAntiAlias = true
-        color = context.getAttrColorSafe(R.attr.colorSecondary)
-        style = Paint.Style.FILL
-    }
+    private val paint: Paint =
+        Paint().apply {
+            isAntiAlias = true
+            color = context.getAttrColorSafe(R.attr.colorSecondary)
+            style = Paint.Style.FILL
+        }
 
     private val path = Path()
     private val matrix = Matrix()
@@ -86,13 +86,14 @@ class FastScrollPopupDrawable(context: Context) : Drawable() {
             // Paths don't need to be convex on android Q, but the API was mislabeled and so
             // we still have to use this method.
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> outline.setConvexPath(path)
-
-            else -> if (!path.isConvex) {
-                // The outline path must be convex before Q, but we may run into floating point
-                // errors caused by calculations involving sqrt(2) or OEM implementation differences,
-                // so in this case we just omit the shadow instead of crashing.
-                super.getOutline(outline)
-            }
+            else ->
+                if (!path.isConvex) {
+                    // The outline path must be convex before Q, but we may run into floating point
+                    // errors caused by calculations involving sqrt(2) or OEM implementation
+                    // differences,
+                    // so in this case we just omit the shadow instead of crashing.
+                    super.getOutline(outline)
+                }
         }
     }
 
@@ -153,11 +154,15 @@ class FastScrollPopupDrawable(context: Context) : Drawable() {
         sweepAngle: Float
     ) {
         path.arcTo(
-            centerX - radius, centerY - radius, centerX + radius, centerY + radius,
-            startAngle, sweepAngle, false
-        )
+            centerX - radius,
+            centerY - radius,
+            centerX + radius,
+            centerY + radius,
+            startAngle,
+            sweepAngle,
+            false)
     }
 
-    private val isRtl: Boolean get() =
-        DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
+    private val isRtl: Boolean
+        get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 }

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SongListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
@@ -47,12 +46,7 @@ class SongListFragment : HomeListFragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = SongsAdapter(
-            doOnClick = { song ->
-                playbackModel.playSong(song)
-            },
-            ::newMenu
-        )
+        val adapter = SongsAdapter(doOnClick = { song -> playbackModel.playSong(song) }, ::newMenu)
 
         setupRecycler(R.id.home_song_list, binding, adapter, homeModel.songs)
 
@@ -68,21 +62,17 @@ class SongListFragment : HomeListFragment() {
             // based off the names of the parent objects and not the child objects.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
                 // Name -> Use name
-                is Sort.ByName -> song.name.sliceArticle()
-                    .first().uppercase()
+                is Sort.ByName -> song.name.sliceArticle().first().uppercase()
 
                 // Artist -> Use Artist Name
                 is Sort.ByArtist ->
-                    song.album.artist.resolvedName
-                        .sliceArticle().first().uppercase()
+                    song.album.artist.resolvedName.sliceArticle().first().uppercase()
 
                 // Album -> Use Album Name
-                is Sort.ByAlbum -> song.album.name.sliceArticle()
-                    .first().uppercase()
+                is Sort.ByAlbum -> song.album.name.sliceArticle().first().uppercase()
 
                 // Year -> Use Full Year
-                is Sort.ByYear -> song.album.year?.toString()
-                    ?: getString(R.string.def_date)
+                is Sort.ByYear -> song.album.year?.toString() ?: getString(R.string.def_date)
             }
         }
 

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SettingsCompat.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings
 
 import android.content.SharedPreferences
@@ -53,9 +52,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     return Accent(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
 }
 
-/**
- * Cache of the old keys used in Auxio.
- */
+/** Cache of the old keys used in Auxio. */
 private object OldKeys {
     const val KEY_ACCENT2 = "KEY_ACCENT2"
 }

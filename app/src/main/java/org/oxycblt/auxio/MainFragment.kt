@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MainFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio
 
 import android.Manifest
@@ -39,10 +38,10 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
- * A wrapper around the home fragment that shows the playback fragment and controls
- * the more high-level navigation features.
- * @author OxygenCobalt
- * TODO: Add a new view with a stack trace whenever the music loading process fails.
+ * A wrapper around the home fragment that shows the playback fragment and controls the more
+ * high-level navigation features.
+ * @author OxygenCobalt TODO: Add a new view with a stack trace whenever the music loading process
+ * fails.
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -58,22 +57,18 @@ class MainFragment : Fragment() {
         val binding = FragmentMainBinding.inflate(inflater)
 
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
-        val permLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) {
-            musicModel.reloadMusic(requireContext())
-        }
+        val permLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                musicModel.reloadMusic(requireContext())
+            }
 
         // --- UI SETUP ---
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            Callback(binding).also {
-                callback = it
-            }
-        )
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, Callback(binding).also { callback = it })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // Auxio's layout completely breaks down when it's window is resized too small,
@@ -110,15 +105,15 @@ class MainFragment : Fragment() {
                 is MusicStore.Response.Err -> {
                     logW("Received Error")
 
-                    val errorRes = when (response.kind) {
-                        MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
-                        MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
-                        MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
-                    }
+                    val errorRes =
+                        when (response.kind) {
+                            MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
+                            MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
+                            MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
+                        }
 
-                    val snackbar = Snackbar.make(
-                        binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE
-                    )
+                    val snackbar =
+                        Snackbar.make(binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE)
 
                     when (response.kind) {
                         MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {
@@ -126,7 +121,6 @@ class MainFragment : Fragment() {
                                 musicModel.reloadMusic(requireContext())
                             }
                         }
-
                         MusicStore.ErrorKind.NO_PERMS -> {
                             snackbar.setAction(R.string.lbl_grant) {
                                 permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -164,7 +158,8 @@ class MainFragment : Fragment() {
             if (!binding.playbackLayout.collapse()) {
                 val navController = binding.exploreNavHost.findNavController()
 
-                if (navController.currentDestination?.id == navController.graph.startDestinationId) {
+                if (navController.currentDestination?.id ==
+                    navController.graph.startDestinationId) {
                     isEnabled = false
                     requireActivity().onBackPressed()
                     isEnabled = true

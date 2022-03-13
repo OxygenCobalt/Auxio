@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * QueueDragCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.queue
 
 import android.graphics.Canvas
@@ -24,19 +23,19 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.getDimenSafe
-import org.oxycblt.auxio.util.logD
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.getDimenSafe
+import org.oxycblt.auxio.util.logD
 
 /**
  * A highly customized [ItemTouchHelper.Callback] that handles the queue system while basically
- * rebuilding most the "Material-y" aspects of an editable list because Google's implementations
- * are hot garbage. This shouldn't have *too many* UI bugs. I hope.
+ * rebuilding most the "Material-y" aspects of an editable list because Google's implementations are
+ * hot garbage. This shouldn't have *too many* UI bugs. I hope.
  * @author OxygenCobalt
  */
 class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
@@ -59,17 +58,14 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     ): Int {
         // Fix to make QueueFragment scroll slower when an item is scrolled out of bounds.
         // Adapted from NewPipe: https://github.com/TeamNewPipe/NewPipe
-        val standardSpeed = super.interpolateOutOfBoundsScroll(
-            recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll
-        )
+        val standardSpeed =
+            super.interpolateOutOfBoundsScroll(
+                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll)
 
-        val clampedAbsVelocity = max(
-            MINIMUM_INITIAL_DRAG_VELOCITY,
-            min(
-                abs(standardSpeed),
-                MAXIMUM_INITIAL_DRAG_VELOCITY
-            )
-        )
+        val clampedAbsVelocity =
+            max(
+                MINIMUM_INITIAL_DRAG_VELOCITY,
+                min(abs(standardSpeed), MAXIMUM_INITIAL_DRAG_VELOCITY))
 
         return clampedAbsVelocity * sign(viewSizeOutOfBounds.toDouble()).toInt()
     }
@@ -94,12 +90,12 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
 
             val bg = holder.bodyView.background as MaterialShapeDrawable
             val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
-            holder.itemView.animate()
+            holder
+                .itemView
+                .animate()
                 .translationZ(elevation)
                 .setDuration(100)
-                .setUpdateListener {
-                    bg.elevation = holder.itemView.translationZ
-                }
+                .setUpdateListener { bg.elevation = holder.itemView.translationZ }
                 .setInterpolator(AccelerateDecelerateInterpolator())
                 .start()
 
@@ -132,7 +128,9 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
             logD("Dropping queue item")
 
             val bg = holder.bodyView.background as MaterialShapeDrawable
-            holder.itemView.animate()
+            holder
+                .itemView
+                .animate()
                 .translationZ(0.0f)
                 .setDuration(100)
                 .setUpdateListener { bg.elevation = holder.itemView.translationZ }
@@ -154,9 +152,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         val from = viewHolder.bindingAdapterPosition
         val to = target.bindingAdapterPosition
 
-        return playbackModel.moveQueueDataItems(from, to) {
-            queueAdapter.moveItems(from, to)
-        }
+        return playbackModel.moveQueueDataItems(from, to) { queueAdapter.moveItems(from, to) }
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -168,8 +164,8 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     override fun isLongPressDragEnabled(): Boolean = false
 
     /**
-     * Add the queue adapter to this callback.
-     * Done because there's a circular dependency between the two objects
+     * Add the queue adapter to this callback. Done because there's a circular dependency between
+     * the two objects
      */
     fun addQueueAdapter(adapter: QueueAdapter) {
         queueAdapter = adapter

@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ViewUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.util
 
 import android.content.res.ColorStateList
@@ -29,10 +28,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 
-/**
- * Converts this color to a single-color [ColorStateList].
- */
-val @receiver:ColorRes Int.stateList get() = ColorStateList.valueOf(this)
+/** Converts this color to a single-color [ColorStateList]. */
+val @receiver:ColorRes Int.stateList
+    get() = ColorStateList.valueOf(this)
 
 /**
  * Apply the recommended spans for a [RecyclerView].
@@ -47,25 +45,24 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
         val mgr = GridLayoutManager(context, spans)
 
         if (shouldBeFullWidth != null) {
-            mgr.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (shouldBeFullWidth(position)) spans else 1
+            mgr.spanSizeLookup =
+                object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (shouldBeFullWidth(position)) spans else 1
+                    }
                 }
-            }
         }
 
         layoutManager = mgr
     }
 }
 
-/**
- * Returns whether a recyclerview can scroll.
- */
+/** Returns whether a recyclerview can scroll. */
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 
 /**
- * Disables drop shadows on a view programmatically in a version-compatible manner.
- * This only works on Android 9 and above. Below that version, shadows will remain visible.
+ * Disables drop shadows on a view programmatically in a version-compatible manner. This only works
+ * on Android 9 and above. Below that version, shadows will remain visible.
  */
 fun View.disableDropShadowCompat() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -77,49 +74,44 @@ fun View.disableDropShadowCompat() {
 }
 
 /**
- * Resolve system bar insets in a version-aware manner. This can be used to apply padding to
- * a view that properly follows all the frustrating changes that were made between 8-11.
+ * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
+ * that properly follows all the frustrating changes that were made between 8-11.
  */
-val WindowInsets.systemBarInsetsCompat: Rect get() {
-    return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            getInsets(WindowInsets.Type.systemBars()).run {
-                Rect(left, top, right, bottom)
+val WindowInsets.systemBarInsetsCompat: Rect
+    get() {
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                getInsets(WindowInsets.Type.systemBars()).run { Rect(left, top, right, bottom) }
+            }
+            else -> {
+                @Suppress("DEPRECATION")
+                Rect(
+                    systemWindowInsetLeft,
+                    systemWindowInsetTop,
+                    systemWindowInsetRight,
+                    systemWindowInsetBottom)
             }
         }
-
-        else -> {
-            @Suppress("DEPRECATION")
-            Rect(
-                systemWindowInsetLeft,
-                systemWindowInsetTop,
-                systemWindowInsetRight,
-                systemWindowInsetBottom
-            )
-        }
     }
-}
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
  * for child views in a way that follows all of the frustrating changes that were made between 8-11.
  */
-fun WindowInsets.replaceSystemBarInsetsCompat(left: Int, top: Int, right: Int, bottom: Int): WindowInsets {
+fun WindowInsets.replaceSystemBarInsetsCompat(
+    left: Int,
+    top: Int,
+    right: Int,
+    bottom: Int
+): WindowInsets {
     return when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
             WindowInsets.Builder(this)
-                .setInsets(
-                    WindowInsets.Type.systemBars(),
-                    Insets.of(left, top, right, bottom)
-                )
+                .setInsets(WindowInsets.Type.systemBars(), Insets.of(left, top, right, bottom))
                 .build()
         }
-
         else -> {
-            @Suppress("DEPRECATION")
-            replaceSystemWindowInsets(
-                left, top, right, bottom
-            )
+            @Suppress("DEPRECATION") replaceSystemWindowInsets(left, top, right, bottom)
         }
     }
 }

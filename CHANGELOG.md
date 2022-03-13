@@ -2,6 +2,9 @@
 
 ## dev [v2.2.3, v2.3.0, or v3.0.0]
 
+#### Dev/Meta
+- Switched to spotless and ktfmt instead of ktlint
+
 ## v2.2.2
 #### What's New
 - New spanish translations and metadata [courtesy of n-berenice]

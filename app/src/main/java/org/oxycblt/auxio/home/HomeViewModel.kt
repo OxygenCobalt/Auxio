@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * HomeViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home
 
 import androidx.lifecycle.LiveData
@@ -42,31 +41,34 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val settingsManager = SettingsManager.getInstance()
 
     private val mSongs = MutableLiveData(listOf<Song>())
-    val songs: LiveData<List<Song>> get() = mSongs
+    val songs: LiveData<List<Song>>
+        get() = mSongs
 
     private val mAlbums = MutableLiveData(listOf<Album>())
-    val albums: LiveData<List<Album>> get() = mAlbums
+    val albums: LiveData<List<Album>>
+        get() = mAlbums
 
     private val mArtists = MutableLiveData(listOf<Artist>())
-    val artists: LiveData<List<Artist>> get() = mArtists
+    val artists: LiveData<List<Artist>>
+        get() = mArtists
 
     private val mGenres = MutableLiveData(listOf<Genre>())
-    val genres: LiveData<List<Genre>> get() = mGenres
+    val genres: LiveData<List<Genre>>
+        get() = mGenres
 
     var tabs: List<DisplayMode> = visibleTabs
         private set
 
     /** Internal getter for getting the visible library tabs */
-    private val visibleTabs: List<DisplayMode> get() = settingsManager.libTabs
-        .filterIsInstance<Tab.Visible>().map { it.mode }
+    private val visibleTabs: List<DisplayMode>
+        get() = settingsManager.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
     private val mCurTab = MutableLiveData(tabs[0])
     val curTab: LiveData<DisplayMode> = mCurTab
 
     /**
-     * Marker to recreate all library tabs, usually initiated by a settings change.
-     * When this flag is set, all tabs (and their respective viewpager fragments) will be
-     * recreated from scratch.
+     * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
+     * is set, all tabs (and their respective viewpager fragments) will be recreated from scratch.
      */
     private val mRecreateTabs = MutableLiveData(false)
     val recreateTabs: LiveData<Boolean> = mRecreateTabs
@@ -86,9 +88,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
-    /**
-     * Update the current tab based off of the new ViewPager position.
-     */
+    /** Update the current tab based off of the new ViewPager position. */
     fun updateCurrentTab(pos: Int) {
         logD("Updating current tab to ${tabs[pos]}")
         mCurTab.value = tabs[pos]
@@ -107,9 +107,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
         }
     }
 
-    /**
-     * Update the currently displayed item's [Sort].
-     */
+    /** Update the currently displayed item's [Sort]. */
     fun updateCurrentSort(sort: Sort) {
         logD("Updating ${mCurTab.value} sort to $sort")
         when (mCurTab.value) {
@@ -117,29 +115,25 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
                 settingsManager.libSongSort = sort
                 mSongs.value = sort.sortSongs(mSongs.value!!)
             }
-
             DisplayMode.SHOW_ALBUMS -> {
                 settingsManager.libAlbumSort = sort
                 mAlbums.value = sort.sortAlbums(mAlbums.value!!)
             }
-
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
                 mArtists.value = sort.sortParents(mArtists.value!!)
             }
-
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
                 mGenres.value = sort.sortParents(mGenres.value!!)
             }
-
             else -> {}
         }
     }
 
     /**
-     * Update the fast scroll state. This is used to control the FAB visibility whenever
-     * the user begins to fast scroll.
+     * Update the fast scroll state. This is used to control the FAB visibility whenever the user
+     * begins to fast scroll.
      */
     fun updateFastScrolling(scrolling: Boolean) {
         mFastScrolling.value = scrolling

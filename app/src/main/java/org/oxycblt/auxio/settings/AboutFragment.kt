@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AboutFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings
 
 import android.content.ActivityNotFoundException
@@ -59,9 +58,7 @@ class AboutFragment : Fragment() {
             insets
         }
 
-        binding.aboutToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+        binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
         binding.aboutVersion.text = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
@@ -69,9 +66,7 @@ class AboutFragment : Fragment() {
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
         homeModel.songs.observe(viewLifecycleOwner) { songs ->
-            binding.aboutSongCount.text = getString(
-                R.string.fmt_songs_loaded, songs.size
-            )
+            binding.aboutSongCount.text = getString(R.string.fmt_songs_loaded, songs.size)
         }
 
         logD("Dialog created")
@@ -79,15 +74,12 @@ class AboutFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * Go through the process of opening a [link] in a browser.
-     */
+    /** Go through the process of opening a [link] in a browser. */
     private fun openLinkInBrowser(link: String) {
         logD("Opening $link")
 
-        val browserIntent = Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(
-            Intent.FLAG_ACTIVITY_NEW_TASK
-        )
+        val browserIntent =
+            Intent(Intent.ACTION_VIEW, link.toUri()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android 11 seems to now handle the app chooser situations on its own now
@@ -104,9 +96,12 @@ class AboutFragment : Fragment() {
             // not work in all cases, especially when no default app was set. If that is the
             // case, we will try to manually handle these cases before we try to launch the
             // browser.
-            val pkgName = requireContext().packageManager.resolveActivity(
-                browserIntent, PackageManager.MATCH_DEFAULT_ONLY
-            )?.activityInfo?.packageName
+            val pkgName =
+                requireContext()
+                    .packageManager
+                    .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
+                    ?.activityInfo
+                    ?.packageName
 
             if (pkgName != null) {
                 if (pkgName == "android") {
@@ -130,9 +125,10 @@ class AboutFragment : Fragment() {
     }
 
     private fun openAppChooser(intent: Intent) {
-        val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-            .putExtra(Intent.EXTRA_INTENT, intent)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val chooserIntent =
+            Intent(Intent.ACTION_CHOOSER)
+                .putExtra(Intent.EXTRA_INTENT, intent)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         startActivity(chooserIntent)
     }

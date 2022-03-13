@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MainActivity.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio
 
 import android.content.Intent
@@ -39,10 +38,8 @@ import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * The single [AppCompatActivity] for Auxio.
- * TODO: Add a new view for crashes with a stack trace
- * TODO: Custom language support
- * TODO: Rework menus [perhaps add multi-select]
+ * The single [AppCompatActivity] for Auxio. TODO: Add a new view for crashes with a stack trace
+ * TODO: Custom language support TODO: Rework menus [perhaps add multi-select]
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()
@@ -52,9 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         setupTheme()
 
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(
-            this, R.layout.activity_main
-        )
+        val binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         applyEdgeToEdgeWindow(binding)
 
@@ -82,9 +78,7 @@ class MainActivity : AppCompatActivity() {
             if (action == Intent.ACTION_VIEW && !isConsumed) {
                 // Mark the intent as used so this does not fire again
                 intent.putExtra(KEY_INTENT_USED, true)
-                intent.data?.let { fileUri ->
-                    playbackModel.playWithUri(fileUri, this)
-                }
+                intent.data?.let { fileUri -> playbackModel.playWithUri(fileUri, this) }
             }
         }
     }
@@ -129,12 +123,10 @@ class MainActivity : AppCompatActivity() {
                 WindowInsets.Builder()
                     .setInsets(
                         WindowInsets.Type.systemBars(),
-                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-                    )
+                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars()))
                     .setInsets(
                         WindowInsets.Type.systemGestures(),
-                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures())
-                    )
+                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures()))
                     .build()
                     .applyLeftRightInsets(binding)
             }
@@ -144,12 +136,10 @@ class MainActivity : AppCompatActivity() {
 
             @Suppress("DEPRECATION")
             binding.root.apply {
-                systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                systemUiVisibility =
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
-                setOnApplyWindowInsetsListener { _, insets ->
-                    insets.applyLeftRightInsets(binding)
-                }
+                setOnApplyWindowInsetsListener { _, insets -> insets.applyLeftRightInsets(binding) }
             }
         }
     }
@@ -157,10 +147,7 @@ class MainActivity : AppCompatActivity() {
     private fun WindowInsets.applyLeftRightInsets(binding: ViewBinding): WindowInsets {
         val bars = systemBarInsetsCompat
 
-        binding.root.updatePadding(
-            left = bars.left,
-            right = bars.right
-        )
+        binding.root.updatePadding(left = bars.left, right = bars.right)
 
         return replaceSystemBarInsetsCompat(0, bars.top, 0, bars.bottom)
     }

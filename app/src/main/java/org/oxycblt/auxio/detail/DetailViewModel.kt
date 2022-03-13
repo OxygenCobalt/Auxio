@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * DetailViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import android.view.View
@@ -47,22 +46,26 @@ class DetailViewModel : ViewModel() {
     // --- CURRENT VALUES ---
 
     private val mCurGenre = MutableLiveData<Genre?>()
-    val curGenre: LiveData<Genre?> get() = mCurGenre
+    val curGenre: LiveData<Genre?>
+        get() = mCurGenre
 
     private val mGenreData = MutableLiveData(listOf<Item>())
     val genreData: LiveData<List<Item>> = mGenreData
 
     private val mCurArtist = MutableLiveData<Artist?>()
-    val curArtist: LiveData<Artist?> get() = mCurArtist
+    val curArtist: LiveData<Artist?>
+        get() = mCurArtist
 
     private val mArtistData = MutableLiveData(listOf<Item>())
     val artistData: LiveData<List<Item>> = mArtistData
 
     private val mCurAlbum = MutableLiveData<Album?>()
-    val curAlbum: LiveData<Album?> get() = mCurAlbum
+    val curAlbum: LiveData<Album?>
+        get() = mCurAlbum
 
     private val mAlbumData = MutableLiveData(listOf<Item>())
-    val albumData: LiveData<List<Item>> get() = mAlbumData
+    val albumData: LiveData<List<Item>>
+        get() = mAlbumData
 
     data class MenuConfig(val anchor: View, val sortMode: Sort)
 
@@ -72,7 +75,8 @@ class DetailViewModel : ViewModel() {
     private val mNavToItem = MutableLiveData<Item?>()
 
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
-    val navToItem: LiveData<Item?> get() = mNavToItem
+    val navToItem: LiveData<Item?>
+        get() = mNavToItem
 
     var isNavigating = false
         private set
@@ -101,10 +105,7 @@ class DetailViewModel : ViewModel() {
         refreshAlbumData()
     }
 
-    /**
-     * Mark that the menu process is done with the new [Sort].
-     * Pass null if there was no change.
-     */
+    /** Mark that the menu process is done with the new [Sort]. Pass null if there was no change. */
     fun finishShowMenu(newMode: Sort?) {
         mShowMenu.value = null
 
@@ -130,23 +131,17 @@ class DetailViewModel : ViewModel() {
         currentMenuContext = null
     }
 
-    /**
-     * Navigate to an item, whether a song/album/artist
-     */
+    /** Navigate to an item, whether a song/album/artist */
     fun navToItem(item: Item) {
         mNavToItem.value = item
     }
 
-    /**
-     * Mark that the navigation process is done.
-     */
+    /** Mark that the navigation process is done. */
     fun finishNavToItem() {
         mNavToItem.value = null
     }
 
-    /**
-     * Update the current navigation status to [isNavigating]
-     */
+    /** Update the current navigation status to [isNavigating] */
     fun setNavigating(navigating: Boolean) {
         isNavigating = navigating
     }
@@ -165,9 +160,7 @@ class DetailViewModel : ViewModel() {
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_GENRES
                     mShowMenu.value = MenuConfig(view, settingsManager.detailGenreSort)
-                }
-            )
-        )
+                }))
 
         data.addAll(settingsManager.detailGenreSort.sortGenre(curGenre.value!!))
 
@@ -179,12 +172,7 @@ class DetailViewModel : ViewModel() {
         val artist = requireNotNull(curArtist.value)
         val data = mutableListOf<Item>(artist)
 
-        data.add(
-            Header(
-                id = -2,
-                string = R.string.lbl_albums
-            )
-        )
+        data.add(Header(id = -2, string = R.string.lbl_albums))
 
         data.addAll(Sort.ByYear(false).sortAlbums(artist.albums))
 
@@ -197,9 +185,7 @@ class DetailViewModel : ViewModel() {
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_ARTISTS
                     mShowMenu.value = MenuConfig(view, settingsManager.detailArtistSort)
-                }
-            )
-        )
+                }))
 
         data.addAll(settingsManager.detailArtistSort.sortArtist(artist))
 
@@ -220,9 +206,7 @@ class DetailViewModel : ViewModel() {
                 onClick = { view ->
                     currentMenuContext = DisplayMode.SHOW_ALBUMS
                     mShowMenu.value = MenuConfig(view, settingsManager.detailAlbumSort)
-                }
-            )
-        )
+                }))
 
         data.addAll(settingsManager.detailAlbumSort.sortAlbum(curAlbum.value!!))
 

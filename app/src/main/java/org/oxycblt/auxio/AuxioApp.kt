@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AuxioApp.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio
 
 import android.app.Application
@@ -31,10 +30,12 @@ import org.oxycblt.auxio.settings.SettingsManager
 
 /**
  * TODO: Plan for a general UI rework
+ * ```
  *       - Refactor fragment class
  *       - Remove databinding and dedup layouts
  *       - Rework RecyclerView management and item dragging
  *       - Rework sealed classes to minimize whens and maximize overrides
+ * ```
  */
 @Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {

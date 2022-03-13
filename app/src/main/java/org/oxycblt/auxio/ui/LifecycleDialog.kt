@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * LifecycleDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import android.app.Dialog
@@ -27,8 +26,8 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
- * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle
- * override [onCreateView] and [onDestroyView], but with a proper dialog being created.
+ * A wrapper around [DialogFragment] that allows the usage of the standard Auxio lifecycle override
+ * [onCreateView] and [onDestroyView], but with a proper dialog being created.
  */
 abstract class LifecycleDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

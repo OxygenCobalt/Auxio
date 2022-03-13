@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * EdgeRecyclerView.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -26,14 +25,11 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-/**
- * A [RecyclerView] that automatically applies insets to itself.
- */
-class EdgeRecyclerView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0
-) : RecyclerView(context, attrs, defStyleAttr) {
+/** A [RecyclerView] that automatically applies insets to itself. */
+class EdgeRecyclerView
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
+    RecyclerView(context, attrs, defStyleAttr) {
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
         return insets

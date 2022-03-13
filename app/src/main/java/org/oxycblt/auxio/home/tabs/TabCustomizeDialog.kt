@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * CustomizeListDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.tabs
 
 import android.os.Bundle
@@ -32,8 +31,8 @@ import org.oxycblt.auxio.ui.LifecycleDialog
 import org.oxycblt.auxio.util.logD
 
 /**
- * The dialog for customizing library tabs. This dialog does not rely on any specific ViewModel
- * and serializes it's state instead of
+ * The dialog for customizing library tabs. This dialog does not rely on any specific ViewModel and
+ * serializes it's state instead of
  * @author OxygenCobalt
  */
 class TabCustomizeDialog : LifecycleDialog() {
@@ -58,27 +57,28 @@ class TabCustomizeDialog : LifecycleDialog() {
         // Set up adapter & drag callback
         val callback = TabDragCallback { pendingTabs }
         val helper = ItemTouchHelper(callback)
-        val tabAdapter = TabAdapter(
-            helper,
-            getTabs = { pendingTabs },
-            onTabSwitch = { tab ->
-                // Don't find the specific tab [Which might be outdated due to the nature
-                // of how ViewHolders are bound], but instead simply look for the mode in
-                // the list of pending tabs and update that instead.
-                val index = pendingTabs.indexOfFirst { it.mode == tab.mode }
-                if (index != -1) {
-                    val curTab = pendingTabs[index]
-                    logD("Updating tab $curTab to $tab")
-                    pendingTabs[index] = when (curTab) {
-                        is Tab.Visible -> Tab.Invisible(curTab.mode)
-                        is Tab.Invisible -> Tab.Visible(curTab.mode)
+        val tabAdapter =
+            TabAdapter(
+                helper,
+                getTabs = { pendingTabs },
+                onTabSwitch = { tab ->
+                    // Don't find the specific tab [Which might be outdated due to the nature
+                    // of how ViewHolders are bound], but instead simply look for the mode in
+                    // the list of pending tabs and update that instead.
+                    val index = pendingTabs.indexOfFirst { it.mode == tab.mode }
+                    if (index != -1) {
+                        val curTab = pendingTabs[index]
+                        logD("Updating tab $curTab to $tab")
+                        pendingTabs[index] =
+                            when (curTab) {
+                                is Tab.Visible -> Tab.Invisible(curTab.mode)
+                                is Tab.Invisible -> Tab.Visible(curTab.mode)
+                            }
                     }
-                }
 
-                (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                    pendingTabs.filterIsInstance<Tab.Visible>().isNotEmpty()
-            }
-        )
+                    (requireDialog() as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                        .isEnabled = pendingTabs.filterIsInstance<Tab.Visible>().isNotEmpty()
+                })
 
         callback.addTabAdapter(tabAdapter)
 

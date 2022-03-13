@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * Sort.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import androidx.annotation.IdRes
@@ -53,15 +52,15 @@ sealed class Sort(open val isAscending: Boolean) {
     /** Sort by the year of an item, only supported by [Album] and [Song] */
     class ByYear(override val isAscending: Boolean) : Sort(isAscending)
 
-    /**
-     * Get the corresponding item id for this sort.
-     */
-    val itemId: Int get() = when (this) {
-        is ByName -> R.id.option_sort_name
-        is ByArtist -> R.id.option_sort_artist
-        is ByAlbum -> R.id.option_sort_album
-        is ByYear -> R.id.option_sort_year
-    }
+    /** Get the corresponding item id for this sort. */
+    val itemId: Int
+        get() =
+            when (this) {
+                is ByName -> R.id.option_sort_name
+                is ByArtist -> R.id.option_sort_artist
+                is ByAlbum -> R.id.option_sort_album
+                is ByYear -> R.id.option_sort_year
+            }
 
     /**
      * Apply [ascending] to the status of this sort.
@@ -100,10 +99,10 @@ sealed class Sort(open val isAscending: Boolean) {
     fun sortSongs(songs: Collection<Song>): List<Song> {
         return when (this) {
             is ByName -> songs.stringSort { it.name }
-
-            else -> sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
-                album.songs.intSort(true) { it.track ?: 0 }
-            }
+            else ->
+                sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
+                    album.songs.intSort(true) { it.track ?: 0 }
+                }
         }
     }
 
@@ -117,10 +116,10 @@ sealed class Sort(open val isAscending: Boolean) {
     fun sortAlbums(albums: Collection<Album>): List<Album> {
         return when (this) {
             is ByName, is ByAlbum -> albums.stringSort { it.resolvedName }
-
-            is ByArtist -> sortParents(albums.groupBy { it.artist }.keys)
-                .flatMap { ByYear(false).sortAlbums(it.albums) }
-
+            is ByArtist ->
+                sortParents(albums.groupBy { it.artist }.keys).flatMap {
+                    ByYear(false).sortAlbums(it.albums)
+                }
             is ByYear -> albums.intSort { it.year ?: 0 }
         }
     }
@@ -158,9 +157,7 @@ sealed class Sort(open val isAscending: Boolean) {
         return sortSongs(genre.songs)
     }
 
-    /**
-     * Convert this sort to it's integer representation.
-     */
+    /** Convert this sort to it's integer representation. */
     fun toInt(): Int {
         return when (this) {
             is ByName -> INT_NAME
@@ -175,15 +172,14 @@ sealed class Sort(open val isAscending: Boolean) {
         selector: (T) -> String
     ): List<T> {
         // Chain whatever item call with sliceArticle for correctness
-        val chained: (T) -> String = {
-            selector(it).sliceArticle()
-        }
+        val chained: (T) -> String = { selector(it).sliceArticle() }
 
-        val comparator = if (asc) {
-            compareBy(String.CASE_INSENSITIVE_ORDER, chained)
-        } else {
-            compareByDescending(String.CASE_INSENSITIVE_ORDER, chained)
-        }
+        val comparator =
+            if (asc) {
+                compareBy(String.CASE_INSENSITIVE_ORDER, chained)
+            } else {
+                compareByDescending(String.CASE_INSENSITIVE_ORDER, chained)
+            }
 
         return sortedWith(comparator)
     }
@@ -192,11 +188,12 @@ sealed class Sort(open val isAscending: Boolean) {
         asc: Boolean = isAscending,
         selector: (T) -> Int,
     ): List<T> {
-        val comparator = if (asc) {
-            compareBy(selector)
-        } else {
-            compareByDescending(selector)
-        }
+        val comparator =
+            if (asc) {
+                compareBy(selector)
+            } else {
+                compareByDescending(selector)
+            }
 
         return sortedWith(comparator)
     }
@@ -227,9 +224,9 @@ sealed class Sort(open val isAscending: Boolean) {
 }
 
 /**
- * Slice a string so that any preceding articles like The/A(n) are truncated.
- * This is hilariously anglo-centric, but its mostly for MediaStore compat and hopefully
- * shouldn't run with other languages.
+ * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
+ * anglo-centric, but its mostly for MediaStore compat and hopefully shouldn't run with other
+ * languages.
  */
 fun String.sliceArticle(): String {
     if (length > 5 && startsWith("the ", true)) {

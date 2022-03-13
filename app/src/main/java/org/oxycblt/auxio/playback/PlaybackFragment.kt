@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback
 
 import android.os.Bundle
@@ -38,8 +37,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
- * @author OxygenCobalt
- * TODO: Handle RTL correctly in the playback buttons
+ * @author OxygenCobalt TODO: Handle RTL correctly in the playback buttons
  */
 class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -66,18 +64,13 @@ class PlaybackFragment : Fragment() {
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
 
-            binding.root.updatePadding(
-                top = bars.top,
-                bottom = bars.bottom
-            )
+            binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
 
             insets
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener {
-                navigateUp()
-            }
+            setNavigationOnClickListener { navigateUp() }
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_queue) {
@@ -96,9 +89,7 @@ class PlaybackFragment : Fragment() {
         binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
 
         // Abuse the play/pause FAB (see style definition for more info)
-        binding.playbackPlayPause.post {
-            binding.playbackPlayPause.stateListAnimator = null
-        }
+        binding.playbackPlayPause.post { binding.playbackPlayPause.stateListAnimator = null }
 
         // --- VIEWMODEL SETUP --
 
@@ -114,8 +105,8 @@ class PlaybackFragment : Fragment() {
         }
 
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            binding.playbackToolbar.subtitle = parent?.resolvedName
-                ?: getString(R.string.lbl_all_songs)
+            binding.playbackToolbar.subtitle =
+                parent?.resolvedName ?: getString(R.string.lbl_all_songs)
         }
 
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
@@ -123,11 +114,12 @@ class PlaybackFragment : Fragment() {
         }
 
         playbackModel.loopMode.observe(viewLifecycleOwner) { loopMode ->
-            val resId = when (loopMode) {
-                LoopMode.NONE, null -> R.drawable.ic_loop
-                LoopMode.ALL -> R.drawable.ic_loop_on
-                LoopMode.TRACK -> R.drawable.ic_loop_one
-            }
+            val resId =
+                when (loopMode) {
+                    LoopMode.NONE, null -> R.drawable.ic_loop
+                    LoopMode.ALL -> R.drawable.ic_loop_on
+                    LoopMode.TRACK -> R.drawable.ic_loop_one
+                }
 
             binding.playbackLoop.apply {
                 isActivated = loopMode != LoopMode.NONE

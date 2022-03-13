@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * MusicUtils.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music
 
 import android.text.format.DateUtils
@@ -30,8 +29,8 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * Convert a [Long] of seconds into a string duration.
- * @param isElapsed Whether this duration is represents elapsed time. If this is false, then
- * --:-- will be returned if the second value is 0.
+ * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
+ * will be returned if the second value is 0.
  */
 fun Long.toDuration(isElapsed: Boolean): String {
     if (!isElapsed && this == 0L) {
@@ -58,11 +57,7 @@ fun TextView.bindSongInfo(song: Song?) {
         return
     }
 
-    text = context.getString(
-        R.string.fmt_two,
-        song.resolvedArtistName,
-        song.resolvedAlbumName
-    )
+    text = context.getString(R.string.fmt_two, song.resolvedArtistName, song.resolvedAlbumName)
 }
 
 @BindingAdapter("albumInfo")
@@ -72,11 +67,11 @@ fun TextView.bindAlbumInfo(album: Album?) {
         return
     }
 
-    text = context.getString(
-        R.string.fmt_two,
-        album.resolvedArtistName,
-        context.getPluralSafe(R.plurals.fmt_song_count, album.songs.size)
-    )
+    text =
+        context.getString(
+            R.string.fmt_two,
+            album.resolvedArtistName,
+            context.getPluralSafe(R.plurals.fmt_song_count, album.songs.size))
 }
 
 @BindingAdapter("artistInfo")
@@ -86,11 +81,11 @@ fun TextView.bindArtistInfo(artist: Artist?) {
         return
     }
 
-    text = context.getString(
-        R.string.fmt_two,
-        context.getPluralSafe(R.plurals.fmt_album_count, artist.albums.size),
-        context.getPluralSafe(R.plurals.fmt_song_count, artist.songs.size)
-    )
+    text =
+        context.getString(
+            R.string.fmt_two,
+            context.getPluralSafe(R.plurals.fmt_album_count, artist.albums.size),
+            context.getPluralSafe(R.plurals.fmt_song_count, artist.songs.size))
 }
 
 @BindingAdapter("genreInfo")

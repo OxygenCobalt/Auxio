@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.coil
 
 import android.content.Context
@@ -5,6 +22,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.media.MediaMetadataRetriever
+import android.util.Size as AndroidSize
 import androidx.core.graphics.drawable.toDrawable
 import coil.decode.DataSource
 import coil.decode.ImageSource
@@ -20,6 +38,8 @@ import com.google.android.exoplayer2.MediaMetadata
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.flac.PictureFrame
 import com.google.android.exoplayer2.metadata.id3.ApicFrame
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
@@ -28,22 +48,17 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import android.util.Size as AndroidSize
 
 /**
  * The base implementation for all image fetchers in Auxio.
- * @author OxygenCobalt
- * TODO: Artist images
+ * @author OxygenCobalt TODO: Artist images
  */
 abstract class BaseFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
 
     /**
-     * Fetch the artwork of an [album].
-     * This call respects user configuration and has proper redundancy in the case that
-     * an API fails to load.
+     * Fetch the artwork of an [album]. This call respects user configuration and has proper
+     * redundancy in the case that an API fails to load.
      */
     protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
         if (!settingsManager.showCovers) {
@@ -67,9 +82,7 @@ abstract class BaseFetcher : Fetcher {
         val uri = data.albumCoverUri
 
         // Eliminate any chance that this blocking call might mess up the cancellation process
-        return withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(uri)
-        }
+        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
     }
 
     private suspend fun fetchQualityCovers(context: Context, album: Album): InputStream? {
@@ -115,17 +128,13 @@ abstract class BaseFetcher : Fetcher {
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
             // If its null [i.e there is no embedded cover], than just ignore it and move on
-            return ext.embeddedPicture?.let { coverBytes ->
-                ByteArrayInputStream(coverBytes)
-            }
+            return ext.embeddedPicture?.let { coverBytes -> ByteArrayInputStream(coverBytes) }
         }
     }
 
     private suspend fun fetchExoplayerCover(context: Context, album: Album): InputStream? {
         val uri = album.songs[0].uri
-        val future = MetadataRetriever.retrieveMetadata(
-            context, MediaItem.fromUri(uri)
-        )
+        val future = MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(uri))
 
         // future.get is a blocking call that makes us spin until the future is done.
         // This is bad for a co-routine, as it prevents cancellation and by extension
@@ -133,13 +142,14 @@ abstract class BaseFetcher : Fetcher {
         // To fix this we wrap this around in a withContext call to make it suspend and make
         // sure that the runner can do other coroutines.
         @Suppress("BlockingMethodInNonBlockingContext")
-        val tracks = withContext(Dispatchers.IO) {
-            try {
-                future.get()
-            } catch (e: Exception) {
-                null
+        val tracks =
+            withContext(Dispatchers.IO) {
+                try {
+                    future.get()
+                } catch (e: Exception) {
+                    null
+                }
             }
-        }
 
         if (tracks == null || tracks.isEmpty) {
             // Unrecognized format. This is expected, as ExoPlayer only supports a
@@ -201,14 +211,17 @@ abstract class BaseFetcher : Fetcher {
      * Create a mosaic image from multiple streams of image data, Code adapted from Phonograph
      * https://github.com/kabouzeid/Phonograph
      */
-    protected suspend fun createMosaic(context: Context, streams: List<InputStream>, size: Size): FetchResult? {
+    protected suspend fun createMosaic(
+        context: Context,
+        streams: List<InputStream>,
+        size: Size
+    ): FetchResult? {
         if (streams.size < 4) {
             return streams.firstOrNull()?.let { stream ->
                 return SourceResult(
                     source = ImageSource(stream.source().buffer(), context),
                     mimeType = null,
-                    dataSource = DataSource.DISK
-                )
+                    dataSource = DataSource.DISK)
             }
         }
 
@@ -216,15 +229,11 @@ abstract class BaseFetcher : Fetcher {
         // get a symmetrical mosaic [and to prevent bugs]. If there is no size, default to a
         // 512x512 mosaic.
         val mosaicSize = AndroidSize(size.width.mosaicSize(), size.height.mosaicSize())
-        val mosaicFrameSize = Size(
-            Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2)
-        )
+        val mosaicFrameSize =
+            Size(Dimension(mosaicSize.width / 2), Dimension(mosaicSize.height / 2))
 
-        val mosaicBitmap = Bitmap.createBitmap(
-            mosaicSize.width,
-            mosaicSize.height,
-            Bitmap.Config.ARGB_8888
-        )
+        val mosaicBitmap =
+            Bitmap.createBitmap(mosaicSize.width, mosaicSize.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(mosaicBitmap)
 
         var x = 0
@@ -239,11 +248,9 @@ abstract class BaseFetcher : Fetcher {
 
             // Run the bitmap through a transform to make sure it's a square of the desired
             // resolution.
-            val bitmap = SquareFrameTransform.INSTANCE
-                .transform(
-                    BitmapFactory.decodeStream(stream),
-                    mosaicFrameSize
-                )
+            val bitmap =
+                SquareFrameTransform.INSTANCE.transform(
+                    BitmapFactory.decodeStream(stream), mosaicFrameSize)
 
             canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
 
@@ -261,8 +268,7 @@ abstract class BaseFetcher : Fetcher {
         return DrawableResult(
             drawable = mosaicBitmap.toDrawable(context.resources),
             isSampled = true,
-            dataSource = DataSource.DISK
-        )
+            dataSource = DataSource.DISK)
     }
 
     private fun Dimension.mosaicSize(): Int {

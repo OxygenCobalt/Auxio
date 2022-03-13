@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ActionMenu.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import android.view.View
@@ -52,12 +51,11 @@ fun Fragment.newMenu(anchor: View, data: Item, flag: Int = ActionMenu.FLAG_NONE)
  * @param activity [AppCompatActivity] required as both a context and ViewModelStore owner.
  * @param anchor [View] This should be centered around
  * @param data [Item] this menu corresponds to
- * @param flag Any extra flags to accompany the data. See [FLAG_NONE], [FLAG_IN_ALBUM], [FLAG_IN_ARTIST], [FLAG_IN_GENRE] for more details.
+ * @param flag Any extra flags to accompany the data. See [FLAG_NONE], [FLAG_IN_ALBUM],
+ * [FLAG_IN_ARTIST], [FLAG_IN_GENRE] for more details.
  * @throws IllegalStateException When there is no menu for this specific datatype/flag
- * @author OxygenCobalt
- * TODO: Stop scrolling when a menu is open
- * TODO: Prevent duplicate menus from showing up
- * TODO: Maybe replace this with a bottom sheet?
+ * @author OxygenCobalt TODO: Stop scrolling when a menu is open TODO: Prevent duplicate menus from
+ * showing up TODO: Maybe replace this with a bottom sheet?
  */
 class ActionMenu(
     activity: AppCompatActivity,
@@ -98,9 +96,7 @@ class ActionMenu(
         }
     }
 
-    /**
-     * Figure out what menu to use here, based on the data & flags
-     */
+    /** Figure out what menu to use here, based on the data & flags */
     @MenuRes
     private fun determineMenu(): Int {
         return when (data) {
@@ -109,31 +105,23 @@ class ActionMenu(
                     FLAG_NONE, FLAG_IN_GENRE -> R.menu.menu_song_actions
                     FLAG_IN_ALBUM -> R.menu.menu_album_song_actions
                     FLAG_IN_ARTIST -> R.menu.menu_artist_song_actions
-
                     else -> -1
                 }
             }
-
             is Album -> {
                 when (flag) {
                     FLAG_NONE -> R.menu.menu_album_actions
                     FLAG_IN_ARTIST -> R.menu.menu_artist_album_actions
-
                     else -> -1
                 }
             }
-
             is Artist -> R.menu.menu_artist_actions
-
             is Genre -> R.menu.menu_genre_actions
-
             else -> -1
         }
     }
 
-    /**
-     * Determine what to do when a MenuItem is clicked.
-     */
+    /** Determine what to do when a MenuItem is clicked. */
     private fun onMenuClick(@IdRes id: Int) {
         when (id) {
             R.id.action_play -> {
@@ -141,59 +129,48 @@ class ActionMenu(
                     is Album -> playbackModel.playAlbum(data, false)
                     is Artist -> playbackModel.playArtist(data, false)
                     is Genre -> playbackModel.playGenre(data, false)
-
                     else -> {}
                 }
             }
-
             R.id.action_shuffle -> {
                 when (data) {
                     is Album -> playbackModel.playAlbum(data, true)
                     is Artist -> playbackModel.playArtist(data, true)
                     is Genre -> playbackModel.playGenre(data, true)
-
                     else -> {}
                 }
             }
-
             R.id.action_play_next -> {
                 when (data) {
                     is Song -> {
                         playbackModel.playNext(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
-
                     is Album -> {
                         playbackModel.playNext(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
-
                     else -> {}
                 }
             }
-
             R.id.action_queue_add -> {
                 when (data) {
                     is Song -> {
                         playbackModel.addToQueue(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
-
                     is Album -> {
                         playbackModel.addToQueue(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
-
                     else -> {}
                 }
             }
-
             R.id.action_go_album -> {
                 if (data is Song) {
                     detailModel.navToItem(data.album)
                 }
             }
-
             R.id.action_go_artist -> {
                 if (data is Song) {
                     detailModel.navToItem(data.album.artist)
@@ -205,13 +182,22 @@ class ActionMenu(
     }
 
     companion object {
-        /** No Flags **/
+        /** No Flags */
         const val FLAG_NONE = -1
-        /** Flag for when a menu is opened from an artist (See [org.oxycblt.auxio.detail.ArtistDetailFragment]) **/
+        /**
+         * Flag for when a menu is opened from an artist (See
+         * [org.oxycblt.auxio.detail.ArtistDetailFragment])
+         */
         const val FLAG_IN_ARTIST = 0
-        /** Flag for when a menu is opened from an album (See [org.oxycblt.auxio.detail.AlbumDetailFragment]) **/
+        /**
+         * Flag for when a menu is opened from an album (See
+         * [org.oxycblt.auxio.detail.AlbumDetailFragment])
+         */
         const val FLAG_IN_ALBUM = 1
-        /** Flag for when a menu is opened from a genre (See [org.oxycblt.auxio.detail.GenreDetailFragment]) **/
+        /**
+         * Flag for when a menu is opened from a genre (See
+         * [org.oxycblt.auxio.detail.GenreDetailFragment])
+         */
         const val FLAG_IN_GENRE = 2
     }
 }

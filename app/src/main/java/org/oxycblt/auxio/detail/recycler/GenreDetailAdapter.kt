@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * GenreDetailAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
@@ -60,16 +59,13 @@ class GenreDetailAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GENRE_DETAIL_ITEM_TYPE -> GenreDetailViewHolder(
-                ItemDetailBinding.inflate(parent.context.inflater)
-            )
-
-            GENRE_SONG_ITEM_TYPE -> GenreSongViewHolder(
-                ItemGenreSongBinding.inflate(parent.context.inflater),
-            )
-
+            GENRE_DETAIL_ITEM_TYPE ->
+                GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
+            GENRE_SONG_ITEM_TYPE ->
+                GenreSongViewHolder(
+                    ItemGenreSongBinding.inflate(parent.context.inflater),
+                )
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
-
             else -> error("Bad ViewHolder item type $viewType")
         }
     }
@@ -110,9 +106,7 @@ class GenreDetailAdapter(
 
         if (song != null) {
             // Use existing data instead of having to re-sort it.
-            val pos = currentList.indexOfFirst { item ->
-                item.id == song.id && item is Song
-            }
+            val pos = currentList.indexOfFirst { item -> item.id == song.id && item is Song }
 
             // Check if the ViewHolder for this song is visible, if it is then highlight it.
             // If the ViewHolder is not visible, then the adapter should take care of it if
@@ -126,31 +120,23 @@ class GenreDetailAdapter(
         }
     }
 
-    inner class GenreDetailViewHolder(
-        private val binding: ItemDetailBinding
-    ) : BaseViewHolder<Genre>(binding) {
+    inner class GenreDetailViewHolder(private val binding: ItemDetailBinding) :
+        BaseViewHolder<Genre>(binding) {
         override fun onBind(data: Genre) {
             val context = binding.root.context
 
             binding.detailCover.apply {
                 bindGenreImage(data)
-                contentDescription = context.getString(
-                    R.string.desc_genre_image,
-                    data.resolvedName
-                )
+                contentDescription = context.getString(R.string.desc_genre_image, data.resolvedName)
             }
 
             binding.detailName.text = data.resolvedName
             binding.detailSubhead.bindGenreInfo(data)
             binding.detailInfo.text = data.totalDuration
 
-            binding.detailPlayButton.setOnClickListener {
-                playbackModel.playGenre(data, false)
-            }
+            binding.detailPlayButton.setOnClickListener { playbackModel.playGenre(data, false) }
 
-            binding.detailShuffleButton.setOnClickListener {
-                playbackModel.playGenre(data, true)
-            }
+            binding.detailShuffleButton.setOnClickListener { playbackModel.playGenre(data, true) }
         }
     }
 

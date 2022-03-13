@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * BlacklistDatabase.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.excluded
 
 import android.content.ContentValues
@@ -28,9 +27,9 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
 
 /**
- * Database for storing excluded directories.
- * Note that the paths stored here will not work with MediaStore unless you append a "%" at the end.
- * Yes. I know Room exists. But that would needlessly bloat my app and has crippling bugs.
+ * Database for storing excluded directories. Note that the paths stored here will not work with
+ * MediaStore unless you append a "%" at the end. Yes. I know Room exists. But that would needlessly
+ * bloat my app and has crippling bugs.
  * @author OxygenCobalt
  */
 class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
@@ -47,9 +46,7 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
         onUpgrade(db, newVersion, oldVersion)
     }
 
-    /**
-     * Write a list of [paths] to the database.
-     */
+    /** Write a list of [paths] to the database. */
     fun writePaths(paths: List<String>) {
         assertBackgroundThread()
 
@@ -58,21 +55,14 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
             logD("Deleted paths db")
 
             for (path in paths) {
-                insert(
-                    TABLE_NAME, null,
-                    ContentValues(1).apply {
-                        put(COLUMN_PATH, path)
-                    }
-                )
+                insert(TABLE_NAME, null, ContentValues(1).apply { put(COLUMN_PATH, path) })
             }
 
             logD("Successfully wrote ${paths.size} paths to db")
         }
     }
 
-    /**
-     * Get the current list of paths from the database.
-     */
+    /** Get the current list of paths from the database. */
     fun readPaths(): List<String> {
         assertBackgroundThread()
 
@@ -97,12 +87,9 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
         const val TABLE_NAME = "blacklist_dirs_table"
         const val COLUMN_PATH = "COLUMN_PATH"
 
-        @Volatile
-        private var INSTANCE: ExcludedDatabase? = null
+        @Volatile private var INSTANCE: ExcludedDatabase? = null
 
-        /**
-         * Get/Instantiate the single instance of [ExcludedDatabase].
-         */
+        /** Get/Instantiate the single instance of [ExcludedDatabase]. */
         fun getInstance(context: Context): ExcludedDatabase {
             val currentInstance = INSTANCE
 

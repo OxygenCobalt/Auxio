@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * LoopMode.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.state
 
 /**
@@ -23,11 +22,11 @@ package org.oxycblt.auxio.playback.state
  * @author OxygenCobalt
  */
 enum class LoopMode {
-    NONE, ALL, TRACK;
+    NONE,
+    ALL,
+    TRACK;
 
-    /**
-     * Increment the LoopMode, e.g from [NONE] to [ALL]
-     */
+    /** Increment the LoopMode, e.g from [NONE] to [ALL] */
     fun increment(): LoopMode {
         return when (this) {
             NONE -> ALL
@@ -53,15 +52,12 @@ enum class LoopMode {
         private const val INT_ALL = 0xA101
         private const val INT_TRACK = 0xA102
 
-        /**
-         * Convert an int [constant] into a LoopMode, or null if it isn't valid.
-         */
+        /** Convert an int [constant] into a LoopMode, or null if it isn't valid. */
         fun fromInt(constant: Int): LoopMode? {
             return when (constant) {
                 INT_NONE -> NONE
                 INT_ALL -> ALL
                 INT_TRACK -> TRACK
-
                 else -> null
             }
         }

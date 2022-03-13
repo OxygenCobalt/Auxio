@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AlbumDetailAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail.recycler
 
 import android.view.View
@@ -63,16 +62,11 @@ class AlbumDetailAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ALBUM_DETAIL_ITEM_TYPE -> AlbumDetailViewHolder(
-                ItemDetailBinding.inflate(parent.context.inflater)
-            )
-
-            ALBUM_SONG_ITEM_TYPE -> AlbumSongViewHolder(
-                ItemAlbumSongBinding.inflate(parent.context.inflater)
-            )
-
+            ALBUM_DETAIL_ITEM_TYPE ->
+                AlbumDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
+            ALBUM_SONG_ITEM_TYPE ->
+                AlbumSongViewHolder(ItemAlbumSongBinding.inflate(parent.context.inflater))
             ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
-
             else -> error("Invalid ViewHolder item type $viewType")
         }
     }
@@ -84,8 +78,7 @@ class AlbumDetailAdapter(
             is Album -> (holder as AlbumDetailViewHolder).bind(item)
             is Song -> (holder as AlbumSongViewHolder).bind(item)
             is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-            else -> {
-            }
+            else -> {}
         }
 
         if (holder is Highlightable) {
@@ -114,9 +107,7 @@ class AlbumDetailAdapter(
 
         if (song != null) {
             // Use existing data instead of having to re-sort it.
-            val pos = currentList.indexOfFirst { item ->
-                item.id == song.id && item is Song
-            }
+            val pos = currentList.indexOfFirst { item -> item.id == song.id && item is Song }
 
             // Check if the ViewHolder for this song is visible, if it is then highlight it.
             // If the ViewHolder is not visible, then the adapter should take care of it if
@@ -130,9 +121,8 @@ class AlbumDetailAdapter(
         }
     }
 
-    inner class AlbumDetailViewHolder(
-        private val binding: ItemDetailBinding
-    ) : BaseViewHolder<Album>(binding) {
+    inner class AlbumDetailViewHolder(private val binding: ItemDetailBinding) :
+        BaseViewHolder<Album>(binding) {
 
         override fun onBind(data: Album) {
             binding.detailCover.apply {
@@ -144,27 +134,21 @@ class AlbumDetailAdapter(
 
             binding.detailSubhead.apply {
                 text = data.artist.resolvedName
-                setOnClickListener {
-                    detailModel.navToItem(data.artist)
-                }
+                setOnClickListener { detailModel.navToItem(data.artist) }
             }
 
             binding.detailInfo.apply {
-                text = context.getString(
-                    R.string.fmt_three,
-                    data.year?.toString() ?: context.getString(R.string.def_date),
-                    context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size),
-                    data.totalDuration
-                )
+                text =
+                    context.getString(
+                        R.string.fmt_three,
+                        data.year?.toString() ?: context.getString(R.string.def_date),
+                        context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size),
+                        data.totalDuration)
             }
 
-            binding.detailPlayButton.setOnClickListener {
-                playbackModel.playAlbum(data, false)
-            }
+            binding.detailPlayButton.setOnClickListener { playbackModel.playAlbum(data, false) }
 
-            binding.detailShuffleButton.setOnClickListener {
-                playbackModel.playAlbum(data, true)
-            }
+            binding.detailShuffleButton.setOnClickListener { playbackModel.playAlbum(data, true) }
         }
     }
 

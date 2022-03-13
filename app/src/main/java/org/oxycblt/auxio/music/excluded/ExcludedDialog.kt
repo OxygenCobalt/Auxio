@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * BlacklistDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.excluded
 
 import android.net.Uri
@@ -57,13 +56,10 @@ class ExcludedDialog : LifecycleDialog() {
     ): View {
         val binding = DialogExcludedBinding.inflate(inflater)
 
-        val adapter = ExcludedEntryAdapter { path ->
-            excludedModel.removePath(path)
-        }
+        val adapter = ExcludedEntryAdapter { path -> excludedModel.removePath(path) }
 
-        val launcher = registerForActivityResult(
-            ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath
-        )
+        val launcher =
+            registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
 
         // --- UI SETUP ---
 
@@ -131,9 +127,9 @@ class ExcludedDialog : LifecycleDialog() {
 
     private fun parseDocTreePath(uri: Uri): String? {
         // Turn the raw URI into a document tree URI
-        val docUri = DocumentsContract.buildDocumentUriUsingTree(
-            uri, DocumentsContract.getTreeDocumentId(uri)
-        )
+        val docUri =
+            DocumentsContract.buildDocumentUriUsingTree(
+                uri, DocumentsContract.getTreeDocumentId(uri))
 
         // Turn it into a semi-usable path
         val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
@@ -153,15 +149,11 @@ class ExcludedDialog : LifecycleDialog() {
 
     private fun saveAndRestart() {
         excludedModel.save {
-            playbackModel.savePlaybackState(requireContext()) {
-                requireContext().hardRestart()
-            }
+            playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
         }
     }
 
-    /**
-     * Get *just* the root path, nothing else is really needed.
-     */
+    /** Get *just* the root path, nothing else is really needed. */
     private fun getRootPath(): String {
         return Environment.getExternalStorageDirectory().absolutePath
     }

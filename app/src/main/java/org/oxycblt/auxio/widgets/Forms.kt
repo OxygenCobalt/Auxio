@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * Forms.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
@@ -28,8 +27,8 @@ import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
 /**
- * The default widget is displayed whenever there is no music playing. It just shows the
- * message "No music playing".
+ * The default widget is displayed whenever there is no music playing. It just shows the message "No
+ * music playing".
  */
 fun createDefaultWidget(context: Context): RemoteViews {
     return createViews(context, R.layout.widget_default)
@@ -46,9 +45,9 @@ fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
 }
 
 /**
- * The small widget is for 2x2 widgets and just shows the cover art and playback controls.
- * This is generally because a Medium widget is too large for this widget size and a text-only
- * widget is too small for this widget size.
+ * The small widget is for 2x2 widgets and just shows the cover art and playback controls. This is
+ * generally because a Medium widget is too large for this widget size and a text-only widget is too
+ * small for this widget size.
  */
 fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_small)
@@ -57,8 +56,8 @@ fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
 }
 
 /**
- * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three
- * controls. This is the default widget configuration.
+ * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three controls.
+ * This is the default widget configuration.
  */
 fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_medium)
@@ -66,34 +65,24 @@ fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
         .applyBasicControls(context, state)
 }
 
-/**
- * The wide widget is for Nx2 widgets and is like the small widget but with more controls.
- */
+/** The wide widget is for Nx2 widgets and is like the small widget but with more controls. */
 fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_wide)
         .applyCover(context, state)
         .applyFullControls(context, state)
 }
 
-/**
- * The large widget is for 3x4 widgets and shows all metadata and controls.
- */
+/** The large widget is for 3x4 widgets and shows all metadata and controls. */
 fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_large)
         .applyMeta(context, state)
         .applyFullControls(context, state)
 }
 
-private fun createViews(
-    context: Context,
-    @LayoutRes layout: Int
-): RemoteViews {
+private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layout)
 
-    views.setOnClickPendingIntent(
-        android.R.id.background,
-        context.newMainIntent()
-    )
+    views.setOnClickPendingIntent(android.R.id.background, context.newMainIntent())
 
     return views
 }
@@ -112,8 +101,7 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
         setImageViewBitmap(R.id.widget_cover, state.albumArt)
         setContentDescription(
             R.id.widget_cover,
-            context.getString(R.string.desc_album_cover, state.song.resolvedAlbumName)
-        )
+            context.getString(R.string.desc_album_cover, state.song.resolvedAlbumName))
     } else {
         setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
@@ -124,11 +112,7 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
 
 private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState): RemoteViews {
     setOnClickPendingIntent(
-        R.id.widget_play_pause,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_PLAY_PAUSE
-        )
-    )
+        R.id.widget_play_pause, context.newBroadcastIntent(PlaybackService.ACTION_PLAY_PAUSE))
 
     setImageViewResource(
         R.id.widget_play_pause,
@@ -136,8 +120,7 @@ private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState):
             R.drawable.ic_pause
         } else {
             R.drawable.ic_play
-        }
-    )
+        })
 
     return this
 }
@@ -146,18 +129,10 @@ private fun RemoteViews.applyBasicControls(context: Context, state: WidgetState)
     applyPlayControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_skip_prev,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_SKIP_PREV
-        )
-    )
+        R.id.widget_skip_prev, context.newBroadcastIntent(PlaybackService.ACTION_SKIP_PREV))
 
     setOnClickPendingIntent(
-        R.id.widget_skip_next,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_SKIP_NEXT
-        )
-    )
+        R.id.widget_skip_next, context.newBroadcastIntent(PlaybackService.ACTION_SKIP_NEXT))
 
     return this
 }
@@ -166,31 +141,25 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
     applyBasicControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_loop,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_LOOP
-        )
-    )
+        R.id.widget_loop, context.newBroadcastIntent(PlaybackService.ACTION_LOOP))
 
     setOnClickPendingIntent(
-        R.id.widget_shuffle,
-        context.newBroadcastIntent(
-            PlaybackService.ACTION_SHUFFLE
-        )
-    )
+        R.id.widget_shuffle, context.newBroadcastIntent(PlaybackService.ACTION_SHUFFLE))
 
     // Like notifications, use the remote variants of icons since we really don't want to hack
     // indicators.
-    val shuffleRes = when {
-        state.isShuffled -> R.drawable.ic_remote_shuffle_on
-        else -> R.drawable.ic_remote_shuffle_off
-    }
+    val shuffleRes =
+        when {
+            state.isShuffled -> R.drawable.ic_remote_shuffle_on
+            else -> R.drawable.ic_remote_shuffle_off
+        }
 
-    val loopRes = when (state.loopMode) {
-        LoopMode.NONE -> R.drawable.ic_remote_loop_off
-        LoopMode.ALL -> R.drawable.ic_loop_on
-        LoopMode.TRACK -> R.drawable.ic_loop_one
-    }
+    val loopRes =
+        when (state.loopMode) {
+            LoopMode.NONE -> R.drawable.ic_remote_loop_off
+            LoopMode.ALL -> R.drawable.ic_loop_on
+            LoopMode.TRACK -> R.drawable.ic_loop_one
+        }
 
     setImageViewResource(R.id.widget_shuffle, shuffleRes)
     setImageViewResource(R.id.widget_loop, loopRes)

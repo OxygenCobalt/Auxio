@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.detail
 
 import android.animation.ValueAnimator
@@ -12,24 +29,23 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import java.lang.Exception
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.EdgeAppBarLayout
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
-import java.lang.Exception
 
 /**
  * An [EdgeAppBarLayout] variant that also shows the name of the toolbar whenever the detail
  * recyclerview is scrolled beyond it's first item (a.k.a the header). This is used instead of
- * CollapsingToolbarLayout since that thing is a mess with crippling bugs and state issues.
- * This just works.
+ * CollapsingToolbarLayout since that thing is a mess with crippling bugs and state issues. This
+ * just works.
  * @author OxygenCobalt
  */
-class DetailAppBarLayout @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0
-) : EdgeAppBarLayout(context, attrs, defStyleAttr) {
+class DetailAppBarLayout
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
+    EdgeAppBarLayout(context, attrs, defStyleAttr) {
     private var mTitleView: AppCompatTextView? = null
     private var mRecycler: RecyclerView? = null
 
@@ -50,16 +66,17 @@ class DetailAppBarLayout @JvmOverloads constructor(
         val toolbar = findViewById<Toolbar>(R.id.detail_toolbar)
 
         // Reflect to get the actual title view to do transformations on
-        val newTitleView = try {
-            Toolbar::class.java.getDeclaredField("mTitleTextView").run {
-                isAccessible = true
-                get(toolbar) as AppCompatTextView
+        val newTitleView =
+            try {
+                Toolbar::class.java.getDeclaredField("mTitleTextView").run {
+                    isAccessible = true
+                    get(toolbar) as AppCompatTextView
+                }
+            } catch (e: Exception) {
+                logE("Could not get toolbar title view (likely an internal code change)")
+                e.logTraceOrThrow()
+                return null
             }
-        } catch (e: Exception) {
-            logE("Could not get toolbar title view (likely an internal code change)")
-            e.logTraceOrThrow()
-            return null
-        }
 
         newTitleView.alpha = 0f
         mTitleView = newTitleView
@@ -103,21 +120,21 @@ class DetailAppBarLayout @JvmOverloads constructor(
 
         if (titleView?.alpha == to) return
 
-        mTitleAnimator = ValueAnimator.ofFloat(from, to).apply {
-            addUpdateListener {
-                titleView?.alpha = it.animatedValue as Float
+        mTitleAnimator =
+            ValueAnimator.ofFloat(from, to).apply {
+                addUpdateListener { titleView?.alpha = it.animatedValue as Float }
+
+                duration =
+                    resources.getInteger(R.integer.detail_app_bar_title_anim_duration).toLong()
+
+                start()
             }
-
-            duration = resources.getInteger(R.integer.detail_app_bar_title_anim_duration).toLong()
-
-            start()
-        }
     }
 
-    class Behavior @JvmOverloads constructor(
-        context: Context? = null,
-        attrs: AttributeSet? = null
-    ) : AppBarLayout.Behavior(context, attrs) {
+    class Behavior
+    @JvmOverloads
+    constructor(context: Context? = null, attrs: AttributeSet? = null) :
+        AppBarLayout.Behavior(context, attrs) {
         override fun onNestedPreScroll(
             coordinatorLayout: CoordinatorLayout,
             child: AppBarLayout,
@@ -132,8 +149,8 @@ class DetailAppBarLayout @JvmOverloads constructor(
             val appBar = child as DetailAppBarLayout
             val recycler = appBar.findRecyclerView()
 
-            val showTitle = (recycler.layoutManager as LinearLayoutManager)
-                .findFirstVisibleItemPosition() > 0
+            val showTitle =
+                (recycler.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() > 0
 
             appBar.setTitleVisibility(showTitle)
         }

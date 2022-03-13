@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * BlacklistEntryAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.excluded
 
 import android.annotation.SuppressLint
@@ -28,9 +27,8 @@ import org.oxycblt.auxio.util.inflater
  * Adapter that shows the excluded directories and their "Clear" button.
  * @author OxygenCobalt
  */
-class ExcludedEntryAdapter(
-    private val onClear: (String) -> Unit
-) : RecyclerView.Adapter<ExcludedEntryAdapter.ViewHolder>() {
+class ExcludedEntryAdapter(private val onClear: (String) -> Unit) :
+    RecyclerView.Adapter<ExcludedEntryAdapter.ViewHolder>() {
     private var paths = mutableListOf<String>()
 
     override fun getItemCount() = paths.size
@@ -49,21 +47,18 @@ class ExcludedEntryAdapter(
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(
-        private val binding: ItemExcludedDirBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemExcludedDirBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.root.layoutParams = RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT
-            )
+            binding.root.layoutParams =
+                RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         }
 
         fun bind(path: String) {
             binding.excludedPath.text = path
             binding.excludedPath.requestLayout()
-            binding.excludedClear.setOnClickListener {
-                onClear(path)
-            }
+            binding.excludedClear.setOnClickListener { onClear(path) }
         }
     }
 }

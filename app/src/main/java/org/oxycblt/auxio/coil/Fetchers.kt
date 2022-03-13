@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * Fetchers.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.coil
 
 import android.content.Context
@@ -27,6 +26,7 @@ import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.request.Options
 import coil.size.Size
+import kotlin.math.min
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
@@ -34,23 +34,19 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.Sort
-import kotlin.math.min
 
 /**
  * Fetcher that returns the album art for a given [Album] or [Song], depending on the factory used.
  * @author OxygenCobalt
  */
-class AlbumArtFetcher private constructor(
-    private val context: Context,
-    private val album: Album
-) : BaseFetcher() {
+class AlbumArtFetcher private constructor(private val context: Context, private val album: Album) :
+    BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         return fetchArt(context, album)?.let { stream ->
             SourceResult(
                 source = ImageSource(stream.source().buffer(), context),
                 mimeType = null,
-                dataSource = DataSource.DISK
-            )
+                dataSource = DataSource.DISK)
         }
     }
 
@@ -71,17 +67,15 @@ class AlbumArtFetcher private constructor(
  * Fetcher that fetches the image for an [Artist]
  * @author OxygenCobalt
  */
-class ArtistImageFetcher private constructor(
+class ArtistImageFetcher
+private constructor(
     private val context: Context,
     private val size: Size,
     private val artist: Artist,
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val albums = Sort.ByName(true)
-            .sortAlbums(artist.albums)
-        val results = albums.mapAtMost(4) { album ->
-            fetchArt(context, album)
-        }
+        val albums = Sort.ByName(true).sortAlbums(artist.albums)
+        val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
 
         return createMosaic(context, results, size)
     }
@@ -97,7 +91,8 @@ class ArtistImageFetcher private constructor(
  * Fetcher that fetches the image for a [Genre]
  * @author OxygenCobalt
  */
-class GenreImageFetcher private constructor(
+class GenreImageFetcher
+private constructor(
     private val context: Context,
     private val size: Size,
     private val genre: Genre,
@@ -105,9 +100,7 @@ class GenreImageFetcher private constructor(
     override suspend fun fetch(): FetchResult? {
         // We don't need to sort here, as the way we
         val albums = genre.songs.groupBy { it.album }.keys
-        val results = albums.mapAtMost(4) { album ->
-            fetchArt(context, album)
-        }
+        val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
 
         return createMosaic(context, results, size)
     }
@@ -120,10 +113,13 @@ class GenreImageFetcher private constructor(
 }
 
 /**
- * Map at most [n] items from a collection. [transform] is called for each item that is eligible.
- * If null is returned, then that item will be skipped.
+ * Map at most [n] items from a collection. [transform] is called for each item that is eligible. If
+ * null is returned, then that item will be skipped.
  */
-private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(n: Int, transform: (T) -> R?): List<R> {
+private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(
+    n: Int,
+    transform: (T) -> R?
+): List<R> {
     val until = min(size, n)
     val out = mutableListOf<R>()
 
@@ -132,9 +128,7 @@ private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(n: Int, transform:
             break
         }
 
-        transform(item)?.let {
-            out.add(it)
-        }
+        transform(item)?.let { out.add(it) }
     }
 
     return out

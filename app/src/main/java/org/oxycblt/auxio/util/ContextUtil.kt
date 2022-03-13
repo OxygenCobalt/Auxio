@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ContextUtil.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.util
 
 import android.app.PendingIntent
@@ -39,30 +38,28 @@ import androidx.annotation.PluralsRes
 import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import org.oxycblt.auxio.MainActivity
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
+import org.oxycblt.auxio.MainActivity
 
 const val INTENT_REQUEST_CODE = 0xA0A0
 
-/**
- * Shortcut to get a [LayoutInflater] from a [Context]
- */
-val Context.inflater: LayoutInflater get() = LayoutInflater.from(this)
+/** Shortcut to get a [LayoutInflater] from a [Context] */
+val Context.inflater: LayoutInflater
+    get() = LayoutInflater.from(this)
 
 /**
- * Returns whether the current UI is in night mode or not. This will work if the theme is
- * automatic as well.
+ * Returns whether the current UI is in night mode or not. This will work if the theme is automatic
+ * as well.
  */
-val Context.isNight: Boolean get() =
-    resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
-        Configuration.UI_MODE_NIGHT_YES
+val Context.isNight: Boolean
+    get() =
+        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+            Configuration.UI_MODE_NIGHT_YES
 
-/**
- * Returns if this device is in landscape.
- */
-val Context.isLandscape get() =
-    resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+/** Returns if this device is in landscape. */
+val Context.isLandscape
+    get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
 /**
  * Convenience method for getting a plural.
@@ -117,11 +114,12 @@ fun Context.getAttrColorSafe(@AttrRes attr: Int): Int {
     theme.resolveAttribute(attr, resolvedAttr, true)
 
     // Then convert it to a proper color
-    val color = if (resolvedAttr.resourceId != 0) {
-        resolvedAttr.resourceId
-    } else {
-        resolvedAttr.data
-    }
+    val color =
+        if (resolvedAttr.resourceId != 0) {
+            resolvedAttr.resourceId
+        } else {
+            resolvedAttr.data
+        }
 
     return getColorSafe(color)
 }
@@ -183,9 +181,8 @@ fun Context.getDimenOffsetSafe(@DimenRes dimen: Int): Int {
 
 @Px
 fun Context.pxOfDp(@Dimension dp: Float): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics
-    ).toInt()
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+        .toInt()
 }
 
 private fun <T> Context.handleResourceFailure(e: Exception, what: String, default: T): T {
@@ -207,46 +204,37 @@ fun <T : Any> Context.getSystemServiceSafe(serviceClass: KClass<T>): T {
     }
 }
 
-/**
- * Create a toast using the provided string resource.
- */
+/** Create a toast using the provided string resource. */
 fun Context.showToast(@StringRes str: Int) {
     Toast.makeText(applicationContext, getString(str), Toast.LENGTH_SHORT).show()
 }
 
-/**
- * Create a [PendingIntent] that leads to Auxio's [MainActivity]
- */
+/** Create a [PendingIntent] that leads to Auxio's [MainActivity] */
 fun Context.newMainIntent(): PendingIntent {
     return PendingIntent.getActivity(
-        this, INTENT_REQUEST_CODE, Intent(this, MainActivity::class.java),
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            PendingIntent.FLAG_IMMUTABLE
-        else 0
-    )
+        this,
+        INTENT_REQUEST_CODE,
+        Intent(this, MainActivity::class.java),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 }
 
-/**
- * Create a broadcast [PendingIntent]
- */
+/** Create a broadcast [PendingIntent] */
 fun Context.newBroadcastIntent(what: String): PendingIntent {
     return PendingIntent.getBroadcast(
-        this, INTENT_REQUEST_CODE, Intent(what),
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            PendingIntent.FLAG_IMMUTABLE
-        else 0
-    )
+        this,
+        INTENT_REQUEST_CODE,
+        Intent(what),
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 }
 
-/**
- * Hard-restarts the app. Useful for forcing the app to reload music.
- */
+/** Hard-restarts the app. Useful for forcing the app to reload music. */
 fun Context.hardRestart() {
     // Instead of having to do a ton of cleanup and horrible code changes
     // to restart this application non-destructively, I just restart the UI task [There is only
     // one, after all] and then kill the application using exitProcess. Works well enough.
-    val intent = Intent(applicationContext, MainActivity::class.java)
-        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    val intent =
+        Intent(applicationContext, MainActivity::class.java)
+            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
     startActivity(intent)
     exitProcess(0)
 }

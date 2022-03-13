@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackService.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.system
 
 import android.app.NotificationManager
@@ -69,11 +68,12 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * - Headset management
  * - Widgets
  *
- * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback],
- * so therefore there's no need to bind to it to deliver commands.
+ * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
+ * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  */
-class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
+class PlaybackService :
+    Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
     // Player components
     private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
@@ -126,22 +126,20 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 .setUsage(C.USAGE_MEDIA)
                 .setContentType(C.CONTENT_TYPE_MUSIC)
                 .build(),
-            false
-        )
+            false)
 
-        audioReactor = AudioReactor(this) { volume ->
-            logD("Updating player volume to $volume")
-            player.volume = volume
-        }
+        audioReactor =
+            AudioReactor(this) { volume ->
+                logD("Updating player volume to $volume")
+                player.volume = volume
+            }
 
         // --- SYSTEM SETUP ---
 
         widgets = WidgetController(this)
 
         // Set up the media button callbacks
-        mediaSession = MediaSessionCompat(this, packageName).apply {
-            isActive = true
-        }
+        mediaSession = MediaSessionCompat(this, packageName).apply { isActive = true }
 
         connector = PlaybackSessionConnector(this, player, mediaSession)
 
@@ -215,7 +213,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
             Player.STATE_READY -> startPolling()
-
             Player.STATE_ENDED -> {
                 if (playbackManager.loopMode == LoopMode.TRACK) {
                     playbackManager.loop()
@@ -223,7 +220,6 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                     playbackManager.next()
                 }
             }
-
             else -> {}
         }
     }
@@ -347,17 +343,14 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
 
     // --- OTHER FUNCTIONS ---
 
-    /**
-     * Create the [ExoPlayer] instance.
-     */
+    /** Create the [ExoPlayer] instance. */
     private fun newPlayer(): ExoPlayer {
         // Since Auxio is a music player, only specify an audio renderer to save
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
                 MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener),
-                LibflacAudioRenderer(handler, audioListener)
-            )
+                LibflacAudioRenderer(handler, audioListener))
         }
 
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable
@@ -369,9 +362,7 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             .build()
     }
 
-    /**
-     * Fully restore the notification and playback state
-     */
+    /** Fully restore the notification and playback state */
     private fun restore() {
         logD("Restoring the service state")
 
@@ -387,16 +378,16 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
         widgets.update()
     }
 
-    /**
-     * Start polling the position on a coroutine.
-     */
+    /** Start polling the position on a coroutine. */
     private fun startPolling() {
-        val pollFlow = flow {
-            while (true) {
-                emit(player.currentPosition)
-                delay(POS_POLL_INTERVAL)
-            }
-        }.conflate()
+        val pollFlow =
+            flow {
+                    while (true) {
+                        emit(player.currentPosition)
+                        delay(POS_POLL_INTERVAL)
+                    }
+                }
+                .conflate()
 
         serviceScope.launch {
             pollFlow.takeWhile { player.isPlaying }.collect { pos ->
@@ -416,9 +407,9 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 // Specify that this is a media service, if supported.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(
-                        PlaybackNotification.NOTIFICATION_ID, notification.build(),
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
-                    )
+                        PlaybackNotification.NOTIFICATION_ID,
+                        notification.build(),
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
                 } else {
                     startForeground(PlaybackNotification.NOTIFICATION_ID, notification.build())
                 }
@@ -427,24 +418,19 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
             } else {
                 // If we are already in foreground just update the notification
                 notificationManager.notify(
-                    PlaybackNotification.NOTIFICATION_ID, notification.build()
-                )
+                    PlaybackNotification.NOTIFICATION_ID, notification.build())
             }
         }
     }
 
-    /**
-     * Stop the foreground state and hide the notification
-     */
+    /** Stop the foreground state and hide the notification */
     private fun stopForegroundAndNotification() {
         stopForeground(true)
         notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
         isForeground = false
     }
 
-    /**
-     * A [BroadcastReceiver] for receiving general playback events from the system.
-     */
+    /** A [BroadcastReceiver] for receiving general playback events from the system. */
     private inner class PlaybackReceiver : BroadcastReceiver() {
         private var initialHeadsetPlugEventHandled = false
 
@@ -477,56 +463,44 @@ class PlaybackService : Service(), Player.Listener, PlaybackStateManager.Callbac
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
-                ACTION_PLAY_PAUSE -> playbackManager.setPlaying(
-                    !playbackManager.isPlaying
-                )
-
-                ACTION_LOOP -> playbackManager.setLoopMode(
-                    playbackManager.loopMode.increment()
-                )
-
-                ACTION_SHUFFLE -> playbackManager.setShuffling(
-                    !playbackManager.isShuffling, keepSong = true
-                )
-
+                ACTION_PLAY_PAUSE -> playbackManager.setPlaying(!playbackManager.isPlaying)
+                ACTION_LOOP -> playbackManager.setLoopMode(playbackManager.loopMode.increment())
+                ACTION_SHUFFLE ->
+                    playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
-
                 ACTION_EXIT -> {
                     playbackManager.setPlaying(false)
                     stopForegroundAndNotification()
                 }
-
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
             }
         }
 
         /**
-         * Resume from a headset plug event in the case that the quirk is enabled.
-         * This functionality remains a quirk for two reasons:
-         * 1. Automatically resuming more or less overrides all other audio streams, which
-         * is not that friendly
-         * 2. There is a bug where playback will always start when this service starts, mostly
-         * due to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but
-         * I fear that it may not work on OEM skins that for whatever reason don't make this
-         * action fire.
-         * TODO: Figure out how players like Retro are able to get autoplay working with
-         *  bluetooth headsets
+         * Resume from a headset plug event in the case that the quirk is enabled. This
+         * functionality remains a quirk for two reasons:
+         * 1. Automatically resuming more or less overrides all other audio streams, which is not
+         * that friendly
+         * 2. There is a bug where playback will always start when this service starts, mostly due
+         * to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but I fear
+         * that it may not work on OEM skins that for whatever reason don't make this action fire.
+         * TODO: Figure out how players like Retro are able to get autoplay working with bluetooth
+         * headsets
          */
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
                 settingsManager.headsetAutoplay &&
-                initialHeadsetPlugEventHandled
-            ) {
+                initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
                 playbackManager.setPlaying(true)
             }
         }
 
         /**
-         * Pause from a headset plug.
-         * TODO: Find a way to centralize this stuff into a single BroadcastReciever instead
-         *  of the weird disjointed arrangement between MediaSession and this.
+         * Pause from a headset plug. TODO: Find a way to centralize this stuff into a single
+         * BroadcastReciever instead of the weird disjointed arrangement between MediaSession and
+         * this.
          */
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {

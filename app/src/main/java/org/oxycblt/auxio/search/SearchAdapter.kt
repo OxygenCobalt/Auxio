@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SearchAdapter.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.search
 
 import android.view.View
@@ -58,24 +57,15 @@ class SearchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GenreViewHolder.ITEM_TYPE -> GenreViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
-            ArtistViewHolder.ITEM_TYPE -> ArtistViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
-            AlbumViewHolder.ITEM_TYPE -> AlbumViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
-            SongViewHolder.ITEM_TYPE -> SongViewHolder.from(
-                parent.context, doOnClick, doOnLongClick
-            )
-
+            GenreViewHolder.ITEM_TYPE ->
+                GenreViewHolder.from(parent.context, doOnClick, doOnLongClick)
+            ArtistViewHolder.ITEM_TYPE ->
+                ArtistViewHolder.from(parent.context, doOnClick, doOnLongClick)
+            AlbumViewHolder.ITEM_TYPE ->
+                AlbumViewHolder.from(parent.context, doOnClick, doOnLongClick)
+            SongViewHolder.ITEM_TYPE ->
+                SongViewHolder.from(parent.context, doOnClick, doOnLongClick)
             HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-
             else -> error("Invalid ViewHolder item type")
         }
     }

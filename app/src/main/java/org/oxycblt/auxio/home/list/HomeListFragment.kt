@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * HomeListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.list
 
 import android.annotation.SuppressLint
@@ -38,9 +37,7 @@ abstract class HomeListFragment : Fragment() {
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
-    /**
-     * The popup provider to use for the fast scroller view.
-     */
+    /** The popup provider to use for the fast scroller view. */
     abstract val listPopupProvider: (Int) -> String
 
     protected fun <T : Item, VH : RecyclerView.ViewHolder> setupRecycler(
@@ -56,18 +53,15 @@ abstract class HomeListFragment : Fragment() {
             applySpans()
 
             popupProvider = listPopupProvider
-            onDragListener = { dragging ->
-                homeModel.updateFastScrolling(dragging)
-            }
+            onDragListener = { dragging -> homeModel.updateFastScrolling(dragging) }
         }
 
         // Make sure that this RecyclerView has data before startup
-        homeData.observe(viewLifecycleOwner) { data ->
-            homeAdapter.updateData(data)
-        }
+        homeData.observe(viewLifecycleOwner) { data -> homeAdapter.updateData(data) }
     }
 
-    abstract class HomeAdapter<T : Item, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+    abstract class HomeAdapter<T : Item, VH : RecyclerView.ViewHolder> :
+        RecyclerView.Adapter<VH>() {
         protected var data = listOf<T>()
 
         @SuppressLint("NotifyDataSetChanged")

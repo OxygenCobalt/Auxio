@@ -1,8 +1,23 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback.system
 
-/**
- * Represents the current setting for ReplayGain.
- */
+/** Represents the current setting for ReplayGain. */
 enum class ReplayGainMode {
     /** Do not apply ReplayGain. */
     OFF,
@@ -13,9 +28,7 @@ enum class ReplayGainMode {
     /** Apply the album gain only when playing from an album, defaulting to track gain otherwise. */
     DYNAMIC;
 
-    /**
-     * Converts this type to an integer constant.
-     */
+    /** Converts this type to an integer constant. */
     fun toInt(): Int {
         return when (this) {
             OFF -> INT_OFF
@@ -31,9 +44,7 @@ enum class ReplayGainMode {
         private const val INT_ALBUM = 0xA112
         private const val INT_DYNAMIC = 0xA113
 
-        /**
-         * Converts an integer constant to this type.
-         */
+        /** Converts an integer constant to this type. */
         fun fromInt(value: Int): ReplayGainMode? {
             return when (value) {
                 INT_OFF -> OFF

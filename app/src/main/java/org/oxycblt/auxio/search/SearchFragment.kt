@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SearchFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.search
 
 import android.os.Bundle
@@ -67,24 +66,21 @@ class SearchFragment : Fragment() {
 
         val imm = requireContext().getSystemServiceSafe(InputMethodManager::class)
 
-        val searchAdapter = SearchAdapter(
-            doOnClick = { item ->
-                onItemSelection(item, imm)
-            },
-            ::newMenu
-        )
+        val searchAdapter =
+            SearchAdapter(doOnClick = { item -> onItemSelection(item, imm) }, ::newMenu)
         // --- UI SETUP --
 
         binding.lifecycleOwner = viewLifecycleOwner
 
         binding.searchToolbar.apply {
-            val itemId = when (searchModel.filterMode) {
-                DisplayMode.SHOW_SONGS -> R.id.option_filter_songs
-                DisplayMode.SHOW_ALBUMS -> R.id.option_filter_albums
-                DisplayMode.SHOW_ARTISTS -> R.id.option_filter_artists
-                DisplayMode.SHOW_GENRES -> R.id.option_filter_genres
-                null -> R.id.option_filter_all
-            }
+            val itemId =
+                when (searchModel.filterMode) {
+                    DisplayMode.SHOW_SONGS -> R.id.option_filter_songs
+                    DisplayMode.SHOW_ALBUMS -> R.id.option_filter_albums
+                    DisplayMode.SHOW_ARTISTS -> R.id.option_filter_artists
+                    DisplayMode.SHOW_GENRES -> R.id.option_filter_genres
+                    null -> R.id.option_filter_all
+                }
 
             menu.findItem(itemId).isChecked = true
 
@@ -114,9 +110,7 @@ class SearchFragment : Fragment() {
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
                 requestFocus()
-                postDelayed(200) {
-                    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-                }
+                postDelayed(200) { imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT) }
 
                 launchedKeyboard = true
             }
@@ -125,9 +119,7 @@ class SearchFragment : Fragment() {
         binding.searchRecycler.apply {
             adapter = searchAdapter
 
-            applySpans { pos ->
-                searchAdapter.currentList[pos] is Header
-            }
+            applySpans { pos -> searchAdapter.currentList[pos] is Header }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -148,15 +140,14 @@ class SearchFragment : Fragment() {
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            findNavController().navigate(
-                when (item) {
-                    is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
-                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
-                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-
-                    else -> return@observe
-                }
-            )
+            findNavController()
+                .navigate(
+                    when (item) {
+                        is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
+                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
+                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                        else -> return@observe
+                    })
 
             imm.hide()
         }
@@ -177,8 +168,7 @@ class SearchFragment : Fragment() {
     }
 
     /**
-     * Function that handles when an [item] is selected.
-     * Handles all datatypes that are selectable.
+     * Function that handles when an [item] is selected. Handles all datatypes that are selectable.
      */
     private fun onItemSelection(item: Music, imm: InputMethodManager) {
         if (item is Song) {
@@ -192,20 +182,20 @@ class SearchFragment : Fragment() {
 
             logD("Navigating to the detail fragment for ${item.name}")
 
-            findNavController().navigate(
-                when (item) {
-                    is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
-                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
+            findNavController()
+                .navigate(
+                    when (item) {
+                        is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
+                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
 
-                    // If given model wasn't valid, then reset the navigation status
-                    // and abort the navigation.
-                    else -> {
-                        searchModel.setNavigating(false)
-                        return
-                    }
-                }
-            )
+                        // If given model wasn't valid, then reset the navigation status
+                        // and abort the navigation.
+                        else -> {
+                            searchModel.setNavigating(false)
+                            return
+                        }
+                    })
 
             imm.hide()
         }

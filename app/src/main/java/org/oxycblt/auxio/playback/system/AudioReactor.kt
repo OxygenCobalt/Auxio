@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AudioReactor.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.system
 
 import android.content.Context
@@ -28,22 +27,20 @@ import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
-import kotlin.math.pow
 
 /**
  * Manages the current volume and playback state across ReplayGain and AudioFocus events.
  * @author OxygenCobalt
  */
-class AudioReactor(
-    context: Context,
-    private val callback: (Float) -> Unit
-) : AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
+class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
+    AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
     private data class Gain(val track: Float, val album: Float)
     private data class GainTag(val key: String, val value: Float)
 
@@ -51,16 +48,16 @@ class AudioReactor(
     private val settingsManager = SettingsManager.getInstance()
     private val audioManager = context.getSystemServiceSafe(AudioManager::class)
 
-    private val request = AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
-        .setWillPauseWhenDucked(false)
-        .setAudioAttributes(
-            AudioAttributesCompat.Builder()
-                .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributesCompat.USAGE_MEDIA)
-                .build()
-        )
-        .setOnAudioFocusChangeListener(this)
-        .build()
+    private val request =
+        AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
+            .setWillPauseWhenDucked(false)
+            .setAudioAttributes(
+                AudioAttributesCompat.Builder()
+                    .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributesCompat.USAGE_MEDIA)
+                    .build())
+            .setOnAudioFocusChangeListener(this)
+            .build()
 
     private var pauseWasTransient = false
 
@@ -82,19 +79,16 @@ class AudioReactor(
         settingsManager.addCallback(this)
     }
 
-    /**
-     * Request the android system for audio focus
-     */
+    /** Request the android system for audio focus */
     fun requestFocus() {
         logD("Requesting audio focus")
         AudioManagerCompat.requestAudioFocus(audioManager, request)
     }
 
     /**
-     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags.
-     * This is based off Vanilla Music's implementation.
-     * TODO: Add ReplayGain pre-amp
-     * TODO: Add positive ReplayGain values
+     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is based off
+     * Vanilla Music's implementation. TODO: Add ReplayGain pre-amp TODO: Add positive ReplayGain
+     * values
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {
@@ -104,49 +98,44 @@ class AudioReactor(
         }
 
         // ReplayGain is configurable, so determine what to do based off of the mode.
-        val useAlbumGain: (Gain) -> Boolean = when (settingsManager.replayGainMode) {
-            ReplayGainMode.OFF -> {
-                logD("ReplayGain is off")
-                volume = 1f
-                return
+        val useAlbumGain: (Gain) -> Boolean =
+            when (settingsManager.replayGainMode) {
+                ReplayGainMode.OFF -> {
+                    logD("ReplayGain is off")
+                    volume = 1f
+                    return
+                }
+
+                // User wants track gain to be preferred. Default to album gain only if there
+                // is no track gain.
+                ReplayGainMode.TRACK -> { gain -> gain.track == 0f }
+
+                // User wants album gain to be preferred. Default to track gain only if there
+                // is no album gain.
+                ReplayGainMode.ALBUM -> { gain -> gain.album != 0f }
+
+                // User wants album gain to be used when in an album, track gain otherwise.
+                ReplayGainMode.DYNAMIC -> { _ ->
+                        playbackManager.parent is Album &&
+                            playbackManager.song?.album == playbackManager.parent
+                    }
             }
-
-            // User wants track gain to be preferred. Default to album gain only if there
-            // is no track gain.
-            ReplayGainMode.TRACK ->
-                { gain ->
-                    gain.track == 0f
-                }
-
-            // User wants album gain to be preferred. Default to track gain only if there
-            // is no album gain.
-            ReplayGainMode.ALBUM ->
-                { gain ->
-                    gain.album != 0f
-                }
-
-            // User wants album gain to be used when in an album, track gain otherwise.
-            ReplayGainMode.DYNAMIC ->
-                { _ ->
-                    playbackManager.parent is Album &&
-                        playbackManager.song?.album == playbackManager.parent
-                }
-        }
 
         val gain = parseReplayGain(metadata)
 
-        val adjust = if (gain != null) {
-            if (useAlbumGain(gain)) {
-                logD("Using album gain")
-                gain.album
+        val adjust =
+            if (gain != null) {
+                if (useAlbumGain(gain)) {
+                    logD("Using album gain")
+                    gain.album
+                } else {
+                    logD("Using track gain")
+                    gain.track
+                }
             } else {
-                logD("Using track gain")
-                gain.track
+                // No gain tags were present
+                0f
             }
-        } else {
-            // No gain tags were present
-            0f
-        }
 
         // Final adjustment along the volume curve.
         // Ensure this is clamped to 0 or 1 so that it can be used as a volume.
@@ -171,12 +160,10 @@ class AudioReactor(
                     key = entry.description?.uppercase()
                     value = entry.value
                 }
-
                 is VorbisComment -> {
                     key = entry.key
                     value = entry.value
                 }
-
                 else -> continue
             }
 
@@ -226,9 +213,7 @@ class AudioReactor(
         }
     }
 
-    /**
-     * Abandon the current focus request and any callbacks
-     */
+    /** Abandon the current focus request and any callbacks */
     fun release() {
         AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
         settingsManager.removeCallback(this)
@@ -302,11 +287,6 @@ class AudioReactor(
         const val R128_TRACK = "R128_TRACK_GAIN"
         const val R128_ALBUM = "R128_ALBUM_GAIN"
 
-        val REPLAY_GAIN_TAGS = arrayOf(
-            RG_TRACK,
-            RG_ALBUM,
-            R128_ALBUM,
-            R128_TRACK
-        )
+        val REPLAY_GAIN_TAGS = arrayOf(RG_TRACK, RG_ALBUM, R128_ALBUM, R128_TRACK)
     }
 }

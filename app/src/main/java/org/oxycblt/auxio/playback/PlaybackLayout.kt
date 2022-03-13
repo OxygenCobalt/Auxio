@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2022 Auxio Project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+ 
 package org.oxycblt.auxio.playback
 
 import android.content.Context
@@ -19,6 +36,9 @@ import androidx.core.view.isInvisible
 import androidx.customview.widget.ViewDragHelper
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.shape.MaterialShapeDrawable
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -32,31 +52,30 @@ import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 /**
- * This layout handles pretty much every aspect of the playback UI flow, notably the playback
- * bar and it's ability to slide up into the playback view. It's a blend of Hai Zhang's
+ * This layout handles pretty much every aspect of the playback UI flow, notably the playback bar
+ * and it's ability to slide up into the playback view. It's a blend of Hai Zhang's
  * PersistentBarLayout and Umano's SlidingUpPanelLayout, albeit heavily minified to remove
  * extraneous use cases and updated to support the latest SDK level and androidx tools.
  *
  * **Note:** If you want to adapt this layout into your own app. Good luck. This layout has been
- * reduced to Auxio's use case in particular and is really hard to understand since it has a ton
- * of state and view magic. I tried my best to document it, but it's probably not the most friendly
- * or extendable. You have been warned.
+ * reduced to Auxio's use case in particular and is really hard to understand since it has a ton of
+ * state and view magic. I tried my best to document it, but it's probably not the most friendly or
+ * extendable. You have been warned.
  *
- * @author OxygenCobalt (With help from Umano and Hai Zhang)
- * TODO: Find a better way to handle PlaybackFragment in general (navigation, creation)
+ * @author OxygenCobalt (With help from Umano and Hai Zhang) TODO: Find a better way to handle
+ * PlaybackFragment in general (navigation, creation)
  */
-class PlaybackLayout @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0
-) : ViewGroup(context, attrs, defStyle) {
+class PlaybackLayout
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+    ViewGroup(context, attrs, defStyle) {
     private enum class PanelState {
-        EXPANDED, COLLAPSED, HIDDEN, DRAGGING
+        EXPANDED,
+        COLLAPSED,
+        HIDDEN,
+        DRAGGING
     }
 
     private lateinit var contentView: View
@@ -67,20 +86,19 @@ class PlaybackLayout @JvmOverloads constructor(
     private val playbackContainerBg: MaterialShapeDrawable
     private val playbackFragment = PlaybackFragment()
 
-    /**
-     * The drag helper that animates and dispatches drag events to the panels.
-     */
-    private val dragHelper = ViewDragHelper.create(this, DragHelperCallback()).apply {
-        minVelocity = MIN_FLING_VEL * resources.displayMetrics.density
-    }
+    /** The drag helper that animates and dispatches drag events to the panels. */
+    private val dragHelper =
+        ViewDragHelper.create(this, DragHelperCallback()).apply {
+            minVelocity = MIN_FLING_VEL * resources.displayMetrics.density
+        }
 
     /**
-     * The current window insets.
-     * Important since this layout must play a long with Auxio's edge-to-edge functionality.
+     * The current window insets. Important since this layout must play a long with Auxio's
+     * edge-to-edge functionality.
      */
     private var lastInsets: WindowInsets? = null
 
-    /** The current panel state. Can be [PanelState.DRAGGING]*/
+    /** The current panel state. Can be [PanelState.DRAGGING] */
     private var panelState = INIT_PANEL_STATE
 
     /** The last panel state before a drag event began. */
@@ -90,10 +108,8 @@ class PlaybackLayout @JvmOverloads constructor(
     private var panelRange = 0
 
     /**
-     * The relative offset of this panel as a percentage of [panelRange].
-     * A value of 1 means a fully expanded panel.
-     * A value of 0 means a collapsed panel.
-     * A value below 0 means a hidden panel.
+     * The relative offset of this panel as a percentage of [panelRange]. A value of 1 means a fully
+     * expanded panel. A value of 0 means a collapsed panel. A value below 0 means a hidden panel.
      */
     private var panelOffset = 0f
 
@@ -105,88 +121,96 @@ class PlaybackLayout @JvmOverloads constructor(
     private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
 
     /** See [isDragging] */
-    private val dragStateField = ViewDragHelper::class.java.getDeclaredField("mDragState").apply {
-        isAccessible = true
-    }
+    private val dragStateField =
+        ViewDragHelper::class.java.getDeclaredField("mDragState").apply { isAccessible = true }
 
     init {
         setWillNotDraw(false)
 
         // Set up our playback views. Doing this allows us to abstract away the implementation
         // of these views from the user of this layout [MainFragment].
-        playbackContainerView = FrameLayout(context).apply {
-            id = R.id.playback_container
+        playbackContainerView =
+            FrameLayout(context).apply {
+                id = R.id.playback_container
 
-            isClickable = true
-            isFocusable = false
-            isFocusableInTouchMode = false
+                isClickable = true
+                isFocusable = false
+                isFocusableInTouchMode = false
 
-            playbackContainerBg = MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-                elevation = context.pxOfDp(elevationNormal).toFloat()
+                playbackContainerBg =
+                    MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+                        fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
+                        elevation = context.pxOfDp(elevationNormal).toFloat()
+                    }
+
+                // The way we fade out the elevation overlay is not by actually reducing the
+                // elevation
+                // but by fading out the background drawable itself. To be safe, we apply this
+                // background drawable to a layer list with another colorSurface shape drawable,
+                // just
+                // in case weird things happen if background drawable is completely transparent.
+                background =
+                    (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
+                        setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
+                    }
+
+                disableDropShadowCompat()
             }
 
-            // The way we fade out the elevation overlay is not by actually reducing the elevation
-            // but by fading out the background drawable itself. To be safe, we apply this
-            // background drawable to a layer list with another colorSurface shape drawable, just
-            // in case weird things happen if background drawable is completely transparent.
-            background = (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
-                setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
-            }
+        playbackBarView =
+            PlaybackBarView(context).apply {
+                id = R.id.playback_bar
 
-            disableDropShadowCompat()
-        }
+                playbackContainerView.addView(this)
 
-        playbackBarView = PlaybackBarView(context).apply {
-            id = R.id.playback_bar
+                (layoutParams as FrameLayout.LayoutParams).apply {
+                    width = LayoutParams.MATCH_PARENT
+                    height = LayoutParams.WRAP_CONTENT
+                    gravity = Gravity.TOP
+                }
 
-            playbackContainerView.addView(this)
-
-            (layoutParams as FrameLayout.LayoutParams).apply {
-                width = LayoutParams.MATCH_PARENT
-                height = LayoutParams.WRAP_CONTENT
-                gravity = Gravity.TOP
-            }
-
-            // The bar view if clicked will expand into the full panel
-            setOnClickListener {
-                if (canSlide && panelState != PanelState.EXPANDED) {
-                    applyState(PanelState.EXPANDED)
+                // The bar view if clicked will expand into the full panel
+                setOnClickListener {
+                    if (canSlide && panelState != PanelState.EXPANDED) {
+                        applyState(PanelState.EXPANDED)
+                    }
                 }
             }
-        }
 
-        playbackPanelView = FrameLayout(context).apply {
-            playbackContainerView.addView(this)
+        playbackPanelView =
+            FrameLayout(context).apply {
+                playbackContainerView.addView(this)
 
-            (layoutParams as FrameLayout.LayoutParams).apply {
-                width = LayoutParams.MATCH_PARENT
-                height = LayoutParams.MATCH_PARENT
-                gravity = Gravity.CENTER
+                (layoutParams as FrameLayout.LayoutParams).apply {
+                    width = LayoutParams.MATCH_PARENT
+                    height = LayoutParams.MATCH_PARENT
+                    gravity = Gravity.CENTER
+                }
+
+                id = R.id.playback_panel
+
+                // Make sure we add our fragment to this view. This is actually a replace operation
+                // since we don't want to stack fragments but we can't ensure that this view doesn't
+                // already have a fragment attached.
+                try {
+                    (context as AppCompatActivity)
+                        .supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.playback_panel, playbackFragment)
+                        .commit()
+                } catch (e: Exception) {
+                    // Band-aid to stop the app crashing if we have to swap out the content view
+                    // without warning (which we have to do sometimes because android is the worst
+                    // thing ever)
+                }
             }
-
-            id = R.id.playback_panel
-
-            // Make sure we add our fragment to this view. This is actually a replace operation
-            // since we don't want to stack fragments but we can't ensure that this view doesn't
-            // already have a fragment attached.
-            try {
-                (context as AppCompatActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.playback_panel, playbackFragment)
-                    .commit()
-            } catch (e: Exception) {
-                // Band-aid to stop the app crashing if we have to swap out the content view
-                // without warning (which we have to do sometimes because android is the worst
-                // thing ever)
-            }
-        }
     }
 
     // / --- CONTROL METHODS ---
 
     /**
-     * Update the song that this layout is showing. This will be reflected in the compact view
-     * at the bottom of the screen.
+     * Update the song that this layout is showing. This will be reflected in the compact view at
+     * the bottom of the screen.
      */
     fun setup(
         playbackModel: PlaybackViewModel,
@@ -195,9 +219,7 @@ class PlaybackLayout @JvmOverloads constructor(
     ) {
         setSong(playbackModel.song.value)
 
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            setSong(song)
-        }
+        playbackModel.song.observe(viewLifecycleOwner) { song -> setSong(song) }
 
         playbackBarView.setup(playbackModel, detailModel, viewLifecycleOwner)
     }
@@ -243,7 +265,8 @@ class PlaybackLayout @JvmOverloads constructor(
         }
 
         if (!isLaidOut) {
-            // Not laid out, just apply the state and let the measure + layout steps apply it for us.
+            // Not laid out, just apply the state and let the measure + layout steps apply it for
+            // us.
             setPanelStateInternal(state)
         } else {
             // We are laid out. In this case we actually animate to our desired target.
@@ -293,11 +316,12 @@ class PlaybackLayout @JvmOverloads constructor(
         if (!isLaidOut) {
             // This is our first layout, so make sure we know what offset we should work with
             // before we measure our content
-            panelOffset = when (panelState) {
-                PanelState.EXPANDED -> 1.0f
-                PanelState.HIDDEN -> computePanelOffset(measuredHeight)
-                else -> 0f
-            }
+            panelOffset =
+                when (panelState) {
+                    PanelState.EXPANDED -> 1.0f
+                    PanelState.HIDDEN -> computePanelOffset(measuredHeight)
+                    else -> 0f
+                }
 
             updatePanelTransition()
         }
@@ -315,9 +339,8 @@ class PlaybackLayout @JvmOverloads constructor(
         // Note that these views will always be a fixed MATCH_PARENT. This is intentional,
         // as it reduces the logic we have to deal with regarding WRAP_CONTENT views.
         val contentWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
-        val contentHeightSpec = MeasureSpec.makeMeasureSpec(
-            measuredHeight - barHeightAdjusted, MeasureSpec.EXACTLY
-        )
+        val contentHeightSpec =
+            MeasureSpec.makeMeasureSpec(measuredHeight - barHeightAdjusted, MeasureSpec.EXACTLY)
 
         contentView.measure(contentWidthSpec, contentHeightSpec)
     }
@@ -330,8 +353,7 @@ class PlaybackLayout @JvmOverloads constructor(
             0,
             panelTop,
             playbackContainerView.measuredWidth,
-            playbackContainerView.measuredHeight + panelTop
-        )
+            playbackContainerView.measuredHeight + panelTop)
 
         layoutContent()
     }
@@ -352,9 +374,7 @@ class PlaybackLayout @JvmOverloads constructor(
             canvas.clipRect(tRect)
         }
 
-        return super.drawChild(canvas, child, drawingTime).also {
-            canvas.restoreToCount(save)
-        }
+        return super.drawChild(canvas, child, drawingTime).also { canvas.restoreToCount(save) }
     }
 
     override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
@@ -369,8 +389,8 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     /**
-     * Apply window insets to the content views in this layouts. This is done separately as at
-     * times we want to re-inset the content views but not re-inset the bar view.
+     * Apply window insets to the content views in this layouts. This is done separately as at times
+     * we want to re-inset the content views but not re-inset the bar view.
      */
     private fun applyContentWindowInsets() {
         val insets = lastInsets
@@ -379,9 +399,7 @@ class PlaybackLayout @JvmOverloads constructor(
         }
     }
 
-    /**
-     * Adjust window insets to line up with the panel
-     */
+    /** Adjust window insets to line up with the panel */
     private fun adjustInsets(insets: WindowInsets): WindowInsets {
         // We kind to do a reverse-measure to figure out how we should inset this view.
         // Find how much space is lost by the panel and then combine that with the
@@ -390,21 +408,20 @@ class PlaybackLayout @JvmOverloads constructor(
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
         return insets.replaceSystemBarInsetsCompat(
-            bars.left, bars.top, bars.right, adjustedBottomInset
-        )
+            bars.left, bars.top, bars.right, adjustedBottomInset)
     }
 
-    override fun onSaveInstanceState(): Parcelable = Bundle().apply {
-        putParcelable("superState", super.onSaveInstanceState())
-        putSerializable(
-            KEY_PANEL_STATE,
-            if (panelState != PanelState.DRAGGING) {
-                panelState
-            } else {
-                lastIdlePanelState
-            }
-        )
-    }
+    override fun onSaveInstanceState(): Parcelable =
+        Bundle().apply {
+            putParcelable("superState", super.onSaveInstanceState())
+            putSerializable(
+                KEY_PANEL_STATE,
+                if (panelState != PanelState.DRAGGING) {
+                    panelState
+                } else {
+                    lastIdlePanelState
+                })
+        }
 
     override fun onRestoreInstanceState(state: Parcelable) {
         if (state is Bundle) {
@@ -425,13 +442,14 @@ class PlaybackLayout @JvmOverloads constructor(
 
         return if (!canSlide) {
             super.onTouchEvent(ev)
-        } else try {
-            dragHelper.processTouchEvent(ev)
-            true
-        } catch (ex: Exception) {
-            // Ignore the pointer out of range exception
-            false
-        }
+        } else
+            try {
+                dragHelper.processTouchEvent(ev)
+                true
+            } catch (ex: Exception) {
+                // Ignore the pointer out of range exception
+                false
+            }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
@@ -454,10 +472,10 @@ class PlaybackLayout @JvmOverloads constructor(
                     return false
                 }
             }
-
             MotionEvent.ACTION_MOVE -> {
                 val pointerUnder = playbackContainerView.isUnder(ev.x.toInt(), ev.y.toInt())
-                val motionUnder = playbackContainerView.isUnder(initMotionX.toInt(), initMotionY.toInt())
+                val motionUnder =
+                    playbackContainerView.isUnder(initMotionX.toInt(), initMotionY.toInt())
 
                 if (!(pointerUnder || motionUnder) || ady > dragSlop && adx > ady) {
                     // Pointer has moved beyond our control, do not intercept this event
@@ -465,7 +483,6 @@ class PlaybackLayout @JvmOverloads constructor(
                     return false
                 }
             }
-
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP ->
                 if (dragHelper.isDragging) {
                     // Stopped pressing while we were dragging, let the drag helper handle it
@@ -504,11 +521,12 @@ class PlaybackLayout @JvmOverloads constructor(
         get() {
             // We can't grab the drag state outside of a callback, but that's stupid and I don't
             // want to vendor ViewDragHelper so I just do reflection instead.
-            val state = try {
-                dragStateField.get(this)
-            } catch (e: Exception) {
-                ViewDragHelper.STATE_IDLE
-            }
+            val state =
+                try {
+                    dragStateField.get(this)
+                } catch (e: Exception) {
+                    ViewDragHelper.STATE_IDLE
+                }
 
             return state == ViewDragHelper.STATE_DRAGGING
         }
@@ -524,9 +542,9 @@ class PlaybackLayout @JvmOverloads constructor(
     }
 
     /**
-     * Do the nice view animations that occur whenever we slide up the playback panel.
-     * The way I transition is largely inspired by Android 12's notification panel, with the
-     * compact view fading out completely before the panel view fades in.
+     * Do the nice view animations that occur whenever we slide up the playback panel. The way I
+     * transition is largely inspired by Android 12's notification panel, with the compact view
+     * fading out completely before the panel view fades in.
      */
     private fun updatePanelTransition() {
         val ratio = max(panelOffset, 0f)
@@ -566,8 +584,7 @@ class PlaybackLayout @JvmOverloads constructor(
                     params.leftMargin,
                     (bars.top * halfOutRatio).toInt(),
                     params.rightMargin,
-                    params.bottomMargin
-                )
+                    params.bottomMargin)
 
                 // Poke the layout only when we changed something
                 if (params.topMargin != oldTopMargin) {
@@ -592,9 +609,9 @@ class PlaybackLayout @JvmOverloads constructor(
     private fun smoothSlideTo(offset: Float) {
         logD("Smooth sliding to $offset")
 
-        val okay = dragHelper.smoothSlideViewTo(
-            playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset)
-        )
+        val okay =
+            dragHelper.smoothSlideViewTo(
+                playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset))
 
         if (okay) {
             postInvalidateOnAnimation()
@@ -621,7 +638,6 @@ class PlaybackLayout @JvmOverloads constructor(
                         setPanelStateInternal(PanelState.HIDDEN)
                         playbackContainerView.visibility = INVISIBLE
                     }
-
                     else -> setPanelStateInternal(PanelState.EXPANDED)
                 }
             }
@@ -658,16 +674,17 @@ class PlaybackLayout @JvmOverloads constructor(
         }
 
         override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
-            val newOffset = when {
-                // Swipe Up -> Expand to top
-                yvel < 0 -> 1f
-                // Swipe down -> Collapse to bottom
-                yvel > 0 -> 0f
-                // No velocity, far enough from middle to expand to top
-                panelOffset >= 0.5f -> 1f
-                // Collapse to bottom
-                else -> 0f
-            }
+            val newOffset =
+                when {
+                    // Swipe Up -> Expand to top
+                    yvel < 0 -> 1f
+                    // Swipe down -> Collapse to bottom
+                    yvel > 0 -> 0f
+                    // No velocity, far enough from middle to expand to top
+                    panelOffset >= 0.5f -> 1f
+                    // Collapse to bottom
+                    else -> 0f
+                }
 
             dragHelper.settleCapturedViewAt(releasedChild.left, computePanelTopPosition(newOffset))
 

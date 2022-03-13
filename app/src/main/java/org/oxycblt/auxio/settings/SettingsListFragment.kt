@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * SettingsListFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.settings
 
 import android.os.Bundle
@@ -32,8 +31,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.accent.AccentCustomizeDialog
-import org.oxycblt.auxio.music.excluded.ExcludedDialog
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
+import org.oxycblt.auxio.music.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.pref.IntListPrefDialog
 import org.oxycblt.auxio.settings.pref.IntListPreference
@@ -83,9 +82,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         }
     }
 
-    /**
-     * Recursively handle a preference, doing any specific actions on it.
-     */
+    /** Recursively handle a preference, doing any specific actions on it. */
     private fun recursivelyHandlePreference(preference: Preference) {
         if (!preference.isVisible) return
 
@@ -100,82 +97,80 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.KEY_THEME -> {
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
 
-                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, value ->
-                        AppCompatDelegate.setDefaultNightMode(value as Int)
-                        setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
-                        true
-                    }
-                }
-
-                SettingsManager.KEY_BLACK_THEME -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        if (requireContext().isNight) {
-                            requireActivity().recreate()
+                    onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, value ->
+                            AppCompatDelegate.setDefaultNightMode(value as Int)
+                            setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
+                            true
                         }
-
-                        true
-                    }
                 }
+                SettingsManager.KEY_BLACK_THEME -> {
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            if (requireContext().isNight) {
+                                requireActivity().recreate()
+                            }
 
+                            true
+                        }
+                }
                 SettingsManager.KEY_ACCENT -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        AccentCustomizeDialog().show(childFragmentManager, AccentCustomizeDialog.TAG)
-                        true
-                    }
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            AccentCustomizeDialog()
+                                .show(childFragmentManager, AccentCustomizeDialog.TAG)
+                            true
+                        }
 
                     summary = context.getString(settingsManager.accent.name)
                 }
-
                 SettingsManager.KEY_LIB_TABS -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
-                        true
-                    }
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
+                            true
+                        }
                 }
-
                 SettingsManager.KEY_SHOW_COVERS, SettingsManager.KEY_QUALITY_COVERS -> {
-                    onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
-                        Coil.imageLoader(requireContext()).apply {
-                            this.memoryCache?.clear()
+                    onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, _ ->
+                            Coil.imageLoader(requireContext()).apply { this.memoryCache?.clear() }
+
+                            true
                         }
-
-                        true
-                    }
                 }
-
                 SettingsManager.KEY_SAVE_STATE -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        playbackModel.savePlaybackState(requireContext()) {
-                            requireContext().showToast(R.string.lbl_state_saved)
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            playbackModel.savePlaybackState(requireContext()) {
+                                requireContext().showToast(R.string.lbl_state_saved)
+                            }
+
+                            true
                         }
-
-                        true
-                    }
                 }
-
                 SettingsManager.KEY_RELOAD -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        playbackModel.savePlaybackState(requireContext()) {
-                            requireContext().hardRestart()
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            playbackModel.savePlaybackState(requireContext()) {
+                                requireContext().hardRestart()
+                            }
+
+                            true
                         }
-
-                        true
-                    }
                 }
-
                 SettingsManager.KEY_EXCLUDED -> {
-                    onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        ExcludedDialog().show(childFragmentManager, ExcludedDialog.TAG)
-                        true
-                    }
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            ExcludedDialog().show(childFragmentManager, ExcludedDialog.TAG)
+                            true
+                        }
                 }
             }
         }
     }
 
-    /**
-     * Convert an theme integer into an icon that can be used.
-     */
+    /** Convert an theme integer into an icon that can be used. */
     @DrawableRes
     private fun Int.toThemeIcon(): Int {
         return when (this) {

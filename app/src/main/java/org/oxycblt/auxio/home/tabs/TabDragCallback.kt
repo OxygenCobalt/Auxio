@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * QueueDragCallback.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.home.tabs
 
 import android.graphics.Canvas
@@ -24,21 +23,18 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A simple [ItemTouchHelper.Callback] that handles dragging items in the tab customization menu.
- * Unlike QueueAdapter's ItemTouchHelper, this one is bare and simple.
- * TODO: Consider unifying the shared behavior between this and QueueDragCallback into a single
- *  class.
+ * Unlike QueueAdapter's ItemTouchHelper, this one is bare and simple. TODO: Consider unifying the
+ * shared behavior between this and QueueDragCallback into a single class.
  */
 class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.Callback() {
-    private val tabs: Array<Tab> get() = getTabs()
+    private val tabs: Array<Tab>
+        get() = getTabs()
     private lateinit var tabAdapter: TabAdapter
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
-    ): Int = makeFlag(
-        ItemTouchHelper.ACTION_STATE_DRAG,
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN
-    )
+    ): Int = makeFlag(ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.UP or ItemTouchHelper.DOWN)
 
     override fun onChildDraw(
         c: Canvas,
@@ -76,8 +72,8 @@ class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.C
     override fun isLongPressDragEnabled(): Boolean = false
 
     /**
-     * Add the tab adapter to this callback.
-     * Done because there's a circular dependency between the two objects
+     * Add the tab adapter to this callback. Done because there's a circular dependency between the
+     * two objects
      */
     fun addTabAdapter(adapter: TabAdapter) {
         tabAdapter = adapter

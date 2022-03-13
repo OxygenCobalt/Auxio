@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * LiftAppBarLayout.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.ui
 
 import android.content.Context
@@ -33,31 +32,30 @@ import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state
- * will not properly respond to RecyclerView events.
- * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
- *  scrolling view to use. Failure to specify this will result in the layout not working.
+ * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
+ * not properly respond to RecyclerView events. **Note:** This layout relies on
+ * [AppBarLayout.liftOnScrollTargetViewId] to figure out what scrolling view to use. Failure to
+ * specify this will result in the layout not working.
  */
-open class EdgeAppBarLayout @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0
-) : AppBarLayout(context, attrs, defStyleAttr) {
+open class EdgeAppBarLayout
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
+    AppBarLayout(context, attrs, defStyleAttr) {
     private var scrollingChild: View? = null
     private val tConsumed = IntArray(2)
 
-    private val onPreDraw = ViewTreeObserver.OnPreDrawListener {
-        val child = findScrollingChild()
+    private val onPreDraw =
+        ViewTreeObserver.OnPreDrawListener {
+            val child = findScrollingChild()
 
-        if (child != null) {
-            val coordinator = parent as CoordinatorLayout
-            (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
-                coordinator, this, coordinator, 0, 0, tConsumed, 0
-            )
+            if (child != null) {
+                val coordinator = parent as CoordinatorLayout
+                (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
+                    coordinator, this, coordinator, 0, 0, tConsumed, 0)
+            }
+
+            true
         }
-
-        true
-    }
 
     init {
         viewTreeObserver.addOnPreDrawListener(onPreDraw)

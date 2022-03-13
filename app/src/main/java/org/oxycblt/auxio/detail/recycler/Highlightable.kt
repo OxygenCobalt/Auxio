@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * Highlightable.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail.recycler
 
-/**
- * Interface that allows the highlighting of certain ViewHolders
- */
+/** Interface that allows the highlighting of certain ViewHolders */
 interface Highlightable {
     fun setHighlighted(isHighlighted: Boolean)
 }

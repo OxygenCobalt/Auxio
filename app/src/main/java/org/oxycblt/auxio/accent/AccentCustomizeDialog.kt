@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * AccentDialog.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.accent
 
 import android.os.Bundle
@@ -52,10 +51,11 @@ class AccentCustomizeDialog : LifecycleDialog() {
         // --- UI SETUP ---
 
         binding.accentRecycler.apply {
-            adapter = AccentAdapter(pendingAccent) { accent ->
-                logD("Switching selected accent to $accent")
-                pendingAccent = accent
-            }
+            adapter =
+                AccentAdapter(pendingAccent) { accent ->
+                    logD("Switching selected accent to $accent")
+                    pendingAccent = accent
+                }
         }
 
         logD("Dialog created")

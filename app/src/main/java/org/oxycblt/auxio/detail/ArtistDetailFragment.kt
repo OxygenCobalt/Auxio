@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * ArtistDetailFragment.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
@@ -53,24 +52,19 @@ class ArtistDetailFragment : DetailFragment() {
         detailModel.setArtist(args.artistId)
 
         val binding = FragmentDetailBinding.inflate(layoutInflater)
-        val detailAdapter = ArtistDetailAdapter(
-            playbackModel,
-            doOnClick = { data ->
-                if (!detailModel.isNavigating) {
-                    detailModel.setNavigating(true)
+        val detailAdapter =
+            ArtistDetailAdapter(
+                playbackModel,
+                doOnClick = { data ->
+                    if (!detailModel.isNavigating) {
+                        detailModel.setNavigating(true)
 
-                    findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(data.id)
-                    )
-                }
-            },
-            doOnSongClick = { data ->
-                playbackModel.playSong(data, PlaybackMode.IN_ARTIST)
-            },
-            doOnLongClick = { view, data ->
-                newMenu(view, data, ActionMenu.FLAG_IN_ARTIST)
-            }
-        )
+                        findNavController()
+                            .navigate(ArtistDetailFragmentDirections.actionShowAlbum(data.id))
+                    }
+                },
+                doOnSongClick = { data -> playbackModel.playSong(data, PlaybackMode.IN_ARTIST) },
+                doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ARTIST) })
 
         // --- UI SETUP ---
 
@@ -91,9 +85,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         detailModel.showMenu.observe(viewLifecycleOwner) { config ->
             if (config != null) {
-                showMenu(config) { id ->
-                    id != R.id.option_sort_artist
-                }
+                showMenu(config) { id -> id != R.id.option_sort_artist }
             }
         }
 
@@ -106,26 +98,20 @@ class ArtistDetailFragment : DetailFragment() {
                         detailModel.finishNavToItem()
                     } else {
                         logD("Navigating to another artist")
-                        findNavController().navigate(
-                            ArtistDetailFragmentDirections.actionShowArtist(item.id)
-                        )
+                        findNavController()
+                            .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
                     }
                 }
-
                 is Album -> {
                     logD("Navigating to another album")
-                    findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(item.id)
-                    )
+                    findNavController()
+                        .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
                 }
-
                 is Song -> {
                     logD("Navigating to another album")
-                    findNavController().navigate(
-                        ArtistDetailFragmentDirections.actionShowAlbum(item.album.id)
-                    )
+                    findNavController()
+                        .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
                 }
-
                 null -> {}
                 else -> logW("Unsupported navigation item ${item::class.java}")
             }
@@ -143,8 +129,7 @@ class ArtistDetailFragment : DetailFragment() {
         // Highlight songs if they are being played
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (playbackModel.playbackMode.value == PlaybackMode.IN_ARTIST &&
-                playbackModel.parent.value?.id == detailModel.curArtist.value?.id
-            ) {
+                playbackModel.parent.value?.id == detailModel.curArtist.value?.id) {
                 detailAdapter.highlightSong(song, binding.detailRecycler)
             } else {
                 // Clear the ViewHolders if the mode isn't ALL_SONGS

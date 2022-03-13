@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackNotification.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.system
 
 import android.annotation.SuppressLint
@@ -37,15 +36,14 @@ import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
 /**
- * The unified notification for [PlaybackService]. This is not self-sufficient, updates have
- * to be delivered manually.
+ * The unified notification for [PlaybackService]. This is not self-sufficient, updates have to be
+ * delivered manually.
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
-class PlaybackNotification private constructor(
-    private val context: Context,
-    mediaToken: MediaSessionCompat.Token
-) : NotificationCompat.Builder(context, CHANNEL_ID) {
+class PlaybackNotification
+private constructor(private val context: Context, mediaToken: MediaSessionCompat.Token) :
+    NotificationCompat.Builder(context, CHANNEL_ID) {
     init {
         setSmallIcon(R.drawable.ic_auxio)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -61,11 +59,7 @@ class PlaybackNotification private constructor(
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
         addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_exit))
 
-        setStyle(
-            MediaStyle()
-                .setMediaSession(mediaToken)
-                .setShowActionsInCompactView(1, 2, 3)
-        )
+        setStyle(MediaStyle().setMediaSession(mediaToken).setShowActionsInCompactView(1, 2, 3))
 
         // Don't connect to PlaybackStateManager here. This is because it's possible for this
         // notification to not be updated by PlaybackStateManager before PlaybackService pushes
@@ -96,30 +90,22 @@ class PlaybackNotification private constructor(
         }
     }
 
-    /**
-     * Set the playing icon on the notification
-     */
+    /** Set the playing icon on the notification */
     fun setPlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
-    /**
-     * Update the first action to reflect the [loopMode] given.
-     */
+    /** Update the first action to reflect the [loopMode] given. */
     fun setLoop(loopMode: LoopMode) {
         mActions[0] = buildLoopAction(context, loopMode)
     }
 
-    /**
-     * Update the first action to reflect whether the queue is shuffled or not
-     */
+    /** Update the first action to reflect whether the queue is shuffled or not */
     fun setShuffle(isShuffling: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffling)
     }
 
-    /**
-     * Apply the current [parent] to the header of the notification.
-     */
+    /** Apply the current [parent] to the header of the notification. */
     fun setParent(parent: MusicParent?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
@@ -138,15 +124,13 @@ class PlaybackNotification private constructor(
         return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
 
-    private fun buildLoopAction(
-        context: Context,
-        loopMode: LoopMode
-    ): NotificationCompat.Action {
-        val drawableRes = when (loopMode) {
-            LoopMode.NONE -> R.drawable.ic_remote_loop_off
-            LoopMode.ALL -> R.drawable.ic_loop
-            LoopMode.TRACK -> R.drawable.ic_loop_one
-        }
+    private fun buildLoopAction(context: Context, loopMode: LoopMode): NotificationCompat.Action {
+        val drawableRes =
+            when (loopMode) {
+                LoopMode.NONE -> R.drawable.ic_remote_loop_off
+                LoopMode.ALL -> R.drawable.ic_loop
+                LoopMode.TRACK -> R.drawable.ic_loop_one
+            }
 
         return buildAction(context, PlaybackService.ACTION_LOOP, drawableRes)
     }
@@ -155,7 +139,8 @@ class PlaybackNotification private constructor(
         context: Context,
         isShuffled: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
+        val drawableRes =
+            if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
 
         return buildAction(context, PlaybackService.ACTION_SHUFFLE, drawableRes)
     }
@@ -165,10 +150,9 @@ class PlaybackNotification private constructor(
         actionName: String,
         @DrawableRes iconRes: Int
     ): NotificationCompat.Action {
-        val action = NotificationCompat.Action.Builder(
-            iconRes, actionName,
-            context.newBroadcastIntent(actionName)
-        )
+        val action =
+            NotificationCompat.Action.Builder(
+                iconRes, actionName, context.newBroadcastIntent(actionName))
 
         return action.build()
     }
@@ -177,19 +161,18 @@ class PlaybackNotification private constructor(
         const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK"
         const val NOTIFICATION_ID = 0xA0A0
 
-        /**
-         * Build a new instance of [PlaybackNotification].
-         */
+        /** Build a new instance of [PlaybackNotification]. */
         fun from(
             context: Context,
             notificationManager: NotificationManager,
             mediaSession: MediaSessionCompat
         ): PlaybackNotification {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    CHANNEL_ID, context.getString(R.string.info_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+                val channel =
+                    NotificationChannel(
+                        CHANNEL_ID,
+                        context.getString(R.string.info_channel_name),
+                        NotificationManager.IMPORTANCE_DEFAULT)
 
                 notificationManager.createNotificationChannel(channel)
             }

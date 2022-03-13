@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * PlaybackSessionConnector.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.playback.system
 
 import android.content.Context
@@ -32,8 +31,8 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 
 /**
- * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player],
- * and [PlaybackStateManager].
+ * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player], and
+ * [PlaybackStateManager].
  */
 class PlaybackSessionConnector(
     private val context: Context,
@@ -84,12 +83,13 @@ class PlaybackSessionConnector(
     }
 
     override fun onSetRepeatMode(repeatMode: Int) {
-        val mode = when (repeatMode) {
-            PlaybackStateCompat.REPEAT_MODE_ALL -> LoopMode.ALL
-            PlaybackStateCompat.REPEAT_MODE_GROUP -> LoopMode.ALL
-            PlaybackStateCompat.REPEAT_MODE_ONE -> LoopMode.TRACK
-            else -> LoopMode.NONE
-        }
+        val mode =
+            when (repeatMode) {
+                PlaybackStateCompat.REPEAT_MODE_ALL -> LoopMode.ALL
+                PlaybackStateCompat.REPEAT_MODE_GROUP -> LoopMode.ALL
+                PlaybackStateCompat.REPEAT_MODE_ONE -> LoopMode.TRACK
+                else -> LoopMode.NONE
+            }
 
         playbackManager.setLoopMode(mode)
     }
@@ -98,8 +98,7 @@ class PlaybackSessionConnector(
         playbackManager.setShuffling(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
                 shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
-            true
-        )
+            true)
     }
 
     override fun onStop() {
@@ -117,15 +116,16 @@ class PlaybackSessionConnector(
 
         val artistName = song.resolvedArtistName
 
-        val builder = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
-            .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, artistName)
-            .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, artistName)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, artistName)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.resolvedAlbumName)
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
+        val builder =
+            MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
+                .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, artistName)
+                .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, artistName)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, artistName)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.resolvedAlbumName)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
 
         // Load the cover asynchronously. This is the entire reason I don't use a plain
         // MediaSessionConnector, which AFAIK makes it impossible to load this the way I do
@@ -144,14 +144,12 @@ class PlaybackSessionConnector(
 
     override fun onEvents(player: Player, events: Player.Events) {
         if (events.containsAny(
-                Player.EVENT_POSITION_DISCONTINUITY,
-                Player.EVENT_PLAYBACK_STATE_CHANGED,
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                Player.EVENT_IS_PLAYING_CHANGED,
-                Player.EVENT_REPEAT_MODE_CHANGED,
-                Player.EVENT_PLAYBACK_PARAMETERS_CHANGED
-            )
-        ) {
+            Player.EVENT_POSITION_DISCONTINUITY,
+            Player.EVENT_PLAYBACK_STATE_CHANGED,
+            Player.EVENT_PLAY_WHEN_READY_CHANGED,
+            Player.EVENT_IS_PLAYING_CHANGED,
+            Player.EVENT_REPEAT_MODE_CHANGED,
+            Player.EVENT_PLAYBACK_PARAMETERS_CHANGED)) {
             invalidateSessionState()
         }
     }
@@ -162,24 +160,20 @@ class PlaybackSessionConnector(
         logD("Updating media session state")
 
         // Position updates arrive faster when you upload STATE_PAUSED for some insane reason.
-        val state = PlaybackStateCompat.Builder()
-            .setActions(ACTIONS)
-            .setBufferedPosition(player.bufferedPosition)
-            .setState(
-                PlaybackStateCompat.STATE_PAUSED,
-                player.currentPosition,
-                1.0f,
-                SystemClock.elapsedRealtime()
-            )
+        val state =
+            PlaybackStateCompat.Builder()
+                .setActions(ACTIONS)
+                .setBufferedPosition(player.bufferedPosition)
+                .setState(
+                    PlaybackStateCompat.STATE_PAUSED,
+                    player.currentPosition,
+                    1.0f,
+                    SystemClock.elapsedRealtime())
 
         mediaSession.setPlaybackState(state.build())
 
         state.setState(
-            getPlayerState(),
-            player.currentPosition,
-            1.0f,
-            SystemClock.elapsedRealtime()
-        )
+            getPlayerState(), player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
 
         mediaSession.setPlaybackState(state.build())
     }
@@ -199,14 +193,15 @@ class PlaybackSessionConnector(
     }
 
     companion object {
-        const val ACTIONS = PlaybackStateCompat.ACTION_PLAY or
-            PlaybackStateCompat.ACTION_PAUSE or
-            PlaybackStateCompat.ACTION_PLAY_PAUSE or
-            PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
-            PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
-            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-            PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-            PlaybackStateCompat.ACTION_SEEK_TO or
-            PlaybackStateCompat.ACTION_STOP
+        const val ACTIONS =
+            PlaybackStateCompat.ACTION_PLAY or
+                PlaybackStateCompat.ACTION_PAUSE or
+                PlaybackStateCompat.ACTION_PLAY_PAUSE or
+                PlaybackStateCompat.ACTION_SET_REPEAT_MODE or
+                PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_STOP
     }
 }

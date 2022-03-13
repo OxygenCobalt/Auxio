@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2021 Auxio Project
- * BlacklistViewModel.kt is part of Auxio.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 package org.oxycblt.auxio.music.excluded
 
 import android.content.Context
@@ -30,29 +29,28 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.logD
 
 /**
- * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal
- * of paths. Use [Factory] to instantiate this.
- * TODO: Unify with MusicViewModel
+ * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal of
+ * paths. Use [Factory] to instantiate this. TODO: Unify with MusicViewModel
  * @author OxygenCobalt
  */
 class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())
-    val paths: LiveData<MutableList<String>> get() = mPaths
+    val paths: LiveData<MutableList<String>>
+        get() = mPaths
 
     private var dbPaths = listOf<String>()
 
-    /**
-     * Check if changes have been made to the ViewModel's paths.
-     */
-    val isModified: Boolean get() = dbPaths != paths.value
+    /** Check if changes have been made to the ViewModel's paths. */
+    val isModified: Boolean
+        get() = dbPaths != paths.value
 
     init {
         loadDatabasePaths()
     }
 
     /**
-     * Add a path to this ViewModel. It will not write the path to the database unless
-     * [save] is called.
+     * Add a path to this ViewModel. It will not write the path to the database unless [save] is
+     * called.
      */
     fun addPath(path: String) {
         if (!mPaths.value!!.contains(path)) {
@@ -70,9 +68,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
         mPaths.value = mPaths.value
     }
 
-    /**
-     * Save the pending paths to the database. [onDone] will be called on completion.
-     */
+    /** Save the pending paths to the database. [onDone] will be called on completion. */
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
@@ -80,24 +76,18 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
             dbPaths = mPaths.value!!
             onDone()
             this@ExcludedViewModel.logD(
-                "Path save completed successfully in ${System.currentTimeMillis() - start}ms"
-            )
+                "Path save completed successfully in ${System.currentTimeMillis() - start}ms")
         }
     }
 
-    /**
-     * Load the paths stored in the database to this ViewModel, will erase any pending changes.
-     */
+    /** Load the paths stored in the database to this ViewModel, will erase any pending changes. */
     private fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
             dbPaths = excludedDatabase.readPaths()
-            withContext(Dispatchers.Main) {
-                mPaths.value = dbPaths.toMutableList()
-            }
+            withContext(Dispatchers.Main) { mPaths.value = dbPaths.toMutableList() }
             this@ExcludedViewModel.logD(
-                "Path load completed successfully in ${System.currentTimeMillis() - start}ms"
-            )
+                "Path load completed successfully in ${System.currentTimeMillis() - start}ms")
         }
     }
 
