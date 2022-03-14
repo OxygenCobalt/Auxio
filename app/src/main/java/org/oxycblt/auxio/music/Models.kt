@@ -32,23 +32,10 @@ sealed class Item {
     abstract val id: Long
 }
 
-/**
- * [Item] variant that represents a music item.
- *
- * TODO: Make name the actual display name and move raw names (including file names) to a
- *  new field called rawName.
- */
+/** [Item] variant that represents a music item. */
 sealed class Music : Item() {
     /** The raw name of this item. */
-    abstract val name: String
-}
-
-/**
- * [Music] variant that denotes that this object is a parent of other data objects, such as an
- * [Album] or [Artist]
- * @property resolvedName
- */
-sealed class MusicParent : Music() {
+    abstract val rawName: String
     /**
      * A name resolved from it's raw form to a form suitable to be shown in a ui. Ex. "unknown"
      * would become Unknown Artist, (124) would become its proper genre name, etc.
@@ -56,9 +43,15 @@ sealed class MusicParent : Music() {
     abstract val resolvedName: String
 }
 
+/**
+ * [Music] variant that denotes that this object is a parent of other data objects, such as an
+ * [Album] or [Artist]
+ */
+sealed class MusicParent : Music()
+
 /** The data object for a song. */
 data class Song(
-    override val name: String,
+    override val rawName: String,
     /** The file name of this song, excluding the full path. */
     val fileName: String,
     /** The total duration of this song, in millis. */
@@ -80,13 +73,16 @@ data class Song(
 ) : Music() {
     override val id: Long
         get() {
-            var result = name.hashCode().toLong()
-            result = 31 * result + album.name.hashCode()
-            result = 31 * result + album.artist.name.hashCode()
+            var result = rawName.hashCode().toLong()
+            result = 31 * result + album.rawName.hashCode()
+            result = 31 * result + album.artist.rawName.hashCode()
             result = 31 * result + (track ?: 0)
             result = 31 * result + duration.hashCode()
             return result
         }
+
+    override val resolvedName: String
+        get() = rawName
 
     /** The URI for this song. */
     val uri: Uri
@@ -155,7 +151,7 @@ data class Song(
 
 /** The data object for an album. */
 data class Album(
-    override val name: String,
+    override val rawName: String,
     /** The latest year of the songs in this album. Null if none of the songs had metadata. */
     val year: Int?,
     /** The URI for the cover art corresponding to this album. */
@@ -173,14 +169,14 @@ data class Album(
 
     override val id: Long
         get() {
-            var result = name.hashCode().toLong()
-            result = 31 * result + artist.name.hashCode()
+            var result = rawName.hashCode().toLong()
+            result = 31 * result + artist.rawName.hashCode()
             result = 31 * result + (year ?: 0)
             return result
         }
 
     override val resolvedName: String
-        get() = name
+        get() = rawName
 
     /** The formatted total duration of this album */
     val totalDuration: String
@@ -214,7 +210,7 @@ data class Album(
  * artist or artist field, not the individual performers of an artist.
  */
 data class Artist(
-    override val name: String,
+    override val rawName: String,
     override val resolvedName: String,
     /** The albums of this artist. */
     val albums: List<Album>
@@ -225,7 +221,7 @@ data class Artist(
         }
     }
 
-    override val id = name.hashCode().toLong()
+    override val id = rawName.hashCode().toLong()
 
     /** The songs of this artist. */
     val songs = albums.flatMap { it.songs }
@@ -233,7 +229,7 @@ data class Artist(
 
 /** The data object for a genre. */
 data class Genre(
-    override val name: String,
+    override val rawName: String,
     override val resolvedName: String,
     val songs: List<Song>
 ) : MusicParent() {
@@ -243,7 +239,7 @@ data class Genre(
         }
     }
 
-    override val id = name.hashCode().toLong()
+    override val id = rawName.hashCode().toLong()
 
     /** The formatted total duration of this genre */
     val totalDuration: String

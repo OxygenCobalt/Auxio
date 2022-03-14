@@ -127,10 +127,10 @@ class AlbumDetailAdapter(
         override fun onBind(data: Album) {
             binding.detailCover.apply {
                 bindAlbumArt(data)
-                contentDescription = context.getString(R.string.desc_album_cover, data.name)
+                contentDescription = context.getString(R.string.desc_album_cover, data.resolvedName)
             }
 
-            binding.detailName.text = data.name
+            binding.detailName.text = data.resolvedName
 
             binding.detailSubhead.apply {
                 text = data.artist.resolvedName

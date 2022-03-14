@@ -28,7 +28,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -144,19 +143,11 @@ class SearchViewModel : ViewModel() {
      */
     private fun <T : Music> List<T>.filterByOrNull(value: String): List<T>? {
         val filtered = filter {
-            // Ensure the name we match with is correct.
-            val name =
-                if (it is MusicParent) {
-                    it.resolvedName
-                } else {
-                    it.name
-                }
-
             // First see if the normal item name will work. If that fails, try the "normalized"
             // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
             // shouldn't break other language's search functionality.
-            name.contains(value, ignoreCase = true) ||
-                name.normalized().contains(value, ignoreCase = true)
+            it.resolvedName.contains(value, ignoreCase = true) ||
+                it.resolvedName.normalized().contains(value, ignoreCase = true)
         }
 
         return filtered.ifEmpty { null }

@@ -56,8 +56,8 @@ fun Fragment.newMenu(anchor: View, data: Item, flag: Int = ActionMenu.FLAG_NONE)
  * @throws IllegalStateException When there is no menu for this specific datatype/flag
  * @author OxygenCobalt
  *
- * TODO: Stop scrolling when a menu is open TODO: Prevent duplicate menus from showing up
- * TODO: Maybe replace this with a bottom sheet?
+ * TODO: Stop scrolling when a menu is open TODO: Prevent duplicate menus from showing up TODO:
+ * Maybe replace this with a bottom sheet?
  */
 class ActionMenu(
     activity: AppCompatActivity,

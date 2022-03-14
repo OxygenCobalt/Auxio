@@ -65,9 +65,7 @@ class PlaybackFragment : Fragment() {
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
-
             binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
-
             insets
         }
 
@@ -97,7 +95,7 @@ class PlaybackFragment : Fragment() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                logD("Updating song display to ${song.name}")
+                logD("Updating song display to ${song.rawName}")
                 binding.song = song
                 binding.playbackSeekBar.setDuration(song.seconds)
             } else {

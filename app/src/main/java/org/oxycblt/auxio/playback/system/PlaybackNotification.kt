@@ -73,7 +73,7 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
      * @param onDone What to do when the loading of the album art is finished
      */
     fun setMetadata(song: Song, onDone: () -> Unit) {
-        setContentTitle(song.name)
+        setContentTitle(song.resolvedName)
         setContentText(song.resolvedArtistName)
 
         // On older versions of android [API <24], show the song's album on the subtext instead of

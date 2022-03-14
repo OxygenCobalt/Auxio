@@ -40,8 +40,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * The single [AppCompatActivity] for Auxio.
  *
- * TODO: Add a new view for crashes with a stack trace
- * TODO: Custom language support TODO: Rework menus [perhaps add multi-select]
+ * TODO: Add a new view for crashes with a stack trace TODO: Custom language support TODO: Rework
+ * menus [perhaps add multi-select]
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

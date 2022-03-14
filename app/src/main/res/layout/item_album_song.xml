@@ -52,7 +52,7 @@
             style="@style/Widget.Auxio.TextView.Item.Primary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{song.name}"
+            android:text="@{song.resolvedName}"
             android:textColor="@color/sel_accented_primary"
             app:layout_constraintBottom_toTopOf="@+id/song_duration"
             app:layout_constraintEnd_toEndOf="parent"

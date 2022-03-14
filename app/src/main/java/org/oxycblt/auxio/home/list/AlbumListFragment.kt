@@ -67,7 +67,7 @@ class AlbumListFragment : HomeListFragment() {
             // Change how we display the popup depending on the mode.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
                 // By Name -> Use Name
-                is Sort.ByName -> album.name.sliceArticle().first().uppercase()
+                is Sort.ByName -> album.resolvedName.sliceArticle().first().uppercase()
 
                 // By Artist -> Use Artist Name
                 is Sort.ByArtist -> album.artist.resolvedName.sliceArticle().first().uppercase()

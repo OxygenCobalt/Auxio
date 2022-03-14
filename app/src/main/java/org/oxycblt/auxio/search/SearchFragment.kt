@@ -180,7 +180,7 @@ class SearchFragment : Fragment() {
         if (!searchModel.isNavigating) {
             searchModel.setNavigating(true)
 
-            logD("Navigating to the detail fragment for ${item.name}")
+            logD("Navigating to the detail fragment for ${item.rawName}")
 
             findNavController()
                 .navigate(

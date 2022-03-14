@@ -98,7 +98,7 @@ sealed class Sort(open val isAscending: Boolean) {
      */
     fun sortSongs(songs: Collection<Song>): List<Song> {
         return when (this) {
-            is ByName -> songs.stringSort { it.name }
+            is ByName -> songs.stringSort { it.resolvedName }
             else ->
                 sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
                     album.songs.intSort(true) { it.track ?: 0 }

@@ -90,7 +90,7 @@ private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
 private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteViews {
     applyCover(context, state)
 
-    setTextViewText(R.id.widget_song, state.song.name)
+    setTextViewText(R.id.widget_song, state.song.resolvedName)
     setTextViewText(R.id.widget_artist, state.song.resolvedArtistName)
 
     return this

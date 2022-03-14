@@ -150,7 +150,7 @@ class PlaybackStateManager private constructor() {
      * @param mode The [PlaybackMode] to construct the queue off of.
      */
     fun playSong(song: Song, mode: PlaybackMode) {
-        logD("Updating song to ${song.name} and mode to $mode")
+        logD("Updating song to ${song.rawName} and mode to $mode")
 
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
@@ -185,7 +185,7 @@ class PlaybackStateManager private constructor() {
      * @param shuffled Whether the queue is shuffled or not
      */
     fun playParent(parent: MusicParent, shuffled: Boolean) {
-        logD("Playing ${parent.name}")
+        logD("Playing ${parent.rawName}")
 
         mParent = parent
         mIndex = 0
@@ -270,7 +270,7 @@ class PlaybackStateManager private constructor() {
             return false
         }
 
-        logD("Removing item ${mQueue[index].name}")
+        logD("Removing item ${mQueue[index].rawName}")
         mQueue.removeAt(index)
         pushQueueUpdate()
         return true

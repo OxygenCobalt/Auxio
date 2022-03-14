@@ -62,14 +62,14 @@ class SongListFragment : HomeListFragment() {
             // based off the names of the parent objects and not the child objects.
             when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
                 // Name -> Use name
-                is Sort.ByName -> song.name.sliceArticle().first().uppercase()
+                is Sort.ByName -> song.resolvedName.sliceArticle().first().uppercase()
 
                 // Artist -> Use Artist Name
                 is Sort.ByArtist ->
                     song.album.artist.resolvedName.sliceArticle().first().uppercase()
 
                 // Album -> Use Album Name
-                is Sort.ByAlbum -> song.album.name.sliceArticle().first().uppercase()
+                is Sort.ByAlbum -> song.album.resolvedName.sliceArticle().first().uppercase()
 
                 // Year -> Use Full Year
                 is Sort.ByYear -> song.album.year?.toString() ?: getString(R.string.def_date)

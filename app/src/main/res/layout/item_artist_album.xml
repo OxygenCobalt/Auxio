@@ -16,7 +16,7 @@
         <org.oxycblt.auxio.coil.RoundableImageView
             android:id="@+id/album_cover"
             style="@style/Widget.Auxio.Image.Medium"
-            android:contentDescription="@{@string/desc_album_cover(album.name)}"
+            android:contentDescription="@{@string/desc_album_cover(album.resolvedName)}"
             app:albumArt="@{album}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
             style="@style/Widget.Auxio.TextView.Item.Primary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{album.name}"
+            android:text="@{album.resolvedName}"
             android:textColor="@color/sel_accented_primary"
             app:layout_constraintBottom_toTopOf="@+id/album_year"
             app:layout_constraintEnd_toEndOf="parent"

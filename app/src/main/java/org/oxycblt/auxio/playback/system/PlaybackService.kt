@@ -256,7 +256,7 @@ class PlaybackService :
 
     override fun onSongUpdate(song: Song?) {
         if (song != null) {
-            logD("Setting player to ${song.name}")
+            logD("Setting player to ${song.rawName}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
             player.prepare()
             notification.setMetadata(song, ::startForegroundOrNotify)
@@ -500,8 +500,8 @@ class PlaybackService :
         /**
          * Pause from a headset plug.
          *
-         * TODO: Find a way to centralize this stuff into a single BroadcastReceiver instead of
-         * the weird disjointed arrangement between MediaSession and this.
+         * TODO: Find a way to centralize this stuff into a single BroadcastReceiver instead of the
+         * weird disjointed arrangement between MediaSession and this.
          */
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {

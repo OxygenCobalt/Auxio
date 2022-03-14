@@ -39,7 +39,7 @@
             style="@style/Widget.Auxio.Image.Full"
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:layout_marginTop="@dimen/spacing_mid_large"
-            android:contentDescription="@{@string/desc_album_cover(song.name)}"
+            android:contentDescription="@{@string/desc_album_cover(song.resolvedName)}"
             app:albumArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
-                android:text="@{song.name}"
+                android:text="@{song.resolvedName}"
                 tools:text="Song Name" />
 
         </FrameLayout>

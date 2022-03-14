@@ -112,7 +112,7 @@ class MusicLoader {
                 song.internalIsMissingArtist ||
                 song.internalIsMissingGenre) {
                 throw IllegalStateException(
-                    "Found malformed song: ${song.name} [" +
+                    "Found malformed song: ${song.rawName} [" +
                         "album: ${!song.internalIsMissingAlbum} " +
                         "artist: ${!song.internalIsMissingArtist} " +
                         "genre: ${!song.internalIsMissingGenre}]")
@@ -240,7 +240,7 @@ class MusicLoader {
         songs =
             songs
                 .distinctBy {
-                    it.name to
+                    it.rawName to
                         it.internalMediaStoreAlbumName to
                         it.internalMediaStoreArtistName to
                         it.internalMediaStoreAlbumArtistName to
@@ -366,8 +366,8 @@ class MusicLoader {
             // Songs that don't have a genre will be thrown into an unknown genre.
             val unknownGenre =
                 Genre(
-                    name = MediaStore.UNKNOWN_STRING,
-                    resolvedName = context.getString(R.string.def_genre),
+                    MediaStore.UNKNOWN_STRING,
+                    context.getString(R.string.def_genre),
                     songsWithoutGenres)
 
             genres.add(unknownGenre)
