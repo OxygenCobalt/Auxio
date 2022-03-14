@@ -61,7 +61,8 @@ class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
 
     private var pauseWasTransient = false
 
-    // It's good to keep the volume and the ducking multiplier separate so that we can
+    // It's good to keep the volume and the ducking multiplier separate so that we don't
+    // lose information
     private var multiplier = 1f
         set(value) {
             field = value
@@ -87,8 +88,11 @@ class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
 
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is based off
-     * Vanilla Music's implementation. TODO: Add ReplayGain pre-amp TODO: Add positive ReplayGain
-     * values
+     * Vanilla Music's implementation.
+     *
+     * TODO: Add ReplayGain pre-amp
+     *
+     * TODO: Add positive ReplayGain
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {

@@ -44,7 +44,7 @@
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
-            <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="cornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
@@ -67,6 +67,10 @@
         <item name="android:padding">@dimen/spacing_medium</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.Auxio.RecyclerView.WithAdaptiveFab" parent="">
+        <item name="android:paddingBottom">@dimen/recycler_fab_space_normal</item>
     </style>
 
     <style name="ThemeOverlay.Accent" parent="">

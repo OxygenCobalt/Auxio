@@ -30,8 +30,10 @@ import org.oxycblt.auxio.util.logD
 
 /**
  * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal of
- * paths. Use [Factory] to instantiate this. TODO: Unify with MusicViewModel
+ * paths. Use [Factory] to instantiate this.
  * @author OxygenCobalt
+ *
+ * TODO: Unify with MusicViewModel
  */
 class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {
     private val mPaths = MutableLiveData(mutableListOf<String>())

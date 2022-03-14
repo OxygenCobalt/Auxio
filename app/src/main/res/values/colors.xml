@@ -146,7 +146,7 @@
     <color name="blue_on_surface_variant">#42474E</color>
     <color name="blue_surface_inverse">#2F3033</color>
     <color name="blue_on_surface_inverse">#F1F0F4</color>
-    
+
     <color name="deep_blue_primary">#006684</color>
     <color name="deep_blue_on_primary">#FFFFFF</color>
     <color name="deep_blue_primary_container">#BAE9FF</color>

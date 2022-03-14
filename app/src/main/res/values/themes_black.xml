@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Auxio.Black" parent="Theme.Auxio.App">
+
+<style name="Theme.Auxio.Black" parent="Theme.Auxio.App">
         <item name="colorSurface">@android:color/black</item>
     </style>
 

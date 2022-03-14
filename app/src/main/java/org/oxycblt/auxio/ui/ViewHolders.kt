@@ -68,7 +68,6 @@ abstract class BaseViewHolder<T : Item>(
         doOnLongClick?.let { onLongClick ->
             binding.root.setOnLongClickListener { view ->
                 onLongClick(view, data)
-
                 true
             }
         }

@@ -2,6 +2,9 @@
 
 ## dev [v2.2.3, v2.3.0, or v3.0.0]
 
+#### What's Fixed
+- Fixed incorrect ellipsizing on song items
+
 #### Dev/Meta
 - Switched to spotless and ktfmt instead of ktlint
 

@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.WindowInsets
 import androidx.annotation.AttrRes
@@ -26,12 +27,25 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /** A [RecyclerView] that automatically applies insets to itself. */
-class EdgeRecyclerView
+open class EdgeRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     RecyclerView(context, attrs, defStyleAttr) {
+    private val initialPadding = Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
+
+    init {
+        // Prevent children from being clipped by window insets
+        clipToPadding = false
+    }
+
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+
+        updatePadding(
+            initialPadding.left,
+            initialPadding.top,
+            initialPadding.right,
+            initialPadding.bottom + insets.systemBarInsetsCompat.bottom)
+
         return insets
     }
 }

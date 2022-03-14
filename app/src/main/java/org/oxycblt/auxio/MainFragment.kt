@@ -40,8 +40,9 @@ import org.oxycblt.auxio.util.logW
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
  * high-level navigation features.
- * @author OxygenCobalt TODO: Add a new view with a stack trace whenever the music loading process
- * fails.
+ * @author OxygenCobalt
+ *
+ * TODO: Add a new view with a stack trace whenever the music loading process fails.
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

@@ -159,7 +159,7 @@
         <item name="colorPrimaryInverse">@color/blue_primary_inverse</item>
         <item name="colorPrimaryContainer">@color/blue_primary_container</item>
         <item name="colorOnPrimaryContainer">@color/blue_on_primary_container</item>
-        
+
         <item name="colorSecondary">@color/blue_secondary</item>
         <item name="colorOnSecondary">@color/blue_on_secondary</item>
         <item name="colorSecondaryContainer">@color/blue_secondary_container</item>

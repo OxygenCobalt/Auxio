@@ -35,13 +35,13 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
 import androidx.core.view.isInvisible
-import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.ui.EdgeRecyclerView
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenOffsetSafe
@@ -76,7 +76,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
-    RecyclerView(context, attrs, defStyleAttr) {
+    EdgeRecyclerView(context, attrs, defStyleAttr) {
     /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null
 
@@ -118,7 +118,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private val initialPadding = Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
     private val scrollerPadding = Rect(0, 0, 0, 0)
 
     init {
@@ -316,16 +315,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        super.onApplyWindowInsets(insets)
         val bars = insets.systemBarInsetsCompat
-
-        updatePadding(
-            initialPadding.left,
-            initialPadding.top,
-            initialPadding.right,
-            initialPadding.bottom + bars.bottom)
-
         scrollerPadding.bottom = bars.bottom
-
         return insets
     }
 

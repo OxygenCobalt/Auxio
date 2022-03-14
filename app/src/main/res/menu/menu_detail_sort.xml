@@ -15,7 +15,8 @@
             android:title="@string/lbl_sort_year" />
     </group>
     <group android:checkableBehavior="all">
-        <item android:id="@+id/option_sort_asc"
+        <item
+            android:id="@+id/option_sort_asc"
             android:title="@string/lbl_sort_asc" />
     </group>
 </menu>

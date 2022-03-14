@@ -53,8 +53,10 @@ import org.oxycblt.auxio.util.logTraceOrThrow
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
  * respective item.
- * @author OxygenCobalt TODO: Make tabs invisible when there is only one TODO: Add duration and song
- * count sorts
+ * @author OxygenCobalt
+ *
+ * TODO: Make tabs invisible when there is only one
+ * TODO: Add duration and song count sorts
  */
 class HomeFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

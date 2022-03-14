@@ -145,7 +145,7 @@
     <color name="blue_on_surface_variant">#C3C7D0</color>
     <color name="blue_surface_inverse">#E2E2E6</color>
     <color name="blue_on_surface_inverse">#1B1B1B</color>
-    
+
     <color name="deep_blue_primary">#62D3FF</color>
     <color name="deep_blue_on_primary">#003546</color>
     <color name="deep_blue_primary_container">#004D64</color>
@@ -361,7 +361,7 @@
     <color name="brown_on_surface_variant">#D8C2BB</color>
     <color name="brown_surface_inverse">#EDE0DC</color>
     <color name="brown_on_surface_inverse">#201A18</color>
-    
+
     <color name="grey_primary">#EEEEEE</color>
     <color name="grey_on_primary">#424242</color>
     <color name="grey_primary_inverse">#757575</color>

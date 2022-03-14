@@ -37,7 +37,9 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
- * @author OxygenCobalt TODO: Handle RTL correctly in the playback buttons
+ * @author OxygenCobalt
+ *
+ * TODO: Handle RTL correctly in the playback buttons
  */
 class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()

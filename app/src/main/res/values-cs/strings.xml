@@ -30,7 +30,7 @@
     <string name="lbl_play_genre">"Přehrát z žánru"</string>
     <string name="lbl_playback">"Nyní hraje"</string>
     <string name="lbl_queue">"Fronta"</string>
-     <string name="lbl_play_next">Další skladba</string>
+    <string name="lbl_play_next">Další skladba</string>
     <string name="lbl_queue_add">"Přidat do fronty"</string>
     <string name="lbl_queue_added">"Přidáno do fronty"</string>
     <string name="lbl_go_artist">"Jít na umělce"</string>

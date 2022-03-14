@@ -32,9 +32,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 abstract class LifecycleDialog : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
-
         onConfigDialog(builder)
-
         return builder.create()
     }
 

@@ -32,8 +32,9 @@ import org.oxycblt.auxio.util.logE
 
 /**
  * The main storage for music items. Getting an instance of this object is more complicated as it
- * loads asynchronously. See the companion object for more. TODO: Add automatic rescanning [major
- * change]
+ * loads asynchronously. See the companion object for more.
+ *
+ * TODO: Add automatic rescanning [major change]
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {
@@ -111,7 +112,9 @@ class MusicStore private constructor() {
 
     /**
      * A response that [MusicStore] returns when loading music. And before you ask, yes, I do like
-     * rust. TODO: Add the exception to the "FAILED" ErrorKind
+     * rust.
+     *
+     * TODO: Add the exception to the "FAILED" ErrorKind
      */
     sealed class Response {
         class Ok(val musicStore: MusicStore) : Response()

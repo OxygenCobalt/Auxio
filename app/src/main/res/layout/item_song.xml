@@ -21,7 +21,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"
             tools:src="@drawable/ic_album" />
 
         <TextView
@@ -31,6 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@{song.name}"
             app:layout_constraintBottom_toTopOf="@+id/song_info"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
@@ -43,8 +43,10 @@
             android:layout_height="wrap_content"
             app:songInfo="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/album_cover"
             app:layout_constraintTop_toBottomOf="@+id/song_name"
             tools:text="Artist / Album" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -5,7 +5,7 @@
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
     <string name="info_channel_name">音乐播放</string>
     <string name="info_widget_desc">查看和控制音乐播放</string>
-	
+
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
     <string name="lbl_grant">授予</string>
@@ -48,14 +48,14 @@
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
     <string name="lbl_no_dirs">没有任何文件夹</string>
-	
+
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">在 Github 上查看</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">许可证</string>
     <string name="lbl_author">由 OxygenCobalt 开发</string>
-	
+
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">设置</string>
     <string name="set_ui">外观</string>

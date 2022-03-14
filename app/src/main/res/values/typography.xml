@@ -116,14 +116,14 @@
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.015</item>
     </style>
-    
+
     <style name="TextAppearance.Auxio.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0.025</item>
     </style>
-    
+
     <style name="TextAppearance.Auxio.BodySmall" parent="TextAppearance.Material3.BodySmall">
         <item name="fontFamily">@font/inter</item>
         <item name="android:fontFamily">@font/inter</item>

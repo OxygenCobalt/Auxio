@@ -498,9 +498,10 @@ class PlaybackService :
         }
 
         /**
-         * Pause from a headset plug. TODO: Find a way to centralize this stuff into a single
-         * BroadcastReciever instead of the weird disjointed arrangement between MediaSession and
-         * this.
+         * Pause from a headset plug.
+         *
+         * TODO: Find a way to centralize this stuff into a single BroadcastReceiver instead of
+         * the weird disjointed arrangement between MediaSession and this.
          */
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {

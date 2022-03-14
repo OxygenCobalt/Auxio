@@ -30,7 +30,6 @@
             android:name="org.oxycblt.auxio.settings.SettingsListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>

@@ -64,8 +64,9 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * state and view magic. I tried my best to document it, but it's probably not the most friendly or
  * extendable. You have been warned.
  *
- * @author OxygenCobalt (With help from Umano and Hai Zhang) TODO: Find a better way to handle
- * PlaybackFragment in general (navigation, creation)
+ * @author OxygenCobalt (With help from Umano and Hai Zhang)
+ *
+ * TODO: Find a better way to handle PlaybackFragment in general (navigation, creation)
  */
 class PlaybackLayout
 @JvmOverloads

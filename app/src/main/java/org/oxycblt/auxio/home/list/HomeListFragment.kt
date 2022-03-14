@@ -56,7 +56,6 @@ abstract class HomeListFragment : Fragment() {
             onDragListener = { dragging -> homeModel.updateFastScrolling(dragging) }
         }
 
-        // Make sure that this RecyclerView has data before startup
         homeData.observe(viewLifecycleOwner) { data -> homeAdapter.updateData(data) }
     }
 

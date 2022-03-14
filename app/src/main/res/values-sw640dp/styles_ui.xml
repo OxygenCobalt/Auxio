@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="Widget.Auxio.RecyclerView.WithAdaptiveFab" parent="">
+        <item name="android:paddingBottom">@dimen/recycler_fab_space_large</item>
+    </style>
+
     <style name="Widget.Auxio.FloatingActionButton.Adaptive" parent="Widget.Material3.FloatingActionButton.Large.Primary">
         <item name="fabSize">normal</item>
     </style>

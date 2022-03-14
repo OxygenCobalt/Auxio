@@ -33,8 +33,10 @@ sealed class Item {
 }
 
 /**
- * [Item] variant that represents a music item. TODO: Make name the actual display name and move raw
- * names (including file names) to a new field called rawName.
+ * [Item] variant that represents a music item.
+ *
+ * TODO: Make name the actual display name and move raw names (including file names) to a
+ *  new field called rawName.
  */
 sealed class Music : Item() {
     /** The raw name of this item. */

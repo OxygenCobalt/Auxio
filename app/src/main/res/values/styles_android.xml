@@ -9,8 +9,10 @@
     <style name="Theme.Auxio.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="android:checkedTextViewStyle">@style/Widget.Auxio.Dialog.CheckedTextView</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Widget.Auxio.Dialog.TextView</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog
+        </item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Material3.Button.TextButton.Dialog
+        </item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Auxio.Dialog.Button.Flush</item>
     </style>
 

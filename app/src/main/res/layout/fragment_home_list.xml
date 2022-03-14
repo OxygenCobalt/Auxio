@@ -5,10 +5,9 @@
 
     <org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
         android:id="@+id/home_recycler"
+        style="@style/Widget.Auxio.RecyclerView.WithAdaptiveFab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/recycler_fab_space_normal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/item_artist" />
