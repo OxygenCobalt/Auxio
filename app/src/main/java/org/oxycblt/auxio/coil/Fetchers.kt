@@ -74,7 +74,7 @@ private constructor(
     private val artist: Artist,
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val albums = Sort.ByName(true).sortAlbums(artist.albums)
+        val albums = Sort.ByName(true).albums(artist.albums)
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
 
         return createMosaic(context, results, size)

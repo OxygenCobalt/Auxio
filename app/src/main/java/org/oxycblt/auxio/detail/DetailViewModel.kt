@@ -162,7 +162,7 @@ class DetailViewModel : ViewModel() {
                     mShowMenu.value = MenuConfig(view, settingsManager.detailGenreSort)
                 }))
 
-        data.addAll(settingsManager.detailGenreSort.sortGenre(curGenre.value!!))
+        data.addAll(settingsManager.detailGenreSort.genre(curGenre.value!!))
 
         mGenreData.value = data
     }
@@ -174,7 +174,7 @@ class DetailViewModel : ViewModel() {
 
         data.add(Header(id = -2, string = R.string.lbl_albums))
 
-        data.addAll(Sort.ByYear(false).sortAlbums(artist.albums))
+        data.addAll(Sort.ByYear(false).albums(artist.albums))
 
         data.add(
             ActionHeader(
@@ -187,7 +187,7 @@ class DetailViewModel : ViewModel() {
                     mShowMenu.value = MenuConfig(view, settingsManager.detailArtistSort)
                 }))
 
-        data.addAll(settingsManager.detailArtistSort.sortArtist(artist))
+        data.addAll(settingsManager.detailArtistSort.artist(artist))
 
         mArtistData.value = data.toList()
     }
@@ -208,7 +208,7 @@ class DetailViewModel : ViewModel() {
                     mShowMenu.value = MenuConfig(view, settingsManager.detailAlbumSort)
                 }))
 
-        data.addAll(settingsManager.detailAlbumSort.sortAlbum(curAlbum.value!!))
+        data.addAll(settingsManager.detailAlbumSort.album(curAlbum.value!!))
 
         mAlbumData.value = data
     }

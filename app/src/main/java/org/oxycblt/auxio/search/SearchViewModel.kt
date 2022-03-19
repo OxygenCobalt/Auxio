@@ -88,28 +88,28 @@ class SearchViewModel : ViewModel() {
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
                 musicStore.artists.filterByOrNull(query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
-                    results.addAll(sort.sortParents(artists))
+                    results.addAll(sort.artists(artists))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
                 musicStore.albums.filterByOrNull(query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
-                    results.addAll(sort.sortAlbums(albums))
+                    results.addAll(sort.albums(albums))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
                 musicStore.genres.filterByOrNull(query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
-                    results.addAll(sort.sortParents(genres))
+                    results.addAll(sort.genres(genres))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
                 musicStore.songs.filterByOrNull(query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
-                    results.addAll(sort.sortSongs(songs))
+                    results.addAll(sort.songs(songs))
                 }
             }
 

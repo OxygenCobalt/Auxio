@@ -23,8 +23,8 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logW
 
 /**
  * A data class representing the sort modes used in Auxio.
@@ -43,14 +43,95 @@ import org.oxycblt.auxio.music.Song
  * @author OxygenCobalt
  */
 sealed class Sort(open val isAscending: Boolean) {
+    open fun songs(songs: Collection<Song>): List<Song> {
+        logW("This sort is not supported for songs")
+        return songs.toList()
+    }
+
+    open fun albums(albums: Collection<Album>): List<Album> {
+        logW("This sort is not supported for albums")
+        return albums.toList()
+    }
+
+    open fun artists(artists: Collection<Artist>): List<Artist> {
+        logW("This sort is not supported for artists")
+        return artists.toList()
+    }
+
+    open fun genres(genres: Collection<Genre>): List<Genre> {
+        logW("This sort is not supported for genres")
+        return genres.toList()
+    }
+
     /** Sort by the names of an item */
-    class ByName(override val isAscending: Boolean) : Sort(isAscending)
-    /** Sort by the artist of an item, only supported by [Album] and [Song] */
-    class ByArtist(override val isAscending: Boolean) : Sort(isAscending)
+    class ByName(override val isAscending: Boolean) : Sort(isAscending) {
+        override fun songs(songs: Collection<Song>): List<Song> {
+            return songs.sortedWith(compareByDynamic(NameComparator()) { it })
+        }
+
+        override fun albums(albums: Collection<Album>): List<Album> {
+            return albums.sortedWith(compareByDynamic(NameComparator()) { it })
+        }
+
+        override fun artists(artists: Collection<Artist>): List<Artist> {
+            return artists.sortedWith(compareByDynamic(NameComparator()) { it })
+        }
+
+        override fun genres(genres: Collection<Genre>): List<Genre> {
+            return genres.sortedWith(compareByDynamic(NameComparator()) { it })
+        }
+    }
+
     /** Sort by the album of an item, only supported by [Song] */
-    class ByAlbum(override val isAscending: Boolean) : Sort(isAscending)
+    class ByAlbum(override val isAscending: Boolean) : Sort(isAscending) {
+        override fun songs(songs: Collection<Song>): List<Song> {
+            return songs.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.track },
+                    compareBy(NameComparator()) { it }))
+        }
+    }
+
+    /** Sort by the artist of an item, only supported by [Album] and [Song] */
+    class ByArtist(override val isAscending: Boolean) : Sort(isAscending) {
+        override fun songs(songs: Collection<Song>): List<Song> {
+            return songs.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NameComparator()) { it.album.artist },
+                    compareByDescending(NullableComparator()) { it.album.year },
+                    compareByDescending(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.track },
+                    compareBy(NameComparator()) { it }))
+        }
+
+        override fun albums(albums: Collection<Album>): List<Album> {
+            return albums.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NameComparator()) { it.artist },
+                    compareByDescending(NullableComparator()) { it.year },
+                    compareBy(NameComparator()) { it }))
+        }
+    }
+
     /** Sort by the year of an item, only supported by [Album] and [Song] */
-    class ByYear(override val isAscending: Boolean) : Sort(isAscending)
+    class ByYear(override val isAscending: Boolean) : Sort(isAscending) {
+        override fun songs(songs: Collection<Song>): List<Song> {
+            return songs.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NullableComparator()) { it.album.year },
+                    compareByDescending(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.track },
+                    compareBy(NameComparator()) { it }))
+        }
+
+        override fun albums(albums: Collection<Album>): List<Album> {
+            return albums.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NullableComparator()) { it.year },
+                    compareBy(NameComparator()) { it }))
+        }
+    }
 
     /** Get the corresponding item id for this sort. */
     val itemId: Int
@@ -90,71 +171,30 @@ sealed class Sort(open val isAscending: Boolean) {
     }
 
     /**
-     * Sort a list of [Song] instances to reflect this specific sort.
-     *
-     * Albums are sorted by ascending track, artists are sorted with [ByYear] descending.
-     *
-     * @return A sorted list of songs
-     */
-    fun sortSongs(songs: Collection<Song>): List<Song> {
-        return when (this) {
-            is ByName -> songs.stringSort { it.resolvedName }
-            else ->
-                sortAlbums(songs.groupBy { it.album }.keys).flatMap { album ->
-                    album.songs.intSort(true) { it.track ?: 0 }
-                }
-        }
-    }
-
-    /**
-     * Sort a list of [Album] instances to reflect this specific sort.
-     *
-     * Artists are sorted with [ByYear] descending.
-     *
-     * @return A sorted list of albums
-     */
-    fun sortAlbums(albums: Collection<Album>): List<Album> {
-        return when (this) {
-            is ByName, is ByAlbum -> albums.stringSort { it.resolvedName }
-            is ByArtist ->
-                sortParents(albums.groupBy { it.artist }.keys).flatMap {
-                    ByYear(false).sortAlbums(it.albums)
-                }
-            is ByYear -> albums.intSort { it.year ?: 0 }
-        }
-    }
-
-    /**
-     * Sort a list of [MusicParent] instances to reflect this specific sort.
-     *
-     * @return A sorted list of the specific parent
-     */
-    fun <T : MusicParent> sortParents(parents: Collection<T>): List<T> {
-        return parents.stringSort { it.resolvedName }
-    }
-
-    /**
      * Sort the songs in an album.
-     * @see sortSongs
+     * @see songs
      */
-    fun sortAlbum(album: Album): List<Song> {
-        return album.songs.intSort { it.track ?: 0 }
+    fun album(album: Album): List<Song> {
+        return album.songs.sortedWith(
+            MultiComparator(
+                compareByDynamic(NullableComparator()) { it.track },
+                compareBy(NameComparator()) { it }))
     }
 
     /**
      * Sort the songs in an artist.
-     * @see sortSongs
+     * @see songs
      */
-    fun sortArtist(artist: Artist): List<Song> {
-        return sortSongs(artist.songs)
+    fun artist(artist: Artist): List<Song> {
+        return songs(artist.songs)
     }
 
     /**
      * Sort the songs in a genre.
-     * @see sortSongs
+     * @see songs
      */
-    fun sortGenre(genre: Genre): List<Song> {
-        return sortSongs(genre.songs)
+    fun genre(genre: Genre): List<Song> {
+        return songs(genre.songs)
     }
 
     /** Convert this sort to it's integer representation. */
@@ -167,35 +207,59 @@ sealed class Sort(open val isAscending: Boolean) {
         }.shl(1) or if (isAscending) 1 else 0
     }
 
-    private fun <T : Music> Collection<T>.stringSort(
-        asc: Boolean = isAscending,
-        selector: (T) -> String
-    ): List<T> {
-        // Chain whatever item call with sliceArticle for correctness
-        val chained: (T) -> String = { selector(it).sliceArticle() }
-
-        val comparator =
-            if (asc) {
-                compareBy(String.CASE_INSENSITIVE_ORDER, chained)
-            } else {
-                compareByDescending(String.CASE_INSENSITIVE_ORDER, chained)
-            }
-
-        return sortedWith(comparator)
+    protected inline fun <T : Music, K> compareByDynamic(
+        comparator: Comparator<in K>,
+        crossinline selector: (T) -> K
+    ): Comparator<T> {
+        return if (isAscending) {
+            compareBy(comparator, selector)
+        } else {
+            compareByDescending(comparator, selector)
+        }
     }
 
-    private fun <T : Music> Collection<T>.intSort(
-        asc: Boolean = isAscending,
-        selector: (T) -> Int,
-    ): List<T> {
-        val comparator =
-            if (asc) {
-                compareBy(selector)
-            } else {
-                compareByDescending(selector)
+    class NameComparator<T : Music> : Comparator<T> {
+        override fun compare(a: T?, b: T?): Int {
+            if (a == null && b != null) return -1 // -1 -> a < b
+            if (a == null && b == null) return 0 // 0 -> 0 = b
+            if (a != null && b == null) return 1 // 1 -> a > b
+
+            return a!!.resolvedName
+                .sliceArticle()
+                .compareTo(b!!.resolvedName.sliceArticle(), ignoreCase = true)
+        }
+    }
+
+    class NullableComparator<T : Comparable<T>> : Comparator<T?> {
+        override fun compare(a: T?, b: T?): Int {
+            if (a == null && b != null) return -1 // -1 -> a < b
+            if (a == null && b == null) return 0 // 0 -> 0 = b
+            if (a != null && b == null) return 1 // 1 -> a > b
+            return a!!.compareTo(b!!)
+        }
+    }
+
+    /**
+     * Chains the given comparators together to form one comparator.
+     *
+     * Sorts often need to compare multiple things at once across several hierarchies, with this
+     * class doing such in a more efficient manner than resorting at multiple intervals or grouping
+     * items up. Comparators are checked from first to last, with the first comparator that returns a
+     * non-equal result being propagated upwards.
+     */
+    class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
+        private val mComparators = comparators
+
+        override fun compare(a: T?, b: T?): Int {
+            for (comparator in mComparators) {
+                val result = comparator.compare(a, b)
+                if (result != 0) {
+                    return result
+                }
             }
 
-        return sortedWith(comparator)
+            return 0
+        }
     }
 
     companion object {
@@ -229,15 +293,15 @@ sealed class Sort(open val isAscending: Boolean) {
  * languages.
  */
 fun String.sliceArticle(): String {
-    if (length > 5 && startsWith("the ", true)) {
+    if (length > 5 && startsWith("the ", ignoreCase = true)) {
         return slice(4..lastIndex)
     }
 
-    if (length > 4 && startsWith("an ", true)) {
+    if (length > 4 && startsWith("an ", ignoreCase = true)) {
         return slice(3..lastIndex)
     }
 
-    if (length > 3 && startsWith("a ", true)) {
+    if (length > 3 && startsWith("a ", ignoreCase = true)) {
         return slice(2..lastIndex)
     }
 

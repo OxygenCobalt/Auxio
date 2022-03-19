@@ -376,13 +376,13 @@ class PlaybackStateManager private constructor() {
         mQueue =
             when (mPlaybackMode) {
                 PlaybackMode.ALL_SONGS ->
-                    settingsManager.libSongSort.sortSongs(musicStore.songs).toMutableList()
+                    settingsManager.libSongSort.songs(musicStore.songs).toMutableList()
                 PlaybackMode.IN_ALBUM ->
-                    settingsManager.detailAlbumSort.sortAlbum(mParent as Album).toMutableList()
+                    settingsManager.detailAlbumSort.album(mParent as Album).toMutableList()
                 PlaybackMode.IN_ARTIST ->
-                    settingsManager.detailArtistSort.sortArtist(mParent as Artist).toMutableList()
+                    settingsManager.detailArtistSort.artist(mParent as Artist).toMutableList()
                 PlaybackMode.IN_GENRE ->
-                    settingsManager.detailGenreSort.sortGenre(mParent as Genre).toMutableList()
+                    settingsManager.detailGenreSort.genre(mParent as Genre).toMutableList()
             }
 
         if (keepSong) {

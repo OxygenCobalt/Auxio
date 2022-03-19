@@ -81,10 +81,10 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
 
         viewModelScope.launch {
             val musicStore = MusicStore.awaitInstance()
-            mSongs.value = settingsManager.libSongSort.sortSongs(musicStore.songs)
-            mAlbums.value = settingsManager.libAlbumSort.sortAlbums(musicStore.albums)
-            mArtists.value = settingsManager.libArtistSort.sortParents(musicStore.artists)
-            mGenres.value = settingsManager.libGenreSort.sortParents(musicStore.genres)
+            mSongs.value = settingsManager.libSongSort.songs(musicStore.songs)
+            mAlbums.value = settingsManager.libAlbumSort.albums(musicStore.albums)
+            mArtists.value = settingsManager.libArtistSort.artists(musicStore.artists)
+            mGenres.value = settingsManager.libGenreSort.genres(musicStore.genres)
         }
     }
 
@@ -113,19 +113,19 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
         when (mCurTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort
-                mSongs.value = sort.sortSongs(mSongs.value!!)
+                mSongs.value = sort.songs(mSongs.value!!)
             }
             DisplayMode.SHOW_ALBUMS -> {
                 settingsManager.libAlbumSort = sort
-                mAlbums.value = sort.sortAlbums(mAlbums.value!!)
+                mAlbums.value = sort.albums(mAlbums.value!!)
             }
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
-                mArtists.value = sort.sortParents(mArtists.value!!)
+                mArtists.value = sort.artists(mArtists.value!!)
             }
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
-                mGenres.value = sort.sortParents(mGenres.value!!)
+                mGenres.value = sort.genres(mGenres.value!!)
             }
             else -> {}
         }

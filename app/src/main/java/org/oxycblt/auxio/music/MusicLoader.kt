@@ -27,6 +27,7 @@ import androidx.core.database.getStringOrNull
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -277,9 +278,17 @@ class MusicLoader {
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            // TODO: Weigh songs with null years lower than songs with zero years
-            val templateSong =
-                requireNotNull(albumSongs.maxByOrNull { it.internalMediaStoreYear ?: 0 })
+            // Note: Normally we could want to use something like maxByWith, but apparently
+            // that does not exist in the kotlin stdlib yet.
+            val comparator = Sort.NullableComparator<Int>()
+            var templateSong = albumSongs[0]
+            for (i in 1..albumSongs.lastIndex) {
+                val candidate = albumSongs[i]
+                if (comparator.compare(templateSong.track, candidate.track) < 0) {
+                    templateSong = candidate
+                }
+            }
+
             val albumName = templateSong.internalMediaStoreAlbumName
             val albumYear = templateSong.internalMediaStoreYear
             val albumCoverUri =

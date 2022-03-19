@@ -36,6 +36,9 @@ import org.oxycblt.auxio.settings.SettingsManager
  *       - Rework RecyclerView management and item dragging
  *       - Rework sealed classes to minimize whens and maximize overrides
  * ```
+ *
+ * TODO: Dumpster int-codes for a 4-byte identifier (can still be in the form of an int) For
+ * example, instead of 0xA111 for ReplayGainMode.TRACK, you would instead have RTCK
  */
 @Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {

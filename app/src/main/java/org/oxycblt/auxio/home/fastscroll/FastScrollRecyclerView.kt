@@ -69,19 +69,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Added documentation
  *
  * @author Hai Zhang, OxygenCobalt
- *
- * TODO: Fix strange touch behavior when the pointer is slightly outside of the view.
- *
- * TODO: Really try to make this view less insane.
  */
 class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     EdgeRecyclerView(context, attrs, defStyleAttr) {
-    private val minTouchTargetSize =
-        context.getDimenSizeSafe(R.dimen.fast_scroll_thumb_touch_target_size)
-    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
-
     // Thumb
     private val thumbView =
         View(context).apply {
@@ -102,6 +94,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
+    private val scrollPositionChildRect = Rect()
+
     // Popup
     private val popupView =
         FastScrollPopupView(context).apply {
@@ -118,7 +112,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private var showingPopup = false
 
-    // Touch events
+    // Touch
+    private val minTouchTargetSize =
+        context.getDimenSizeSafe(R.dimen.fast_scroll_thumb_touch_target_size)
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+
     private var downX = 0f
     private var downY = 0f
     private var lastY = 0f
@@ -150,8 +148,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
             onDragListener?.invoke(value)
         }
-
-    private val childRect = Rect()
 
     /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null
@@ -303,8 +299,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Combine the previous item dimensions with the current item top to find our scroll
         // position
-        getDecoratedBoundsWithMargins(getChildAt(0), childRect)
-        val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - childRect.top
+        getDecoratedBoundsWithMargins(getChildAt(0), scrollPositionChildRect)
+        val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - scrollPositionChildRect.top
 
         // Then calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
@@ -497,8 +493,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
 
             val itemView = getChildAt(0)
-            getDecoratedBoundsWithMargins(itemView, childRect)
-            return childRect.height()
+            getDecoratedBoundsWithMargins(itemView, scrollPositionChildRect)
+            return scrollPositionChildRect.height()
         }
 
     private val itemCount: Int

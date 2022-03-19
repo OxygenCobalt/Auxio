@@ -240,7 +240,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /** Add an [Album] to the top of the queue. */
     fun playNext(album: Album) {
-        playbackManager.playNext(settingsManager.detailAlbumSort.sortAlbum(album))
+        playbackManager.playNext(settingsManager.detailAlbumSort.album(album))
     }
 
     /** Add a [Song] to the end of the queue. */
@@ -250,7 +250,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /** Add an [Album] to the end of the queue. */
     fun addToQueue(album: Album) {
-        playbackManager.addToQueue(settingsManager.detailAlbumSort.sortAlbum(album))
+        playbackManager.addToQueue(settingsManager.detailAlbumSort.album(album))
     }
 
     // --- STATUS FUNCTIONS ---
