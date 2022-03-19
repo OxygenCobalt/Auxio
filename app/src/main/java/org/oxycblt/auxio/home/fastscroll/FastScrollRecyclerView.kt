@@ -17,11 +17,9 @@
  
 package org.oxycblt.auxio.home.fastscroll
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -30,12 +28,9 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.AttrRes
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.math.MathUtils
 import androidx.core.view.isInvisible
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,19 +38,21 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.EdgeRecyclerView
 import org.oxycblt.auxio.util.canScroll
-import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenOffsetSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.isRtl
+import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
  * Hai Zhang's AndroidFastScroll but slimmed down for Auxio and with a couple of enhancements.
  *
- * Attributions as per the Apache 2.0 license: ORIGINAL AUTHOR: Hai Zhang
- * [https://github.com/zhanghai] PROJECT: Android Fast Scroll
- * [https://github.com/zhanghai/AndroidFastScroll] MODIFIER: OxygenCobalt [https://github.com/]
+ * Attributions as per the Apache 2.0 license:
+ * - ORIGINAL AUTHOR: Hai Zhang [https://github.com/zhanghai]
+ * - PROJECT: Android Fast Scroll [https://github.com/zhanghai/AndroidFastScroll]
+ * - MODIFIER: OxygenCobalt [https://github.com/oxygencobalt]
  *
  * !!! MODIFICATIONS !!!:
  * - Scroller will no longer show itself on startup or relayouts, which looked unpleasant with
@@ -72,11 +69,90 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * - Added documentation
  *
  * @author Hai Zhang, OxygenCobalt
+ *
+ * TODO: Fix strange touch behavior when the pointer is slightly outside of the view.
+ *
+ * TODO: Really try to make this view less insane.
  */
 class FastScrollRecyclerView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     EdgeRecyclerView(context, attrs, defStyleAttr) {
+    private val minTouchTargetSize =
+        context.getDimenSizeSafe(R.dimen.fast_scroll_thumb_touch_target_size)
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+
+    // Thumb
+    private val thumbView =
+        View(context).apply {
+            alpha = 0f
+            background = context.getDrawableSafe(R.drawable.ui_scroll_thumb)
+            this@FastScrollRecyclerView.overlay.add(this)
+        }
+
+    private val thumbWidth = thumbView.background.intrinsicWidth
+    private val thumbHeight = thumbView.background.intrinsicHeight
+    private val thumbPadding = Rect(0, 0, 0, 0)
+    private var thumbOffset = 0
+
+    private var showingThumb = false
+    private val hideThumbRunnable = Runnable {
+        if (!dragging) {
+            hideScrollbar()
+        }
+    }
+
+    // Popup
+    private val popupView =
+        FastScrollPopupView(context).apply {
+            layoutParams =
+                FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .apply {
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                        marginEnd = context.getDimenOffsetSafe(R.dimen.spacing_small)
+                    }
+
+            this@FastScrollRecyclerView.overlay.add(this)
+        }
+
+    private var showingPopup = false
+
+    // Touch events
+    private var downX = 0f
+    private var downY = 0f
+    private var lastY = 0f
+    private var dragStartY = 0f
+    private var dragStartThumbOffset = 0
+
+    private var dragging = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+
+            field = value
+
+            if (value) {
+                parent.requestDisallowInterceptTouchEvent(true)
+            }
+
+            thumbView.isPressed = value
+
+            if (field) {
+                removeCallbacks(hideThumbRunnable)
+                showScrollbar()
+                showPopup()
+            } else {
+                postAutoHideScrollbar()
+                hidePopup()
+            }
+
+            onDragListener?.invoke(value)
+        }
+
+    private val childRect = Rect()
+
     /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null
 
@@ -86,83 +162,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      */
     var onDragListener: ((Boolean) -> Unit)? = null
 
-    private val minTouchTargetSize: Int = context.getDimenSizeSafe(R.dimen.size_btn_small)
-    private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
-
-    // Views for the track, thumb, and popup. Note that the track view is mostly vestigial
-    // and is only for bounds checking.
-    private val trackView: View
-    private val thumbView: View
-    private val popupView: TextView
-
-    // Touch values
-    private val thumbWidth: Int
-    private val thumbHeight: Int
-    private var thumbOffset = 0
-    private var downX = 0f
-    private var downY = 0f
-    private var lastY = 0f
-    private var dragStartY = 0f
-    private var dragStartThumbOffset = 0
-
-    // State
-    private var dragging = false
-    private var showingScrollbar = false
-    private var showingPopup = false
-
-    private val childRect = Rect()
-
-    private val hideScrollbarRunnable = Runnable {
-        if (!dragging) {
-            hideScrollbar()
-        }
-    }
-
-    private val scrollerPadding = Rect(0, 0, 0, 0)
-
     init {
-        val thumbDrawable = context.getDrawableSafe(R.drawable.ui_scroll_thumb)
-
-        trackView = View(context)
-        thumbView =
-            View(context).apply {
-                alpha = 0f
-                background = thumbDrawable
-            }
-
-        popupView =
-            AppCompatTextView(context).apply {
-                alpha = 0f
-                layoutParams =
-                    FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-                minimumWidth = context.getDimenSizeSafe(R.dimen.popup_min_width)
-                minimumHeight = context.getDimenSizeSafe(R.dimen.size_btn_large)
-
-                (layoutParams as FrameLayout.LayoutParams).apply {
-                    gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                    marginEnd = context.getDimenOffsetSafe(R.dimen.spacing_small)
-                }
-
-                TextViewCompat.setTextAppearance(this, R.style.TextAppearance_Auxio_HeadlineLarge)
-                setTextColor(context.getAttrColorSafe(R.attr.colorOnSecondary))
-
-                background = FastScrollPopupDrawable(context)
-                elevation = context.getDimenSizeSafe(R.dimen.elevation_normal).toFloat()
-                ellipsize = TextUtils.TruncateAt.MIDDLE
-                gravity = Gravity.CENTER
-                includeFontPadding = false
-                isSingleLine = true
-            }
-
-        thumbWidth = thumbDrawable.intrinsicWidth
-        thumbHeight = thumbDrawable.intrinsicHeight
-
-        check(thumbWidth >= 0)
-        check(thumbHeight >= 0)
-
-        overlay.add(trackView)
         overlay.add(thumbView)
         overlay.add(popupView)
 
@@ -195,42 +195,33 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private fun onPreDraw() {
         updateScrollbarState()
 
-        trackView.layoutDirection = layoutDirection
         thumbView.layoutDirection = layoutDirection
         popupView.layoutDirection = layoutDirection
 
-        val trackLeft =
-            if (isRtl) {
-                scrollerPadding.left
-            } else {
-                width - scrollerPadding.right - thumbWidth
-            }
-
-        trackView.layout(
-            trackLeft, scrollerPadding.top, trackLeft + thumbWidth, height - scrollerPadding.bottom)
-
         val thumbLeft =
             if (isRtl) {
-                scrollerPadding.left
+                thumbPadding.left
             } else {
-                width - scrollerPadding.right - thumbWidth
+                width - thumbPadding.right - thumbWidth
             }
 
-        val thumbTop = scrollerPadding.top + thumbOffset
+        val thumbTop = thumbPadding.top + thumbOffset
 
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
 
         val firstPos = firstAdapterPos
         val popupText =
             if (firstPos != NO_POSITION) {
-                popupProvider?.invoke(firstPos) ?: ""
+                popupProvider?.invoke(firstPos)?.ifEmpty { null }
             } else {
-                ""
+                null
             }
 
-        popupView.isInvisible = popupText.isEmpty()
+        // Lay out the popup view
 
-        if (popupText.isNotEmpty()) {
+        popupView.isInvisible = popupText == null
+
+        if (popupText != null) {
             val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
             if (popupView.text != popupText) {
@@ -239,8 +230,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 val widthMeasureSpec =
                     ViewGroup.getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                        scrollerPadding.left +
-                            scrollerPadding.right +
+                        thumbPadding.left +
+                            thumbPadding.right +
                             thumbWidth +
                             popupLayoutParams.leftMargin +
                             popupLayoutParams.rightMargin,
@@ -249,8 +240,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 val heightMeasureSpec =
                     ViewGroup.getChildMeasureSpec(
                         MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
-                        scrollerPadding.top +
-                            scrollerPadding.bottom +
+                        thumbPadding.top +
+                            thumbPadding.bottom +
                             popupLayoutParams.topMargin +
                             popupLayoutParams.bottomMargin,
                         popupLayoutParams.height)
@@ -262,39 +253,23 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             val popupHeight = popupView.measuredHeight
             val popupLeft =
                 if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                    scrollerPadding.left + thumbWidth + popupLayoutParams.leftMargin
+                    thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
                 } else {
                     width -
-                        scrollerPadding.right -
+                        thumbPadding.right -
                         thumbWidth -
                         popupLayoutParams.rightMargin -
                         popupWidth
                 }
 
-            // We handle RTL separately, so it's okay if Gravity.RIGHT is used here
-            @SuppressLint("RtlHardcoded")
-            val popupAnchorY =
-                when (popupLayoutParams.gravity and Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    Gravity.CENTER_HORIZONTAL -> popupHeight / 2
-                    Gravity.RIGHT -> popupHeight
-                    else -> 0
-                }
-
-            val thumbAnchorY =
-                when (popupLayoutParams.gravity and Gravity.VERTICAL_GRAVITY_MASK) {
-                    Gravity.CENTER_VERTICAL -> {
-                        thumbView.paddingTop +
-                            (thumbHeight - thumbView.paddingTop - thumbView.paddingBottom) / 2
-                    }
-                    Gravity.BOTTOM -> thumbHeight - thumbView.paddingBottom
-                    else -> thumbView.paddingTop
-                }
+            val popupAnchorY = popupHeight / 2
+            val thumbAnchorY = thumbView.paddingTop
 
             val popupTop =
                 MathUtils.clamp(
                     thumbTop + thumbAnchorY - popupAnchorY,
-                    scrollerPadding.top + popupLayoutParams.topMargin,
-                    height - scrollerPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
+                    thumbPadding.top + popupLayoutParams.topMargin,
+                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
             popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
         }
@@ -317,7 +292,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         super.onApplyWindowInsets(insets)
         val bars = insets.systemBarInsetsCompat
-        scrollerPadding.bottom = bars.bottom
+        thumbPadding.bottom = bars.bottom
         return insets
     }
 
@@ -345,38 +320,36 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 downX = eventX
                 downY = eventY
 
-                val scrollX = trackView.scrollX
-                val isInScrollbar =
-                    eventX >= thumbView.left - scrollX && eventX < thumbView.right - scrollX
-
-                if (trackView.alpha > 0 && isInScrollbar) {
+                if (eventX >= thumbView.left && eventX < thumbView.right) {
                     dragStartY = eventY
 
-                    if (isInViewTouchTarget(thumbView, eventX, eventY)) {
+                    if (thumbView.isUnder(eventX, eventY, minTouchTargetSize)) {
                         dragStartThumbOffset = thumbOffset
                     } else {
                         dragStartThumbOffset =
-                            (eventY - scrollerPadding.top - thumbHeight / 2f).toInt()
+                            (eventY - thumbPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     }
 
-                    setDragging(true)
+                    dragging = true
                 }
             }
             MotionEvent.ACTION_MOVE -> {
                 if (!dragging &&
-                    isInViewTouchTarget(trackView, downX, downY) &&
+                    thumbView.isUnder(downX, thumbView.top.toFloat(), minTouchTargetSize) &&
                     abs(eventY - downY) > touchSlop) {
-                    if (isInViewTouchTarget(thumbView, downX, downY)) {
+
+                    if (thumbView.isUnder(downX, downY, minTouchTargetSize)) {
                         dragStartY = lastY
                         dragStartThumbOffset = thumbOffset
                     } else {
                         dragStartY = eventY
                         dragStartThumbOffset =
-                            (eventY - scrollerPadding.top - thumbHeight / 2f).toInt()
+                            (eventY - thumbPadding.top - thumbHeight / 2f).toInt()
                         scrollToThumbOffset(dragStartThumbOffset)
                     }
-                    setDragging(true)
+
+                    dragging = true
                 }
 
                 if (dragging) {
@@ -384,47 +357,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     scrollToThumbOffset(thumbOffset)
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> setDragging(false)
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> dragging = false
         }
 
         lastY = eventY
         return dragging
-    }
-
-    private fun isInViewTouchTarget(view: View, x: Float, y: Float): Boolean {
-        return isInTouchTarget(x, view.left - scrollX, view.right - scrollX, width) &&
-            isInTouchTarget(y, view.top - scrollY, view.bottom - scrollY, height)
-    }
-
-    private fun isInTouchTarget(
-        position: Float,
-        viewStart: Int,
-        viewEnd: Int,
-        parentEnd: Int
-    ): Boolean {
-        val viewSize = viewEnd - viewStart
-
-        if (viewSize >= minTouchTargetSize) {
-            return position >= viewStart && position < viewEnd
-        }
-
-        var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
-
-        if (touchTargetStart < 0) {
-            touchTargetStart = 0
-        }
-
-        var touchTargetEnd = touchTargetStart + minTouchTargetSize
-        if (touchTargetEnd > parentEnd) {
-            touchTargetEnd = parentEnd
-            touchTargetStart = touchTargetEnd - minTouchTargetSize
-
-            if (touchTargetStart < 0) {
-                touchTargetStart = 0
-            }
-        }
-
-        return position >= touchTargetStart && position < touchTargetEnd
     }
 
     private fun scrollToThumbOffset(thumbOffset: Int) {
@@ -464,54 +401,28 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private fun setDragging(isDragging: Boolean) {
-        if (dragging == isDragging) {
-            return
-        }
-
-        dragging = isDragging
-
-        if (dragging) {
-            parent.requestDisallowInterceptTouchEvent(true)
-        }
-
-        trackView.isPressed = dragging
-        thumbView.isPressed = dragging
-
-        if (dragging) {
-            removeCallbacks(hideScrollbarRunnable)
-            showScrollbar()
-            showPopup()
-        } else {
-            postAutoHideScrollbar()
-            hidePopup()
-        }
-
-        onDragListener?.invoke(isDragging)
-    }
-
     // --- SCROLLBAR APPEARANCE ---
 
     private fun postAutoHideScrollbar() {
-        removeCallbacks(hideScrollbarRunnable)
-        postDelayed(hideScrollbarRunnable, AUTO_HIDE_SCROLLBAR_DELAY_MILLIS.toLong())
+        removeCallbacks(hideThumbRunnable)
+        postDelayed(hideThumbRunnable, AUTO_HIDE_SCROLLBAR_DELAY_MILLIS.toLong())
     }
 
     private fun showScrollbar() {
-        if (showingScrollbar) {
+        if (showingThumb) {
             return
         }
 
-        showingScrollbar = true
+        showingThumb = true
         animateView(thumbView, 1f)
     }
 
     private fun hideScrollbar() {
-        if (!showingScrollbar) {
+        if (!showingThumb) {
             return
         }
 
-        showingScrollbar = false
+        showingThumb = false
         animateView(thumbView, 0f)
     }
 
@@ -539,12 +450,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     // --- LAYOUT STATE ---
 
-    private val isRtl: Boolean
-        get() = layoutDirection == LAYOUT_DIRECTION_RTL
-
     private val thumbOffsetRange: Int
         get() {
-            return height - scrollerPadding.top - scrollerPadding.bottom - thumbHeight
+            return height - thumbPadding.top - thumbPadding.bottom - thumbHeight
         }
 
     private val scrollRange: Int

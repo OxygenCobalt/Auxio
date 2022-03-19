@@ -20,7 +20,9 @@ package org.oxycblt.auxio.util
 import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.ColorRes
@@ -72,6 +74,50 @@ fun View.disableDropShadowCompat() {
         outlineSpotShadowColor = transparent
     }
 }
+
+fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0): Boolean {
+    return isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
+        isUnderImpl(y, top, bottom, (parent as View).height, minTouchTargetSize)
+}
+
+private fun isUnderImpl(
+    position: Float,
+    viewStart: Int,
+    viewEnd: Int,
+    parentEnd: Int,
+    minTouchTargetSize: Int
+): Boolean {
+    val viewSize = viewEnd - viewStart
+
+    if (viewSize >= minTouchTargetSize) {
+        return position >= viewStart && position < viewEnd
+    }
+
+    Log.d("Auxio.ViewUtil", "isInTouchTarget: $minTouchTargetSize")
+
+    var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
+
+    if (touchTargetStart < 0) {
+        touchTargetStart = 0
+    }
+
+    var touchTargetEnd = touchTargetStart + minTouchTargetSize
+    if (touchTargetEnd > parentEnd) {
+        touchTargetEnd = parentEnd
+        touchTargetStart = touchTargetEnd - minTouchTargetSize
+
+        if (touchTargetStart < 0) {
+            touchTargetStart = 0
+        }
+    }
+
+    return position >= touchTargetStart && position < touchTargetEnd
+}
+
+val View.isRtl: Boolean
+    get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
+val Drawable.isRtl: Boolean
+    get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view

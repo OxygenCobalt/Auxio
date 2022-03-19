@@ -47,6 +47,7 @@ import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -458,27 +459,25 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             return super.onInterceptTouchEvent(ev)
         }
 
-        val adx = abs(ev.x - initMotionX)
-        val ady = abs(ev.y - initMotionY)
-        val dragSlop = dragHelper.touchSlop
-
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 initMotionX = ev.x
                 initMotionY = ev.y
 
-                if (!playbackContainerView.isUnder(ev.x.toInt(), ev.y.toInt())) {
+                if (!playbackContainerView.isUnder(ev.x, ev.y)) {
                     // Pointer is not on our view, do not intercept this event
                     dragHelper.cancel()
                     return false
                 }
             }
             MotionEvent.ACTION_MOVE -> {
-                val pointerUnder = playbackContainerView.isUnder(ev.x.toInt(), ev.y.toInt())
-                val motionUnder =
-                    playbackContainerView.isUnder(initMotionX.toInt(), initMotionY.toInt())
+                val adx = abs(ev.x - initMotionX)
+                val ady = abs(ev.y - initMotionY)
 
-                if (!(pointerUnder || motionUnder) || ady > dragSlop && adx > ady) {
+                val pointerUnder = playbackContainerView.isUnder(ev.x, ev.y)
+                val motionUnder = playbackContainerView.isUnder(initMotionX, initMotionY)
+
+                if (!(pointerUnder || motionUnder) || ady > dragHelper.touchSlop && adx > ady) {
                     // Pointer has moved beyond our control, do not intercept this event
                     dragHelper.cancel()
                     return false
@@ -500,22 +499,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         if (dragHelper.continueSettling(true)) {
             postInvalidateOnAnimation()
         }
-    }
-
-    private fun View.isUnder(x: Int, y: Int): Boolean {
-        val viewLocation = IntArray(2)
-        getLocationOnScreen(viewLocation)
-
-        val parentLocation = IntArray(2)
-        (parent as View).getLocationOnScreen(parentLocation)
-
-        val screenX = parentLocation[0] + x
-        val screenY = parentLocation[1] + y
-
-        val inX = screenX >= viewLocation[0] && screenX < viewLocation[0] + width
-        val inY = screenY >= viewLocation[1] && screenY < viewLocation[1] + height
-
-        return inX && inY
     }
 
     private val ViewDragHelper.isDragging: Boolean

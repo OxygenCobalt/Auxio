@@ -106,7 +106,6 @@ dependencies {
 spotless {
     kotlin {
         target "src/**/*.kt"
-
         ktfmt('0.30').dropboxStyle()
         licenseHeaderFile("NOTICE")
     }

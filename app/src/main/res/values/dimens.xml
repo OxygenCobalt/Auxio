@@ -30,8 +30,11 @@
     <dimen name="elevation_small">2dp</dimen>
     <dimen name="elevation_normal">4dp</dimen>
 
-    <dimen name="popup_min_width">78dp</dimen>
-    <dimen name="popup_padding_end">28dp</dimen>
+    <dimen name="fast_scroll_popup_min_width">80dp</dimen>
+    <dimen name="fast_scroll_popup_min_height">64dp</dimen>
+    <dimen name="fast_scroll_popup_padding_start">@dimen/spacing_medium</dimen>
+    <dimen name="fast_scroll_popup_padding_end">28dp</dimen>
+    <dimen name="fast_scroll_thumb_touch_target_size">16dp</dimen>
 
     <dimen name="slider_thumb_radius">6dp</dimen>
     <dimen name="slider_halo_radius">12dp</dimen>

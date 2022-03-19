@@ -44,7 +44,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 class PlaybackFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private var mLastBinding: FragmentPlaybackBinding? = null
+    private var lastBinding: FragmentPlaybackBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +55,7 @@ class PlaybackFragment : Fragment() {
         val queueItem: MenuItem
 
         // See onDestroyView for why we do this
-        mLastBinding = binding
+        lastBinding = binding
 
         // --- UI SETUP ---
 
@@ -157,8 +157,8 @@ class PlaybackFragment : Fragment() {
 
         // playbackSong will leak if we don't disable marquee, keep the binding around
         // so that we can turn it off when we destroy the view.
-        mLastBinding?.playbackSong?.isSelected = false
-        mLastBinding = null
+        lastBinding?.playbackSong?.isSelected = false
+        lastBinding = null
     }
 
     private fun navigateUp() {

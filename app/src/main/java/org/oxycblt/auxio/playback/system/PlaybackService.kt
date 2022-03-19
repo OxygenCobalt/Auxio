@@ -441,6 +441,7 @@ class PlaybackService :
                 // Technically the MediaSession seems to handle bluetooth events on their
                 // own, but keep this around as a fallback in the case that the former fails
                 // for whatever reason.
+                // TODO: Remove this since the headset hook KeyEvent should be fine enough.
                 AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
                     when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
                         AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
@@ -459,7 +460,7 @@ class PlaybackService :
                     initialHeadsetPlugEventHandled = true
                 }
 
-                // I have never seen this ever happen but it might be useful
+                // I have never seen this happen but it might be useful
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
@@ -484,9 +485,7 @@ class PlaybackService :
          * that friendly
          * 2. There is a bug where playback will always start when this service starts, mostly due
          * to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but I fear
-         * that it may not work on OEM skins that for whatever reason don't make this action fire.
-         * TODO: Figure out how players like Retro are able to get autoplay working with bluetooth
-         * headsets
+         * that it may not work on OEM skins that for whatever reason don't make this action fire.\
          */
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
@@ -497,12 +496,7 @@ class PlaybackService :
             }
         }
 
-        /**
-         * Pause from a headset plug.
-         *
-         * TODO: Find a way to centralize this stuff into a single BroadcastReceiver instead of the
-         * weird disjointed arrangement between MediaSession and this.
-         */
+        /** Pause from a headset plug. */
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {
                 logD("Device disconnected, pausing")
