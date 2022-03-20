@@ -49,7 +49,6 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
-        setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
         setContentIntent(context.newMainIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
@@ -159,7 +158,6 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
 
     companion object {
         const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK"
-        const val NOTIFICATION_ID = 0xA0A0
 
         /** Build a new instance of [PlaybackNotification]. */
         fun from(

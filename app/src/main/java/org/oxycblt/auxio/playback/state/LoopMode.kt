@@ -17,6 +17,8 @@
  
 package org.oxycblt.auxio.playback.state
 
+import org.oxycblt.auxio.IntegerTable
+
 /**
  * Enum that determines the playback repeat mode.
  * @author OxygenCobalt
@@ -39,25 +41,21 @@ enum class LoopMode {
      * Convert the LoopMode to an int constant that is saved in PlaybackStateDatabase
      * @return The int constant for this mode
      */
-    fun toInt(): Int {
-        return when (this) {
-            NONE -> INT_NONE
-            ALL -> INT_ALL
-            TRACK -> INT_TRACK
-        }
-    }
+    val intCode: Int
+        get() =
+            when (this) {
+                NONE -> IntegerTable.LOOP_MODE_NONE
+                ALL -> IntegerTable.LOOP_MODE_ALL
+                TRACK -> IntegerTable.LOOP_MODE_TRACK
+            }
 
     companion object {
-        private const val INT_NONE = 0xA100
-        private const val INT_ALL = 0xA101
-        private const val INT_TRACK = 0xA102
-
         /** Convert an int [constant] into a LoopMode, or null if it isn't valid. */
-        fun fromInt(constant: Int): LoopMode? {
+        fun fromIntCode(constant: Int): LoopMode? {
             return when (constant) {
-                INT_NONE -> NONE
-                INT_ALL -> ALL
-                INT_TRACK -> TRACK
+                IntegerTable.LOOP_MODE_NONE -> NONE
+                IntegerTable.LOOP_MODE_ALL -> ALL
+                IntegerTable.LOOP_MODE_TRACK -> TRACK
                 else -> null
             }
         }

@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
@@ -58,25 +59,25 @@ class ArtistDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Artist -> ARTIST_DETAIL_ITEM_TYPE
-            is Album -> ARTIST_ALBUM_ITEM_TYPE
-            is Song -> ARTIST_SONG_ITEM_TYPE
-            is Header -> HeaderViewHolder.ITEM_TYPE
-            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
+            is Artist -> IntegerTable.ITEM_TYPE_ARTIST_DETAIL
+            is Album -> IntegerTable.ITEM_TYPE_ARTIST_ALBUM
+            is Song -> IntegerTable.ITEM_TYPE_ARTIST_SONG
+            is Header -> IntegerTable.ITEM_TYPE_HEADER
+            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ARTIST_DETAIL_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ARTIST_DETAIL ->
                 ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
-            ARTIST_ALBUM_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ARTIST_ALBUM ->
                 ArtistAlbumViewHolder(ItemArtistAlbumBinding.inflate(parent.context.inflater))
-            ARTIST_SONG_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ARTIST_SONG ->
                 ArtistSongViewHolder(ItemArtistSongBinding.inflate(parent.context.inflater))
-            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type $viewType")
         }
     }
@@ -221,11 +222,5 @@ class ArtistDetailAdapter(
         override fun setHighlighted(isHighlighted: Boolean) {
             binding.songName.isActivated = isHighlighted
         }
-    }
-
-    companion object {
-        const val ARTIST_DETAIL_ITEM_TYPE = 0xA008
-        const val ARTIST_ALBUM_ITEM_TYPE = 0xA009
-        const val ARTIST_SONG_ITEM_TYPE = 0xA00A
     }
 }

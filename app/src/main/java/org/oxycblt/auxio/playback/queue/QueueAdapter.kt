@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Header
@@ -55,19 +56,19 @@ class QueueAdapter(private val touchHelper: ItemTouchHelper) :
 
     override fun getItemViewType(position: Int): Int {
         return when (data[position]) {
-            is Song -> QUEUE_SONG_ITEM_TYPE
-            is Header -> HeaderViewHolder.ITEM_TYPE
-            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
+            is Song -> IntegerTable.ITEM_TYPE_QUEUE_SONG
+            is Header -> IntegerTable.ITEM_TYPE_HEADER
+            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            QUEUE_SONG_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_QUEUE_SONG ->
                 QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
-            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type $viewType")
         }
     }
@@ -145,9 +146,5 @@ class QueueAdapter(private val touchHelper: ItemTouchHelper) :
                 true
             }
         }
-    }
-
-    companion object {
-        const val QUEUE_SONG_ITEM_TYPE = 0xA00D
     }
 }

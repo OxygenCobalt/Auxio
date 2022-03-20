@@ -100,8 +100,6 @@ private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA000
-
         /** Create an instance of [SongViewHolder] */
         fun from(
             context: Context,
@@ -128,8 +126,6 @@ private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA001
-
         /** Create an instance of [AlbumViewHolder] */
         fun from(
             context: Context,
@@ -156,8 +152,6 @@ private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA002
-
         /** Create an instance of [ArtistViewHolder] */
         fun from(
             context: Context,
@@ -184,8 +178,6 @@ private constructor(
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA003
-
         /** Create an instance of [GenreViewHolder] */
         fun from(
             context: Context,
@@ -207,8 +199,6 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA004
-
         /** Create an instance of [HeaderViewHolder] */
         fun from(context: Context): HeaderViewHolder {
             return HeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
@@ -233,8 +223,6 @@ class ActionHeaderViewHolder private constructor(private val binding: ItemAction
     }
 
     companion object {
-        const val ITEM_TYPE = 0xA005
-
         /** Create an instance of [ActionHeaderViewHolder] */
         fun from(context: Context): ActionHeaderViewHolder {
             return ActionHeaderViewHolder(ItemActionHeaderBinding.inflate(context.inflater))

@@ -104,7 +104,7 @@ class SettingsManager private constructor(context: Context) :
     /** The current ReplayGain configuration */
     val replayGainMode: ReplayGainMode
         get() =
-            ReplayGainMode.fromInt(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
+            ReplayGainMode.fromIntCode(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
                 ?: ReplayGainMode.OFF
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
@@ -129,50 +129,54 @@ class SettingsManager private constructor(context: Context) :
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
-        get() = DisplayMode.fromFilterInt(prefs.getInt(KEY_SEARCH_FILTER_MODE, Int.MIN_VALUE))
+        get() = DisplayMode.fromInt(prefs.getInt(KEY_SEARCH_FILTER_MODE, Int.MIN_VALUE))
         set(value) {
             prefs.edit {
-                putInt(KEY_SEARCH_FILTER_MODE, DisplayMode.toFilterInt(value))
+                putInt(KEY_SEARCH_FILTER_MODE, value?.intCode ?: Int.MIN_VALUE)
                 apply()
             }
         }
 
     /** The song sort mode on HomeFragment */
     var libSongSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+        get() =
+            Sort.fromIntCode(prefs.getInt(KEY_LIB_SONGS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_LIB_SONGS_SORT, value.toInt())
+                putInt(KEY_LIB_SONGS_SORT, value.intCode)
                 apply()
             }
         }
 
     /** The album sort mode on HomeFragment */
     var libAlbumSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+        get() =
+            Sort.fromIntCode(prefs.getInt(KEY_LIB_ALBUMS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_LIB_ALBUMS_SORT, value.toInt())
+                putInt(KEY_LIB_ALBUMS_SORT, value.intCode)
                 apply()
             }
         }
 
     /** The artist sort mode on HomeFragment */
     var libArtistSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+        get() =
+            Sort.fromIntCode(prefs.getInt(KEY_LIB_ARTISTS_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_LIB_ARTISTS_SORT, value.toInt())
+                putInt(KEY_LIB_ARTISTS_SORT, value.intCode)
                 apply()
             }
         }
 
     /** The genre sort mode on HomeFragment */
     var libGenreSort: Sort
-        get() = Sort.fromInt(prefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+        get() =
+            Sort.fromIntCode(prefs.getInt(KEY_LIB_GENRES_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_LIB_GENRES_SORT, value.toInt())
+                putInt(KEY_LIB_GENRES_SORT, value.intCode)
                 apply()
             }
         }
@@ -180,10 +184,11 @@ class SettingsManager private constructor(context: Context) :
     /** The detail album sort mode */
     var detailAlbumSort: Sort
         get() =
-            Sort.fromInt(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+            Sort.fromIntCode(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
+                ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_DETAIL_ALBUM_SORT, value.toInt())
+                putInt(KEY_DETAIL_ALBUM_SORT, value.intCode)
                 apply()
             }
         }
@@ -191,10 +196,11 @@ class SettingsManager private constructor(context: Context) :
     /** The detail artist sort mode */
     var detailArtistSort: Sort
         get() =
-            Sort.fromInt(prefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE)) ?: Sort.ByYear(false)
+            Sort.fromIntCode(prefs.getInt(KEY_DETAIL_ARTIST_SORT, Int.MIN_VALUE))
+                ?: Sort.ByYear(false)
         set(value) {
             prefs.edit {
-                putInt(KEY_DETAIL_ARTIST_SORT, value.toInt())
+                putInt(KEY_DETAIL_ARTIST_SORT, value.intCode)
                 apply()
             }
         }
@@ -202,10 +208,11 @@ class SettingsManager private constructor(context: Context) :
     /** The detail genre sort mode */
     var detailGenreSort: Sort
         get() =
-            Sort.fromInt(prefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE)) ?: Sort.ByName(true)
+            Sort.fromIntCode(prefs.getInt(KEY_DETAIL_GENRE_SORT, Int.MIN_VALUE))
+                ?: Sort.ByName(true)
         set(value) {
             prefs.edit {
-                putInt(KEY_DETAIL_GENRE_SORT, value.toInt())
+                putInt(KEY_DETAIL_GENRE_SORT, value.intCode)
                 apply()
             }
         }

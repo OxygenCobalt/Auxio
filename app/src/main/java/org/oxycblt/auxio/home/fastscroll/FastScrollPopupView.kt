@@ -156,7 +156,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
             startAngle: Float,
             sweepAngle: Float
         ) {
-            path.arcTo(
+            arcTo(
                 centerX - radius,
                 centerY - radius,
                 centerX + radius,

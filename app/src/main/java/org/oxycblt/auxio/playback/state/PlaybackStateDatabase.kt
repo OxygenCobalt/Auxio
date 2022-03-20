@@ -34,6 +34,8 @@ import org.oxycblt.auxio.util.queryAll
  * A SQLite database for managing the persistent playback state and queue. Yes. I know Room exists.
  * But that would needlessly bloat my app and has crippling bugs.
  * @author OxygenCobalt
+ *
+ * TODO: Rework to rely on queue indices more and only use specific items as fallbacks
  */
 class PlaybackStateDatabase(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
@@ -144,7 +146,7 @@ class PlaybackStateDatabase(context: Context) :
                     queueIndex = cursor.getInt(indexIndex),
                     playbackMode = mode,
                     isShuffling = cursor.getInt(shuffleIndex) == 1,
-                    loopMode = LoopMode.fromInt(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
+                    loopMode = LoopMode.fromIntCode(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
                 )
 
             logD("Successfully read playback state: $state")
@@ -169,9 +171,9 @@ class PlaybackStateDatabase(context: Context) :
                     put(StateColumns.COLUMN_POSITION, state.position)
                     put(StateColumns.COLUMN_PARENT_HASH, state.parent?.id)
                     put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
-                    put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.toInt())
+                    put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.intCode)
                     put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
-                    put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.toInt())
+                    put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.intCode)
                 }
 
             insert(TABLE_NAME_STATE, null, stateData)

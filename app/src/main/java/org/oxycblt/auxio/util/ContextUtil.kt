@@ -40,9 +40,8 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
-
-const val INTENT_REQUEST_CODE = 0xA0A0
 
 /** Shortcut to get a [LayoutInflater] from a [Context] */
 val Context.inflater: LayoutInflater
@@ -213,7 +212,7 @@ fun Context.showToast(@StringRes str: Int) {
 fun Context.newMainIntent(): PendingIntent {
     return PendingIntent.getActivity(
         this,
-        INTENT_REQUEST_CODE,
+        IntegerTable.REQUEST_CODE,
         Intent(this, MainActivity::class.java),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 }
@@ -222,7 +221,7 @@ fun Context.newMainIntent(): PendingIntent {
 fun Context.newBroadcastIntent(what: String): PendingIntent {
     return PendingIntent.getBroadcast(
         this,
-        INTENT_REQUEST_CODE,
+        IntegerTable.REQUEST_CODE,
         Intent(what),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 }

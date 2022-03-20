@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumArt
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
@@ -53,20 +54,20 @@ class AlbumDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Album -> ALBUM_DETAIL_ITEM_TYPE
-            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
-            is Song -> ALBUM_SONG_ITEM_TYPE
+            is Album -> IntegerTable.ITEM_TYPE_ALBUM_DETAIL
+            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
+            is Song -> IntegerTable.ITEM_TYPE_ALBUM_SONG
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ALBUM_DETAIL_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ALBUM_DETAIL ->
                 AlbumDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
-            ALBUM_SONG_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_ALBUM_SONG ->
                 AlbumSongViewHolder(ItemAlbumSongBinding.inflate(parent.context.inflater))
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type $viewType")
         }
     }
@@ -171,10 +172,5 @@ class AlbumDetailAdapter(
             binding.songTrack.isActivated = isHighlighted
             binding.songTrackPlaceholder.isActivated = isHighlighted
         }
-    }
-
-    companion object {
-        const val ALBUM_DETAIL_ITEM_TYPE = 0xA006
-        const val ALBUM_SONG_ITEM_TYPE = 0xA007
     }
 }

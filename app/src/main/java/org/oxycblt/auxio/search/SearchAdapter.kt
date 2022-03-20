@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -46,26 +47,26 @@ class SearchAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Genre -> GenreViewHolder.ITEM_TYPE
-            is Artist -> ArtistViewHolder.ITEM_TYPE
-            is Album -> AlbumViewHolder.ITEM_TYPE
-            is Song -> SongViewHolder.ITEM_TYPE
-            is Header -> HeaderViewHolder.ITEM_TYPE
+            is Genre -> IntegerTable.ITEM_TYPE_GENRE
+            is Artist -> IntegerTable.ITEM_TYPE_ARTIST
+            is Album -> IntegerTable.ITEM_TYPE_ALBUM
+            is Song -> IntegerTable.ITEM_TYPE_SONG
+            is Header -> IntegerTable.ITEM_TYPE_HEADER
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GenreViewHolder.ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_GENRE ->
                 GenreViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            ArtistViewHolder.ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ARTIST ->
                 ArtistViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            AlbumViewHolder.ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ALBUM ->
                 AlbumViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            SongViewHolder.ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_SONG ->
                 SongViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            HeaderViewHolder.ITEM_TYPE -> HeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type")
         }
     }

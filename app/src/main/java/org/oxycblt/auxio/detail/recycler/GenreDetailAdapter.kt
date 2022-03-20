@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
@@ -50,22 +51,22 @@ class GenreDetailAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is Genre -> GENRE_DETAIL_ITEM_TYPE
-            is ActionHeader -> ActionHeaderViewHolder.ITEM_TYPE
-            is Song -> GENRE_SONG_ITEM_TYPE
+            is Genre -> IntegerTable.ITEM_TYPE_GENRE_DETAIL
+            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
+            is Song -> IntegerTable.ITEM_TYPE_GENRE_SONG
             else -> -1
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            GENRE_DETAIL_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_GENRE_DETAIL ->
                 GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
-            GENRE_SONG_ITEM_TYPE ->
+            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
+            IntegerTable.ITEM_TYPE_GENRE_SONG ->
                 GenreSongViewHolder(
                     ItemGenreSongBinding.inflate(parent.context.inflater),
                 )
-            ActionHeaderViewHolder.ITEM_TYPE -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Bad ViewHolder item type $viewType")
         }
     }
@@ -153,10 +154,5 @@ class GenreDetailAdapter(
         override fun setHighlighted(isHighlighted: Boolean) {
             binding.songName.isActivated = isHighlighted
         }
-    }
-
-    companion object {
-        const val GENRE_DETAIL_ITEM_TYPE = 0xA00B
-        const val GENRE_SONG_ITEM_TYPE = 0xA00C
     }
 }

@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
@@ -407,18 +408,17 @@ class PlaybackService :
                 // Specify that this is a media service, if supported.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startForeground(
-                        PlaybackNotification.NOTIFICATION_ID,
+                        IntegerTable.NOTIFICATION_CODE,
                         notification.build(),
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
                 } else {
-                    startForeground(PlaybackNotification.NOTIFICATION_ID, notification.build())
+                    startForeground(IntegerTable.NOTIFICATION_CODE, notification.build())
                 }
 
                 isForeground = true
             } else {
                 // If we are already in foreground just update the notification
-                notificationManager.notify(
-                    PlaybackNotification.NOTIFICATION_ID, notification.build())
+                notificationManager.notify(IntegerTable.NOTIFICATION_CODE, notification.build())
             }
         }
     }
@@ -426,7 +426,7 @@ class PlaybackService :
     /** Stop the foreground state and hide the notification */
     private fun stopForegroundAndNotification() {
         stopForeground(true)
-        notificationManager.cancel(PlaybackNotification.NOTIFICATION_ID)
+        notificationManager.cancel(IntegerTable.NOTIFICATION_CODE)
         isForeground = false
     }
 

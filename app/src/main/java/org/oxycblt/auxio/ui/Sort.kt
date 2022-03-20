@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.ui
 
 import androidx.annotation.IdRes
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -43,6 +44,9 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 sealed class Sort(open val isAscending: Boolean) {
+    protected abstract val sortIntCode: Int
+    abstract val itemId: Int
+
     open fun songs(songs: Collection<Song>): List<Song> {
         logW("This sort is not supported for songs")
         return songs.toList()
@@ -63,8 +67,20 @@ sealed class Sort(open val isAscending: Boolean) {
         return genres.toList()
     }
 
+    /**
+     * Apply [newIsAscending] to the status of this sort.
+     * @return A new [Sort] with the value of [newIsAscending] applied.
+     */
+    abstract fun ascending(newIsAscending: Boolean): Sort
+
     /** Sort by the names of an item */
     class ByName(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_NAME
+
+        override val itemId: Int
+            get() = R.id.option_sort_name
+
         override fun songs(songs: Collection<Song>): List<Song> {
             return songs.sortedWith(compareByDynamic(NameComparator()) { it })
         }
@@ -80,10 +96,20 @@ sealed class Sort(open val isAscending: Boolean) {
         override fun genres(genres: Collection<Genre>): List<Genre> {
             return genres.sortedWith(compareByDynamic(NameComparator()) { it })
         }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByName(isAscending)
+        }
     }
 
     /** Sort by the album of an item, only supported by [Song] */
     class ByAlbum(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_ALBUM
+
+        override val itemId: Int
+            get() = R.id.option_sort_album
+
         override fun songs(songs: Collection<Song>): List<Song> {
             return songs.sortedWith(
                 MultiComparator(
@@ -91,10 +117,20 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NullableComparator()) { it.track },
                     compareBy(NameComparator()) { it }))
         }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByAlbum(newIsAscending)
+        }
     }
 
     /** Sort by the artist of an item, only supported by [Album] and [Song] */
     class ByArtist(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_ARTIST
+
+        override val itemId: Int
+            get() = R.id.option_sort_artist
+
         override fun songs(songs: Collection<Song>): List<Song> {
             return songs.sortedWith(
                 MultiComparator(
@@ -112,10 +148,20 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareByDescending(NullableComparator()) { it.year },
                     compareBy(NameComparator()) { it }))
         }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByArtist(newIsAscending)
+        }
     }
 
     /** Sort by the year of an item, only supported by [Album] and [Song] */
     class ByYear(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_YEAR
+
+        override val itemId: Int
+            get() = R.id.option_sort_year
+
         override fun songs(songs: Collection<Song>): List<Song> {
             return songs.sortedWith(
                 MultiComparator(
@@ -131,30 +177,14 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareByDynamic(NullableComparator()) { it.year },
                     compareBy(NameComparator()) { it }))
         }
-    }
 
-    /** Get the corresponding item id for this sort. */
-    val itemId: Int
-        get() =
-            when (this) {
-                is ByName -> R.id.option_sort_name
-                is ByArtist -> R.id.option_sort_artist
-                is ByAlbum -> R.id.option_sort_album
-                is ByYear -> R.id.option_sort_year
-            }
-
-    /**
-     * Apply [ascending] to the status of this sort.
-     * @return A new [Sort] with the value of [ascending] applied.
-     */
-    fun ascending(ascending: Boolean): Sort {
-        return when (this) {
-            is ByName -> ByName(ascending)
-            is ByArtist -> ByArtist(ascending)
-            is ByAlbum -> ByAlbum(ascending)
-            is ByYear -> ByYear(ascending)
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByYear(newIsAscending)
         }
     }
+
+    val intCode: Int
+        get() = sortIntCode.shl(1) or if (isAscending) 1 else 0
 
     /**
      * Assign a new [id] to this sort
@@ -197,16 +227,6 @@ sealed class Sort(open val isAscending: Boolean) {
         return songs(genre.songs)
     }
 
-    /** Convert this sort to it's integer representation. */
-    fun toInt(): Int {
-        return when (this) {
-            is ByName -> INT_NAME
-            is ByArtist -> INT_ARTIST
-            is ByAlbum -> INT_ALBUM
-            is ByYear -> INT_YEAR
-        }.shl(1) or if (isAscending) 1 else 0
-    }
-
     protected inline fun <T : Music, K> compareByDynamic(
         comparator: Comparator<in K>,
         crossinline selector: (T) -> K
@@ -244,8 +264,8 @@ sealed class Sort(open val isAscending: Boolean) {
      *
      * Sorts often need to compare multiple things at once across several hierarchies, with this
      * class doing such in a more efficient manner than resorting at multiple intervals or grouping
-     * items up. Comparators are checked from first to last, with the first comparator that returns a
-     * non-equal result being propagated upwards.
+     * items up. Comparators are checked from first to last, with the first comparator that returns
+     * a non-equal result being propagated upwards.
      */
     class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
         private val mComparators = comparators
@@ -263,24 +283,19 @@ sealed class Sort(open val isAscending: Boolean) {
     }
 
     companion object {
-        private const val INT_NAME = 0xA10C
-        private const val INT_ARTIST = 0xA10D
-        private const val INT_ALBUM = 0xA10E
-        private const val INT_YEAR = 0xA10F
-
         /**
          * Convert a sort's integer representation into a [Sort] instance.
          *
          * @return A [Sort] instance, null if the data is malformed.
          */
-        fun fromInt(value: Int): Sort? {
+        fun fromIntCode(value: Int): Sort? {
             val ascending = (value and 1) == 1
 
             return when (value.shr(1)) {
-                INT_NAME -> ByName(ascending)
-                INT_ARTIST -> ByArtist(ascending)
-                INT_ALBUM -> ByAlbum(ascending)
-                INT_YEAR -> ByYear(ascending)
+                IntegerTable.SORT_BY_NAME -> ByName(ascending)
+                IntegerTable.SORT_BY_ARTIST -> ByArtist(ascending)
+                IntegerTable.SORT_BY_ALBUM -> ByAlbum(ascending)
+                IntegerTable.SORT_BY_YEAR -> ByYear(ascending)
                 else -> null
             }
         }

@@ -26,6 +26,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.ColorRes
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
@@ -117,7 +118,7 @@ private fun isUnderImpl(
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 val Drawable.isRtl: Boolean
-    get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
+    get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view

@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.ui
 
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 
 /**
@@ -49,39 +50,27 @@ enum class DisplayMode {
                 SHOW_GENRES -> R.drawable.ic_genre
             }
 
-    companion object {
-        private const val INT_NULL = 0xA107
-        private const val INT_SHOW_GENRES = 0xA108
-        private const val INT_SHOW_ARTISTS = 0xA109
-        private const val INT_SHOW_ALBUMS = 0xA10A
-        private const val INT_SHOW_SONGS = 0xA10B
-
-        /**
-         * Convert this enum into an integer for filtering. In this context, a null value means to
-         * filter nothing.
-         * @return An integer constant for that display mode, or a constant for a null [DisplayMode]
-         */
-        fun toFilterInt(value: DisplayMode?): Int {
-            return when (value) {
-                SHOW_SONGS -> INT_SHOW_SONGS
-                SHOW_ALBUMS -> INT_SHOW_ALBUMS
-                SHOW_ARTISTS -> INT_SHOW_ARTISTS
-                SHOW_GENRES -> INT_SHOW_GENRES
-                null -> INT_NULL
+    val intCode: Int
+        get() =
+            when (this) {
+                SHOW_SONGS -> IntegerTable.DISPLAY_MODE_SHOW_SONGS
+                SHOW_ALBUMS -> IntegerTable.DISPLAY_MODE_SHOW_ALBUMS
+                SHOW_ARTISTS -> IntegerTable.DISPLAY_MODE_SHOW_ARTISTS
+                SHOW_GENRES -> IntegerTable.DISPLAY_MODE_SHOW_GENRES
             }
-        }
 
+    companion object {
         /**
          * Convert a filtering integer to a [DisplayMode]. In this context, a null value means to
          * filter nothing.
          * @return A [DisplayMode] for this constant (including null)
          */
-        fun fromFilterInt(value: Int): DisplayMode? {
+        fun fromInt(value: Int): DisplayMode? {
             return when (value) {
-                INT_SHOW_SONGS -> SHOW_SONGS
-                INT_SHOW_ALBUMS -> SHOW_ALBUMS
-                INT_SHOW_ARTISTS -> SHOW_ARTISTS
-                INT_SHOW_GENRES -> SHOW_GENRES
+                IntegerTable.DISPLAY_MODE_SHOW_SONGS -> SHOW_SONGS
+                IntegerTable.DISPLAY_MODE_SHOW_ALBUMS -> SHOW_ALBUMS
+                IntegerTable.DISPLAY_MODE_SHOW_ARTISTS -> SHOW_ARTISTS
+                IntegerTable.DISPLAY_MODE_SHOW_GENRES -> SHOW_GENRES
                 else -> null
             }
         }

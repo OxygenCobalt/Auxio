@@ -17,6 +17,8 @@
  
 package org.oxycblt.auxio.playback.state
 
+import org.oxycblt.auxio.IntegerTable
+
 /**
  * Enum that indicates how the queue should be constructed.
  * @author OxygenCobalt
@@ -35,32 +37,26 @@ enum class PlaybackMode {
      * Convert the mode into an int constant, to be saved in PlaybackStateDatabase
      * @return The constant for this mode,
      */
-    fun toInt(): Int {
-        return when (this) {
-            ALL_SONGS -> INT_ALL_SONGS
-            IN_ALBUM -> INT_IN_ALBUM
-            IN_ARTIST -> INT_IN_ARTIST
-            IN_GENRE -> INT_IN_GENRE
-        }
-    }
+    val intCode: Int
+        get() =
+            when (this) {
+                ALL_SONGS -> IntegerTable.PLAYBACK_MODE_ALL_SONGS
+                IN_ALBUM -> IntegerTable.PLAYBACK_MODE_IN_ALBUM
+                IN_ARTIST -> IntegerTable.PLAYBACK_MODE_IN_ARTIST
+                IN_GENRE -> IntegerTable.PLAYBACK_MODE_IN_GENRE
+            }
 
     companion object {
-        // Kept in reverse order because of backwards compat, do not re-order these
-        private const val INT_ALL_SONGS = 0xA106
-        private const val INT_IN_ALBUM = 0xA105
-        private const val INT_IN_ARTIST = 0xA104
-        private const val INT_IN_GENRE = 0xA103
-
         /**
          * Get a [PlaybackMode] for an int [constant]
          * @return The mode, null if there isn't one for this.
          */
         fun fromInt(constant: Int): PlaybackMode? {
             return when (constant) {
-                INT_ALL_SONGS -> ALL_SONGS
-                INT_IN_ALBUM -> IN_ALBUM
-                INT_IN_ARTIST -> IN_ARTIST
-                INT_IN_GENRE -> IN_GENRE
+                IntegerTable.PLAYBACK_MODE_ALL_SONGS -> ALL_SONGS
+                IntegerTable.PLAYBACK_MODE_IN_ALBUM -> IN_ALBUM
+                IntegerTable.PLAYBACK_MODE_IN_ARTIST -> IN_ARTIST
+                IntegerTable.PLAYBACK_MODE_IN_GENRE -> IN_GENRE
                 else -> null
             }
         }

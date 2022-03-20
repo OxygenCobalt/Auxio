@@ -150,58 +150,8 @@ system events, such as when a button is pressed on a headset. It should **never*
 
 #### Data Integers
 Integer representations of data/UI elements are used heavily in Auxio, primarily for efficiency.
-To prevent any strange bugs, all integer representations must be unique. A table of all current integers used are shown below:
-
-```
-0xA0XX | UI Integer Space [Required by android]
-
-0xA000 | SongViewHolder
-0xA001 | AlbumViewHolder
-0xA002 | ArtistViewHolder
-0xA003 | GenreViewHolder
-0xA004 | HeaderViewHolder
-0xA005 | ActionHeaderViewHolder
-
-0xA006 | AlbumDetailViewHolder
-0xA007 | AlbumSongViewHolder
-0xA008 | ArtistDetailViewHolder
-0xA009 | ArtistAlbumViewHolder
-0xA00A | ArtistSongViewHolder
-0xA00B | GenreDetailViewHolder
-0xA00C | GenreSongViewHolder
-
-0xA00D | QueueSongViewHolder
-
-0xA0A0 | Auxio notification code
-0xA0C0 | Auxio request code
-
-0xA1XX | Data Integer Space [Stored for IO efficency]
-
-0xA100 | LoopMode.NONE
-0xA101 | LoopMode.ALL
-0xA102 | LoopMode.TRACK
-
-0xA103 | PlaybackMode.IN_GENRE
-0xA104 | PlaybackMode.IN_ARTIST
-0xA105 | PlaybackMode.IN_ALBUM
-0xA106 | PlaybackMode.ALL_SONGS
-
-0xA107 | Null DisplayMode [Filter Nothing]
-0xA108 | DisplayMode.SHOW_GENRES
-0xA109 | DisplayMode.SHOW_ARTISTS
-0xA10A | DisplayMode.SHOW_ALBUMS
-0xA10B | DisplayMode.SHOW_SONGS
-
-0xA10C | Sort.Name
-0xA10D | Sort.Artist
-0xA10E | Sort.Album
-0xA10F | Sort.Year
-
-0xA110 | ReplayGainMode.OFF
-0xA111 | ReplayGainMode.TRACK
-0xA112 | ReplayGainMode.ALBUM
-0xA113 | ReplayGainMode.DYNAMIC
-```
+To prevent any strange bugs, all integer representations must be unique. To see a table of all current integers, see the `C` class within
+the project.
 
 Some datatypes [like `Tab` and `Sort`] have even more fine-grained integer representations for other data. More information can be found in
 the documentation for those datatypes.
