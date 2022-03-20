@@ -34,6 +34,7 @@ class DiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     }
 
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+        // FIXME: Not correct, use item displays
         return oldItem.hashCode() == newItem.hashCode()
     }
 }

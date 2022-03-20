@@ -12,7 +12,7 @@
 
     </data>
 
-    <merge
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
@@ -106,5 +106,5 @@
             app:trackColor="?attr/colorPrimary"
             tools:progress="70" />
 
-    </merge>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -28,9 +28,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentPlaybackBinding
+import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.ui.BottomSheetLayout
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
@@ -41,17 +42,17 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Handle RTL correctly in the playback buttons
  */
-class PlaybackFragment : Fragment() {
+class PlaybackPanelFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private var lastBinding: FragmentPlaybackBinding? = null
+    private var lastBinding: FragmentPlaybackPanelBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentPlaybackBinding.inflate(layoutInflater)
+        val binding = FragmentPlaybackPanelBinding.inflate(layoutInflater)
         val queueItem: MenuItem
 
         // See onDestroyView for why we do this
@@ -98,9 +99,6 @@ class PlaybackFragment : Fragment() {
                 logD("Updating song display to ${song.rawName}")
                 binding.song = song
                 binding.playbackSeekBar.setDuration(song.seconds)
-            } else {
-                logD("No song is being played, leaving")
-                findNavController().navigateUp()
             }
         }
 
@@ -164,6 +162,6 @@ class PlaybackFragment : Fragment() {
     private fun navigateUp() {
         // This is a dumb and fragile hack but this fragment isn't part of the navigation stack
         // so we can't really do much
-        (requireView().parent.parent.parent as PlaybackLayout).collapse()
+        (requireView().parent.parent.parent as BottomSheetLayout).collapse()
     }
 }

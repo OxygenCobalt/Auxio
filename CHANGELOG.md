@@ -6,7 +6,10 @@
 - Fixed incorrect ellipsizing on song items
 
 #### Dev/Meta
+- Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese ]
 - Switched to spotless and ktfmt instead of ktlint
+- Migrated constants to centralized table
+- A bunch of internal view implementation improvements
 
 ## v2.2.2
 #### What's New

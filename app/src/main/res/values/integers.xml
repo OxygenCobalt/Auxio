@@ -2,7 +2,7 @@
 <resources>
     <integer name="detail_app_bar_title_anim_duration">150</integer>
 
-    <!-- FIXME: This is really stupid, figure out how we can unify it with the C object-->
+    <!-- FIXME: This is really stupid, figure out how we can unify it with the IntegerTable object-->
     <!-- Preference values -->
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>

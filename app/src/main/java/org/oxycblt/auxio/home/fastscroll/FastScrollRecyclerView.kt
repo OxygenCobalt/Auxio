@@ -79,7 +79,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         View(context).apply {
             alpha = 0f
             background = context.getDrawableSafe(R.drawable.ui_scroll_thumb)
-            this@FastScrollRecyclerView.overlay.add(this)
         }
 
     private val thumbWidth = thumbView.background.intrinsicWidth
@@ -94,8 +93,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
-    private val scrollPositionChildRect = Rect()
-
     // Popup
     private val popupView =
         FastScrollPopupView(context).apply {
@@ -106,8 +103,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                         gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
                         marginEnd = context.getDimenOffsetSafe(R.dimen.spacing_small)
                     }
-
-            this@FastScrollRecyclerView.overlay.add(this)
         }
 
     private var showingPopup = false
@@ -148,6 +143,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
             onDragListener?.invoke(value)
         }
+
+    private val tRect = Rect()
 
     /** Callback to provide a string to be shown on the popup when an item is passed */
     var popupProvider: ((Int) -> String)? = null
@@ -299,8 +296,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         // Combine the previous item dimensions with the current item top to find our scroll
         // position
-        getDecoratedBoundsWithMargins(getChildAt(0), scrollPositionChildRect)
-        val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - scrollPositionChildRect.top
+        getDecoratedBoundsWithMargins(getChildAt(0), tRect)
+        val scrollOffset = paddingTop + (firstAdapterPos * itemHeight) - tRect.top
 
         // Then calculate the thumb position, which is just:
         // [proportion of scroll position to scroll range] * [total thumb range]
@@ -493,8 +490,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
 
             val itemView = getChildAt(0)
-            getDecoratedBoundsWithMargins(itemView, scrollPositionChildRect)
-            return scrollPositionChildRect.height()
+            getDecoratedBoundsWithMargins(itemView, tRect)
+            return tRect.height()
         }
 
     private val itemCount: Int

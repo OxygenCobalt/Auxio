@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.graphics.Canvas
@@ -31,18 +31,14 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.customview.widget.ViewDragHelper
-import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
@@ -55,10 +51,21 @@ import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
- * This layout handles pretty much every aspect of the playback UI flow, notably the playback bar
- * and it's ability to slide up into the playback view. It's a blend of Hai Zhang's
- * PersistentBarLayout and Umano's SlidingUpPanelLayout, albeit heavily minified to remove
- * extraneous use cases and updated to support the latest SDK level and androidx tools.
+ * A layout that *properly* handles bottom sheet functionality.
+ *
+ * BottomSheetBehavior has a multitude of shortcomings based that make it a non-starter for Auxio,
+ * such as:
+ * - No edge-to-edge support
+ * - Extreme jank
+ * - Terrible APIs that you have to use just to make the UX tolerable
+ * - Reliance on CoordinatorLayout, which is just a terrible component in general and everyone
+ * responsible for creating it should be publicly shamed
+ *
+ * So, I decided to make my own implementation. With blackjack, and referential humor.
+ *
+ * The actual internals of this view are based off of a blend of Hai Zhang's PersistentBarLayout and
+ * Umano's SlidingUpPanelLayout, albeit heavily minified to remove extraneous use cases and updated
+ * to support the latest SDK level and androidx tools.
  *
  * **Note:** If you want to adapt this layout into your own app. Good luck. This layout has been
  * reduced to Auxio's use case in particular and is really hard to understand since it has a ton of
@@ -66,10 +73,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
- *
- * TODO: Find a better way to handle PlaybackFragment in general (navigation, creation)
  */
-class PlaybackLayout
+class BottomSheetLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     ViewGroup(context, attrs, defStyle) {
@@ -80,13 +85,39 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         DRAGGING
     }
 
+    // Core views [obtained when layout is inflated]
     private lateinit var contentView: View
-    private val playbackContainerView: FrameLayout
-    private val playbackBarView: PlaybackBarView
-    private val playbackPanelView: FrameLayout
+    private lateinit var barView: View
+    private lateinit var panelView: View
 
-    private val playbackContainerBg: MaterialShapeDrawable
-    private val playbackFragment = PlaybackFragment()
+    // We have to define the background before the container declaration as otherwise it wont work
+    private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
+    private val containerBackgroundDrawable =
+        MaterialShapeDrawable.createWithElevationOverlay(context).apply {
+            fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
+            elevation = context.pxOfDp(elevationNormal).toFloat()
+        }
+
+    private val containerView =
+        FrameLayout(context).apply {
+            id = R.id.bottom_sheet_layout_container
+
+            isClickable = true
+            isFocusable = false
+            isFocusableInTouchMode = false
+
+            // The way we fade out the elevation overlay is not by actually reducing the
+            // elevation but by fading out the background drawable itself. To be safe,
+            // we apply this background drawable to a layer list with another colorSurface
+            // shape drawable, just in case weird things happen if background drawable is
+            // completely transparent.
+            background =
+                (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
+                    setDrawableByLayerId(R.id.panel_overlay, containerBackgroundDrawable)
+                }
+
+            disableDropShadowCompat()
+        }
 
     /** The drag helper that animates and dispatches drag events to the panels. */
     private val dragHelper =
@@ -115,12 +146,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
      */
     private var panelOffset = 0f
 
-    // Miscellaneous view things
+    // Miscellaneous touch things
     private var initMotionX = 0f
     private var initMotionY = 0f
     private val tRect = Rect()
-
-    private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
 
     /** See [isDragging] */
     private val dragStateField =
@@ -128,115 +157,28 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     init {
         setWillNotDraw(false)
-
-        // Set up our playback views. Doing this allows us to abstract away the implementation
-        // of these views from the user of this layout [MainFragment].
-        playbackContainerView =
-            FrameLayout(context).apply {
-                id = R.id.playback_container
-
-                isClickable = true
-                isFocusable = false
-                isFocusableInTouchMode = false
-
-                playbackContainerBg =
-                    MaterialShapeDrawable.createWithElevationOverlay(context).apply {
-                        fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-                        elevation = context.pxOfDp(elevationNormal).toFloat()
-                    }
-
-                // The way we fade out the elevation overlay is not by actually reducing the
-                // elevation
-                // but by fading out the background drawable itself. To be safe, we apply this
-                // background drawable to a layer list with another colorSurface shape drawable,
-                // just
-                // in case weird things happen if background drawable is completely transparent.
-                background =
-                    (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
-                        setDrawableByLayerId(R.id.panel_overlay, playbackContainerBg)
-                    }
-
-                disableDropShadowCompat()
-            }
-
-        playbackBarView =
-            PlaybackBarView(context).apply {
-                id = R.id.playback_bar
-
-                playbackContainerView.addView(this)
-
-                (layoutParams as FrameLayout.LayoutParams).apply {
-                    width = LayoutParams.MATCH_PARENT
-                    height = LayoutParams.WRAP_CONTENT
-                    gravity = Gravity.TOP
-                }
-
-                // The bar view if clicked will expand into the full panel
-                setOnClickListener {
-                    if (canSlide && panelState != PanelState.EXPANDED) {
-                        applyState(PanelState.EXPANDED)
-                    }
-                }
-            }
-
-        playbackPanelView =
-            FrameLayout(context).apply {
-                playbackContainerView.addView(this)
-
-                (layoutParams as FrameLayout.LayoutParams).apply {
-                    width = LayoutParams.MATCH_PARENT
-                    height = LayoutParams.MATCH_PARENT
-                    gravity = Gravity.CENTER
-                }
-
-                id = R.id.playback_panel
-
-                // Make sure we add our fragment to this view. This is actually a replace operation
-                // since we don't want to stack fragments but we can't ensure that this view doesn't
-                // already have a fragment attached.
-                try {
-                    (context as AppCompatActivity)
-                        .supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.playback_panel, playbackFragment)
-                        .commit()
-                } catch (e: Exception) {
-                    // Band-aid to stop the app crashing if we have to swap out the content view
-                    // without warning (which we have to do sometimes because android is the worst
-                    // thing ever)
-                }
-            }
     }
 
     // / --- CONTROL METHODS ---
 
     /**
-     * Update the song that this layout is showing. This will be reflected in the compact view at
-     * the bottom of the screen.
      */
-    fun setup(
-        playbackModel: PlaybackViewModel,
-        detailModel: DetailViewModel,
-        viewLifecycleOwner: LifecycleOwner
-    ) {
-        setSong(playbackModel.song.value)
+    fun show(): Boolean {
+        if (panelState == PanelState.HIDDEN) {
+            applyState(PanelState.COLLAPSED)
+            return true
+        }
 
-        playbackModel.song.observe(viewLifecycleOwner) { song -> setSong(song) }
-
-        playbackBarView.setup(playbackModel, detailModel, viewLifecycleOwner)
+        return false
     }
 
-    private fun setSong(song: Song?) {
-        if (song != null) {
-            playbackBarView.setSong(song)
-
-            // Make sure the bar is shown
-            if (panelState == PanelState.HIDDEN) {
-                applyState(PanelState.COLLAPSED)
-            }
-        } else {
-            applyState(PanelState.HIDDEN)
+    fun expand(): Boolean {
+        if (panelState == PanelState.COLLAPSED) {
+            applyState(PanelState.EXPANDED)
+            return true
         }
+
+        return false
     }
 
     /**
@@ -246,6 +188,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     fun collapse(): Boolean {
         if (panelState == PanelState.EXPANDED) {
             applyState(PanelState.COLLAPSED)
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     */
+    fun hide(): Boolean {
+        if (panelState != PanelState.HIDDEN) {
+            applyState(PanelState.HIDDEN)
             return true
         }
 
@@ -284,12 +237,28 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        check(childCount == 1) { "There must only be one view in this layout" }
+        contentView = getChildAt(0) // Child 1 is assumed to be the content
+        barView = getChildAt(1) // Child 2 is assumed to be the bar used when collapsed
+        panelView = getChildAt(2) // Child 3 is assumed to be the panel used when expanded
 
-        // Grab our content view [asserting that there is nothing else] and then add our panel.
-        // I would add our panel in our init, but that messes things up for some reason.
-        contentView = getChildAt(0)
-        addView(playbackContainerView)
+        removeView(barView)
+        removeView(panelView)
+
+        // We actually move the bar and panel views into a container so that they have consistent
+        // behavior when be manipulate layouts later.
+        containerView.apply {
+            addView(
+                barView,
+                FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+                    .apply { gravity = Gravity.TOP })
+
+            addView(
+                panelView,
+                FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    .apply { gravity = Gravity.CENTER })
+        }
+
+        addView(containerView)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -311,16 +280,16 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // range and offset values.
         val panelWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
         val panelHeightSpec = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
-        playbackContainerView.measure(panelWidthSpec, panelHeightSpec)
+        containerView.measure(panelWidthSpec, panelHeightSpec)
 
-        panelRange = measuredHeight - playbackBarView.measuredHeight
+        panelRange = measuredHeight - barView.measuredHeight
 
         if (!isLaidOut) {
             // This is our first layout, so make sure we know what offset we should work with
             // before we measure our content
             panelOffset =
                 when (panelState) {
-                    PanelState.EXPANDED -> 1.0f
+                    PanelState.EXPANDED -> 1f
                     PanelState.HIDDEN -> computePanelOffset(measuredHeight)
                     else -> 0f
                 }
@@ -351,11 +320,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // Figure out where our panel should be and lay it out there.
         val panelTop = computePanelTopPosition(panelOffset)
 
-        playbackContainerView.layout(
-            0,
-            panelTop,
-            playbackContainerView.measuredWidth,
-            playbackContainerView.measuredHeight + panelTop)
+        containerView.layout(
+            0, panelTop, containerView.measuredWidth, containerView.measuredHeight + panelTop)
 
         layoutContent()
     }
@@ -372,7 +338,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // so that doesn't occur.
         if (child == contentView) {
             canvas.getClipBounds(tRect)
-            tRect.bottom = tRect.bottom.coerceAtMost(playbackContainerView.top)
+            tRect.bottom = tRect.bottom.coerceAtMost(containerView.top)
             canvas.clipRect(tRect)
         }
 
@@ -384,7 +350,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // apply window insets to a view, those insets will cause incorrect spacing if the
         // bottom navigation is consumed by a bar. To fix this, we modify the bottom insets
         // to reflect the presence of the panel [at least in it's collapsed state]
-        playbackContainerView.dispatchApplyWindowInsets(insets)
+        containerView.dispatchApplyWindowInsets(insets)
         lastInsets = insets
         applyContentWindowInsets()
         return insets
@@ -403,7 +369,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     /** Adjust window insets to line up with the panel */
     private fun adjustInsets(insets: WindowInsets): WindowInsets {
-        // We kind to do a reverse-measure to figure out how we should inset this view.
+        // We kind of do a reverse-measure to figure out how we should inset this view.
         // Find how much space is lost by the panel and then combine that with the
         // bottom inset to find how much space we should apply.
         val bars = insets.systemBarInsetsCompat
@@ -464,7 +430,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                 initMotionX = ev.x
                 initMotionY = ev.y
 
-                if (!playbackContainerView.isUnder(ev.x, ev.y)) {
+                if (!containerView.isUnder(ev.x, ev.y)) {
                     // Pointer is not on our view, do not intercept this event
                     dragHelper.cancel()
                     return false
@@ -474,8 +440,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                 val adx = abs(ev.x - initMotionX)
                 val ady = abs(ev.y - initMotionY)
 
-                val pointerUnder = playbackContainerView.isUnder(ev.x, ev.y)
-                val motionUnder = playbackContainerView.isUnder(initMotionX, initMotionY)
+                val pointerUnder = containerView.isUnder(ev.x, ev.y)
+                val motionUnder = containerView.isUnder(initMotionX, initMotionY)
 
                 if (!(pointerUnder || motionUnder) || ady > dragHelper.touchSlop && adx > ady) {
                     // Pointer has moved beyond our control, do not intercept this event
@@ -526,7 +492,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
-     * Do the nice view animations that occur whenever we slide up the playback panel. The way I
+     * Do the nice view animations that occur whenever we slide up the bottom sheet. The way I
      * transition is largely inspired by Android 12's notification panel, with the compact view
      * fading out completely before the panel view fades in.
      */
@@ -544,24 +510,24 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
         // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
         // neutral color instead of an elevated one when fully expanded.
-        playbackContainerBg.alpha = (outRatio * 255).toInt()
-        playbackContainerView.translationZ = elevationNormal * outRatio
+        containerBackgroundDrawable.alpha = (outRatio * 255).toInt()
+        containerView.translationZ = elevationNormal * outRatio
 
         // Fade out our bar view as we slide up
-        playbackBarView.apply {
+        barView.apply {
             alpha = min(1 - halfOutRatio, 1f)
             isInvisible = alpha == 0f
 
-            // When edge-to-edge is enabled, the playback bar will not fade out into the
-            // playback menu's toolbar properly as PlaybackFragment will apply it's window insets.
+            // When edge-to-edge is enabled, the bar will not fade out into the
+            // top of the panel properly as PlaybackFragment will apply it's window insets.
             // Therefore, we slowly increase the bar view's margins so that it fully disappears
             // near the toolbar instead of in the system bars, which just looks nicer.
             // The reason why we can't pad the bar is that it might result in the padding
             // desynchronizing [reminder that this view also applies the bottom window inset]
             // and we can't apply padding to the whole container layout since that would adjust
-            // the size of the playback view. This seems to be the least obtrusive way to do this.
+            // the size of the panel view. This seems to be the least obtrusive way to do this.
             lastInsets?.systemBarInsetsCompat?.let { bars ->
-                val params = layoutParams as FrameLayout.LayoutParams
+                val params = layoutParams as MarginLayoutParams
                 val oldTopMargin = params.topMargin
 
                 params.setMargins(
@@ -572,20 +538,20 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
                 // Poke the layout only when we changed something
                 if (params.topMargin != oldTopMargin) {
-                    playbackContainerView.requestLayout()
+                    containerView.requestLayout()
                 }
             }
         }
 
         // Fade in our panel as we slide up
-        playbackPanelView.apply {
+        panelView.apply {
             alpha = halfInRatio
             isInvisible = alpha == 0f
         }
     }
 
     private fun computePanelTopPosition(panelOffset: Float): Int =
-        measuredHeight - playbackBarView.measuredHeight - (panelOffset * panelRange).toInt()
+        measuredHeight - barView.measuredHeight - (panelOffset * panelRange).toInt()
 
     private fun computePanelOffset(topPosition: Int): Float =
         (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
@@ -595,7 +561,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
         val okay =
             dragHelper.smoothSlideViewTo(
-                playbackContainerView, playbackContainerView.left, computePanelTopPosition(offset))
+                containerView, containerView.left, computePanelTopPosition(offset))
 
         if (okay) {
             postInvalidateOnAnimation()
@@ -608,19 +574,19 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
             // Only capture on a fully expanded panel view
-            return child === playbackContainerView && panelOffset >= 0
+            return child === containerView && panelOffset >= 0
         }
 
         override fun onViewDragStateChanged(state: Int) {
             if (state == ViewDragHelper.STATE_IDLE) {
-                panelOffset = computePanelOffset(playbackContainerView.top)
+                panelOffset = computePanelOffset(containerView.top)
 
                 when {
                     panelOffset == 1f -> setPanelStateInternal(PanelState.EXPANDED)
                     panelOffset == 0f -> setPanelStateInternal(PanelState.COLLAPSED)
                     panelOffset < 0f -> {
                         setPanelStateInternal(PanelState.HIDDEN)
-                        playbackContainerView.visibility = INVISIBLE
+                        containerView.visibility = INVISIBLE
                     }
                     else -> setPanelStateInternal(PanelState.EXPANDED)
                 }

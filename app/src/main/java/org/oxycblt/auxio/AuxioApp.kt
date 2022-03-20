@@ -34,7 +34,6 @@ import org.oxycblt.auxio.settings.SettingsManager
  *       - Refactor fragment class
  *       - Remove databinding and dedup layouts
  *       - Rework RecyclerView management and item dragging
- *       - Rework sealed classes to minimize whens and maximize overrides
  * ```
  */
 @Suppress("UNUSED")

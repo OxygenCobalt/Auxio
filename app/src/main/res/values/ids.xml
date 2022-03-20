@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- This is for PlaybackBarLayout -->
-    <item name="playback_container" type="id" />
-    <item name="playback_bar" type="id" />
-    <item name="playback_panel" type="id" />
+    <!-- This is for BottomSheetLayout -->
+    <item name="bottom_sheet_layout_container" type="id" />
 
     <!-- This is for HomeFragment's AppBarLayout. Explanations for these can be found there. -->
     <item name="home_song_list" type="id" />

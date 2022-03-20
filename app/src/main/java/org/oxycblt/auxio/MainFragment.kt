@@ -30,7 +30,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -46,7 +45,6 @@ import org.oxycblt.auxio.util.logW
  */
 class MainFragment : Fragment() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private var callback: Callback? = null
 
@@ -86,10 +84,6 @@ class MainFragment : Fragment() {
         }
 
         // --- VIEWMODEL SETUP ---
-
-        // We have to control the bar view from here since using a Fragment in PlaybackLayout
-        // would result in annoying UI issues.
-        binding.playbackLayout.setup(playbackModel, detailModel, viewLifecycleOwner)
 
         // Initialize music loading. Do it here so that it shows on every fragment that this
         // one contains.
@@ -135,6 +129,14 @@ class MainFragment : Fragment() {
             }
         }
 
+        playbackModel.song.observe(viewLifecycleOwner) { song ->
+            if (song != null) {
+                binding.bottomSheetLayout.show()
+            } else {
+                binding.bottomSheetLayout.hide()
+            }
+        }
+
         logD("Fragment Created")
 
         return binding.root
@@ -156,7 +158,7 @@ class MainFragment : Fragment() {
      */
     inner class Callback(private val binding: FragmentMainBinding) : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
-            if (!binding.playbackLayout.collapse()) {
+            if (!binding.bottomSheetLayout.collapse()) {
                 val navController = binding.exploreNavHost.findNavController()
 
                 if (navController.currentDestination?.id ==

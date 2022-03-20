@@ -138,10 +138,7 @@ class PlaybackService :
         // --- SYSTEM SETUP ---
 
         widgets = WidgetController(this)
-
-        // Set up the media button callbacks
         mediaSession = MediaSessionCompat(this, packageName).apply { isActive = true }
-
         connector = PlaybackSessionConnector(this, player, mediaSession)
 
         // Then the notification/headset callbacks
@@ -201,6 +198,7 @@ class PlaybackService :
         playbackManager.setPlaying(false)
 
         // The service coroutines last job is to save the state to the DB, before terminating itself
+        // FIXME: This is a terrible idea, move this to when the user closes the notification
         serviceScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
             serviceJob.cancel()
@@ -438,19 +436,17 @@ class PlaybackService :
             when (intent.action) {
                 // --- SYSTEM EVENTS ---
 
-                // Technically the MediaSession seems to handle bluetooth events on their
-                // own, but keep this around as a fallback in the case that the former fails
-                // for whatever reason.
-                // TODO: Remove this since the headset hook KeyEvent should be fine enough.
-                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
-                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
-                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> maybeResumeFromPlug()
-                    }
-                }
-
-                // MediaSession does not handle wired headsets for some reason, so also include
-                // this. Gotta love Android having two actions for more or less the same thing.
+                // Android has four different ways of handling audio plug events for some reason:
+                // 1. ACTION_HEADSET_PLUG, which only works with wired headsets
+                // 2. ACTION_SCO_AUDIO_STATE_UPDATED, which only works with pausing from a plug
+                // event and I'm not even sure if it's needed
+                // 3. ACTION_ACL_CONNECTED, which allows headset autoplay but also requires
+                // granting the BLUETOOTH/BLUETOOTH_CONNECT permissions, which is more or less
+                // a non-starter since both require me to display a permission prompt
+                // 4. Some weird internal framework thing that also handles bluetooth headsets???
+                //
+                // They should have just stopped at ACTION_HEADSET_PLUG. Just use 1 and 2 so that
+                // *something* fills in the role.
                 AudioManager.ACTION_HEADSET_PLUG -> {
                     when (intent.getIntExtra("state", -1)) {
                         0 -> pauseFromPlug()
@@ -459,8 +455,12 @@ class PlaybackService :
 
                     initialHeadsetPlugEventHandled = true
                 }
-
-                // I have never seen this happen but it might be useful
+                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
+                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
+                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
+                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> maybeResumeFromPlug()
+                    }
+                }
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
@@ -485,7 +485,7 @@ class PlaybackService :
          * that friendly
          * 2. There is a bug where playback will always start when this service starts, mostly due
          * to AudioManager.ACTION_HEADSET_PLUG always firing on startup. This is fixed, but I fear
-         * that it may not work on OEM skins that for whatever reason don't make this action fire.\
+         * that it may not work on OEM skins that for whatever reason don't make this action fire.
          */
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
