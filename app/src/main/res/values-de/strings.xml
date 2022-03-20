@@ -64,6 +64,8 @@
     <string name="set_show_covers_desc">Ausschalten um Speicherplatz zu sparen</string>
     <string name="set_quality_covers">MediaStore Cover ignorieren</string>
     <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
+    <string name="set_round_covers">Abgerundete Cover</string>
+    <string name="set_round_covers_desc">Rundet Ecken der Cover ab</string>
     <string name="set_alt_action">Alternative Aktionstaste verwenden</string>
     <string name="set_alt_loop">Wiederholen-Aktionstaste bevorzugen</string>
     <string name="set_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
@@ -71,6 +73,8 @@
     <string name="set_audio">Audio</string>
     <string name="set_focus">Audiofokus</string>
     <string name="set_focus_desc">Pausieren wenn andere Töne abspielt wird [Bsp. Anrufe]</string>
+    <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
+    <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain">ReplayGain (Experimentell)</string>
     <string name="set_off">Aus</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
@@ -86,6 +90,8 @@
     <string name="set_content">Inhalt</string>
     <string name="set_save">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
+    <string name="set_reload">Musik neu laden</string>
+    <string name="set_reload_desc">Startet die App neu</string>
     <string name="set_excluded">Ausgeschlossene Ordner</string>
     <string name="set_excluded_desc">Die Inhalte der ausgeschlossenen Ordner werden nicht deiner Musikbibliothek angezeigt</string>
 
