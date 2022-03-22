@@ -20,19 +20,25 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.slider.Slider
+import kotlin.math.max
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.BottomSheetLayout
+import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -42,27 +48,24 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Handle RTL correctly in the playback buttons
  */
-class PlaybackPanelFragment : Fragment() {
+class PlaybackPanelFragment :
+    ViewBindingFragment<FragmentPlaybackPanelBinding>(),
+    Slider.OnChangeListener,
+    Slider.OnSliderTouchListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
-    private var lastBinding: FragmentPlaybackPanelBinding? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onCreateBinding(inflater: LayoutInflater): FragmentPlaybackPanelBinding {
+        return FragmentPlaybackPanelBinding.inflate(inflater)
+    }
+
+    override fun onBindingCreated(
+        binding: FragmentPlaybackPanelBinding,
         savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentPlaybackPanelBinding.inflate(layoutInflater)
+    ) {
         val queueItem: MenuItem
 
-        // See onDestroyView for why we do this
-        lastBinding = binding
-
         // --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.playbackModel = playbackModel
-        binding.detailModel = detailModel
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
@@ -85,20 +88,62 @@ class PlaybackPanelFragment : Fragment() {
             queueItem = menu.findItem(R.id.action_queue)
         }
 
-        // Make marquee of song title work
-        binding.playbackSong.isSelected = true
-        binding.playbackSeekBar.onConfirmListener = playbackModel::setPosition
+        binding.playbackSong.apply {
+            // Make marquee of the song title work
+            isSelected = true
+            setOnClickListener { playbackModel.song.value?.let { detailModel.navToItem(it) } }
+        }
 
-        // Abuse the play/pause FAB (see style definition for more info)
-        binding.playbackPlayPause.post { binding.playbackPlayPause.stateListAnimator = null }
+        binding.playbackArtist.setOnClickListener {
+            playbackModel.song.value?.let { detailModel.navToItem(it.album.artist) }
+        }
+
+        binding.playbackAlbum.setOnClickListener {
+            playbackModel.song.value?.let { detailModel.navToItem(it.album) }
+        }
+
+        binding.playbackSeekBar.apply {
+            addOnChangeListener(this@PlaybackPanelFragment)
+            addOnSliderTouchListener(this@PlaybackPanelFragment)
+
+            // Composite a tint list based on the active/inactive colors
+            trackInactiveTintList =
+                MaterialColors.compositeARGBWithAlpha(
+                        context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt())
+                    .stateList
+        }
+
+        binding.playbackLoop.setOnClickListener { playbackModel.incrementLoopStatus() }
+
+        binding.playbackSkipPrev.setOnClickListener { playbackModel.skipPrev() }
+
+        binding.playbackPlayPause.apply {
+            // Abuse the play/pause FAB (see style definition for more info)
+            post { binding.playbackPlayPause.stateListAnimator = null }
+            setOnClickListener { playbackModel.invertPlayingStatus() }
+        }
+
+        binding.playbackSkipNext.setOnClickListener { playbackModel.skipNext() }
+
+        binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffleStatus() }
 
         // --- VIEWMODEL SETUP --
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
                 logD("Updating song display to ${song.rawName}")
-                binding.song = song
-                binding.playbackSeekBar.setDuration(song.seconds)
+                binding.playbackCover.bindAlbumCover(song)
+                binding.playbackSong.text = song.resolvedName
+                binding.playbackArtist.text = song.resolvedArtistName
+                binding.playbackAlbum.text = song.resolvedAlbumName
+
+                // Normally if a song had a duration
+                val seconds = song.seconds
+                binding.playbackDuration.text = seconds.toDuration(false)
+                binding.playbackSeekBar.apply {
+                    valueTo = max(seconds, 1L).toFloat()
+                    isEnabled = seconds > 0L
+                }
             }
         }
 
@@ -125,8 +170,13 @@ class PlaybackPanelFragment : Fragment() {
             }
         }
 
-        playbackModel.position.observe(viewLifecycleOwner) { pos ->
-            binding.playbackSeekBar.setProgress(pos)
+        playbackModel.seconds.observe(viewLifecycleOwner) { pos ->
+            // Don't update the progress while we are seeking, that will make the SeekBar jump
+            // around.
+            if (!binding.playbackSeconds.isActivated) {
+                binding.playbackSeekBar.value = pos.toFloat()
+                binding.playbackSeconds.text = pos.toDuration(true)
+            }
         }
 
         playbackModel.nextUp.observe(viewLifecycleOwner) {
@@ -146,17 +196,27 @@ class PlaybackPanelFragment : Fragment() {
         }
 
         logD("Fragment Created")
-
-        return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
+        binding.playbackSong.isSelected = false
+        binding.playbackSeekBar.removeOnChangeListener(this)
+        binding.playbackSeekBar.removeOnChangeListener(this)
+    }
 
-        // playbackSong will leak if we don't disable marquee, keep the binding around
-        // so that we can turn it off when we destroy the view.
-        lastBinding?.playbackSong?.isSelected = false
-        lastBinding = null
+    override fun onStartTrackingTouch(slider: Slider) {
+        requireBinding().playbackSeconds.isActivated = true
+    }
+
+    override fun onStopTrackingTouch(slider: Slider) {
+        requireBinding().playbackSeconds.isActivated = false
+        playbackModel.setPosition(slider.value.toLong())
+    }
+
+    override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
+        if (fromUser) {
+            requireBinding().playbackSeconds.text = value.toLong().toDuration(true)
+        }
     }
 
     private fun navigateUp() {

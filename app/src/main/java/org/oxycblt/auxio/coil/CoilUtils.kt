@@ -21,6 +21,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.BindingAdapter
 import coil.dispose
@@ -37,23 +38,28 @@ import org.oxycblt.auxio.music.Song
 
 // --- BINDING ADAPTERS ---
 
-/** Bind the album art for a [song]. */
+/** Bind the album cover for a [song]. */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(song: Song?) = load(song, R.drawable.ic_album)
+fun ImageView.bindAlbumCover(song: Song?) =
+    load(song, R.drawable.ic_album, R.string.desc_album_cover)
 
-/** Bind the album art for an [album]. */
+/** Bind the album cover for an [album]. */
 @BindingAdapter("albumArt")
-fun ImageView.bindAlbumArt(album: Album?) = load(album, R.drawable.ic_album)
+fun ImageView.bindAlbumCover(album: Album?) =
+    load(album, R.drawable.ic_album, R.string.desc_album_cover)
 
 /** Bind the image for an [artist] */
 @BindingAdapter("artistImage")
-fun ImageView.bindArtistImage(artist: Artist?) = load(artist, R.drawable.ic_artist)
+fun ImageView.bindArtistImage(artist: Artist?) =
+    load(artist, R.drawable.ic_artist, R.string.desc_artist_image)
 
 /** Bind the image for a [genre] */
 @BindingAdapter("genreImage")
-fun ImageView.bindGenreImage(genre: Genre?) = load(genre, R.drawable.ic_genre)
+fun ImageView.bindGenreImage(genre: Genre?) =
+    load(genre, R.drawable.ic_genre, R.string.desc_genre_image)
 
-fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int) {
+fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int, @StringRes desc: Int) {
+    contentDescription = context.getString(desc, music?.resolvedName)
     dispose()
     load(music) {
         error(error)

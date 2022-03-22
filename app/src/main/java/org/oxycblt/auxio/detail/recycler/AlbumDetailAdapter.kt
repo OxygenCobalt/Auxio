@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumArt
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -127,7 +127,7 @@ class AlbumDetailAdapter(
 
         override fun onBind(data: Album) {
             binding.detailCover.apply {
-                bindAlbumArt(data)
+                bindAlbumCover(data)
                 contentDescription = context.getString(R.string.desc_album_cover, data.resolvedName)
             }
 

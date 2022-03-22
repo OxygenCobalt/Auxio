@@ -28,8 +28,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.bindSongInfo
 import org.oxycblt.auxio.ui.BottomSheetLayout
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -99,26 +101,24 @@ class PlaybackBarFragment : Fragment() {
 
         // -- VIEWMODEL SETUP ---
 
-        binding.song = playbackModel.song.value
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                binding.song = song
-                binding.executePendingBindings()
+                binding.playbackCover.bindAlbumCover(song)
+                binding.playbackSong.text = song.resolvedName
+                binding.playbackInfo.bindSongInfo(song)
+                binding.playbackProgressBar.max = song.seconds.toInt()
             }
         }
 
         binding.playbackPlayPause.isActivated = playbackModel.isPlaying.value!!
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
             binding.playbackPlayPause.isActivated = isPlaying
-            binding.executePendingBindings()
         }
 
-        binding.playbackProgressBar.progress = playbackModel.position.value!!.toInt()
-        playbackModel.position.observe(viewLifecycleOwner) { position ->
+        binding.playbackProgressBar.progress = playbackModel.seconds.value!!.toInt()
+        playbackModel.seconds.observe(viewLifecycleOwner) { position ->
             binding.playbackProgressBar.progress = position.toInt()
         }
-
-        binding.executePendingBindings()
 
         return binding.root
     }

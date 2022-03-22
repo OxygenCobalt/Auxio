@@ -162,6 +162,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     // / --- CONTROL METHODS ---
 
     /**
+     * Show the panel, only if it's hidden.
+     * @return if the panel was shown
      */
     fun show(): Boolean {
         if (panelState == PanelState.HIDDEN) {
@@ -172,6 +174,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         return false
     }
 
+    /**
+     * Expand the panel if it is currently collapsed.
+     * @return If the panel was expanded
+     */
     fun expand(): Boolean {
         if (panelState == PanelState.COLLAPSED) {
             applyState(PanelState.EXPANDED)
@@ -183,7 +189,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     /**
      * Collapse the panel if it is currently expanded.
-     * @return If the panel was collapsed or not.
+     * @return If the panel was collapsed
      */
     fun collapse(): Boolean {
         if (panelState == PanelState.EXPANDED) {
@@ -195,6 +201,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
+     * Hide the panel if it is not hidden.
+     * @return If the panel was hidden
      */
     fun hide(): Boolean {
         if (panelState != PanelState.HIDDEN) {

@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/playback_duration_current"
+            android:id="@+id/playback_seconds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -38,7 +38,7 @@
             tools:text="11:38" />
 
         <TextView
-            android:id="@+id/playback_song_duration"
+            android:id="@+id/playback_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_medium"

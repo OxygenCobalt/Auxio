@@ -4,14 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".playback.PlaybackBarView">
 
-    <data>
-
-        <variable
-            name="song"
-            type="org.oxycblt.auxio.music.Song" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +13,6 @@
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Small"
             android:layout_margin="@dimen/spacing_small"
-            android:contentDescription="@{@string/desc_album_cover(song.resolvedName)}"
-            app:albumArt="@{song}"
             app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -35,7 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
-            android:text="@{song.resolvedName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_info"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -51,7 +40,6 @@
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_small"
             android:ellipsize="end"
-            app:songInfo="@{song}"
             app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
             app:layout_constraintStart_toEndOf="@+id/playback_cover"
@@ -73,7 +61,6 @@
             android:id="@+id/playback_progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="@{(int) song.seconds}"
             app:trackColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

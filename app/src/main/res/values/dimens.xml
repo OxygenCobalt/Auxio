@@ -6,6 +6,8 @@
     <dimen name="spacing_mid_large">24dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
 
+    <dimen name="spacing_small_inv">-8dp</dimen>
+
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_btn_small">48dp</dimen>
     <dimen name="size_btn_large">64dp</dimen>
