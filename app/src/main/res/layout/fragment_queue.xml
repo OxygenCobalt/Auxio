@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".playback.queue.QueueFragment">
+    android:id="@+id/queue_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:orientation="vertical">
 
-    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
-        android:id="@+id/queue_coordinator"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical">
-
-        <org.oxycblt.auxio.ui.EdgeAppBarLayout
-            android:id="@+id/queue_appbar"
+    <org.oxycblt.auxio.ui.EdgeAppBarLayout
+        android:id="@+id/queue_appbar"
             style="@style/Widget.Auxio.AppBarLayout"
             app:liftOnScroll="true"
             app:liftOnScrollTargetViewId="@id/queue_recycler">
@@ -36,4 +33,3 @@
             tools:listitem="@layout/item_queue_song" />
 
     </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
-</layout>

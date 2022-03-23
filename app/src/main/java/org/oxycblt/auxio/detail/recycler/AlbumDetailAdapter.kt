@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.applyAlbumCover
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.detail.DetailViewModel
@@ -32,12 +32,14 @@ import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying the details and [Song]s of an [Album]
@@ -127,14 +129,14 @@ class AlbumDetailAdapter(
 
         override fun onBind(data: Album) {
             binding.detailCover.apply {
-                bindAlbumCover(data)
+                applyAlbumCover(data)
                 contentDescription = context.getString(R.string.desc_album_cover, data.resolvedName)
             }
 
-            binding.detailName.text = data.resolvedName
+            binding.detailName.textSafe = data.resolvedName
 
             binding.detailSubhead.apply {
-                text = data.artist.resolvedName
+                textSafe = data.artist.resolvedName
                 setOnClickListener { detailModel.navToItem(data.artist) }
             }
 
@@ -157,14 +159,25 @@ class AlbumDetailAdapter(
         private val binding: ItemAlbumSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
         override fun onBind(data: Song) {
-            binding.song = data
-            binding.songName.requestLayout()
+            // Hide the track number view if the song does not have a track.
+            if (data.track != null) {
+                binding.songTrack.apply {
+                    textSafe = context.getString(R.string.fmt_number, data.track)
+                    isInvisible = false
+                }
 
-            // Hide the track number view if the track is zero, as generally a track number of
-            // zero implies that the song does not have a track number.
-            val usePlaceholder = data.track == null
-            binding.songTrack.isInvisible = usePlaceholder
-            binding.songTrackPlaceholder.isInvisible = !usePlaceholder
+                binding.songTrackPlaceholder.isInvisible = true
+            } else {
+                binding.songTrack.apply {
+                    textSafe = ""
+                    isInvisible = true
+                }
+
+                binding.songTrackPlaceholder.isInvisible = false
+            }
+
+            binding.songName.textSafe = data.resolvedName
+            binding.songDuration.textSafe = data.seconds.toDuration(false)
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {

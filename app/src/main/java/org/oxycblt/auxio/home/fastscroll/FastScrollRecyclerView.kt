@@ -186,6 +186,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
 
     private fun onPreDraw() {
+        // FIXME: Make the way we lay out views less of a hacky mess. Perhaps consider
+        //  overlaying views or turning this into a ViewGroup.
         updateScrollbarState()
 
         thumbView.layoutDirection = layoutDirection

@@ -26,8 +26,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
-import androidx.databinding.DataBindingUtil
-import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
@@ -54,10 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         setupTheme()
 
-        val binding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-
-        applyEdgeToEdgeWindow(binding)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        applyEdgeToEdgeWindow(binding.root)
 
         logD("Activity created")
     }
@@ -114,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyEdgeToEdgeWindow(binding: ViewBinding) {
+    private fun applyEdgeToEdgeWindow(contentView: View) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             logD("Doing R+ edge-to-edge")
 
@@ -124,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             // the R+ SDK decides to make you specify the insets yourself with a barely
             // documented API that isn't even mentioned in any of the edge-to-edge
             // tutorials. Thanks android, very cool!
-            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+            contentView.setOnApplyWindowInsetsListener { view, insets ->
                 WindowInsets.Builder()
                     .setInsets(
                         WindowInsets.Type.systemBars(),
@@ -133,27 +130,25 @@ class MainActivity : AppCompatActivity() {
                         WindowInsets.Type.systemGestures(),
                         insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures()))
                     .build()
-                    .applyLeftRightInsets(binding)
+                    .applyLeftRightInsets(view)
             }
         } else {
             // Do old edge-to-edge otherwise.
             logD("Doing legacy edge-to-edge")
 
             @Suppress("DEPRECATION")
-            binding.root.apply {
+            contentView.apply {
                 systemUiVisibility =
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
-                setOnApplyWindowInsetsListener { _, insets -> insets.applyLeftRightInsets(binding) }
+                setOnApplyWindowInsetsListener { view, insets -> insets.applyLeftRightInsets(view) }
             }
         }
     }
 
-    private fun WindowInsets.applyLeftRightInsets(binding: ViewBinding): WindowInsets {
+    private fun WindowInsets.applyLeftRightInsets(contentView: View): WindowInsets {
         val bars = systemBarInsetsCompat
-
-        binding.root.updatePadding(left = bars.left, right = bars.right)
-
+        contentView.updatePadding(left = bars.left, right = bars.right)
         return replaceSystemBarInsetsCompat(0, bars.top, 0, bars.bottom)
     }
 

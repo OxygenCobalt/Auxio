@@ -249,11 +249,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         barView = getChildAt(1) // Child 2 is assumed to be the bar used when collapsed
         panelView = getChildAt(2) // Child 3 is assumed to be the panel used when expanded
 
+        // We actually move the bar and panel views into a container so that they have consistent
+        // behavior when be manipulate layouts later.
         removeView(barView)
         removeView(panelView)
 
-        // We actually move the bar and panel views into a container so that they have consistent
-        // behavior when be manipulate layouts later.
         containerView.apply {
             addView(
                 barView,

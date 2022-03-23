@@ -36,6 +36,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
@@ -54,13 +55,13 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
         binding.aboutToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
-        binding.aboutVersion.text = BuildConfig.VERSION_NAME
+        binding.aboutVersion.textSafe = BuildConfig.VERSION_NAME
         binding.aboutCode.setOnClickListener { openLinkInBrowser(LINK_CODEBASE) }
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
         homeModel.songs.observe(viewLifecycleOwner) { songs ->
-            binding.aboutSongCount.text = getString(R.string.fmt_songs_loaded, songs.size)
+            binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
         }
     }
 

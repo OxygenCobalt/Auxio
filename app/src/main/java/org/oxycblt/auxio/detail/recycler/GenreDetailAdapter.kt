@@ -23,19 +23,22 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindGenreImage
+import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.applyGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
-import org.oxycblt.auxio.databinding.ItemGenreSongBinding
+import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.bindGenreInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying the [Song]s of a genre.
@@ -64,9 +67,7 @@ class GenreDetailAdapter(
                 GenreDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
             IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
             IntegerTable.ITEM_TYPE_GENRE_SONG ->
-                GenreSongViewHolder(
-                    ItemGenreSongBinding.inflate(parent.context.inflater),
-                )
+                GenreSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
             else -> error("Bad ViewHolder item type $viewType")
         }
     }
@@ -127,13 +128,14 @@ class GenreDetailAdapter(
             val context = binding.root.context
 
             binding.detailCover.apply {
-                bindGenreImage(data)
+                applyGenreImage(data)
                 contentDescription = context.getString(R.string.desc_genre_image, data.resolvedName)
             }
 
-            binding.detailName.text = data.resolvedName
-            binding.detailSubhead.bindGenreInfo(data)
-            binding.detailInfo.text = data.totalDuration
+            binding.detailName.textSafe = data.resolvedName
+            binding.detailSubhead.textSafe =
+                binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
+            binding.detailInfo.textSafe = data.totalDuration
 
             binding.detailPlayButton.setOnClickListener { playbackModel.playGenre(data, false) }
 
@@ -141,14 +143,16 @@ class GenreDetailAdapter(
         }
     }
 
-    inner class GenreSongViewHolder(
-        private val binding: ItemGenreSongBinding,
+    /** The Shared ViewHolder for a [Song]. Instantiation should be done with [from]. */
+    inner class GenreSongViewHolder
+    constructor(
+        private val binding: ItemSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
-        override fun onBind(data: Song) {
-            binding.song = data
 
-            binding.songName.requestLayout()
-            binding.songInfo.requestLayout()
+        override fun onBind(data: Song) {
+            binding.songAlbumCover.applyAlbumCover(data)
+            binding.songName.textSafe = data.resolvedName
+            binding.songInfo.textSafe = data.resolvedArtistName
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {

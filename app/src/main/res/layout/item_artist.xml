@@ -1,47 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.ArtistViewHolder">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Auxio.ItemLayout">
 
-    <data>
+    <org.oxycblt.auxio.coil.RoundableImageView
+        android:id="@+id/artist_image"
+        style="@style/Widget.Auxio.Image.Medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_artist" />
 
-        <variable
-            name="artist"
-            type="org.oxycblt.auxio.music.Artist" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/Widget.Auxio.ItemLayout">
-
-        <org.oxycblt.auxio.coil.RoundableImageView
-            android:id="@+id/artist_image"
-            style="@style/Widget.Auxio.Image.Medium"
-            android:contentDescription="@{@string/desc_artist_image(artist.resolvedName)}"
-            app:artistImage="@{artist}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_artist" />
-
-        <TextView
+    <TextView
             android:id="@+id/artist_name"
             style="@style/Widget.Auxio.TextView.Item.Primary"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{artist.resolvedName}"
-            app:layout_constraintBottom_toTopOf="@+id/artist_details"
-            app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/artist_info"
+        app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Artist Name" />
 
         <TextView
-            android:id="@+id/artist_details"
+            android:id="@+id/artist_info"
             style="@style/Widget.Auxio.TextView.Item.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:artistInfo="@{artist}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/artist_image"
@@ -49,4 +37,3 @@
             tools:text="2 Albums, 20 Songs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

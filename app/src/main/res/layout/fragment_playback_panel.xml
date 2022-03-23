@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".playback.PlaybackPanelFragment">
+    android:id="@+id/playback_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/playback_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/playback_toolbar"
-            style="@style/Widget.Auxio.Toolbar.Icon.Down"
-            app:layout_constraintStart_toStartOf="parent"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/playback_toolbar"
+        style="@style/Widget.Auxio.Toolbar.Icon.Down"
+        app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/lbl_playback"
             tools:subtitle="@string/lbl_all_songs"
@@ -170,4 +167,3 @@
             app:tint="@color/sel_accented" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

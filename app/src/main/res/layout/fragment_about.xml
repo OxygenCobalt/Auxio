@@ -1,183 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:orientation="vertical"
     tools:context=".settings.AboutFragment">
 
-    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
+    <org.oxycblt.auxio.ui.EdgeAppBarLayout
+        android:id="@+id/about_appbar"
+        style="@style/Widget.Auxio.AppBarLayout"
+        app:liftOnScroll="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/about_toolbar"
+            style="@style/Widget.Auxio.Toolbar.Icon"
+            app:title="@string/lbl_about" />
+
+    </org.oxycblt.auxio.ui.EdgeAppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/about_contents"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <org.oxycblt.auxio.ui.EdgeAppBarLayout
-            android:id="@+id/about_appbar"
-            style="@style/Widget.Auxio.AppBarLayout"
-            app:liftOnScroll="true">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/about_toolbar"
-                style="@style/Widget.Auxio.Toolbar.Icon"
-                app:title="@string/lbl_about" />
-
-        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/about_contents"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_medium">
 
-            <com.google.android.material.card.MaterialCardView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_medium">
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/about_auxio_icon"
+                    style="@style/Widget.Auxio.Image.Small"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:contentDescription="@string/desc_auxio_icon"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintEnd_toStartOf="@+id/about_app_name"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/about_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:text="@string/info_app_name"
+                    android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
+                    app:layout_constraintBottom_toBottomOf="@+id/about_auxio_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/about_auxio_icon"
+                    app:layout_constraintTop_toTopOf="@+id/about_auxio_icon" />
+
+                <TextView
+                    android:id="@+id/about_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/spacing_medium"
+                    android:paddingEnd="@dimen/spacing_medium"
+                    android:text="@string/info_app_desc"
+                    android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/about_auxio_icon" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/version_container"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/spacing_medium"
+                    app:layout_constraintTop_toBottomOf="@+id/about_desc"
+                    app:layout_constraintVertical_chainStyle="packed">
 
                     <ImageView
-                        android:id="@+id/about_auxio_icon"
-                        style="@style/Widget.Auxio.Image.Small"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:contentDescription="@string/desc_auxio_icon"
-                        android:src="@mipmap/ic_launcher"
-                        app:layout_constraintEnd_toStartOf="@+id/about_app_name"
-                        app:layout_constraintHorizontal_chainStyle="packed"
+                        android:id="@+id/about_version_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/lbl_version"
+                        android:src="@drawable/ic_about"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/about_app_name"
+                        android:id="@+id/about_version_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/spacing_medium"
-                        android:text="@string/info_app_name"
-                        android:textAppearance="@style/TextAppearance.Auxio.TitleLarge"
-                        app:layout_constraintBottom_toBottomOf="@+id/about_auxio_icon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/about_auxio_icon"
-                        app:layout_constraintTop_toTopOf="@+id/about_auxio_icon" />
-
-                    <TextView
-                        android:id="@+id/about_desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:gravity="center"
-                        android:paddingStart="@dimen/spacing_medium"
-                        android:paddingEnd="@dimen/spacing_medium"
-                        android:text="@string/info_app_desc"
+                        android:text="@string/lbl_version"
                         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_auxio_icon" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/version_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="@dimen/spacing_medium"
-                        app:layout_constraintTop_toBottomOf="@+id/about_desc"
-                        app:layout_constraintVertical_chainStyle="packed">
-
-                        <ImageView
-                            android:id="@+id/about_version_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/lbl_version"
-                            android:src="@drawable/ic_about"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/about_version_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_medium"
-                            android:text="@string/lbl_version"
-                            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-                            app:layout_constraintBottom_toTopOf="@+id/about_version"
-                            app:layout_constraintStart_toEndOf="@+id/about_version_icon"
-                            app:layout_constraintTop_toTopOf="@+id/about_version_icon" />
-
-                        <TextView
-                            android:id="@+id/about_version"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_medium"
-                            android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
-                            app:layout_constraintBottom_toBottomOf="@+id/about_version_icon"
-                            app:layout_constraintStart_toEndOf="@+id/about_version_icon"
-                            app:layout_constraintTop_toBottomOf="@+id/about_version_title"
-                            tools:text="16.16.16" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        app:layout_constraintBottom_toTopOf="@+id/about_version"
+                        app:layout_constraintStart_toEndOf="@+id/about_version_icon"
+                        app:layout_constraintTop_toTopOf="@+id/about_version_icon" />
 
                     <TextView
-                        android:id="@+id/about_code"
-                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
-                        android:layout_width="match_parent"
+                        android:id="@+id/about_version"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/lbl_code"
-                        app:drawableStartCompat="@drawable/ic_code"
-                        app:layout_constraintBottom_toTopOf="@+id/about_faq"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/version_container" />
-
-                    <TextView
-                        android:id="@+id/about_licenses"
-                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_licenses"
-                        app:drawableStartCompat="@drawable/ic_license"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_faq" />
-
-                    <TextView
-                        android:id="@+id/about_faq"
-                        style="@style/Widget.Auxio.TextView.Icon.Clickable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_faq"
-                        app:drawableStartCompat="@drawable/ic_faq"
-                        app:layout_constraintBottom_toTopOf="@+id/about_licenses"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_code" />
-
-                    <TextView
-                        android:id="@+id/about_song_count"
-                        style="@style/Widget.Auxio.TextView.Icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:drawableStartCompat="@drawable/ic_album"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_licenses"
-                        tools:text="Songs Loaded: 1616"
-                        app:drawableTint="?attr/colorControlNormal" />
-
-                    <TextView
-                        android:id="@+id/about_author"
-                        style="@style/Widget.Auxio.TextView.Icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_author"
-                        app:drawableTint="?attr/colorControlNormal"
-                        app:drawableStartCompat="@drawable/ic_artist"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/about_song_count" />
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
+                        app:layout_constraintBottom_toBottomOf="@+id/about_version_icon"
+                        app:layout_constraintStart_toEndOf="@+id/about_version_icon"
+                        app:layout_constraintTop_toBottomOf="@+id/about_version_title"
+                        tools:text="16.16.16" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </androidx.core.widget.NestedScrollView>
-    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
-</layout>
+
+                <TextView
+                    android:id="@+id/about_code"
+                    style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_code"
+                    app:drawableStartCompat="@drawable/ic_code"
+                    app:layout_constraintBottom_toTopOf="@+id/about_faq"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/version_container" />
+
+                <TextView
+                    android:id="@+id/about_licenses"
+                    style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_licenses"
+                    app:drawableStartCompat="@drawable/ic_license"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/about_faq" />
+
+                <TextView
+                    android:id="@+id/about_faq"
+                    style="@style/Widget.Auxio.TextView.Icon.Clickable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_faq"
+                    app:drawableStartCompat="@drawable/ic_faq"
+                    app:layout_constraintBottom_toTopOf="@+id/about_licenses"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/about_code" />
+
+                <TextView
+                    android:id="@+id/about_song_count"
+                    style="@style/Widget.Auxio.TextView.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/ic_album"
+                    app:drawableTint="?attr/colorControlNormal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/about_licenses"
+                    tools:text="Songs Loaded: 1616" />
+
+                <TextView
+                    android:id="@+id/about_author"
+                    style="@style/Widget.Auxio.TextView.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_author"
+                    app:drawableStartCompat="@drawable/ic_artist"
+                    app:drawableTint="?attr/colorControlNormal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/about_song_count" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.core.widget.NestedScrollView>
+</org.oxycblt.auxio.ui.EdgeCoordinatorLayout>

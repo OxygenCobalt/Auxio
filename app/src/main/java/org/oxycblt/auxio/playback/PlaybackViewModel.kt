@@ -65,6 +65,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
     // Other
+    // TODO: Move URI management to PlaybackService (more capable of taking commands)
     private var mIntentUri: Uri? = null
 
     /** The current song. */

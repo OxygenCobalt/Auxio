@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".playback.queue.QueueAdapter.QueueSongViewHolder">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
 
-    <data>
-
-        <variable
-            name="song"
-            type="org.oxycblt.auxio.music.Song" />
-    </data>
-
-    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface">
@@ -39,11 +30,9 @@
             android:background="?attr/colorSurface">
 
             <org.oxycblt.auxio.coil.RoundableImageView
-                android:id="@+id/album_cover"
+                android:id="@+id/song_album_cover"
                 style="@style/Widget.Auxio.Image.Small"
                 android:layout_margin="@dimen/spacing_medium"
-                android:contentDescription="@{@string/desc_album_cover(song.resolvedName)}"
-                app:albumArt="@{song}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -55,10 +44,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_medium"
-                android:text="@{song.resolvedName}"
                 app:layout_constraintBottom_toTopOf="@+id/song_info"
                 app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
-                app:layout_constraintStart_toEndOf="@+id/album_cover"
+                app:layout_constraintStart_toEndOf="@+id/song_album_cover"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="Song Name" />
@@ -69,10 +57,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_medium"
-                app:songInfo="@{song}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/song_drag_handle"
-                app:layout_constraintStart_toEndOf="@+id/album_cover"
+                app:layout_constraintStart_toEndOf="@+id/song_album_cover"
                 app:layout_constraintTop_toBottomOf="@+id/song_name"
                 tools:text="Artist / Album" />
 
@@ -89,10 +76,9 @@
                 android:paddingEnd="@dimen/spacing_medium"
                 android:scaleType="center"
                 android:src="@drawable/ic_handle"
-                app:layout_constraintBottom_toBottomOf="@+id/album_cover"
+                app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/album_cover" />
+                app:layout_constraintTop_toTopOf="@+id/song_album_cover" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
-</layout>

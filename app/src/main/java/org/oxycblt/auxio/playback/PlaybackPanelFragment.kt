@@ -29,7 +29,7 @@ import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.applyAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicParent
@@ -42,6 +42,7 @@ import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * A [Fragment] that displays more information about the song, along with more media controls.
@@ -166,7 +167,7 @@ class PlaybackPanelFragment :
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         if (fromUser) {
-            requireBinding().playbackPosition.text = value.toLong().toDuration(true)
+            requireBinding().playbackPosition.textSafe = value.toLong().toDuration(true)
         }
     }
 
@@ -174,14 +175,14 @@ class PlaybackPanelFragment :
         if (song == null) return
 
         val binding = requireBinding()
-        binding.playbackCover.bindAlbumCover(song)
-        binding.playbackSong.text = song.resolvedName
-        binding.playbackArtist.text = song.resolvedArtistName
-        binding.playbackAlbum.text = song.resolvedAlbumName
+        binding.playbackCover.applyAlbumCover(song)
+        binding.playbackSong.textSafe = song.resolvedName
+        binding.playbackArtist.textSafe = song.resolvedArtistName
+        binding.playbackAlbum.textSafe = song.resolvedAlbumName
 
         // Normally if a song had a duration
         val seconds = song.seconds
-        binding.playbackDuration.text = seconds.toDuration(false)
+        binding.playbackDuration.textSafe = seconds.toDuration(false)
         binding.playbackSeekBar.apply {
             valueTo = max(seconds, 1L).toFloat()
             isEnabled = seconds > 0L
@@ -199,7 +200,7 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         if (!binding.playbackPosition.isActivated) {
             binding.playbackSeekBar.value = position.toFloat()
-            binding.playbackPosition.text = position.toDuration(true)
+            binding.playbackPosition.textSafe = position.toDuration(true)
         }
     }
 

@@ -20,13 +20,15 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.view.View
 import androidx.appcompat.widget.TooltipCompat
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import org.oxycblt.auxio.R
+import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.applyArtistImage
+import org.oxycblt.auxio.coil.applyGenreImage
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
-import org.oxycblt.auxio.databinding.ItemAlbumBinding
-import org.oxycblt.auxio.databinding.ItemArtistBinding
-import org.oxycblt.auxio.databinding.ItemGenreBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
+import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
@@ -35,7 +37,10 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * A [RecyclerView.ViewHolder] that streamlines a lot of the common things across all viewholders.
@@ -46,7 +51,7 @@ import org.oxycblt.auxio.util.inflater
  * @author OxygenCobalt
  */
 abstract class BaseViewHolder<T : Item>(
-    private val binding: ViewDataBinding,
+    private val binding: ViewBinding,
     private val doOnClick: ((data: T) -> Unit)? = null,
     private val doOnLongClick: ((view: View, data: T) -> Unit)? = null
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -73,8 +78,6 @@ abstract class BaseViewHolder<T : Item>(
         }
 
         onBind(data)
-
-        binding.executePendingBindings()
     }
 
     /**
@@ -93,10 +96,9 @@ private constructor(
 ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Song) {
-        binding.song = data
-
-        binding.songName.requestLayout()
-        binding.songInfo.requestLayout()
+        binding.songAlbumCover.applyAlbumCover(data)
+        binding.songName.textSafe = data.resolvedName
+        binding.songInfo.textSafe = data.resolvedArtistName
     }
 
     companion object {
@@ -115,14 +117,19 @@ private constructor(
 /** The Shared ViewHolder for a [Album]. Instantiation should be done with [from]. */
 class AlbumViewHolder
 private constructor(
-    private val binding: ItemAlbumBinding,
+    private val binding: ItemParentBinding,
     doOnClick: (data: Album) -> Unit,
     doOnLongClick: (view: View, data: Album) -> Unit
 ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Album) {
-        binding.album = data
-        binding.albumName.requestLayout()
+        binding.parentImage.applyAlbumCover(data)
+        binding.parentName.textSafe = data.resolvedName
+        binding.parentInfo.textSafe =
+            binding.context.getString(
+                R.string.fmt_two,
+                data.resolvedArtistName,
+                binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
     }
 
     companion object {
@@ -133,7 +140,7 @@ private constructor(
             doOnLongClick: (view: View, data: Album) -> Unit
         ): AlbumViewHolder {
             return AlbumViewHolder(
-                ItemAlbumBinding.inflate(context.inflater), doOnClick, doOnLongClick)
+                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
@@ -141,14 +148,19 @@ private constructor(
 /** The Shared ViewHolder for a [Artist]. Instantiation should be done with [from]. */
 class ArtistViewHolder
 private constructor(
-    private val binding: ItemArtistBinding,
+    private val binding: ItemParentBinding,
     doOnClick: (Artist) -> Unit,
     doOnLongClick: (view: View, data: Artist) -> Unit
 ) : BaseViewHolder<Artist>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Artist) {
-        binding.artist = data
-        binding.artistName.requestLayout()
+        binding.parentImage.applyArtistImage(data)
+        binding.parentName.textSafe = data.resolvedName
+        binding.parentInfo.textSafe =
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
+                binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
     }
 
     companion object {
@@ -159,7 +171,7 @@ private constructor(
             doOnLongClick: (view: View, data: Artist) -> Unit
         ): ArtistViewHolder {
             return ArtistViewHolder(
-                ItemArtistBinding.inflate(context.inflater), doOnClick, doOnLongClick)
+                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
@@ -167,14 +179,16 @@ private constructor(
 /** The Shared ViewHolder for a [Genre]. Instantiation should be done with [from]. */
 class GenreViewHolder
 private constructor(
-    private val binding: ItemGenreBinding,
+    private val binding: ItemParentBinding,
     doOnClick: (Genre) -> Unit,
     doOnLongClick: (view: View, data: Genre) -> Unit
 ) : BaseViewHolder<Genre>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Genre) {
-        binding.genre = data
-        binding.genreName.requestLayout()
+        binding.parentImage.applyGenreImage(data)
+        binding.parentName.textSafe = data.resolvedName
+        binding.parentInfo.textSafe =
+            binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
     }
 
     companion object {
@@ -185,7 +199,7 @@ private constructor(
             doOnLongClick: (view: View, data: Genre) -> Unit
         ): GenreViewHolder {
             return GenreViewHolder(
-                ItemGenreBinding.inflate(context.inflater), doOnClick, doOnLongClick)
+                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
         }
     }
 }
@@ -195,7 +209,7 @@ class HeaderViewHolder private constructor(private val binding: ItemHeaderBindin
     BaseViewHolder<Header>(binding) {
 
     override fun onBind(data: Header) {
-        binding.header = data
+        binding.title.textSafe = binding.context.getString(data.string)
     }
 
     companion object {
@@ -211,13 +225,11 @@ class ActionHeaderViewHolder private constructor(private val binding: ItemAction
     BaseViewHolder<ActionHeader>(binding) {
 
     override fun onBind(data: ActionHeader) {
-        binding.header = data
-
-        binding.executePendingBindings()
-
+        binding.headerTitle.textSafe = binding.context.getString(data.string)
         binding.headerButton.apply {
+            setImageResource(data.icon)
+            contentDescription = context.getString(data.desc)
             TooltipCompat.setTooltipText(this, contentDescription)
-
             setOnClickListener(data.onClick)
         }
     }

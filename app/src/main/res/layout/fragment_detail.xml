@@ -1,38 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".detail.DetailFragment">
+    android:id="@+id/bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/bar_layout"
+    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
+        <org.oxycblt.auxio.detail.DetailAppBarLayout
+            android:id="@+id/detail_appbar"
+            style="@style/Widget.Auxio.AppBarLayout"
+            app:liftOnScroll="true"
+            app:liftOnScrollTargetViewId="@id/detail_recycler">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/detail_toolbar"
+                style="@style/Widget.Auxio.Toolbar.Icon" />
+
+        </org.oxycblt.auxio.detail.DetailAppBarLayout>
+
+        <org.oxycblt.auxio.ui.EdgeRecyclerView
+            android:id="@+id/detail_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:listitem="@layout/item_detail" />
 
-            <org.oxycblt.auxio.detail.DetailAppBarLayout
-                android:id="@+id/detail_appbar"
-                style="@style/Widget.Auxio.AppBarLayout"
-                app:liftOnScroll="true"
-                app:liftOnScrollTargetViewId="@id/detail_recycler">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/detail_toolbar"
-                    style="@style/Widget.Auxio.Toolbar.Icon" />
-
-            </org.oxycblt.auxio.detail.DetailAppBarLayout>
-
-            <org.oxycblt.auxio.ui.EdgeRecyclerView
-                android:id="@+id/detail_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                tools:listitem="@layout/item_detail" />
-
-        </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
-    </FrameLayout>
-</layout>
+    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+</FrameLayout>

@@ -44,16 +44,16 @@ should be added as a new `Fragment` implementation and added to one of the two n
 - `nav_main`: Navigation *from* `MainFragment`
 - `nav_explore`: Navigation *in* `MainFragment` 
 
-Fragments themselves are organized in order of lifecycle. So the first override would be `onCreate`, followed by
-`onCreateView`, and so on. `onCreateView` is where all view instantiation and configuration takes place, and
-is separated into three phases:
+Fragments themselves are based off a super class called `ViewBindingFragment` that takes a view-binding and then
+leverages it within the fragment lifecycle. 
 
 - Create variables [Bindings, Adapters, etc]
 - Set up the UI
 - Set up ViewModel instances and LiveData observers
 
 `findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, view-binding should be
-used in all cases. Avoid usages of databinding outside of the `onCreateView` step unless absolutely necessary.
+used in all cases. Code that involves retrieving the binding should be isolated into its own function, with
+the binding being obtained by calling `requireBinding`.
 
 At times it may be more appropriate to use a `View` instead of a full blown fragment. This is okay as long as
 view-binding is still used.
@@ -61,11 +61,6 @@ view-binding is still used.
 When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder` to standardize the binding process
 and automate some code shared across all ViewHolders. The only exceptions to this case are for ViewHolders that
 correspond to non-`BaseModel` data, in which a normal ViewHolder can be used instead.
-
-Data is often bound using Binding Adapters, which are XML attributes assigned in layout files that can automatically 
-display data, usually written as `app:bindingAdapterName="@{data}"`. Its recommended to use these instead of applying
-the attributes directly unless absolutely necessary. Usually it's okay to apply data programmatically if you begin
-to duplicate layouts simply because they apply to different data objects, such as the detail UIs.
 
 #### Object communication
 Auxio's codebase is mostly centered around 4 different types of code that communicates with each-other.

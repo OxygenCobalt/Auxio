@@ -25,14 +25,14 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.applyAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.music.bindSongInfo
 import org.oxycblt.auxio.ui.BottomSheetLayout
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.textSafe
 
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -99,9 +99,10 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                binding.playbackCover.bindAlbumCover(song)
-                binding.playbackSong.text = song.resolvedName
-                binding.playbackInfo.bindSongInfo(song)
+                binding.playbackCover.applyAlbumCover(song)
+                binding.playbackSong.textSafe = song.resolvedName
+                binding.playbackInfo.textSafe =
+                    getString(R.string.fmt_two, song.resolvedArtistName, song.resolvedAlbumName)
                 binding.playbackProgressBar.max = song.seconds.toInt()
             }
         }

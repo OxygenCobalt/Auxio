@@ -23,23 +23,26 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindArtistImage
-import org.oxycblt.auxio.databinding.ItemArtistAlbumBinding
-import org.oxycblt.auxio.databinding.ItemArtistSongBinding
+import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.applyArtistImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.databinding.ItemParentBinding
+import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.bindArtistInfo
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ActionHeaderViewHolder
 import org.oxycblt.auxio.ui.BaseViewHolder
 import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * An adapter for displaying the [Album]s and [Song]s of an artist.
@@ -73,9 +76,9 @@ class ArtistDetailAdapter(
             IntegerTable.ITEM_TYPE_ARTIST_DETAIL ->
                 ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
             IntegerTable.ITEM_TYPE_ARTIST_ALBUM ->
-                ArtistAlbumViewHolder(ItemArtistAlbumBinding.inflate(parent.context.inflater))
+                ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
             IntegerTable.ITEM_TYPE_ARTIST_SONG ->
-                ArtistSongViewHolder(ItemArtistSongBinding.inflate(parent.context.inflater))
+                ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
             IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
             IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
             else -> error("Invalid ViewHolder item type $viewType")
@@ -173,16 +176,16 @@ class ArtistDetailAdapter(
             val context = binding.root.context
 
             binding.detailCover.apply {
-                bindArtistImage(data)
+                applyArtistImage(data)
                 contentDescription =
                     context.getString(R.string.desc_artist_image, data.resolvedName)
             }
 
-            binding.detailName.text = data.resolvedName
+            binding.detailName.textSafe = data.resolvedName
 
             // Get the genre that corresponds to the most songs in this artist, which would be
             // the most "Prominent" genre.
-            binding.detailSubhead.text =
+            binding.detailSubhead.textSafe =
                 data.songs
                     .groupBy { it.genre.resolvedName }
                     .entries
@@ -190,7 +193,11 @@ class ArtistDetailAdapter(
                     ?.key
                     ?: context.getString(R.string.def_genre)
 
-            binding.detailInfo.bindArtistInfo(data)
+            binding.detailInfo.textSafe =
+                binding.context.getString(
+                    R.string.fmt_two,
+                    binding.context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
+                    binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
 
             binding.detailPlayButton.setOnClickListener { playbackModel.playArtist(data, false) }
 
@@ -199,24 +206,26 @@ class ArtistDetailAdapter(
     }
 
     inner class ArtistAlbumViewHolder(
-        private val binding: ItemArtistAlbumBinding,
+        private val binding: ItemParentBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
         override fun onBind(data: Album) {
-            binding.album = data
-            binding.albumName.requestLayout()
+            binding.parentImage.applyAlbumCover(data)
+            binding.parentName.textSafe = data.resolvedName
+            binding.parentInfo.textSafe = binding.context.getString(R.string.fmt_number, data.year)
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {
-            binding.albumName.isActivated = isHighlighted
+            binding.parentName.isActivated = isHighlighted
         }
     }
 
     inner class ArtistSongViewHolder(
-        private val binding: ItemArtistSongBinding,
+        private val binding: ItemSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnSongClick, doOnLongClick), Highlightable {
         override fun onBind(data: Song) {
-            binding.song = data
-            binding.songName.requestLayout()
+            binding.songAlbumCover.applyAlbumCover(data)
+            binding.songName.textSafe = data.resolvedName
+            binding.songInfo.textSafe = data.resolvedAlbumName
         }
 
         override fun setHighlighted(isHighlighted: Boolean) {

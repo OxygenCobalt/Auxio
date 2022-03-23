@@ -26,7 +26,6 @@
 
     <dimen name="text_size_ext_label_larger">16sp</dimen>
     <dimen name="text_size_ext_title_mid_large">18sp</dimen>
-    <dimen name="text_size_ext_title_mid_larger">20sp</dimen>
 
     <!-- Misc -->
     <dimen name="elevation_small">2dp</dimen>

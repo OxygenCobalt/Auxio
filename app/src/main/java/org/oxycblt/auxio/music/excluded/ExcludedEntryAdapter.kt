@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.textSafe
 
 /**
  * Adapter that shows the excluded directories and their "Clear" button.
@@ -56,8 +57,7 @@ class ExcludedEntryAdapter(private val onClear: (String) -> Unit) :
         }
 
         fun bind(path: String) {
-            binding.excludedPath.text = path
-            binding.excludedPath.requestLayout()
+            binding.excludedPath.textSafe = path
             binding.excludedClear.setOnClickListener { onClear(path) }
         }
     }

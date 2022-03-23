@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Insets
 import android.graphics.Rect
@@ -24,43 +25,13 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
-
-/** Converts this color to a single-color [ColorStateList]. */
-val @receiver:ColorRes Int.stateList
-    get() = ColorStateList.valueOf(this)
-
-/**
- * Apply the recommended spans for a [RecyclerView].
- *
- * @param shouldBeFullWidth Optional callback for determining whether an item should be full-width,
- * regardless of spans
- */
-fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
-    val spans = resources.getInteger(R.integer.recycler_spans)
-
-    if (spans > 1) {
-        val mgr = GridLayoutManager(context, spans)
-
-        if (shouldBeFullWidth != null) {
-            mgr.spanSizeLookup =
-                object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return if (shouldBeFullWidth(position)) spans else 1
-                    }
-                }
-        }
-
-        layoutManager = mgr
-    }
-}
-
-/** Returns whether a recyclerview can scroll. */
-fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 
 /**
  * Disables drop shadows on a view programmatically in a version-compatible manner. This only works
@@ -113,8 +84,51 @@ private fun isUnderImpl(
 
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
+
 val Drawable.isRtl: Boolean
     get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
+
+val ViewBinding.context: Context
+    get() = root.context
+
+var TextView.textSafe
+    get() = text
+    set(value) {
+        text = value
+        requestLayout()
+    }
+
+/**
+ * Apply the recommended spans for a [RecyclerView].
+ *
+ * @param shouldBeFullWidth Optional callback for determining whether an item should be full-width,
+ * regardless of spans
+ */
+fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
+    val spans = resources.getInteger(R.integer.recycler_spans)
+
+    if (spans > 1) {
+        val mgr = GridLayoutManager(context, spans)
+
+        if (shouldBeFullWidth != null) {
+            mgr.spanSizeLookup =
+                object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (shouldBeFullWidth(position)) spans else 1
+                    }
+                }
+        }
+
+        layoutManager = mgr
+    }
+}
+
+/** Returns whether a recyclerview can scroll. */
+fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
+
+/** Converts this color to a single-color [ColorStateList]. */
+val @receiver:ColorRes Int.stateList
+    get() = ColorStateList.valueOf(this)
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
