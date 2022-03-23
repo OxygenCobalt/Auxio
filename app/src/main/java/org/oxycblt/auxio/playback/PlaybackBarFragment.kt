@@ -25,7 +25,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.ui.BottomSheetLayout
@@ -99,7 +99,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         playbackModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
-                binding.playbackCover.applyAlbumCover(song)
+                binding.playbackCover.bindAlbumCover(song)
                 binding.playbackSong.textSafe = song.resolvedName
                 binding.playbackInfo.textSafe =
                     getString(R.string.fmt_two, song.resolvedArtistName, song.resolvedAlbumName)

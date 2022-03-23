@@ -51,9 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/spacing_medium"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        android:layout_gravity="center">
+        android:padding="@dimen/spacing_medium">
 
         <android.widget.TextView
             android:id="@+id/widget_song"

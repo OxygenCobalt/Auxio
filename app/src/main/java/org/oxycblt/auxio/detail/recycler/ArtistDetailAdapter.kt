@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.applyAlbumCover
-import org.oxycblt.auxio.coil.applyArtistImage
+import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
@@ -176,7 +176,7 @@ class ArtistDetailAdapter(
             val context = binding.root.context
 
             binding.detailCover.apply {
-                applyArtistImage(data)
+                bindArtistImage(data)
                 contentDescription =
                     context.getString(R.string.desc_artist_image, data.resolvedName)
             }
@@ -209,7 +209,7 @@ class ArtistDetailAdapter(
         private val binding: ItemParentBinding,
     ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
         override fun onBind(data: Album) {
-            binding.parentImage.applyAlbumCover(data)
+            binding.parentImage.bindAlbumCover(data)
             binding.parentName.textSafe = data.resolvedName
             binding.parentInfo.textSafe = binding.context.getString(R.string.fmt_number, data.year)
         }
@@ -223,7 +223,7 @@ class ArtistDetailAdapter(
         private val binding: ItemSongBinding,
     ) : BaseViewHolder<Song>(binding, doOnSongClick, doOnLongClick), Highlightable {
         override fun onBind(data: Song) {
-            binding.songAlbumCover.applyAlbumCover(data)
+            binding.songAlbumCover.bindAlbumCover(data)
             binding.songName.textSafe = data.resolvedName
             binding.songInfo.textSafe = data.resolvedAlbumName
         }

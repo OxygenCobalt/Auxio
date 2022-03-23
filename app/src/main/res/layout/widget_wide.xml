@@ -56,10 +56,10 @@
         android:layout_gravity="center"
         android:background="@drawable/ui_widget_panel"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/spacing_small"
-        android:paddingBottom="@dimen/spacing_small"
         android:paddingStart="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_small">
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small">
 
         <android.widget.ImageButton
             android:id="@+id/widget_loop"

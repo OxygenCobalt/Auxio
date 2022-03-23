@@ -23,8 +23,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.applyAlbumCover
-import org.oxycblt.auxio.coil.applyGenreImage
+import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.ActionHeader
@@ -128,7 +128,7 @@ class GenreDetailAdapter(
             val context = binding.root.context
 
             binding.detailCover.apply {
-                applyGenreImage(data)
+                bindGenreImage(data)
                 contentDescription = context.getString(R.string.desc_genre_image, data.resolvedName)
             }
 
@@ -150,7 +150,7 @@ class GenreDetailAdapter(
     ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick), Highlightable {
 
         override fun onBind(data: Song) {
-            binding.songAlbumCover.applyAlbumCover(data)
+            binding.songAlbumCover.bindAlbumCover(data)
             binding.songName.textSafe = data.resolvedName
             binding.songInfo.textSafe = data.resolvedArtistName
         }

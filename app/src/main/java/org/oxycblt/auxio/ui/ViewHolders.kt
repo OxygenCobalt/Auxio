@@ -23,9 +23,9 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.applyAlbumCover
-import org.oxycblt.auxio.coil.applyArtistImage
-import org.oxycblt.auxio.coil.applyGenreImage
+import org.oxycblt.auxio.coil.bindAlbumCover
+import org.oxycblt.auxio.coil.bindArtistImage
+import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
@@ -96,7 +96,7 @@ private constructor(
 ) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Song) {
-        binding.songAlbumCover.applyAlbumCover(data)
+        binding.songAlbumCover.bindAlbumCover(data)
         binding.songName.textSafe = data.resolvedName
         binding.songInfo.textSafe = data.resolvedArtistName
     }
@@ -123,13 +123,9 @@ private constructor(
 ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Album) {
-        binding.parentImage.applyAlbumCover(data)
+        binding.parentImage.bindAlbumCover(data)
         binding.parentName.textSafe = data.resolvedName
-        binding.parentInfo.textSafe =
-            binding.context.getString(
-                R.string.fmt_two,
-                data.resolvedArtistName,
-                binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
+        binding.parentInfo.textSafe = data.resolvedArtistName
     }
 
     companion object {
@@ -154,7 +150,7 @@ private constructor(
 ) : BaseViewHolder<Artist>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Artist) {
-        binding.parentImage.applyArtistImage(data)
+        binding.parentImage.bindArtistImage(data)
         binding.parentName.textSafe = data.resolvedName
         binding.parentInfo.textSafe =
             binding.context.getString(
@@ -185,7 +181,7 @@ private constructor(
 ) : BaseViewHolder<Genre>(binding, doOnClick, doOnLongClick) {
 
     override fun onBind(data: Genre) {
-        binding.parentImage.applyGenreImage(data)
+        binding.parentImage.bindGenreImage(data)
         binding.parentName.textSafe = data.resolvedName
         binding.parentInfo.textSafe =
             binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)

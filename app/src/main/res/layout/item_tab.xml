@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.ItemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="0dp">
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/tab_icon"
+        style="@style/Widget.Material3.CompoundButton.CheckBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        style="@style/Widget.Auxio.ItemLayout"
-        android:padding="0dp">
+        android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:clickable="false"
+        android:focusable="false"
+        android:paddingStart="@dimen/spacing_medium"
+        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+        app:buttonCompat="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tab_drag_handle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry,contentDescription"
+        tools:text="Artist" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/tab_icon"
-            style="@style/Widget.Material3.CompoundButton.CheckBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:clickable="false"
-            android:focusable="false"
-            android:paddingStart="@dimen/spacing_medium"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            app:buttonCompat="@null"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tab_drag_handle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="RtlSymmetry,contentDescription"
-            tools:text="Artist" />
+    <ImageView
+        android:id="@+id/tab_drag_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="@string/desc_tab_handle"
+        android:focusable="true"
+        android:minWidth="@dimen/size_btn_small"
+        android:minHeight="@dimen/size_btn_small"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium"
+        android:scaleType="center"
+        android:src="@drawable/ic_handle"
+        app:layout_constraintBottom_toBottomOf="@+id/tab_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tab_icon" />
 
-        <ImageView
-            android:id="@+id/tab_drag_handle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/desc_tab_handle"
-            android:focusable="true"
-            android:minWidth="@dimen/size_btn_small"
-            android:minHeight="@dimen/size_btn_small"
-            android:paddingStart="@dimen/spacing_medium"
-            android:paddingEnd="@dimen/spacing_medium"
-            android:scaleType="center"
-            android:src="@drawable/ic_handle"
-            app:layout_constraintBottom_toBottomOf="@+id/tab_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tab_icon" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

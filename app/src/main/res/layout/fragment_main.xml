@@ -11,52 +11,52 @@
         android:layout_height="match_parent">
 
         <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/explore_nav_host"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:navGraph="@navigation/nav_explore"
-                tools:layout="@layout/fragment_home" />
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/playback_bar_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="org.oxycblt.auxio.playback.PlaybackBarFragment" />
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/playback_panel_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:name="org.oxycblt.auxio.playback.PlaybackPanelFragment" />
-
-        </org.oxycblt.auxio.ui.BottomSheetLayout>
-
-        <FrameLayout
-            android:id="@+id/layout_too_small"
+            android:id="@+id/explore_nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/colorSurface"
-            android:visibility="gone">
+            app:navGraph="@navigation/nav_explore"
+            tools:layout="@layout/fragment_home" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.275"
-                android:contentDescription="@string/desc_auxio_icon"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_auxio" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/playback_bar_fragment"
+            android:name="org.oxycblt.auxio.playback.PlaybackBarFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="@dimen/spacing_medium"
-                android:text="@string/err_too_small"
-                android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/playback_panel_fragment"
+            android:name="org.oxycblt.auxio.playback.PlaybackPanelFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        </FrameLayout>
+    </org.oxycblt.auxio.ui.BottomSheetLayout>
+
+    <FrameLayout
+        android:id="@+id/layout_too_small"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.275"
+            android:contentDescription="@string/desc_auxio_icon"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_auxio" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/spacing_medium"
+            android:text="@string/err_too_small"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold" />
+
     </FrameLayout>
+</FrameLayout>

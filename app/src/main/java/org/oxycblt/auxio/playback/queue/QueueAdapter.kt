@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Header
@@ -127,7 +127,7 @@ class QueueAdapter(private val touchHelper: ItemTouchHelper) :
 
         @SuppressLint("ClickableViewAccessibility")
         override fun onBind(data: Song) {
-            binding.songAlbumCover.applyAlbumCover(data)
+            binding.songAlbumCover.bindAlbumCover(data)
             binding.songName.textSafe = data.resolvedName
             binding.songInfo.textSafe = data.resolvedArtistName
 

@@ -29,7 +29,7 @@ import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.applyAlbumCover
+import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicParent
@@ -175,7 +175,7 @@ class PlaybackPanelFragment :
         if (song == null) return
 
         val binding = requireBinding()
-        binding.playbackCover.applyAlbumCover(song)
+        binding.playbackCover.bindAlbumCover(song)
         binding.playbackSong.textSafe = song.resolvedName
         binding.playbackArtist.textSafe = song.resolvedArtistName
         binding.playbackAlbum.textSafe = song.resolvedAlbumName

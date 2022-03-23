@@ -18,15 +18,15 @@
         android:tint="?attr/colorPrimary" />
 
     <android.widget.TextView
-        android:layout_width="match_parent"
         style="@style/Widget.Auxio.TextView.Primary.AppWidget"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ellipsize="none"
-        android:singleLine="false"
-        android:textAlignment="center"
         android:gravity="center"
         android:padding="@dimen/spacing_medium"
-        android:text="@string/def_playback" />
+        android:singleLine="false"
+        android:text="@string/def_playback"
+        android:textAlignment="center" />
 
 </FrameLayout>

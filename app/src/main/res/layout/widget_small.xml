@@ -53,13 +53,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingTop="@dimen/spacing_small"
-        android:paddingBottom="@dimen/spacing_small"
-        android:paddingStart="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_small"
-        android:orientation="horizontal"
+        android:layout_gravity="center"
         android:background="@drawable/ui_widget_panel"
-        android:layout_gravity="center">
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small">
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"

@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <org.oxycblt.auxio.ui.EdgeAppBarLayout
-            android:id="@+id/home_appbar"
-            style="@style/Widget.Auxio.AppBarLayout"
-            app:liftOnScroll="true">
+    <org.oxycblt.auxio.ui.EdgeAppBarLayout
+        android:id="@+id/home_appbar"
+        style="@style/Widget.Auxio.AppBarLayout"
+        app:liftOnScroll="true">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/home_toolbar"
-                style="@style/Widget.Auxio.Toolbar"
-                app:menu="@menu/menu_home"
-                app:title="@string/info_app_name" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/home_toolbar"
+            style="@style/Widget.Auxio.Toolbar"
+            app:menu="@menu/menu_home"
+            app:title="@string/info_app_name" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/home_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:tabContentStart="@dimen/spacing_medium"
-                app:tabGravity="start"
-                app:tabMode="scrollable"
-                app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger" />
-
-        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/home_pager"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/home_tabs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:layout="@layout/fragment_home_list" />
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:tabContentStart="@dimen/spacing_medium"
+            app:tabGravity="start"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger" />
 
-        <org.oxycblt.auxio.home.EdgeFabContainer
-            android:id="@+id/home_fab_container"
+    </org.oxycblt.auxio.ui.EdgeAppBarLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/home_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:layout="@layout/fragment_home_list" />
+
+    <org.oxycblt.auxio.home.EdgeFabContainer
+        android:id="@+id/home_fab_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/home_pager"
+        app:layout_anchorGravity="bottom|end">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/home_fab"
+            style="@style/Widget.Auxio.FloatingActionButton.Adaptive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_anchor="@id/home_pager"
-            app:layout_anchorGravity="bottom|end">
+            android:layout_margin="@dimen/spacing_medium"
+            android:contentDescription="@string/desc_shuffle_all"
+            android:src="@drawable/ic_shuffle" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/home_fab"
-                style="@style/Widget.Auxio.FloatingActionButton.Adaptive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_medium"
-                android:contentDescription="@string/desc_shuffle_all"
-                android:src="@drawable/ic_shuffle" />
+    </org.oxycblt.auxio.home.EdgeFabContainer>
 
-        </org.oxycblt.auxio.home.EdgeFabContainer>
-
-    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+</org.oxycblt.auxio.ui.EdgeCoordinatorLayout>

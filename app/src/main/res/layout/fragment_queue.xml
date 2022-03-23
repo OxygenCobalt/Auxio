@@ -10,26 +10,26 @@
 
     <org.oxycblt.auxio.ui.EdgeAppBarLayout
         android:id="@+id/queue_appbar"
-            style="@style/Widget.Auxio.AppBarLayout"
-            app:liftOnScroll="true"
-            app:liftOnScrollTargetViewId="@id/queue_recycler">
+        style="@style/Widget.Auxio.AppBarLayout"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/queue_recycler">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/queue_toolbar"
-                style="@style/Widget.Auxio.Toolbar.Icon.Down"
-                android:elevation="0dp"
-                app:navigationIcon="@drawable/ic_down"
-                app:title="@string/lbl_queue" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/queue_toolbar"
+            style="@style/Widget.Auxio.Toolbar.Icon.Down"
+            android:elevation="0dp"
+            app:navigationIcon="@drawable/ic_down"
+            app:title="@string/lbl_queue" />
 
-        </org.oxycblt.auxio.ui.EdgeAppBarLayout>
+    </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
-        <org.oxycblt.auxio.ui.EdgeRecyclerView
-            android:id="@+id/queue_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="ifContentScrolls"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            tools:listitem="@layout/item_queue_song" />
+    <org.oxycblt.auxio.ui.EdgeRecyclerView
+        android:id="@+id/queue_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="ifContentScrolls"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:listitem="@layout/item_queue_song" />
 
-    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+</org.oxycblt.auxio.ui.EdgeCoordinatorLayout>

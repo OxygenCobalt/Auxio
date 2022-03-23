@@ -6,17 +6,17 @@
 
         <org.oxycblt.auxio.settings.pref.IntListPreference
             app:defaultValue="@integer/theme_auto"
-            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:entries="@array/entries_theme"
             app:entryValues="@array/values_theme"
             app:icon="@drawable/ic_day"
             app:iconSpaceReserved="false"
+            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:key="KEY_THEME2"
             app:title="@string/set_theme" />
 
         <Preference
-            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:icon="@drawable/ic_accent"
+            app:isPreferenceVisible="@bool/enable_theme_settings"
             app:key="auxio_accent"
             app:title="@string/set_accent" />
 
@@ -81,8 +81,8 @@
         <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:key="KEY_AUDIO_FOCUS"
             app:isPreferenceVisible="@bool/enable_audio_focus_setting"
+            app:key="KEY_AUDIO_FOCUS"
             app:summary="@string/set_focus_desc"
             app:title="@string/set_focus" />
 
@@ -94,12 +94,12 @@
             app:title="@string/set_headset_autoplay" />
 
         <org.oxycblt.auxio.settings.pref.IntListPreference
-            app:defaultValue="@integer/replay_gain_off"
-            app:key="auxio_replay_gain"
             app:allowDividerBelow="false"
-            app:iconSpaceReserved="false"
+            app:defaultValue="@integer/replay_gain_off"
             app:entries="@array/entries_replay_gain"
             app:entryValues="@array/values_replay_gain"
+            app:iconSpaceReserved="false"
+            app:key="auxio_replay_gain"
             app:title="@string/set_replay_gain" />
 
     </PreferenceCategory>

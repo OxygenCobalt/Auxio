@@ -38,19 +38,19 @@ import org.oxycblt.auxio.music.Song
 // --- BINDING ADAPTERS ---
 
 /** Bind the album cover for a [song]. */
-fun ImageView.applyAlbumCover(song: Song?) =
+fun ImageView.bindAlbumCover(song: Song?) =
     load(song, R.drawable.ic_album, R.string.desc_album_cover)
 
 /** Bind the album cover for an [album]. */
-fun ImageView.applyAlbumCover(album: Album?) =
+fun ImageView.bindAlbumCover(album: Album?) =
     load(album, R.drawable.ic_album, R.string.desc_album_cover)
 
 /** Bind the image for an [artist] */
-fun ImageView.applyArtistImage(artist: Artist?) =
+fun ImageView.bindArtistImage(artist: Artist?) =
     load(artist, R.drawable.ic_artist, R.string.desc_artist_image)
 
 /** Bind the image for a [genre] */
-fun ImageView.applyGenreImage(genre: Genre?) =
+fun ImageView.bindGenreImage(genre: Genre?) =
     load(genre, R.drawable.ic_genre, R.string.desc_genre_image)
 
 fun <T : Music> ImageView.load(music: T?, @DrawableRes error: Int, @StringRes desc: Int) {

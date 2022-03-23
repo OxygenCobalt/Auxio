@@ -13,54 +13,54 @@
         android:contentDescription="@string/def_track"
         android:src="@drawable/ic_song"
         android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/song_track"
+        app:layout_constraintEnd_toEndOf="@+id/song_track"
+        app:layout_constraintStart_toStartOf="@+id/song_track"
+        app:layout_constraintTop_toTopOf="@+id/song_track"
         app:tint="@color/sel_accented"
-            app:layout_constraintBottom_toBottomOf="@+id/song_track"
-            app:layout_constraintEnd_toEndOf="@+id/song_track"
-            app:layout_constraintStart_toStartOf="@+id/song_track"
-            app:layout_constraintTop_toTopOf="@+id/song_track"
-            tools:text="1" />
+        tools:text="1" />
 
-        <TextView
-            android:id="@+id/song_track"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minWidth="@dimen/size_track_number"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-            android:textColor="@color/sel_accented_secondary"
-            android:textSize="@dimen/text_size_ext_title_mid_large"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/song_name"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="16" />
+    <TextView
+        android:id="@+id/song_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minWidth="@dimen/size_track_number"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+        android:textColor="@color/sel_accented_secondary"
+        android:textSize="@dimen/text_size_ext_title_mid_large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/song_name"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="16" />
 
-        <TextView
-            android:id="@+id/song_name"
-            style="@style/Widget.Auxio.TextView.Item.Primary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/sel_accented_primary"
-            app:layout_constraintBottom_toTopOf="@+id/song_duration"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/song_track"
-            app:layout_constraintTop_toTopOf="@+id/song_track"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="Song Name" />
+    <TextView
+        android:id="@+id/song_name"
+        style="@style/Widget.Auxio.TextView.Item.Primary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/sel_accented_primary"
+        app:layout_constraintBottom_toTopOf="@+id/song_duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/song_track"
+        app:layout_constraintTop_toTopOf="@+id/song_track"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Song Name" />
 
-        <TextView
-            android:id="@+id/song_duration"
-            style="@style/Widget.Auxio.TextView.Item.Secondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorSecondary"
-            app:layout_constraintBottom_toBottomOf="@+id/song_track"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/song_track"
-            app:layout_constraintTop_toBottomOf="@+id/song_name"
-            tools:text="16:16" />
+    <TextView
+        android:id="@+id/song_duration"
+        style="@style/Widget.Auxio.TextView.Item.Secondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/song_track"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/song_track"
+        app:layout_constraintTop_toBottomOf="@+id/song_name"
+        tools:text="16:16" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
