@@ -72,6 +72,9 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
  * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
+ *
+ * TODO: Move all external exposal from passing around PlaybackStateManager to passing around the
+ * MediaMetadata instance. Generally makes it easier to encapsulate this class.
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -199,6 +202,8 @@ class PlaybackService :
 
         // The service coroutines last job is to save the state to the DB, before terminating itself
         // FIXME: This is a terrible idea, move this to when the user closes the notification
+        // FIXME: Why not also encourage the user to disable battery optimizations while were
+        //  at it? Would help prevent state saving issues to an extent.
         serviceScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
             serviceJob.cancel()

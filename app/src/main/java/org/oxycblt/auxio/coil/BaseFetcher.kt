@@ -58,7 +58,7 @@ abstract class BaseFetcher : Fetcher {
 
     /**
      * Fetch the artwork of an [album]. This call respects user configuration and has proper
-     * redundancy in the case that an API fails to load.
+     * redundancy in the case that metadata fails to load.
      */
     protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
         if (!settingsManager.showCovers) {
@@ -75,14 +75,6 @@ abstract class BaseFetcher : Fetcher {
             logW("Unable to extract album art due to an error")
             null
         }
-    }
-
-    @Suppress("BlockingMethodInNonBlockingContext")
-    private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
-        val uri = data.albumCoverUri
-
-        // Eliminate any chance that this blocking call might mess up the cancellation process
-        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
     }
 
     private suspend fun fetchQualityCovers(context: Context, album: Album): InputStream? {
@@ -205,6 +197,14 @@ abstract class BaseFetcher : Fetcher {
         }
 
         return stream
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun fetchMediaStoreCovers(context: Context, data: Album): InputStream? {
+        val uri = data.albumCoverUri
+
+        // Eliminate any chance that this blocking call might mess up the loading process
+        return withContext(Dispatchers.IO) { context.contentResolver.openInputStream(uri) }
     }
 
     /**

@@ -43,6 +43,7 @@
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
+        <item name="android:letterSpacing">0</item>
         <item name="android:textAppearance">@style/TextAppearance.Material3.TitleMedium</item>
     </style>
 

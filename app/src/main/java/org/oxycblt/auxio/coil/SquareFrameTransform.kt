@@ -39,14 +39,14 @@ class SquareFrameTransform : Transformation {
         val x = (input.width - dstSize) / 2
         val y = (input.height - dstSize) / 2
 
-        val wantedWidth = size.width.pxOrElse { dstSize }
-        val wantedHeight = size.height.pxOrElse { dstSize }
+        val desiredWidth = size.width.pxOrElse { dstSize }
+        val desiredHeight = size.height.pxOrElse { dstSize }
 
         val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
 
-        if (dstSize != wantedWidth || dstSize != wantedHeight) {
+        if (dstSize != desiredWidth || dstSize != desiredHeight) {
             // Desired size differs from the cropped size, resize the bitmap.
-            return Bitmap.createScaledBitmap(dst, wantedWidth, wantedHeight, true)
+            return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
         }
 
         return dst

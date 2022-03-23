@@ -4,21 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".playback.PlaybackPanelFragment">
 
-    <data>
-
-        <variable
-            name="song"
-            type="org.oxycblt.auxio.music.Song" />
-
-        <variable
-            name="playbackModel"
-            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
-
-        <variable
-            name="detailModel"
-            type="org.oxycblt.auxio.detail.DetailViewModel" />
-    </data>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playback_layout"
@@ -38,8 +23,6 @@
             android:id="@+id/playback_cover"
             style="@style/Widget.Auxio.Image.Full"
             android:layout_margin="@dimen/spacing_medium"
-            android:contentDescription="@{@string/desc_album_cover(song.resolvedName)}"
-            app:albumArt="@{song}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
@@ -65,8 +48,6 @@
                 style="@style/Widget.Auxio.TextView.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:onClick="@{() -> detailModel.navToItem(playbackModel.song)}"
-                android:text="@{song.resolvedName}"
                 tools:text="Song Name" />
 
         </FrameLayout>
@@ -78,8 +59,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album.artist)}"
-            android:text="@{song.resolvedArtistName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_album"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -94,8 +73,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_medium"
-            android:onClick="@{() -> detailModel.navToItem(playbackModel.song.album)}"
-            android:text="@{song.resolvedAlbumName}"
             app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -121,7 +98,7 @@
             app:thumbRadius="@dimen/slider_thumb_radius" />
 
         <TextView
-            android:id="@+id/playback_seconds"
+            android:id="@+id/playback_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"
@@ -151,7 +128,6 @@
             android:layout_marginStart="@dimen/spacing_medium"
             android:contentDescription="@string/desc_change_loop"
             app:hasIndicator="true"
-            android:onClick="@{() -> playbackModel.incrementLoopStatus()}"
             android:src="@drawable/ic_loop"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -163,7 +139,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_skip_prev"
-            android:onClick="@{() -> playbackModel.skipPrev()}"
             android:src="@drawable/ic_skip_prev"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
@@ -176,7 +151,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_play_pause"
-            android:onClick="@{() -> playbackModel.invertPlayingStatus()}"
             android:src="@drawable/sel_playing_state"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
@@ -190,7 +164,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_skip_next"
-            android:onClick="@{() -> playbackModel.skipNext()}"
             android:src="@drawable/ic_skip_next"
             app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
             app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
@@ -204,7 +177,6 @@
             android:layout_marginEnd="@dimen/spacing_medium"
             android:contentDescription="@string/desc_shuffle"
             app:hasIndicator="true"
-            android:onClick="@{() -> playbackModel.invertShuffleStatus()}"
             android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
             app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"

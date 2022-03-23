@@ -4,22 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".playback.PlaybackPanelFragment">
 
-    <data>
-
-        <variable
-            name="song"
-            type="org.oxycblt.auxio.music.Song" />
-
-        <variable
-            name="playbackModel"
-            type="org.oxycblt.auxio.playback.PlaybackViewModel" />
-
-        <variable
-            name="detailModel"
-            type="org.oxycblt.auxio.detail.DetailViewModel" />
-    </data>
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/playback_layout"
         android:layout_width="match_parent"
@@ -112,7 +96,7 @@
             app:thumbRadius="@dimen/slider_thumb_radius" />
 
         <TextView
-            android:id="@+id/playback_seconds"
+            android:id="@+id/playback_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"

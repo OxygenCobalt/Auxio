@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.home.list
 
 import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,36 +28,43 @@ import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.applySpans
 
 /**
  * A Base [Fragment] implementing the base features shared across all list fragments in the home UI.
  * @author OxygenCobalt
  */
-abstract class HomeListFragment : Fragment() {
-    protected val homeModel: HomeViewModel by activityViewModels()
-    protected val playbackModel: PlaybackViewModel by activityViewModels()
-
+abstract class HomeListFragment : ViewBindingFragment<FragmentHomeListBinding>() {
     /** The popup provider to use for the fast scroller view. */
     abstract val listPopupProvider: (Int) -> String
 
+    protected val homeModel: HomeViewModel by activityViewModels()
+    protected val playbackModel: PlaybackViewModel by activityViewModels()
+
     protected fun <T : Item, VH : RecyclerView.ViewHolder> setupRecycler(
         @IdRes uniqueId: Int,
-        binding: FragmentHomeListBinding,
         homeAdapter: HomeAdapter<T, VH>,
         homeData: LiveData<List<T>>,
     ) {
-        binding.homeRecycler.apply {
+        requireBinding().homeRecycler.apply {
             id = uniqueId
             adapter = homeAdapter
             setHasFixedSize(true)
             applySpans()
 
             popupProvider = listPopupProvider
-            onDragListener = { dragging -> homeModel.updateFastScrolling(dragging) }
+            onDragListener = homeModel::updateFastScrolling
         }
 
-        homeData.observe(viewLifecycleOwner) { data -> homeAdapter.updateData(data) }
+        homeData.observe(viewLifecycleOwner, homeAdapter::updateData)
+    }
+
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentHomeListBinding.inflate(inflater)
+
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        homeModel.updateFastScrolling(false)
     }
 
     abstract class HomeAdapter<T : Item, VH : RecyclerView.ViewHolder> :

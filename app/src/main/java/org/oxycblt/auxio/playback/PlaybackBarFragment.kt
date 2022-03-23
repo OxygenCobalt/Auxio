@@ -20,11 +20,8 @@ package org.oxycblt.auxio.playback
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
@@ -33,22 +30,21 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.bindSongInfo
 import org.oxycblt.auxio.ui.BottomSheetLayout
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
-class PlaybackBarFragment : Fragment() {
+class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentPlaybackBarBinding.inflate(inflater)
+
+    override fun onBindingCreated(
+        binding: FragmentPlaybackBarBinding,
         savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentPlaybackBarBinding.inflate(inflater)
-
-        // -- UI SETUP ---
-
+    ) {
         binding.root.apply {
             setOnClickListener {
                 // This is a dumb and fragile hack but this fragment isn't part of the navigation
@@ -115,11 +111,9 @@ class PlaybackBarFragment : Fragment() {
             binding.playbackPlayPause.isActivated = isPlaying
         }
 
-        binding.playbackProgressBar.progress = playbackModel.seconds.value!!.toInt()
-        playbackModel.seconds.observe(viewLifecycleOwner) { position ->
+        binding.playbackProgressBar.progress = playbackModel.positionSeconds.value!!.toInt()
+        playbackModel.positionSeconds.observe(viewLifecycleOwner) { position ->
             binding.playbackProgressBar.progress = position.toInt()
         }
-
-        return binding.root
     }
 }

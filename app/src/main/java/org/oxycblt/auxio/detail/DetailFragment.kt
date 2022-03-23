@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.detail
 
+import android.view.LayoutInflater
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 
@@ -35,9 +37,12 @@ import org.oxycblt.auxio.util.logD
  * A Base [Fragment] implementing the base features shared across all detail fragments.
  * @author OxygenCobalt
  */
-abstract class DetailFragment : Fragment() {
+abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
     protected val detailModel: DetailViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
+
+    override fun onCreateBinding(inflater: LayoutInflater): FragmentDetailBinding =
+        FragmentDetailBinding.inflate(inflater)
 
     override fun onResume() {
         super.onResume()
@@ -58,11 +63,10 @@ abstract class DetailFragment : Fragment() {
      */
     protected fun setupToolbar(
         data: MusicParent,
-        binding: FragmentDetailBinding,
         @MenuRes menuId: Int = -1,
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
-        binding.detailToolbar.apply {
+        requireBinding().detailToolbar.apply {
             title = data.resolvedName
 
             if (menuId != -1) {
@@ -79,11 +83,10 @@ abstract class DetailFragment : Fragment() {
 
     /** Shortcut method for recyclerview setup */
     protected fun setupRecycler(
-        binding: FragmentDetailBinding,
         detailAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         gridLookup: (Int) -> Boolean
     ) {
-        binding.detailRecycler.apply {
+        requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             setHasFixedSize(true)
             applySpans(gridLookup)

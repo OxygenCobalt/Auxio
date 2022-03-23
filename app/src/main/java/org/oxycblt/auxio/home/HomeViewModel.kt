@@ -63,8 +63,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     private val visibleTabs: List<DisplayMode>
         get() = settingsManager.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
-    private val mCurTab = MutableLiveData(tabs[0])
-    val curTab: LiveData<DisplayMode> = mCurTab
+    private val mCurrentTab = MutableLiveData(tabs[0])
+    val currentTab: LiveData<DisplayMode> = mCurrentTab
 
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
@@ -91,7 +91,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     /** Update the current tab based off of the new ViewPager position. */
     fun updateCurrentTab(pos: Int) {
         logD("Updating current tab to ${tabs[pos]}")
-        mCurTab.value = tabs[pos]
+        mCurrentTab.value = tabs[pos]
     }
 
     fun finishRecreateTabs() {
@@ -109,8 +109,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
 
     /** Update the currently displayed item's [Sort]. */
     fun updateCurrentSort(sort: Sort) {
-        logD("Updating ${mCurTab.value} sort to $sort")
-        when (mCurTab.value) {
+        logD("Updating ${mCurrentTab.value} sort to $sort")
+        when (mCurrentTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort
                 mSongs.value = sort.songs(mSongs.value!!)

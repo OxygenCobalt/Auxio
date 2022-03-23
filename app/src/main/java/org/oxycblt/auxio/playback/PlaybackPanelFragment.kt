@@ -32,6 +32,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.DetailViewModel
+import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.ui.BottomSheetLayout
@@ -55,23 +57,21 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
-    override fun onCreateBinding(inflater: LayoutInflater): FragmentPlaybackPanelBinding {
-        return FragmentPlaybackPanelBinding.inflate(inflater)
-    }
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        FragmentPlaybackPanelBinding.inflate(inflater)
 
     override fun onBindingCreated(
         binding: FragmentPlaybackPanelBinding,
         savedInstanceState: Bundle?
     ) {
-        val queueItem: MenuItem
-
         // --- UI SETUP ---
-
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
             binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
+
+        val queueItem: MenuItem
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navigateUp() }
@@ -114,7 +114,6 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackLoop.setOnClickListener { playbackModel.incrementLoopStatus() }
-
         binding.playbackSkipPrev.setOnClickListener { playbackModel.skipPrev() }
 
         binding.playbackPlayPause.apply {
@@ -124,69 +123,21 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackSkipNext.setOnClickListener { playbackModel.skipNext() }
-
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffleStatus() }
 
         // --- VIEWMODEL SETUP --
 
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (song != null) {
-                logD("Updating song display to ${song.rawName}")
-                binding.playbackCover.bindAlbumCover(song)
-                binding.playbackSong.text = song.resolvedName
-                binding.playbackArtist.text = song.resolvedArtistName
-                binding.playbackAlbum.text = song.resolvedAlbumName
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+        playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
+        playbackModel.positionSeconds.observe(viewLifecycleOwner, ::updatePosition)
+        playbackModel.loopMode.observe(viewLifecycleOwner, ::updateLoop)
+        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updatePlayPause)
+        playbackModel.isShuffling.observe(viewLifecycleOwner, ::updateShuffle)
 
-                // Normally if a song had a duration
-                val seconds = song.seconds
-                binding.playbackDuration.text = seconds.toDuration(false)
-                binding.playbackSeekBar.apply {
-                    valueTo = max(seconds, 1L).toFloat()
-                    isEnabled = seconds > 0L
-                }
-            }
-        }
-
-        playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            binding.playbackToolbar.subtitle =
-                parent?.resolvedName ?: getString(R.string.lbl_all_songs)
-        }
-
-        playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
-            binding.playbackShuffle.isActivated = isShuffling
-        }
-
-        playbackModel.loopMode.observe(viewLifecycleOwner) { loopMode ->
-            val resId =
-                when (loopMode) {
-                    LoopMode.NONE, null -> R.drawable.ic_loop
-                    LoopMode.ALL -> R.drawable.ic_loop_on
-                    LoopMode.TRACK -> R.drawable.ic_loop_one
-                }
-
-            binding.playbackLoop.apply {
-                isActivated = loopMode != LoopMode.NONE
-                setImageResource(resId)
-            }
-        }
-
-        playbackModel.seconds.observe(viewLifecycleOwner) { pos ->
-            // Don't update the progress while we are seeking, that will make the SeekBar jump
-            // around.
-            if (!binding.playbackSeconds.isActivated) {
-                binding.playbackSeekBar.value = pos.toFloat()
-                binding.playbackSeconds.text = pos.toDuration(true)
-            }
-        }
-
-        playbackModel.nextUp.observe(viewLifecycleOwner) {
+        playbackModel.nextUp.observe(viewLifecycleOwner) { nextUp ->
             // The queue icon uses a selector that will automatically tint the icon as active or
             // inactive. We just need to set the flag.
-            queueItem.isEnabled = playbackModel.nextUp.value!!.isNotEmpty()
-        }
-
-        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.playbackPlayPause.isActivated = isPlaying
+            queueItem.isEnabled = nextUp.isNotEmpty()
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
@@ -205,18 +156,66 @@ class PlaybackPanelFragment :
     }
 
     override fun onStartTrackingTouch(slider: Slider) {
-        requireBinding().playbackSeconds.isActivated = true
+        requireBinding().playbackPosition.isActivated = true
     }
 
     override fun onStopTrackingTouch(slider: Slider) {
-        requireBinding().playbackSeconds.isActivated = false
+        requireBinding().playbackPosition.isActivated = false
         playbackModel.setPosition(slider.value.toLong())
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         if (fromUser) {
-            requireBinding().playbackSeconds.text = value.toLong().toDuration(true)
+            requireBinding().playbackPosition.text = value.toLong().toDuration(true)
         }
+    }
+
+    private fun updateSong(song: Song?) {
+        if (song == null) return
+
+        val binding = requireBinding()
+        binding.playbackCover.bindAlbumCover(song)
+        binding.playbackSong.text = song.resolvedName
+        binding.playbackArtist.text = song.resolvedArtistName
+        binding.playbackAlbum.text = song.resolvedAlbumName
+
+        // Normally if a song had a duration
+        val seconds = song.seconds
+        binding.playbackDuration.text = seconds.toDuration(false)
+        binding.playbackSeekBar.apply {
+            valueTo = max(seconds, 1L).toFloat()
+            isEnabled = seconds > 0L
+        }
+    }
+
+    private fun updateParent(parent: MusicParent?) {
+        requireBinding().playbackToolbar.subtitle =
+            parent?.resolvedName ?: getString(R.string.lbl_all_songs)
+    }
+
+    private fun updatePosition(position: Long) {
+        // Don't update the progress while we are seeking, that will make the SeekBar jump
+        // around.
+        val binding = requireBinding()
+        if (!binding.playbackPosition.isActivated) {
+            binding.playbackSeekBar.value = position.toFloat()
+            binding.playbackPosition.text = position.toDuration(true)
+        }
+    }
+
+    private fun updateLoop(loopMode: LoopMode) {
+        requireBinding().playbackLoop.apply {
+            isActivated = loopMode != LoopMode.NONE
+            setImageResource(loopMode.icon)
+        }
+    }
+
+    private fun updatePlayPause(isPlaying: Boolean) {
+        requireBinding().playbackPlayPause.isActivated = isPlaying
+    }
+
+    private fun updateShuffle(isShuffling: Boolean) {
+        requireBinding().playbackShuffle.isActivated = isShuffling
     }
 
     private fun navigateUp() {

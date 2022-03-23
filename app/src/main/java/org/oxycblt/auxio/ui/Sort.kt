@@ -98,7 +98,7 @@ sealed class Sort(open val isAscending: Boolean) {
         }
 
         override fun ascending(newIsAscending: Boolean): Sort {
-            return ByName(isAscending)
+            return ByName(newIsAscending)
         }
     }
 
@@ -239,21 +239,17 @@ sealed class Sort(open val isAscending: Boolean) {
     }
 
     class NameComparator<T : Music> : Comparator<T> {
-        override fun compare(a: T?, b: T?): Int {
-            if (a == null && b != null) return -1 // -1 -> a < b
-            if (a == null && b == null) return 0 // 0 -> 0 = b
-            if (a != null && b == null) return 1 // 1 -> a > b
-
-            return a!!.resolvedName
+        override fun compare(a: T, b: T): Int {
+            return a.resolvedName
                 .sliceArticle()
-                .compareTo(b!!.resolvedName.sliceArticle(), ignoreCase = true)
+                .compareTo(b.resolvedName.sliceArticle(), ignoreCase = true)
         }
     }
 
     class NullableComparator<T : Comparable<T>> : Comparator<T?> {
         override fun compare(a: T?, b: T?): Int {
             if (a == null && b != null) return -1 // -1 -> a < b
-            if (a == null && b == null) return 0 // 0 -> 0 = b
+            if (a == null && b == null) return 0 // 0 -> a = b
             if (a != null && b == null) return 1 // 1 -> a > b
             return a!!.compareTo(b!!)
         }

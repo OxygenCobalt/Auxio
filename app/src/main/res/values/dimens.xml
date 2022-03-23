@@ -39,7 +39,7 @@
     <dimen name="fast_scroll_thumb_touch_target_size">16dp</dimen>
 
     <dimen name="slider_thumb_radius">6dp</dimen>
-    <dimen name="slider_halo_radius">12dp</dimen>
+    <dimen name="slider_halo_radius">16dp</dimen>
 
     <dimen name="recycler_fab_space_normal">88dp</dimen>
     <dimen name="recycler_fab_space_large">128dp</dimen>

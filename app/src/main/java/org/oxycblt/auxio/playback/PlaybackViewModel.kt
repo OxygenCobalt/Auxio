@@ -58,7 +58,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val mIsPlaying = MutableLiveData(false)
     private val mIsShuffling = MutableLiveData(false)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
-    private val mSeconds = MutableLiveData(0L)
+    private val mPositionSeconds = MutableLiveData(0L)
 
     // Queue
     private val mNextUp = MutableLiveData(listOf<Song>())
@@ -82,8 +82,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     val loopMode: LiveData<LoopMode>
         get() = mLoopMode
     /** The current playback position, in seconds */
-    val seconds: LiveData<Long>
-        get() = mSeconds
+    val positionSeconds: LiveData<Long>
+        get() = mPositionSeconds
 
     /** The queue, without the previous items. */
     val nextUp: LiveData<List<Song>>
@@ -336,7 +336,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onPositionUpdate(position: Long) {
-        mSeconds.value = position / 1000
+        mPositionSeconds.value = position / 1000
     }
 
     override fun onQueueUpdate(queue: List<Song>, index: Int) {

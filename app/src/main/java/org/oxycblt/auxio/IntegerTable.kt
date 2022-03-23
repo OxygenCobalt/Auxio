@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio
 
+/** A table containing all unique integer codes that Auxio uses. */
 object IntegerTable {
     /** SongViewHolder */
     const val ITEM_TYPE_SONG = 0xA000
@@ -49,7 +50,7 @@ object IntegerTable {
     /** QueueSongViewHolder */
     const val ITEM_TYPE_QUEUE_SONG = 0xA00D
 
-    /** "Music playback" Notification channel */
+    /** "Music playback" Notification code */
     const val NOTIFICATION_CODE = 0xA0A0
     /** Intent request code */
     const val REQUEST_CODE = 0xA0C0

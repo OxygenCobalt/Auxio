@@ -380,6 +380,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // We kind of do a reverse-measure to figure out how we should inset this view.
         // Find how much space is lost by the panel and then combine that with the
         // bottom inset to find how much space we should apply.
+        // There is a slight shortcoming to this. If the playback bar has a height of
+        // zero (usually due to delays with fragment inflation), then it is assumed to
+        // not apply any window insets at all, which results in scroll desynchronization on
+        // certain views. This is considered tolerable as the other options are to convert
+        // the playback fragments to views, which is not nice.
         val bars = insets.systemBarInsetsCompat
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)

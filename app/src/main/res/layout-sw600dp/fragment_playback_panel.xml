@@ -84,7 +84,7 @@
             app:thumbRadius="@dimen/slider_thumb_radius" />
 
         <TextView
-            android:id="@+id/playback_seconds"
+            android:id="@+id/playback_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_medium"

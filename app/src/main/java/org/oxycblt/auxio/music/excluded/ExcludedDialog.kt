@@ -22,8 +22,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -33,7 +31,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -42,26 +40,28 @@ import org.oxycblt.auxio.util.showToast
  * Dialog that manages the currently excluded directories.
  * @author OxygenCobalt
  */
-class ExcludedDialog : LifecycleDialog() {
+class ExcludedDialog : ViewBindingDialogFragment<DialogExcludedBinding>() {
     private val excludedModel: ExcludedViewModel by viewModels {
         ExcludedViewModel.Factory(requireContext())
     }
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = DialogExcludedBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = DialogExcludedBinding.inflate(inflater)
 
+    override fun onConfigDialog(builder: AlertDialog.Builder) {
+        builder.setTitle(R.string.set_excluded)
+
+        // Don't set the click listener here, we do some custom black magic in onCreateView instead.
+        builder.setNeutralButton(R.string.lbl_add, null)
+        builder.setPositiveButton(R.string.lbl_save, null)
+        builder.setNegativeButton(android.R.string.cancel, null)
+    }
+
+    override fun onBindingCreated(binding: DialogExcludedBinding, savedInstanceState: Bundle?) {
         val adapter = ExcludedEntryAdapter { path -> excludedModel.removePath(path) }
-
         val launcher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
-
-        // --- UI SETUP ---
 
         binding.excludedRecycler.adapter = adapter
 
@@ -90,23 +90,14 @@ class ExcludedDialog : LifecycleDialog() {
 
         // --- VIEWMODEL SETUP ---
 
-        excludedModel.paths.observe(viewLifecycleOwner) { paths ->
-            adapter.submitList(paths)
-            binding.excludedEmpty.isVisible = paths.isEmpty()
-        }
+        excludedModel.paths.observe(viewLifecycleOwner) { paths -> updatePaths(paths, adapter) }
 
         logD("Dialog created")
-
-        return binding.root
     }
 
-    override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.set_excluded)
-
-        // Don't set the click listener here, we do some custom black magic in onCreateView instead.
-        builder.setNeutralButton(R.string.lbl_add, null)
-        builder.setPositiveButton(R.string.lbl_save, null)
-        builder.setNegativeButton(android.R.string.cancel, null)
+    private fun updatePaths(paths: MutableList<String>, adapter: ExcludedEntryAdapter) {
+        adapter.submitList(paths)
+        requireBinding().excludedEmpty.isVisible = paths.isEmpty()
     }
 
     private fun addDocTreePath(uri: Uri?) {
@@ -147,15 +138,14 @@ class ExcludedDialog : LifecycleDialog() {
         return null
     }
 
+    private fun getRootPath(): String {
+        return Environment.getExternalStorageDirectory().absolutePath
+    }
+
     private fun saveAndRestart() {
         excludedModel.save {
             playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
         }
-    }
-
-    /** Get *just* the root path, nothing else is really needed. */
-    private fun getRootPath(): String {
-        return Environment.getExternalStorageDirectory().absolutePath
     }
 
     companion object {

@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.playback.state
 
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 
 /**
  * Enum that determines the playback repeat mode.
@@ -36,6 +37,14 @@ enum class LoopMode {
             TRACK -> NONE
         }
     }
+
+    val icon: Int
+        get() =
+            when (this) {
+                NONE -> R.drawable.ic_loop
+                ALL -> R.drawable.ic_loop_on
+                TRACK -> R.drawable.ic_loop_one
+            }
 
     /**
      * Convert the LoopMode to an int constant that is saved in PlaybackStateDatabase

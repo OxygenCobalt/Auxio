@@ -28,6 +28,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Item
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
@@ -43,39 +44,37 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
-    // --- CURRENT VALUES ---
-
-    private val mCurGenre = MutableLiveData<Genre?>()
-    val curGenre: LiveData<Genre?>
-        get() = mCurGenre
-
-    private val mGenreData = MutableLiveData(listOf<Item>())
-    val genreData: LiveData<List<Item>> = mGenreData
-
-    private val mCurArtist = MutableLiveData<Artist?>()
-    val curArtist: LiveData<Artist?>
-        get() = mCurArtist
-
-    private val mArtistData = MutableLiveData(listOf<Item>())
-    val artistData: LiveData<List<Item>> = mArtistData
-
-    private val mCurAlbum = MutableLiveData<Album?>()
+    private val mCurrentAlbum = MutableLiveData<Album?>()
     val curAlbum: LiveData<Album?>
-        get() = mCurAlbum
+        get() = mCurrentAlbum
 
     private val mAlbumData = MutableLiveData(listOf<Item>())
     val albumData: LiveData<List<Item>>
         get() = mAlbumData
+
+    private val mCurrentArtist = MutableLiveData<Artist?>()
+    val currentArtist: LiveData<Artist?>
+        get() = mCurrentArtist
+
+    private val mArtistData = MutableLiveData(listOf<Item>())
+    val artistData: LiveData<List<Item>> = mArtistData
+
+    private val mCurrentGenre = MutableLiveData<Genre?>()
+    val currentGenre: LiveData<Genre?>
+        get() = mCurrentGenre
+
+    private val mGenreData = MutableLiveData(listOf<Item>())
+    val genreData: LiveData<List<Item>> = mGenreData
 
     data class MenuConfig(val anchor: View, val sortMode: Sort)
 
     private val mShowMenu = MutableLiveData<MenuConfig?>(null)
     val showMenu: LiveData<MenuConfig?> = mShowMenu
 
-    private val mNavToItem = MutableLiveData<Item?>()
+    private val mNavToItem = MutableLiveData<Music?>()
 
     /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
-    val navToItem: LiveData<Item?>
+    val navToItem: LiveData<Music?>
         get() = mNavToItem
 
     var isNavigating = false
@@ -84,25 +83,25 @@ class DetailViewModel : ViewModel() {
     private var currentMenuContext: DisplayMode? = null
     private val settingsManager = SettingsManager.getInstance()
 
-    fun setGenre(id: Long) {
-        if (mCurGenre.value?.id == id) return
+    fun setAlbumId(id: Long) {
+        if (mCurrentAlbum.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurGenre.value = musicStore.genres.find { it.id == id }
-        refreshGenreData()
+        mCurrentAlbum.value = musicStore.albums.find { it.id == id }
+        refreshAlbumData()
     }
 
-    fun setArtist(id: Long) {
-        if (mCurArtist.value?.id == id) return
+    fun setArtistId(id: Long) {
+        if (mCurrentArtist.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurArtist.value = musicStore.artists.find { it.id == id }
+        mCurrentArtist.value = musicStore.artists.find { it.id == id }
         refreshArtistData()
     }
 
-    fun setAlbum(id: Long) {
-        if (mCurAlbum.value?.id == id) return
+    fun setGenreId(id: Long) {
+        if (mCurrentGenre.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurAlbum.value = musicStore.albums.find { it.id == id }
-        refreshAlbumData()
+        mCurrentGenre.value = musicStore.genres.find { it.id == id }
+        refreshGenreData()
     }
 
     /** Mark that the menu process is done with the new [Sort]. Pass null if there was no change. */
@@ -132,7 +131,7 @@ class DetailViewModel : ViewModel() {
     }
 
     /** Navigate to an item, whether a song/album/artist */
-    fun navToItem(item: Item) {
+    fun navToItem(item: Music) {
         mNavToItem.value = item
     }
 
@@ -148,7 +147,7 @@ class DetailViewModel : ViewModel() {
 
     private fun refreshGenreData() {
         logD("Refreshing genre data")
-        val genre = requireNotNull(curGenre.value)
+        val genre = requireNotNull(currentGenre.value)
         val data = mutableListOf<Item>(genre)
 
         data.add(
@@ -162,14 +161,14 @@ class DetailViewModel : ViewModel() {
                     mShowMenu.value = MenuConfig(view, settingsManager.detailGenreSort)
                 }))
 
-        data.addAll(settingsManager.detailGenreSort.genre(curGenre.value!!))
+        data.addAll(settingsManager.detailGenreSort.genre(currentGenre.value!!))
 
         mGenreData.value = data
     }
 
     private fun refreshArtistData() {
         logD("Refreshing artist data")
-        val artist = requireNotNull(curArtist.value)
+        val artist = requireNotNull(currentArtist.value)
         val data = mutableListOf<Item>(artist)
 
         data.add(Header(id = -2, string = R.string.lbl_albums))

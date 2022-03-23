@@ -18,9 +18,6 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
@@ -30,6 +27,8 @@ import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.ActionMenu
@@ -44,21 +43,15 @@ import org.oxycblt.auxio.util.logW
 class ArtistDetailFragment : DetailFragment() {
     private val args: ArtistDetailFragmentArgs by navArgs()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        detailModel.setArtist(args.artistId)
+    override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
+        detailModel.setArtistId(args.artistId)
 
-        val binding = FragmentDetailBinding.inflate(layoutInflater)
         val detailAdapter =
             ArtistDetailAdapter(
                 playbackModel,
                 doOnClick = { data ->
                     if (!detailModel.isNavigating) {
                         detailModel.setNavigating(true)
-
                         findNavController()
                             .navigate(ArtistDetailFragmentDirections.actionShowAlbum(data.id))
                     }
@@ -66,12 +59,8 @@ class ArtistDetailFragment : DetailFragment() {
                 doOnSongClick = { data -> playbackModel.playSong(data, PlaybackMode.IN_ARTIST) },
                 doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ARTIST) })
 
-        // --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        setupToolbar(detailModel.curArtist.value!!, binding)
-        setupRecycler(binding, detailAdapter) { pos ->
+        setupToolbar(detailModel.currentArtist.value!!)
+        setupRecycler(detailAdapter) { pos ->
             // If the item is an ActionHeader we need to also make the item full-width
             val item = detailAdapter.currentList[pos]
             item is Header || item is ActionHeader || item is Artist
@@ -79,9 +68,7 @@ class ArtistDetailFragment : DetailFragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.artistData.observe(viewLifecycleOwner) { data ->
-            detailAdapter.submitList(data)
-        }
+        detailModel.artistData.observe(viewLifecycleOwner, detailAdapter::submitList)
 
         detailModel.showMenu.observe(viewLifecycleOwner) { config ->
             if (config != null) {
@@ -89,56 +76,64 @@ class ArtistDetailFragment : DetailFragment() {
             }
         }
 
-        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            when (item) {
-                is Artist -> {
-                    if (item.id == detailModel.curArtist.value?.id) {
-                        logD("Navigating to the top of this artist")
-                        binding.detailRecycler.scrollToPosition(0)
-                        detailModel.finishNavToItem()
-                    } else {
-                        logD("Navigating to another artist")
-                        findNavController()
-                            .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
-                    }
-                }
-                is Album -> {
-                    logD("Navigating to another album")
-                    findNavController()
-                        .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
-                }
-                is Song -> {
-                    logD("Navigating to another album")
-                    findNavController()
-                        .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
-                }
-                null -> {}
-                else -> logW("Unsupported navigation item ${item::class.java}")
-            }
-        }
+        detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
+
+        // Highlight songs if they are being played
+        playbackModel.song.observe(viewLifecycleOwner) { song -> updateSong(song, detailAdapter) }
 
         // Highlight albums if they are being played
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            if (parent is Album?) {
-                detailAdapter.highlightAlbum(parent, binding.detailRecycler)
-            } else {
-                detailAdapter.highlightAlbum(null, binding.detailRecycler)
-            }
+            updateParent(parent, detailAdapter)
         }
+    }
 
-        // Highlight songs if they are being played
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (playbackModel.playbackMode.value == PlaybackMode.IN_ARTIST &&
-                playbackModel.parent.value?.id == detailModel.curArtist.value?.id) {
-                detailAdapter.highlightSong(song, binding.detailRecycler)
-            } else {
-                // Clear the ViewHolders if the mode isn't ALL_SONGS
-                detailAdapter.highlightSong(null, binding.detailRecycler)
+    private fun handleNavigation(item: Music?) {
+        val binding = requireBinding()
+
+        when (item) {
+            is Artist -> {
+                if (item.id == detailModel.currentArtist.value?.id) {
+                    logD("Navigating to the top of this artist")
+                    binding.detailRecycler.scrollToPosition(0)
+                    detailModel.finishNavToItem()
+                } else {
+                    logD("Navigating to another artist")
+                    findNavController()
+                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
+                }
             }
+            is Album -> {
+                logD("Navigating to another album")
+                findNavController()
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
+            }
+            is Song -> {
+                logD("Navigating to another album")
+                findNavController()
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
+            }
+            null -> {}
+            else -> logW("Unsupported navigation item ${item::class.java}")
         }
+    }
 
-        logD("Fragment created")
+    private fun updateSong(song: Song?, adapter: ArtistDetailAdapter) {
+        val binding = requireBinding()
+        if (playbackModel.playbackMode.value == PlaybackMode.IN_ARTIST &&
+            playbackModel.parent.value?.id == detailModel.currentArtist.value?.id) {
+            adapter.highlightSong(song, binding.detailRecycler)
+        } else {
+            // Clear the ViewHolders if the mode isn't ALL_SONGS
+            adapter.highlightSong(null, binding.detailRecycler)
+        }
+    }
 
-        return binding.root
+    private fun updateParent(parent: MusicParent?, adapter: ArtistDetailAdapter) {
+        val binding = requireBinding()
+        if (parent is Album?) {
+            adapter.highlightAlbum(parent, binding.detailRecycler)
+        } else {
+            adapter.highlightAlbum(null, binding.detailRecycler)
+        }
     }
 }

@@ -19,54 +19,23 @@ package org.oxycblt.auxio.accent
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.LifecycleDialog
+import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
 
 /**
  * Dialog responsible for showing the list of accents to select.
  * @author OxygenCobalt
  */
-class AccentCustomizeDialog : LifecycleDialog() {
+class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
     private val settingsManager = SettingsManager.getInstance()
     private var pendingAccent = settingsManager.accent
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = DialogAccentBinding.inflate(inflater)
-
-        savedInstanceState?.getInt(KEY_PENDING_ACCENT)?.let { index ->
-            pendingAccent = Accent(index)
-        }
-
-        // --- UI SETUP ---
-
-        binding.accentRecycler.apply {
-            adapter =
-                AccentAdapter(pendingAccent) { accent ->
-                    logD("Switching selected accent to $accent")
-                    pendingAccent = accent
-                }
-        }
-
-        logD("Dialog created")
-
-        return binding.root
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(KEY_PENDING_ACCENT, pendingAccent.index)
-    }
+    override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder.setTitle(R.string.set_accent)
@@ -83,6 +52,25 @@ class AccentCustomizeDialog : LifecycleDialog() {
 
         // Negative button just dismisses, no need for a listener.
         builder.setNegativeButton(android.R.string.cancel, null)
+    }
+
+    override fun onBindingCreated(binding: DialogAccentBinding, savedInstanceState: Bundle?) {
+        savedInstanceState?.getInt(KEY_PENDING_ACCENT)?.let { index ->
+            pendingAccent = Accent(index)
+        }
+
+        // --- UI SETUP ---
+
+        binding.accentRecycler.adapter =
+            AccentAdapter(pendingAccent) { accent ->
+                logD("Switching selected accent to $accent")
+                pendingAccent = accent
+            }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_PENDING_ACCENT, pendingAccent.index)
     }
 
     companion object {

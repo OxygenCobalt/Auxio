@@ -19,9 +19,8 @@ package org.oxycblt.auxio.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -35,10 +34,11 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Header
+import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
@@ -48,41 +48,26 @@ import org.oxycblt.auxio.util.logD
  * A [Fragment] that allows for the searching of the entire music library.
  * @author OxygenCobalt
  */
-class SearchFragment : Fragment() {
+class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
     private var launchedKeyboard = false
-    private var mustScrollUp = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentSearchBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
 
+    override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
         val imm = requireContext().getSystemServiceSafe(InputMethodManager::class)
 
         val searchAdapter =
             SearchAdapter(doOnClick = { item -> onItemSelection(item, imm) }, ::newMenu)
+
         // --- UI SETUP --
 
-        binding.lifecycleOwner = viewLifecycleOwner
-
         binding.searchToolbar.apply {
-            val itemId =
-                when (searchModel.filterMode) {
-                    DisplayMode.SHOW_SONGS -> R.id.option_filter_songs
-                    DisplayMode.SHOW_ALBUMS -> R.id.option_filter_albums
-                    DisplayMode.SHOW_ARTISTS -> R.id.option_filter_artists
-                    DisplayMode.SHOW_GENRES -> R.id.option_filter_genres
-                    null -> R.id.option_filter_all
-                }
-
-            menu.findItem(itemId).isChecked = true
+            menu.findItem(searchModel.filterMode?.itemId ?: R.id.option_filter_all).isChecked = true
 
             setNavigationOnClickListener {
                 imm.hide()
@@ -102,7 +87,6 @@ class SearchFragment : Fragment() {
 
         binding.searchEditText.apply {
             addTextChangedListener { text ->
-                mustScrollUp = true
                 // Run the search with the updated text as the query
                 searchModel.search(text?.toString() ?: "")
             }
@@ -118,49 +102,48 @@ class SearchFragment : Fragment() {
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-
             applySpans { pos -> searchAdapter.currentList[pos] is Header }
         }
 
         // --- VIEWMODEL SETUP ---
 
         searchModel.searchResults.observe(viewLifecycleOwner) { results ->
-            searchAdapter.submitList(results) {
-                // I would make it so that the position is only scrolled back to the top when
-                // the query actually changes instead of one every re-creation event, but sadly
-                // that doesn't seem possible.
-                binding.searchRecycler.scrollToPosition(0)
-            }
-
-            if (results.isEmpty()) {
-                binding.searchRecycler.visibility = View.INVISIBLE
-            } else {
-                binding.searchRecycler.visibility = View.VISIBLE
-            }
+            updateResults(results, searchAdapter)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            findNavController()
-                .navigate(
-                    when (item) {
-                        is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
-                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
-                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-                        else -> return@observe
-                    })
-
+            handleNavigation(item)
             imm.hide()
         }
-
-        logD("Fragment created")
-
-        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-
         searchModel.setNavigating(false)
+    }
+
+    private fun updateResults(results: List<Item>, searchAdapter: SearchAdapter) {
+        val binding = requireBinding()
+
+        searchAdapter.submitList(results) {
+            // I would make it so that the position is only scrolled back to the top when
+            // the query actually changes instead of once every re-creation event, but sadly
+            // that doesn't seem possible.
+            binding.searchRecycler.scrollToPosition(0)
+        }
+
+        binding.searchRecycler.isInvisible = results.isEmpty()
+    }
+
+    private fun handleNavigation(item: Music?) {
+        findNavController()
+            .navigate(
+                when (item) {
+                    is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
+                    is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
+                    is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                    else -> return
+                })
     }
 
     private fun InputMethodManager.hide() {

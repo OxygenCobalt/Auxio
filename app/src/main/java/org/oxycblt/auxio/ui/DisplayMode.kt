@@ -50,6 +50,15 @@ enum class DisplayMode {
                 SHOW_GENRES -> R.drawable.ic_genre
             }
 
+    val itemId: Int
+        get() =
+            when (this) {
+                SHOW_SONGS -> R.drawable.ic_song
+                SHOW_ALBUMS -> R.drawable.ic_album
+                SHOW_ARTISTS -> R.drawable.ic_artist
+                SHOW_GENRES -> R.drawable.ic_genre
+            }
+
     val intCode: Int
         get() =
             when (this) {

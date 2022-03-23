@@ -17,15 +17,18 @@
  
 package org.oxycblt.auxio.settings.pref
 
+import android.app.Dialog
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.ui.LifecycleDialog
 
 /** The dialog shown whenever an [IntListPreference] is shown. */
-class IntListPrefDialog : LifecycleDialog() {
-    override fun onConfigDialog(builder: AlertDialog.Builder) {
+class IntListPrefDialog : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
+
         // Since we have to store the preference key as an argument, we have to find the
         // preference we need to use manually.
         val pref =
@@ -41,6 +44,8 @@ class IntListPrefDialog : LifecycleDialog() {
         }
 
         builder.setNegativeButton(android.R.string.cancel, null)
+
+        return builder.create()
     }
 
     companion object {

@@ -20,8 +20,6 @@ package org.oxycblt.auxio.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -41,11 +39,13 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
@@ -59,103 +59,34 @@ import org.oxycblt.auxio.util.logTraceOrThrow
  *
  * TODO: Add duration and song count sorts
  */
-class HomeFragment : Fragment() {
+class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentHomeBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
+
+    override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         val sortItem: MenuItem
 
-        // --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
         binding.homeToolbar.apply {
+            sortItem = menu.findItem(R.id.submenu_sorting)
+
             setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.action_search -> {
-                        logD("Navigating to search")
-                        findNavController().navigate(HomeFragmentDirections.actionShowSearch())
-                    }
-                    R.id.action_settings -> {
-                        logD("Navigating to settings")
-                        parentFragment
-                            ?.parentFragment
-                            ?.findNavController()
-                            ?.navigate(MainFragmentDirections.actionShowSettings())
-                    }
-                    R.id.action_about -> {
-                        logD("Navigating to about")
-                        parentFragment
-                            ?.parentFragment
-                            ?.findNavController()
-                            ?.navigate(MainFragmentDirections.actionShowAbout())
-                    }
-                    R.id.submenu_sorting -> {}
-                    R.id.option_sort_asc -> {
-                        item.isChecked = !item.isChecked
-                        val new =
-                            homeModel
-                                .getSortForDisplay(homeModel.curTab.value!!)
-                                .ascending(item.isChecked)
-                        homeModel.updateCurrentSort(new)
-                    }
-
-                    // Sorting option was selected, mark it as selected and update the mode
-                    else -> {
-                        item.isChecked = true
-                        val new =
-                            homeModel
-                                .getSortForDisplay(homeModel.curTab.value!!)
-                                .assignId(item.itemId)
-                        homeModel.updateCurrentSort(requireNotNull(new))
-                    }
-                }
-
+                onMenuClick(item)
                 true
             }
-
-            sortItem = menu.findItem(R.id.submenu_sorting)
         }
 
         binding.homePager.apply {
             adapter = HomePagerAdapter()
-
-            // By default, ViewPager2's sensitivity is high enough to result in vertical
-            // scroll events being registered as horizontal scroll events. Reflect into the
-            // internal recyclerview and change the touch slope so that touch actions will
-            // act more as a scroll than as a swipe.
-            // Derived from:
-            // https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
-            try {
-                val recycler =
-                    ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
-                        isAccessible = true
-                        get(binding.homePager)
-                    }
-
-                RecyclerView::class.java.getDeclaredField("mTouchSlop").apply {
-                    isAccessible = true
-
-                    val slop = get(recycler) as Int
-                    set(recycler, slop * 3) // 3x seems to be the best fit here
-                }
-            } catch (e: Exception) {
-                logE("Unable to reduce ViewPager sensitivity (likely an internal code change)")
-                e.logTraceOrThrow()
-            }
-
             // We know that there will only be a fixed amount of tabs, so we manually set this
             // limit to that. This also prevents the appbar lift state from being confused during
             // page transitions.
             offscreenPageLimit = homeModel.tabs.size
+
+            reduceSensitivity(3)
 
             registerOnPageChangeCallback(
                 object : ViewPager2.OnPageChangeCallback() {
@@ -171,89 +102,94 @@ class HomeFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ---
 
-        // There is no way a fast scrolling event can continue across a re-create. Reset it.
-        homeModel.updateFastScrolling(false)
+        homeModel.fastScrolling.observe(viewLifecycleOwner, ::updateFastScrolling)
+        homeModel.currentTab.observe(viewLifecycleOwner) { tab -> updateCurrentTab(sortItem, tab) }
+        homeModel.recreateTabs.observe(viewLifecycleOwner, ::handleRecreateTabs)
 
-        musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
-            // Handle the loader response.
-            when (response) {
-                is MusicStore.Response.Ok -> binding.homeFab.show()
+        musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
+        detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
+    }
 
-                // While loading or during an error, make sure we keep the shuffle fab hidden so
-                // that any kind of playback is impossible. PlaybackStateManager also relies on this
-                // invariant, so please don't change it.
-                else -> binding.homeFab.hide()
+    private fun onMenuClick(item: MenuItem) {
+        when (item.itemId) {
+            R.id.action_search -> {
+                logD("Navigating to search")
+                findNavController().navigate(HomeFragmentDirections.actionShowSearch())
+            }
+            R.id.action_settings -> {
+                logD("Navigating to settings")
+                parentFragment
+                    ?.parentFragment
+                    ?.findNavController()
+                    ?.navigate(MainFragmentDirections.actionShowSettings())
+            }
+            R.id.action_about -> {
+                logD("Navigating to about")
+                parentFragment
+                    ?.parentFragment
+                    ?.findNavController()
+                    ?.navigate(MainFragmentDirections.actionShowAbout())
+            }
+            R.id.submenu_sorting -> {}
+            R.id.option_sort_asc -> {
+                item.isChecked = !item.isChecked
+                homeModel.updateCurrentSort(
+                    requireNotNull(
+                        homeModel
+                            .getSortForDisplay(homeModel.currentTab.value!!)
+                            .ascending(item.isChecked)))
+            }
+
+            // Sorting option was selected, mark it as selected and update the mode
+            else -> {
+                item.isChecked = true
+                homeModel.updateCurrentSort(
+                    requireNotNull(
+                        homeModel
+                            .getSortForDisplay(homeModel.currentTab.value!!)
+                            .assignId(item.itemId)))
             }
         }
+    }
 
-        homeModel.fastScrolling.observe(viewLifecycleOwner) { scrolling ->
-            // Make sure an update here doesn't mess up the FAB state when it comes to the
-            // loader response.
-            if (musicModel.loaderResponse.value !is MusicStore.Response.Ok) {
-                return@observe
-            }
+    private fun updateFastScrolling(isFastScrolling: Boolean) {
+        val binding = requireBinding()
 
-            if (scrolling) {
-                binding.homeFab.hide()
-            } else {
-                binding.homeFab.show()
-            }
+        // Make sure an update here doesn't mess up the FAB state when it comes to the
+        // loader response.
+        if (musicModel.loaderResponse.value !is MusicStore.Response.Ok) {
+            return
         }
 
-        homeModel.recreateTabs.observe(viewLifecycleOwner) { recreate ->
-            // notifyDataSetChanged is not practical for recreating here since it will cache
-            // the previous fragments. Just instantiate a whole new adapter.
-            if (recreate) {
-                binding.homePager.currentItem = 0
-                binding.homePager.adapter = HomePagerAdapter()
-                homeModel.finishRecreateTabs()
+        if (isFastScrolling) {
+            binding.homeFab.hide()
+        } else {
+            binding.homeFab.show()
+        }
+    }
+
+    private fun updateCurrentTab(sortItem: MenuItem, tab: DisplayMode) {
+        // Make sure that we update the scrolling view and allowed menu items whenever
+        // the tab changes.
+        val binding = requireBinding()
+        when (tab) {
+            DisplayMode.SHOW_SONGS -> {
+                updateSortMenu(sortItem, tab)
+                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_song_list
+            }
+            DisplayMode.SHOW_ALBUMS -> {
+                updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
+                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_album_list
+            }
+            DisplayMode.SHOW_ARTISTS -> {
+                updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
+                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_artist_list
+            }
+            DisplayMode.SHOW_GENRES -> {
+                updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
+                binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_genre_list
             }
         }
-
-        homeModel.curTab.observe(viewLifecycleOwner) { t ->
-            val tab = requireNotNull(t)
-
-            // Make sure that we update the scrolling view and allowed menu items whenever
-            // the tab changes.
-            when (tab) {
-                DisplayMode.SHOW_SONGS -> updateSortMenu(sortItem, tab)
-                DisplayMode.SHOW_ALBUMS ->
-                    updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
-                DisplayMode.SHOW_ARTISTS ->
-                    updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
-                DisplayMode.SHOW_GENRES ->
-                    updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
-            }
-
-            binding.homeAppbar.liftOnScrollTargetViewId = tab.viewId
-        }
-
-        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            // The AppBarLayout gets confused when we navigate too fast, wait for it to draw
-            // before we navigate.
-            // This is only here just in case a collapsing toolbar is re-added.
-            binding.homeAppbar.post {
-                when (item) {
-                    is Song ->
-                        findNavController()
-                            .navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))
-                    is Album ->
-                        findNavController()
-                            .navigate(HomeFragmentDirections.actionShowAlbum(item.id))
-                    is Artist ->
-                        findNavController()
-                            .navigate(HomeFragmentDirections.actionShowArtist(item.id))
-                    is Genre ->
-                        findNavController()
-                            .navigate(HomeFragmentDirections.actionShowGenre(item.id))
-                    else -> {}
-                }
-            }
-        }
-
-        logD("Fragment Created")
-
-        return binding.root
     }
 
     private fun updateSortMenu(
@@ -276,14 +212,72 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val DisplayMode.viewId: Int
-        get() =
-            when (this) {
-                DisplayMode.SHOW_SONGS -> R.id.home_song_list
-                DisplayMode.SHOW_ALBUMS -> R.id.home_album_list
-                DisplayMode.SHOW_ARTISTS -> R.id.home_artist_list
-                DisplayMode.SHOW_GENRES -> R.id.home_genre_list
+    private fun handleRecreateTabs(recreate: Boolean) {
+        if (recreate) {
+            requireBinding().homePager.recreate()
+            homeModel.finishRecreateTabs()
+        }
+    }
+
+    private fun handleLoaderResponse(response: MusicStore.Response?) {
+        val binding = requireBinding()
+        when (response) {
+            is MusicStore.Response.Ok -> binding.homeFab.show()
+
+            // While loading or during an error, make sure we keep the shuffle fab hidden so
+            // that any kind of playback is impossible. PlaybackStateManager also relies on this
+            // invariant, so please don't change it.
+            else -> binding.homeFab.hide()
+        }
+    }
+
+    private fun handleNavigation(item: Music?) {
+        // Note: You will want to add a post call to this if you want to re-introduce a collapsing
+        // toolbar.
+        when (item) {
+            is Song ->
+                findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.album.id))
+            is Album ->
+                findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.id))
+            is Artist ->
+                findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
+            is Genre ->
+                findNavController().navigate(HomeFragmentDirections.actionShowGenre(item.id))
+            else -> {}
+        }
+    }
+
+    /**
+     * By default, ViewPager2's sensitivity is high enough to result in vertical scroll events being
+     * registered as horizontal scroll events. Reflect into the internal recyclerview and change the
+     * touch slope so that touch actions will act more as a scroll than as a swipe. Derived from:
+     * https://al-e-shevelev.medium.com/how-to-reduce-scroll-sensitivity-of-viewpager2-widget-87797ad02414
+     */
+    private fun ViewPager2.reduceSensitivity(by: Int) {
+        try {
+            val recycler =
+                ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
+                    isAccessible = true
+                    get(this@reduceSensitivity)
+                }
+
+            RecyclerView::class.java.getDeclaredField("mTouchSlop").apply {
+                isAccessible = true
+
+                val slop = get(recycler) as Int
+                set(recycler, slop * by)
             }
+        } catch (e: Exception) {
+            logE("Unable to reduce ViewPager sensitivity (likely an internal code change)")
+            e.logTraceOrThrow()
+        }
+    }
+
+    /** Forces the view to recreate all fragments contained within it. */
+    private fun ViewPager2.recreate() {
+        currentItem = 0
+        adapter = HomePagerAdapter()
+    }
 
     private inner class HomePagerAdapter :
         FragmentStateAdapter(childFragmentManager, viewLifecycleOwner.lifecycle) {

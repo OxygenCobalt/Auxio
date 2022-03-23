@@ -17,21 +17,24 @@
  
 package org.oxycblt.auxio.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.util.logD
 
-/** A fragment enabling ViewBinding inflation and usage across the fragment lifecycle. */
-abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
+abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
     private var mBinding: T? = null
 
     protected abstract fun onCreateBinding(inflater: LayoutInflater): T
     protected open fun onBindingCreated(binding: T, savedInstanceState: Bundle?) {}
     protected open fun onDestroyBinding(binding: T) {}
+    protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
 
     protected val binding: T?
         get() = mBinding
@@ -48,9 +51,17 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
         savedInstanceState: Bundle?
     ): View = onCreateBinding(inflater).also { mBinding = it }.root
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return MaterialAlertDialogBuilder(requireActivity(), theme).run {
+            onConfigDialog(this)
+            create()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onBindingCreated(requireBinding(), savedInstanceState)
+        (requireDialog() as AlertDialog).setView(view)
         logD("Fragment created")
     }
 

@@ -22,7 +22,6 @@ import android.graphics.Insets
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.ColorRes
@@ -93,9 +92,6 @@ private fun isUnderImpl(
     if (viewSize >= minTouchTargetSize) {
         return position >= viewStart && position < viewEnd
     }
-
-    Log.d("Auxio.ViewUtil", "isInTouchTarget: $minTouchTargetSize")
-
     var touchTargetStart = viewStart - (minTouchTargetSize - viewSize) / 2
 
     if (touchTargetStart < 0) {

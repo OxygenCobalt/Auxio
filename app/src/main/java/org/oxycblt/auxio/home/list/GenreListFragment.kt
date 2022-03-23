@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
@@ -35,27 +34,15 @@ import org.oxycblt.auxio.ui.sliceArticle
  * @author
  */
 class GenreListFragment : HomeListFragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentHomeListBinding.inflate(layoutInflater)
-
-        // / --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        val adapter =
+    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
+        val homeAdapter =
             GenreAdapter(
                 doOnClick = { Genre ->
                     findNavController().navigate(HomeFragmentDirections.actionShowGenre(Genre.id))
                 },
                 ::newMenu)
 
-        setupRecycler(R.id.home_genre_list, binding, adapter, homeModel.genres)
-
-        return binding.root
+        setupRecycler(R.id.home_genre_list, homeAdapter, homeModel.genres)
     }
 
     override val listPopupProvider: (Int) -> String

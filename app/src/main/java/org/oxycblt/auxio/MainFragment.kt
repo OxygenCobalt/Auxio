@@ -22,18 +22,18 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -43,31 +43,25 @@ import org.oxycblt.auxio.util.logW
  *
  * TODO: Add a new view with a stack trace whenever the music loading process fails.
  */
-class MainFragment : Fragment() {
+class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
-    private var callback: Callback? = null
+    private var callback: DynamicBackPressedCallback? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentMainBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 
+    override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
+
+        // --- UI SETUP ---
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
         val permLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 musicModel.reloadMusic(requireContext())
             }
 
-        // --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
         requireActivity()
             .onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, Callback(binding).also { callback = it })
+            .addCallback(viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // Auxio's layout completely breaks down when it's window is resized too small,
@@ -87,59 +81,15 @@ class MainFragment : Fragment() {
 
         // Initialize music loading. Do it here so that it shows on every fragment that this
         // one contains.
+        // TODO: Move this to a service [automatic rescanning]
         musicModel.loadMusic(requireContext())
 
         // Handle the music loader response.
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
-            // Handle the loader response.
-            when (response) {
-                // Ok, start restoring playback now
-                is MusicStore.Response.Ok -> playbackModel.setupPlayback(requireContext())
-
-                // Error, show the error to the user
-                is MusicStore.Response.Err -> {
-                    logW("Received Error")
-
-                    val errorRes =
-                        when (response.kind) {
-                            MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
-                            MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
-                            MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
-                        }
-
-                    val snackbar =
-                        Snackbar.make(binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE)
-
-                    when (response.kind) {
-                        MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {
-                            snackbar.setAction(R.string.lbl_retry) {
-                                musicModel.reloadMusic(requireContext())
-                            }
-                        }
-                        MusicStore.ErrorKind.NO_PERMS -> {
-                            snackbar.setAction(R.string.lbl_grant) {
-                                permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            }
-                        }
-                    }
-
-                    snackbar.show()
-                }
-                else -> {}
-            }
+            handleLoaderResponse(response, permLauncher)
         }
 
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (song != null) {
-                binding.bottomSheetLayout.show()
-            } else {
-                binding.bottomSheetLayout.hide()
-            }
-        }
-
-        logD("Fragment Created")
-
-        return binding.root
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
     }
 
     override fun onResume() {
@@ -152,12 +102,66 @@ class MainFragment : Fragment() {
         callback?.isEnabled = false
     }
 
+    private fun handleLoaderResponse(
+        response: MusicStore.Response?,
+        permLauncher: ActivityResultLauncher<String>
+    ) {
+        val binding = requireBinding()
+
+        // Handle the loader response.
+        when (response) {
+            // Ok, start restoring playback now
+            is MusicStore.Response.Ok -> playbackModel.setupPlayback(requireContext())
+
+            // Error, show the error to the user
+            is MusicStore.Response.Err -> {
+                logW("Received Error")
+
+                val errorRes =
+                    when (response.kind) {
+                        MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
+                        MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
+                        MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
+                    }
+
+                val snackbar =
+                    Snackbar.make(binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE)
+
+                when (response.kind) {
+                    MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {
+                        snackbar.setAction(R.string.lbl_retry) {
+                            musicModel.reloadMusic(requireContext())
+                        }
+                    }
+                    MusicStore.ErrorKind.NO_PERMS -> {
+                        snackbar.setAction(R.string.lbl_grant) {
+                            permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
+                    }
+                }
+
+                snackbar.show()
+            }
+            null -> {}
+        }
+    }
+
+    private fun updateSong(song: Song?) {
+        val binding = requireBinding()
+        if (song != null) {
+            binding.bottomSheetLayout.show()
+        } else {
+            binding.bottomSheetLayout.hide()
+        }
+    }
+
     /**
      * A back press callback that handles how to respond to backwards navigation in the detail
      * fragments and the playback panel.
      */
-    inner class Callback(private val binding: FragmentMainBinding) : OnBackPressedCallback(false) {
+    inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
+            val binding = requireBinding()
             if (!binding.bottomSheetLayout.collapse()) {
                 val navController = binding.exploreNavHost.findNavController()
 

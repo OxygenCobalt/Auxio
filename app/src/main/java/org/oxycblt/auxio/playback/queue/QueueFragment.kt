@@ -19,39 +19,31 @@ package org.oxycblt.auxio.playback.queue
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
  * @author OxygenCobalt
  */
-class QueueFragment : Fragment() {
+class QueueFragment : ViewBindingFragment<FragmentQueueBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private var lastShuffle: Boolean? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentQueueBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
+
+    override fun onBindingCreated(binding: FragmentQueueBinding, savedInstanceState: Bundle?) {
+        // TODO: Merge ItemTouchHelper with QueueAdapter
         val callback = QueueDragCallback(playbackModel)
         val helper = ItemTouchHelper(callback)
         val queueAdapter = QueueAdapter(helper)
         callback.addQueueAdapter(queueAdapter)
-
-        var lastShuffle = playbackModel.isShuffling.value
-
-        // --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.queueToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
@@ -63,15 +55,7 @@ class QueueFragment : Fragment() {
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.nextUp.observe(viewLifecycleOwner) { queue ->
-            if (queue.isEmpty()) {
-                findNavController().navigateUp()
-                return@observe
-            }
-
-            queueAdapter.submitList(queue.toMutableList())
-        }
-
+        lastShuffle = playbackModel.isShuffling.value
         playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
             // Try to prevent the queue adapter from going spastic during reshuffle events
             // by just scrolling back to the top.
@@ -82,6 +66,13 @@ class QueueFragment : Fragment() {
             }
         }
 
-        return binding.root
+        playbackModel.nextUp.observe(viewLifecycleOwner) { queue ->
+            if (queue.isEmpty()) {
+                findNavController().navigateUp()
+                return@observe
+            }
+
+            queueAdapter.submitList(queue.toMutableList())
+        }
     }
 }

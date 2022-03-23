@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oxycblt.auxio.R
@@ -35,22 +34,9 @@ import org.oxycblt.auxio.ui.sliceArticle
  * @author
  */
 class SongListFragment : HomeListFragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentHomeListBinding.inflate(layoutInflater)
-
-        // / --- UI SETUP ---
-
-        binding.lifecycleOwner = viewLifecycleOwner
-
-        val adapter = SongsAdapter(doOnClick = { song -> playbackModel.playSong(song) }, ::newMenu)
-
-        setupRecycler(R.id.home_song_list, binding, adapter, homeModel.songs)
-
-        return binding.root
+    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
+        val homeAdapter = SongsAdapter(doOnClick = playbackModel::playSong, ::newMenu)
+        setupRecycler(R.id.home_song_list, homeAdapter, homeModel.songs)
     }
 
     override val listPopupProvider: (Int) -> String

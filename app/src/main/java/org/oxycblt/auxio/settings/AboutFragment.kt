@@ -23,11 +23,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -35,6 +32,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -43,18 +41,14 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * A [BottomSheetDialogFragment] that shows Auxio's about screen.
  * @author OxygenCobalt
  */
-class AboutFragment : Fragment() {
+class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     private val homeModel: HomeViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = FragmentAboutBinding.inflate(layoutInflater)
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentAboutBinding.inflate(inflater)
 
-        binding.aboutContents.setOnApplyWindowInsetsListener { _, insets ->
-            binding.aboutContents.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+    override fun onBindingCreated(binding: FragmentAboutBinding, savedInstanceState: Bundle?) {
+        binding.aboutContents.setOnApplyWindowInsetsListener { view, insets ->
+            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 
@@ -68,10 +62,6 @@ class AboutFragment : Fragment() {
         homeModel.songs.observe(viewLifecycleOwner) { songs ->
             binding.aboutSongCount.text = getString(R.string.fmt_songs_loaded, songs.size)
         }
-
-        logD("Dialog created")
-
-        return binding.root
     }
 
     /** Go through the process of opening a [link] in a browser. */
@@ -100,8 +90,7 @@ class AboutFragment : Fragment() {
                 requireContext()
                     .packageManager
                     .resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
-                    ?.activityInfo
-                    ?.packageName
+                    ?.run { activityInfo.packageName }
 
             if (pkgName != null) {
                 if (pkgName == "android") {
