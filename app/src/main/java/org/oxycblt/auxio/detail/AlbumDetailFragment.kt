@@ -73,14 +73,16 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailItemListener {
         requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
-                val item = detailAdapter.currentList[pos]
+                val item = detailAdapter.data.currentList[pos]
                 item is Header || item is SortHeader || item is Album
             }
         }
 
         // -- VIEWMODEL SETUP ---
 
-        detailModel.albumData.observe(viewLifecycleOwner) { list -> detailAdapter.submitList(list) }
+        detailModel.albumData.observe(viewLifecycleOwner) { list ->
+            detailAdapter.data.submitList(list)
+        }
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             handleNavigation(item, detailAdapter)
@@ -168,7 +170,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailItemListener {
     /** Scroll to an song using its [id]. */
     private fun scrollToItem(id: Long, adapter: AlbumDetailAdapter) {
         // Calculate where the item for the currently played song is
-        val pos = adapter.currentList.indexOfFirst { it.id == id && it is Song }
+        val pos = adapter.data.currentList.indexOfFirst { it.id == id && it is Song }
 
         if (pos != -1) {
             val binding = requireBinding()

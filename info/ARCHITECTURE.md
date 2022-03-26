@@ -100,9 +100,11 @@ Attempting to use it as a `MediaStore` ID will result in errors.
 - Any field or method beginning with `internal` is off-limits. These fields are meant for use within `MusicLoader` and generally
 provide poor UX to the user. The only reason they are public is to make the loading process not have to rely on separate "Raw"
 objects.
-- Generally, `name` is used when saving music data to storage, while `resolvedName` is used when displaying music data to the user.
-    - For `Song` instances in particular, prefer `resolvedAlbumName` and `resolvedArtistName` over `album.resolvedName` and `album.artist.resolvedName`
-    - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`
+- Generally, `rawName` is used when doing internal work, such as saving music data, while `resolvedName` is used when displaying music data to the user.
+    - For `Song` instances in particular, prefer `resolvedAlbumName` and `resolvedArtistName` over `album.resolvedName` and `album.artist.resolvedName`,
+    as these resolve the name in context of the song.
+    - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`, which don't actually do anything but add consistency
+    to the `Song` function
 
 #### Music Access
 All music on a system is asynchronously loaded into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.

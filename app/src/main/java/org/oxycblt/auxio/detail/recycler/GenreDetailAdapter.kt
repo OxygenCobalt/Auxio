@@ -29,8 +29,8 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.ItemDiffCallback
 import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
@@ -100,7 +100,7 @@ class GenreDetailAdapter(listener: DetailItemListener) :
 
     companion object {
         val DIFFER =
-            object : ItemDiffCallback<Item>() {
+            object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Genre && newItem is Genre ->
@@ -137,7 +137,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Genre>() {
+            object : SimpleItemCallback<Genre>() {
                 override fun areItemsTheSame(oldItem: Genre, newItem: Genre) =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.songs.size == newItem.songs.size &&

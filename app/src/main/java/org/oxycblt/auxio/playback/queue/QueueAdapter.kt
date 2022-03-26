@@ -30,6 +30,7 @@ import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.HybridBackingData
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.util.disableDropShadowCompat
@@ -37,9 +38,9 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.textSafe
 
-class NewQueueAdapter(listener: QueueItemListener) :
-    MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(
-        listener, QueueSongViewHolder.DIFFER) {
+class QueueAdapter(listener: QueueItemListener) :
+    MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
+    override val data = HybridBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR
 }
 

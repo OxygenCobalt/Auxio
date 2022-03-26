@@ -26,31 +26,212 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * An adapter enabling both asynchronous list updates and synchronous list updates.
- *
- * DiffUtil is a joke. The animations are chaotic and gaudy, it does not preserve the scroll
- * position of the RecyclerView, it refuses to play along with item movements, and the speed gains
- * are minimal. We would rather want to use the slower yet more reliable notifyX in nearly all
- * cases, however DiffUtil does have some use in places such as search, so we still want the ability
- * to use a differ while also having access to the basic adapter primitives as well. This class
- * achieves it through some terrible reflection magic, and is more or less the base for all adapters
- * in the app.
- *
- * TODO: Delegate data management to the internal adapters so that we can isolate the horrible hacks
- * to the specific adapters that use need them.
+ * An adapter for one viewholder tied to one type of data. All functionality is derived from the
+ * overridden values.
  */
-abstract class HybridAdapter<T, VH : RecyclerView.ViewHolder>(
-    diffCallback: DiffUtil.ItemCallback<T>
-) : RecyclerView.Adapter<VH>() {
-    protected var mCurrentList = mutableListOf<T>()
+abstract class MonoAdapter<T, L, VH : BindingViewHolder<T, L>>(private val listener: L) :
+    RecyclerView.Adapter<VH>() {
+    /** The data that the adapter will source to bind viewholders. */
+    abstract val data: BackingData<T>
+    /** The creator instance that all viewholders will be derived from. */
+    protected abstract val creator: BindingViewHolder.Creator<VH>
+
+    override fun getItemCount(): Int = data.getItemCount()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        creator.create(parent.context)
+
+    override fun onBindViewHolder(viewHolder: VH, position: Int) {
+        viewHolder.bind(data.getItem(position), listener)
+    }
+}
+
+private typealias AnyCreator = BindingViewHolder.Creator<out RecyclerView.ViewHolder>
+
+/**
+ * An adapter for many viewholders tied to many types of data. Deriving this is more complicated
+ * than [MonoAdapter], as less overrides can be provided "for free".
+ */
+abstract class MultiAdapter<L>(private val listener: L) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    /** The data that the adapter will source to bind viewholders. */
+    abstract val data: BackingData<Item>
+
+    /**
+     * Get any creator from the given item. This is used to derive the view type. If there is no
+     * creator for the given item, return null.
+     */
+    protected abstract fun getCreatorFromItem(item: Item): AnyCreator?
+    /**
+     * Get any creator from the given view type. This is used to create the viewholder itself.
+     * Ideally, one should compare the viewType to every creator's view type and return the one that
+     * matches. In cases where the view type is unexpected, return null.
+     */
+    protected abstract fun getCreatorFromViewType(viewType: Int): AnyCreator?
+
+    /**
+     * Bind the given viewholder to an item. Casting must be done on the consumer's end due to
+     * bounds on [BindingViewHolder].
+     */
+    protected abstract fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: L)
+
+    override fun getItemCount(): Int = data.getItemCount()
+
+    override fun getItemViewType(position: Int) =
+        requireNotNull(getCreatorFromItem(data.getItem(position))) {
+                "Unable to get view type for item ${data.getItem(position)}"
+            }
+            .viewType
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        requireNotNull(getCreatorFromViewType(viewType)) {
+                "Unable to create viewholder for view type $viewType"
+            }
+            .create(parent.context)
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        onBind(holder, data.getItem(position), listener)
+    }
+}
+
+/**
+ * A variation of [RecyclerView.ViewHolder] that enables ViewBinding. This is be used to provide a
+ * universal surface for binding data to a ViewHolder, and can be used with [MonoAdapter] to get an
+ * entire adapter implementation for free.
+ */
+abstract class BindingViewHolder<T, L>(root: View) : RecyclerView.ViewHolder(root) {
+    abstract fun bind(item: T, listener: L)
+
+    init {
+        // Force the layout to *actually* be the screen width
+        root.layoutParams =
+            RecyclerView.LayoutParams(
+                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+    }
+
+    interface Creator<VH : RecyclerView.ViewHolder> {
+        val viewType: Int
+        fun create(context: Context): VH
+    }
+}
+
+/** An interface for detecting if an item has been clicked once. */
+interface ItemClickListener {
+    /** Called when an item is clicked once. */
+    fun onItemClick(item: Item)
+}
+
+/** An interface for detecting if an item has had it's menu opened. */
+interface MenuItemListener : ItemClickListener {
+    /** Called when an item desires to open a menu relating to it. */
+    fun onOpenMenu(item: Item, anchor: View)
+}
+
+/**
+ * The base for all items in Auxio. Any datatype can derive this type and gain some behavior not
+ * provided for free by the normal adapter implementations, such as certain types of diffing.
+ */
+abstract class Item {
+    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
+    abstract val id: Long
+}
+
+/** A data object used solely for the "Header" UI element. */
+data class Header(
+    override val id: Long,
+    /** The string resource used for the header. */
+    @StringRes val string: Int
+) : Item()
+
+/**
+ * Represents data that backs a [MonoAdapter] or [MultiAdapter]. This can be implemented by any
+ * datatype to customize the organization or editing of data in a way that works best for the
+ * specific adapter.
+ */
+abstract class BackingData<T> {
+    /** Get an item at [position]. */
+    abstract fun getItem(position: Int): T
+    /** Get the total length of the backing data. */
+    abstract fun getItemCount(): Int
+}
+
+/**
+ * A list-backed [BackingData] that is modified using adapter primitives. Useful in cases where
+ * [AsyncBackingData] is not preferable due to bugs involving diffing.
+ */
+class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : BackingData<T>() {
+    private var mCurrentList = mutableListOf<T>()
+    /** The current list backing this adapter. */
     val currentList: List<T>
         get() = mCurrentList
 
-    // Probably okay to leak this here since it's just a callback.
-    @Suppress("LeakingThis") private val differ = AsyncListDiffer(this, diffCallback)
+    override fun getItem(position: Int): T = mCurrentList[position]
+    override fun getItemCount(): Int = mCurrentList.size
 
-    protected fun getItem(position: Int): T = mCurrentList[position]
+    /**
+     * Update the list with a [newList]. This calls [RecyclerView.Adapter.notifyDataSetChanged]
+     * internally, which is inefficient but also the most reliable update callback.
+     */
+    @Suppress("NotifyDatasetChanged")
+    fun submitList(newList: List<T>) {
+        mCurrentList = newList.toMutableList()
+        adapter.notifyDataSetChanged()
+    }
 
+    /**
+     * Move an item from [from] to [to]. This calls [RecyclerView.Adapter.notifyItemMoved]
+     * internally.
+     */
+    fun moveItems(from: Int, to: Int) {
+        mCurrentList.add(to, mCurrentList.removeAt(from))
+        adapter.notifyItemMoved(from, to)
+    }
+}
+
+/**
+ * A list-backed [BackingData] that is modified with [AsyncListDiffer]. This is useful in cases
+ * where data updates are rapid-fire and unpredictable, and where the benefits of asynchronously
+ * diffing the adapter outweigh the shortcomings.
+ */
+class AsyncBackingData<T>(
+    adapter: RecyclerView.Adapter<*>,
+    diffCallback: DiffUtil.ItemCallback<T>
+) : BackingData<T>() {
+    private var differ = AsyncListDiffer(adapter, diffCallback)
+    /** The current list backing this adapter. */
+    val currentList: List<T>
+        get() = differ.currentList
+
+    override fun getItem(position: Int): T = differ.currentList[position]
+    override fun getItemCount(): Int = differ.currentList.size
+
+    /**
+     * Submit a list for [AsyncListDiffer] to calculate. Any previous calls of [submitList] will be
+     * dropped.
+     */
+    fun submitList(newList: List<T>, onDone: () -> Unit = {}) {
+        differ.submitList(newList, onDone)
+    }
+}
+
+/**
+ * A list-backed [BackingData] that can be modified with both adapter primitives and
+ * [AsyncListDiffer]. Never use this class unless absolutely necessary, such as when dealing with
+ * item dragging. This is mostly because the class is a terrible hacky mess that could easily crash
+ * the app if you are not careful with it. You have been warned.
+ */
+class HybridBackingData<T>(
+    private val adapter: RecyclerView.Adapter<*>,
+    diffCallback: DiffUtil.ItemCallback<T>
+) : BackingData<T>() {
+    private var mCurrentList = mutableListOf<T>()
+    val currentList: List<T>
+        get() = mCurrentList
+
+    private val differ = AsyncListDiffer(adapter, diffCallback)
+
+    override fun getItem(position: Int): T = mCurrentList[position]
     override fun getItemCount(): Int = mCurrentList.size
 
     fun submitList(newData: List<T>, onDone: () -> Unit = {}) {
@@ -60,25 +241,25 @@ abstract class HybridAdapter<T, VH : RecyclerView.ViewHolder>(
         }
     }
 
-    @Suppress("NotifyDatasetChanged")
-    fun submitListHard(newList: List<T>) {
-        if (newList != mCurrentList) {
-            mCurrentList = newList.toMutableList()
-            differ.rewriteListUnsafe(mCurrentList)
-            notifyDataSetChanged()
-        }
-    }
+    //    @Suppress("NotifyDatasetChanged")
+    //    fun submitListHard(newList: List<T>) {
+    //        if (newList != mCurrentList) {
+    //            mCurrentList = newList.toMutableList()
+    //            differ.rewriteListUnsafe(mCurrentList)
+    //            adapter.notifyDataSetChanged()
+    //        }
+    //    }
 
     fun moveItems(from: Int, to: Int) {
         mCurrentList.add(to, mCurrentList.removeAt(from))
         differ.rewriteListUnsafe(mCurrentList)
-        notifyItemMoved(from, to)
+        adapter.notifyItemMoved(from, to)
     }
 
     fun removeItem(at: Int) {
         mCurrentList.removeAt(at)
         differ.rewriteListUnsafe(mCurrentList)
-        notifyItemRemoved(at)
+        adapter.notifyItemRemoved(at)
     }
 
     /**
@@ -108,87 +289,13 @@ abstract class HybridAdapter<T, VH : RecyclerView.ViewHolder>(
     }
 }
 
-abstract class MonoAdapter<T, L, VH : BindingViewHolder<T, L>>(
-    private val listener: L,
-    diffCallback: DiffUtil.ItemCallback<T>
-) : HybridAdapter<T, VH>(diffCallback) {
-    protected abstract val creator: BindingViewHolder.Creator<VH>
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        creator.create(parent.context)
-
-    override fun onBindViewHolder(viewHolder: VH, position: Int) {
-        viewHolder.bind(getItem(position), listener)
-    }
-}
-
-abstract class MultiAdapter<L>(private val listener: L, diffCallback: DiffUtil.ItemCallback<Item>) :
-    HybridAdapter<Item, RecyclerView.ViewHolder>(diffCallback) {
-    abstract fun getCreatorFromItem(
-        item: Item
-    ): BindingViewHolder.Creator<out RecyclerView.ViewHolder>?
-    abstract fun getCreatorFromViewType(
-        viewType: Int
-    ): BindingViewHolder.Creator<out RecyclerView.ViewHolder>?
-    abstract fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: L)
-
-    override fun getItemViewType(position: Int) =
-        requireNotNull(getCreatorFromItem(getItem(position))) {
-                "Unable to get view type for item ${getItem(position)}"
-            }
-            .viewType
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        requireNotNull(getCreatorFromViewType(viewType)) {
-                "Unable to create viewholder for view type $viewType"
-            }
-            .create(parent.context)
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        onBind(holder, getItem(position), listener)
-    }
-}
-
-/** The base for all items in Auxio. */
-abstract class Item {
-    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
-    abstract val id: Long
-}
-
-/** A data object used solely for the "Header" UI element. */
-data class Header(
-    override val id: Long,
-    /** The string resource used for the header. */
-    @StringRes val string: Int
-) : Item()
-
-abstract class ItemDiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
+/**
+ * A base [DiffUtil.ItemCallback] that automatically provides an implementation of
+ * [areContentsTheSame] any object that is derived from [Item].
+ */
+abstract class SimpleItemCallback<T : Item> : DiffUtil.ItemCallback<T>() {
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
         if (oldItem.javaClass != newItem.javaClass) return false
         return oldItem.id == newItem.id
-    }
-}
-
-interface ItemClickListener {
-    fun onItemClick(item: Item)
-}
-
-interface MenuItemListener : ItemClickListener {
-    fun onOpenMenu(item: Item, anchor: View)
-}
-
-abstract class BindingViewHolder<T, L>(root: View) : RecyclerView.ViewHolder(root) {
-    abstract fun bind(item: T, listener: L)
-
-    init {
-        // Force the layout to *actually* be the screen width
-        root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-    }
-
-    interface Creator<VH : RecyclerView.ViewHolder> {
-        val viewType: Int
-        fun create(context: Context): VH
     }
 }

@@ -22,6 +22,8 @@ import coil.size.Size
 import coil.size.pxOrElse
 import coil.transform.Transformation
 import kotlin.math.min
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * A transformation that performs a center crop-style transformation on an image, however unlike the
@@ -45,8 +47,13 @@ class SquareFrameTransform : Transformation {
         val dst = Bitmap.createBitmap(input, x, y, dstSize, dstSize)
 
         if (dstSize != desiredWidth || dstSize != desiredHeight) {
-            // Desired size differs from the cropped size, resize the bitmap.
-            return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
+            logD("RETARD YOU STUPID FUCKING IDIOT $desiredWidth $desiredHeight")
+            try {
+                // Desired size differs from the cropped size, resize the bitmap.
+                return Bitmap.createScaledBitmap(dst, desiredWidth, desiredHeight, true)
+            } catch (e: Exception) {
+                logE(e.stackTraceToString())
+            }
         }
 
         return dst

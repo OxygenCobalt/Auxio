@@ -18,13 +18,14 @@
 package org.oxycblt.auxio.home.list
 
 import android.view.View
-import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
@@ -35,10 +36,16 @@ import org.oxycblt.auxio.ui.sliceArticle
  * @author
  */
 class SongListFragment : HomeListFragment<Song>() {
-    override val recyclerId = R.id.home_song_list
-    override val homeAdapter = SongsAdapter(this)
-    override val homeData: LiveData<List<Song>>
-        get() = homeModel.songs
+    private val homeAdapter = SongsAdapter(this)
+
+    override fun setupRecycler(recycler: RecyclerView) {
+        recycler.apply {
+            id = R.id.home_song_list
+            adapter = homeAdapter
+        }
+
+        homeModel.songs.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
+    }
 
     override fun getPopup(pos: Int): String {
         val song = homeModel.songs.value!![pos]
@@ -71,7 +78,8 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     inner class SongsAdapter(listener: MenuItemListener) :
-        MonoAdapter<Song, MenuItemListener, SongViewHolder>(listener, SongViewHolder.DIFFER) {
+        MonoAdapter<Song, MenuItemListener, SongViewHolder>(listener) {
+        override val data = PrimitiveBackingData<Song>(this)
         override val creator = SongViewHolder.CREATOR
     }
 }

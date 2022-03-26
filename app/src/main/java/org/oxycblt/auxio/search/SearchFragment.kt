@@ -58,7 +58,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
-    private val searchAdapter = NeoSearchAdapter(this)
+    private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
 
@@ -103,7 +103,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
 
         binding.searchRecycler.apply {
             adapter = searchAdapter
-            applySpans { pos -> searchAdapter.currentList[pos] is Header }
+            applySpans { pos -> searchAdapter.data.currentList[pos] is Header }
         }
 
         // --- VIEWMODEL SETUP ---
@@ -161,7 +161,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
 
         val binding = requireBinding()
 
-        searchAdapter.submitList(results.toMutableList()) {
+        searchAdapter.data.submitList(results.toMutableList()) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.

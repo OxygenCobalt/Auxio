@@ -55,7 +55,7 @@ class ArtistDetailFragment : DetailFragment(), DetailItemListener {
             adapter = detailAdapter
             applySpans { pos ->
                 // If the item is an ActionHeader we need to also make the item full-width
-                val item = detailAdapter.currentList[pos]
+                val item = detailAdapter.data.currentList[pos]
                 item is Header || item is SortHeader || item is Artist
             }
         }
@@ -63,7 +63,7 @@ class ArtistDetailFragment : DetailFragment(), DetailItemListener {
         // --- VIEWMODEL SETUP ---
 
         detailModel.artistData.observe(viewLifecycleOwner) { list ->
-            detailAdapter.submitList(list)
+            detailAdapter.data.submitList(list)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)

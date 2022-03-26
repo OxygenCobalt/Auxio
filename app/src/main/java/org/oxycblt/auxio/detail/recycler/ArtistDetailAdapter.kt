@@ -32,8 +32,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ArtistViewHolder
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.ItemDiffCallback
 import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
@@ -123,7 +123,7 @@ class ArtistDetailAdapter(listener: DetailItemListener) :
 
     companion object {
         private val DIFFER =
-            object : ItemDiffCallback<Item>() {
+            object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Artist && newItem is Artist ->
@@ -209,7 +209,7 @@ private constructor(
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Album>() {
+            object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.resolvedName == newItem.resolvedName && oldItem.year == newItem.year
             }
@@ -249,7 +249,7 @@ private constructor(
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Song>() {
+            object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.resolvedAlbumName == newItem.resolvedAlbumName

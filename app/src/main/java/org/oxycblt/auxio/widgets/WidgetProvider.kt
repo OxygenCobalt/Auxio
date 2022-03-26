@@ -66,6 +66,7 @@ class WidgetProvider : AppWidgetProvider() {
         }
 
         loadWidgetBitmap(context, song) { bitmap ->
+            logD(bitmap == null)
             val state =
                 WidgetState(
                     song,

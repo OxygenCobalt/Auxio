@@ -24,17 +24,19 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.ArtistViewHolder
+import org.oxycblt.auxio.ui.AsyncBackingData
 import org.oxycblt.auxio.ui.GenreViewHolder
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.ItemDiffCallback
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MultiAdapter
 import org.oxycblt.auxio.ui.NewHeaderViewHolder
+import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.ui.SongViewHolder
 
-class NeoSearchAdapter(listener: MenuItemListener) :
-    MultiAdapter<MenuItemListener>(listener, DIFFER) {
+class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>(listener) {
+    override val data = AsyncBackingData(this, DIFFER)
+
     override fun getCreatorFromItem(item: Item) =
         when (item) {
             is Song -> SongViewHolder.CREATOR
@@ -72,7 +74,7 @@ class NeoSearchAdapter(listener: MenuItemListener) :
 
     companion object {
         private val DIFFER =
-            object : ItemDiffCallback<Item>() {
+            object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item) =
                     when {
                         oldItem is Song && newItem is Song ->

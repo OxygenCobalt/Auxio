@@ -53,14 +53,16 @@ class GenreDetailFragment : DetailFragment(), DetailItemListener {
         binding.detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
-                val item = detailAdapter.currentList[pos]
+                val item = detailAdapter.data.currentList[pos]
                 item is Header || item is SortHeader || item is Genre
             }
         }
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.genreData.observe(viewLifecycleOwner) { list -> detailAdapter.submitList(list) }
+        detailModel.genreData.observe(viewLifecycleOwner) { list ->
+            detailAdapter.data.submitList(list)
+        }
 
         detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
 

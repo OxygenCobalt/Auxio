@@ -40,7 +40,7 @@ import org.oxycblt.auxio.util.logD
  */
 class QueueDragCallback(
     private val playbackModel: PlaybackViewModel,
-    private val queueAdapter: NewQueueAdapter
+    private val queueAdapter: QueueAdapter
 ) : ItemTouchHelper.Callback() {
     private var shouldLift = true
 
@@ -154,12 +154,12 @@ class QueueDragCallback(
         val from = viewHolder.bindingAdapterPosition
         val to = target.bindingAdapterPosition
 
-        return playbackModel.moveQueueDataItems(from, to) { queueAdapter.moveItems(from, to) }
+        return playbackModel.moveQueueDataItems(from, to) { queueAdapter.data.moveItems(from, to) }
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition) {
-            queueAdapter.removeItem(viewHolder.bindingAdapterPosition)
+            queueAdapter.data.removeItem(viewHolder.bindingAdapterPosition)
         }
     }
 

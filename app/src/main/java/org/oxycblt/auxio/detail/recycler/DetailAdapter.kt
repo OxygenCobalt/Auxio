@@ -25,13 +25,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemSortHeaderBinding
+import org.oxycblt.auxio.ui.AsyncBackingData
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.ItemDiffCallback
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MultiAdapter
 import org.oxycblt.auxio.ui.NewHeaderViewHolder
+import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getViewHolderAt
 import org.oxycblt.auxio.util.inflater
@@ -41,7 +42,7 @@ import org.oxycblt.auxio.util.textSafe
 abstract class DetailAdapter<L : DetailItemListener>(
     listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
-) : MultiAdapter<L>(listener, diffCallback) {
+) : MultiAdapter<L>(listener) {
     abstract fun onHighlightViewHolder(viewHolder: Highlightable, item: Item)
 
     protected inline fun <reified T : Item> highlightItem(
@@ -54,7 +55,7 @@ abstract class DetailAdapter<L : DetailItemListener>(
 
         // Use existing data instead of having to re-sort it.
         // We also have to account for the album count when searching for the ViewHolder.
-        val pos = mCurrentList.indexOfFirst { item -> item.id == newItem.id && item is T }
+        val pos = data.currentList.indexOfFirst { item -> item.id == newItem.id && item is T }
 
         // Check if the ViewHolder for this song is visible, if it is then highlight it.
         // If the ViewHolder is not visible, then the adapter should take care of it if
@@ -69,6 +70,8 @@ abstract class DetailAdapter<L : DetailItemListener>(
             null
         }
     }
+
+    @Suppress("LeakingThis") override val data = AsyncBackingData(this, diffCallback)
 
     override fun getCreatorFromItem(item: Item) =
         when (item) {
@@ -97,7 +100,7 @@ abstract class DetailAdapter<L : DetailItemListener>(
 
     companion object {
         val DIFFER =
-            object : ItemDiffCallback<Item>() {
+            object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
                     return when {
                         oldItem is Header && newItem is Header ->
@@ -134,7 +137,7 @@ class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
             }
 
         val DIFFER =
-            object : ItemDiffCallback<SortHeader>() {
+            object : SimpleItemCallback<SortHeader>() {
                 override fun areItemsTheSame(oldItem: SortHeader, newItem: SortHeader) =
                     oldItem.string == newItem.string
             }

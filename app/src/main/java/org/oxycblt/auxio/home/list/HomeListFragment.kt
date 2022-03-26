@@ -21,17 +21,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.applySpans
 
 /**
  * A Base [Fragment] implementing the base features shared across all list fragments in the home UI.
@@ -42,11 +39,7 @@ abstract class HomeListFragment<T : Item> :
     MenuItemListener,
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.OnFastScrollListener {
-    /** The popup provider to use for the fast scroller view. */
-    abstract val recyclerId: Int
-    abstract val homeAdapter:
-        MonoAdapter<T, MenuItemListener, out BindingViewHolder<T, MenuItemListener>>
-    abstract val homeData: LiveData<List<T>>
+    abstract fun setupRecycler(recycler: RecyclerView)
 
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
@@ -55,18 +48,9 @@ abstract class HomeListFragment<T : Item> :
         FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        binding.homeRecycler.apply {
-            id = recyclerId
-            adapter = homeAdapter
-            applySpans()
-        }
-
+        setupRecycler(binding.homeRecycler)
         binding.homeRecycler.popupProvider = this
         binding.homeRecycler.onDragListener = this
-
-        homeData.observe(viewLifecycleOwner) { list ->
-            homeAdapter.submitListHard(list.toMutableList())
-        }
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {

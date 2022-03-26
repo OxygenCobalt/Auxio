@@ -18,8 +18,8 @@
 package org.oxycblt.auxio.home.list
 
 import android.view.View
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Genre
@@ -27,6 +27,7 @@ import org.oxycblt.auxio.ui.GenreViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
@@ -35,10 +36,16 @@ import org.oxycblt.auxio.ui.sliceArticle
  * @author
  */
 class GenreListFragment : HomeListFragment<Genre>() {
-    override val recyclerId = R.id.home_genre_list
-    override val homeAdapter = GenreAdapter(this)
-    override val homeData: LiveData<List<Genre>>
-        get() = homeModel.genres
+    private val homeAdapter = GenreAdapter(this)
+
+    override fun setupRecycler(recycler: RecyclerView) {
+        recycler.apply {
+            id = R.id.home_genre_list
+            adapter = homeAdapter
+        }
+
+        homeModel.genres.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
+    }
 
     override fun getPopup(pos: Int) =
         homeModel.genres.value!![pos].resolvedName.sliceArticle().first().uppercase()
@@ -53,7 +60,8 @@ class GenreListFragment : HomeListFragment<Genre>() {
     }
 
     class GenreAdapter(listener: MenuItemListener) :
-        MonoAdapter<Genre, MenuItemListener, GenreViewHolder>(listener, GenreViewHolder.DIFFER) {
+        MonoAdapter<Genre, MenuItemListener, GenreViewHolder>(listener) {
+        override val data = PrimitiveBackingData<Genre>(this)
         override val creator = GenreViewHolder.CREATOR
     }
 }

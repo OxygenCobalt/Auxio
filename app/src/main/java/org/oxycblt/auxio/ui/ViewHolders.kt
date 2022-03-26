@@ -35,6 +35,7 @@ import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
+/** The shared ViewHolder for a [Song]. */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
@@ -61,7 +62,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Song>() {
+            object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.resolvedArtistName == oldItem.resolvedArtistName
@@ -69,7 +70,7 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 }
 
-/** The Shared ViewHolder for a [Album]. Instantiation should be done with [from]. */
+/** The Shared ViewHolder for a [Album]. */
 class AlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
@@ -99,7 +100,7 @@ private constructor(
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Album>() {
+            object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.resolvedArtistName == newItem.resolvedArtistName
@@ -139,7 +140,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Artist>() {
+            object : SimpleItemCallback<Artist>() {
                 override fun areItemsTheSame(oldItem: Artist, newItem: Artist) =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.albums.size == newItem.albums.size &&
@@ -179,7 +180,7 @@ private constructor(
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Genre>() {
+            object : SimpleItemCallback<Genre>() {
                 override fun areItemsTheSame(oldItem: Genre, newItem: Genre): Boolean =
                     oldItem.resolvedName == newItem.resolvedName &&
                         oldItem.songs.size == newItem.songs.size
@@ -187,7 +188,7 @@ private constructor(
     }
 }
 
-/** The Shared ViewHolder for a [Header]. Instantiation should be done with [from] */
+/** The Shared ViewHolder for a [Header]. */
 class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
     BindingViewHolder<Header, Unit>(binding.root) {
 
@@ -206,7 +207,7 @@ class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBin
             }
 
         val DIFFER =
-            object : ItemDiffCallback<Header>() {
+            object : SimpleItemCallback<Header>() {
                 override fun areItemsTheSame(oldItem: Header, newItem: Header): Boolean =
                     oldItem.string == newItem.string
             }

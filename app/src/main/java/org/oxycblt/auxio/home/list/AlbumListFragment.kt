@@ -18,17 +18,17 @@
 package org.oxycblt.auxio.home.list
 
 import android.view.View
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.ui.AlbumViewHolder
-import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
@@ -38,10 +38,16 @@ import org.oxycblt.auxio.ui.sliceArticle
  * @author
  */
 class AlbumListFragment : HomeListFragment<Album>() {
-    override val recyclerId: Int = R.id.home_album_list
-    override val homeAdapter = AlbumAdapter(this)
-    override val homeData: LiveData<List<Album>>
-        get() = homeModel.albums
+    private val homeAdapter = AlbumAdapter(this)
+
+    override fun setupRecycler(recycler: RecyclerView) {
+        recycler.apply {
+            id = R.id.home_album_list
+            adapter = homeAdapter
+        }
+
+        homeModel.albums.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
+    }
 
     override fun getPopup(pos: Int): String? {
         val album = homeModel.albums.value!![pos]
@@ -72,8 +78,8 @@ class AlbumListFragment : HomeListFragment<Album>() {
     }
 
     class AlbumAdapter(listener: MenuItemListener) :
-        MonoAdapter<Album, MenuItemListener, AlbumViewHolder>(listener, AlbumViewHolder.DIFFER) {
-        override val creator: BindingViewHolder.Creator<AlbumViewHolder>
-            get() = AlbumViewHolder.CREATOR
+        MonoAdapter<Album, MenuItemListener, AlbumViewHolder>(listener) {
+        override val data = PrimitiveBackingData<Album>(this)
+        override val creator = AlbumViewHolder.CREATOR
     }
 }

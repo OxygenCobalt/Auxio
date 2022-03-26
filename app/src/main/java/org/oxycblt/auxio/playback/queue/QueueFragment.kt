@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.requireAttached
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private var queueAdapter = NewQueueAdapter(this)
+    private var queueAdapter = QueueAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     private var callback: QueueDragCallback? = null
 
@@ -72,7 +72,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
             return
         }
 
-        queueAdapter.submitList(queue.toMutableList())
+        queueAdapter.data.submitList(queue.toMutableList())
     }
 
     private fun requireTouchHelper(): ItemTouchHelper {
