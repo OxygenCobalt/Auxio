@@ -31,6 +31,7 @@ import android.widget.RemoteViews
 import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
@@ -120,7 +121,9 @@ class WidgetProvider : AppWidgetProvider() {
                 .transformations(SquareFrameTransform(), transform)
                 .size(min(metrics.widthPixels, metrics.heightPixels))
         } else {
-            coverRequest.transformations(SquareFrameTransform())
+            // Note: Explicitly use the "original" size as without it the scaling logic
+            // in SquareFrameTransform breaks down and results in an error.
+            coverRequest.transformations(SquareFrameTransform()).size(Size.ORIGINAL)
         }
 
         context.imageLoader.enqueue(coverRequest.build())
