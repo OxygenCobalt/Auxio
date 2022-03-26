@@ -123,6 +123,13 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+fun RecyclerView.getViewHolderAt(pos: Int): RecyclerView.ViewHolder? {
+    return layoutManager?.run {
+        findViewByPosition(pos)?.let { child -> getChildViewHolder(child) }
+    }
+}
+
 /** Returns whether a recyclerview can scroll. */
 fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 

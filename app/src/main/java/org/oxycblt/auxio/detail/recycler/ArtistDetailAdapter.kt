@@ -17,9 +17,7 @@
  
 package org.oxycblt.auxio.detail.recycler
 
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -28,88 +26,76 @@ import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.ui.ActionHeaderViewHolder
-import org.oxycblt.auxio.ui.BaseViewHolder
-import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.ui.ArtistViewHolder
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.ItemDiffCallback
+import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
 /**
- * An adapter for displaying the [Album]s and [Song]s of an artist.
+ * An adapter for displaying [Artist] information and it's children. Unlike the other adapters, this
+ * one actually contains both album information and song information.
  * @author OxygenCobalt
  */
-class ArtistDetailAdapter(
-    private val playbackModel: PlaybackViewModel,
-    private val doOnClick: (data: Album) -> Unit,
-    private val doOnSongClick: (data: Song) -> Unit,
-    private val doOnLongClick: (view: View, data: Item) -> Unit,
-) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback()) {
+class ArtistDetailAdapter(listener: DetailItemListener) :
+    DetailAdapter<DetailItemListener>(listener, DIFFER) {
     private var currentAlbum: Album? = null
     private var currentAlbumHolder: Highlightable? = null
 
     private var currentSong: Song? = null
     private var currentSongHolder: Highlightable? = null
 
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is Artist -> IntegerTable.ITEM_TYPE_ARTIST_DETAIL
-            is Album -> IntegerTable.ITEM_TYPE_ARTIST_ALBUM
-            is Song -> IntegerTable.ITEM_TYPE_ARTIST_SONG
-            is Header -> IntegerTable.ITEM_TYPE_HEADER
-            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
-            else -> -1
-        }
-    }
+    override fun getCreatorFromItem(item: Item) =
+        super.getCreatorFromItem(item)
+            ?: when (item) {
+                is Artist -> ArtistDetailViewHolder.CREATOR
+                is Album -> ArtistAlbumViewHolder.CREATOR
+                is Song -> ArtistSongViewHolder.CREATOR
+                else -> null
+            }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            IntegerTable.ITEM_TYPE_ARTIST_DETAIL ->
-                ArtistDetailViewHolder(ItemDetailBinding.inflate(parent.context.inflater))
-            IntegerTable.ITEM_TYPE_ARTIST_ALBUM ->
-                ArtistAlbumViewHolder(ItemParentBinding.inflate(parent.context.inflater))
-            IntegerTable.ITEM_TYPE_ARTIST_SONG ->
-                ArtistSongViewHolder(ItemSongBinding.inflate(parent.context.inflater))
-            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
-            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
-            else -> error("Invalid ViewHolder item type $viewType")
-        }
-    }
+    override fun getCreatorFromViewType(viewType: Int) =
+        super.getCreatorFromViewType(viewType)
+            ?: when (viewType) {
+                ArtistDetailViewHolder.CREATOR.viewType -> ArtistDetailViewHolder.CREATOR
+                ArtistAlbumViewHolder.CREATOR.viewType -> ArtistAlbumViewHolder.CREATOR
+                ArtistSongViewHolder.CREATOR.viewType -> ArtistSongViewHolder.CREATOR
+                else -> null
+            }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-
+    override fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: DetailItemListener
+    ) {
+        super.onBind(viewHolder, item, listener)
         when (item) {
-            is Artist -> (holder as ArtistDetailViewHolder).bind(item)
-            is Album -> (holder as ArtistAlbumViewHolder).bind(item)
-            is Song -> (holder as ArtistSongViewHolder).bind(item)
-            is Header -> (holder as HeaderViewHolder).bind(item)
-            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
+            is Artist -> (viewHolder as ArtistDetailViewHolder).bind(item, listener)
+            is Album -> (viewHolder as ArtistAlbumViewHolder).bind(item, listener)
+            is Song -> (viewHolder as ArtistSongViewHolder).bind(item, listener)
             else -> {}
         }
+    }
 
-        if (holder is Highlightable) {
-            // If the item corresponds to a currently playing song/album then highlight it
-            if (item.id == currentAlbum?.id && item is Album) {
-                currentAlbumHolder?.setHighlighted(false)
-                currentAlbumHolder = holder
-                holder.setHighlighted(true)
-            } else if (item.id == currentSong?.id && item is Song) {
-                currentSongHolder?.setHighlighted(false)
-                currentSongHolder = holder
-                holder.setHighlighted(true)
-            } else {
-                holder.setHighlighted(false)
-            }
+    override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
+        // If the item corresponds to a currently playing song/album then highlight it
+        if (item.id == currentAlbum?.id && item is Album) {
+            currentAlbumHolder?.setHighlighted(false)
+            currentAlbumHolder = viewHolder
+            viewHolder.setHighlighted(true)
+        } else if (item.id == currentSong?.id && item is Song) {
+            currentSongHolder?.setHighlighted(false)
+            currentSongHolder = viewHolder
+            viewHolder.setHighlighted(true)
+        } else {
+            viewHolder.setHighlighted(false)
         }
     }
 
@@ -118,26 +104,10 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightAlbum(album: Album?, recycler: RecyclerView) {
-        if (album == currentAlbum) return // Already highlighting this ViewHolder
-
-        // Album is no longer valid, clear out this ViewHolder.
-        currentAlbumHolder?.setHighlighted(false)
-        currentAlbumHolder = null
+        if (album == currentAlbum) return
         currentAlbum = album
-
-        if (album != null) {
-            // Use existing data instead of having to re-sort it.
-            val pos = currentList.indexOfFirst { item -> item.id == album.id && item is Album }
-
-            // Check if the ViewHolder if this album is visible, and highlight it if so.
-            recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
-                recycler.getChildViewHolder(child)?.let {
-                    currentAlbumHolder = it as Highlightable
-
-                    currentAlbumHolder?.setHighlighted(true)
-                }
-            }
-        }
+        currentAlbumHolder?.setHighlighted(false)
+        currentAlbumHolder = highlightItem(album, recycler)
     }
 
     /**
@@ -145,91 +115,144 @@ class ArtistDetailAdapter(
      * @param recycler The recyclerview the highlighting should act on.
      */
     fun highlightSong(song: Song?, recycler: RecyclerView) {
-        if (song == currentSong) return // Already highlighting this ViewHolder
-
-        // Clear the current ViewHolder since it's invalid
-        currentSongHolder?.setHighlighted(false)
-        currentSongHolder = null
+        if (song == currentSong) return
         currentSong = song
+        currentSongHolder?.setHighlighted(false)
+        currentSongHolder = highlightItem(song, recycler)
+    }
 
-        if (song != null) {
-            // Use existing data instead of having to re-sort it.
-            // We also have to account for the album count when searching for the ViewHolder.
-            val pos = currentList.indexOfFirst { item -> item.id == song.id && item is Song }
-
-            // Check if the ViewHolder for this song is visible, if it is then highlight it.
-            // If the ViewHolder is not visible, then the adapter should take care of it if
-            // it does become visible.
-            recycler.layoutManager?.findViewByPosition(pos)?.let { child ->
-                recycler.getChildViewHolder(child)?.let {
-                    currentSongHolder = it as Highlightable
-                    currentSongHolder?.setHighlighted(true)
+    companion object {
+        private val DIFFER =
+            object : ItemDiffCallback<Item>() {
+                override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                    return when {
+                        oldItem is Artist && newItem is Artist ->
+                            ArtistDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Album && newItem is Album ->
+                            ArtistAlbumViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Song && newItem is Song ->
+                            ArtistSongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        else -> DetailAdapter.DIFFER.areItemsTheSame(oldItem, newItem)
+                    }
                 }
             }
-        }
+    }
+}
+
+private class ArtistDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
+    BindingViewHolder<Artist, DetailItemListener>(binding.root) {
+
+    override fun bind(item: Artist, listener: DetailItemListener) {
+        binding.detailCover.bindArtistImage(item)
+        binding.detailName.textSafe = item.resolvedName
+
+        // Get the genre that corresponds to the most songs in this artist, which would be
+        // the most "Prominent" genre.
+        binding.detailSubhead.textSafe =
+            item.songs.groupBy { it.genre.resolvedName }.entries.maxByOrNull { it.value.size }?.key
+                ?: binding.context.getString(R.string.def_genre)
+
+        binding.detailInfo.textSafe =
+            binding.context.getString(
+                R.string.fmt_two,
+                binding.context.getPluralSafe(R.plurals.fmt_album_count, item.albums.size),
+                binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size))
+
+        binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
+        binding.detailShuffleButton.setOnClickListener { listener.onShuffleParent() }
     }
 
-    inner class ArtistDetailViewHolder(private val binding: ItemDetailBinding) :
-        BaseViewHolder<Artist>(binding) {
+    companion object {
+        val CREATOR =
+            object : Creator<ArtistDetailViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_ARTIST_DETAIL
 
-        override fun onBind(data: Artist) {
-            val context = binding.root.context
-
-            binding.detailCover.apply {
-                bindArtistImage(data)
-                contentDescription =
-                    context.getString(R.string.desc_artist_image, data.resolvedName)
+                override fun create(context: Context) =
+                    ArtistDetailViewHolder(ItemDetailBinding.inflate(context.inflater))
             }
 
-            binding.detailName.textSafe = data.resolvedName
+        val DIFFER = ArtistViewHolder.DIFFER
+    }
+}
 
-            // Get the genre that corresponds to the most songs in this artist, which would be
-            // the most "Prominent" genre.
-            binding.detailSubhead.textSafe =
-                data.songs
-                    .groupBy { it.genre.resolvedName }
-                    .entries
-                    .maxByOrNull { it.value.size }
-                    ?.key
-                    ?: context.getString(R.string.def_genre)
+private class ArtistAlbumViewHolder
+private constructor(
+    private val binding: ItemParentBinding,
+) : BindingViewHolder<Album, MenuItemListener>(binding.root), Highlightable {
+    override fun bind(item: Album, listener: MenuItemListener) {
+        binding.parentImage.bindAlbumCover(item)
+        binding.parentName.textSafe = item.resolvedName
+        binding.parentInfo.textSafe = binding.context.getString(R.string.fmt_number, item.year)
 
-            binding.detailInfo.textSafe =
-                binding.context.getString(
-                    R.string.fmt_two,
-                    binding.context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
-                    binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
-
-            binding.detailPlayButton.setOnClickListener { playbackModel.playArtist(data, false) }
-
-            binding.detailShuffleButton.setOnClickListener { playbackModel.playArtist(data, true) }
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
+                true
+            }
         }
     }
 
-    inner class ArtistAlbumViewHolder(
-        private val binding: ItemParentBinding,
-    ) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick), Highlightable {
-        override fun onBind(data: Album) {
-            binding.parentImage.bindAlbumCover(data)
-            binding.parentName.textSafe = data.resolvedName
-            binding.parentInfo.textSafe = binding.context.getString(R.string.fmt_number, data.year)
-        }
+    override fun setHighlighted(isHighlighted: Boolean) {
+        binding.parentName.isActivated = isHighlighted
+    }
 
-        override fun setHighlighted(isHighlighted: Boolean) {
-            binding.parentName.isActivated = isHighlighted
+    companion object {
+        val CREATOR =
+            object : Creator<ArtistAlbumViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_ARTIST_ALBUM
+
+                override fun create(context: Context) =
+                    ArtistAlbumViewHolder(ItemParentBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Album>() {
+                override fun areItemsTheSame(oldItem: Album, newItem: Album) =
+                    oldItem.resolvedName == newItem.resolvedName && oldItem.year == newItem.year
+            }
+    }
+}
+
+private class ArtistSongViewHolder
+private constructor(
+    private val binding: ItemSongBinding,
+) : BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
+    override fun bind(item: Song, listener: MenuItemListener) {
+        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songName.textSafe = item.resolvedName
+        binding.songInfo.textSafe = item.resolvedAlbumName
+
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
+                true
+            }
         }
     }
 
-    inner class ArtistSongViewHolder(
-        private val binding: ItemSongBinding,
-    ) : BaseViewHolder<Song>(binding, doOnSongClick, doOnLongClick), Highlightable {
-        override fun onBind(data: Song) {
-            binding.songAlbumCover.bindAlbumCover(data)
-            binding.songName.textSafe = data.resolvedName
-            binding.songInfo.textSafe = data.resolvedAlbumName
-        }
+    override fun setHighlighted(isHighlighted: Boolean) {
+        binding.songName.isActivated = isHighlighted
+    }
 
-        override fun setHighlighted(isHighlighted: Boolean) {
-            binding.songName.isActivated = isHighlighted
-        }
+    companion object {
+        val CREATOR =
+            object : Creator<ArtistSongViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_ARTIST_SONG
+
+                override fun create(context: Context) =
+                    ArtistSongViewHolder(ItemSongBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Song>() {
+                override fun areItemsTheSame(oldItem: Song, newItem: Song) =
+                    oldItem.resolvedName == newItem.resolvedName &&
+                        oldItem.resolvedAlbumName == newItem.resolvedAlbumName
+            }
     }
 }

@@ -29,8 +29,8 @@ object IntegerTable {
     const val ITEM_TYPE_GENRE = 0xA003
     /** HeaderViewHolder */
     const val ITEM_TYPE_HEADER = 0xA004
-    /** ActionHeaderViewHolder */
-    const val ITEM_TYPE_ACTION_HEADER = 0xA005
+    /** SortHeaderViewHolder */
+    const val ITEM_TYPE_SORT_HEADER = 0xA005
 
     /** AlbumDetailViewHolder */
     const val ITEM_TYPE_ALBUM_DETAIL = 0xA006

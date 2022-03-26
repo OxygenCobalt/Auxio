@@ -18,20 +18,23 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
+import org.oxycblt.auxio.detail.recycler.DetailItemListener
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
-import org.oxycblt.auxio.music.ActionHeader
+import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.ActionMenu
+import org.oxycblt.auxio.ui.Header
+import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -39,37 +42,54 @@ import org.oxycblt.auxio.util.logW
  * The [DetailFragment] for a genre.
  * @author OxygenCobalt
  */
-class GenreDetailFragment : DetailFragment() {
+class GenreDetailFragment : DetailFragment(), DetailItemListener {
     private val args: GenreDetailFragmentArgs by navArgs()
+    private val detailAdapter = GenreDetailAdapter(this)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setGenreId(args.genreId)
 
-        val detailAdapter =
-            GenreDetailAdapter(
-                playbackModel,
-                doOnClick = { song -> playbackModel.playSong(song, PlaybackMode.IN_GENRE) },
-                doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_GENRE) })
-
         setupToolbar(detailModel.currentGenre.value!!)
-        setupRecycler(detailAdapter) { pos ->
-            val item = detailAdapter.currentList[pos]
-            item is Header || item is ActionHeader || item is Genre
+        binding.detailRecycler.apply {
+            adapter = detailAdapter
+            applySpans { pos ->
+                val item = detailAdapter.currentList[pos]
+                item is Header || item is SortHeader || item is Genre
+            }
         }
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.genreData.observe(viewLifecycleOwner, detailAdapter::submitList)
+        detailModel.genreData.observe(viewLifecycleOwner) { list -> detailAdapter.submitList(list) }
 
         detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
 
         playbackModel.song.observe(viewLifecycleOwner) { song -> updateSong(song, detailAdapter) }
+    }
 
-        detailModel.showMenu.observe(viewLifecycleOwner) { config ->
-            if (config != null) {
-                showMenu(config)
-            }
+    override fun onItemClick(item: Item) {
+        when (item) {
+            is Song -> playbackModel.playSong(item, PlaybackMode.IN_GENRE)
+            is Album ->
+                findNavController()
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
         }
+    }
+
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
+
+    override fun onPlayParent() {
+        playbackModel.playGenre(requireNotNull(detailModel.currentGenre.value), false)
+    }
+
+    override fun onShuffleParent() {
+        playbackModel.playGenre(requireNotNull(detailModel.currentGenre.value), true)
+    }
+
+    override fun onShowSortMenu(anchor: View) {
+        showSortMenu(anchor, detailModel.genreSort, onConfirm = { detailModel.genreSort = it })
     }
 
     private fun handleNavigation(item: Music?) {

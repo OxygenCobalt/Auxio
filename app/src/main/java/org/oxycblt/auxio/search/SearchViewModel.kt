@@ -25,12 +25,12 @@ import androidx.lifecycle.viewModelScope
 import java.text.Normalizer
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.Header
+import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 

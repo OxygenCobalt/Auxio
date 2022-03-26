@@ -29,8 +29,8 @@
         app:layout_constraintBottom_toTopOf="@id/header_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_sort" />
+        android:contentDescription="@string/lbl_sort"
+        android:src="@drawable/ic_sort" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/header_divider"

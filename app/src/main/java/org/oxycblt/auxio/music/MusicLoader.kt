@@ -357,10 +357,8 @@ class MusicLoader {
 
                 while (cursor.moveToNext()) {
                     // Genre names can be a normal name, an ID3v2 constant, or null. Normal names
-                    // are
-                    // resolved as usual, but null values don't make sense and are often junk
-                    // anyway,
-                    // so we skip genres that have them.
+                    // are resolved as usual, but null values don't make sense and are often junk
+                    // anyway, so we skip genres that have them.
                     val id = cursor.getLong(idIndex)
                     val name = cursor.getStringOrNull(nameIndex) ?: continue
                     val resolvedName = name.genreNameCompat ?: name

@@ -38,8 +38,10 @@ import org.oxycblt.auxio.util.logD
  * hot garbage. This shouldn't have *too many* UI bugs. I hope.
  * @author OxygenCobalt
  */
-class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
-    private lateinit var queueAdapter: QueueAdapter
+class QueueDragCallback(
+    private val playbackModel: PlaybackViewModel,
+    private val queueAdapter: NewQueueAdapter
+) : ItemTouchHelper.Callback() {
     private var shouldLift = true
 
     override fun getMovementFlags(
@@ -83,7 +85,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
         // themselves when being dragged. Too bad google's implementation of this doesn't even
         // work! To emulate it on my own, I check if this child is in a drag state and then animate
         // an elevation change.
-        val holder = viewHolder as QueueAdapter.QueueSongViewHolder
+        val holder = viewHolder as QueueSongViewHolder
 
         if (shouldLift && isCurrentlyActive && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             logD("Lifting queue item")
@@ -122,7 +124,7 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         // When an elevated item is cleared, we reset the elevation using another animation.
-        val holder = viewHolder as QueueAdapter.QueueSongViewHolder
+        val holder = viewHolder as QueueSongViewHolder
 
         if (holder.itemView.translationZ != 0f) {
             logD("Dropping queue item")
@@ -162,14 +164,6 @@ class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouc
     }
 
     override fun isLongPressDragEnabled(): Boolean = false
-
-    /**
-     * Add the queue adapter to this callback. Done because there's a circular dependency between
-     * the two objects
-     */
-    fun addQueueAdapter(adapter: QueueAdapter) {
-        queueAdapter = adapter
-    }
 
     companion object {
         const val MINIMUM_INITIAL_DRAG_VELOCITY = 10

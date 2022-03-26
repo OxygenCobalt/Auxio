@@ -17,15 +17,16 @@
  
 package org.oxycblt.auxio.home.list
 
-import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.ui.ArtistViewHolder
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
 
@@ -33,35 +34,26 @@ import org.oxycblt.auxio.ui.sliceArticle
  * A [HomeListFragment] for showing a list of [Artist]s.
  * @author
  */
-class ArtistListFragment : HomeListFragment() {
-    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        val homeAdapter =
-            ArtistAdapter(
-                doOnClick = { artist ->
-                    findNavController().navigate(HomeFragmentDirections.actionShowArtist(artist.id))
-                },
-                ::newMenu)
+class ArtistListFragment : HomeListFragment<Artist>() {
+    override val recyclerId: Int = R.id.home_artist_list
+    override val homeAdapter = ArtistAdapter(this)
+    override val homeData: LiveData<List<Artist>>
+        get() = homeModel.artists
 
-        setupRecycler(R.id.home_artist_list, homeAdapter, homeModel.artists)
+    override fun getPopup(pos: Int) =
+        homeModel.artists.value!![pos].resolvedName.sliceArticle().first().uppercase()
+
+    override fun onItemClick(item: Item) {
+        check(item is Artist)
+        findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
     }
 
-    override val listPopupProvider: (Int) -> String
-        get() = { idx ->
-            homeModel.artists.value!![idx].resolvedName.sliceArticle().first().uppercase()
-        }
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
 
-    class ArtistAdapter(
-        private val doOnClick: (data: Artist) -> Unit,
-        private val doOnLongClick: (view: View, data: Artist) -> Unit,
-    ) : HomeAdapter<Artist, ArtistViewHolder>() {
-        override fun getItemCount(): Int = data.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistViewHolder {
-            return ArtistViewHolder.from(parent.context, doOnClick, doOnLongClick)
-        }
-
-        override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
-            holder.bind(data[position])
-        }
+    class ArtistAdapter(listener: MenuItemListener) :
+        MonoAdapter<Artist, MenuItemListener, ArtistViewHolder>(listener, ArtistViewHolder.DIFFER) {
+        override val creator = ArtistViewHolder.CREATOR
     }
 }

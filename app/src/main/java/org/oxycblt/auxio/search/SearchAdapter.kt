@@ -17,68 +17,76 @@
  
 package org.oxycblt.auxio.search
 
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.AlbumViewHolder
 import org.oxycblt.auxio.ui.ArtistViewHolder
-import org.oxycblt.auxio.ui.DiffCallback
 import org.oxycblt.auxio.ui.GenreViewHolder
-import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.ui.Header
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.ItemDiffCallback
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MultiAdapter
+import org.oxycblt.auxio.ui.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.SongViewHolder
 
-/**
- * A Multi-ViewHolder adapter that displays the results of a search query.
- * @author OxygenCobalt
- */
-class SearchAdapter(
-    private val doOnClick: (data: Music) -> Unit,
-    private val doOnLongClick: (view: View, data: Music) -> Unit
-) : ListAdapter<Item, RecyclerView.ViewHolder>(DiffCallback<Item>()) {
-
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is Genre -> IntegerTable.ITEM_TYPE_GENRE
-            is Artist -> IntegerTable.ITEM_TYPE_ARTIST
-            is Album -> IntegerTable.ITEM_TYPE_ALBUM
-            is Song -> IntegerTable.ITEM_TYPE_SONG
-            is Header -> IntegerTable.ITEM_TYPE_HEADER
-            else -> -1
+class NeoSearchAdapter(listener: MenuItemListener) :
+    MultiAdapter<MenuItemListener>(listener, DIFFER) {
+    override fun getCreatorFromItem(item: Item) =
+        when (item) {
+            is Song -> SongViewHolder.CREATOR
+            is Album -> AlbumViewHolder.CREATOR
+            is Artist -> ArtistViewHolder.CREATOR
+            is Genre -> GenreViewHolder.CREATOR
+            is Header -> NewHeaderViewHolder.CREATOR
+            else -> null
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            IntegerTable.ITEM_TYPE_GENRE ->
-                GenreViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            IntegerTable.ITEM_TYPE_ARTIST ->
-                ArtistViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            IntegerTable.ITEM_TYPE_ALBUM ->
-                AlbumViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            IntegerTable.ITEM_TYPE_SONG ->
-                SongViewHolder.from(parent.context, doOnClick, doOnLongClick)
-            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
-            else -> error("Invalid ViewHolder item type")
+    override fun getCreatorFromViewType(viewType: Int) =
+        when (viewType) {
+            SongViewHolder.CREATOR.viewType -> SongViewHolder.CREATOR
+            AlbumViewHolder.CREATOR.viewType -> AlbumViewHolder.CREATOR
+            ArtistViewHolder.CREATOR.viewType -> ArtistViewHolder.CREATOR
+            GenreViewHolder.CREATOR.viewType -> GenreViewHolder.CREATOR
+            NewHeaderViewHolder.CREATOR.viewType -> NewHeaderViewHolder.CREATOR
+            else -> null
         }
-    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
-            is Genre -> (holder as GenreViewHolder).bind(item)
-            is Artist -> (holder as ArtistViewHolder).bind(item)
-            is Album -> (holder as AlbumViewHolder).bind(item)
-            is Song -> (holder as SongViewHolder).bind(item)
-            is Header -> (holder as HeaderViewHolder).bind(item)
+    override fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: MenuItemListener
+    ) {
+        when (item) {
+            is Song -> (viewHolder as SongViewHolder).bind(item, listener)
+            is Album -> (viewHolder as AlbumViewHolder).bind(item, listener)
+            is Artist -> (viewHolder as ArtistViewHolder).bind(item, listener)
+            is Genre -> (viewHolder as GenreViewHolder).bind(item, listener)
+            is Header -> (viewHolder as NewHeaderViewHolder).bind(item, Unit)
             else -> {}
         }
+    }
+
+    companion object {
+        private val DIFFER =
+            object : ItemDiffCallback<Item>() {
+                override fun areItemsTheSame(oldItem: Item, newItem: Item) =
+                    when {
+                        oldItem is Song && newItem is Song ->
+                            SongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Album && newItem is Album ->
+                            AlbumViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Artist && newItem is Artist ->
+                            ArtistViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Genre && newItem is Genre ->
+                            GenreViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is Header && newItem is Header ->
+                            NewHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        else -> false
+                    }
+            }
     }
 }

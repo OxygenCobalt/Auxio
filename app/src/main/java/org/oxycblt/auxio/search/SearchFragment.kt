@@ -19,6 +19,7 @@ package org.oxycblt.auxio.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
@@ -33,44 +34,42 @@ import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.Header
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.requireAttached
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
  * @author OxygenCobalt
  */
-class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
+class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemListener {
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
+    private val searchAdapter = NeoSearchAdapter(this)
+    private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSearchBinding, savedInstanceState: Bundle?) {
-        val imm = requireContext().getSystemServiceSafe(InputMethodManager::class)
-
-        val searchAdapter =
-            SearchAdapter(doOnClick = { item -> onItemSelection(item, imm) }, ::newMenu)
-
-        // --- UI SETUP --
-
         binding.searchToolbar.apply {
             menu.findItem(searchModel.filterMode?.itemId ?: R.id.option_filter_all).isChecked = true
 
             setNavigationOnClickListener {
-                imm.hide()
+                requireImm().hide()
                 findNavController().navigateUp()
             }
 
@@ -94,7 +93,9 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
                 requestFocus()
-                postDelayed(200) { imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT) }
+                postDelayed(200) {
+                    requireImm().showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                }
 
                 launchedKeyboard = true
             }
@@ -107,13 +108,11 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        searchModel.searchResults.observe(viewLifecycleOwner) { results ->
-            updateResults(results, searchAdapter)
-        }
+        searchModel.searchResults.observe(viewLifecycleOwner, ::updateResults)
 
         detailModel.navToItem.observe(viewLifecycleOwner) { item ->
             handleNavigation(item)
-            imm.hide()
+            requireImm().hide()
         }
     }
 
@@ -122,10 +121,47 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
         searchModel.setNavigating(false)
     }
 
-    private fun updateResults(results: List<Item>, searchAdapter: SearchAdapter) {
+    override fun onDestroyBinding(binding: FragmentSearchBinding) {
+        super.onDestroyBinding(binding)
+        binding.searchRecycler.adapter = null
+        imm = null
+    }
+
+    override fun onItemClick(item: Item) {
+        if (item is Song) {
+            playbackModel.playSong(item)
+            return
+        }
+
+        if (item is MusicParent && !searchModel.isNavigating) {
+            searchModel.setNavigating(true)
+
+            logD("Navigating to the detail fragment for ${item.rawName}")
+
+            findNavController()
+                .navigate(
+                    when (item) {
+                        is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
+                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
+                    })
+
+            requireImm().hide()
+        }
+    }
+
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
+
+    private fun updateResults(results: List<Item>) {
+        if (isDetached) {
+            error("Fragment not attached to activity")
+        }
+
         val binding = requireBinding()
 
-        searchAdapter.submitList(results) {
+        searchAdapter.submitList(results.toMutableList()) {
             // I would make it so that the position is only scrolled back to the top when
             // the query actually changes instead of once every re-creation event, but sadly
             // that doesn't seem possible.
@@ -146,41 +182,18 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>() {
                 })
     }
 
-    private fun InputMethodManager.hide() {
-        hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    private fun requireImm(): InputMethodManager {
+        requireAttached()
+        val instance = imm
+        if (instance != null) {
+            return instance
+        }
+        val newInstance = requireContext().getSystemServiceSafe(InputMethodManager::class)
+        imm = newInstance
+        return newInstance
     }
 
-    /**
-     * Function that handles when an [item] is selected. Handles all datatypes that are selectable.
-     */
-    private fun onItemSelection(item: Music, imm: InputMethodManager) {
-        if (item is Song) {
-            playbackModel.playSong(item)
-
-            return
-        }
-
-        if (!searchModel.isNavigating) {
-            searchModel.setNavigating(true)
-
-            logD("Navigating to the detail fragment for ${item.rawName}")
-
-            findNavController()
-                .navigate(
-                    when (item) {
-                        is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
-                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
-
-                        // If given model wasn't valid, then reset the navigation status
-                        // and abort the navigation.
-                        else -> {
-                            searchModel.setNavigating(false)
-                            return
-                        }
-                    })
-
-            imm.hide()
-        }
+    private fun InputMethodManager.hide() {
+        hideSoftInputFromWindow(requireView().windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 }

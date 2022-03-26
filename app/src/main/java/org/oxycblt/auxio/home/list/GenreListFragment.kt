@@ -17,52 +17,43 @@
  
 package org.oxycblt.auxio.home.list
 
-import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.ui.GenreViewHolder
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
-import org.oxycblt.auxio.util.context
 
 /**
  * A [HomeListFragment] for showing a list of [Genre]s.
  * @author
  */
-class GenreListFragment : HomeListFragment() {
-    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        val homeAdapter =
-            GenreAdapter(
-                doOnClick = { Genre ->
-                    findNavController().navigate(HomeFragmentDirections.actionShowGenre(Genre.id))
-                },
-                ::newMenu)
+class GenreListFragment : HomeListFragment<Genre>() {
+    override val recyclerId = R.id.home_genre_list
+    override val homeAdapter = GenreAdapter(this)
+    override val homeData: LiveData<List<Genre>>
+        get() = homeModel.genres
 
-        setupRecycler(R.id.home_genre_list, homeAdapter, homeModel.genres)
+    override fun getPopup(pos: Int) =
+        homeModel.genres.value!![pos].resolvedName.sliceArticle().first().uppercase()
+
+    override fun onItemClick(item: Item) {
+        check(item is Genre)
+        findNavController().navigate(HomeFragmentDirections.actionShowGenre(item.id))
     }
 
-    override val listPopupProvider: (Int) -> String
-        get() = { idx ->
-            homeModel.genres.value!![idx].resolvedName.sliceArticle().first().uppercase()
-        }
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
 
-    class GenreAdapter(
-        private val doOnClick: (data: Genre) -> Unit,
-        private val doOnLongClick: (view: View, data: Genre) -> Unit,
-    ) : HomeAdapter<Genre, GenreViewHolder>() {
-        override fun getItemCount(): Int = data.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
-            return GenreViewHolder.from(parent.context, doOnClick, doOnLongClick)
-        }
-
-        override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
-            holder.bind(data[position])
-        }
+    class GenreAdapter(listener: MenuItemListener) :
+        MonoAdapter<Genre, MenuItemListener, GenreViewHolder>(listener, GenreViewHolder.DIFFER) {
+        override val creator = GenreViewHolder.CREATOR
     }
 }

@@ -23,56 +23,68 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentQueueBinding
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.requireAttached
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
  * @author OxygenCobalt
  */
-class QueueFragment : ViewBindingFragment<FragmentQueueBinding>() {
+class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private var lastShuffle: Boolean? = null
+    private var queueAdapter = NewQueueAdapter(this)
+    private var touchHelper: ItemTouchHelper? = null
+    private var callback: QueueDragCallback? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentQueueBinding, savedInstanceState: Bundle?) {
-        // TODO: Merge ItemTouchHelper with QueueAdapter
-        val callback = QueueDragCallback(playbackModel)
-        val helper = ItemTouchHelper(callback)
-        val queueAdapter = QueueAdapter(helper)
-        callback.addQueueAdapter(queueAdapter)
-
         binding.queueToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
         binding.queueRecycler.apply {
-            setHasFixedSize(true)
             adapter = queueAdapter
-            helper.attachToRecyclerView(this)
+            requireTouchHelper().attachToRecyclerView(this)
         }
 
         // --- VIEWMODEL SETUP ----
 
-        lastShuffle = playbackModel.isShuffling.value
-        playbackModel.isShuffling.observe(viewLifecycleOwner) { isShuffling ->
-            // Try to prevent the queue adapter from going spastic during reshuffle events
-            // by just scrolling back to the top.
-            if (isShuffling != lastShuffle) {
-                logD("Reshuffle event, scrolling to top")
-                lastShuffle = isShuffling
-                binding.queueRecycler.scrollToPosition(0)
-            }
+        playbackModel.nextUp.observe(viewLifecycleOwner, ::updateQueue)
+    }
+
+    override fun onDestroyBinding(binding: FragmentQueueBinding) {
+        super.onDestroyBinding(binding)
+        binding.queueRecycler.adapter = null
+        touchHelper = null
+        callback = null
+    }
+
+    override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
+        requireTouchHelper().startDrag(viewHolder)
+    }
+
+    private fun updateQueue(queue: List<Song>) {
+        if (queue.isEmpty()) {
+            findNavController().navigateUp()
+            return
         }
 
-        playbackModel.nextUp.observe(viewLifecycleOwner) { queue ->
-            if (queue.isEmpty()) {
-                findNavController().navigateUp()
-                return@observe
-            }
+        queueAdapter.submitList(queue.toMutableList())
+    }
 
-            queueAdapter.submitList(queue.toMutableList())
+    private fun requireTouchHelper(): ItemTouchHelper {
+        requireAttached()
+        val instance = touchHelper
+        if (instance != null) {
+            return instance
         }
+        val newCallback = QueueDragCallback(playbackModel, queueAdapter)
+        val newInstance = ItemTouchHelper(newCallback)
+        callback = newCallback
+        touchHelper = newInstance
+        return newInstance
     }
 }

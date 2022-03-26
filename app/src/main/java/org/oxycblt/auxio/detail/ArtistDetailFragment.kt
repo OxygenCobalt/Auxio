@@ -18,21 +18,24 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
-import org.oxycblt.auxio.music.ActionHeader
+import org.oxycblt.auxio.detail.recycler.DetailItemListener
+import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Header
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.ui.ActionMenu
+import org.oxycblt.auxio.ui.Header
+import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -40,40 +43,27 @@ import org.oxycblt.auxio.util.logW
  * The [DetailFragment] for an artist.
  * @author OxygenCobalt
  */
-class ArtistDetailFragment : DetailFragment() {
+class ArtistDetailFragment : DetailFragment(), DetailItemListener {
     private val args: ArtistDetailFragmentArgs by navArgs()
+    private val detailAdapter = ArtistDetailAdapter(this)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setArtistId(args.artistId)
 
-        val detailAdapter =
-            ArtistDetailAdapter(
-                playbackModel,
-                doOnClick = { data ->
-                    if (!detailModel.isNavigating) {
-                        detailModel.setNavigating(true)
-                        findNavController()
-                            .navigate(ArtistDetailFragmentDirections.actionShowAlbum(data.id))
-                    }
-                },
-                doOnSongClick = { data -> playbackModel.playSong(data, PlaybackMode.IN_ARTIST) },
-                doOnLongClick = { view, data -> newMenu(view, data, ActionMenu.FLAG_IN_ARTIST) })
-
         setupToolbar(detailModel.currentArtist.value!!)
-        setupRecycler(detailAdapter) { pos ->
-            // If the item is an ActionHeader we need to also make the item full-width
-            val item = detailAdapter.currentList[pos]
-            item is Header || item is ActionHeader || item is Artist
+        requireBinding().detailRecycler.apply {
+            adapter = detailAdapter
+            applySpans { pos ->
+                // If the item is an ActionHeader we need to also make the item full-width
+                val item = detailAdapter.currentList[pos]
+                item is Header || item is SortHeader || item is Artist
+            }
         }
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.artistData.observe(viewLifecycleOwner, detailAdapter::submitList)
-
-        detailModel.showMenu.observe(viewLifecycleOwner) { config ->
-            if (config != null) {
-                showMenu(config) { id -> id != R.id.option_sort_artist }
-            }
+        detailModel.artistData.observe(viewLifecycleOwner) { list ->
+            detailAdapter.submitList(list)
         }
 
         detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
@@ -85,6 +75,35 @@ class ArtistDetailFragment : DetailFragment() {
         playbackModel.parent.observe(viewLifecycleOwner) { parent ->
             updateParent(parent, detailAdapter)
         }
+    }
+
+    override fun onItemClick(item: Item) {
+        when (item) {
+            is Song -> playbackModel.playSong(item, PlaybackMode.IN_ARTIST)
+            is Album ->
+                findNavController()
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
+        }
+    }
+
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
+
+    override fun onPlayParent() {
+        playbackModel.playArtist(requireNotNull(detailModel.currentArtist.value), false)
+    }
+
+    override fun onShuffleParent() {
+        playbackModel.playArtist(requireNotNull(detailModel.currentArtist.value), true)
+    }
+
+    override fun onShowSortMenu(anchor: View) {
+        showSortMenu(
+            anchor,
+            detailModel.artistSort,
+            onConfirm = { detailModel.artistSort = it },
+            showItem = { id -> id != R.id.option_sort_artist })
     }
 
     private fun handleNavigation(item: Music?) {

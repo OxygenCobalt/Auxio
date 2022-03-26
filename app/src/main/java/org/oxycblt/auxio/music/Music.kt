@@ -20,17 +20,9 @@ package org.oxycblt.auxio.music
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import android.view.View
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import org.oxycblt.auxio.ui.Item
 
 // --- MUSIC MODELS ---
-
-/** The base for all items in Auxio. */
-sealed class Item {
-    /** A unique ID for this item. ***THIS IS NOT A MEDIASTORE ID!** */
-    abstract val id: Long
-}
 
 /** [Item] variant that represents a music item. */
 sealed class Music : Item() {
@@ -244,50 +236,4 @@ data class Genre(
     /** The formatted total duration of this genre */
     val totalDuration: String
         get() = songs.sumOf { it.seconds }.toDuration(false)
-}
-
-/** A data object used solely for the "Header" UI element. */
-data class Header(
-    override val id: Long,
-    /** The string resource used for the header. */
-    @StringRes val string: Int
-) : Item()
-
-/**
- * A data object used for an action header. Like [Header], but with a button.
- * @see Header
- */
-data class ActionHeader(
-    override val id: Long,
-    /** The string resource used for the header. */
-    @StringRes val string: Int,
-    /** The icon resource used for the header action. */
-    @DrawableRes val icon: Int,
-    /** The string resource used for the header action's content description. */
-    @StringRes val desc: Int,
-    /** A callback for when this item is clicked. */
-    val onClick: (View) -> Unit,
-) : Item() {
-    // All lambdas are not equal to each-other, so we override equals/hashCode and exclude them.
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ActionHeader) return false
-
-        if (id != other.id) return false
-        if (string != other.string) return false
-        if (icon != other.icon) return false
-        if (desc != other.desc) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + string.hashCode()
-        result = 31 * result + icon
-        result = 31 * result + desc
-
-        return result
-    }
 }

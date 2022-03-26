@@ -20,6 +20,7 @@ package org.oxycblt.auxio.util
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Looper
+import androidx.fragment.app.Fragment
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned. Will
@@ -32,5 +33,11 @@ fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
 fun assertBackgroundThread() {
     check(Looper.myLooper() != Looper.getMainLooper()) {
         "This operation must be ran on a background thread"
+    }
+}
+
+fun Fragment.requireAttached() {
+    if (isDetached) {
+        error("Fragment is detached from activity")
     }
 }

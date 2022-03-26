@@ -17,16 +17,18 @@
  
 package org.oxycblt.auxio.home.list
 
-import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.ui.AlbumViewHolder
+import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
@@ -35,50 +37,43 @@ import org.oxycblt.auxio.ui.sliceArticle
  * A [HomeListFragment] for showing a list of [Album]s.
  * @author
  */
-class AlbumListFragment : HomeListFragment() {
-    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        val homeAdapter =
-            AlbumAdapter(
-                doOnClick = { album ->
-                    findNavController().navigate(HomeFragmentDirections.actionShowAlbum(album.id))
-                },
-                ::newMenu)
+class AlbumListFragment : HomeListFragment<Album>() {
+    override val recyclerId: Int = R.id.home_album_list
+    override val homeAdapter = AlbumAdapter(this)
+    override val homeData: LiveData<List<Album>>
+        get() = homeModel.albums
 
-        setupRecycler(R.id.home_album_list, homeAdapter, homeModel.albums)
+    override fun getPopup(pos: Int): String? {
+        val album = homeModel.albums.value!![pos]
+
+        // Change how we display the popup depending on the mode.
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
+            // By Name -> Use Name
+            is Sort.ByName -> album.resolvedName.sliceArticle().first().uppercase()
+
+            // By Artist -> Use Artist Name
+            is Sort.ByArtist -> album.artist.resolvedName.sliceArticle().first().uppercase()
+
+            // Year -> Use Full Year
+            is Sort.ByYear -> album.year?.toString() ?: getString(R.string.def_date)
+
+            // Unsupported sort, error gracefully
+            else -> null
+        }
     }
 
-    override val listPopupProvider: (Int) -> String
-        get() = { idx ->
-            val album = homeModel.albums.value!![idx]
+    override fun onItemClick(item: Item) {
+        check(item is Album)
+        findNavController().navigate(HomeFragmentDirections.actionShowAlbum(item.id))
+    }
 
-            // Change how we display the popup depending on the mode.
-            when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
-                // By Name -> Use Name
-                is Sort.ByName -> album.resolvedName.sliceArticle().first().uppercase()
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
 
-                // By Artist -> Use Artist Name
-                is Sort.ByArtist -> album.artist.resolvedName.sliceArticle().first().uppercase()
-
-                // Year -> Use Full Year
-                is Sort.ByYear -> album.year?.toString() ?: getString(R.string.def_date)
-
-                // Unsupported sort, error gracefully
-                else -> ""
-            }
-        }
-
-    class AlbumAdapter(
-        private val doOnClick: (data: Album) -> Unit,
-        private val doOnLongClick: (view: View, data: Album) -> Unit,
-    ) : HomeAdapter<Album, AlbumViewHolder>() {
-        override fun getItemCount(): Int = data.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
-            return AlbumViewHolder.from(parent.context, doOnClick, doOnLongClick)
-        }
-
-        override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-            holder.bind(data[position])
-        }
+    class AlbumAdapter(listener: MenuItemListener) :
+        MonoAdapter<Album, MenuItemListener, AlbumViewHolder>(listener, AlbumViewHolder.DIFFER) {
+        override val creator: BindingViewHolder.Creator<AlbumViewHolder>
+            get() = AlbumViewHolder.CREATOR
     }
 }

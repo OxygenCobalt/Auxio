@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Auxio Project
+ * Copyright (c) 2022 Auxio Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,99 +18,54 @@
 package org.oxycblt.auxio.ui
 
 import android.content.Context
-import android.view.View
-import androidx.appcompat.widget.TooltipCompat
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.coil.bindGenreImage
-import org.oxycblt.auxio.databinding.ItemActionHeaderBinding
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
-import org.oxycblt.auxio.music.ActionHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
-/**
- * A [RecyclerView.ViewHolder] that streamlines a lot of the common things across all viewholders.
- * @param T The datatype, inheriting [Item] for this ViewHolder.
- * @param binding Basic [ViewDataBinding] required to set up click listeners & sizing.
- * @param doOnClick (Optional) Function that calls on a click.
- * @param doOnLongClick (Optional) Functions that calls on a long-click.
- * @author OxygenCobalt
- */
-abstract class BaseViewHolder<T : Item>(
-    private val binding: ViewBinding,
-    private val doOnClick: ((data: T) -> Unit)? = null,
-    private val doOnLongClick: ((view: View, data: T) -> Unit)? = null
-) : RecyclerView.ViewHolder(binding.root) {
-    init {
-        // Force the layout to *actually* be the screen width
-        binding.root.layoutParams =
-            RecyclerView.LayoutParams(
-                RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-    }
-
-    /**
-     * Bind the viewholder with whatever [Item] instance that has been specified. Will call [onBind]
-     * on the inheriting ViewHolder.
-     * @param data Data that the viewholder should be bound with
-     */
-    fun bind(data: T) {
-        doOnClick?.let { onClick -> binding.root.setOnClickListener { onClick(data) } }
-
-        doOnLongClick?.let { onLongClick ->
-            binding.root.setOnLongClickListener { view ->
-                onLongClick(view, data)
+class SongViewHolder private constructor(private val binding: ItemSongBinding) :
+    BindingViewHolder<Song, MenuItemListener>(binding.root) {
+    override fun bind(item: Song, listener: MenuItemListener) {
+        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songName.textSafe = item.resolvedName
+        binding.songInfo.textSafe = item.resolvedArtistName
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
                 true
             }
         }
-
-        onBind(data)
-    }
-
-    /**
-     * Function that performs binding operations unique to the inheriting viewholder. Add any
-     * specialized code to an override of this instead of [BaseViewHolder] itself.
-     */
-    protected abstract fun onBind(data: T)
-}
-
-/** The Shared ViewHolder for a [Song]. Instantiation should be done with [from]. */
-class SongViewHolder
-private constructor(
-    private val binding: ItemSongBinding,
-    doOnClick: (data: Song) -> Unit,
-    doOnLongClick: (view: View, data: Song) -> Unit
-) : BaseViewHolder<Song>(binding, doOnClick, doOnLongClick) {
-
-    override fun onBind(data: Song) {
-        binding.songAlbumCover.bindAlbumCover(data)
-        binding.songName.textSafe = data.resolvedName
-        binding.songInfo.textSafe = data.resolvedArtistName
     }
 
     companion object {
-        /** Create an instance of [SongViewHolder] */
-        fun from(
-            context: Context,
-            doOnClick: (data: Song) -> Unit,
-            doOnLongClick: (view: View, data: Song) -> Unit
-        ): SongViewHolder {
-            return SongViewHolder(
-                ItemSongBinding.inflate(context.inflater), doOnClick, doOnLongClick)
-        }
+        val CREATOR =
+            object : Creator<SongViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_SONG
+
+                override fun create(context: Context) =
+                    SongViewHolder(ItemSongBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Song>() {
+                override fun areItemsTheSame(oldItem: Song, newItem: Song) =
+                    oldItem.resolvedName == newItem.resolvedName &&
+                        oldItem.resolvedArtistName == oldItem.resolvedArtistName
+            }
     }
 }
 
@@ -118,122 +73,142 @@ private constructor(
 class AlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-    doOnClick: (data: Album) -> Unit,
-    doOnLongClick: (view: View, data: Album) -> Unit
-) : BaseViewHolder<Album>(binding, doOnClick, doOnLongClick) {
+) : BindingViewHolder<Album, MenuItemListener>(binding.root) {
 
-    override fun onBind(data: Album) {
-        binding.parentImage.bindAlbumCover(data)
-        binding.parentName.textSafe = data.resolvedName
-        binding.parentInfo.textSafe = data.resolvedArtistName
+    override fun bind(item: Album, listener: MenuItemListener) {
+        binding.parentImage.bindAlbumCover(item)
+        binding.parentName.textSafe = item.resolvedName
+        binding.parentInfo.textSafe = item.resolvedArtistName
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
+                true
+            }
+        }
     }
 
     companion object {
-        /** Create an instance of [AlbumViewHolder] */
-        fun from(
-            context: Context,
-            doOnClick: (data: Album) -> Unit,
-            doOnLongClick: (view: View, data: Album) -> Unit
-        ): AlbumViewHolder {
-            return AlbumViewHolder(
-                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
-        }
+        val CREATOR =
+            object : Creator<AlbumViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_ALBUM
+
+                override fun create(context: Context) =
+                    AlbumViewHolder(ItemParentBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Album>() {
+                override fun areItemsTheSame(oldItem: Album, newItem: Album) =
+                    oldItem.resolvedName == newItem.resolvedName &&
+                        oldItem.resolvedArtistName == newItem.resolvedArtistName
+            }
     }
 }
 
-/** The Shared ViewHolder for a [Artist]. Instantiation should be done with [from]. */
-class ArtistViewHolder
-private constructor(
-    private val binding: ItemParentBinding,
-    doOnClick: (Artist) -> Unit,
-    doOnLongClick: (view: View, data: Artist) -> Unit
-) : BaseViewHolder<Artist>(binding, doOnClick, doOnLongClick) {
+/** The Shared ViewHolder for a [Artist]. */
+class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
+    BindingViewHolder<Artist, MenuItemListener>(binding.root) {
 
-    override fun onBind(data: Artist) {
-        binding.parentImage.bindArtistImage(data)
-        binding.parentName.textSafe = data.resolvedName
+    override fun bind(item: Artist, listener: MenuItemListener) {
+        binding.parentImage.bindArtistImage(item)
+        binding.parentName.textSafe = item.resolvedName
         binding.parentInfo.textSafe =
             binding.context.getString(
                 R.string.fmt_two,
-                binding.context.getPluralSafe(R.plurals.fmt_album_count, data.albums.size),
-                binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size))
+                binding.context.getPluralSafe(R.plurals.fmt_album_count, item.albums.size),
+                binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size))
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
+                true
+            }
+        }
     }
 
     companion object {
-        /** Create an instance of [ArtistViewHolder] */
-        fun from(
-            context: Context,
-            doOnClick: (Artist) -> Unit,
-            doOnLongClick: (view: View, data: Artist) -> Unit
-        ): ArtistViewHolder {
-            return ArtistViewHolder(
-                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
-        }
+        val CREATOR =
+            object : Creator<ArtistViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_ARTIST
+
+                override fun create(context: Context) =
+                    ArtistViewHolder(ItemParentBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Artist>() {
+                override fun areItemsTheSame(oldItem: Artist, newItem: Artist) =
+                    oldItem.resolvedName == newItem.resolvedName &&
+                        oldItem.albums.size == newItem.albums.size &&
+                        newItem.songs.size == newItem.songs.size
+            }
     }
 }
 
-/** The Shared ViewHolder for a [Genre]. Instantiation should be done with [from]. */
+/** The Shared ViewHolder for a [Genre]. */
 class GenreViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-    doOnClick: (Genre) -> Unit,
-    doOnLongClick: (view: View, data: Genre) -> Unit
-) : BaseViewHolder<Genre>(binding, doOnClick, doOnLongClick) {
+) : BindingViewHolder<Genre, MenuItemListener>(binding.root) {
 
-    override fun onBind(data: Genre) {
-        binding.parentImage.bindGenreImage(data)
-        binding.parentName.textSafe = data.resolvedName
+    override fun bind(item: Genre, listener: MenuItemListener) {
+        binding.parentImage.bindGenreImage(item)
+        binding.parentName.textSafe = item.resolvedName
         binding.parentInfo.textSafe =
-            binding.context.getPluralSafe(R.plurals.fmt_song_count, data.songs.size)
+            binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
+        binding.root.apply {
+            setOnClickListener { listener.onItemClick(item) }
+            setOnLongClickListener { view ->
+                listener.onOpenMenu(item, view)
+                true
+            }
+        }
     }
 
     companion object {
-        /** Create an instance of [GenreViewHolder] */
-        fun from(
-            context: Context,
-            doOnClick: (Genre) -> Unit,
-            doOnLongClick: (view: View, data: Genre) -> Unit
-        ): GenreViewHolder {
-            return GenreViewHolder(
-                ItemParentBinding.inflate(context.inflater), doOnClick, doOnLongClick)
-        }
+        val CREATOR =
+            object : Creator<GenreViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_GENRE
+
+                override fun create(context: Context) =
+                    GenreViewHolder(ItemParentBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : ItemDiffCallback<Genre>() {
+                override fun areItemsTheSame(oldItem: Genre, newItem: Genre): Boolean =
+                    oldItem.resolvedName == newItem.resolvedName &&
+                        oldItem.songs.size == newItem.songs.size
+            }
     }
 }
 
 /** The Shared ViewHolder for a [Header]. Instantiation should be done with [from] */
-class HeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
-    BaseViewHolder<Header>(binding) {
+class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
+    BindingViewHolder<Header, Unit>(binding.root) {
 
-    override fun onBind(data: Header) {
-        binding.title.textSafe = binding.context.getString(data.string)
+    override fun bind(item: Header, listener: Unit) {
+        binding.title.textSafe = binding.context.getString(item.string)
     }
 
     companion object {
-        /** Create an instance of [HeaderViewHolder] */
-        fun from(context: Context): HeaderViewHolder {
-            return HeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
-        }
-    }
-}
+        val CREATOR =
+            object : Creator<NewHeaderViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_HEADER
 
-/** The Shared ViewHolder for an [ActionHeader]. Instantiation should be done with [from] */
-class ActionHeaderViewHolder private constructor(private val binding: ItemActionHeaderBinding) :
-    BaseViewHolder<ActionHeader>(binding) {
+                override fun create(context: Context) =
+                    NewHeaderViewHolder(ItemHeaderBinding.inflate(context.inflater))
+            }
 
-    override fun onBind(data: ActionHeader) {
-        binding.headerTitle.textSafe = binding.context.getString(data.string)
-        binding.headerButton.apply {
-            setImageResource(data.icon)
-            contentDescription = context.getString(data.desc)
-            TooltipCompat.setTooltipText(this, contentDescription)
-            setOnClickListener(data.onClick)
-        }
-    }
-
-    companion object {
-        /** Create an instance of [ActionHeaderViewHolder] */
-        fun from(context: Context): ActionHeaderViewHolder {
-            return ActionHeaderViewHolder(ItemActionHeaderBinding.inflate(context.inflater))
-        }
+        val DIFFER =
+            object : ItemDiffCallback<Header>() {
+                override fun areItemsTheSame(oldItem: Header, newItem: Header): Boolean =
+                    oldItem.string == newItem.string
+            }
     }
 }

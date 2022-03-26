@@ -136,24 +136,33 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 removeCallbacks(hideThumbRunnable)
                 showScrollbar()
                 showPopup()
+                onDragListener?.onFastScrollStart()
             } else {
                 postAutoHideScrollbar()
                 hidePopup()
+                onDragListener?.onFastScrollStop()
             }
-
-            onDragListener?.invoke(value)
         }
 
     private val tRect = Rect()
 
+    interface PopupProvider {
+        fun getPopup(pos: Int): String?
+    }
+
     /** Callback to provide a string to be shown on the popup when an item is passed */
-    var popupProvider: ((Int) -> String)? = null
+    var popupProvider: PopupProvider? = null
+
+    interface OnFastScrollListener {
+        fun onFastScrollStart()
+        fun onFastScrollStop()
+    }
 
     /**
      * A listener for when a drag event occurs. The value will be true if a drag has begun, and
      * false if a drag ended.
      */
-    var onDragListener: ((Boolean) -> Unit)? = null
+    var onDragListener: OnFastScrollListener? = null
 
     init {
         overlay.add(thumbView)
@@ -186,8 +195,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     // --- RECYCLERVIEW EVENT MANAGEMENT ---
 
     private fun onPreDraw() {
-        // FIXME: Make the way we lay out views less of a hacky mess. Perhaps consider
-        //  overlaying views or turning this into a ViewGroup.
         updateScrollbarState()
 
         thumbView.layoutDirection = layoutDirection
@@ -207,12 +214,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         val firstPos = firstAdapterPos
         val popupText =
             if (firstPos != NO_POSITION) {
-                popupProvider?.invoke(firstPos)?.ifEmpty { null }
+                popupProvider?.getPopup(firstPos)?.ifEmpty { null }
             } else {
                 null
             }
-
-        // Lay out the popup view
 
         popupView.isInvisible = popupText == null
 
@@ -370,6 +375,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun scrollTo(offset: Int) {
+        if (childCount == 0) {
+            return
+        }
+
         stopScroll()
 
         val trueOffset = offset - paddingTop

@@ -38,8 +38,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         clipToPadding = false
     }
 
-    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        setHasFixedSize(true)
+    }
 
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         updatePadding(
             initialPadding.left,
             initialPadding.top,

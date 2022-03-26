@@ -28,7 +28,7 @@ import org.oxycblt.auxio.coil.GenreImageFetcher
 import org.oxycblt.auxio.coil.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
 
-/** TODO: Rework RecyclerView management and item dragging */
+/** TODO: Rework null-safety/usage of requireNotNull */
 @Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {

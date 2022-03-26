@@ -18,19 +18,19 @@
 package org.oxycblt.auxio.detail
 
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -49,10 +49,9 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
         detailModel.setNavigating(false)
     }
 
-    override fun onStop() {
-        super.onStop()
-        // Cancel all pending menus when this fragment stops to prevent bugs/crashes
-        detailModel.finishShowMenu(null)
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
+        super.onDestroyBinding(binding)
+        binding.detailRecycler.adapter = null
     }
 
     /**
@@ -81,46 +80,35 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
         }
     }
 
-    /** Shortcut method for recyclerview setup */
-    protected fun setupRecycler(
-        detailAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
-        gridLookup: (Int) -> Boolean
-    ) {
-        requireBinding().detailRecycler.apply {
-            adapter = detailAdapter
-            setHasFixedSize(true)
-            applySpans(gridLookup)
-        }
-    }
-
     /**
      * Shortcut method for spinning up the sorting [PopupMenu]
-     * @param config The initial configuration to apply to the menu. This is provided by
-     * [DetailViewModel.showMenu].
+     * @param anchor The view to anchor the sort menu to
+     * @param sort The initial sort
+     * @param onConfirm What to do when the sort is confirmed
      * @param showItem Which menu items to keep
      */
-    protected fun showMenu(
-        config: DetailViewModel.MenuConfig,
-        showItem: ((Int) -> Boolean)? = null
+    protected fun showSortMenu(
+        anchor: View,
+        sort: Sort,
+        onConfirm: (Sort) -> Unit,
+        showItem: ((Int) -> Boolean)? = null,
     ) {
-        logD("Launching menu [$config]")
+        logD("Launching menu")
 
-        PopupMenu(config.anchor.context, config.anchor).apply {
+        PopupMenu(anchor.context, anchor).apply {
             inflate(R.menu.menu_detail_sort)
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.option_sort_asc) {
                     item.isChecked = !item.isChecked
-                    detailModel.finishShowMenu(config.sortMode.ascending(item.isChecked))
+                    onConfirm(sort.ascending(item.isChecked))
                 } else {
                     item.isChecked = true
-                    detailModel.finishShowMenu(config.sortMode.assignId(item.itemId))
+                    onConfirm(requireNotNull(sort.assignId(item.itemId)))
                 }
 
                 true
             }
-
-            setOnDismissListener { detailModel.finishShowMenu(null) }
 
             if (showItem != null) {
                 for (item in menu.children) {
@@ -128,8 +116,8 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
                 }
             }
 
-            menu.findItem(config.sortMode.itemId).isChecked = true
-            menu.findItem(R.id.option_sort_asc).isChecked = config.sortMode.isAscending
+            menu.findItem(sort.itemId).isChecked = true
+            menu.findItem(R.id.option_sort_asc).isChecked = sort.isAscending
 
             show()
         }

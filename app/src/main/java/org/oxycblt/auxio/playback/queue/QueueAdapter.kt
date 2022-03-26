@@ -18,137 +18,89 @@
 package org.oxycblt.auxio.playback.queue
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isInvisible
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
-import org.oxycblt.auxio.music.ActionHeader
-import org.oxycblt.auxio.music.Header
-import org.oxycblt.auxio.music.Item
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.ActionHeaderViewHolder
-import org.oxycblt.auxio.ui.BaseViewHolder
-import org.oxycblt.auxio.ui.DiffCallback
-import org.oxycblt.auxio.ui.HeaderViewHolder
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.textSafe
 
-/**
- * The single adapter for both the Next Queue and the User Queue.
- * @param touchHelper The [ItemTouchHelper] ***containing*** [QueueDragCallback] to be used
- * @author OxygenCobalt
- */
-class QueueAdapter(private val touchHelper: ItemTouchHelper) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var data = mutableListOf<Item>()
-    private var listDiffer = AsyncListDiffer(this, DiffCallback())
+class NewQueueAdapter(listener: QueueItemListener) :
+    MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(
+        listener, QueueSongViewHolder.DIFFER) {
+    override val creator = QueueSongViewHolder.CREATOR
+}
 
-    override fun getItemCount(): Int = data.size
+interface QueueItemListener {
+    fun onPickUp(viewHolder: RecyclerView.ViewHolder)
+}
 
-    override fun getItemViewType(position: Int): Int {
-        return when (data[position]) {
-            is Song -> IntegerTable.ITEM_TYPE_QUEUE_SONG
-            is Header -> IntegerTable.ITEM_TYPE_HEADER
-            is ActionHeader -> IntegerTable.ITEM_TYPE_ACTION_HEADER
-            else -> -1
-        }
-    }
+class QueueSongViewHolder
+private constructor(
+    private val binding: ItemQueueSongBinding,
+) : BindingViewHolder<Song, QueueItemListener>(binding.root) {
+    val bodyView: View
+        get() = binding.body
+    val backgroundView: View
+        get() = binding.background
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            IntegerTable.ITEM_TYPE_QUEUE_SONG ->
-                QueueSongViewHolder(ItemQueueSongBinding.inflate(parent.context.inflater))
-            IntegerTable.ITEM_TYPE_HEADER -> HeaderViewHolder.from(parent.context)
-            IntegerTable.ITEM_TYPE_ACTION_HEADER -> ActionHeaderViewHolder.from(parent.context)
-            else -> error("Invalid ViewHolder item type $viewType")
-        }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = data[position]) {
-            is Song -> (holder as QueueSongViewHolder).bind(item)
-            is Header -> (holder as HeaderViewHolder).bind(item)
-            is ActionHeader -> (holder as ActionHeaderViewHolder).bind(item)
-            else -> logE("Bad data given to QueueAdapter")
-        }
-    }
-
-    /**
-     * Submit data using [AsyncListDiffer]. **Only use this if you have no idea what changes
-     * occurred to the data**
-     */
-    fun submitList(newData: MutableList<Item>) {
-        if (data != newData) {
-            data = newData
-            listDiffer.submitList(newData)
-        }
-    }
-
-    /** Move Items. Used since [submitList] will cause QueueAdapter to freak out. */
-    fun moveItems(adapterFrom: Int, adapterTo: Int) {
-        data.add(adapterTo, data.removeAt(adapterFrom))
-        notifyItemMoved(adapterFrom, adapterTo)
-    }
-
-    /** Remove an item. Used since [submitList] will cause QueueAdapter to freak out. */
-    fun removeItem(adapterIndex: Int) {
-        data.removeAt(adapterIndex)
-        notifyItemRemoved(adapterIndex)
-    }
-
-    /** Generic ViewHolder for a queue song */
-    inner class QueueSongViewHolder(
-        private val binding: ItemQueueSongBinding,
-    ) : BaseViewHolder<Song>(binding) {
-        val bodyView: View
-            get() = binding.body
-        val backgroundView: View
-            get() = binding.background
-
-        init {
-            binding.body.background =
-                MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
-                    fillColor = (binding.body.background as ColorDrawable).color.stateList
-                }
-
-            binding.root.disableDropShadowCompat()
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        override fun onBind(data: Song) {
-            binding.songAlbumCover.bindAlbumCover(data)
-            binding.songName.textSafe = data.resolvedName
-            binding.songInfo.textSafe = data.resolvedArtistName
-
-            binding.background.isInvisible = true
-
-            binding.songName.requestLayout()
-            binding.songInfo.requestLayout()
-
-            // Roll our own drag handlers as the default ones suck
-            binding.songDragHandle.setOnTouchListener { _, motionEvent ->
-                binding.songDragHandle.performClick()
-                if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                    touchHelper.startDrag(this)
-                    true
-                } else false
+    init {
+        binding.body.background =
+            MaterialShapeDrawable.createWithElevationOverlay(binding.root.context).apply {
+                fillColor = (binding.body.background as ColorDrawable).color.stateList
             }
 
-            binding.body.setOnLongClickListener {
-                touchHelper.startDrag(this)
+        binding.root.disableDropShadowCompat()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun bind(item: Song, listener: QueueItemListener) {
+        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songName.textSafe = item.resolvedName
+        binding.songInfo.textSafe = item.resolvedArtistName
+
+        binding.background.isInvisible = true
+
+        binding.songName.requestLayout()
+        binding.songInfo.requestLayout()
+
+        // Roll our own drag handlers as the default ones suck
+        binding.songDragHandle.setOnTouchListener { _, motionEvent ->
+            binding.songDragHandle.performClick()
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                listener.onPickUp(this)
                 true
-            }
+            } else false
         }
+
+        binding.body.setOnLongClickListener {
+            listener.onPickUp(this)
+            true
+        }
+    }
+
+    companion object {
+        val CREATOR =
+            object : Creator<QueueSongViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_QUEUE_SONG
+
+                override fun create(context: Context): QueueSongViewHolder =
+                    QueueSongViewHolder(ItemQueueSongBinding.inflate(context.inflater))
+            }
+
+        val DIFFER = SongViewHolder.DIFFER
     }
 }

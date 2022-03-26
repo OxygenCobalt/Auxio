@@ -17,13 +17,14 @@
  
 package org.oxycblt.auxio.home.list
 
-import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
@@ -33,47 +34,44 @@ import org.oxycblt.auxio.ui.sliceArticle
  * A [HomeListFragment] for showing a list of [Song]s.
  * @author
  */
-class SongListFragment : HomeListFragment() {
-    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        val homeAdapter = SongsAdapter(doOnClick = playbackModel::playSong, ::newMenu)
-        setupRecycler(R.id.home_song_list, homeAdapter, homeModel.songs)
+class SongListFragment : HomeListFragment<Song>() {
+    override val recyclerId = R.id.home_song_list
+    override val homeAdapter = SongsAdapter(this)
+    override val homeData: LiveData<List<Song>>
+        get() = homeModel.songs
+
+    override fun getPopup(pos: Int): String {
+        val song = homeModel.songs.value!![pos]
+
+        // Change how we display the popup depending on the mode.
+        // We don't use the more correct resolve(Model)Name here, as sorts are largely
+        // based off the names of the parent objects and not the child objects.
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+            // Name -> Use name
+            is Sort.ByName -> song.resolvedName.sliceArticle().first().uppercase()
+
+            // Artist -> Use Artist Name
+            is Sort.ByArtist -> song.album.artist.resolvedName.sliceArticle().first().uppercase()
+
+            // Album -> Use Album Name
+            is Sort.ByAlbum -> song.album.resolvedName.sliceArticle().first().uppercase()
+
+            // Year -> Use Full Year
+            is Sort.ByYear -> song.album.year?.toString() ?: getString(R.string.def_date)
+        }
     }
 
-    override val listPopupProvider: (Int) -> String
-        get() = { idx ->
-            val song = homeModel.songs.value!![idx]
+    override fun onItemClick(item: Item) {
+        check(item is Song)
+        playbackModel.playSong(item)
+    }
 
-            // Change how we display the popup depending on the mode.
-            // We don't use the more correct resolve(Model)Name here, as sorts are largely
-            // based off the names of the parent objects and not the child objects.
-            when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
-                // Name -> Use name
-                is Sort.ByName -> song.resolvedName.sliceArticle().first().uppercase()
+    override fun onOpenMenu(item: Item, anchor: View) {
+        newMenu(anchor, item)
+    }
 
-                // Artist -> Use Artist Name
-                is Sort.ByArtist ->
-                    song.album.artist.resolvedName.sliceArticle().first().uppercase()
-
-                // Album -> Use Album Name
-                is Sort.ByAlbum -> song.album.resolvedName.sliceArticle().first().uppercase()
-
-                // Year -> Use Full Year
-                is Sort.ByYear -> song.album.year?.toString() ?: getString(R.string.def_date)
-            }
-        }
-
-    inner class SongsAdapter(
-        private val doOnClick: (data: Song) -> Unit,
-        private val doOnLongClick: (view: View, data: Song) -> Unit,
-    ) : HomeAdapter<Song, SongViewHolder>() {
-        override fun getItemCount(): Int = data.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-            return SongViewHolder.from(parent.context, doOnClick, doOnLongClick)
-        }
-
-        override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-            holder.bind(data[position])
-        }
+    inner class SongsAdapter(listener: MenuItemListener) :
+        MonoAdapter<Song, MenuItemListener, SongViewHolder>(listener, SongViewHolder.DIFFER) {
+        override val creator = SongViewHolder.CREATOR
     }
 }

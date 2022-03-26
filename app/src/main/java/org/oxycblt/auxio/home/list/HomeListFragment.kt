@@ -17,17 +17,19 @@
  
 package org.oxycblt.auxio.home.list
 
-import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
-import org.oxycblt.auxio.music.Item
+import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.applySpans
 
@@ -35,49 +37,52 @@ import org.oxycblt.auxio.util.applySpans
  * A Base [Fragment] implementing the base features shared across all list fragments in the home UI.
  * @author OxygenCobalt
  */
-abstract class HomeListFragment : ViewBindingFragment<FragmentHomeListBinding>() {
+abstract class HomeListFragment<T : Item> :
+    ViewBindingFragment<FragmentHomeListBinding>(),
+    MenuItemListener,
+    FastScrollRecyclerView.PopupProvider,
+    FastScrollRecyclerView.OnFastScrollListener {
     /** The popup provider to use for the fast scroller view. */
-    abstract val listPopupProvider: (Int) -> String
+    abstract val recyclerId: Int
+    abstract val homeAdapter:
+        MonoAdapter<T, MenuItemListener, out BindingViewHolder<T, MenuItemListener>>
+    abstract val homeData: LiveData<List<T>>
 
     protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
-    protected fun <T : Item, VH : RecyclerView.ViewHolder> setupRecycler(
-        @IdRes uniqueId: Int,
-        homeAdapter: HomeAdapter<T, VH>,
-        homeData: LiveData<List<T>>,
-    ) {
-        requireBinding().homeRecycler.apply {
-            id = uniqueId
-            adapter = homeAdapter
-            setHasFixedSize(true)
-            applySpans()
-
-            popupProvider = listPopupProvider
-            onDragListener = homeModel::updateFastScrolling
-        }
-
-        homeData.observe(viewLifecycleOwner, homeAdapter::updateData)
-    }
-
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)
 
-    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
-        homeModel.updateFastScrolling(false)
+    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
+        binding.homeRecycler.apply {
+            id = recyclerId
+            adapter = homeAdapter
+            applySpans()
+        }
+
+        binding.homeRecycler.popupProvider = this
+        binding.homeRecycler.onDragListener = this
+
+        homeData.observe(viewLifecycleOwner) { list ->
+            homeAdapter.submitListHard(list.toMutableList())
+        }
     }
 
-    abstract class HomeAdapter<T : Item, VH : RecyclerView.ViewHolder> :
-        RecyclerView.Adapter<VH>() {
-        protected var data = listOf<T>()
-
-        @SuppressLint("NotifyDataSetChanged")
-        fun updateData(newData: List<T>) {
-            data = newData
-
-            // notifyDataSetChanged here is okay, as we have no idea how the layout changed when
-            // we re-sort and ListAdapter causes the scroll position to get messed up
-            notifyDataSetChanged()
+    override fun onDestroyBinding(binding: FragmentHomeListBinding) {
+        homeModel.updateFastScrolling(false)
+        binding.homeRecycler.apply {
+            adapter = null
+            popupProvider = null
+            onDragListener = null
         }
+    }
+
+    override fun onFastScrollStart() {
+        homeModel.updateFastScrolling(true)
+    }
+
+    override fun onFastScrollStop() {
+        homeModel.updateFastScrolling(false)
     }
 }
