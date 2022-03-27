@@ -40,12 +40,14 @@ import org.oxycblt.auxio.util.showToast
  * Dialog that manages the currently excluded directories.
  * @author OxygenCobalt
  */
-class ExcludedDialog : ViewBindingDialogFragment<DialogExcludedBinding>() {
+class ExcludedDialog :
+    ViewBindingDialogFragment<DialogExcludedBinding>(), ExcludedAdapter.Listener {
     private val excludedModel: ExcludedViewModel by viewModels {
         ExcludedViewModel.Factory(requireContext())
     }
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val excludedAdapter = ExcludedAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogExcludedBinding.inflate(inflater)
 
@@ -59,11 +61,10 @@ class ExcludedDialog : ViewBindingDialogFragment<DialogExcludedBinding>() {
     }
 
     override fun onBindingCreated(binding: DialogExcludedBinding, savedInstanceState: Bundle?) {
-        val adapter = ExcludedEntryAdapter { path -> excludedModel.removePath(path) }
         val launcher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
 
-        binding.excludedRecycler.adapter = adapter
+        binding.excludedRecycler.adapter = excludedAdapter
 
         // Now that the dialog exists, we get the view manually when the dialog is shown
         // and override its click listener so that the dialog does not auto-dismiss when we
@@ -90,13 +91,22 @@ class ExcludedDialog : ViewBindingDialogFragment<DialogExcludedBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        excludedModel.paths.observe(viewLifecycleOwner) { paths -> updatePaths(paths, adapter) }
+        excludedModel.paths.observe(viewLifecycleOwner, ::updatePaths)
 
         logD("Dialog created")
     }
 
-    private fun updatePaths(paths: MutableList<String>, adapter: ExcludedEntryAdapter) {
-        adapter.submitList(paths)
+    override fun onDestroyBinding(binding: DialogExcludedBinding) {
+        super.onDestroyBinding(binding)
+        binding.excludedRecycler.adapter = null
+    }
+
+    override fun onRemovePath(path: String) {
+        excludedModel.removePath(path)
+    }
+
+    private fun updatePaths(paths: MutableList<String>) {
+        excludedAdapter.data.submitList(paths)
         requireBinding().excludedEmpty.isVisible = paths.isEmpty()
     }
 

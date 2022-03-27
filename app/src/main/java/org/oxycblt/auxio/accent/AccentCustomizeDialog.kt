@@ -31,9 +31,10 @@ import org.oxycblt.auxio.util.logD
  * Dialog responsible for showing the list of accents to select.
  * @author OxygenCobalt
  */
-class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
+class AccentCustomizeDialog :
+    ViewBindingDialogFragment<DialogAccentBinding>(), AccentAdapter.Listener {
     private val settingsManager = SettingsManager.getInstance()
-    private var pendingAccent = settingsManager.accent
+    private var accentAdapter = AccentAdapter(this)
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
@@ -41,9 +42,9 @@ class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
         builder.setTitle(R.string.set_accent)
 
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            if (pendingAccent != settingsManager.accent) {
+            if (accentAdapter.selectedAccent != settingsManager.accent) {
                 logD("Applying new accent")
-                settingsManager.accent = pendingAccent
+                settingsManager.accent = requireNotNull(accentAdapter.selectedAccent)
                 requireActivity().recreate()
             }
 
@@ -55,22 +56,30 @@ class AccentCustomizeDialog : ViewBindingDialogFragment<DialogAccentBinding>() {
     }
 
     override fun onBindingCreated(binding: DialogAccentBinding, savedInstanceState: Bundle?) {
-        savedInstanceState?.getInt(KEY_PENDING_ACCENT)?.let { index ->
-            pendingAccent = Accent(index)
-        }
+        accentAdapter.setSelectedAccent(
+            if (savedInstanceState != null) {
+                Accent(savedInstanceState.getInt(KEY_PENDING_ACCENT))
+            } else {
+                settingsManager.accent
+            },
+            binding.accentRecycler)
 
         // --- UI SETUP ---
 
-        binding.accentRecycler.adapter =
-            AccentAdapter(pendingAccent) { accent ->
-                logD("Switching selected accent to $accent")
-                pendingAccent = accent
-            }
+        binding.accentRecycler.adapter = accentAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_PENDING_ACCENT, pendingAccent.index)
+        outState.putInt(KEY_PENDING_ACCENT, requireNotNull(accentAdapter.selectedAccent).index)
+    }
+
+    override fun onDestroyBinding(binding: DialogAccentBinding) {
+        binding.accentRecycler.adapter = null
+    }
+
+    override fun onAccentSelected(accent: Accent) {
+        accentAdapter.setSelectedAccent(accent, requireBinding().accentRecycler)
     }
 
     companion object {

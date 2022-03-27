@@ -41,8 +41,8 @@ import org.oxycblt.auxio.util.textSafe
  * An adapter for displaying genre information and it's children.
  * @author OxygenCobalt
  */
-class GenreDetailAdapter(listener: DetailItemListener) :
-    DetailAdapter<DetailItemListener>(listener, DIFFER) {
+class GenreDetailAdapter(listener: Listener) :
+    DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
     private var currentHolder: Highlightable? = null
 
@@ -62,11 +62,7 @@ class GenreDetailAdapter(listener: DetailItemListener) :
                 else -> null
             }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: DetailItemListener
-    ) {
+    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: Listener) {
         super.onBind(viewHolder, item, listener)
         when (item) {
             is Genre -> (viewHolder as GenreDetailViewHolder).bind(item, listener)
@@ -115,8 +111,8 @@ class GenreDetailAdapter(listener: DetailItemListener) :
 }
 
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    BindingViewHolder<Genre, DetailItemListener>(binding.root) {
-    override fun bind(item: Genre, listener: DetailItemListener) {
+    BindingViewHolder<Genre, DetailAdapter.Listener>(binding.root) {
+    override fun bind(item: Genre, listener: DetailAdapter.Listener) {
         binding.detailCover.bindGenreImage(item)
         binding.detailName.textSafe = item.resolvedName
         binding.detailSubhead.textSafe =

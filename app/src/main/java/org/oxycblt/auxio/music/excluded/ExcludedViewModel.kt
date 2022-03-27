@@ -40,11 +40,8 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     val paths: LiveData<MutableList<String>>
         get() = mPaths
 
-    private var dbPaths = listOf<String>()
-
-    /** Check if changes have been made to the ViewModel's paths. */
-    val isModified: Boolean
-        get() = dbPaths != paths.value
+    var isModified: Boolean = false
+        private set
 
     init {
         loadDatabasePaths()
@@ -58,6 +55,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
         if (!mPaths.value!!.contains(path)) {
             mPaths.value!!.add(path)
             mPaths.value = mPaths.value
+            isModified = true
         }
     }
 
@@ -68,6 +66,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     fun removePath(path: String) {
         mPaths.value!!.remove(path)
         mPaths.value = mPaths.value
+        isModified = true
     }
 
     /** Save the pending paths to the database. [onDone] will be called on completion. */
@@ -75,7 +74,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
             excludedDatabase.writePaths(mPaths.value!!)
-            dbPaths = mPaths.value!!
+            isModified = false
             onDone()
             this@ExcludedViewModel.logD(
                 "Path save completed successfully in ${System.currentTimeMillis() - start}ms")
@@ -86,8 +85,11 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     private fun loadDatabasePaths() {
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
-            dbPaths = excludedDatabase.readPaths()
+            isModified = false
+
+            val dbPaths = excludedDatabase.readPaths()
             withContext(Dispatchers.Main) { mPaths.value = dbPaths.toMutableList() }
+
             this@ExcludedViewModel.logD(
                 "Path load completed successfully in ${System.currentTimeMillis() - start}ms")
         }

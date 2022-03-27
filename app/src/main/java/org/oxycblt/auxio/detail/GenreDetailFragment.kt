@@ -22,7 +22,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
-import org.oxycblt.auxio.detail.recycler.DetailItemListener
+import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
 import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
@@ -42,7 +42,7 @@ import org.oxycblt.auxio.util.logW
  * The [DetailFragment] for a genre.
  * @author OxygenCobalt
  */
-class GenreDetailFragment : DetailFragment(), DetailItemListener {
+class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     private val args: GenreDetailFragmentArgs by navArgs()
     private val detailAdapter = GenreDetailAdapter(this)
 

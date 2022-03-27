@@ -178,15 +178,6 @@ class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : Ba
         mCurrentList = newList.toMutableList()
         adapter.notifyDataSetChanged()
     }
-
-    /**
-     * Move an item from [from] to [to]. This calls [RecyclerView.Adapter.notifyItemMoved]
-     * internally.
-     */
-    fun moveItems(from: Int, to: Int) {
-        mCurrentList.add(to, mCurrentList.removeAt(from))
-        adapter.notifyItemMoved(from, to)
-    }
 }
 
 /**
@@ -212,80 +203,6 @@ class AsyncBackingData<T>(
      */
     fun submitList(newList: List<T>, onDone: () -> Unit = {}) {
         differ.submitList(newList, onDone)
-    }
-}
-
-/**
- * A list-backed [BackingData] that can be modified with both adapter primitives and
- * [AsyncListDiffer]. Never use this class unless absolutely necessary, such as when dealing with
- * item dragging. This is mostly because the class is a terrible hacky mess that could easily crash
- * the app if you are not careful with it. You have been warned.
- */
-class HybridBackingData<T>(
-    private val adapter: RecyclerView.Adapter<*>,
-    diffCallback: DiffUtil.ItemCallback<T>
-) : BackingData<T>() {
-    private var mCurrentList = mutableListOf<T>()
-    val currentList: List<T>
-        get() = mCurrentList
-
-    private val differ = AsyncListDiffer(adapter, diffCallback)
-
-    override fun getItem(position: Int): T = mCurrentList[position]
-    override fun getItemCount(): Int = mCurrentList.size
-
-    fun submitList(newData: List<T>, onDone: () -> Unit = {}) {
-        if (newData != mCurrentList) {
-            mCurrentList = newData.toMutableList()
-            differ.submitList(newData, onDone)
-        }
-    }
-
-    //    @Suppress("NotifyDatasetChanged")
-    //    fun submitListHard(newList: List<T>) {
-    //        if (newList != mCurrentList) {
-    //            mCurrentList = newList.toMutableList()
-    //            differ.rewriteListUnsafe(mCurrentList)
-    //            adapter.notifyDataSetChanged()
-    //        }
-    //    }
-
-    fun moveItems(from: Int, to: Int) {
-        mCurrentList.add(to, mCurrentList.removeAt(from))
-        differ.rewriteListUnsafe(mCurrentList)
-        adapter.notifyItemMoved(from, to)
-    }
-
-    fun removeItem(at: Int) {
-        mCurrentList.removeAt(at)
-        differ.rewriteListUnsafe(mCurrentList)
-        adapter.notifyItemRemoved(at)
-    }
-
-    /**
-     * Rewrites the AsyncListDiffer's internal list, cancelling any diffs that are currently in
-     * progress. I cannot describe in words how dangerous this is, but it's also the only thing I
-     * can do to marry the adapter primitives with DiffUtil.
-     */
-    private fun <T> AsyncListDiffer<T>.rewriteListUnsafe(newList: List<T>) {
-        differMaxGenerationsField.set(this, (differMaxGenerationsField.get(this) as Int).inc())
-        differListField.set(this, newList.toMutableList())
-        differImmutableListField.set(this, newList)
-    }
-
-    companion object {
-        private val differListField =
-            AsyncListDiffer::class.java.getDeclaredField("mList").apply { isAccessible = true }
-
-        private val differImmutableListField =
-            AsyncListDiffer::class.java.getDeclaredField("mReadOnlyList").apply {
-                isAccessible = true
-            }
-
-        private val differMaxGenerationsField =
-            AsyncListDiffer::class.java.getDeclaredField("mMaxScheduledGeneration").apply {
-                isAccessible = true
-            }
     }
 }
 

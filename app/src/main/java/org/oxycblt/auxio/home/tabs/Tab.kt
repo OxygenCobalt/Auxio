@@ -53,6 +53,16 @@ sealed class Tab(open val mode: DisplayMode) {
         /** The default tab sequence, represented in integer form */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
+        /**
+         * Maps between the integer code in the tab sequence and the actual [DisplayMode] instance
+         */
+        private val MODE_TABLE =
+            arrayOf(
+                DisplayMode.SHOW_SONGS,
+                DisplayMode.SHOW_ALBUMS,
+                DisplayMode.SHOW_ARTISTS,
+                DisplayMode.SHOW_GENRES)
+
         /** Convert an array [tabs] into a sequence of tabs. */
         fun toSequence(tabs: Array<Tab>): Int {
             // Like when deserializing, make sure there are no duplicate tabs for whatever reason.
@@ -64,8 +74,8 @@ sealed class Tab(open val mode: DisplayMode) {
             for (tab in distinct) {
                 val bin =
                     when (tab) {
-                        is Visible -> 1.shl(3) or tab.mode.ordinal
-                        is Invisible -> tab.mode.ordinal
+                        is Visible -> 1.shl(3) or MODE_TABLE.indexOf(tab.mode)
+                        is Invisible -> MODE_TABLE.indexOf(tab.mode)
                     }
 
                 sequence = sequence or bin.shl(shift)
@@ -84,14 +94,7 @@ sealed class Tab(open val mode: DisplayMode) {
             for (shift in (0..4 * SEQUENCE_LEN).reversed() step 4) {
                 val chunk = sequence.shr(shift) and 0b1111
 
-                val mode =
-                    when (chunk and 7) {
-                        0 -> DisplayMode.SHOW_SONGS
-                        1 -> DisplayMode.SHOW_ALBUMS
-                        2 -> DisplayMode.SHOW_ARTISTS
-                        3 -> DisplayMode.SHOW_GENRES
-                        else -> continue
-                    }
+                val mode = MODE_TABLE.getOrNull(chunk and 7) ?: continue
 
                 // Figure out the visibility
                 tabs +=

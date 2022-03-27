@@ -28,11 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
  * TODO: Consider unifying the shared behavior between this and QueueDragCallback into a single
  * class.
  */
-class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.Callback() {
-    private val tabs: Array<Tab>
-        get() = getTabs()
-    private lateinit var tabAdapter: TabAdapter
-
+class TabDragCallback(private val adapter: TabAdapter) : ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
@@ -63,8 +59,7 @@ class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.C
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        tabs.swap(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
-        tabAdapter.notifyItemMoved(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+        adapter.data.moveItems(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
         return true
     }
 
@@ -72,20 +67,4 @@ class TabDragCallback(private val getTabs: () -> Array<Tab>) : ItemTouchHelper.C
 
     // We use a custom drag handle, so disable the long press action.
     override fun isLongPressDragEnabled(): Boolean = false
-
-    /**
-     * Add the tab adapter to this callback. Done because there's a circular dependency between the
-     * two objects
-     */
-    fun addTabAdapter(adapter: TabAdapter) {
-        tabAdapter = adapter
-    }
-
-    private fun <T : Any> Array<T>.swap(from: Int, to: Int) {
-        val t = get(to)
-        val f = get(from)
-
-        set(from, t)
-        set(to, f)
-    }
 }

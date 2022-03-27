@@ -122,7 +122,7 @@ class WidgetProvider : AppWidgetProvider() {
                 .size(min(metrics.widthPixels, metrics.heightPixels))
         } else {
             // Note: Explicitly use the "original" size as without it the scaling logic
-            // in SquareFrameTransform breaks down and results in an error.
+            // in coil breaks down and results in an error.
             coverRequest.transformations(SquareFrameTransform()).size(Size.ORIGINAL)
         }
 

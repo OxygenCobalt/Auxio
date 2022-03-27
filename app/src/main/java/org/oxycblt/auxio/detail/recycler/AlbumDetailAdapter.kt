@@ -40,8 +40,8 @@ import org.oxycblt.auxio.util.textSafe
  * An adapter for displaying [Album] information and it's children.
  * @author OxygenCobalt
  */
-class AlbumDetailAdapter(listener: AlbumDetailItemListener) :
-    DetailAdapter<AlbumDetailItemListener>(listener, DIFFER) {
+class AlbumDetailAdapter(listener: Listener) :
+    DetailAdapter<AlbumDetailAdapter.Listener>(listener, DIFFER) {
     private var highlightedSong: Song? = null
     private var highlightedViewHolder: Highlightable? = null
 
@@ -61,11 +61,7 @@ class AlbumDetailAdapter(listener: AlbumDetailItemListener) :
                 else -> null
             }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: AlbumDetailItemListener
-    ) {
+    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: Listener) {
         super.onBind(viewHolder, item, listener)
 
         when (item) {
@@ -112,16 +108,16 @@ class AlbumDetailAdapter(listener: AlbumDetailItemListener) :
                 }
             }
     }
-}
 
-interface AlbumDetailItemListener : DetailItemListener {
-    fun onNavigateToArtist()
+    interface Listener : DetailAdapter.Listener {
+        fun onNavigateToArtist()
+    }
 }
 
 private class AlbumDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    BindingViewHolder<Album, AlbumDetailItemListener>(binding.root) {
+    BindingViewHolder<Album, AlbumDetailAdapter.Listener>(binding.root) {
 
-    override fun bind(item: Album, listener: AlbumDetailItemListener) {
+    override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bindAlbumCover(item)
         binding.detailName.textSafe = item.resolvedName
 

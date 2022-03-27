@@ -17,10 +17,12 @@
  
 package org.oxycblt.auxio.music.excluded
 
-import android.annotation.SuppressLint
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
@@ -28,37 +30,34 @@ import org.oxycblt.auxio.util.textSafe
  * Adapter that shows the excluded directories and their "Clear" button.
  * @author OxygenCobalt
  */
-class ExcludedEntryAdapter(private val onClear: (String) -> Unit) :
-    RecyclerView.Adapter<ExcludedEntryAdapter.ViewHolder>() {
-    private var paths = mutableListOf<String>()
+class ExcludedAdapter(listener: Listener) :
+    MonoAdapter<String, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
+    override val data = PrimitiveBackingData<String>(this)
+    override val creator = ExcludedViewHolder.CREATOR
 
-    override fun getItemCount() = paths.size
+    interface Listener {
+        fun onRemovePath(path: String)
+    }
+}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemExcludedDirBinding.inflate(parent.context.inflater))
+/**
+ * The viewholder for [ExcludedAdapter]. Not intended for use in other adapters.
+ */
+class ExcludedViewHolder private constructor(private val binding: ItemExcludedDirBinding) :
+    BindingViewHolder<String, ExcludedAdapter.Listener>(binding.root) {
+    override fun bind(item: String, listener: ExcludedAdapter.Listener) {
+        binding.excludedPath.textSafe = item
+        binding.excludedClear.setOnClickListener { listener.onRemovePath(item) }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(paths[position])
-    }
+    companion object {
+        val CREATOR =
+            object : Creator<ExcludedViewHolder> {
+                override val viewType: Int
+                    get() = throw UnsupportedOperationException()
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun submitList(newPaths: MutableList<String>) {
-        paths = newPaths
-        notifyDataSetChanged()
-    }
-
-    inner class ViewHolder(private val binding: ItemExcludedDirBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.root.layoutParams =
-                RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-        }
-
-        fun bind(path: String) {
-            binding.excludedPath.textSafe = path
-            binding.excludedClear.setOnClickListener { onClear(path) }
-        }
+                override fun create(context: Context) =
+                    ExcludedViewHolder(ItemExcludedDirBinding.inflate(context.inflater))
+            }
     }
 }

@@ -43,6 +43,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * TODO: Custom language support
  *
  * TODO: Rework menus [perhaps add multi-select]
+ *
+ * TODO: Rework navigation to be based on a viewmodel
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

@@ -44,8 +44,8 @@ import org.oxycblt.auxio.util.textSafe
  * one actually contains both album information and song information.
  * @author OxygenCobalt
  */
-class ArtistDetailAdapter(listener: DetailItemListener) :
-    DetailAdapter<DetailItemListener>(listener, DIFFER) {
+class ArtistDetailAdapter(listener: Listener) :
+    DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentAlbum: Album? = null
     private var currentAlbumHolder: Highlightable? = null
 
@@ -70,11 +70,7 @@ class ArtistDetailAdapter(listener: DetailItemListener) :
                 else -> null
             }
 
-    override fun onBind(
-        viewHolder: RecyclerView.ViewHolder,
-        item: Item,
-        listener: DetailItemListener
-    ) {
+    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: Listener) {
         super.onBind(viewHolder, item, listener)
         when (item) {
             is Artist -> (viewHolder as ArtistDetailViewHolder).bind(item, listener)
@@ -140,9 +136,9 @@ class ArtistDetailAdapter(listener: DetailItemListener) :
 }
 
 private class ArtistDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
-    BindingViewHolder<Artist, DetailItemListener>(binding.root) {
+    BindingViewHolder<Artist, DetailAdapter.Listener>(binding.root) {
 
-    override fun bind(item: Artist, listener: DetailItemListener) {
+    override fun bind(item: Artist, listener: DetailAdapter.Listener) {
         binding.detailCover.bindArtistImage(item)
         binding.detailName.textSafe = item.resolvedName
 

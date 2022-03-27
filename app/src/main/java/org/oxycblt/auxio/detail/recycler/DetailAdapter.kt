@@ -39,7 +39,7 @@ import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.textSafe
 
-abstract class DetailAdapter<L : DetailItemListener>(
+abstract class DetailAdapter<L : DetailAdapter.Listener>(
     listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
 ) : MultiAdapter<L>(listener) {
@@ -112,13 +112,19 @@ abstract class DetailAdapter<L : DetailItemListener>(
                 }
             }
     }
+
+    interface Listener : MenuItemListener {
+        fun onPlayParent()
+        fun onShuffleParent()
+        fun onShowSortMenu(anchor: View)
+    }
 }
 
 data class SortHeader(override val id: Long, @StringRes val string: Int) : Item()
 
 class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
-    BindingViewHolder<SortHeader, DetailItemListener>(binding.root) {
-    override fun bind(item: SortHeader, listener: DetailItemListener) {
+    BindingViewHolder<SortHeader, DetailAdapter.Listener>(binding.root) {
+    override fun bind(item: SortHeader, listener: DetailAdapter.Listener) {
         binding.headerTitle.textSafe = binding.context.getString(item.string)
         binding.headerButton.apply {
             TooltipCompat.setTooltipText(this, contentDescription)
@@ -147,10 +153,4 @@ class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
 /** Interface that allows the highlighting of certain ViewHolders */
 interface Highlightable {
     fun setHighlighted(isHighlighted: Boolean)
-}
-
-interface DetailItemListener : MenuItemListener {
-    fun onPlayParent()
-    fun onShuffleParent()
-    fun onShowSortMenu(anchor: View)
 }

@@ -58,9 +58,10 @@ the binding being obtained by calling `requireBinding`.
 At times it may be more appropriate to use a `View` instead of a full blown fragment. This is okay as long as
 view-binding is still used.
 
-When creating a ViewHolder for a `RecyclerView`, one should use `BaseViewHolder` to standardize the binding process
-and automate some code shared across all ViewHolders. The only exceptions to this case are for ViewHolders that
-correspond to non-`BaseModel` data, in which a normal ViewHolder can be used instead.
+Auxio uses `RecyclerView` for all list information. Due to the complexities of Auxio, the way one defines an
+adapter differs quite heavily from the normal library. Generally, start with `MonoAdapter` for a list with one
+type of data and `MultiAdapter` for lists with many types of data, then follow the documentation to see how
+to fully implement the class.
 
 #### Object communication
 Auxio's codebase is mostly centered around 4 different types of code that communicates with each-other.

@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
-import org.oxycblt.auxio.detail.recycler.AlbumDetailItemListener
 import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -47,7 +46,7 @@ import org.oxycblt.auxio.util.showToast
  * The [DetailFragment] for an album.
  * @author OxygenCobalt
  */
-class AlbumDetailFragment : DetailFragment(), AlbumDetailItemListener {
+class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     private val args: AlbumDetailFragmentArgs by navArgs()
     private val detailAdapter = AlbumDetailAdapter(this)
 

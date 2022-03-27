@@ -18,70 +18,92 @@
 package org.oxycblt.auxio.home.tabs
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.MotionEvent
-import android.view.ViewGroup
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemTabBinding
+import org.oxycblt.auxio.ui.BackingData
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.util.inflater
 
-class TabAdapter(
-    private val touchHelper: ItemTouchHelper,
-    private val getTabs: () -> Array<Tab>,
-    private val onTabSwitch: (Tab) -> Unit,
-) : RecyclerView.Adapter<TabAdapter.TabViewHolder>() {
-    private val tabs: Array<Tab>
-        get() = getTabs()
+class TabAdapter(listener: Listener) :
+    MonoAdapter<Tab, TabAdapter.Listener, TabViewHolder>(listener) {
+    override val data = TabData(this)
+    override val creator = TabViewHolder.CREATOR
 
-    override fun getItemCount(): Int = Tab.SEQUENCE_LEN
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TabViewHolder {
-        return TabViewHolder(ItemTabBinding.inflate(parent.context.inflater))
+    interface Listener {
+        fun onVisibilityToggled(displayMode: DisplayMode)
+        fun onPickUpTab(viewHolder: RecyclerView.ViewHolder)
     }
 
-    override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
-        holder.bind(tabs[position])
-    }
+    class TabData(private val adapter: RecyclerView.Adapter<*>) : BackingData<Tab>() {
+        var tabs = arrayOf<Tab>()
+            private set
 
-    inner class TabViewHolder(private val binding: ItemTabBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        init {
-            binding.root.layoutParams =
-                RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+        override fun getItem(position: Int) = tabs[position]
+        override fun getItemCount() = tabs.size
+
+        @Suppress("NotifyDatasetChanged")
+        fun submitTabs(newTabs: Array<Tab>) {
+            tabs = newTabs
+            adapter.notifyDataSetChanged()
         }
 
-        @SuppressLint("ClickableViewAccessibility")
-        fun bind(tab: Tab) {
-            binding.root.apply {
-                setOnClickListener {
-                    // Don't do a typical notifyDataSetChanged call here, because
-                    // A. We don't have a real ViewModel state since this is a dialog
-                    // B. Doing so would cause a relayout and the ripple effect to disappear
-                    // Instead, simply notify a tab change and let TabCustomizeDialog handle it.
-                    binding.tabIcon.isChecked = !binding.tabIcon.isChecked
-                    onTabSwitch(tab)
-                }
-            }
+        fun setTab(at: Int, tab: Tab) {
+            tabs[at] = tab
+        }
 
-            binding.tabIcon.apply {
-                setText(tab.mode.string)
-                isChecked = tab is Tab.Visible
-            }
+        fun moveItems(from: Int, to: Int) {
+            val t = tabs[to]
+            val f = tabs[from]
+            tabs[from] = t
+            tabs[to] = f
+            adapter.notifyItemMoved(from, to)
+        }
+    }
+}
 
-            // Roll our own drag handlers as the default ones suck
-            binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
-                binding.tabDragHandle.performClick()
-                if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
-                    touchHelper.startDrag(this)
-                    true
-                } else false
+class TabViewHolder private constructor(private val binding: ItemTabBinding) :
+    BindingViewHolder<Tab, TabAdapter.Listener>(binding.root) {
+    @SuppressLint("ClickableViewAccessibility")
+    override fun bind(item: Tab, listener: TabAdapter.Listener) {
+        binding.root.apply {
+            setOnClickListener {
+                binding.tabIcon.isChecked = !binding.tabIcon.isChecked
+                listener.onVisibilityToggled(item.mode)
             }
+        }
 
-            binding.root.setOnLongClickListener {
-                touchHelper.startDrag(this)
+        binding.tabIcon.apply {
+            setText(item.mode.string)
+            isChecked = item is Tab.Visible
+        }
+
+        // Roll our own drag handlers as the default ones suck
+        binding.tabDragHandle.setOnTouchListener { _, motionEvent ->
+            binding.tabDragHandle.performClick()
+            if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN) {
+                listener.onPickUpTab(this)
                 true
-            }
+            } else false
         }
+
+        binding.root.setOnLongClickListener {
+            listener.onPickUpTab(this)
+            true
+        }
+    }
+
+    companion object {
+        val CREATOR =
+            object : Creator<TabViewHolder> {
+                override val viewType: Int
+                    get() = throw UnsupportedOperationException()
+
+                override fun create(context: Context) =
+                    TabViewHolder(ItemTabBinding.inflate(context.inflater))
+            }
     }
 }

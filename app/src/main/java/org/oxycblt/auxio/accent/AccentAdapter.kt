@@ -17,71 +17,93 @@
  
 package org.oxycblt.auxio.accent
 
-import android.view.ViewGroup
+import android.content.Context
 import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
+import org.oxycblt.auxio.ui.BackingData
+import org.oxycblt.auxio.ui.BindingViewHolder
+import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getColorSafe
+import org.oxycblt.auxio.util.getViewHolderAt
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.stateList
 
-/**
- * An adapter that displays the list of all possible accents, and highlights the current one.
- * @author OxygenCobalt
- * @param onSelect What to do when an accent is selected.
- */
-class AccentAdapter(private var curAccent: Accent, private val onSelect: (accent: Accent) -> Unit) :
-    RecyclerView.Adapter<AccentAdapter.ViewHolder>() {
-    private var selectedViewHolder: ViewHolder? = null
+/** An adapter that displays the accent palette. */
+class AccentAdapter(listener: Listener) :
+    MonoAdapter<Accent, AccentAdapter.Listener, NewAccentViewHolder>(listener) {
+    var selectedAccent: Accent? = null
+        private set
+    private var selectedViewHolder: NewAccentViewHolder? = null
 
-    override fun getItemCount(): Int = ACCENT_COUNT
+    override val data = AccentData()
+    override val creator = NewAccentViewHolder.CREATOR
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemAccentBinding.inflate(parent.context.inflater))
+    override fun onBindViewHolder(viewHolder: NewAccentViewHolder, position: Int) {
+        super.onBindViewHolder(viewHolder, position)
+
+        if (data.getItem(position) == selectedAccent) {
+            selectedViewHolder?.setSelected(false)
+            selectedViewHolder = viewHolder
+            viewHolder.setSelected(true)
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(Accent(position))
+    fun setSelectedAccent(accent: Accent, recycler: RecyclerView) {
+        if (accent == selectedAccent) return
+        selectedAccent = accent
+        selectedViewHolder?.setSelected(false)
+        selectedViewHolder = recycler.getViewHolderAt(accent.index) as NewAccentViewHolder?
+        selectedViewHolder?.setSelected(true)
     }
 
-    private fun setAccent(accent: Accent) {
-        curAccent = accent
-        onSelect(accent)
+    interface Listener {
+        fun onAccentSelected(accent: Accent)
     }
 
-    inner class ViewHolder(private val binding: ItemAccentBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class AccentData : BackingData<Accent>() {
+        override fun getItem(position: Int) = Accent(position)
+        override fun getItemCount() = ACCENT_COUNT
+    }
+}
 
-        fun bind(accent: Accent) {
-            setSelected(accent == curAccent)
+class NewAccentViewHolder private constructor(private val binding: ItemAccentBinding) :
+    BindingViewHolder<Accent, AccentAdapter.Listener>(binding.root) {
 
-            binding.accent.apply {
-                backgroundTintList = context.getColorSafe(accent.primary).stateList
-                contentDescription = context.getString(accent.name)
-                TooltipCompat.setTooltipText(this, contentDescription)
-            }
+    override fun bind(item: Accent, listener: AccentAdapter.Listener) {
+        setSelected(false)
 
-            binding.accent.setOnClickListener {
-                setAccent(accent)
-                setSelected(true)
-            }
+        binding.accent.apply {
+            backgroundTintList = context.getColorSafe(item.primary).stateList
+            contentDescription = context.getString(item.name)
+            TooltipCompat.setTooltipText(this, contentDescription)
         }
 
-        private fun setSelected(isSelected: Boolean) {
-            val context = binding.accent.context
+        binding.accent.setOnClickListener { listener.onAccentSelected(item) }
+    }
 
-            binding.accent.isEnabled = !isSelected
-            binding.accent.imageTintList =
-                if (isSelected) {
-                    // Switch out the currently selected ViewHolder with this one.
-                    selectedViewHolder?.setSelected(false)
-                    selectedViewHolder = this
-                    context.getAttrColorSafe(R.attr.colorSurface).stateList
-                } else {
-                    context.getColorSafe(android.R.color.transparent).stateList
-                }
-        }
+    fun setSelected(isSelected: Boolean) {
+        val context = binding.accent.context
+
+        binding.accent.isEnabled = !isSelected
+        binding.accent.imageTintList =
+            if (isSelected) {
+                context.getAttrColorSafe(R.attr.colorSurface).stateList
+            } else {
+                context.getColorSafe(android.R.color.transparent).stateList
+            }
+    }
+
+    companion object {
+        val CREATOR =
+            object : Creator<NewAccentViewHolder> {
+                override val viewType: Int
+                    get() = throw UnsupportedOperationException()
+
+                override fun create(context: Context) =
+                    NewAccentViewHolder(ItemAccentBinding.inflate(context.inflater))
+            }
     }
 }
