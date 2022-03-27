@@ -41,6 +41,7 @@ import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The [DetailFragment] for an album.
@@ -53,15 +54,16 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setAlbumId(args.albumId)
 
-        setupToolbar(detailModel.currentAlbum.value!!, R.menu.menu_album_detail) { itemId ->
+        setupToolbar(unlikelyToBeNull(detailModel.currentAlbum.value), R.menu.menu_album_detail) {
+            itemId ->
             when (itemId) {
                 R.id.action_play_next -> {
-                    playbackModel.playNext(detailModel.currentAlbum.value!!)
+                    playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
                     requireContext().showToast(R.string.lbl_queue_added)
                     true
                 }
                 R.id.action_queue_add -> {
-                    playbackModel.addToQueue(detailModel.currentAlbum.value!!)
+                    playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
                     requireContext().showToast(R.string.lbl_queue_added)
                     true
                 }
@@ -102,11 +104,11 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playAlbum(requireNotNull(detailModel.currentAlbum.value), false)
+        playbackModel.playAlbum(unlikelyToBeNull(detailModel.currentAlbum.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playAlbum(requireNotNull(detailModel.currentAlbum.value), true)
+        playbackModel.playAlbum(unlikelyToBeNull(detailModel.currentAlbum.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {
@@ -121,7 +123,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
         findNavController()
             .navigate(
                 AlbumDetailFragmentDirections.actionShowArtist(
-                    requireNotNull(detailModel.currentAlbum.value).artist.id))
+                    unlikelyToBeNull(detailModel.currentAlbum.value).artist.id))
     }
 
     private fun handleNavigation(item: Music?, adapter: AlbumDetailAdapter) {
@@ -130,7 +132,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             // Songs should be scrolled to if the album matches, or a new detail
             // fragment should be launched otherwise.
             is Song -> {
-                if (detailModel.currentAlbum.value!!.id == item.album.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.album.id) {
                     logD("Navigating to a song in this album")
                     scrollToItem(item.id, adapter)
                     detailModel.finishNavToItem()
@@ -144,7 +146,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             // If the album matches, no need to do anything. Otherwise launch a new
             // detail fragment.
             is Album -> {
-                if (detailModel.currentAlbum.value!!.id == item.id) {
+                if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.id) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
                     detailModel.finishNavToItem()
@@ -197,7 +199,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
         }
 
         if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
-            playbackModel.parent.value?.id == detailModel.currentAlbum.value!!.id) {
+            playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
             adapter.highlightSong(song, binding.detailRecycler)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS

@@ -27,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * ViewModel that acts as a wrapper around [ExcludedDatabase], allowing for the addition/removal of
@@ -52,8 +53,9 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      * called.
      */
     fun addPath(path: String) {
-        if (!mPaths.value!!.contains(path)) {
-            mPaths.value!!.add(path)
+        val paths = unlikelyToBeNull(mPaths.value)
+        if (!paths.contains(path)) {
+            paths.add(path)
             mPaths.value = mPaths.value
             isModified = true
         }
@@ -64,7 +66,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      * [save] is called.
      */
     fun removePath(path: String) {
-        mPaths.value!!.remove(path)
+        unlikelyToBeNull(mPaths.value).remove(path)
         mPaths.value = mPaths.value
         isModified = true
     }
@@ -73,7 +75,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
-            excludedDatabase.writePaths(mPaths.value!!)
+            excludedDatabase.writePaths(unlikelyToBeNull(mPaths.value))
             isModified = false
             onDone()
             this@ExcludedViewModel.logD(

@@ -26,6 +26,7 @@ import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Dialog responsible for showing the list of accents to select.
@@ -44,7 +45,7 @@ class AccentCustomizeDialog :
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             if (accentAdapter.selectedAccent != settingsManager.accent) {
                 logD("Applying new accent")
-                settingsManager.accent = requireNotNull(accentAdapter.selectedAccent)
+                settingsManager.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
                 requireActivity().recreate()
             }
 
@@ -71,7 +72,7 @@ class AccentCustomizeDialog :
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_PENDING_ACCENT, requireNotNull(accentAdapter.selectedAccent).index)
+        outState.putInt(KEY_PENDING_ACCENT, unlikelyToBeNull(accentAdapter.selectedAccent).index)
     }
 
     override fun onDestroyBinding(binding: DialogAccentBinding) {

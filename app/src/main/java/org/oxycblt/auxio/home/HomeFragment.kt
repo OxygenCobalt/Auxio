@@ -49,6 +49,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
@@ -134,9 +135,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
             R.id.option_sort_asc -> {
                 item.isChecked = !item.isChecked
                 homeModel.updateCurrentSort(
-                    requireNotNull(
+                    unlikelyToBeNull(
                         homeModel
-                            .getSortForDisplay(homeModel.currentTab.value!!)
+                            .getSortForDisplay(unlikelyToBeNull(homeModel.currentTab.value))
                             .ascending(item.isChecked)))
             }
 
@@ -144,9 +145,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
             else -> {
                 item.isChecked = true
                 homeModel.updateCurrentSort(
-                    requireNotNull(
+                    unlikelyToBeNull(
                         homeModel
-                            .getSortForDisplay(homeModel.currentTab.value!!)
+                            .getSortForDisplay(unlikelyToBeNull(homeModel.currentTab.value))
                             .assignId(item.itemId)))
             }
         }

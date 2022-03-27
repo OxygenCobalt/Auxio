@@ -37,6 +37,7 @@ import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The [DetailFragment] for a genre.
@@ -49,7 +50,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setGenreId(args.genreId)
 
-        setupToolbar(detailModel.currentGenre.value!!)
+        setupToolbar(unlikelyToBeNull(detailModel.currentGenre.value))
         binding.detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -83,11 +84,11 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playGenre(requireNotNull(detailModel.currentGenre.value), false)
+        playbackModel.playGenre(unlikelyToBeNull(detailModel.currentGenre.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playGenre(requireNotNull(detailModel.currentGenre.value), true)
+        playbackModel.playGenre(unlikelyToBeNull(detailModel.currentGenre.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {
@@ -119,7 +120,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     private fun updateSong(song: Song?, adapter: GenreDetailAdapter) {
         val binding = requireBinding()
         if (playbackModel.playbackMode.value == PlaybackMode.IN_GENRE &&
-            playbackModel.parent.value?.id == detailModel.currentGenre.value!!.id) {
+            playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
             adapter.highlightSong(song, binding.detailRecycler)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS

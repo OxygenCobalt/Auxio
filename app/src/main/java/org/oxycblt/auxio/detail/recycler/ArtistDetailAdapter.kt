@@ -179,7 +179,11 @@ private constructor(
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bindAlbumCover(item)
         binding.parentName.textSafe = item.resolvedName
-        binding.parentInfo.textSafe = binding.context.getString(R.string.fmt_number, item.year)
+        binding.parentInfo.textSafe = if (item.year != null) {
+            binding.context.getString(R.string.fmt_number, item.year)
+        } else {
+            binding.context.getString(R.string.def_date)
+        }
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }

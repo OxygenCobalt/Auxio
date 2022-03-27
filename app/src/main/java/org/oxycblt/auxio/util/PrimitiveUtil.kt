@@ -21,6 +21,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Looper
 import androidx.fragment.app.Fragment
+import org.oxycblt.auxio.BuildConfig
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned. Will
@@ -36,8 +37,17 @@ fun assertBackgroundThread() {
     }
 }
 
-fun Fragment.requireAttached() {
-    if (isDetached) {
-        error("Fragment is detached from activity")
+/**
+ * Sanitizes a nullable value that is not likely to be null. On debug builds, requireNotNull is
+ * used, while on release builds, the unsafe assertion operator [!!] ]is used
+ */
+fun <T> unlikelyToBeNull(value: T?): T {
+    return if (BuildConfig.DEBUG) {
+        requireNotNull(value)
+    } else {
+        value!!
     }
 }
+
+/** Require the fragment is attached to an activity. */
+fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from activity" }

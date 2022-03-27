@@ -28,6 +28,7 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.system.ReplayGainMode
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Wrapper around the [SharedPreferences] class that writes & reads values without a context.
@@ -73,7 +74,7 @@ class SettingsManager private constructor(context: Context) :
     var libTabs: Array<Tab>
         get() =
             Tab.fromSequence(prefs.getInt(KEY_LIB_TABS, Tab.SEQUENCE_DEFAULT))
-                ?: Tab.fromSequence(Tab.SEQUENCE_DEFAULT)!!
+                ?: unlikelyToBeNull(Tab.fromSequence(Tab.SEQUENCE_DEFAULT))
         set(value) {
             prefs.edit {
                 putInt(KEY_LIB_TABS, Tab.toSequence(value))

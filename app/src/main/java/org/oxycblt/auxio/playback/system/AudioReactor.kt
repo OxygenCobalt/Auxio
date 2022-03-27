@@ -34,6 +34,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Manages the current volume and playback state across ReplayGain and AudioFocus events.
@@ -172,7 +173,7 @@ class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
             }
 
             if (key in REPLAY_GAIN_TAGS) {
-                tags.add(GainTag(requireNotNull(key), parseReplayGainFloat(value)))
+                tags.add(GainTag(unlikelyToBeNull(key), parseReplayGainFloat(value)))
             }
         }
 

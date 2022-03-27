@@ -248,10 +248,13 @@ sealed class Sort(open val isAscending: Boolean) {
 
     class NullableComparator<T : Comparable<T>> : Comparator<T?> {
         override fun compare(a: T?, b: T?): Int {
-            if (a == null && b != null) return -1 // -1 -> a < b
-            if (a == null && b == null) return 0 // 0 -> a = b
-            if (a != null && b == null) return 1 // 1 -> a > b
-            return a!!.compareTo(b!!)
+            return when {
+                a != null && b != null -> a.compareTo(b)
+                a == null && b != null -> -1 // a < b
+                a == null && b == null -> 0 // a = b
+                a != null && b == null -> 1 // a < b
+                else -> error("Unreachable")
+            }
         }
     }
 

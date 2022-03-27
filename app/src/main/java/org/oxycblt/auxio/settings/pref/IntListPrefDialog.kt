@@ -19,41 +19,43 @@ package org.oxycblt.auxio.settings.pref
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceDialogFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.BuildConfig
 
-/** The dialog shown whenever an [IntListPreference] is shown. */
-class IntListPrefDialog : DialogFragment() {
+class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
+    private val listPreference: IntListPreference
+        get() = (preference as IntListPreference)
+    private var pendingValueIndex = -1
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = MaterialAlertDialogBuilder(requireActivity(), theme)
-
-        // Since we have to store the preference key as an argument, we have to find the
-        // preference we need to use manually.
-        val pref =
-            requireNotNull(
-                (parentFragment as PreferenceFragmentCompat).preferenceManager.findPreference<
-                    IntListPreference>(requireArguments().getString(ARG_KEY, null)))
-
-        builder.setTitle(pref.title)
-
-        builder.setSingleChoiceItems(pref.entries, pref.getValueIndex()) { _, index ->
-            pref.setValueIndex(index)
+        // PreferenceDialogFragmentCompat does not allow us to customize the actual creation
+        // of the alert dialog, so we have to manually override onCreateDialog and customize it
+        // ourselves.
+        val builder = MaterialAlertDialogBuilder(requireContext(), theme)
+        builder.setTitle(listPreference.title)
+        builder.setPositiveButton(null, null)
+        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.setSingleChoiceItems(listPreference.entries, listPreference.getValueIndex()) {
+            _,
+            index ->
+            pendingValueIndex = index
             dismiss()
         }
-
-        builder.setNegativeButton(android.R.string.cancel, null)
-
         return builder.create()
+    }
+
+    override fun onDialogClosed(positiveResult: Boolean) {
+        if (pendingValueIndex > -1) {
+            listPreference.setValueIndex(pendingValueIndex)
+        }
     }
 
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.INT_PREF"
-        const val ARG_KEY = BuildConfig.APPLICATION_ID + ".arg.PREF_KEY"
 
-        fun from(pref: IntListPreference): IntListPrefDialog {
-            return IntListPrefDialog().apply {
+        fun from(pref: IntListPreference): IntListPreferenceDialog {
+            return IntListPreferenceDialog().apply {
                 arguments = Bundle().apply { putString(ARG_KEY, pref.key) }
             }
         }

@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.music.excluded
 
 import android.content.Context
-import androidx.recyclerview.widget.DiffUtil
 import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.MonoAdapter
@@ -40,9 +39,7 @@ class ExcludedAdapter(listener: Listener) :
     }
 }
 
-/**
- * The viewholder for [ExcludedAdapter]. Not intended for use in other adapters.
- */
+/** The viewholder for [ExcludedAdapter]. Not intended for use in other adapters. */
 class ExcludedViewHolder private constructor(private val binding: ItemExcludedDirBinding) :
     BindingViewHolder<String, ExcludedAdapter.Listener>(binding.root) {
     override fun bind(item: String, listener: ExcludedAdapter.Listener) {

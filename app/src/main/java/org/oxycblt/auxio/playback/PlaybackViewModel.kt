@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -211,7 +212,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * is called just before the change is committed so that the adapter can be updated.
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
-        val index = adapterIndex + (playbackManager.queue.size - mNextUp.value!!.size)
+        val index =
+            adapterIndex + (playbackManager.queue.size - unlikelyToBeNull(mNextUp.value).size)
         if (index in playbackManager.queue.indices) {
             apply()
             playbackManager.removeQueueItem(index)
@@ -222,7 +224,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * is called just before the change is committed so that the adapter can be updated.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
-        val delta = (playbackManager.queue.size - mNextUp.value!!.size)
+        val delta = (playbackManager.queue.size - unlikelyToBeNull(mNextUp.value).size)
         val from = adapterFrom + delta
         val to = adapterTo + delta
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {

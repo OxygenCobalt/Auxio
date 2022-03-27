@@ -32,6 +32,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A Base [Fragment] implementing the base features shared across all detail fragments.
@@ -95,6 +96,9 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
     ) {
         logD("Launching menu")
 
+        // Scrolling breaks the menus, so we stop any momentum currently going on.
+        requireBinding().detailRecycler.stopScroll()
+
         PopupMenu(anchor.context, anchor).apply {
             inflate(R.menu.menu_detail_sort)
 
@@ -104,7 +108,7 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
                     onConfirm(sort.ascending(item.isChecked))
                 } else {
                     item.isChecked = true
-                    onConfirm(requireNotNull(sort.assignId(item.itemId)))
+                    onConfirm(unlikelyToBeNull(sort.assignId(item.itemId)))
                 }
 
                 true

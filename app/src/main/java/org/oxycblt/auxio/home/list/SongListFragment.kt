@@ -30,6 +30,7 @@ import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [HomeListFragment] for showing a list of [Song]s.
@@ -48,7 +49,7 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     override fun getPopup(pos: Int): String {
-        val song = homeModel.songs.value!![pos]
+        val song = unlikelyToBeNull(homeModel.songs.value)[pos]
 
         // Change how we display the popup depending on the mode.
         // We don't use the more correct resolve(Model)Name here, as sorts are largely

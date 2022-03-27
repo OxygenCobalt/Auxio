@@ -101,8 +101,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         titleShown = visible
 
-        if (mTitleAnimator != null) {
-            mTitleAnimator!!.cancel()
+        val titleAnimator = mTitleAnimator
+        if (titleAnimator != null) {
+            titleAnimator.cancel()
             mTitleAnimator = null
         }
 

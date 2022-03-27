@@ -32,6 +32,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
@@ -113,19 +114,19 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
         when (mCurrentTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort
-                mSongs.value = sort.songs(mSongs.value!!)
+                mSongs.value = sort.songs(unlikelyToBeNull(mSongs.value))
             }
             DisplayMode.SHOW_ALBUMS -> {
                 settingsManager.libAlbumSort = sort
-                mAlbums.value = sort.albums(mAlbums.value!!)
+                mAlbums.value = sort.albums(unlikelyToBeNull(mAlbums.value))
             }
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
-                mArtists.value = sort.artists(mArtists.value!!)
+                mArtists.value = sort.artists(unlikelyToBeNull(mArtists.value))
             }
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
-                mGenres.value = sort.genres(mGenres.value!!)
+                mGenres.value = sort.genres(unlikelyToBeNull(mGenres.value))
             }
             else -> {}
         }

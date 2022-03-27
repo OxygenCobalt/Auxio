@@ -38,6 +38,7 @@ import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The [DetailFragment] for an artist.
@@ -50,7 +51,7 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setArtistId(args.artistId)
 
-        setupToolbar(detailModel.currentArtist.value!!)
+        setupToolbar(unlikelyToBeNull(detailModel.currentArtist.value))
         requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -91,11 +92,11 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playArtist(requireNotNull(detailModel.currentArtist.value), false)
+        playbackModel.playArtist(unlikelyToBeNull(detailModel.currentArtist.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playArtist(requireNotNull(detailModel.currentArtist.value), true)
+        playbackModel.playArtist(unlikelyToBeNull(detailModel.currentArtist.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {

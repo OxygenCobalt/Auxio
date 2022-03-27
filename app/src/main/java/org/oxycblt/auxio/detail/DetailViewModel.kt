@@ -56,7 +56,7 @@ class DetailViewModel : ViewModel() {
         get() = settingsManager.detailAlbumSort
         set(value) {
             settingsManager.detailAlbumSort = value
-            refreshAlbumData()
+            currentAlbum.value?.let(::refreshAlbumData)
         }
 
     private val mCurrentArtist = MutableLiveData<Artist?>()
@@ -70,7 +70,7 @@ class DetailViewModel : ViewModel() {
         get() = settingsManager.detailArtistSort
         set(value) {
             settingsManager.detailArtistSort = value
-            refreshArtistData()
+            currentArtist.value?.let(::refreshArtistData)
         }
 
     private val mCurrentGenre = MutableLiveData<Genre?>()
@@ -84,7 +84,7 @@ class DetailViewModel : ViewModel() {
         get() = settingsManager.detailGenreSort
         set(value) {
             settingsManager.detailGenreSort = value
-            refreshGenreData()
+            currentGenre.value?.let(::refreshGenreData)
         }
 
     private val mNavToItem = MutableLiveData<Music?>()
@@ -99,22 +99,30 @@ class DetailViewModel : ViewModel() {
     fun setAlbumId(id: Long) {
         if (mCurrentAlbum.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurrentAlbum.value = musicStore.albums.find { it.id == id }
-        refreshAlbumData()
+        val album =
+            requireNotNull(musicStore.albums.find { it.id == id }) { "Invalid album ID provided " }
+
+        mCurrentAlbum.value = album
+        refreshAlbumData(album)
     }
 
     fun setArtistId(id: Long) {
         if (mCurrentArtist.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurrentArtist.value = musicStore.artists.find { it.id == id }
-        refreshArtistData()
+        val artist =
+            requireNotNull(musicStore.artists.find { it.id == id }) { "Invalid artist ID provided" }
+
+        mCurrentArtist.value = artist
+        refreshArtistData(artist)
     }
 
     fun setGenreId(id: Long) {
         if (mCurrentGenre.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        mCurrentGenre.value = musicStore.genres.find { it.id == id }
-        refreshGenreData()
+        val genre =
+            requireNotNull(musicStore.genres.find { it.id == id }) { "Invalid genre ID provided" }
+        mCurrentGenre.value = genre
+        refreshGenreData(genre)
     }
 
     /** Navigate to an item, whether a song/album/artist */
@@ -132,38 +140,29 @@ class DetailViewModel : ViewModel() {
         isNavigating = navigating
     }
 
-    private fun refreshGenreData() {
+    private fun refreshGenreData(genre: Genre) {
         logD("Refreshing genre data")
-        val genre = requireNotNull(currentGenre.value)
         val data = mutableListOf<Item>(genre)
-
         data.add(SortHeader(-2, R.string.lbl_songs))
-        data.addAll(settingsManager.detailGenreSort.genre(currentGenre.value!!))
-
+        data.addAll(genreSort.genre(genre))
         mGenreData.value = data
     }
 
-    private fun refreshArtistData() {
+    private fun refreshArtistData(artist: Artist) {
         logD("Refreshing artist data")
-        val artist = requireNotNull(currentArtist.value)
         val data = mutableListOf<Item>(artist)
-
         data.add(Header(-2, R.string.lbl_albums))
         data.addAll(Sort.ByYear(false).albums(artist.albums))
         data.add(SortHeader(-3, R.string.lbl_songs))
-        data.addAll(settingsManager.detailArtistSort.artist(artist))
-
+        data.addAll(artistSort.artist(artist))
         mArtistData.value = data.toList()
     }
 
-    private fun refreshAlbumData() {
+    private fun refreshAlbumData(album: Album) {
         logD("Refreshing album data")
-        val album = requireNotNull(currentAlbum.value)
         val data = mutableListOf<Item>(album)
-
         data.add(SortHeader(id = -2, R.string.lbl_albums))
-        data.addAll(settingsManager.detailAlbumSort.album(currentAlbum.value!!))
-
+        data.addAll(albumSort.album(album))
         mAlbumData.value = data
     }
 }

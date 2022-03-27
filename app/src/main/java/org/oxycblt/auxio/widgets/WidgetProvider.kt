@@ -42,6 +42,7 @@ import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * Auxio's one and only appwidget. This widget follows a more unorthodox approach, effectively
@@ -245,7 +246,7 @@ class WidgetProvider : AppWidgetProvider() {
                     logW("No good widget layout found")
 
                     val minimum =
-                        requireNotNull(views.minByOrNull { it.key.width * it.key.height }?.value)
+                        unlikelyToBeNull(views.minByOrNull { it.key.width * it.key.height }?.value)
 
                     updateAppWidget(id, minimum)
                 }

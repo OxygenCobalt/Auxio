@@ -32,6 +32,7 @@ import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [HomeListFragment] for showing a list of [Album]s.
@@ -50,7 +51,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
     }
 
     override fun getPopup(pos: Int): String? {
-        val album = homeModel.albums.value!![pos]
+        val album = unlikelyToBeNull(homeModel.albums.value)[pos]
 
         // Change how we display the popup depending on the mode.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {

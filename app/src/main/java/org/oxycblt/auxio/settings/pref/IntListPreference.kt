@@ -33,9 +33,6 @@ constructor(
     defStyleRes: Int = 0
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
     // Reflect into Preference to get the (normally inaccessible) default value.
-    private val defValueField =
-        Preference::class.java.getDeclaredField("mDefaultValue").apply { isAccessible = true }
-
     val entries: Array<CharSequence>
     val values: IntArray
     private var currentValue: Int? = null
@@ -107,5 +104,10 @@ constructor(
             // Usually an invalid state, don't bother translating
             return "<not set>"
         }
+    }
+
+    companion object {
+        private val defValueField =
+            Preference::class.java.getDeclaredField("mDefaultValue").apply { isAccessible = true }
     }
 }

@@ -107,12 +107,10 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             }
         }
 
-        binding.playbackPlayPause.isActivated = playbackModel.isPlaying.value!!
         playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
             binding.playbackPlayPause.isActivated = isPlaying
         }
 
-        binding.playbackProgressBar.progress = playbackModel.positionSeconds.value!!.toInt()
         playbackModel.positionSeconds.observe(viewLifecycleOwner) { position ->
             binding.playbackProgressBar.progress = position.toInt()
         }

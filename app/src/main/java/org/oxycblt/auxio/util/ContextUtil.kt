@@ -95,7 +95,7 @@ fun Context.getColorSafe(@ColorRes color: Int): Int {
  */
 fun Context.getColorStateListSafe(@ColorRes color: Int): ColorStateList {
     return try {
-        requireNotNull(ContextCompat.getColorStateList(this, color))
+        unlikelyToBeNull(ContextCompat.getColorStateList(this, color))
     } catch (e: Exception) {
         handleResourceFailure(e, "color state list", getColorSafe(android.R.color.black).stateList)
     }

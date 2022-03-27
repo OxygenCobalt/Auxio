@@ -21,6 +21,7 @@ import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
 import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
 
@@ -84,19 +85,16 @@ data class Song(
     /** The duration of this song, in seconds (rounded down) */
     val seconds: Long
         get() = duration / 1000
-    /** The seconds of this song, but as a duration. */
-    val formattedDuration: String
-        get() = seconds.toDuration(false)
 
     private var mAlbum: Album? = null
     /** The album of this song. */
     val album: Album
-        get() = requireNotNull(mAlbum)
+        get() = unlikelyToBeNull(mAlbum)
 
     private var mGenre: Genre? = null
     /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
     val genre: Genre
-        get() = requireNotNull(mGenre)
+        get() = unlikelyToBeNull(mGenre)
 
     /** An album name resolved to this song in particular. */
     val resolvedAlbumName: String
@@ -177,7 +175,7 @@ data class Album(
     private var mArtist: Artist? = null
     /** The parent artist of this album. */
     val artist: Artist
-        get() = requireNotNull(mArtist)
+        get() = unlikelyToBeNull(mArtist)
 
     /** The artist name, resolved to this album in particular. */
     val resolvedArtistName: String

@@ -30,6 +30,7 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.ui.sliceArticle
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [HomeListFragment] for showing a list of [Artist]s.
@@ -48,7 +49,11 @@ class ArtistListFragment : HomeListFragment<Artist>() {
     }
 
     override fun getPopup(pos: Int) =
-        homeModel.artists.value!![pos].resolvedName.sliceArticle().first().uppercase()
+        unlikelyToBeNull(homeModel.artists.value)[pos]
+            .resolvedName
+            .sliceArticle()
+            .first()
+            .uppercase()
 
     override fun onItemClick(item: Item) {
         check(item is Artist)
