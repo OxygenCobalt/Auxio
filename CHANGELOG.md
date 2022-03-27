@@ -5,10 +5,15 @@
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items
 
+#### What's Changed
+- Audio focus is no longer configurable
+
 #### Dev/Meta
 - Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese ]
 - Switched to spotless and ktfmt instead of ktlint
 - Migrated constants to centralized table
+- Introduced new RecyclerView framework
+- Use native ExoPlayer AudioFocus implementation
 - Removed databinding [Greatly reduces compile times]
 - A bunch of internal view implementation improvements
 

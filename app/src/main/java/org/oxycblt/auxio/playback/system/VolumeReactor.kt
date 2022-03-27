@@ -17,13 +17,7 @@
  
 package org.oxycblt.auxio.playback.system
 
-import android.content.Context
-import android.media.AudioManager
-import android.os.Build
 import androidx.core.math.MathUtils
-import androidx.media.AudioAttributesCompat
-import androidx.media.AudioFocusRequestCompat
-import androidx.media.AudioManagerCompat
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
@@ -31,36 +25,24 @@ import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * Manages the current volume and playback state across ReplayGain and AudioFocus events.
+ * Manages the current volume across ReplayGain and AudioFocus events.
+ *
+ * TODO: Add ReplayGain pre-amp
+ *
+ * TODO: Add positive ReplayGain
  * @author OxygenCobalt
  */
-class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
-    AudioManager.OnAudioFocusChangeListener, SettingsManager.Callback {
+class VolumeReactor(private val callback: (Float) -> Unit) {
     private data class Gain(val track: Float, val album: Float)
     private data class GainTag(val key: String, val value: Float)
 
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
-    private val audioManager = context.getSystemServiceSafe(AudioManager::class)
-
-    private val request =
-        AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
-            .setWillPauseWhenDucked(false)
-            .setAudioAttributes(
-                AudioAttributesCompat.Builder()
-                    .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributesCompat.USAGE_MEDIA)
-                    .build())
-            .setOnAudioFocusChangeListener(this)
-            .build()
-
-    private var pauseWasTransient = false
 
     // It's good to keep the volume and the ducking multiplier separate so that we don't
     // lose information
@@ -77,23 +59,9 @@ class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
             callback(volume)
         }
 
-    init {
-        settingsManager.addCallback(this)
-    }
-
-    /** Request the android system for audio focus */
-    fun requestFocus() {
-        logD("Requesting audio focus")
-        AudioManagerCompat.requestAudioFocus(audioManager, request)
-    }
-
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is based off
      * Vanilla Music's implementation.
-     *
-     * TODO: Add ReplayGain pre-amp
-     *
-     * TODO: Add positive ReplayGain
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (metadata == null) {
@@ -218,75 +186,9 @@ class AudioReactor(context: Context, private val callback: (Float) -> Unit) :
         }
     }
 
-    /** Abandon the current focus request and any callbacks */
-    fun release() {
-        AudioManagerCompat.abandonAudioFocusRequest(audioManager, request)
-        settingsManager.removeCallback(this)
-    }
-
-    // --- INTERNAL AUDIO FOCUS ---
-
-    override fun onAudioFocusChange(focusChange: Int) {
-        if (!settingsManager.doAudioFocus && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            // Don't do audio focus if its not enabled
-            return
-        }
-
-        when (focusChange) {
-            AudioManager.AUDIOFOCUS_GAIN -> onGain()
-            AudioManager.AUDIOFOCUS_LOSS -> onLossPermanent()
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> onLossTransient()
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> onDuck()
-        }
-    }
-
-    private fun onGain() {
-        if (multiplier == MULTIPLIER_DUCK) {
-            unduck()
-        } else if (pauseWasTransient) {
-            logD("Gained focus after transient loss")
-
-            // Play again if the pause was only temporary [AudioManager.AUDIOFOCUS_LOSS_TRANSIENT]
-            playbackManager.setPlaying(true)
-            pauseWasTransient = false
-        }
-    }
-
-    private fun onLossTransient() {
-        // Since this loss is only temporary, mark it as such if we had to pause playback.
-        if (playbackManager.isPlaying) {
-            logD("Pausing for transient loss")
-            playbackManager.setPlaying(false)
-            pauseWasTransient = true
-        }
-    }
-
-    private fun onLossPermanent() {
-        logD("Pausing for permanent loss")
-        playbackManager.setPlaying(false)
-    }
-
-    private fun onDuck() {
-        multiplier = MULTIPLIER_DUCK
-        logD("Ducked volume, now $volume")
-    }
-
-    private fun unduck() {
-        multiplier = 1f
-        logD("Unducked volume, now $volume")
-    }
-
     // --- SETTINGS MANAGEMENT ---
 
-    override fun onAudioFocusUpdate(focus: Boolean) {
-        if (!focus) {
-            onGain()
-        }
-    }
-
     companion object {
-        private const val MULTIPLIER_DUCK = 0.2f
-
         const val RG_TRACK = "REPLAYGAIN_TRACK_GAIN"
         const val RG_ALBUM = "REPLAYGAIN_ALBUM_GAIN"
         const val R128_TRACK = "R128_TRACK_GAIN"

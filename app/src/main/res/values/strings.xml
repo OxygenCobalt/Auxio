@@ -80,8 +80,6 @@
     <string name="set_alt_shuffle">Prefer shuffle action</string>
 
     <string name="set_audio">Audio</string>
-    <string name="set_focus">Audio focus</string>
-    <string name="set_focus_desc">Pause when other audio plays (ex. Calls)</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
     <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
     <string name="set_replay_gain">ReplayGain (Experimental)</string>

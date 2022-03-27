@@ -49,7 +49,7 @@ sealed class Tab(open val mode: DisplayMode) {
 
     companion object {
         /** The length a well-formed tab sequence should be */
-        const val SEQUENCE_LEN = 4
+        private const val SEQUENCE_LEN = 4
         /** The default tab sequence, represented in integer form */
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 

@@ -80,8 +80,6 @@
     <string name="set_alt_shuffle">偏好随机播放操作</string>
 
     <string name="set_audio">音频</string>
-    <string name="set_focus">音频焦点</string>
-    <string name="set_focus_desc">有其它音频播放（比如电话）时暂停</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
     <string name="set_replay_gain">回放增益（实验性）</string>

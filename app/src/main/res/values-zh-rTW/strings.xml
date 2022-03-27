@@ -47,7 +47,6 @@
     <string name="set_quality_covers">忽略音訊檔內嵌的專輯封面</string>
 
     <string name="set_audio">音訊</string>
-    <string name="set_focus">音頻焦點</string>
 
     <string name="set_behavior">行為</string>
     <string name="set_keep_shuffle">記住隨機播放</string>

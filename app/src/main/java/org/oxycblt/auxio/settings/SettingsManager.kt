@@ -94,10 +94,6 @@ class SettingsManager private constructor(context: Context) :
     val roundCovers: Boolean
         get() = prefs.getBoolean(KEY_ROUND_COVERS, false)
 
-    /** Whether to do Audio focus. */
-    val doAudioFocus: Boolean
-        get() = prefs.getBoolean(KEY_AUDIO_FOCUS, true)
-
     /** Whether to resume playback when a headset is connected (may not work well in all cases) */
     val headsetAutoplay: Boolean
         get() = prefs.getBoolean(KEY_HEADSET_AUTOPLAY, false)
@@ -239,7 +235,6 @@ class SettingsManager private constructor(context: Context) :
             KEY_SHOW_COVERS -> callbacks.forEach { it.onShowCoverUpdate(showCovers) }
             KEY_QUALITY_COVERS -> callbacks.forEach { it.onQualityCoverUpdate(useQualityCovers) }
             KEY_LIB_TABS -> callbacks.forEach { it.onLibTabsUpdate(libTabs) }
-            KEY_AUDIO_FOCUS -> callbacks.forEach { it.onAudioFocusUpdate(doAudioFocus) }
             KEY_REPLAY_GAIN -> callbacks.forEach { it.onReplayGainUpdate(replayGainMode) }
         }
     }
@@ -255,7 +250,6 @@ class SettingsManager private constructor(context: Context) :
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
-        fun onAudioFocusUpdate(focus: Boolean) {}
         fun onReplayGainUpdate(mode: ReplayGainMode) {}
     }
 
@@ -272,7 +266,6 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_ROUND_COVERS = "auxio_round_covers"
         const val KEY_USE_ALT_NOTIFICATION_ACTION = "KEY_ALT_NOTIF_ACTION"
 
-        const val KEY_AUDIO_FOCUS = "KEY_AUDIO_FOCUS"
         const val KEY_HEADSET_AUTOPLAY = "auxio_headset_autoplay"
         const val KEY_REPLAY_GAIN = "auxio_replay_gain"
 

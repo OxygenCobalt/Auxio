@@ -81,8 +81,6 @@
     <string name="set_alt_shuffle">Режим перемешивания</string>
 
     <string name="set_audio">Звук</string>
-    <string name="set_focus">Аудио-фокус</string>
-    <string name="set_focus_desc">Ставить на паузу при звонках</string>
     <string name="set_replay_gain">ReplayGain (экспериментально)</string>
     <string name="set_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>

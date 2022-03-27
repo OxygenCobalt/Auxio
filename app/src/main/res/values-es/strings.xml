@@ -81,8 +81,6 @@
     <string name="set_alt_shuffle">Preferir acción de mezcla</string>
 
     <string name="set_audio">Sonido</string>
-    <string name="set_focus">Enfoque de sonido</string>
-    <string name="set_focus_desc">Pausar cuando se reproduce otro sonido (Ej: llamadas)</string>
     <string name="set_replay_gain">ReplayGain (Experimental)</string>
     <string name="set_off">Desactivado</string>
     <string name="set_replay_gain_track">Por pista</string>

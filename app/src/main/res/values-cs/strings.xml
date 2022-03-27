@@ -65,8 +65,6 @@
     <string name="set_alt_loop">"Preferovat akci režimu opakování"</string>
     <string name="set_alt_shuffle">"Preferovat akci náhodného přehrávání"</string>
     <string name="set_audio">"Zvuk"</string>
-    <string name="set_focus">"Zaměření zvuku"</string>
-    <string name="set_focus_desc">Pozastavit při přehrávání jiného zvuku (např. hovor)</string>
     <string name="set_behavior">"Chování"</string>
     <string name="set_song_mode">"Když je vybrána skladba"</string>
     <string name="set_keep_shuffle">"Zapamatovat si náhodné přehrávání"</string>

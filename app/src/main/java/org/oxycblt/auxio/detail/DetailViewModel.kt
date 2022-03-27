@@ -100,7 +100,7 @@ class DetailViewModel : ViewModel() {
         if (mCurrentAlbum.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
         val album =
-            requireNotNull(musicStore.albums.find { it.id == id }) { "Invalid album ID provided " }
+            requireNotNull(musicStore.albums.find { it.id == id }) { "Invalid album id provided " }
 
         mCurrentAlbum.value = album
         refreshAlbumData(album)
@@ -109,9 +109,7 @@ class DetailViewModel : ViewModel() {
     fun setArtistId(id: Long) {
         if (mCurrentArtist.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        val artist =
-            requireNotNull(musicStore.artists.find { it.id == id }) { "Invalid artist ID provided" }
-
+        val artist = requireNotNull(musicStore.artists.find { it.id == id }) {}
         mCurrentArtist.value = artist
         refreshArtistData(artist)
     }
@@ -119,8 +117,7 @@ class DetailViewModel : ViewModel() {
     fun setGenreId(id: Long) {
         if (mCurrentGenre.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
-        val genre =
-            requireNotNull(musicStore.genres.find { it.id == id }) { "Invalid genre ID provided" }
+        val genre = requireNotNull(musicStore.genres.find { it.id == id })
         mCurrentGenre.value = genre
         refreshGenreData(genre)
     }

@@ -91,7 +91,7 @@ val Drawable.isRtl: Boolean
 val ViewBinding.context: Context
     get() = root.context
 
-var TextView.textSafe
+var TextView.textSafe: CharSequence
     get() = text
     set(value) {
         text = value

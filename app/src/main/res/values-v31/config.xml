@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="enable_theme_settings">false</bool>
-    <bool name="enable_audio_focus_setting">false</bool>
 </resources>

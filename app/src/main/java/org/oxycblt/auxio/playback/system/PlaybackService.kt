@@ -88,7 +88,7 @@ class PlaybackService :
     private lateinit var notificationManager: NotificationManager
 
     // System backend components
-    private lateinit var audioReactor: AudioReactor
+    private lateinit var audioReactor: VolumeReactor
     private lateinit var widgets: WidgetController
     private val systemReceiver = PlaybackReceiver()
 
@@ -130,10 +130,10 @@ class PlaybackService :
                 .setUsage(C.USAGE_MEDIA)
                 .setContentType(C.CONTENT_TYPE_MUSIC)
                 .build(),
-            false)
+            true)
 
         audioReactor =
-            AudioReactor(this) { volume ->
+            VolumeReactor { volume ->
                 logD("Updating player volume to $volume")
                 player.volume = volume
             }
@@ -191,7 +191,6 @@ class PlaybackService :
         player.release()
         connector.release()
         mediaSession.release()
-        audioReactor.release()
         widgets.release()
 
         playbackManager.removeCallback(this)
@@ -213,6 +212,13 @@ class PlaybackService :
     }
 
     // --- PLAYER EVENT LISTENER OVERRIDES ---
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+        if (playbackManager.isPlaying != playWhenReady) {
+            playbackManager.setPlaying(playWhenReady)
+        }
+    }
 
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
@@ -281,7 +287,6 @@ class PlaybackService :
     override fun onPlayingUpdate(isPlaying: Boolean) {
         if (isPlaying && !player.isPlaying) {
             player.play()
-            audioReactor.requestFocus()
             startPolling()
         } else {
             player.pause()

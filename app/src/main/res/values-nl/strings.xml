@@ -70,8 +70,6 @@
     <string name="set_alt_shuffle">Voorkeur aan shuffle actie</string>
 
     <string name="set_audio">Audio</string>
-    <string name="set_focus">Audiofocus</string>
-    <string name="set_focus_desc">Pauze wanneer andere audio speelt (ex. Gesprekken)</string>
 
     <string name="set_behavior">Gedrag</string>
     <string name="set_song_mode">Wanneer een liedje is geselecteerd</string>

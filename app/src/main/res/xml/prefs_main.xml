@@ -79,14 +79,6 @@
         app:title="@string/set_audio">
 
         <org.oxycblt.auxio.settings.pref.M3SwitchPreference
-            app:defaultValue="true"
-            app:iconSpaceReserved="false"
-            app:isPreferenceVisible="@bool/enable_audio_focus_setting"
-            app:key="KEY_AUDIO_FOCUS"
-            app:summary="@string/set_focus_desc"
-            app:title="@string/set_focus" />
-
-        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="auxio_headset_autoplay"
