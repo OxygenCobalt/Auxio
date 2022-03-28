@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
 import com.google.android.exoplayer2.TracksInfo
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
 import com.google.android.exoplayer2.ext.flac.LibflacAudioRenderer
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
@@ -82,13 +83,13 @@ class PlaybackService :
     private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var connector: PlaybackSessionConnector
+    private val audioProcessor = ReplayGainAudioProcessor()
 
     // Notification components
     private lateinit var notification: PlaybackNotification
     private lateinit var notificationManager: NotificationManager
 
     // System backend components
-    private lateinit var audioReactor: VolumeReactor
     private lateinit var widgets: WidgetController
     private val systemReceiver = PlaybackReceiver()
 
@@ -131,12 +132,6 @@ class PlaybackService :
                 .setContentType(C.CONTENT_TYPE_MUSIC)
                 .build(),
             true)
-
-        audioReactor =
-            VolumeReactor { volume ->
-                logD("Updating player volume to $volume")
-                player.volume = volume
-            }
 
         // --- SYSTEM SETUP ---
 
@@ -252,7 +247,7 @@ class PlaybackService :
             if (info.isSelected) {
                 for (i in 0 until info.trackGroup.length) {
                     if (info.isTrackSelected(i)) {
-                        audioReactor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
+                        audioProcessor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
                         break
                     }
                 }
@@ -358,8 +353,14 @@ class PlaybackService :
         // battery/apk size/cache size
         val audioRenderer = RenderersFactory { handler, _, audioListener, _, _ ->
             arrayOf(
-                MediaCodecAudioRenderer(this, MediaCodecSelector.DEFAULT, handler, audioListener),
-                LibflacAudioRenderer(handler, audioListener))
+                MediaCodecAudioRenderer(
+                    this,
+                    MediaCodecSelector.DEFAULT,
+                    handler,
+                    audioListener,
+                    AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
+                    audioProcessor),
+                LibflacAudioRenderer(handler, audioListener, audioProcessor))
         }
 
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable

@@ -14,6 +14,7 @@
 - Migrated constants to centralized table
 - Introduced new RecyclerView framework
 - Use native ExoPlayer AudioFocus implementation
+- Make ReplayGain functionality use AudioProcessor instead of volume
 - Removed databinding [Greatly reduces compile times]
 - A bunch of internal view implementation improvements
 
