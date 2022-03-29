@@ -70,6 +70,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         viewTreeObserver.removeOnPreDrawListener(onPreDraw)
+        scrollingChild = null
     }
 
     override fun setLiftOnScrollTargetViewId(liftOnScrollTargetViewId: Int) {
@@ -88,7 +89,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (liftOnScrollTargetViewId != ResourcesCompat.ID_NULL) {
                 scrollingChild = (parent as ViewGroup).findViewById(liftOnScrollTargetViewId)
             } else {
-                logW("liftOnScrollTargetViewId was not specified. ignoring scroll events")
+                logW("liftOnScrollTargetViewId was not specified, ignoring scroll events")
             }
         }
 

@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.system
 
-import androidx.core.math.MathUtils
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.audio.AudioProcessor
@@ -27,10 +26,10 @@ import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import java.nio.ByteBuffer
 import kotlin.math.pow
-import okhttp3.internal.and
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -40,8 +39,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * audio stream. Instead of leveraging the volume attribute like other implementations, this system
  * manipulates the bitstream itself to modify the volume, which allows the use of positive
  * ReplayGain values.
- *
- * TODO: Positive ReplayGain values (implementation is not good enough yet, results in popping)
  *
  * TODO: Pre-amp values
  *
@@ -55,6 +52,11 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     private val settingsManager = SettingsManager.getInstance()
 
     private var volume = 1f
+        set(value) {
+            field = value
+            // Processed bytes are no longer valid, flush the stream
+            flush()
+        }
 
     /// --- REPLAYGAIN PARSING ---
 
@@ -110,9 +112,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             }
 
         // Final adjustment along the volume curve.
-        // Currently, we clamp it to a fixed value as 0f
-        volume = MathUtils.clamp(10f.pow(adjust / 20f), 0f, 1f)
-        flush()
+        volume = 10f.pow(adjust / 20f)
     }
 
     private fun parseReplayGain(metadata: Metadata): Gain? {
@@ -170,7 +170,6 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             albumGain += tag.value / 256f
             found = true
         }
-
         return if (found) {
             Gain(trackGain, albumGain)
         } else {
@@ -212,20 +211,27 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         val buffer = replaceOutputBuffer(size)
 
         if (volume == 1f) {
-            // Nothing to do, just copy the bytes normally so that we're more efficient.
+            // Nothing to do, just copy the bytes into the output buffer.
             for (i in position until limit) {
                 buffer.put(inputBuffer[i])
             }
         } else {
-            // Note: If an encoding value exceeds the actual data capacity of the encoding,
-            // it is truncated. This is not ideal, but since many of these formats are bitwise
-            // (and the jvm cannot into unsigned types), we can't do smarter clamping with them.
+            // AudioProcessor supplies us with the raw bytes and the encoding. It's our job
+            // to decode and manipulate it. However, the way we muck the bytes into integer
+            // types (and vice versa) introduces the possibility for bits to be dropped along
+            // the way. This is very bad and can result in popping, corrupted audio streams.
+            // Fix this by clamping the values to the possible range of *signed* values, as
+            // the PCM data is unsigned and still uses the bit that the JVM interprets as a sign.
             when (inputAudioFormat.encoding) {
                 C.ENCODING_PCM_8BIT -> {
                     // 8-bit PCM, decode a single byte and multiply it
                     for (i in position until limit) {
                         val sample = inputBuffer.get(i).toInt().and(0xFF)
-                        val targetSample = (sample * volume).toInt().toByte()
+                        val targetSample =
+                            (sample * volume)
+                                .toInt()
+                                .clamp(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt())
+                                .toByte()
                         buffer.put(targetSample)
                     }
                 }
@@ -233,7 +239,11 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                     // 16-bit PCM (little endian).
                     for (i in position until limit step 2) {
                         val sample = inputBuffer.getLeShort(i)
-                        val targetSample = (sample * volume).toInt().toShort()
+                        val targetSample =
+                            (sample * volume)
+                                .toInt()
+                                .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+                                .toShort()
                         buffer.putLeShort(targetSample)
                     }
                 }
@@ -241,33 +251,40 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                     // 16-bit PCM (big endian)
                     for (i in position until limit step 2) {
                         val sample = inputBuffer.getBeShort(i)
-                        val targetSample = (sample * volume).toInt().toShort()
+                        val targetSample =
+                            (sample * volume)
+                                .toInt()
+                                .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+                                .toShort()
                         buffer.putBeSort(targetSample)
                     }
                 }
                 C.ENCODING_PCM_24BIT -> {
                     // 24-bit PCM (little endian), decode the data three bytes at a time.
+                    // I don't know if the clamping we do here is valid or not. Since the bit
+                    // values should not cross over into the sign, we should be able to do a
+                    // simple unsigned clamp, but I'm not sure.
                     for (i in position until limit step 3) {
                         val sample = inputBuffer.getLeInt24(i)
-                        val targetSample = (sample * volume).toInt()
+                        val targetSample = (sample * volume).toInt().clamp(0, 0xFF_FF_FF)
                         buffer.putLeInt24(targetSample)
                     }
                 }
                 C.ENCODING_PCM_32BIT -> {
-                    // 32-bit PCM (little endian)
+                    // 32-bit PCM (little endian).
                     for (i in position until limit step 4) {
-                        var sample = inputBuffer.getLeLong32(i)
-                        sample = (sample * volume).toLong()
-                        buffer.putLeLong32(sample)
+                        var sample = inputBuffer.getLeInt32(i)
+                        sample = (sample * volume).toInt().clamp(Int.MIN_VALUE, Int.MAX_VALUE)
+                        buffer.putLeInt32(sample)
                     }
                 }
                 C.ENCODING_PCM_FLOAT -> {
                     // PCM float. Here we can actually clamp values since the value isn't
                     // bitwise.
                     for (i in position until limit step 4) {
-                        var sample = inputBuffer.getFloat(i)
-                        sample = MathUtils.clamp((sample * volume), 0f, 1f)
-                        buffer.putFloat(sample)
+                        val sample = inputBuffer.getFloat(i)
+                        val targetSample = (sample * volume).clamp(0f, 1f)
+                        buffer.putFloat(targetSample)
                     }
                 }
                 C.ENCODING_INVALID, Format.NO_VALUE -> {}
@@ -297,7 +314,11 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     }
 
     private fun ByteBuffer.getLeInt24(at: Int): Int {
-        return get(at + 2).toInt().shl(16).or(get(at + 1).toInt().shl(8)).or(get(at).and(0xFF))
+        return get(at + 2)
+            .toInt()
+            .shl(16)
+            .or(get(at + 1).toInt().shl(8))
+            .or(get(at).toInt().and(0xFF))
     }
 
     private fun ByteBuffer.putLeInt24(int: Int) {
@@ -306,20 +327,20 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         put(int.shr(16).toByte())
     }
 
-    private fun ByteBuffer.getLeLong32(at: Int): Long {
+    private fun ByteBuffer.getLeInt32(at: Int): Int {
         return get(at + 3)
-            .toLong()
+            .toInt()
             .shl(24)
-            .or(get(at + 2).toLong().shl(16))
-            .or(get(at + 1).toLong().shl(8))
-            .or(get(at).toLong().and(0xFF))
+            .or(get(at + 2).toInt().shl(16))
+            .or(get(at + 1).toInt().shl(8))
+            .or(get(at).toInt().and(0xFF))
     }
 
-    private fun ByteBuffer.putLeLong32(long: Long) {
-        put(long.toByte())
-        put(long.shr(8).toByte())
-        put(long.shr(16).toByte())
-        put(long.shr(24).toByte())
+    private fun ByteBuffer.putLeInt32(int: Int) {
+        put(int.toByte())
+        put(int.shr(8).toByte())
+        put(int.shr(16).toByte())
+        put(int.shr(24).toByte())
     }
 
     companion object {

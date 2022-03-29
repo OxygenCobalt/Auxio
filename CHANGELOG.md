@@ -2,6 +2,9 @@
 
 ## dev [v2.2.3, v2.3.0, or v3.0.0]
 
+#### What's New
+- Added ReplayGain support for below-reference volume tracks [i.e positive ReplayGain values] 
+
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items
 
