@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.playback.system
 
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.metadata.Metadata
@@ -58,7 +57,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             flush()
         }
 
-    /// --- REPLAYGAIN PARSING ---
+    // --- REPLAYGAIN PARSING ---
 
     /**
      * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is based off
@@ -190,18 +189,13 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     override fun onConfigure(
         inputAudioFormat: AudioProcessor.AudioFormat
     ): AudioProcessor.AudioFormat {
-        // TODO: Determine if we really need all of these encodings
-        val encoding = inputAudioFormat.encoding
-        if (encoding != C.ENCODING_PCM_8BIT &&
-            encoding != C.ENCODING_PCM_16BIT &&
-            encoding != C.ENCODING_PCM_16BIT_BIG_ENDIAN &&
-            encoding != C.ENCODING_PCM_24BIT &&
-            encoding != C.ENCODING_PCM_32BIT &&
-            encoding != C.ENCODING_PCM_FLOAT) {
-            throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
+        if (inputAudioFormat.encoding == C.ENCODING_PCM_16BIT) {
+            // AudioProcessor is only provided 16-bit PCM audio data, so that's the only
+            // encoding we need to check for.
+            return inputAudioFormat
         }
 
-        return inputAudioFormat
+        throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
     }
 
     override fun queueInput(inputBuffer: ByteBuffer) {
@@ -216,78 +210,18 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                 buffer.put(inputBuffer[i])
             }
         } else {
-            // AudioProcessor supplies us with the raw bytes and the encoding. It's our job
-            // to decode and manipulate it. However, the way we muck the bytes into integer
-            // types (and vice versa) introduces the possibility for bits to be dropped along
-            // the way. This is very bad and can result in popping, corrupted audio streams.
-            // Fix this by clamping the values to the possible range of *signed* values, as
-            // the PCM data is unsigned and still uses the bit that the JVM interprets as a sign.
-            when (inputAudioFormat.encoding) {
-                C.ENCODING_PCM_8BIT -> {
-                    // 8-bit PCM, decode a single byte and multiply it
-                    for (i in position until limit) {
-                        val sample = inputBuffer.get(i).toInt().and(0xFF)
-                        val targetSample =
-                            (sample * volume)
-                                .toInt()
-                                .clamp(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt())
-                                .toByte()
-                        buffer.put(targetSample)
-                    }
-                }
-                C.ENCODING_PCM_16BIT -> {
-                    // 16-bit PCM (little endian).
-                    for (i in position until limit step 2) {
-                        val sample = inputBuffer.getLeShort(i)
-                        val targetSample =
-                            (sample * volume)
-                                .toInt()
-                                .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
-                                .toShort()
-                        buffer.putLeShort(targetSample)
-                    }
-                }
-                C.ENCODING_PCM_16BIT_BIG_ENDIAN -> {
-                    // 16-bit PCM (big endian)
-                    for (i in position until limit step 2) {
-                        val sample = inputBuffer.getBeShort(i)
-                        val targetSample =
-                            (sample * volume)
-                                .toInt()
-                                .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
-                                .toShort()
-                        buffer.putBeSort(targetSample)
-                    }
-                }
-                C.ENCODING_PCM_24BIT -> {
-                    // 24-bit PCM (little endian), decode the data three bytes at a time.
-                    // I don't know if the clamping we do here is valid or not. Since the bit
-                    // values should not cross over into the sign, we should be able to do a
-                    // simple unsigned clamp, but I'm not sure.
-                    for (i in position until limit step 3) {
-                        val sample = inputBuffer.getLeInt24(i)
-                        val targetSample = (sample * volume).toInt().clamp(0, 0xFF_FF_FF)
-                        buffer.putLeInt24(targetSample)
-                    }
-                }
-                C.ENCODING_PCM_32BIT -> {
-                    // 32-bit PCM (little endian).
-                    for (i in position until limit step 4) {
-                        var sample = inputBuffer.getLeInt32(i)
-                        sample = (sample * volume).toInt().clamp(Int.MIN_VALUE, Int.MAX_VALUE)
-                        buffer.putLeInt32(sample)
-                    }
-                }
-                C.ENCODING_PCM_FLOAT -> {
-                    // PCM float. Here we can actually clamp values since the value isn't
-                    // bitwise.
-                    for (i in position until limit step 4) {
-                        val sample = inputBuffer.getFloat(i)
-                        val targetSample = (sample * volume).clamp(0f, 1f)
-                        buffer.putFloat(targetSample)
-                    }
-                }
-                C.ENCODING_INVALID, Format.NO_VALUE -> {}
+            for (i in position until limit step 2) {
+                val sample = inputBuffer.getLeShort(i)
+                // Clamp the values to the minimum and maximum values possible for the
+                // encoding. This prevents issues where samples amplified beyond 1 << 16
+                // will end up becoming truncated during the conversion to a short,
+                // resulting in popping.
+                val targetSample =
+                    (sample * volume)
+                        .toInt()
+                        .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+                        .toShort()
+                buffer.putLeShort(targetSample)
             }
         }
 
@@ -299,48 +233,9 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         return get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
     }
 
-    private fun ByteBuffer.getBeShort(at: Int): Short {
-        return get(at).toInt().shl(8).or(get(at + 1).toInt().and(0xFF)).toShort()
-    }
-
     private fun ByteBuffer.putLeShort(short: Short) {
         put(short.toByte())
         put(short.toInt().shr(8).toByte())
-    }
-
-    private fun ByteBuffer.putBeSort(short: Short) {
-        put(short.toInt().shr(8).toByte())
-        put(short.toByte())
-    }
-
-    private fun ByteBuffer.getLeInt24(at: Int): Int {
-        return get(at + 2)
-            .toInt()
-            .shl(16)
-            .or(get(at + 1).toInt().shl(8))
-            .or(get(at).toInt().and(0xFF))
-    }
-
-    private fun ByteBuffer.putLeInt24(int: Int) {
-        put(int.toByte())
-        put(int.shr(8).toByte())
-        put(int.shr(16).toByte())
-    }
-
-    private fun ByteBuffer.getLeInt32(at: Int): Int {
-        return get(at + 3)
-            .toInt()
-            .shl(24)
-            .or(get(at + 2).toInt().shl(16))
-            .or(get(at + 1).toInt().shl(8))
-            .or(get(at).toInt().and(0xFF))
-    }
-
-    private fun ByteBuffer.putLeInt32(int: Int) {
-        put(int.toByte())
-        put(int.shr(8).toByte())
-        put(int.shr(16).toByte())
-        put(int.shr(24).toByte())
     }
 
     companion object {

@@ -81,10 +81,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             // to override this random method within the class in order to launch the dialog in
             // the first (because apparently you can't just implement some interface that
             // automatically provides this behavior), then we also need to use a deprecated method
-            // to adequately supply
-            // a "target fragment" (otherwise we will crash since the dialog requires one), and then
-            // we need to actually show the dialog, making sure we use the parent FragmentManager
-            // as again, it will crash if we don't do it right. Fragments were a mistake.
+            // to adequately supply a "target fragment" (otherwise we will crash since the dialog
+            // requires one), and then we need to actually show the dialog, making sure we use
+            // the parent FragmentManager as again, it will crash if we don't.
+            // Fragments were a mistake.
             val dialog = IntListPreferenceDialog.from(preference)
             dialog.setTargetFragment(this, 0)
             dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
