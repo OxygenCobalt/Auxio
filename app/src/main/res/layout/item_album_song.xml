@@ -5,6 +5,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.ItemLayout">
 
+    <!--
+    We don't want to show an album cover, but we still want the spacing of this song
+    to be alike to other songs. So, add a pastel-ish background to each track number
+    view. The way we do this is odd, but it's designed this way-->
+
+    <org.oxycblt.auxio.coil.RoundableImageView
+        android:id="@+id/song_track_bg"
+        style="@style/Widget.Auxio.Image.Small"
+        android:src="@drawable/ui_track_bg"
+        app:layout_constraintBottom_toBottomOf="@+id/song_track"
+        app:layout_constraintEnd_toEndOf="@+id/song_track"
+        app:layout_constraintStart_toStartOf="@+id/song_track"
+        app:layout_constraintTop_toTopOf="@+id/song_track"/>
+
     <ImageView
         android:id="@+id/song_track_placeholder"
         style="@style/Widget.Auxio.Image.Small"
@@ -12,26 +26,27 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/def_track"
         android:src="@drawable/ic_song"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/song_track"
         app:layout_constraintEnd_toEndOf="@+id/song_track"
         app:layout_constraintStart_toStartOf="@+id/song_track"
         app:layout_constraintTop_toTopOf="@+id/song_track"
-        app:tint="@color/sel_accented"
+        app:tint="@color/sel_on_track_bg"
         tools:text="1" />
 
     <TextView
         android:id="@+id/song_track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/size_btn_small"
+        android:layout_height="@dimen/size_btn_small"
         android:gravity="center"
         android:maxLines="1"
-        android:minWidth="@dimen/size_btn_small"
-        android:minHeight="@dimen/size_btn_small"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="@dimen/text_size_track_number_min"
+        app:autoSizeMaxTextSize="@dimen/text_size_track_number_max"
+        app:autoSizeStepGranularity="@dimen/text_size_track_number_step"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-        android:textColor="@color/sel_accented_secondary"
-        android:textSize="@dimen/text_size_track_number"
+        android:textColor="@color/sel_on_track_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/song_name"
         app:layout_constraintHorizontal_bias="0.5"

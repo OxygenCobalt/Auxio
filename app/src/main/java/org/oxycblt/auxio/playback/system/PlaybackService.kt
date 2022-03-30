@@ -83,7 +83,7 @@ class PlaybackService :
     private lateinit var player: ExoPlayer
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var connector: PlaybackSessionConnector
-    private val audioProcessor = ReplayGainAudioProcessor()
+    private val replayGainProcessor = ReplayGainAudioProcessor()
 
     // Notification components
     private lateinit var notification: PlaybackNotification
@@ -247,7 +247,7 @@ class PlaybackService :
             if (info.isSelected) {
                 for (i in 0 until info.trackGroup.length) {
                     if (info.isTrackSelected(i)) {
-                        audioProcessor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
+                        replayGainProcessor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
                         break
                     }
                 }
@@ -359,8 +359,8 @@ class PlaybackService :
                     handler,
                     audioListener,
                     AudioCapabilities.DEFAULT_AUDIO_CAPABILITIES,
-                    audioProcessor),
-                LibflacAudioRenderer(handler, audioListener, audioProcessor))
+                    replayGainProcessor),
+                LibflacAudioRenderer(handler, audioListener, replayGainProcessor))
         }
 
         // Enable constant bitrate seeking so that certain MP3s/AACs are seekable

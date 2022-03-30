@@ -6,9 +6,13 @@ Auxio is available on the [F-Droid](https://f-droid.org/en/packages/org.oxycblt.
 Auxio is not and will never be on the play store due to it being a proprietary and draconian platform.
 
 #### Why ExoPlayer?
-ExoPlayer is far more flexible than the native MediaPlayer API, which allows consistent behavior across devices & OEMs and the
-ability to be extended to music sources outside of local files. You can read more about the benefits (and drawbacks) of ExoPlayer
-[Here](https://exoplayer.dev/pros-and-cons.html).
+Unlike the stock `MediaPlayer` API that most music apps use, ExoPlayer is independent from the android system's
+audio framework. This allows for the following:
+- Consistent behavior across devices and OS versions
+- Features that are normally not possible with a normal audio stream (such as positive ReplayGain values)
+- Playback to be (theoretically) be extended beyond local files in the future
+
+You can read more about the benefits (and drawbacks) of ExoPlayer [Here](https://exoplayer.dev/pros-and-cons.html).
 
 #### What formats does Auxio support?
 As per the [Supported ExoPlayer Formats](https://exoplayer.dev/supported-formats.html), Auxio supports
@@ -19,6 +23,7 @@ of Android through the use of the ExoPlayer FLAC extension.
 This is probably caused by one of two reasons:
 1. If other players like Phonograph, Retro Music, or Music Player GO load it correctly, then Auxio has a bug and it should be [reported](https://github.com/OxygenCobalt/Auxio/issues).
 2. If the aforementioned players don't work, but players like Vanilla Music and VLC do, then it's a problem with the Media APIs that Auxio relies on. There is nothing I can do about it.
+	- I hope to mitigate these issues in the future by extracting metadata myself or adding Subsonic/SoundPod support, however this is extremely far off.
 
 #### I have a large library and Auxio takes really long to load it!
 This is expected since reading from the audio database takes awhile, especially with libraries containing 10k songs or more.
@@ -27,13 +32,19 @@ This is expected since reading from the audio database takes awhile, especially 
 This is a current limitation with the music loader. To remedy this, go to Settings -> Reload music whenever new songs are added.
 I hope to make the app rescan music on the fly eventually.
 
+#### There should be one artist, but instead I get a bunch of "Artist & Collaborator" artists!
+This likely means your tags are wrong. By default, Auxio will use the "album artist" tag for
+grouping if present, falling back to the "artist" tag otherwise. If your music does not have
+such a field, it will result in fragmented artists. The reason why Auxio does not simply parse
+for separators and then extract artists that way is that it risks mangling artists that don't
+actually have collaborators, such as "Black Country, New Road" becoming "Black Country".
+
 #### ReplayGain isn't working on my music!
 This is for a couple reason:
-- Auxio doesn't extract ReplayGain tags for your format.
+- Auxio doesn't extract ReplayGain tags for your format. This is a problem on ExoPlayer's end and should be
+investigated there.
 - Auxio doesn't recognize your ReplayGain tags. This is usually because of a non-standard tag like ID3v2's `RVAD` or
 an unrecognized name.
-- Your tags use a ReplayGain value higher than 0. Due to technical limitations, Auxio does not support this right now,
-but I can work on it if the demand for this is sufficient.
 
 #### What is dynamic ReplayGain?
 Dynamic ReplayGain is a quirk setting based off the FooBar2000 plugin that dynamically switches from track gain to album

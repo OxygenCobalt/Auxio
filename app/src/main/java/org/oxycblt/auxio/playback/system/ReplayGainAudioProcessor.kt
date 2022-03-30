@@ -211,17 +211,17 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             }
         } else {
             for (i in position until limit step 2) {
-                val sample = inputBuffer.getLeShort(i)
+                var sample = inputBuffer.getLeShort(i)
                 // Clamp the values to the minimum and maximum values possible for the
                 // encoding. This prevents issues where samples amplified beyond 1 << 16
                 // will end up becoming truncated during the conversion to a short,
                 // resulting in popping.
-                val targetSample =
+                sample =
                     (sample * volume)
                         .toInt()
                         .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
                         .toShort()
-                buffer.putLeShort(targetSample)
+                buffer.putLeShort(sample)
             }
         }
 

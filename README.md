@@ -39,15 +39,17 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 ## Features
 
 - [ExoPlayer](https://exoplayer.dev/) based playback
-- Customizable UI & Behavior
+- Snappy UI derived from the latest Material Design guidelines
+- Opinionated UX that prioritizes ease of use over edge cases
+- Customizable behavior
 - Advanced media indexer that prioritizes correct metadata
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
-- Material You (Android 12+ only)
 - Edge-to-edge
 - Embedded covers support
 - Search Functionality
-- Audio/Headset focus
+- Headset autoplay
+- Stylish widgets that automatically adapt to their size
 - Completely private and offline
 - No rounded album covers (Unless you want them. Then you can.)
 

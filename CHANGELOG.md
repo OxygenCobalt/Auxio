@@ -10,6 +10,7 @@
 
 #### What's Changed
 - Audio focus is no longer configurable
+- Made the layout of album songs more similar to other songs
 
 #### Dev/Meta
 - Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese ]

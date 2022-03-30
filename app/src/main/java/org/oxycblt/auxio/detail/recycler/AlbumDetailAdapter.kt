@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.content.Context
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -171,14 +172,14 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
                 isInvisible = false
             }
 
-            binding.songTrackPlaceholder.isInvisible = true
+            binding.songTrackPlaceholder.isVisible = false
         } else {
             binding.songTrack.apply {
                 textSafe = ""
                 isInvisible = true
             }
 
-            binding.songTrackPlaceholder.isInvisible = false
+            binding.songTrackPlaceholder.isVisible = true
         }
 
         binding.songName.textSafe = item.resolvedName
@@ -197,6 +198,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         binding.songName.isActivated = isHighlighted
         binding.songTrack.isActivated = isHighlighted
         binding.songTrackPlaceholder.isActivated = isHighlighted
+        binding.songTrackBg.isActivated = isHighlighted
     }
 
     companion object {
