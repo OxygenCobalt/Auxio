@@ -7,7 +7,6 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/header_title"
         style="@style/Widget.Auxio.TextView.Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +16,6 @@
         tools:text="Songs" />
 
     <ImageButton
-        android:id="@+id/header_button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

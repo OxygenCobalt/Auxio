@@ -19,7 +19,6 @@ package org.oxycblt.auxio.detail.recycler
 
 import android.content.Context
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -170,16 +169,18 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
             binding.songTrack.apply {
                 textSafe = context.getString(R.string.fmt_number, item.track)
                 isInvisible = false
+                contentDescription = context.getString(R.string.desc_track_number, item.track)
             }
 
-            binding.songTrackPlaceholder.isVisible = false
+            binding.songTrackBg.imageAlpha = 0
         } else {
             binding.songTrack.apply {
                 textSafe = ""
                 isInvisible = true
+                contentDescription = context.getString(R.string.def_track)
             }
 
-            binding.songTrackPlaceholder.isVisible = true
+            binding.songTrackBg.imageAlpha = 255
         }
 
         binding.songName.textSafe = item.resolvedName
@@ -197,7 +198,6 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     override fun setHighlighted(isHighlighted: Boolean) {
         binding.songName.isActivated = isHighlighted
         binding.songTrack.isActivated = isHighlighted
-        binding.songTrackPlaceholder.isActivated = isHighlighted
         binding.songTrackBg.isActivated = isHighlighted
     }
 

@@ -24,7 +24,7 @@
     <color name="red_surface_variant">#534341</color>
     <color name="red_on_surface_variant">#D8C2BF</color>
     <color name="red_surface_inverse">#EDE0DE</color>
-    <color name="red_on_surface_inverse">#211A19</color>
+    <color name="red_on_surface_inverse">#362F2E</color>
 
     <color name="pink_primary">#FFB2C0</color>
     <color name="pink_on_primary">#670024</color>
@@ -48,7 +48,7 @@
     <color name="pink_surface_variant">#524345</color>
     <color name="pink_on_surface_variant">#D6C1C3</color>
     <color name="pink_surface_inverse">#ECE0E0</color>
-    <color name="pink_on_surface_inverse">#201A1B</color>
+    <color name="pink_on_surface_inverse">#352F2F</color>
 
     <color name="purple_primary">#FBAAFF</color>
     <color name="purple_on_primary">#570068</color>
@@ -72,7 +72,7 @@
     <color name="purple_surface_variant">#4D444C</color>
     <color name="purple_on_surface_variant">#D0C3CC</color>
     <color name="purple_surface_inverse">#E9E0E5</color>
-    <color name="purple_on_surface_inverse">#1E1A1D</color>
+    <color name="purple_on_surface_inverse">#332F32</color>
 
     <color name="deep_purple_primary">#D4BAFF</color>
     <color name="deep_purple_on_primary">#3E008E</color>
@@ -96,7 +96,7 @@
     <color name="deep_purple_surface_variant">#49454E</color>
     <color name="deep_purple_on_surface_variant">#CBC4CF</color>
     <color name="deep_purple_surface_inverse">#E6E1E5</color>
-    <color name="deep_purple_on_surface_inverse">#1D1B1F</color>
+    <color name="deep_purple_on_surface_inverse">#323033</color>
 
     <color name="indigo_primary">#B9C3FF</color>
     <color name="indigo_on_primary">#08218A</color>
@@ -120,7 +120,7 @@
     <color name="indigo_surface_variant">#46464F</color>
     <color name="indigo_on_surface_variant">#C6C5D0</color>
     <color name="indigo_surface_inverse">#E4E1E6</color>
-    <color name="indigo_on_surface_inverse">#1B1B1F</color>
+    <color name="indigo_on_surface_inverse">#303034</color>
 
     <color name="blue_primary">#9CCAFF</color>
     <color name="blue_on_primary">#00325A</color>
@@ -144,7 +144,7 @@
     <color name="blue_surface_variant">#42474E</color>
     <color name="blue_on_surface_variant">#C3C7D0</color>
     <color name="blue_surface_inverse">#E2E2E6</color>
-    <color name="blue_on_surface_inverse">#1B1B1B</color>
+    <color name="blue_on_surface_inverse">#2F3033</color>
 
     <color name="deep_blue_primary">#62D3FF</color>
     <color name="deep_blue_on_primary">#003546</color>
@@ -168,7 +168,7 @@
     <color name="deep_blue_surface_variant">#40484C</color>
     <color name="deep_blue_on_surface_variant">#C0C8CD</color>
     <color name="deep_blue_surface_inverse">#E1E2E4</color>
-    <color name="deep_blue_on_surface_inverse">#191C1E</color>
+    <color name="deep_blue_on_surface_inverse">#2F3132</color>
 
     <color name="cyan_primary">#44D8F1</color>
     <color name="cyan_on_primary">#00363F</color>
@@ -192,7 +192,7 @@
     <color name="cyan_surface_variant">#3F484A</color>
     <color name="cyan_on_surface_variant">#BFC8CA</color>
     <color name="cyan_surface_inverse">#E1E3E3</color>
-    <color name="cyan_on_surface_inverse">#191C1D</color>
+    <color name="cyan_on_surface_inverse">#2D3132</color>
 
     <color name="teal_primary">#53DBC9</color>
     <color name="teal_on_primary">#003730</color>
@@ -216,7 +216,7 @@
     <color name="teal_surface_variant">#3F4947</color>
     <color name="teal_on_surface_variant">#BFC9C6</color>
     <color name="teal_surface_inverse">#E0E3E1</color>
-    <color name="teal_on_surface_inverse">#191C1B</color>
+    <color name="teal_on_surface_inverse">#2E3130</color>
 
     <color name="green_primary">#78DC77</color>
     <color name="green_on_primary">#003907</color>
@@ -240,7 +240,7 @@
     <color name="green_surface_variant">#424840</color>
     <color name="green_on_surface_variant">#C2C8BD</color>
     <color name="green_surface_inverse">#E2E3DD</color>
-    <color name="green_on_surface_inverse">#1A1C19</color>
+    <color name="green_on_surface_inverse">#2F312D</color>
 
     <color name="deep_green_primary">#9ED75C</color>
     <color name="deep_green_on_primary">#1C3700</color>
@@ -264,7 +264,7 @@
     <color name="deep_green_surface_variant">#44483D</color>
     <color name="deep_green_on_surface_variant">#C4C8B9</color>
     <color name="deep_green_surface_inverse">#E3E3DB</color>
-    <color name="deep_green_on_surface_inverse">#1A1C17</color>
+    <color name="deep_green_on_surface_inverse">#2F312C</color>
 
     <color name="lime_primary">#C1D02C</color>
     <color name="lime_on_primary">#2E3400</color>
@@ -288,7 +288,7 @@
     <color name="lime_surface_variant">#47473B</color>
     <color name="lime_on_surface_variant">#C8C7B7</color>
     <color name="lime_surface_inverse">#E5E2DA</color>
-    <color name="lime_on_surface_inverse">#1C1C17</color>
+    <color name="lime_on_surface_inverse">#31312B</color>
 
     <color name="yellow_primary">#FABD00</color>
     <color name="yellow_on_primary">#402D00</color>
@@ -312,7 +312,7 @@
     <color name="yellow_surface_variant">#4D4639</color>
     <color name="yellow_on_surface_variant">#D0C5B4</color>
     <color name="yellow_surface_inverse">#E9E1D8</color>
-    <color name="yellow_on_surface_inverse">#1E1B16</color>
+    <color name="yellow_on_surface_inverse">#3C2E16</color>
 
     <color name="orange_primary">#FFB86D</color>
     <color name="orange_on_primary">#4B2800</color>
@@ -336,7 +336,7 @@
     <color name="orange_surface_variant">#51453A</color>
     <color name="orange_on_surface_variant">#D5C3B5</color>
     <color name="orange_surface_inverse">#EBE0D9</color>
-    <color name="orange_on_surface_inverse">#1F1B17</color>
+    <color name="orange_on_surface_inverse">#352F2B</color>
 
     <color name="brown_primary">#E7BEB0</color>
     <color name="brown_on_primary">#442A20</color>
@@ -360,7 +360,7 @@
     <color name="brown_surface_variant">#52433E</color>
     <color name="brown_on_surface_variant">#D8C2BB</color>
     <color name="brown_surface_inverse">#EDE0DC</color>
-    <color name="brown_on_surface_inverse">#201A18</color>
+    <color name="brown_on_surface_inverse">#362F2D</color>
 
     <color name="grey_primary">#EEEEEE</color>
     <color name="grey_on_primary">#424242</color>
@@ -384,7 +384,7 @@
     <color name="grey_surface_variant">#484848</color>
     <color name="grey_on_surface_variant">#C8C8C8</color>
     <color name="grey_surface_inverse">#fafafa</color>
-    <color name="grey_on_surface_inverse">#191919</color>
+    <color name="grey_on_surface_inverse">#2D3132</color>
 
     <color name="widget_surface">@color/material_dynamic_secondary20</color>
     <color name="widget_surface_inverse">@color/material_dynamic_neutral90</color>

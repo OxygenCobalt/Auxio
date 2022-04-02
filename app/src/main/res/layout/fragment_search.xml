@@ -6,18 +6,15 @@
     android:layout_height="match_parent">
 
     <org.oxycblt.auxio.ui.EdgeAppBarLayout
-        android:id="@+id/search_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/search_recycler">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/search_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon"
             app:menu="@menu/menu_search">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/search_text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconContentDescription="@string/desc_clear_search"
@@ -28,7 +25,6 @@
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/search_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"

@@ -10,29 +10,14 @@
     to be alike to other songs. So, add a pastel-ish background to each track number
     view. The way we do this is odd, but it's designed this way-->
 
-    <org.oxycblt.auxio.coil.RoundableImageView
-        android:id="@+id/song_track_bg"
+    <org.oxycblt.auxio.coil.StyledImageView
         style="@style/Widget.Auxio.Image.Small"
-        android:src="@drawable/ui_track_bg"
-        app:layout_constraintBottom_toBottomOf="@+id/song_track"
-        app:layout_constraintEnd_toEndOf="@+id/song_track"
-        app:layout_constraintStart_toStartOf="@+id/song_track"
-        app:layout_constraintTop_toTopOf="@+id/song_track"/>
-
-    <ImageView
-        android:id="@+id/song_track_placeholder"
-        style="@style/Widget.Auxio.Image.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/def_track"
         android:src="@drawable/ic_song"
-        android:visibility="gone"
+        android:scaleType="matrix"
         app:layout_constraintBottom_toBottomOf="@+id/song_track"
         app:layout_constraintEnd_toEndOf="@+id/song_track"
         app:layout_constraintStart_toStartOf="@+id/song_track"
-        app:layout_constraintTop_toTopOf="@+id/song_track"
-        app:tint="@color/sel_on_track_bg"
-        tools:text="1" />
+        app:layout_constraintTop_toTopOf="@+id/song_track" />
 
     <TextView
         android:id="@+id/song_track"
@@ -46,7 +31,7 @@
         app:autoSizeStepGranularity="@dimen/text_size_track_number_step"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-        android:textColor="@color/sel_on_track_bg"
+        android:textColor="@color/sel_on_cover_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/song_name"
         app:layout_constraintHorizontal_bias="0.5"

@@ -3,7 +3,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/playback_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,7 +15,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.coil.RoundableImageView
+    <org.oxycblt.auxio.coil.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_medium"
@@ -95,7 +94,6 @@
         app:thumbRadius="@dimen/slider_thumb_radius" />
 
     <TextView
-        android:id="@+id/playback_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -107,7 +105,6 @@
         tools:text="11:38" />
 
     <TextView
-        android:id="@+id/playback_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small_inv"

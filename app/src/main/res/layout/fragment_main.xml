@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <org.oxycblt.auxio.ui.BottomSheetLayout
-        android:id="@+id/bottom_sheet_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,7 +32,6 @@
     </org.oxycblt.auxio.ui.BottomSheetLayout>
 
     <FrameLayout
-        android:id="@+id/layout_too_small"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorSurface"

@@ -53,12 +53,15 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Completely private and offline
 - No rounded album covers (Unless you want them. Then you can.)
 
-## To possibly come in the future:
+## To come in the future:
 
+- Automatic music rescanning
+- Even better metadata support
 - Playlists
 - Liked songs
-- More notification actions
-- And other things, probably
+- Artist Images
+- More customization options
+- Other things, probably
 
 ## Permissions
 
@@ -69,7 +72,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 
 Auxio relies on a custom version of ExoPlayer that enables some extra features. So, the build process is as follows:
 
-1. `cd` into the project directory
+1. `cd` into the project directory.
 2. Run `python3 prebuild.py`, which installs ExoPlayer and it's extensions.
     - The pre-build process only works with \*nix systems. On windows, this process must be done manually.
 3. Build the project normally in Android Studio.

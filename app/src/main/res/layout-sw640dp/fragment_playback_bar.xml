@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <org.oxycblt.auxio.coil.RoundableImageView
+    <org.oxycblt.auxio.coil.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Medium"
         android:layout_margin="@dimen/spacing_small"

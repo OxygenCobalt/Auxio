@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <View
-        android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
@@ -22,12 +21,11 @@
         app:tint="?attr/colorSurface" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface">
 
-        <org.oxycblt.auxio.coil.RoundableImageView
+        <org.oxycblt.auxio.coil.StyledImageView
             android:id="@+id/song_album_cover"
             style="@style/Widget.Auxio.Image.Small"
             android:layout_margin="@dimen/spacing_medium"

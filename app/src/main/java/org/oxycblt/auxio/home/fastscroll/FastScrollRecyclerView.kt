@@ -29,7 +29,6 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
-import androidx.core.math.MathUtils
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +37,7 @@ import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.EdgeRecyclerView
 import org.oxycblt.auxio.util.canScroll
+import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.getDimenOffsetSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
@@ -266,8 +266,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             val thumbAnchorY = thumbView.paddingTop
 
             val popupTop =
-                MathUtils.clamp(
-                    thumbTop + thumbAnchorY - popupAnchorY,
+                (thumbTop + thumbAnchorY - popupAnchorY).clamp(
                     thumbPadding.top + popupLayoutParams.topMargin,
                     height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
@@ -365,7 +364,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun scrollToThumbOffset(thumbOffset: Int) {
-        val clampedThumbOffset = MathUtils.clamp(thumbOffset, 0, thumbOffsetRange)
+        val clampedThumbOffset = thumbOffset.clamp(0, thumbOffsetRange)
 
         val scrollOffset =
             (scrollOffsetRange.toLong() * clampedThumbOffset / thumbOffsetRange).toInt() -

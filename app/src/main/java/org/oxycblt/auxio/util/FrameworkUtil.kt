@@ -19,6 +19,8 @@ package org.oxycblt.auxio.util
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.graphics.Insets
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -28,6 +30,7 @@ import android.view.WindowInsets
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -136,6 +139,16 @@ fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
 /** Converts this color to a single-color [ColorStateList]. */
 val @receiver:ColorRes Int.stateList
     get() = ColorStateList.valueOf(this)
+
+/** Require the fragment is attached to an activity. */
+fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from activity" }
+
+/**
+ * Shortcut for querying all items in a database and running [block] with the cursor returned. Will
+ * not run if the cursor is null.
+ */
+fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
+    query(tableName, null, null, null, null, null, null)?.use(block)
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view

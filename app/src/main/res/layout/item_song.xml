@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.ItemLayout">
 
-    <org.oxycblt.auxio.coil.RoundableImageView
+    <org.oxycblt.auxio.coil.StyledImageView
         android:id="@+id/song_album_cover"
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintBottom_toBottomOf="parent"

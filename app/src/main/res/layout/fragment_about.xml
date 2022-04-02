@@ -8,19 +8,16 @@
     tools:context=".settings.AboutFragment">
 
     <org.oxycblt.auxio.ui.EdgeAppBarLayout
-        android:id="@+id/about_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/about_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon"
             app:title="@string/lbl_about" />
 
     </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/about_contents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -162,7 +159,6 @@
                     tools:text="Songs Loaded: 1616" />
 
                 <TextView
-                    android:id="@+id/about_author"
                     style="@style/Widget.Auxio.TextView.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

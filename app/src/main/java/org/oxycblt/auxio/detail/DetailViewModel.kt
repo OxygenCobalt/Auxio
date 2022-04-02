@@ -158,7 +158,7 @@ class DetailViewModel : ViewModel() {
     private fun refreshAlbumData(album: Album) {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
-        data.add(SortHeader(id = -2, R.string.lbl_albums))
+        data.add(SortHeader(id = -2, R.string.lbl_songs))
         data.addAll(albumSort.album(album))
         mAlbumData.value = data
     }

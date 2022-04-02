@@ -2,20 +2,17 @@
 
 <org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/settings_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <org.oxycblt.auxio.ui.EdgeAppBarLayout
-        android:id="@+id/settings_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         android:clickable="true"
         android:focusable="true"
         app:liftOnScroll="true">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/settings_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon"
             app:title="@string/set_title" />
 

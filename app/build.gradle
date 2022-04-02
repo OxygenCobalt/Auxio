@@ -1,8 +1,9 @@
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
-apply plugin: "kotlin-kapt"
-apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: "com.diffplug.spotless"
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "androidx.navigation.safeargs.kotlin"
+    id "com.diffplug.spotless"
+}
 
 android {
     compileSdkVersion 32

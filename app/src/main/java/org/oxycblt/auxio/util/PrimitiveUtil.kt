@@ -17,19 +17,9 @@
  
 package org.oxycblt.auxio.util
 
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.os.Looper
 import androidx.core.math.MathUtils
-import androidx.fragment.app.Fragment
 import org.oxycblt.auxio.BuildConfig
-
-/**
- * Shortcut for querying all items in a database and running [block] with the cursor returned. Will
- * not run if the cursor is null.
- */
-fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
-    query(tableName, null, null, null, null, null, null)?.use(block)
 
 /** Assert that we are on a background thread. */
 fun assertBackgroundThread() {
@@ -50,11 +40,4 @@ fun <T> unlikelyToBeNull(value: T?): T {
     }
 }
 
-/** Require the fragment is attached to an activity. */
-fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from activity" }
-
 fun Int.clamp(min: Int, max: Int): Int = MathUtils.clamp(this, min, max)
-
-fun Long.clamp(min: Long, max: Long): Long = MathUtils.clamp(this, min, max)
-
-fun Float.clamp(min: Float, max: Float): Float = MathUtils.clamp(this, min, max)

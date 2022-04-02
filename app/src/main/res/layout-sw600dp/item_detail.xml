@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium">
 
-    <org.oxycblt.auxio.coil.RoundableImageView
+    <org.oxycblt.auxio.coil.StyledImageView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.MidHuge"
         app:layout_constraintDimensionRatio="1"
