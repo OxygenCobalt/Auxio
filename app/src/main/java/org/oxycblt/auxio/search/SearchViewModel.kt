@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.search
 
+import android.content.Context
 import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,7 +43,7 @@ class SearchViewModel : ViewModel() {
     private val mSearchResults = MutableLiveData(listOf<Item>())
     private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
-    private var mLastQuery = ""
+    private var mLastQuery: String? = null
 
     /** Current search results from the last [search] call. */
     val searchResults: LiveData<List<Item>>
@@ -54,21 +55,16 @@ class SearchViewModel : ViewModel() {
 
     init {
         mFilterMode = settingsManager.searchFilterMode
-
-        viewModelScope.launch {
-            MusicStore.awaitInstance()
-            search(mLastQuery)
-        }
     }
 
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
-    fun search(query: String) {
+    fun search(context: Context, query: String?) {
         val musicStore = MusicStore.maybeGetInstance()
         mLastQuery = query
 
-        if (query.isEmpty() || musicStore == null) {
+        if (query.isNullOrEmpty() || musicStore == null) {
             logD("No music/query, ignoring search")
             mSearchResults.value = listOf()
             return
@@ -84,28 +80,28 @@ class SearchViewModel : ViewModel() {
             // Note: a filter mode of null means to not filter at all.
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
-                musicStore.artists.filterByOrNull(query)?.let { artists ->
+                musicStore.artists.filterByOrNull(context, query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
-                musicStore.albums.filterByOrNull(query)?.let { albums ->
+                musicStore.albums.filterByOrNull(context, query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
-                musicStore.genres.filterByOrNull(query)?.let { genres ->
+                musicStore.genres.filterByOrNull(context, query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
-                musicStore.songs.filterByOrNull(query)?.let { songs ->
+                musicStore.songs.filterByOrNull(context, query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
                 }
@@ -115,10 +111,15 @@ class SearchViewModel : ViewModel() {
         }
     }
 
+    /** Re-search the library using the last query. Will push results to [searchResults]. */
+    fun refresh(context: Context) {
+        search(context, mLastQuery)
+    }
+
     /**
      * Update the current filter mode with a menu [id]. New value will be pushed to [filterMode].
      */
-    fun updateFilterModeWithId(@IdRes id: Int) {
+    fun updateFilterModeWithId(context: Context, @IdRes id: Int) {
         mFilterMode =
             when (id) {
                 R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
@@ -132,33 +133,33 @@ class SearchViewModel : ViewModel() {
 
         settingsManager.searchFilterMode = mFilterMode
 
-        search(mLastQuery)
+        refresh(context)
     }
 
     /**
      * Shortcut that will run a ignoreCase filter on a list and only return a value if the resulting
      * list is empty.
      */
-    private fun <T : Music> List<T>.filterByOrNull(value: String): List<T>? {
+    private fun <T : Music> List<T>.filterByOrNull(context: Context, value: String): List<T>? {
         val filtered = filter {
             // First see if the normal item name will work. If that fails, try the "normalized"
             // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
             // shouldn't break other language's search functionality.
-            it.resolvedName.contains(value, ignoreCase = true) ||
-                it.resolvedName.normalized().contains(value, ignoreCase = true)
+            it.resolveNameNormalized(context).contains(value, ignoreCase = true) ||
+                it.resolveNameNormalized(context).contains(value, ignoreCase = true)
         }
 
         return filtered.ifEmpty { null }
     }
 
-    private fun String.normalized(): String {
+    private fun Music.resolveNameNormalized(context: Context): String {
         // This method normalizes strings so that songs with accented characters will show
         // up in search even if the actual character was not inputted.
         // https://stackoverflow.com/a/32030586/14143986
 
         // Normalize with NFKD [Meaning that symbols with identical meanings will be turned into
         // their letter variants].
-        val norm = Normalizer.normalize(this, Normalizer.Form.NFKD)
+        val norm = Normalizer.normalize(resolveName(context), Normalizer.Form.NFKD)
 
         // Normalizer doesn't exactly finish the job though. We have to rebuild all the codepoints
         // in the string and remove the hidden characters that were added by Normalizer.

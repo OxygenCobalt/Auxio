@@ -30,7 +30,6 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.ui.sliceArticle
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -55,13 +54,13 @@ class AlbumListFragment : HomeListFragment<Album>() {
         // Change how we display the popup depending on the mode.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
             // By Name -> Use Name
-            is Sort.ByName -> album.resolvedName.sliceArticle().first().uppercase()
+            is Sort.ByName -> album.sortName.first().uppercase()
 
             // By Artist -> Use Artist Name
-            is Sort.ByArtist -> album.artist.resolvedName.sliceArticle().first().uppercase()
+            is Sort.ByArtist -> album.artist.sortName?.run { first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.ByYear -> album.year?.toString() ?: getString(R.string.def_date)
+            is Sort.ByYear -> album.year?.toString()
 
             // Unsupported sort, error gracefully
             else -> null

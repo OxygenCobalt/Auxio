@@ -27,6 +27,7 @@ import org.oxycblt.auxio.util.logD
  * - On small screens, use only an icon
  * - On medium screens, use only text
  * - On large screens, use text and an icon
+ * @author OxygenCobalt
  */
 class AdaptiveTabStrategy(context: Context, private val homeModel: HomeViewModel) :
     TabLayoutMediator.TabConfigurationStrategy {

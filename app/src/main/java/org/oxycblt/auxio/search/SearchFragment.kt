@@ -35,6 +35,8 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
+import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Header
@@ -56,6 +58,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
+    private val musicModel: MusicViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -74,7 +77,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId != R.id.submenu_filtering) {
-                    searchModel.updateFilterModeWithId(item.itemId)
+                    searchModel.updateFilterModeWithId(context, item.itemId)
                     item.isChecked = true
                     true
                 } else {
@@ -86,7 +89,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.search(text?.toString() ?: "")
+                searchModel.search(context, text?.toString())
             }
 
             if (!launchedKeyboard) {
@@ -109,6 +112,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
 
         searchModel.searchResults.observe(viewLifecycleOwner, ::updateResults)
         navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
+        musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
     }
 
     override fun onResume() {
@@ -162,6 +166,12 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
                 })
 
         requireImm().hide()
+    }
+
+    private fun handleLoaderResponse(response: MusicStore.Response?) {
+        if (response is MusicStore.Response.Ok) {
+            searchModel.refresh(requireContext())
+        }
     }
 
     private fun requireImm(): InputMethodManager {

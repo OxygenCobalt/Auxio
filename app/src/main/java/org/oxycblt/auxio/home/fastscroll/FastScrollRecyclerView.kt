@@ -29,7 +29,6 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
-import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -211,6 +210,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         thumbView.layout(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbHeight)
 
+        // Get the popup text. If there is none, we default to "?".
         val firstPos = firstAdapterPos
         val popupText =
             if (firstPos != NO_POSITION) {
@@ -218,60 +218,53 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             } else {
                 null
             }
+                ?: "?"
 
-        popupView.isInvisible = popupText == null
+        val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
 
-        if (popupText != null) {
-            val popupLayoutParams = popupView.layoutParams as FrameLayout.LayoutParams
+        if (popupView.text != popupText) {
+            popupView.text = popupText
 
-            if (popupView.text != popupText) {
-                popupView.text = popupText
+            val widthMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    thumbPadding.left +
+                        thumbPadding.right +
+                        thumbWidth +
+                        popupLayoutParams.leftMargin +
+                        popupLayoutParams.rightMargin,
+                    popupLayoutParams.width)
 
-                val widthMeasureSpec =
-                    ViewGroup.getChildMeasureSpec(
-                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                        thumbPadding.left +
-                            thumbPadding.right +
-                            thumbWidth +
-                            popupLayoutParams.leftMargin +
-                            popupLayoutParams.rightMargin,
-                        popupLayoutParams.width)
+            val heightMeasureSpec =
+                ViewGroup.getChildMeasureSpec(
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+                    thumbPadding.top +
+                        thumbPadding.bottom +
+                        popupLayoutParams.topMargin +
+                        popupLayoutParams.bottomMargin,
+                    popupLayoutParams.height)
 
-                val heightMeasureSpec =
-                    ViewGroup.getChildMeasureSpec(
-                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
-                        thumbPadding.top +
-                            thumbPadding.bottom +
-                            popupLayoutParams.topMargin +
-                            popupLayoutParams.bottomMargin,
-                        popupLayoutParams.height)
+            popupView.measure(widthMeasureSpec, heightMeasureSpec)
+        }
 
-                popupView.measure(widthMeasureSpec, heightMeasureSpec)
+        val popupWidth = popupView.measuredWidth
+        val popupHeight = popupView.measuredHeight
+        val popupLeft =
+            if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
+            } else {
+                width - thumbPadding.right - thumbWidth - popupLayoutParams.rightMargin - popupWidth
             }
 
-            val popupWidth = popupView.measuredWidth
-            val popupHeight = popupView.measuredHeight
-            val popupLeft =
-                if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                    thumbPadding.left + thumbWidth + popupLayoutParams.leftMargin
-                } else {
-                    width -
-                        thumbPadding.right -
-                        thumbWidth -
-                        popupLayoutParams.rightMargin -
-                        popupWidth
-                }
+        val popupAnchorY = popupHeight / 2
+        val thumbAnchorY = thumbView.paddingTop
 
-            val popupAnchorY = popupHeight / 2
-            val thumbAnchorY = thumbView.paddingTop
+        val popupTop =
+            (thumbTop + thumbAnchorY - popupAnchorY).clamp(
+                thumbPadding.top + popupLayoutParams.topMargin,
+                height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
 
-            val popupTop =
-                (thumbTop + thumbAnchorY - popupAnchorY).clamp(
-                    thumbPadding.top + popupLayoutParams.topMargin,
-                    height - thumbPadding.bottom - popupLayoutParams.bottomMargin - popupHeight)
-
-            popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
-        }
+        popupView.layout(popupLeft, popupTop, popupLeft + popupWidth, popupTop + popupHeight)
     }
 
     override fun onScrolled(dx: Int, dy: Int) {

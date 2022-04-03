@@ -72,13 +72,13 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
      * @param onDone What to do when the loading of the album art is finished
      */
     fun setMetadata(song: Song, onDone: () -> Unit) {
-        setContentTitle(song.resolvedName)
-        setContentText(song.resolvedArtistName)
+        setContentTitle(song.resolveName(context))
+        setContentText(song.resolveIndividualArtistName(context))
 
         // On older versions of android [API <24], show the song's album on the subtext instead of
         // the current mode, as that makes more sense for the old style of media notifications.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            setSubText(song.resolvedAlbumName)
+            setSubText(song.resolveName(context))
         }
 
         // loadBitmap() is concurrent, so only call back to the object calling this function when
@@ -109,7 +109,7 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
 
         // A blank parent always means that the mode is ALL_SONGS
-        setSubText(parent?.resolvedName ?: context.getString(R.string.lbl_all_songs))
+        setSubText(parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---

@@ -44,7 +44,9 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Rework menus [perhaps add multi-select]
  *
- * TODO: Rework navigation to be based on a viewmodel
+ * TODO: Rework some fragments to use listeners *even more*
+ *
+ * TODO: Unify all member variables under an m prefix
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

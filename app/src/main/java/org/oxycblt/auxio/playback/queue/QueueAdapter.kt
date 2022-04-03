@@ -35,6 +35,7 @@ import org.oxycblt.auxio.ui.BackingData
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.stateList
@@ -71,8 +72,8 @@ private constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: Song, listener: QueueItemListener) {
         binding.songAlbumCover.bindAlbumCover(item)
-        binding.songName.textSafe = item.resolvedName
-        binding.songInfo.textSafe = item.resolvedArtistName
+        binding.songName.textSafe = item.resolveName(binding.context)
+        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
 
         binding.background.isInvisible = true
 

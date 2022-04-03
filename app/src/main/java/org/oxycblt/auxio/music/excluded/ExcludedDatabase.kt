@@ -22,9 +22,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.core.database.sqlite.transaction
-import org.oxycblt.auxio.util.assertBackgroundThread
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
+import org.oxycblt.auxio.util.requireBackgroundThread
 
 /**
  * Database for storing excluded directories. Note that the paths stored here will not work with
@@ -48,7 +48,7 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
 
     /** Write a list of [paths] to the database. */
     fun writePaths(paths: List<String>) {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         writableDatabase.transaction {
             delete(TABLE_NAME, null, null)
@@ -64,7 +64,7 @@ class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, nu
 
     /** Get the current list of paths from the database. */
     fun readPaths(): List<String> {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         val paths = mutableListOf<String>()
         readableDatabase.queryAll(TABLE_NAME) { cursor ->

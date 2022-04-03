@@ -119,25 +119,24 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 // eventually
 
 /** Bind the album cover for a [song]. */
-fun StyledImageView.bindAlbumCover(song: Song?) =
+fun StyledImageView.bindAlbumCover(song: Song) =
     load(song, R.drawable.ic_song, R.string.desc_album_cover)
 
 /** Bind the album cover for an [album]. */
-fun StyledImageView.bindAlbumCover(album: Album?) =
+fun StyledImageView.bindAlbumCover(album: Album) =
     load(album, R.drawable.ic_album, R.string.desc_album_cover)
 
 /** Bind the image for an [artist] */
-fun StyledImageView.bindArtistImage(artist: Artist?) =
+fun StyledImageView.bindArtistImage(artist: Artist) =
     load(artist, R.drawable.ic_artist, R.string.desc_artist_image)
 
 /** Bind the image for a [genre] */
-fun StyledImageView.bindGenreImage(genre: Genre?) =
+fun StyledImageView.bindGenreImage(genre: Genre) =
     load(genre, R.drawable.ic_genre, R.string.desc_genre_image)
 
-fun <T : Music> StyledImageView.load(music: T?, @DrawableRes error: Int, @StringRes desc: Int) {
-    contentDescription = context.getString(desc, music?.resolvedName)
+fun <T : Music> StyledImageView.load(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
+    contentDescription = context.getString(desc, music.resolveName(context))
     dispose()
-    scaleType = ImageView.ScaleType.FIT_CENTER
     load(music) {
         error(error)
         transformations(SquareFrameTransform.INSTANCE)
@@ -145,7 +144,7 @@ fun <T : Music> StyledImageView.load(music: T?, @DrawableRes error: Int, @String
             onSuccess = { _, _ ->
                 // Using the matrix scale type will shrink the cover images, so set it back to
                 // the default scale type.
-                scaleType = ImageView.ScaleType.CENTER
+                scaleType = ImageView.ScaleType.FIT_CENTER
             },
             onError = { _, _ ->
                 // Error icons need to be scaled correctly, so set it to the custom matrix

@@ -88,8 +88,7 @@ It has the following implementations:
 - `Music` is a `Item` that represents music. It adds a `name` field that represents the raw name of the music (from `MediaStore`).
 - `MusicParent` is a type of `Music` that contains children. It adds a `resolveName` field that converts the raw `MediaStore` name
 to a name that can be used in UIs.
-- `Header` and `ActionHeader` are UI data objects that represent a header item. `Header` corresponds to a simple header with no action,
-while `ActionHeader` corresponds to an action with a dedicated icon, such as with sorting.
+- `Header` corresponds to a simple header. The Detail UIs have a derivative called `SortHeader` that also adds a sorting button.
 
 Other data types represent a specific UI configuration or state:
 - Sealed classes like `Sort` contain data with them that can be modified.
@@ -101,11 +100,11 @@ Attempting to use it as a `MediaStore` ID will result in errors.
 - Any field or method beginning with `internal` is off-limits. These fields are meant for use within `MusicLoader` and generally
 provide poor UX to the user. The only reason they are public is to make the loading process not have to rely on separate "Raw"
 objects.
-- Generally, `rawName` is used when doing internal work, such as saving music data, while `resolvedName` is used when displaying music data to the user.
-    - For `Song` instances in particular, prefer `resolvedAlbumName` and `resolvedArtistName` over `album.resolvedName` and `album.artist.resolvedName`,
-    as these resolve the name in context of the song.
-    - For `Album` instances in particular, prefer `resolvedArtistName` over `artist.resolvedName`, which don't actually do anything but add consistency
-    to the `Song` function
+- `rawName` is used when doing internal work, such as saving music data or diffing items
+- `sortName` is used in the fast scroller indicators and sorting. Avoid it wherever else.
+- `resolveName()` should be used when displaying any kind of music data to the user.
+- For songs, `individualArtistRawName` and `resolveIndividualArtistName` should always be used when displaying the artist of
+a song, as it will always show collaborator information first before deatiling to the album artist.
 
 #### Music Access
 All music on a system is asynchronously loaded into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.

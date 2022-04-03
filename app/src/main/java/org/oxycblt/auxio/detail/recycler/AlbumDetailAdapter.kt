@@ -32,6 +32,7 @@ import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.SimpleItemCallback
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
@@ -119,10 +120,10 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
 
     override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
         binding.detailCover.bindAlbumCover(item)
-        binding.detailName.textSafe = item.resolvedName
+        binding.detailName.textSafe = item.resolveName(binding.context)
 
         binding.detailSubhead.apply {
-            textSafe = item.resolvedArtistName
+            textSafe = item.artist.resolveName(context)
             setOnClickListener { listener.onNavigateToArtist() }
         }
 
@@ -152,8 +153,8 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
         val DIFFER =
             object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.resolvedArtistName == newItem.resolvedArtistName &&
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.year == newItem.year &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.totalDuration == newItem.totalDuration
@@ -183,7 +184,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
             binding.songTrackBg.imageAlpha = 255
         }
 
-        binding.songName.textSafe = item.resolvedName
+        binding.songName.textSafe = item.resolveName(binding.context)
         binding.songDuration.textSafe = item.seconds.toDuration(false)
 
         binding.root.apply {
@@ -214,8 +215,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         val DIFFER =
             object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.duration == newItem.duration
+                    oldItem.rawName == newItem.rawName && oldItem.duration == newItem.duration
             }
     }
 }

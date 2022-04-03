@@ -49,6 +49,10 @@ fun View.disableDropShadowCompat() {
     }
 }
 
+/**
+ * Determines if the point given by [x] and [y] falls within this view.
+ * @param minTouchTargetSize The minimum touch size, independent of the view's size (Optional)
+ */
 fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0): Boolean {
     return isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
         isUnderImpl(y, top, bottom, (parent as View).height, minTouchTargetSize)
@@ -85,15 +89,22 @@ private fun isUnderImpl(
     return position >= touchTargetStart && position < touchTargetEnd
 }
 
+/** Returns if this view is RTL in a compatible manner. */
 val View.isRtl: Boolean
     get() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
+/** Returns if this drawable is RTL in a compatible manner.] */
 val Drawable.isRtl: Boolean
     get() = DrawableCompat.getLayoutDirection(this) == View.LAYOUT_DIRECTION_RTL
 
+/** Shortcut to get a context from a ViewBinding */
 val ViewBinding.context: Context
     get() = root.context
 
+/**
+ * A variation of [TextView.setText] that automatically relayouts the view when updated. Helps with
+ * getting ellipsize functionality to work.
+ */
 var TextView.textSafe: CharSequence
     get() = text
     set(value) {
@@ -123,13 +134,6 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
         }
 
         layoutManager = mgr
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-fun RecyclerView.getViewHolderAt(pos: Int): RecyclerView.ViewHolder? {
-    return layoutManager?.run {
-        findViewByPosition(pos)?.let { child -> getChildViewHolder(child) }
     }
 }
 

@@ -140,12 +140,16 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 
     override fun bind(item: Artist, listener: DetailAdapter.Listener) {
         binding.detailCover.bindArtistImage(item)
-        binding.detailName.textSafe = item.resolvedName
+        binding.detailName.textSafe = item.resolveName(binding.context)
 
         // Get the genre that corresponds to the most songs in this artist, which would be
         // the most "Prominent" genre.
         binding.detailSubhead.textSafe =
-            item.songs.groupBy { it.genre.resolvedName }.entries.maxByOrNull { it.value.size }?.key
+            item.songs
+                .groupBy { it.genre.resolveName(binding.context) }
+                .entries
+                .maxByOrNull { it.value.size }
+                ?.key
                 ?: binding.context.getString(R.string.def_genre)
 
         binding.detailInfo.textSafe =
@@ -178,7 +182,7 @@ private constructor(
 ) : BindingViewHolder<Album, MenuItemListener>(binding.root), Highlightable {
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bindAlbumCover(item)
-        binding.parentName.textSafe = item.resolvedName
+        binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             if (item.year != null) {
                 binding.context.getString(R.string.fmt_number, item.year)
@@ -212,7 +216,7 @@ private constructor(
         val DIFFER =
             object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.resolvedName == newItem.resolvedName && oldItem.year == newItem.year
+                    oldItem.rawName == newItem.rawName && oldItem.year == newItem.year
             }
     }
 }
@@ -223,8 +227,8 @@ private constructor(
 ) : BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bindAlbumCover(item)
-        binding.songName.textSafe = item.resolvedName
-        binding.songInfo.textSafe = item.resolvedAlbumName
+        binding.songName.textSafe = item.resolveName(binding.context)
+        binding.songInfo.textSafe = item.album.resolveName(binding.context)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -252,8 +256,8 @@ private constructor(
         val DIFFER =
             object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.resolvedAlbumName == newItem.resolvedAlbumName
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.album.rawName == newItem.album.rawName
             }
     }
 }

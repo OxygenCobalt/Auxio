@@ -42,6 +42,8 @@ import org.oxycblt.auxio.util.logW
  * representing whether this sort is ascending or descending.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Make comparators static instances
  */
 sealed class Sort(open val isAscending: Boolean) {
     protected abstract val sortIntCode: Int
@@ -240,9 +242,16 @@ sealed class Sort(open val isAscending: Boolean) {
 
     class NameComparator<T : Music> : Comparator<T> {
         override fun compare(a: T, b: T): Int {
-            return a.resolvedName
-                .sliceArticle()
-                .compareTo(b.resolvedName.sliceArticle(), ignoreCase = true)
+            val aSortName = a.sortName
+            val bSortName = b.sortName
+            return when {
+                aSortName != null && bSortName != null ->
+                    aSortName.compareTo(bSortName, ignoreCase = true)
+                aSortName == null && bSortName != null -> -1 // a < b
+                aSortName == null && bSortName == null -> 0 // a = b
+                aSortName != null && bSortName == null -> 1 // a < b
+                else -> error("Unreachable")
+            }
         }
     }
 
@@ -299,25 +308,4 @@ sealed class Sort(open val isAscending: Boolean) {
             }
         }
     }
-}
-
-/**
- * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
- * anglo-centric, but its mostly for MediaStore compat and hopefully shouldn't run with other
- * languages.
- */
-fun String.sliceArticle(): String {
-    if (length > 5 && startsWith("the ", ignoreCase = true)) {
-        return slice(4..lastIndex)
-    }
-
-    if (length > 4 && startsWith("an ", ignoreCase = true)) {
-        return slice(3..lastIndex)
-    }
-
-    if (length > 3 && startsWith("a ", ignoreCase = true)) {
-        return slice(2..lastIndex)
-    }
-
-    return this
 }

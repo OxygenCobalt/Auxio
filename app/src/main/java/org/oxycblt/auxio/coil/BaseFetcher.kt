@@ -51,7 +51,9 @@ import org.oxycblt.auxio.util.logW
 
 /**
  * The base implementation for all image fetchers in Auxio.
- * @author OxygenCobalt TODO: Artist images
+ * @author OxygenCobalt
+ *
+ * TODO: Artist images
  */
 abstract class BaseFetcher : Fetcher {
     private val settingsManager = SettingsManager.getInstance()
@@ -86,7 +88,7 @@ abstract class BaseFetcher : Fetcher {
         // for a manual parser.
         // However, Samsung seems to cripple this class as to force people to use their ad-infested
         // music app which relies on proprietary OneUI extensions instead of AOSP. That means
-        // we have to have another layer of redundancy to retain quality. Thanks samsung. Prick.
+        // we have to have another layer of redundancy to retain quality. Thanks Samsung. Prick.
         val result = fetchAospMetadataCovers(context, album)
         if (result != null) {
             return result

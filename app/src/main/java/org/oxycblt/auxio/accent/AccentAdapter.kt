@@ -27,7 +27,6 @@ import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getColorSafe
-import org.oxycblt.auxio.util.getViewHolderAt
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.stateList
 
@@ -55,7 +54,8 @@ class AccentAdapter(listener: Listener) :
         if (accent == selectedAccent) return
         selectedAccent = accent
         selectedViewHolder?.setSelected(false)
-        selectedViewHolder = recycler.getViewHolderAt(accent.index) as AccentViewHolder?
+        selectedViewHolder =
+            recycler.findViewHolderForAdapterPosition(accent.index) as AccentViewHolder?
         selectedViewHolder?.setSelected(true)
     }
 

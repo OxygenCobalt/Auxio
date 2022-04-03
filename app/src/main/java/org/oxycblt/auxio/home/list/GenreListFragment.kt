@@ -28,7 +28,6 @@ import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.ui.sliceArticle
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -48,11 +47,7 @@ class GenreListFragment : HomeListFragment<Genre>() {
     }
 
     override fun getPopup(pos: Int) =
-        unlikelyToBeNull(homeModel.genres.value)[pos]
-            .resolvedName
-            .sliceArticle()
-            .first()
-            .uppercase()
+        unlikelyToBeNull(homeModel.genres.value)[pos].sortName?.run { first().uppercase() }
 
     override fun onItemClick(item: Item) {
         check(item is Music)

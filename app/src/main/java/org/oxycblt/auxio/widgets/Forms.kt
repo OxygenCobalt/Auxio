@@ -90,8 +90,8 @@ private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
 private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteViews {
     applyCover(context, state)
 
-    setTextViewText(R.id.widget_song, state.song.resolvedName)
-    setTextViewText(R.id.widget_artist, state.song.resolvedArtistName)
+    setTextViewText(R.id.widget_song, state.song.resolveName(context))
+    setTextViewText(R.id.widget_artist, state.song.resolveIndividualArtistName(context))
 
     return this
 }
@@ -101,7 +101,7 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
         setImageViewBitmap(R.id.widget_cover, state.albumArt)
         setContentDescription(
             R.id.widget_cover,
-            context.getString(R.string.desc_album_cover, state.song.resolvedAlbumName))
+            context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
     } else {
         setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))

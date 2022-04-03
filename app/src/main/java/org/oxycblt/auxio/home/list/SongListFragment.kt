@@ -29,7 +29,6 @@ import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
-import org.oxycblt.auxio.ui.sliceArticle
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -48,7 +47,7 @@ class SongListFragment : HomeListFragment<Song>() {
         homeModel.songs.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
     }
 
-    override fun getPopup(pos: Int): String {
+    override fun getPopup(pos: Int): String? {
         val song = unlikelyToBeNull(homeModel.songs.value)[pos]
 
         // Change how we display the popup depending on the mode.
@@ -56,16 +55,16 @@ class SongListFragment : HomeListFragment<Song>() {
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
             // Name -> Use name
-            is Sort.ByName -> song.resolvedName.sliceArticle().first().uppercase()
+            is Sort.ByName -> song.sortName.first().uppercase()
 
             // Artist -> Use Artist Name
-            is Sort.ByArtist -> song.album.artist.resolvedName.sliceArticle().first().uppercase()
+            is Sort.ByArtist -> song.album.artist.sortName?.run { first().uppercase() }
 
             // Album -> Use Album Name
-            is Sort.ByAlbum -> song.album.resolvedName.sliceArticle().first().uppercase()
+            is Sort.ByAlbum -> song.album.sortName.first().uppercase()
 
             // Year -> Use Full Year
-            is Sort.ByYear -> song.album.year?.toString() ?: getString(R.string.def_date)
+            is Sort.ByYear -> song.album.year?.toString()
         }
     }
 

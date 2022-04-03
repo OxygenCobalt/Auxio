@@ -26,9 +26,9 @@ import androidx.core.database.sqlite.transaction
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.assertBackgroundThread
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
+import org.oxycblt.auxio.util.requireBackgroundThread
 
 /**
  * A SQLite database for managing the persistent playback state and queue. Yes. I know Room exists.
@@ -106,7 +106,7 @@ class PlaybackStateDatabase(context: Context) :
      * @return The stored [SavedState], null if there isn't one.
      */
     fun readState(musicStore: MusicStore): SavedState? {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         var state: SavedState? = null
 
@@ -157,7 +157,7 @@ class PlaybackStateDatabase(context: Context) :
 
     /** Clear the previously written [SavedState] and write a new one. */
     fun writeState(state: SavedState) {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         writableDatabase.transaction {
             delete(TABLE_NAME_STATE, null, null)
@@ -187,7 +187,7 @@ class PlaybackStateDatabase(context: Context) :
      * @param musicStore Required to transform database songs into actual song instances
      */
     fun readQueue(musicStore: MusicStore): MutableList<Song> {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         val queue = mutableListOf<Song>()
 
@@ -210,7 +210,7 @@ class PlaybackStateDatabase(context: Context) :
 
     /** Write a queue to the database. */
     fun writeQueue(queue: MutableList<Song>) {
-        assertBackgroundThread()
+        requireBackgroundThread()
 
         val database = writableDatabase
         database.transaction { delete(TABLE_NAME_QUEUE, null, null) }

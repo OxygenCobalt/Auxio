@@ -18,22 +18,32 @@
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.TextUtils.isDigitsOnly
+import androidx.core.text.isDigitsOnly
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
 
-/** [Item] variant that represents a music item. */
+/**
+ * [Item] variant that represents a music item.
+ */
 sealed class Music : Item() {
-    /** The raw name of this item. */
-    abstract val rawName: String
+    /** The raw name of this item. Null if unknown. */
+    abstract val rawName: String?
+
+    /** The name of this item used for sorting. Null if unknown. */
+    abstract val sortName: String?
+
     /**
-     * A name resolved from it's raw form to a form suitable to be shown in a ui. Ex. "unknown"
-     * would become Unknown Artist, (124) would become its proper genre name, etc.
+     * Resolve a name from it's raw form to a form suitable to be shown in a ui. Ex. "unknown" would
+     * become Unknown Artist, (124) would become its proper genre name, etc.
      */
-    abstract val resolvedName: String
+    abstract fun resolveName(context: Context): String
 }
 
 /**
@@ -74,8 +84,10 @@ data class Song(
             return result
         }
 
-    override val resolvedName: String
-        get() = rawName
+    override val sortName: String
+        get() = rawName.withoutArticle
+
+    override fun resolveName(context: Context) = rawName
 
     /** The URI for this song. */
     val uri: Uri
@@ -96,13 +108,19 @@ data class Song(
     val genre: Genre
         get() = unlikelyToBeNull(mGenre)
 
-    /** An album name resolved to this song in particular. */
-    val resolvedAlbumName: String
-        get() = album.resolvedName
+    /**
+     * The raw artist name for this song in particular. First uses the artist tag, and then falls
+     * back to the album artist tag (i.e parent artist name). Null if name is unknown.
+     */
+    val individualRawArtistName: String?
+        get() = internalMediaStoreArtistName ?: album.artist.rawName
 
-    /** An artist name resolved to this song in particular. */
-    val resolvedArtistName: String
-        get() = internalMediaStoreArtistName ?: album.artist.resolvedName
+    /**
+     * Resolve the artist name for this song in particular. First uses the artist tag, and
+     * then falls back to the album artist tag (i.e parent artist name)
+     */
+    fun resolveIndividualArtistName(context: Context) =
+        internalMediaStoreArtistName ?: album.artist.resolveName(context)
 
     /** Internal field. Do not use. */
     val internalAlbumGroupingId: Long
@@ -165,8 +183,10 @@ data class Album(
             return result
         }
 
-    override val resolvedName: String
-        get() = rawName
+    override val sortName: String
+        get() = rawName.withoutArticle
+
+    override fun resolveName(context: Context) = rawName
 
     /** The formatted total duration of this album */
     val totalDuration: String
@@ -176,10 +196,6 @@ data class Album(
     /** The parent artist of this album. */
     val artist: Artist
         get() = unlikelyToBeNull(mArtist)
-
-    /** The artist name, resolved to this album in particular. */
-    val resolvedArtistName: String
-        get() = artist.resolvedName
 
     /** Internal field. Do not use. */
     val internalArtistGroupingId: Long
@@ -200,8 +216,7 @@ data class Album(
  * artist or artist field, not the individual performers of an artist.
  */
 data class Artist(
-    override val rawName: String,
-    override val resolvedName: String,
+    override val rawName: String?,
     /** The albums of this artist. */
     val albums: List<Album>
 ) : MusicParent() {
@@ -211,27 +226,286 @@ data class Artist(
         }
     }
 
-    override val id = rawName.hashCode().toLong()
+    override val id: Long
+        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+
+    override val sortName: String?
+        get() = rawName?.withoutArticle
+
+    override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
     /** The songs of this artist. */
     val songs = albums.flatMap { it.songs }
 }
 
 /** The data object for a genre. */
-data class Genre(
-    override val rawName: String,
-    override val resolvedName: String,
-    val songs: List<Song>
-) : MusicParent() {
+data class Genre(override val rawName: String?, val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
             song.internalLinkGenre(this)
         }
     }
 
-    override val id = rawName.hashCode().toLong()
+    override val id: Long
+        get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+
+    override val sortName: String?
+        get() = rawName?.genreNameCompat
+
+    override fun resolveName(context: Context) =
+        rawName?.genreNameCompat ?: context.getString(R.string.def_genre)
 
     /** The formatted total duration of this genre */
     val totalDuration: String
         get() = songs.sumOf { it.seconds }.toDuration(false)
 }
+
+/**
+ * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
+ * anglo-centric, but its mostly for MediaStore compat and hopefully shouldn't run with other
+ * languages.
+ */
+private val String.withoutArticle: String
+    get() {
+        if (length > 5 && startsWith("the ", ignoreCase = true)) {
+            return slice(4..lastIndex)
+        }
+
+        if (length > 4 && startsWith("an ", ignoreCase = true)) {
+            return slice(3..lastIndex)
+        }
+
+        if (length > 3 && startsWith("a ", ignoreCase = true)) {
+            return slice(2..lastIndex)
+        }
+
+        return this
+    }
+
+/**
+ * Decodes the genre name from an ID3(v2) constant. See [genreConstantTable] for the genre constant
+ * map that Auxio uses.
+ */
+private val String.genreNameCompat: String
+    get() {
+        if (isDigitsOnly()) {
+            // ID3v1, just parse as an integer
+            return genreConstantTable.getOrNull(toInt()) ?: this
+        }
+
+        if (startsWith('(') && endsWith(')')) {
+            // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
+            // Any genres formatted as "(CHARS)" will be ignored.
+            val genreInt = substring(1 until lastIndex).toIntOrNull()
+            if (genreInt != null) {
+                return genreConstantTable.getOrNull(genreInt) ?: this
+            }
+        }
+
+        // Current name is fine.
+        return this
+    }
+
+/**
+ * A complete table of all the constant genre values for ID3(v2), including non-standard extensions.
+ */
+private val genreConstantTable =
+    arrayOf(
+        // ID3 Standard
+        "Blues",
+        "Classic Rock",
+        "Country",
+        "Dance",
+        "Disco",
+        "Funk",
+        "Grunge",
+        "Hip-Hop",
+        "Jazz",
+        "Metal",
+        "New Age",
+        "Oldies",
+        "Other",
+        "Pop",
+        "R&B",
+        "Rap",
+        "Reggae",
+        "Rock",
+        "Techno",
+        "Industrial",
+        "Alternative",
+        "Ska",
+        "Death Metal",
+        "Pranks",
+        "Soundtrack",
+        "Euro-Techno",
+        "Ambient",
+        "Trip-Hop",
+        "Vocal",
+        "Jazz+Funk",
+        "Fusion",
+        "Trance",
+        "Classical",
+        "Instrumental",
+        "Acid",
+        "House",
+        "Game",
+        "Sound Clip",
+        "Gospel",
+        "Noise",
+        "AlternRock",
+        "Bass",
+        "Soul",
+        "Punk",
+        "Space",
+        "Meditative",
+        "Instrumental Pop",
+        "Instrumental Rock",
+        "Ethnic",
+        "Gothic",
+        "Darkwave",
+        "Techno-Industrial",
+        "Electronic",
+        "Pop-Folk",
+        "Eurodance",
+        "Dream",
+        "Southern Rock",
+        "Comedy",
+        "Cult",
+        "Gangsta",
+        "Top 40",
+        "Christian Rap",
+        "Pop/Funk",
+        "Jungle",
+        "Native American",
+        "Cabaret",
+        "New Wave",
+        "Psychadelic",
+        "Rave",
+        "Showtunes",
+        "Trailer",
+        "Lo-Fi",
+        "Tribal",
+        "Acid Punk",
+        "Acid Jazz",
+        "Polka",
+        "Retro",
+        "Musical",
+        "Rock & Roll",
+        "Hard Rock",
+
+        // Winamp extensions, more or less a de-facto standard
+        "Folk",
+        "Folk-Rock",
+        "National Folk",
+        "Swing",
+        "Fast Fusion",
+        "Bebob",
+        "Latin",
+        "Revival",
+        "Celtic",
+        "Bluegrass",
+        "Avantgarde",
+        "Gothic Rock",
+        "Progressive Rock",
+        "Psychedelic Rock",
+        "Symphonic Rock",
+        "Slow Rock",
+        "Big Band",
+        "Chorus",
+        "Easy Listening",
+        "Acoustic",
+        "Humour",
+        "Speech",
+        "Chanson",
+        "Opera",
+        "Chamber Music",
+        "Sonata",
+        "Symphony",
+        "Booty Bass",
+        "Primus",
+        "Porn Groove",
+        "Satire",
+        "Slow Jam",
+        "Club",
+        "Tango",
+        "Samba",
+        "Folklore",
+        "Ballad",
+        "Power Ballad",
+        "Rhythmic Soul",
+        "Freestyle",
+        "Duet",
+        "Punk Rock",
+        "Drum Solo",
+        "A capella",
+        "Euro-House",
+        "Dance Hall",
+        "Goa",
+        "Drum & Bass",
+        "Club-House",
+        "Hardcore",
+        "Terror",
+        "Indie",
+        "Britpop",
+        "Negerpunk",
+        "Polsk Punk",
+        "Beat",
+        "Christian Gangsta",
+        "Heavy Metal",
+        "Black Metal",
+        "Crossover",
+        "Contemporary Christian",
+        "Christian Rock",
+        "Merengue",
+        "Salsa",
+        "Thrash Metal",
+        "Anime",
+        "JPop",
+        "Synthpop",
+
+        // Winamp 5.6+ extensions, also used by EasyTAG.
+        // I only include this because post-rock is a based genre and deserves a slot.
+        "Abstract",
+        "Art Rock",
+        "Baroque",
+        "Bhangra",
+        "Big Beat",
+        "Breakbeat",
+        "Chillout",
+        "Downtempo",
+        "Dub",
+        "EBM",
+        "Eclectic",
+        "Electro",
+        "Electroclash",
+        "Emo",
+        "Experimental",
+        "Garage",
+        "Global",
+        "IDM",
+        "Illbient",
+        "Industro-Goth",
+        "Jam Band",
+        "Krautrock",
+        "Leftfield",
+        "Lounge",
+        "Math Rock",
+        "New Romantic",
+        "Nu-Breakz",
+        "Post-Punk",
+        "Post-Rock",
+        "Psytrance",
+        "Shoegaze",
+        "Space Rock",
+        "Trop Rock",
+        "World Music",
+        "Neoclassical",
+        "Audiobook",
+        "Audio Theatre",
+        "Neue Deutsche Welle",
+        "Podcast",
+        "Indie Rock",
+        "G-Funk",
+        "Dubstep",
+        "Garage Rock",
+        "Psybient")

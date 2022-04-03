@@ -40,8 +40,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bindAlbumCover(item)
-        binding.songName.textSafe = item.resolvedName
-        binding.songInfo.textSafe = item.resolvedArtistName
+        binding.songName.textSafe = item.resolveName(binding.context)
+        binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->
@@ -64,8 +64,8 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
         val DIFFER =
             object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.resolvedArtistName == oldItem.resolvedArtistName
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.individualRawArtistName == oldItem.individualRawArtistName
             }
     }
 }
@@ -78,8 +78,8 @@ private constructor(
 
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bindAlbumCover(item)
-        binding.parentName.textSafe = item.resolvedName
-        binding.parentInfo.textSafe = item.resolvedArtistName
+        binding.parentName.textSafe = item.resolveName(binding.context)
+        binding.parentInfo.textSafe = item.artist.resolveName(binding.context)
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
             setOnLongClickListener { view ->
@@ -102,8 +102,8 @@ private constructor(
         val DIFFER =
             object : SimpleItemCallback<Album>() {
                 override fun areItemsTheSame(oldItem: Album, newItem: Album) =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.resolvedArtistName == newItem.resolvedArtistName
+                    oldItem.rawName == newItem.rawName &&
+                        oldItem.artist.rawName == newItem.artist.rawName
             }
     }
 }
@@ -114,7 +114,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
 
     override fun bind(item: Artist, listener: MenuItemListener) {
         binding.parentImage.bindArtistImage(item)
-        binding.parentName.textSafe = item.resolvedName
+        binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             binding.context.getString(
                 R.string.fmt_two,
@@ -142,7 +142,7 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
         val DIFFER =
             object : SimpleItemCallback<Artist>() {
                 override fun areItemsTheSame(oldItem: Artist, newItem: Artist) =
-                    oldItem.resolvedName == newItem.resolvedName &&
+                    oldItem.rawName == newItem.rawName &&
                         oldItem.albums.size == newItem.albums.size &&
                         newItem.songs.size == newItem.songs.size
             }
@@ -157,7 +157,7 @@ private constructor(
 
     override fun bind(item: Genre, listener: MenuItemListener) {
         binding.parentImage.bindGenreImage(item)
-        binding.parentName.textSafe = item.resolvedName
+        binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
         binding.root.apply {
@@ -182,8 +182,7 @@ private constructor(
         val DIFFER =
             object : SimpleItemCallback<Genre>() {
                 override fun areItemsTheSame(oldItem: Genre, newItem: Genre): Boolean =
-                    oldItem.resolvedName == newItem.resolvedName &&
-                        oldItem.songs.size == newItem.songs.size
+                    oldItem.rawName == newItem.rawName && oldItem.songs.size == newItem.songs.size
             }
     }
 }

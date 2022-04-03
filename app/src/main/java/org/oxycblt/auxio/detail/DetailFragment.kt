@@ -64,7 +64,7 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
         onMenuClick: ((itemId: Int) -> Boolean)? = null
     ) {
         requireBinding().detailToolbar.apply {
-            title = data.resolvedName
+            title = data.resolveName(context)
 
             if (menuId != -1) {
                 inflateMenu(menuId)
@@ -92,9 +92,6 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
         showItem: ((Int) -> Boolean)? = null,
     ) {
         logD("Launching menu")
-
-        // Scrolling breaks the menus, so we stop any momentum currently going on.
-        requireBinding().detailRecycler.stopScroll()
 
         PopupMenu(anchor.context, anchor).apply {
             inflate(R.menu.menu_detail_sort)

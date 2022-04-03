@@ -22,7 +22,7 @@ import androidx.core.math.MathUtils
 import org.oxycblt.auxio.BuildConfig
 
 /** Assert that we are on a background thread. */
-fun assertBackgroundThread() {
+fun requireBackgroundThread() {
     check(Looper.myLooper() != Looper.getMainLooper()) {
         "This operation must be ran on a background thread"
     }
@@ -40,4 +40,5 @@ fun <T> unlikelyToBeNull(value: T?): T {
     }
 }
 
+/** Shortcut to clamp an integer between [min] and [max] */
 fun Int.clamp(min: Int, max: Int): Int = MathUtils.clamp(this, min, max)

@@ -13,14 +13,14 @@
 - Made the layout of album songs more similar to other songs
 
 #### Dev/Meta
-- Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese ]
+- Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese]
 - Switched to spotless and ktfmt instead of ktlint
 - Migrated constants to centralized table
 - Introduced new RecyclerView framework
 - Use native ExoPlayer AudioFocus implementation
 - Make ReplayGain functionality use AudioProcessor instead of volume
 - Removed databinding [Greatly reduces compile times]
-- A bunch of internal view implementation improvements
+- An uncountable amount of internal codebase improvements
 
 ## v2.2.2
 #### What's New

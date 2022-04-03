@@ -169,10 +169,11 @@ class PlaybackPanelFragment :
         if (song == null) return
 
         val binding = requireBinding()
+        val context = requireContext()
         binding.playbackCover.bindAlbumCover(song)
-        binding.playbackSong.textSafe = song.resolvedName
-        binding.playbackArtist.textSafe = song.resolvedArtistName
-        binding.playbackAlbum.textSafe = song.resolvedAlbumName
+        binding.playbackSong.textSafe = song.resolveName(context)
+        binding.playbackArtist.textSafe = song.resolveIndividualArtistName(context)
+        binding.playbackAlbum.textSafe = song.album.resolveName(context)
 
         // Normally if a song had a duration
         val seconds = song.seconds
@@ -185,7 +186,7 @@ class PlaybackPanelFragment :
 
     private fun updateParent(parent: MusicParent?) {
         requireBinding().playbackToolbar.subtitle =
-            parent?.resolvedName ?: getString(R.string.lbl_all_songs)
+            parent?.resolveName(requireContext()) ?: getString(R.string.lbl_all_songs)
     }
 
     private fun updatePosition(position: Long) {

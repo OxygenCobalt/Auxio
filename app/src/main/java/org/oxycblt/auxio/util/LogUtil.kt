@@ -38,18 +38,18 @@ fun Any.logD(obj: Any) {
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG) {
         basedCopyleftNotice()
-        Log.d(getName(), msg)
+        Log.d(name, msg)
     }
 }
 
 /** Shortcut method for logging [msg] as a warning to the console. Handles anonymous objects */
 fun Any.logW(msg: String) {
-    Log.w(getName(), msg)
+    Log.w(name, msg)
 }
 
 /** Shortcut method for logging [msg] as an error to the console. Handles anonymous objects */
 fun Any.logE(msg: String) {
-    Log.e(getName(), msg)
+    Log.e(name, msg)
 }
 
 /**
@@ -68,7 +68,8 @@ fun Throwable.logTraceOrThrow() {
  * Get a non-nullable name, used so that logs will always show up by Auxio
  * @return The name of the object, otherwise "Anonymous Object"
  */
-private fun Any.getName(): String = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
+private val Any.name: String
+    get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**
  * I know that this will not stop you, but consider what you are doing with your life, plagiarizers.

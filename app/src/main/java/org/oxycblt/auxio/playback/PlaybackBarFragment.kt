@@ -27,6 +27,7 @@ import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -93,22 +94,28 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // -- VIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner) { song ->
-            if (song != null) {
-                binding.playbackCover.bindAlbumCover(song)
-                binding.playbackSong.textSafe = song.resolvedName
-                binding.playbackInfo.textSafe =
-                    getString(R.string.fmt_two, song.resolvedArtistName, song.resolvedAlbumName)
-                binding.playbackProgressBar.max = song.seconds.toInt()
-            }
-        }
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updateIsPlaying)
 
-        playbackModel.isPlaying.observe(viewLifecycleOwner) { isPlaying ->
-            binding.playbackPlayPause.isActivated = isPlaying
-        }
+        playbackModel.positionSeconds.observe(viewLifecycleOwner, ::updatePosition)
+    }
 
-        playbackModel.positionSeconds.observe(viewLifecycleOwner) { position ->
-            binding.playbackProgressBar.progress = position.toInt()
+    private fun updateSong(song: Song?) {
+        if (song != null) {
+            val context = requireContext()
+            val binding = requireBinding()
+            binding.playbackCover.bindAlbumCover(song)
+            binding.playbackSong.textSafe = song.resolveName(context)
+            binding.playbackInfo.textSafe = song.resolveIndividualArtistName(context)
+            binding.playbackProgressBar.max = song.seconds.toInt()
         }
+    }
+
+    private fun updateIsPlaying(isPlaying: Boolean) {
+        requireBinding().playbackPlayPause.isActivated = isPlaying
+    }
+
+    private fun updatePosition(position: Long) {
+        requireBinding().playbackProgressBar.progress = position.toInt()
     }
 }

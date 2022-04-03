@@ -34,7 +34,6 @@ import org.oxycblt.auxio.ui.MultiAdapter
 import org.oxycblt.auxio.ui.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.getViewHolderAt
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.textSafe
@@ -60,7 +59,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         // Check if the ViewHolder for this song is visible, if it is then highlight it.
         // If the ViewHolder is not visible, then the adapter should take care of it if
         // it does become visible.
-        val viewHolder = recycler.getViewHolderAt(pos)
+        val viewHolder = recycler.findViewHolderForAdapterPosition(pos)
 
         return if (viewHolder is Highlightable) {
             viewHolder.setHighlighted(true)

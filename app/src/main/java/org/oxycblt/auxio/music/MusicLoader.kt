@@ -24,8 +24,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import androidx.core.text.isDigitsOnly
-import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
@@ -104,7 +102,7 @@ class MusicLoader {
         if (songs.isEmpty()) return null
 
         val albums = buildAlbums(songs)
-        val artists = buildArtists(context, albums)
+        val artists = buildArtists(albums)
         val genres = readGenres(context, songs)
 
         // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
@@ -316,21 +314,20 @@ class MusicLoader {
      * Group up albums into artists. This also requires a de-duplication step due to some edge cases
      * where [buildAlbums] could not detect duplicates.
      */
-    private fun buildArtists(context: Context, albums: List<Album>): List<Artist> {
+    private fun buildArtists(albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
         val albumsByArtist = albums.groupBy { it.internalArtistGroupingId }
 
         for (entry in albumsByArtist) {
             val templateAlbum = entry.value[0]
-            val artistName = templateAlbum.internalGroupingArtistName
-            val resolvedName =
+            val artistName =
                 when (templateAlbum.internalGroupingArtistName) {
-                    MediaStore.UNKNOWN_STRING -> context.getString(R.string.def_artist)
-                    else -> artistName
+                    MediaStore.UNKNOWN_STRING -> null
+                    else -> templateAlbum.internalGroupingArtistName
                 }
             val artistAlbums = entry.value
 
-            artists.add(Artist(artistName, resolvedName, artistAlbums))
+            artists.add(Artist(artistName, artistAlbums))
         }
 
         logD("Successfully built ${artists.size} artists")
@@ -361,21 +358,16 @@ class MusicLoader {
                     // anyway, so we skip genres that have them.
                     val id = cursor.getLong(idIndex)
                     val name = cursor.getStringOrNull(nameIndex) ?: continue
-                    val resolvedName = name.genreNameCompat ?: name
                     val genreSongs = queryGenreSongs(context, id, songs) ?: continue
 
-                    genres.add(Genre(name, resolvedName, genreSongs))
+                    genres.add(Genre(name, genreSongs))
                 }
             }
 
         val songsWithoutGenres = songs.filter { it.internalIsMissingGenre }
         if (songsWithoutGenres.isNotEmpty()) {
             // Songs that don't have a genre will be thrown into an unknown genre.
-            val unknownGenre =
-                Genre(
-                    MediaStore.UNKNOWN_STRING,
-                    context.getString(R.string.def_genre),
-                    songsWithoutGenres)
+            val unknownGenre = Genre(null, songsWithoutGenres)
 
             genres.add(unknownGenre)
         }
@@ -384,30 +376,6 @@ class MusicLoader {
 
         return genres
     }
-
-    /**
-     * Decodes the genre name from an ID3(v2) constant. See [genreConstantTable] for the genre
-     * constant map that Auxio uses.
-     */
-    private val String.genreNameCompat: String?
-        get() {
-            if (isDigitsOnly()) {
-                // ID3v1, just parse as an integer
-                return genreConstantTable.getOrNull(toInt())
-            }
-
-            if (startsWith('(') && endsWith(')')) {
-                // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
-                // Any genres formatted as "(CHARS)" will be ignored.
-                val genreInt = substring(1 until lastIndex).toIntOrNull()
-                if (genreInt != null) {
-                    return genreConstantTable.getOrNull(genreInt)
-                }
-            }
-
-            // Current name is fine.
-            return null
-        }
 
     /**
      * Queries the genre songs for [genreId]. Some genres are insane and don't contain songs for
@@ -446,210 +414,5 @@ class MusicLoader {
          */
         @Suppress("InlinedApi")
         private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
-
-        /**
-         * A complete table of all the constant genre values for ID3(v2), including non-standard
-         * extensions.
-         */
-        private val genreConstantTable =
-            arrayOf(
-                // ID3 Standard
-                "Blues",
-                "Classic Rock",
-                "Country",
-                "Dance",
-                "Disco",
-                "Funk",
-                "Grunge",
-                "Hip-Hop",
-                "Jazz",
-                "Metal",
-                "New Age",
-                "Oldies",
-                "Other",
-                "Pop",
-                "R&B",
-                "Rap",
-                "Reggae",
-                "Rock",
-                "Techno",
-                "Industrial",
-                "Alternative",
-                "Ska",
-                "Death Metal",
-                "Pranks",
-                "Soundtrack",
-                "Euro-Techno",
-                "Ambient",
-                "Trip-Hop",
-                "Vocal",
-                "Jazz+Funk",
-                "Fusion",
-                "Trance",
-                "Classical",
-                "Instrumental",
-                "Acid",
-                "House",
-                "Game",
-                "Sound Clip",
-                "Gospel",
-                "Noise",
-                "AlternRock",
-                "Bass",
-                "Soul",
-                "Punk",
-                "Space",
-                "Meditative",
-                "Instrumental Pop",
-                "Instrumental Rock",
-                "Ethnic",
-                "Gothic",
-                "Darkwave",
-                "Techno-Industrial",
-                "Electronic",
-                "Pop-Folk",
-                "Eurodance",
-                "Dream",
-                "Southern Rock",
-                "Comedy",
-                "Cult",
-                "Gangsta",
-                "Top 40",
-                "Christian Rap",
-                "Pop/Funk",
-                "Jungle",
-                "Native American",
-                "Cabaret",
-                "New Wave",
-                "Psychadelic",
-                "Rave",
-                "Showtunes",
-                "Trailer",
-                "Lo-Fi",
-                "Tribal",
-                "Acid Punk",
-                "Acid Jazz",
-                "Polka",
-                "Retro",
-                "Musical",
-                "Rock & Roll",
-                "Hard Rock",
-
-                // Winamp extensions, more or less a de-facto standard
-                "Folk",
-                "Folk-Rock",
-                "National Folk",
-                "Swing",
-                "Fast Fusion",
-                "Bebob",
-                "Latin",
-                "Revival",
-                "Celtic",
-                "Bluegrass",
-                "Avantgarde",
-                "Gothic Rock",
-                "Progressive Rock",
-                "Psychedelic Rock",
-                "Symphonic Rock",
-                "Slow Rock",
-                "Big Band",
-                "Chorus",
-                "Easy Listening",
-                "Acoustic",
-                "Humour",
-                "Speech",
-                "Chanson",
-                "Opera",
-                "Chamber Music",
-                "Sonata",
-                "Symphony",
-                "Booty Bass",
-                "Primus",
-                "Porn Groove",
-                "Satire",
-                "Slow Jam",
-                "Club",
-                "Tango",
-                "Samba",
-                "Folklore",
-                "Ballad",
-                "Power Ballad",
-                "Rhythmic Soul",
-                "Freestyle",
-                "Duet",
-                "Punk Rock",
-                "Drum Solo",
-                "A capella",
-                "Euro-House",
-                "Dance Hall",
-                "Goa",
-                "Drum & Bass",
-                "Club-House",
-                "Hardcore",
-                "Terror",
-                "Indie",
-                "Britpop",
-                "Negerpunk",
-                "Polsk Punk",
-                "Beat",
-                "Christian Gangsta",
-                "Heavy Metal",
-                "Black Metal",
-                "Crossover",
-                "Contemporary Christian",
-                "Christian Rock",
-                "Merengue",
-                "Salsa",
-                "Thrash Metal",
-                "Anime",
-                "JPop",
-                "Synthpop",
-
-                // Winamp 5.6+ extensions, also used by EasyTAG.
-                // I only include this because post-rock is a based genre and deserves a slot.
-                "Abstract",
-                "Art Rock",
-                "Baroque",
-                "Bhangra",
-                "Big Beat",
-                "Breakbeat",
-                "Chillout",
-                "Downtempo",
-                "Dub",
-                "EBM",
-                "Eclectic",
-                "Electro",
-                "Electroclash",
-                "Emo",
-                "Experimental",
-                "Garage",
-                "Global",
-                "IDM",
-                "Illbient",
-                "Industro-Goth",
-                "Jam Band",
-                "Krautrock",
-                "Leftfield",
-                "Lounge",
-                "Math Rock",
-                "New Romantic",
-                "Nu-Breakz",
-                "Post-Punk",
-                "Post-Rock",
-                "Psytrance",
-                "Shoegaze",
-                "Space Rock",
-                "Trop Rock",
-                "World Music",
-                "Neoclassical",
-                "Audiobook",
-                "Audio Theatre",
-                "Neue Deutsche Welle",
-                "Podcast",
-                "Indie Rock",
-                "G-Funk",
-                "Dubstep",
-                "Garage Rock",
-                "Psybient")
     }
 }
