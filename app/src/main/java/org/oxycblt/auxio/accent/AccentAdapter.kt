@@ -33,15 +33,15 @@ import org.oxycblt.auxio.util.stateList
 
 /** An adapter that displays the accent palette. */
 class AccentAdapter(listener: Listener) :
-    MonoAdapter<Accent, AccentAdapter.Listener, NewAccentViewHolder>(listener) {
+    MonoAdapter<Accent, AccentAdapter.Listener, AccentViewHolder>(listener) {
     var selectedAccent: Accent? = null
         private set
-    private var selectedViewHolder: NewAccentViewHolder? = null
+    private var selectedViewHolder: AccentViewHolder? = null
 
     override val data = AccentData()
-    override val creator = NewAccentViewHolder.CREATOR
+    override val creator = AccentViewHolder.CREATOR
 
-    override fun onBindViewHolder(viewHolder: NewAccentViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: AccentViewHolder, position: Int) {
         super.onBindViewHolder(viewHolder, position)
 
         if (data.getItem(position) == selectedAccent) {
@@ -55,7 +55,7 @@ class AccentAdapter(listener: Listener) :
         if (accent == selectedAccent) return
         selectedAccent = accent
         selectedViewHolder?.setSelected(false)
-        selectedViewHolder = recycler.getViewHolderAt(accent.index) as NewAccentViewHolder?
+        selectedViewHolder = recycler.getViewHolderAt(accent.index) as AccentViewHolder?
         selectedViewHolder?.setSelected(true)
     }
 
@@ -69,7 +69,7 @@ class AccentAdapter(listener: Listener) :
     }
 }
 
-class NewAccentViewHolder private constructor(private val binding: ItemAccentBinding) :
+class AccentViewHolder private constructor(private val binding: ItemAccentBinding) :
     BindingViewHolder<Accent, AccentAdapter.Listener>(binding.root) {
 
     override fun bind(item: Accent, listener: AccentAdapter.Listener) {
@@ -79,9 +79,8 @@ class NewAccentViewHolder private constructor(private val binding: ItemAccentBin
             backgroundTintList = context.getColorSafe(item.primary).stateList
             contentDescription = context.getString(item.name)
             TooltipCompat.setTooltipText(this, contentDescription)
+            setOnClickListener { listener.onAccentSelected(item) }
         }
-
-        binding.accent.setOnClickListener { listener.onAccentSelected(item) }
     }
 
     fun setSelected(isSelected: Boolean) {
@@ -98,12 +97,12 @@ class NewAccentViewHolder private constructor(private val binding: ItemAccentBin
 
     companion object {
         val CREATOR =
-            object : Creator<NewAccentViewHolder> {
+            object : Creator<AccentViewHolder> {
                 override val viewType: Int
                     get() = throw UnsupportedOperationException()
 
                 override fun create(context: Context) =
-                    NewAccentViewHolder(ItemAccentBinding.inflate(context.inflater))
+                    AccentViewHolder(ItemAccentBinding.inflate(context.inflater))
             }
     }
 }

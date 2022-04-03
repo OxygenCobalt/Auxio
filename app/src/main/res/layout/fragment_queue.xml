@@ -12,6 +12,7 @@
         app:liftOnScrollTargetViewId="@id/queue_recycler">
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/queue_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon.Down"
             android:elevation="0dp"
             app:navigationIcon="@drawable/ic_down"

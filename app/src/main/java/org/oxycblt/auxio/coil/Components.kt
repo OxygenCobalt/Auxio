@@ -24,6 +24,7 @@ import coil.decode.ImageSource
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
+import coil.key.Keyer
 import coil.request.Options
 import coil.size.Size
 import kotlin.math.min
@@ -32,8 +33,21 @@ import okio.source
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.Sort
+
+/** A basic keyer for music data. */
+class MusicKeyer : Keyer<Music> {
+    override fun key(data: Music, options: Options): String {
+        return if (data is Song) {
+            // Group up song covers with album covers for better caching
+            key(data.album, options)
+        } else {
+            "${data::class.simpleName}: ${data.id}"
+        }
+    }
+}
 
 /**
  * Fetcher that returns the album art for a given [Album] or [Song], depending on the factory used.
@@ -128,7 +142,7 @@ private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(
             break
         }
 
-        transform(item)?.let { out.add(it) }
+        transform(item)?.let(out::add)
     }
 
     return out

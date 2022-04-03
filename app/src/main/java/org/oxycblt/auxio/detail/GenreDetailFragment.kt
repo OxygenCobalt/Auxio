@@ -36,7 +36,6 @@ import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -61,13 +60,9 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.genreData.observe(viewLifecycleOwner) { list ->
-            detailAdapter.data.submitList(list)
-        }
-
-        detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
-
-        playbackModel.song.observe(viewLifecycleOwner) { song -> updateSong(song, detailAdapter) }
+        detailModel.genreData.observe(viewLifecycleOwner, detailAdapter.data::submitList)
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
     }
 
     override fun onItemClick(item: Item) {
@@ -97,34 +92,36 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
     private fun handleNavigation(item: Music?) {
         when (item) {
+            is Song -> {
+                logD("Navigating to another song")
+                findNavController()
+                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.id))
+            }
+            is Album -> {
+                logD("Navigating to another album")
+                findNavController().navigate(GenreDetailFragmentDirections.actionShowAlbum(item.id))
+            }
             // All items will launch new detail fragments.
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()
                     .navigate(GenreDetailFragmentDirections.actionShowArtist(item.id))
             }
-            is Album -> {
-                logD("Navigating to another album")
-                findNavController().navigate(GenreDetailFragmentDirections.actionShowAlbum(item.id))
-            }
-            is Song -> {
-                logD("Navigating to another song")
-                findNavController()
-                    .navigate(GenreDetailFragmentDirections.actionShowAlbum(item.album.id))
+            is Genre -> {
+                navModel.finishExploreNavigation()
             }
             null -> {}
-            else -> logW("Unsupported navigation command ${item::class.java}")
         }
     }
 
-    private fun updateSong(song: Song?, adapter: GenreDetailAdapter) {
+    private fun updateSong(song: Song?) {
         val binding = requireBinding()
         if (playbackModel.playbackMode.value == PlaybackMode.IN_GENRE &&
             playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
-            adapter.highlightSong(song, binding.detailRecycler)
+            detailAdapter.highlightSong(song, binding.detailRecycler)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            adapter.highlightSong(null, binding.detailRecycler)
+            detailAdapter.highlightSong(null, binding.detailRecycler)
         }
     }
 }

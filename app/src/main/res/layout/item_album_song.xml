@@ -11,6 +11,7 @@
     view. The way we do this is odd, but it's designed this way-->
 
     <org.oxycblt.auxio.coil.StyledImageView
+        android:id="@+id/song_track_bg"
         style="@style/Widget.Auxio.Image.Small"
         android:src="@drawable/ic_song"
         android:scaleType="matrix"

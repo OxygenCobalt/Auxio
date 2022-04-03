@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <View
+        android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorPrimary"
@@ -21,6 +22,7 @@
         app:tint="?attr/colorSurface" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface">

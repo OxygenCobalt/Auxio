@@ -54,7 +54,7 @@ sealed class Tab(open val mode: DisplayMode) {
         const val SEQUENCE_DEFAULT = 0b1000_1001_1010_1011_0100
 
         /**
-         * Maps between the integer code in the tab sequence and the actual [DisplayMode] instance
+         * Maps between the integer code in the tab sequence and the actual [DisplayMode] instance.
          */
         private val MODE_TABLE =
             arrayOf(

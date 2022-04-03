@@ -27,8 +27,8 @@ import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
-import org.oxycblt.auxio.detail.DetailViewModel
-import org.oxycblt.auxio.ui.BottomSheetLayout
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.textSafe
 
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackBarBinding.inflate(inflater)
@@ -46,14 +46,10 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         savedInstanceState: Bundle?
     ) {
         binding.root.apply {
-            setOnClickListener {
-                // This is a dumb and fragile hack but this fragment isn't part of the navigation
-                // stack so we can't really do much
-                (requireView().parent.parent.parent as BottomSheetLayout).expand()
-            }
+            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.EXPAND) }
 
             setOnLongClickListener {
-                playbackModel.song.value?.let { song -> detailModel.navToItem(song) }
+                playbackModel.song.value?.let(navModel::exploreNavigateTo)
                 true
             }
 

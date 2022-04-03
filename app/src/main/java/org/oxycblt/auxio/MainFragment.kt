@@ -27,12 +27,16 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logW
 
@@ -45,13 +49,13 @@ import org.oxycblt.auxio.util.logW
  */
 class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
-
         // --- UI SETUP ---
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
         val permLauncher =
@@ -88,6 +92,9 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
             handleLoaderResponse(response, permLauncher)
         }
+
+        navModel.mainNavigationAction.observe(viewLifecycleOwner, ::handleMainNavigation)
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleExploreNavigation)
 
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
     }
@@ -143,6 +150,30 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
                 snackbar.show()
             }
             null -> {}
+        }
+    }
+
+    private fun handleMainNavigation(action: MainNavigationAction?) {
+        if (action == null) return
+
+        val binding = requireBinding()
+        when (action) {
+            MainNavigationAction.EXPAND -> binding.bottomSheetLayout.expand()
+            MainNavigationAction.COLLAPSE -> binding.bottomSheetLayout.collapse()
+            MainNavigationAction.SETTINGS ->
+                findNavController().navigate(MainFragmentDirections.actionShowSettings())
+            MainNavigationAction.ABOUT ->
+                findNavController().navigate(MainFragmentDirections.actionShowAbout())
+            MainNavigationAction.QUEUE ->
+                findNavController().navigate(MainFragmentDirections.actionShowQueue())
+        }
+
+        navModel.finishMainNavigation()
+    }
+
+    private fun handleExploreNavigation(item: Music?) {
+        if (item != null) {
+            requireBinding().bottomSheetLayout.collapse()
         }
     }
 

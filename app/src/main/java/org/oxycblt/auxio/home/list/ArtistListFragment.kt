@@ -18,11 +18,10 @@
 package org.oxycblt.auxio.home.list
 
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.home.HomeFragmentDirections
 import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ArtistViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
@@ -56,8 +55,8 @@ class ArtistListFragment : HomeListFragment<Artist>() {
             .uppercase()
 
     override fun onItemClick(item: Item) {
-        check(item is Artist)
-        findNavController().navigate(HomeFragmentDirections.actionShowArtist(item.id))
+        check(item is Music)
+        navModel.exploreNavigateTo(item)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

@@ -10,6 +10,7 @@
         android:layout_height="match_parent">
 
         <org.oxycblt.auxio.detail.DetailAppBarLayout
+            android:id="@+id/detail_appbar"
             style="@style/Widget.Auxio.AppBarLayout"
             app:liftOnScroll="true"
             app:liftOnScrollTargetViewId="@id/detail_recycler">

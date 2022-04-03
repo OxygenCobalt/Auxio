@@ -30,7 +30,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -41,11 +40,11 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.requireAttached
 
 /**
@@ -56,7 +55,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -109,11 +108,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
         // --- VIEWMODEL SETUP ---
 
         searchModel.searchResults.observe(viewLifecycleOwner, ::updateResults)
-
-        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            handleNavigation(item)
-            requireImm().hide()
-        }
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
     }
 
     override fun onResume() {
@@ -128,25 +123,9 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
     }
 
     override fun onItemClick(item: Item) {
-        if (item is Song) {
-            playbackModel.playSong(item)
-            return
-        }
-
-        if (item is MusicParent && !searchModel.isNavigating) {
-            searchModel.setNavigating(true)
-
-            logD("Navigating to the detail fragment for ${item.rawName}")
-
-            findNavController()
-                .navigate(
-                    when (item) {
-                        is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
-                        is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
-                        is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
-                    })
-
-            requireImm().hide()
+        when (item) {
+            is Song -> playbackModel.playSong(item)
+            is MusicParent -> navModel.exploreNavigateTo(item)
         }
     }
 
@@ -178,8 +157,11 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
                     is Song -> SearchFragmentDirections.actionShowAlbum(item.album.id)
                     is Album -> SearchFragmentDirections.actionShowAlbum(item.id)
                     is Artist -> SearchFragmentDirections.actionShowArtist(item.id)
+                    is Genre -> SearchFragmentDirections.actionShowGenre(item.id)
                     else -> return
                 })
+
+        requireImm().hide()
     }
 
     private fun requireImm(): InputMethodManager {

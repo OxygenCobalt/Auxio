@@ -23,11 +23,9 @@ import android.view.MenuItem
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import kotlin.math.max
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
@@ -36,7 +34,8 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.state.LoopMode
-import org.oxycblt.auxio.ui.BottomSheetLayout
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
@@ -56,6 +55,7 @@ class PlaybackPanelFragment :
     Slider.OnChangeListener,
     Slider.OnSliderTouchListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
     private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -75,11 +75,11 @@ class PlaybackPanelFragment :
         val queueItem: MenuItem
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener { navigateUp() }
+            setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.COLLAPSE) }
 
             setOnMenuItemClickListener { item ->
                 if (item.itemId == R.id.action_queue) {
-                    findNavController().navigate(MainFragmentDirections.actionShowQueue())
+                    navModel.mainNavigateTo(MainNavigationAction.QUEUE)
                     true
                 } else {
                     false
@@ -92,15 +92,15 @@ class PlaybackPanelFragment :
         binding.playbackSong.apply {
             // Make marquee of the song title work
             isSelected = true
-            setOnClickListener { playbackModel.song.value?.let { detailModel.navToItem(it) } }
+            setOnClickListener { playbackModel.song.value?.let(navModel::exploreNavigateTo) }
         }
 
         binding.playbackArtist.setOnClickListener {
-            playbackModel.song.value?.let { detailModel.navToItem(it.album.artist) }
+            playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
         }
 
         binding.playbackAlbum.setOnClickListener {
-            playbackModel.song.value?.let { detailModel.navToItem(it.album) }
+            playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
         }
 
         binding.playbackSeekBar.apply {
@@ -139,12 +139,6 @@ class PlaybackPanelFragment :
             // The queue icon uses a selector that will automatically tint the icon as active or
             // inactive. We just need to set the flag.
             queueItem.isEnabled = nextUp.isNotEmpty()
-        }
-
-        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            if (item != null) {
-                navigateUp()
-            }
         }
 
         logD("Fragment Created")
@@ -217,11 +211,5 @@ class PlaybackPanelFragment :
 
     private fun updateShuffle(isShuffling: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffling
-    }
-
-    private fun navigateUp() {
-        // This is a dumb and fragile hack but this fragment isn't part of the navigation stack
-        // so we can't really do much
-        (requireView().parent.parent.parent as BottomSheetLayout).collapse()
     }
 }

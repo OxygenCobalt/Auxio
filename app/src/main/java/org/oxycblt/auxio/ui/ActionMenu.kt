@@ -26,7 +26,6 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -70,8 +69,8 @@ class ActionMenu(
     private val context = activity.applicationContext
 
     // Get ViewModels using the activity as the store owner
-    private val detailModel: DetailViewModel by lazy {
-        ViewModelProvider(activity)[DetailViewModel::class.java]
+    private val navModel: NavigationViewModel by lazy {
+        ViewModelProvider(activity)[NavigationViewModel::class.java]
     }
 
     private val playbackModel: PlaybackViewModel by lazy {
@@ -172,14 +171,14 @@ class ActionMenu(
             }
             R.id.action_go_album -> {
                 if (data is Song) {
-                    detailModel.navToItem(data.album)
+                    navModel.exploreNavigateTo(data.album)
                 }
             }
             R.id.action_go_artist -> {
                 if (data is Song) {
-                    detailModel.navToItem(data.album.artist)
+                    navModel.exploreNavigateTo(data.album.artist)
                 } else if (data is Album) {
-                    detailModel.navToItem(data.artist)
+                    navModel.exploreNavigateTo(data.artist)
                 }
             }
         }

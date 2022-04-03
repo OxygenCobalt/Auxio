@@ -81,6 +81,7 @@
         app:thumbRadius="@dimen/slider_thumb_radius" />
 
     <TextView
+        android:id="@+id/playback_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -92,6 +93,7 @@
         tools:text="11:38" />
 
     <TextView
+        android:id="@+id/playback_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small_inv"

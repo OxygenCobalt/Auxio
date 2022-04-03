@@ -29,6 +29,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
@@ -40,15 +41,11 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
     protected val detailModel: DetailViewModel by activityViewModels()
+    protected val navModel: NavigationViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater): FragmentDetailBinding =
         FragmentDetailBinding.inflate(inflater)
-
-    override fun onResume() {
-        super.onResume()
-        detailModel.setNavigating(false)
-    }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)

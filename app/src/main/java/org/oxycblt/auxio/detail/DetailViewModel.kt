@@ -25,7 +25,6 @@ import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Header
@@ -38,7 +37,6 @@ import org.oxycblt.auxio.util.logD
  * - What item the fragment should be showing
  * - The RecyclerView data for each fragment
  * - Menu triggers for each fragment
- * - Navigation triggers for each fragment [e.g "Go to artist"]
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
@@ -87,15 +85,6 @@ class DetailViewModel : ViewModel() {
             currentGenre.value?.let(::refreshGenreData)
         }
 
-    private val mNavToItem = MutableLiveData<Music?>()
-
-    /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
-    val navToItem: LiveData<Music?>
-        get() = mNavToItem
-
-    var isNavigating = false
-        private set
-
     fun setAlbumId(id: Long) {
         if (mCurrentAlbum.value?.id == id) return
         val musicStore = MusicStore.requireInstance()
@@ -120,21 +109,6 @@ class DetailViewModel : ViewModel() {
         val genre = requireNotNull(musicStore.genres.find { it.id == id })
         mCurrentGenre.value = genre
         refreshGenreData(genre)
-    }
-
-    /** Navigate to an item, whether a song/album/artist */
-    fun navToItem(item: Music) {
-        mNavToItem.value = item
-    }
-
-    /** Mark that the navigation process is done. */
-    fun finishNavToItem() {
-        mNavToItem.value = null
-    }
-
-    /** Update the current navigation status to [isNavigating] */
-    fun setNavigating(navigating: Boolean) {
-        isNavigating = navigating
     }
 
     private fun refreshGenreData(genre: Genre) {

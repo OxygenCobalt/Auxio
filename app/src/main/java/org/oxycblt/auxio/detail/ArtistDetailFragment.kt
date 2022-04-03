@@ -63,27 +63,16 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         // --- VIEWMODEL SETUP ---
 
-        detailModel.artistData.observe(viewLifecycleOwner) { list ->
-            detailAdapter.data.submitList(list)
-        }
-
-        detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
-
-        // Highlight songs if they are being played
-        playbackModel.song.observe(viewLifecycleOwner) { song -> updateSong(song, detailAdapter) }
-
-        // Highlight albums if they are being played
-        playbackModel.parent.observe(viewLifecycleOwner) { parent ->
-            updateParent(parent, detailAdapter)
-        }
+        detailModel.artistData.observe(viewLifecycleOwner, detailAdapter.data::submitList)
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+        playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
     }
 
     override fun onItemClick(item: Item) {
         when (item) {
             is Song -> playbackModel.playSong(item, PlaybackMode.IN_ARTIST)
-            is Album ->
-                findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
+            is Album -> navModel.exploreNavigateTo(item)
         }
     }
 
@@ -111,49 +100,49 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
         val binding = requireBinding()
 
         when (item) {
-            is Artist -> {
-                if (item.id == detailModel.currentArtist.value?.id) {
-                    logD("Navigating to the top of this artist")
-                    binding.detailRecycler.scrollToPosition(0)
-                    detailModel.finishNavToItem()
-                } else {
-                    logD("Navigating to another artist")
-                    findNavController()
-                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
-                }
+            is Song -> {
+                logD("Navigating to another album")
+                findNavController()
+                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
             }
             is Album -> {
                 logD("Navigating to another album")
                 findNavController()
                     .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
             }
-            is Song -> {
-                logD("Navigating to another album")
-                findNavController()
-                    .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.album.id))
+            is Artist -> {
+                if (item.id == detailModel.currentArtist.value?.id) {
+                    logD("Navigating to the top of this artist")
+                    binding.detailRecycler.scrollToPosition(0)
+                    navModel.finishExploreNavigation()
+                } else {
+                    logD("Navigating to another artist")
+                    findNavController()
+                        .navigate(ArtistDetailFragmentDirections.actionShowArtist(item.id))
+                }
             }
             null -> {}
             else -> logW("Unsupported navigation item ${item::class.java}")
         }
     }
 
-    private fun updateSong(song: Song?, adapter: ArtistDetailAdapter) {
+    private fun updateSong(song: Song?) {
         val binding = requireBinding()
         if (playbackModel.playbackMode.value == PlaybackMode.IN_ARTIST &&
             playbackModel.parent.value?.id == detailModel.currentArtist.value?.id) {
-            adapter.highlightSong(song, binding.detailRecycler)
+            detailAdapter.highlightSong(song, binding.detailRecycler)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            adapter.highlightSong(null, binding.detailRecycler)
+            detailAdapter.highlightSong(null, binding.detailRecycler)
         }
     }
 
-    private fun updateParent(parent: MusicParent?, adapter: ArtistDetailAdapter) {
+    private fun updateParent(parent: MusicParent?) {
         val binding = requireBinding()
         if (parent is Album?) {
-            adapter.highlightAlbum(parent, binding.detailRecycler)
+            detailAdapter.highlightAlbum(parent, binding.detailRecycler)
         } else {
-            adapter.highlightAlbum(null, binding.detailRecycler)
+            detailAdapter.highlightAlbum(null, binding.detailRecycler)
         }
     }
 }

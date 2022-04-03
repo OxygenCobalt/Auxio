@@ -81,16 +81,9 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
         // -- VIEWMODEL SETUP ---
 
-        detailModel.albumData.observe(viewLifecycleOwner) { list ->
-            detailAdapter.data.submitList(list)
-        }
-
-        detailModel.navToItem.observe(viewLifecycleOwner) { item ->
-            handleNavigation(item, detailAdapter)
-        }
-
-        updateSong(playbackModel.song.value, detailAdapter)
-        playbackModel.song.observe(viewLifecycleOwner) { song -> updateSong(song, detailAdapter) }
+        detailModel.albumData.observe(viewLifecycleOwner, detailAdapter.data::submitList)
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
+        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
     }
 
     override fun onItemClick(item: Item) {
@@ -126,7 +119,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
                     unlikelyToBeNull(detailModel.currentAlbum.value).artist.id))
     }
 
-    private fun handleNavigation(item: Music?, adapter: AlbumDetailAdapter) {
+    private fun handleNavigation(item: Music?) {
         val binding = requireBinding()
         when (item) {
             // Songs should be scrolled to if the album matches, or a new detail
@@ -134,8 +127,8 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             is Song -> {
                 if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.album.id) {
                     logD("Navigating to a song in this album")
-                    scrollToItem(item.id, adapter)
-                    detailModel.finishNavToItem()
+                    scrollToItem(item.id)
+                    navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
@@ -149,7 +142,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
                 if (unlikelyToBeNull(detailModel.currentAlbum.value).id == item.id) {
                     logD("Navigating to the top of this album")
                     binding.detailRecycler.scrollToPosition(0)
-                    detailModel.finishNavToItem()
+                    navModel.finishExploreNavigation()
                 } else {
                     logD("Navigating to another album")
                     findNavController()
@@ -169,9 +162,9 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     }
 
     /** Scroll to an song using its [id]. */
-    private fun scrollToItem(id: Long, adapter: AlbumDetailAdapter) {
+    private fun scrollToItem(id: Long) {
         // Calculate where the item for the currently played song is
-        val pos = adapter.data.currentList.indexOfFirst { it.id == id && it is Song }
+        val pos = detailAdapter.data.currentList.indexOfFirst { it.id == id && it is Song }
 
         if (pos != -1) {
             val binding = requireBinding()
@@ -189,7 +182,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     }
 
     /** Updates the queue actions when a song is present or not */
-    private fun updateSong(song: Song?, adapter: AlbumDetailAdapter) {
+    private fun updateSong(song: Song?) {
         val binding = requireBinding()
 
         for (item in binding.detailToolbar.menu.children) {
@@ -200,10 +193,10 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
         if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
             playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            adapter.highlightSong(song, binding.detailRecycler)
+            detailAdapter.highlightSong(song, binding.detailRecycler)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            adapter.highlightSong(null, binding.detailRecycler)
+            detailAdapter.highlightSong(null, binding.detailRecycler)
         }
     }
 

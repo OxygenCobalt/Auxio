@@ -47,8 +47,6 @@ class SearchViewModel : ViewModel() {
     /** Current search results from the last [search] call. */
     val searchResults: LiveData<List<Item>>
         get() = mSearchResults
-    val isNavigating: Boolean
-        get() = mIsNavigating
     val filterMode: DisplayMode?
         get() = mFilterMode
 

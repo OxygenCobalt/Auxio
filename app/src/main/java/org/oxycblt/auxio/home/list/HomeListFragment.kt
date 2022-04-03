@@ -28,6 +28,7 @@ import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 
 /**
@@ -41,8 +42,9 @@ abstract class HomeListFragment<T : Item> :
     FastScrollRecyclerView.OnFastScrollListener {
     abstract fun setupRecycler(recycler: RecyclerView)
 
-    protected val homeModel: HomeViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
+    protected val navModel: NavigationViewModel by activityViewModels()
+    protected val homeModel: HomeViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)

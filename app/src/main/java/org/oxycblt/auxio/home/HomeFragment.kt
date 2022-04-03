@@ -28,10 +28,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import org.oxycblt.auxio.MainFragmentDirections
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.home.list.AlbumListFragment
 import org.oxycblt.auxio.home.list.ArtistListFragment
 import org.oxycblt.auxio.home.list.GenreListFragment
@@ -45,6 +43,8 @@ import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -62,7 +62,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
+    private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
@@ -108,7 +108,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
         homeModel.recreateTabs.observe(viewLifecycleOwner, ::handleRecreateTabs)
 
         musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
-        detailModel.navToItem.observe(viewLifecycleOwner, ::handleNavigation)
+        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
     }
 
     private fun onMenuClick(item: MenuItem) {
@@ -119,19 +119,15 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
-                parentFragment
-                    ?.parentFragment
-                    ?.findNavController()
-                    ?.navigate(MainFragmentDirections.actionShowSettings())
+                navModel.mainNavigateTo(MainNavigationAction.SETTINGS)
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                parentFragment
-                    ?.parentFragment
-                    ?.findNavController()
-                    ?.navigate(MainFragmentDirections.actionShowAbout())
+                navModel.mainNavigateTo(MainNavigationAction.ABOUT)
             }
-            R.id.submenu_sorting -> {}
+            R.id.submenu_sorting -> {
+                // Junk click event when opening the menu
+            }
             R.id.option_sort_asc -> {
                 item.isChecked = !item.isChecked
                 homeModel.updateCurrentSort(

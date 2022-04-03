@@ -44,7 +44,10 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
 
-/** An [AppCompatImageView] that applies many of the stylistic choices thjat Auxio uses wi */
+/**
+ * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
+ * images.
+ */
 class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
@@ -85,6 +88,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
+        // Scale the image down to half-size
         imageMatrix =
             centerMatrix.apply {
                 reset()

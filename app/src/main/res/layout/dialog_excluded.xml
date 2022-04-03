@@ -7,8 +7,8 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/spacing_small">
 
-
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/excluded_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
@@ -19,6 +19,7 @@
         tools:listitem="@layout/item_excluded_dir" />
 
     <TextView
+        android:id="@+id/excluded_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_medium"
