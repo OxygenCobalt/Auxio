@@ -38,76 +38,95 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {
-    private var mGenres = listOf<Genre>()
-    val genres: List<Genre>
-        get() = mGenres
+    private var response: Response? = null
+    val library: Library?
+        get() =
+            response?.let { currentResponse ->
+                if (currentResponse is Response.Ok) {
+                    currentResponse.library
+                } else {
+                    null
+                }
+            }
 
-    private var mArtists = listOf<Artist>()
-    val artists: List<Artist>
-        get() = mArtists
+    private val callbacks = mutableListOf<Callback>()
 
-    private var mAlbums = listOf<Album>()
-    val albums: List<Album>
-        get() = mAlbums
+    fun addCallback(callback: Callback) {
+        callbacks.add(callback)
+    }
 
-    private var mSongs = listOf<Song>()
-    val songs: List<Song>
-        get() = mSongs
+    fun removeCallback(callback: Callback) {
+        callbacks.remove(callback)
+    }
 
     /** Load/Sort the entire music library. Should always be ran on a coroutine. */
-    private fun load(context: Context): Response {
+    suspend fun index(context: Context): Response {
         logD("Starting initial music load")
+        val newResponse = withContext(Dispatchers.IO) { indexImpl(context) }.also { response = it }
+        for (callback in callbacks) {
+            callback.onMusicUpdate(newResponse)
+        }
+        return newResponse
+    }
 
+    private fun indexImpl(context: Context): Response {
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
 
         if (notGranted) {
-            return Response.Err(ErrorKind.NO_PERMS)
+            return Response.NoPerms
         }
 
-        try {
-            val start = System.currentTimeMillis()
+        val response =
+            try {
+                val start = System.currentTimeMillis()
+                val library = Indexer.run(context)
+                if (library != null) {
+                    logD(
+                        "Music load completed successfully in ${System.currentTimeMillis() - start}ms")
+                    Response.Ok(library)
+                } else {
+                    logE("No music found")
+                    Response.NoMusic
+                }
+            } catch (e: Exception) {
+                logE("Music loading failed.")
+                logE(e.stackTraceToString())
+                Response.Err(e)
+            }
 
-            val loader = MusicLoader()
-            val library = loader.load(context) ?: return Response.Err(ErrorKind.NO_MUSIC)
-
-            mSongs = library.songs
-            mAlbums = library.albums
-            mArtists = library.artists
-            mGenres = library.genres
-
-            logD("Music load completed successfully in ${System.currentTimeMillis() - start}ms")
-        } catch (e: Exception) {
-            logE("Music loading failed.")
-            logE(e.stackTraceToString())
-            return Response.Err(ErrorKind.FAILED)
-        }
-
-        return Response.Ok(this)
+        return response
     }
 
-    /** Find a song in a faster manner using an ID for its album as well. */
-    fun findSongFast(songId: Long, albumId: Long): Song? {
-        return albums.find { it.id == albumId }?.songs?.find { it.id == songId }
-    }
-
-    /**
-     * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content
-     * uri.
-     * @return The corresponding [Song] for this [uri], null if there isn't one.
-     */
-    fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-        resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor
-            ->
-            cursor.moveToFirst()
-            val fileName =
-                cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-
-            return songs.find { it.fileName == fileName }
+    data class Library(
+        val genres: List<Genre>,
+        val artists: List<Artist>,
+        val albums: List<Album>,
+        val songs: List<Song>
+    ) {
+        /** Find a song in a faster manner using an ID for its album as well. */
+        fun findSongFast(songId: Long, albumId: Long): Song? {
+            return albums.find { it.id == albumId }?.songs?.find { it.id == songId }
         }
 
-        return null
+        /**
+         * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content
+         * uri.
+         * @return The corresponding [Song] for this [uri], null if there isn't one.
+         */
+        fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
+            resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
+                cursor ->
+                cursor.moveToFirst()
+                val fileName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+
+                return songs.find { it.fileName == fileName }
+            }
+
+            return null
+        }
     }
 
     /**
@@ -117,93 +136,31 @@ class MusicStore private constructor() {
      * TODO: Add the exception to the "FAILED" ErrorKind
      */
     sealed class Response {
-        class Ok(val musicStore: MusicStore) : Response()
-        class Err(val kind: ErrorKind) : Response()
+        class Ok(val library: Library) : Response()
+        class Err(throwable: Throwable) : Response()
+        object NoMusic : Response()
+        object NoPerms : Response()
     }
 
-    enum class ErrorKind {
-        NO_PERMS,
-        NO_MUSIC,
-        FAILED
+    interface Callback {
+        fun onMusicUpdate(response: Response)
     }
 
     companion object {
-        @Volatile private var RESPONSE: Response? = null
+        @Volatile private var INSTANCE: MusicStore? = null
 
-        /**
-         * Initialize the loading process for this instance. This must be ran on a background
-         * thread. If the instance has already been loaded successfully, then it will be returned
-         * immediately.
-         */
-        suspend fun initInstance(context: Context): Response {
-            val currentInstance = RESPONSE
+        fun getInstance(): MusicStore {
+            val currentInstance = INSTANCE
 
-            if (currentInstance is Response.Ok) {
+            if (currentInstance != null) {
                 return currentInstance
             }
 
-            val response =
-                withContext(Dispatchers.IO) {
-                    val response = MusicStore().load(context)
-                    synchronized(this) { RESPONSE = response }
-                    response
-                }
-
-            return response
-        }
-
-        /**
-         * Await the successful creation of a [MusicStore] instance. The co-routine calling this
-         * will block until the successful creation of a [MusicStore], in which it will then be
-         * returned.
-         */
-        suspend fun awaitInstance() =
-            withContext(Dispatchers.Default) {
-                // We have to do a withContext call so we don't block the JVM thread
-                val musicStore: MusicStore
-
-                while (true) {
-                    val response = RESPONSE
-
-                    if (response is Response.Ok) {
-                        musicStore = response.musicStore
-                        break
-                    }
-                }
-
-                musicStore
+            synchronized(this) {
+                val newInstance = MusicStore()
+                INSTANCE = newInstance
+                return newInstance
             }
-
-        /**
-         * Maybe get a MusicStore instance. This is useful if you are running code while the loading
-         * process may still be going on.
-         *
-         * @return null if the music store instance is still loading or if the loading process has
-         * encountered an error. An instance is returned otherwise.
-         */
-        fun maybeGetInstance(): MusicStore? {
-            val currentInstance = RESPONSE
-
-            return if (currentInstance is Response.Ok) {
-                currentInstance.musicStore
-            } else {
-                null
-            }
-        }
-
-        /**
-         * Require a MusicStore instance. This function is dangerous and should only be used if it's
-         * guaranteed that the caller's code will only be called after the initial loading process.
-         */
-        fun requireInstance(): MusicStore {
-            return requireNotNull(maybeGetInstance()) {
-                "Required MusicStore instance was not available"
-            }
-        }
-
-        /** Check if this instance has successfully loaded or not. */
-        fun loaded(): Boolean {
-            return maybeGetInstance() != null
         }
     }
 }

@@ -20,8 +20,6 @@ package org.oxycblt.auxio.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -38,7 +36,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
  * @author OxygenCobalt
  */
-class HomeViewModel : ViewModel(), SettingsManager.Callback {
+class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback {
+    private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     private val mSongs = MutableLiveData(listOf<Song>())
@@ -78,15 +77,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
     val fastScrolling: LiveData<Boolean> = mFastScrolling
 
     init {
+        musicStore.addCallback(this)
         settingsManager.addCallback(this)
-
-        viewModelScope.launch {
-            val musicStore = MusicStore.awaitInstance()
-            mSongs.value = settingsManager.libSongSort.songs(musicStore.songs)
-            mAlbums.value = settingsManager.libAlbumSort.albums(musicStore.albums)
-            mArtists.value = settingsManager.libArtistSort.artists(musicStore.artists)
-            mGenres.value = settingsManager.libGenreSort.genres(musicStore.genres)
-        }
     }
 
     /** Update the current tab based off of the new ViewPager position. */
@@ -142,6 +134,16 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
 
     // --- OVERRIDES ---
 
+    override fun onMusicUpdate(response: MusicStore.Response) {
+        if (response is MusicStore.Response.Ok) {
+            val library = response.library
+            mSongs.value = settingsManager.libSongSort.songs(library.songs)
+            mAlbums.value = settingsManager.libAlbumSort.albums(library.albums)
+            mArtists.value = settingsManager.libArtistSort.artists(library.artists)
+            mGenres.value = settingsManager.libGenreSort.genres(library.genres)
+        }
+    }
+
     override fun onLibTabsUpdate(libTabs: Array<Tab>) {
         tabs = visibleTabs
         mRecreateTabs.value = true
@@ -149,6 +151,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback {
 
     override fun onCleared() {
         super.onCleared()
+        musicStore.addCallback(this)
         settingsManager.removeCallback(this)
     }
 }

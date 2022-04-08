@@ -29,9 +29,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
 
-/**
- * [Item] variant that represents a music item.
- */
+/** [Item] variant that represents a music item. */
 sealed class Music : Item() {
     /** The raw name of this item. Null if unknown. */
     abstract val rawName: String?
@@ -116,8 +114,8 @@ data class Song(
         get() = internalMediaStoreArtistName ?: album.artist.rawName
 
     /**
-     * Resolve the artist name for this song in particular. First uses the artist tag, and
-     * then falls back to the album artist tag (i.e parent artist name)
+     * Resolve the artist name for this song in particular. First uses the artist tag, and then
+     * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
         internalMediaStoreArtistName ?: album.artist.resolveName(context)

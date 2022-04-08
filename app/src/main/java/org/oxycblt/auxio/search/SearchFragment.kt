@@ -115,11 +115,6 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
         musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
     }
 
-    override fun onResume() {
-        super.onResume()
-        searchModel.setNavigating(false)
-    }
-
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
         super.onDestroyBinding(binding)
         binding.searchRecycler.adapter = null

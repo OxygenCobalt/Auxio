@@ -105,7 +105,7 @@ class PlaybackStateDatabase(context: Context) :
      * @param musicStore Required to transform database songs/parents into actual instances
      * @return The stored [SavedState], null if there isn't one.
      */
-    fun readState(musicStore: MusicStore): SavedState? {
+    fun readState(library: MusicStore.Library): SavedState? {
         requireBackgroundThread()
 
         var state: SavedState? = null
@@ -124,16 +124,16 @@ class PlaybackStateDatabase(context: Context) :
             cursor.moveToFirst()
 
             val song =
-                cursor.getLongOrNull(songIndex)?.let { id -> musicStore.songs.find { it.id == id } }
+                cursor.getLongOrNull(songIndex)?.let { id -> library.songs.find { it.id == id } }
 
             val mode = PlaybackMode.fromInt(cursor.getInt(modeIndex)) ?: PlaybackMode.ALL_SONGS
 
             val parent =
                 cursor.getLongOrNull(parentIndex)?.let { id ->
                     when (mode) {
-                        PlaybackMode.IN_GENRE -> musicStore.genres.find { it.id == id }
-                        PlaybackMode.IN_ARTIST -> musicStore.artists.find { it.id == id }
-                        PlaybackMode.IN_ALBUM -> musicStore.albums.find { it.id == id }
+                        PlaybackMode.IN_GENRE -> library.genres.find { it.id == id }
+                        PlaybackMode.IN_ARTIST -> library.artists.find { it.id == id }
+                        PlaybackMode.IN_ALBUM -> library.albums.find { it.id == id }
                         PlaybackMode.ALL_SONGS -> null
                     }
                 }
@@ -186,7 +186,7 @@ class PlaybackStateDatabase(context: Context) :
      * Read a list of queue items from this database.
      * @param musicStore Required to transform database songs into actual song instances
      */
-    fun readQueue(musicStore: MusicStore): MutableList<Song> {
+    fun readQueue(library: MusicStore.Library): MutableList<Song> {
         requireBackgroundThread()
 
         val queue = mutableListOf<Song>()
@@ -198,8 +198,10 @@ class PlaybackStateDatabase(context: Context) :
             val albumIndex = cursor.getColumnIndexOrThrow(QueueColumns.ALBUM_HASH)
 
             while (cursor.moveToNext()) {
-                musicStore.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))
-                    ?.let { song -> queue.add(song) }
+                library.findSongFast(cursor.getLong(songIndex), cursor.getLong(albumIndex))?.let {
+                    song ->
+                    queue.add(song)
+                }
             }
         }
 

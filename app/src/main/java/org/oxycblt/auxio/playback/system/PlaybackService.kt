@@ -76,6 +76,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Move all external exposal from passing around PlaybackStateManager to passing around the
  * MediaMetadata instance. Generally makes it easier to encapsulate this class.
+ *
+ * TODO: Move restore and file opening to service
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {

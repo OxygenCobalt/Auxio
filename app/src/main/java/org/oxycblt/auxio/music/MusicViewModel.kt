@@ -25,11 +25,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
-class MusicViewModel : ViewModel() {
+class MusicViewModel : ViewModel(), MusicStore.Callback {
+    private val musicStore = MusicStore.getInstance()
+
     private val mLoaderResponse = MutableLiveData<MusicStore.Response?>(null)
     val loaderResponse: LiveData<MusicStore.Response?> = mLoaderResponse
 
     private var isBusy = false
+
+    init {
+        musicStore.addCallback(this)
+    }
 
     /**
      * Initiate the loading process. This is done here since HomeFragment will be the first fragment
@@ -45,7 +51,7 @@ class MusicViewModel : ViewModel() {
         mLoaderResponse.value = null
 
         viewModelScope.launch {
-            val result = MusicStore.initInstance(context)
+            val result = musicStore.index(context)
             mLoaderResponse.value = result
             isBusy = false
         }
@@ -55,5 +61,14 @@ class MusicViewModel : ViewModel() {
         logD("Reloading music library")
         mLoaderResponse.value = null
         loadMusic(context)
+    }
+
+    override fun onMusicUpdate(response: MusicStore.Response) {
+        mLoaderResponse.value = response
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        musicStore.removeCallback(this)
     }
 }

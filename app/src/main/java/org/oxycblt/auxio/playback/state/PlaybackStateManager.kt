@@ -43,6 +43,9 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class PlaybackStateManager private constructor() {
+    private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+
     // Playback
     private var mSong: Song? = null
         set(value) {
@@ -124,8 +127,6 @@ class PlaybackStateManager private constructor() {
     val hasPlayed: Boolean
         get() = mHasPlayed
 
-    private val settingsManager = SettingsManager.getInstance()
-
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
@@ -154,8 +155,7 @@ class PlaybackStateManager private constructor() {
 
         when (mode) {
             PlaybackMode.ALL_SONGS -> {
-                val musicStore = MusicStore.maybeGetInstance() ?: return
-
+                val musicStore = musicStore.library ?: return
                 mParent = null
                 mQueue = musicStore.songs.toMutableList()
             }
@@ -211,10 +211,11 @@ class PlaybackStateManager private constructor() {
 
     /** Shuffle all songs. */
     fun shuffleAll() {
-        val musicStore = MusicStore.maybeGetInstance() ?: return
+        logD("RETARD. ${musicStore.library}")
+        val library = musicStore.library ?: return
 
         mPlaybackMode = PlaybackMode.ALL_SONGS
-        mQueue = musicStore.songs.toMutableList()
+        mQueue = library.songs.toMutableList()
         mParent = null
 
         setShuffling(true, keepSong = false)
@@ -370,13 +371,13 @@ class PlaybackStateManager private constructor() {
      * @param keepSong Whether the current song should be kept as the queue is un-shuffled
      */
     private fun resetShuffle(keepSong: Boolean) {
-        val musicStore = MusicStore.maybeGetInstance() ?: return
+        val library = musicStore.library ?: return
         val lastSong = mSong
 
         mQueue =
             when (mPlaybackMode) {
                 PlaybackMode.ALL_SONGS ->
-                    settingsManager.libSongSort.songs(musicStore.songs).toMutableList()
+                    settingsManager.libSongSort.songs(library.songs).toMutableList()
                 PlaybackMode.IN_ALBUM ->
                     settingsManager.detailAlbumSort.album(mParent as Album).toMutableList()
                 PlaybackMode.IN_ARTIST ->
@@ -496,7 +497,7 @@ class PlaybackStateManager private constructor() {
     suspend fun restoreFromDatabase(context: Context) {
         logD("Getting state from DB")
 
-        val musicStore = MusicStore.maybeGetInstance() ?: return
+        val library = musicStore.library ?: return
         val start: Long
         val playbackState: PlaybackStateDatabase.SavedState?
         val queue: MutableList<Song>
@@ -504,8 +505,8 @@ class PlaybackStateManager private constructor() {
         withContext(Dispatchers.IO) {
             start = System.currentTimeMillis()
             val database = PlaybackStateDatabase.getInstance(context)
-            playbackState = database.readState(musicStore)
-            queue = database.readQueue(musicStore)
+            playbackState = database.readState(library)
+            queue = database.readQueue(library)
         }
 
         // Get off the IO coroutine since it will cause LiveData updates to throw an exception

@@ -40,8 +40,10 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 class SearchViewModel : ViewModel() {
+    private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+
     private val mSearchResults = MutableLiveData(listOf<Item>())
-    private var mIsNavigating = false
     private var mFilterMode: DisplayMode? = null
     private var mLastQuery: String? = null
 
@@ -51,8 +53,6 @@ class SearchViewModel : ViewModel() {
     val filterMode: DisplayMode?
         get() = mFilterMode
 
-    private val settingsManager = SettingsManager.getInstance()
-
     init {
         mFilterMode = settingsManager.searchFilterMode
     }
@@ -61,10 +61,10 @@ class SearchViewModel : ViewModel() {
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
     fun search(context: Context, query: String?) {
-        val musicStore = MusicStore.maybeGetInstance()
         mLastQuery = query
 
-        if (query.isNullOrEmpty() || musicStore == null) {
+        val library = musicStore.library
+        if (query.isNullOrEmpty() || library == null) {
             logD("No music/query, ignoring search")
             mSearchResults.value = listOf()
             return
@@ -80,28 +80,28 @@ class SearchViewModel : ViewModel() {
             // Note: a filter mode of null means to not filter at all.
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
-                musicStore.artists.filterByOrNull(context, query)?.let { artists ->
+                library.artists.filterByOrNull(context, query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
-                musicStore.albums.filterByOrNull(context, query)?.let { albums ->
+                library.albums.filterByOrNull(context, query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
-                musicStore.genres.filterByOrNull(context, query)?.let { genres ->
+                library.genres.filterByOrNull(context, query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
             if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
-                musicStore.songs.filterByOrNull(context, query)?.let { songs ->
+                library.songs.filterByOrNull(context, query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
                 }
@@ -180,10 +180,5 @@ class SearchViewModel : ViewModel() {
         }
 
         return sb.toString()
-    }
-
-    /** Update the current navigation status to [isNavigating] */
-    fun setNavigating(isNavigating: Boolean) {
-        mIsNavigating = isNavigating
     }
 }

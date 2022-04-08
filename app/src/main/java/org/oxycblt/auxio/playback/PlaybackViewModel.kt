@@ -51,6 +51,10 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * - DO NOT REWRITE IT! THAT'S BAD AND WILL PROBABLY RE-INTRODUCE A TON OF BUGS.
  */
 class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
+    private val musicStore = MusicStore.getInstance()
+    private val settingsManager = SettingsManager.getInstance()
+    private val playbackManager = PlaybackStateManager.getInstance()
+
     // Playback
     private val mSong = MutableLiveData<Song?>()
     private val mParent = MutableLiveData<MusicParent?>()
@@ -93,9 +97,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The current [PlaybackMode] that also determines the queue */
     val playbackMode: LiveData<PlaybackMode>
         get() = mMode
-
-    private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
 
     init {
         playbackManager.addCallback(this)
@@ -166,7 +167,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playWithUri(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
-        if (playbackManager.isRestored && MusicStore.loaded()) {
+        if (playbackManager.isRestored && musicStore.library != null) {
             playWithUriInternal(uri, context)
         } else {
             logD("Cant play this URI right now, waiting")
@@ -178,9 +179,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** Play with a file URI. This is called after [playWithUri] once its deemed safe to do so. */
     private fun playWithUriInternal(uri: Uri, context: Context) {
         logD("Playing with uri $uri")
-
-        val musicStore = MusicStore.maybeGetInstance() ?: return
-        musicStore.findSongForUri(uri, context.contentResolver)?.let { song -> playSong(song) }
+        val library = musicStore.library ?: return
+        library.findSongForUri(uri, context.contentResolver)?.let { song -> playSong(song) }
     }
 
     /** Shuffle all songs */

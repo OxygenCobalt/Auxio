@@ -31,6 +31,7 @@ import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * ViewModel that stores data for the [DetailFragment]s. This includes:
@@ -40,6 +41,7 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel() {
+    private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
     private val mCurrentAlbum = MutableLiveData<Album?>()
@@ -87,9 +89,9 @@ class DetailViewModel : ViewModel() {
 
     fun setAlbumId(id: Long) {
         if (mCurrentAlbum.value?.id == id) return
-        val musicStore = MusicStore.requireInstance()
+        val library = unlikelyToBeNull(musicStore.library)
         val album =
-            requireNotNull(musicStore.albums.find { it.id == id }) { "Invalid album id provided " }
+            requireNotNull(library.albums.find { it.id == id }) { "Invalid album id provided " }
 
         mCurrentAlbum.value = album
         refreshAlbumData(album)
@@ -97,16 +99,18 @@ class DetailViewModel : ViewModel() {
 
     fun setArtistId(id: Long) {
         if (mCurrentArtist.value?.id == id) return
-        val musicStore = MusicStore.requireInstance()
-        val artist = requireNotNull(musicStore.artists.find { it.id == id }) {}
+        val library = unlikelyToBeNull(musicStore.library)
+        val artist =
+            requireNotNull(library.artists.find { it.id == id }) { "Invalid artist id provided" }
         mCurrentArtist.value = artist
         refreshArtistData(artist)
     }
 
     fun setGenreId(id: Long) {
         if (mCurrentGenre.value?.id == id) return
-        val musicStore = MusicStore.requireInstance()
-        val genre = requireNotNull(musicStore.genres.find { it.id == id })
+        val library = unlikelyToBeNull(musicStore.library)
+        val genre =
+            requireNotNull(library.genres.find { it.id == id }) { "Invalid genre id provided" }
         mCurrentGenre.value = genre
         refreshGenreData(genre)
     }

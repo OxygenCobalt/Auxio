@@ -89,15 +89,24 @@ import org.oxycblt.auxio.util.logD
  *
  * @author OxygenCobalt
  */
-class MusicLoader {
-    data class Library(
-        val genres: List<Genre>,
-        val artists: List<Artist>,
-        val albums: List<Album>,
-        val songs: List<Song>
-    )
+object Indexer {
+    /**
+     * The album_artist MediaStore field has existed since at least API 21, but until API 30 it was
+     * a proprietary extension for Google Play Music and was not documented. Since this field
+     * probably works on all versions Auxio supports, we suppress the warning about using a
+     * possibly-unsupported constant.
+     */
+    @Suppress("InlinedApi")
+    private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
-    fun load(context: Context): Library? {
+    /**
+     * Gets a content resolver in a way that does not mangle metadata on certain OEM skins. See
+     * https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
+     */
+    private val Context.contentResolverSafe: ContentResolver
+        get() = applicationContext.contentResolver
+
+    fun run(context: Context): MusicStore.Library? {
         val songs = loadSongs(context)
         if (songs.isEmpty()) return null
 
@@ -118,15 +127,8 @@ class MusicLoader {
             }
         }
 
-        return Library(genres, artists, albums, songs)
+        return MusicStore.Library(genres, artists, albums, songs)
     }
-
-    /**
-     * Gets a content resolver in a way that does not mangle metadata on certain OEM skins. See
-     * https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
-     */
-    private val Context.contentResolverSafe: ContentResolver
-        get() = applicationContext.contentResolver
 
     /**
      * Does the initial query over the song database, including excluded directory checks. The songs
@@ -403,16 +405,5 @@ class MusicLoader {
             }
 
         return genreSongs.ifEmpty { null }
-    }
-
-    companion object {
-        /**
-         * The album_artist MediaStore field has existed since at least API 21, but until API 30 it
-         * was a proprietary extension for Google Play Music and was not documented. Since this
-         * field probably works on all versions Auxio supports, we suppress the warning about using
-         * a possibly-unsupported constant.
-         */
-        @Suppress("InlinedApi")
-        private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
     }
 }

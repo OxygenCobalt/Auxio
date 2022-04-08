@@ -38,7 +38,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logD
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -122,32 +122,30 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
             // Error, show the error to the user
             is MusicStore.Response.Err -> {
-                logW("Received Error")
-
-                val errorRes =
-                    when (response.kind) {
-                        MusicStore.ErrorKind.NO_MUSIC -> R.string.err_no_music
-                        MusicStore.ErrorKind.NO_PERMS -> R.string.err_no_perms
-                        MusicStore.ErrorKind.FAILED -> R.string.err_load_failed
+                logD("Received Response.Err")
+                Snackbar.make(binding.root, R.string.err_load_failed, Snackbar.LENGTH_INDEFINITE)
+                    .apply {
+                        setAction(R.string.lbl_retry) { musicModel.reloadMusic(context) }
+                        show()
                     }
-
-                val snackbar =
-                    Snackbar.make(binding.root, getString(errorRes), Snackbar.LENGTH_INDEFINITE)
-
-                when (response.kind) {
-                    MusicStore.ErrorKind.FAILED, MusicStore.ErrorKind.NO_MUSIC -> {
-                        snackbar.setAction(R.string.lbl_retry) {
-                            musicModel.reloadMusic(requireContext())
-                        }
+            }
+            is MusicStore.Response.NoMusic -> {
+                logD("Received Response.NoMusic")
+                Snackbar.make(binding.root, R.string.err_no_music, Snackbar.LENGTH_INDEFINITE)
+                    .apply {
+                        setAction(R.string.lbl_retry) { musicModel.reloadMusic(context) }
+                        show()
                     }
-                    MusicStore.ErrorKind.NO_PERMS -> {
-                        snackbar.setAction(R.string.lbl_grant) {
+            }
+            is MusicStore.Response.NoPerms -> {
+                logD("Received Response.NoPerms")
+                Snackbar.make(binding.root, R.string.err_no_perms, Snackbar.LENGTH_INDEFINITE)
+                    .apply {
+                        setAction(R.string.lbl_grant) {
                             permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                         }
+                        show()
                     }
-                }
-
-                snackbar.show()
             }
             null -> {}
         }
