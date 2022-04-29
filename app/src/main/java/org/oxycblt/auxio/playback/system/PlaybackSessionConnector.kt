@@ -47,8 +47,8 @@ class PlaybackSessionConnector(
         playbackManager.addCallback(this)
         player.addListener(this)
 
-        onSongUpdate(playbackManager.song)
-        onPlayingUpdate(playbackManager.isPlaying)
+        onSongChanged(playbackManager.song)
+        onPlayingChanged(playbackManager.isPlaying)
     }
 
     fun release() {
@@ -108,7 +108,7 @@ class PlaybackSessionConnector(
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onSongUpdate(song: Song?) {
+    override fun onSongChanged(song: Song?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
             return
@@ -137,7 +137,7 @@ class PlaybackSessionConnector(
         }
     }
 
-    override fun onPlayingUpdate(isPlaying: Boolean) {
+    override fun onPlayingChanged(isPlaying: Boolean) {
         invalidateSessionState()
     }
 

@@ -127,7 +127,7 @@ class PlaybackService :
 
         positionScope.launch {
             while (true) {
-                playbackManager.setPosition(player.currentPosition)
+                playbackManager.synchronizePosition(player.currentPosition)
                 delay(POS_POLL_INTERVAL)
             }
         }
@@ -235,7 +235,7 @@ class PlaybackService :
         reason: Int
     ) {
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.setPosition(player.currentPosition)
+            playbackManager.synchronizePosition(player.currentPosition)
         }
     }
 
@@ -258,7 +258,7 @@ class PlaybackService :
 
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
-    override fun onSongUpdate(song: Song?) {
+    override fun onSongChanged(song: Song?) {
         if (song != null) {
             logD("Setting player to ${song.rawName}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
@@ -273,25 +273,25 @@ class PlaybackService :
         stopForegroundAndNotification()
     }
 
-    override fun onParentUpdate(parent: MusicParent?) {
+    override fun onParentChanged(parent: MusicParent?) {
         notification.setParent(parent)
         startForegroundOrNotify()
     }
 
-    override fun onPlayingUpdate(isPlaying: Boolean) {
+    override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
         notification.setPlaying(isPlaying)
         startForegroundOrNotify()
     }
 
-    override fun onLoopUpdate(loopMode: LoopMode) {
+    override fun onLoopModeChanged(loopMode: LoopMode) {
         if (!settingsManager.useAltNotifAction) {
             notification.setLoop(loopMode)
             startForegroundOrNotify()
         }
     }
 
-    override fun onShuffleUpdate(isShuffling: Boolean) {
+    override fun onShuffleChanged(isShuffling: Boolean) {
         if (settingsManager.useAltNotifAction) {
             notification.setShuffle(isShuffling)
             startForegroundOrNotify()
@@ -306,7 +306,7 @@ class PlaybackService :
 
     override fun onColorizeNotifUpdate(doColorize: Boolean) {
         playbackManager.song?.let { song ->
-            connector.onSongUpdate(song)
+            connector.onSongChanged(song)
             notification.setMetadata(song, ::startForegroundOrNotify)
         }
     }
@@ -323,7 +323,7 @@ class PlaybackService :
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
-            connector.onSongUpdate(song)
+            connector.onSongChanged(song)
             notification.setMetadata(song, ::startForegroundOrNotify)
         }
     }
@@ -376,11 +376,11 @@ class PlaybackService :
         logD("Restoring the service state")
 
         // Re-call existing callbacks with the current values to restore everything
-        onParentUpdate(playbackManager.parent)
-        onPlayingUpdate(playbackManager.isPlaying)
-        onShuffleUpdate(playbackManager.isShuffling)
-        onLoopUpdate(playbackManager.loopMode)
-        onSongUpdate(playbackManager.song)
+        onParentChanged(playbackManager.parent)
+        onPlayingChanged(playbackManager.isPlaying)
+        onShuffleChanged(playbackManager.isShuffling)
+        onLoopModeChanged(playbackManager.loopMode)
+        onSongChanged(playbackManager.song)
         onSeek(playbackManager.position)
 
         // Notify other classes that rely on this service to also update.

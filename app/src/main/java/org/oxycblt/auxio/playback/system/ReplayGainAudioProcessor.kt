@@ -64,41 +64,39 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
      * Vanilla Music's implementation.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (metadata == null) {
-            logW("No metadata could be extracted from this track")
+        if (metadata == null || settingsManager.replayGainMode == ReplayGainMode.OFF) {
+            logW(
+                "Not applying replaygain [" +
+                    "metadata: ${metadata != null}, " +
+                    "enabled: ${settingsManager.replayGainMode == ReplayGainMode.OFF}]")
             volume = 1f
             return
         }
-
-        // ReplayGain is configurable, so determine what to do based off of the mode.
-        val useAlbumGain: (Gain) -> Boolean =
-            when (settingsManager.replayGainMode) {
-                ReplayGainMode.OFF -> {
-                    logD("ReplayGain is off")
-                    volume = 1f
-                    return
-                }
-
-                // User wants track gain to be preferred. Default to album gain only if there
-                // is no track gain.
-                ReplayGainMode.TRACK -> { gain -> gain.track == 0f }
-
-                // User wants album gain to be preferred. Default to track gain only if there
-                // is no album gain.
-                ReplayGainMode.ALBUM -> { gain -> gain.album != 0f }
-
-                // User wants album gain to be used when in an album, track gain otherwise.
-                ReplayGainMode.DYNAMIC -> { _ ->
-                        playbackManager.parent is Album &&
-                            playbackManager.song?.album == playbackManager.parent
-                    }
-            }
 
         val gain = parseReplayGain(metadata)
 
         val adjust =
             if (gain != null) {
-                if (useAlbumGain(gain)) {
+                // ReplayGain is configurable, so determine what to do based off of the mode.
+                val useAlbumGain =
+                    when (settingsManager.replayGainMode) {
+                        ReplayGainMode.OFF -> error("Unreachable")
+
+                        // User wants track gain to be preferred. Default to album gain only if
+                        // there is no track gain.
+                        ReplayGainMode.TRACK -> gain.track == 0f
+
+                        // User wants album gain to be preferred. Default to track gain only if
+                        // here is no album gain.
+                        ReplayGainMode.ALBUM -> gain.album != 0f
+
+                        // User wants album gain to be used when in an album, track gain otherwise.
+                        ReplayGainMode.DYNAMIC ->
+                            playbackManager.parent is Album &&
+                                playbackManager.song?.album?.id == playbackManager.parent?.id
+                    }
+
+                if (useAlbumGain) {
                     logD("Using album gain")
                     gain.album
                 } else {
@@ -177,6 +175,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     }
 
     private fun parseReplayGainFloat(raw: String): Float {
+        // Grok a float from a ReplayGain tag by removing everything that is not 0-9, , or -.
         return try {
             raw.replace(Regex("[^0-9.-]"), "").toFloat()
         } catch (e: Exception) {
@@ -211,11 +210,11 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             }
         } else {
             for (i in position until limit step 2) {
-                var sample = inputBuffer.getLeShort(i)
-                // Clamp the values to the minimum and maximum values possible for the
-                // encoding. This prevents issues where samples amplified beyond 1 << 16
-                // will end up becoming truncated during the conversion to a short,
+                // Ensure we clamp the values to the minimum and maximum values possible
+                // for the  encoding. This prevents issues where samples amplified beyond
+                // 1 << 16  will end up becoming truncated during the conversion to a short,
                 // resulting in popping.
+                var sample = inputBuffer.getLeShort(i)
                 sample =
                     (sample * volume)
                         .toInt()

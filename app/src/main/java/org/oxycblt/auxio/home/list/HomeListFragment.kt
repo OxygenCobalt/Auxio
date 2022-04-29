@@ -52,7 +52,7 @@ abstract class HomeListFragment<T : Item> :
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         setupRecycler(binding.homeRecycler)
         binding.homeRecycler.popupProvider = this
-        binding.homeRecycler.onDragListener = this
+        binding.homeRecycler.listener = this
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {
@@ -60,7 +60,7 @@ abstract class HomeListFragment<T : Item> :
         binding.homeRecycler.apply {
             adapter = null
             popupProvider = null
-            onDragListener = null
+            listener = null
         }
     }
 

@@ -115,9 +115,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
         }
 
         override fun isAutoMirrored(): Boolean = true
-        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
         override fun setAlpha(alpha: Int) {}
         override fun setColorFilter(colorFilter: ColorFilter?) {}
+        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
         private fun updatePath() {
             val r = bounds.height().toFloat() / 2
@@ -168,6 +168,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleRes: Int = 0)
     }
 
     companion object {
+        // Cache sqrt(2) for faster calculations
         private const val SQRT2 = 1.4142135623730950488f
     }
 }

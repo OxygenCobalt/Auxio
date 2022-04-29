@@ -314,13 +314,13 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state")
 
-        onSongUpdate(playbackManager.song)
-        onPositionUpdate(playbackManager.position)
-        onParentUpdate(playbackManager.parent)
-        onQueueUpdate(playbackManager.queue, playbackManager.index)
-        onPlayingUpdate(playbackManager.isPlaying)
-        onShuffleUpdate(playbackManager.isShuffling)
-        onLoopUpdate(playbackManager.loopMode)
+        onSongChanged(playbackManager.song)
+        onPositionChanged(playbackManager.position)
+        onParentChanged(playbackManager.parent)
+        onQueueChanged(playbackManager.queue, playbackManager.index)
+        onPlayingChanged(playbackManager.isPlaying)
+        onShuffleChanged(playbackManager.isShuffling)
+        onLoopModeChanged(playbackManager.loopMode)
     }
 
     // --- OVERRIDES ---
@@ -329,31 +329,31 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.removeCallback(this)
     }
 
-    override fun onSongUpdate(song: Song?) {
+    override fun onSongChanged(song: Song?) {
         mSong.value = song
     }
 
-    override fun onParentUpdate(parent: MusicParent?) {
+    override fun onParentChanged(parent: MusicParent?) {
         mParent.value = parent
     }
 
-    override fun onPositionUpdate(position: Long) {
+    override fun onPositionChanged(position: Long) {
         mPositionSeconds.value = position / 1000
     }
 
-    override fun onQueueUpdate(queue: List<Song>, index: Int) {
+    override fun onQueueChanged(queue: List<Song>, index: Int) {
         mNextUp.value = queue.slice(index.inc() until queue.size)
     }
 
-    override fun onPlayingUpdate(isPlaying: Boolean) {
+    override fun onPlayingChanged(isPlaying: Boolean) {
         mIsPlaying.value = isPlaying
     }
 
-    override fun onShuffleUpdate(isShuffling: Boolean) {
+    override fun onShuffleChanged(isShuffling: Boolean) {
         mIsShuffling.value = isShuffling
     }
 
-    override fun onLoopUpdate(loopMode: LoopMode) {
+    override fun onLoopModeChanged(loopMode: LoopMode) {
         mLoopMode.value = loopMode
     }
 }

@@ -61,19 +61,19 @@ class WidgetController(private val context: Context) :
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onSongUpdate(song: Song?) {
+    override fun onSongChanged(song: Song?) {
         widget.update(context, playbackManager)
     }
 
-    override fun onPlayingUpdate(isPlaying: Boolean) {
+    override fun onPlayingChanged(isPlaying: Boolean) {
         widget.update(context, playbackManager)
     }
 
-    override fun onShuffleUpdate(isShuffling: Boolean) {
+    override fun onShuffleChanged(isShuffling: Boolean) {
         widget.update(context, playbackManager)
     }
 
-    override fun onLoopUpdate(loopMode: LoopMode) {
+    override fun onLoopModeChanged(loopMode: LoopMode) {
         widget.update(context, playbackManager)
     }
 

@@ -135,11 +135,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 removeCallbacks(hideThumbRunnable)
                 showScrollbar()
                 showPopup()
-                onDragListener?.onFastScrollStart()
+                listener?.onFastScrollStart()
             } else {
                 postAutoHideScrollbar()
                 hidePopup()
-                onDragListener?.onFastScrollStop()
+                listener?.onFastScrollStop()
             }
         }
 
@@ -161,7 +161,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
      * A listener for when a drag event occurs. The value will be true if a drag has begun, and
      * false if a drag ended.
      */
-    var onDragListener: OnFastScrollListener? = null
+    var listener: OnFastScrollListener? = null
 
     init {
         overlay.add(thumbView)
