@@ -104,7 +104,7 @@ objects.
 - `sortName` is used in the fast scroller indicators and sorting. Avoid it wherever else.
 - `resolveName()` should be used when displaying any kind of music data to the user.
 - For songs, `individualArtistRawName` and `resolveIndividualArtistName` should always be used when displaying the artist of
-a song, as it will always show collaborator information first before deatiling to the album artist.
+a song, as it will always show collaborator information first before defaulting to the album artist.
 
 #### Music Access
 All music on a system is asynchronously loaded into the shared object `MusicStore`. Because of this, **`MusicStore` may not be available at all times**.
@@ -175,7 +175,7 @@ an accent.
 
 This should be enough to cover most use cases in Auxio.
 
-Internally, multiple fetchers are provided to transform `Music` instances into images. All of these fetchers inherit `AuxioFetcher`, which implements
+Internally, multiple fetchers are provided to transform `Music` instances into images. All of these fetchers inherit `BaseFetcher`, which implements
 the necessary methods for loading album artwork and creating the mosaics shown in artist/genre images.
 
 #### `.detail`

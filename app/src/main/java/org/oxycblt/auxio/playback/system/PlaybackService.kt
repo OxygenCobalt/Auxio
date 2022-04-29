@@ -447,12 +447,6 @@ class PlaybackService :
 
                     initialHeadsetPlugEventHandled = true
                 }
-                AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED -> {
-                    when (intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1)) {
-                        AudioManager.SCO_AUDIO_STATE_DISCONNECTED -> pauseFromPlug()
-                        AudioManager.SCO_AUDIO_STATE_CONNECTED -> maybeResumeFromPlug()
-                    }
-                }
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---

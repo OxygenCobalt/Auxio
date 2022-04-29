@@ -198,7 +198,6 @@ class PlaybackStateManager private constructor() {
 
     /** Shuffle all songs. */
     fun shuffleAll() {
-        logD("RETARD. ${musicStore.library}")
         val library = musicStore.library ?: return
 
         mQueue = library.songs.toMutableList()
