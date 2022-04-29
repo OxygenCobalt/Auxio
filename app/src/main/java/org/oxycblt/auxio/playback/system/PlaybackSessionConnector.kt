@@ -27,8 +27,8 @@ import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -85,12 +85,12 @@ class PlaybackSessionConnector(
     }
 
     override fun onSetRepeatMode(repeatMode: Int) {
-        playbackManager.loopMode =
+        playbackManager.repeatMode =
             when (repeatMode) {
-                PlaybackStateCompat.REPEAT_MODE_ALL -> LoopMode.ALL
-                PlaybackStateCompat.REPEAT_MODE_GROUP -> LoopMode.ALL
-                PlaybackStateCompat.REPEAT_MODE_ONE -> LoopMode.TRACK
-                else -> LoopMode.NONE
+                PlaybackStateCompat.REPEAT_MODE_ALL -> RepeatMode.ALL
+                PlaybackStateCompat.REPEAT_MODE_GROUP -> RepeatMode.ALL
+                PlaybackStateCompat.REPEAT_MODE_ONE -> RepeatMode.TRACK
+                else -> RepeatMode.NONE
             }
     }
 

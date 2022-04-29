@@ -68,7 +68,7 @@
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_ALT_NOTIF_ACTION"
-            app:summaryOff="@string/set_alt_loop"
+            app:summaryOff="@string/set_alt_repeat"
             app:summaryOn="@string/set_alt_shuffle"
             app:title="@string/set_alt_action" />
 
@@ -129,8 +129,8 @@
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:key="KEY_LOOP_PAUSE"
-            app:summary="@string/set_loop_pause_desc"
-            app:title="@string/set_loop_pause" />
+            app:summary="@string/set_repeat_pause_desc"
+            app:title="@string/set_repeat_pause" />
 
     </PreferenceCategory>
 

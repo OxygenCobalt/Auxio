@@ -21,7 +21,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
@@ -81,9 +81,7 @@ fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
 
 private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layout)
-
     views.setOnClickPendingIntent(android.R.id.background, context.newMainIntent())
-
     return views
 }
 
@@ -141,10 +139,10 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
     applyBasicControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_loop, context.newBroadcastIntent(PlaybackService.ACTION_LOOP))
+        R.id.widget_repeat, context.newBroadcastIntent(PlaybackService.ACTION_INC_REPEAT_MODE))
 
     setOnClickPendingIntent(
-        R.id.widget_shuffle, context.newBroadcastIntent(PlaybackService.ACTION_SHUFFLE))
+        R.id.widget_shuffle, context.newBroadcastIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
 
     // Like notifications, use the remote variants of icons since we really don't want to hack
     // indicators.
@@ -154,15 +152,15 @@ private fun RemoteViews.applyFullControls(context: Context, state: WidgetState):
             else -> R.drawable.ic_remote_shuffle_off
         }
 
-    val loopRes =
-        when (state.loopMode) {
-            LoopMode.NONE -> R.drawable.ic_remote_loop_off
-            LoopMode.ALL -> R.drawable.ic_loop_on
-            LoopMode.TRACK -> R.drawable.ic_loop_one
+    val repeatRes =
+        when (state.repeatMode) {
+            RepeatMode.NONE -> R.drawable.ic_remote_repeat_off
+            RepeatMode.ALL -> R.drawable.ic_repeat_on
+            RepeatMode.TRACK -> R.drawable.ic_repeat_one
         }
 
     setImageViewResource(R.id.widget_shuffle, shuffleRes)
-    setImageViewResource(R.id.widget_loop, loopRes)
+    setImageViewResource(R.id.widget_repeat, repeatRes)
 
     return this
 }

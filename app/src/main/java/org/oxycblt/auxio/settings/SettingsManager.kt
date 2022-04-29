@@ -119,10 +119,11 @@ class SettingsManager private constructor(context: Context) :
         get() = prefs.getBoolean(KEY_PREV_REWIND, true)
 
     /**
-     * Whether [org.oxycblt.auxio.playback.state.LoopMode.TRACK] should pause when the track repeats
+     * Whether [org.oxycblt.auxio.playback.state.RepeatMode.TRACK] should pause when the track
+     * repeats
      */
-    val pauseOnLoop: Boolean
-        get() = prefs.getBoolean(KEY_LOOP_PAUSE, false)
+    val pauseOnRepeat: Boolean
+        get() = prefs.getBoolean(KEY_PAUSE_ON_REPEAT, false)
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
@@ -272,7 +273,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"
         const val KEY_PREV_REWIND = "KEY_PREV_REWIND"
-        const val KEY_LOOP_PAUSE = "KEY_LOOP_PAUSE"
+        const val KEY_PAUSE_ON_REPEAT = "KEY_LOOP_PAUSE"
 
         const val KEY_SAVE_STATE = "auxio_save_state"
         const val KEY_RELOAD = "auxio_reload"

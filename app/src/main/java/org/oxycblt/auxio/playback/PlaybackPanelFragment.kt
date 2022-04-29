@@ -32,7 +32,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
-import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
@@ -112,7 +112,7 @@ class PlaybackPanelFragment :
                     .stateList
         }
 
-        binding.playbackLoop.setOnClickListener { playbackModel.incrementLoop() }
+        binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.skipPrev() }
 
         binding.playbackPlayPause.apply {
@@ -129,7 +129,7 @@ class PlaybackPanelFragment :
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
         playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
         playbackModel.positionSecs.observe(viewLifecycleOwner, ::updatePosition)
-        playbackModel.loopMode.observe(viewLifecycleOwner, ::updateLoop)
+        playbackModel.repeatMode.observe(viewLifecycleOwner, ::updateRepeat)
         playbackModel.isPlaying.observe(viewLifecycleOwner, ::updatePlaying)
         playbackModel.isShuffled.observe(viewLifecycleOwner, ::updateShuffled)
 
@@ -197,10 +197,10 @@ class PlaybackPanelFragment :
         }
     }
 
-    private fun updateLoop(loopMode: LoopMode) {
-        requireBinding().playbackLoop.apply {
-            isActivated = loopMode != LoopMode.NONE
-            setImageResource(loopMode.icon)
+    private fun updateRepeat(repeatMode: RepeatMode) {
+        requireBinding().playbackRepeat.apply {
+            isActivated = repeatMode != RepeatMode.NONE
+            setImageResource(repeatMode.icon)
         }
     }
 

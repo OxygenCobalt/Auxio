@@ -52,7 +52,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
@@ -146,8 +146,8 @@ class PlaybackService :
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(AudioManager.ACTION_HEADSET_PLUG)
 
-            addAction(ACTION_LOOP)
-            addAction(ACTION_SHUFFLE)
+            addAction(ACTION_INC_REPEAT_MODE)
+            addAction(ACTION_INVERT_SHUFFLE)
             addAction(ACTION_SKIP_PREV)
             addAction(ACTION_PLAY_PAUSE)
             addAction(ACTION_SKIP_NEXT)
@@ -215,8 +215,8 @@ class PlaybackService :
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
             Player.STATE_ENDED -> {
-                if (playbackManager.loopMode == LoopMode.TRACK) {
-                    playbackManager.loop()
+                if (playbackManager.repeatMode == RepeatMode.TRACK) {
+                    playbackManager.repeat()
                 } else {
                     playbackManager.next()
                 }
@@ -286,9 +286,9 @@ class PlaybackService :
         startForegroundOrNotify()
     }
 
-    override fun onLoopModeChanged(loopMode: LoopMode) {
+    override fun onRepeatChanged(repeatMode: RepeatMode) {
         if (!settingsManager.useAltNotifAction) {
-            notification.setLoopMode(loopMode)
+            notification.setRepeatMode(repeatMode)
             startForegroundOrNotify()
         }
     }
@@ -317,7 +317,7 @@ class PlaybackService :
         if (useAltAction) {
             notification.setShuffled(playbackManager.isShuffled)
         } else {
-            notification.setLoopMode(playbackManager.loopMode)
+            notification.setRepeatMode(playbackManager.repeatMode)
         }
 
         startForegroundOrNotify()
@@ -380,7 +380,7 @@ class PlaybackService :
         onSongChanged(playbackManager.song)
         onSeek(playbackManager.positionMs)
         onShuffledChanged(playbackManager.isShuffled)
-        onLoopModeChanged(playbackManager.loopMode)
+        onRepeatChanged(playbackManager.repeatMode)
 
         // Notify other classes that rely on this service to also update.
         widgets.update()
@@ -450,8 +450,8 @@ class PlaybackService :
 
                 // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE -> playbackManager.isPlaying = !playbackManager.isPlaying
-                ACTION_LOOP -> playbackManager.loopMode = playbackManager.loopMode.increment()
-                ACTION_SHUFFLE -> playbackManager.reshuffle(!playbackManager.isShuffled)
+                ACTION_INC_REPEAT_MODE -> playbackManager.repeatMode = playbackManager.repeatMode.increment()
+                ACTION_INVERT_SHUFFLE -> playbackManager.reshuffle(!playbackManager.isShuffled)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
@@ -492,8 +492,8 @@ class PlaybackService :
     companion object {
         private const val POS_POLL_INTERVAL = 1000L
 
-        const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
-        const val ACTION_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
+        const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
+        const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
         const val ACTION_SKIP_PREV = BuildConfig.APPLICATION_ID + ".action.PREV"
         const val ACTION_PLAY_PAUSE = BuildConfig.APPLICATION_ID + ".action.PLAY_PAUSE"
         const val ACTION_SKIP_NEXT = BuildConfig.APPLICATION_ID + ".action.NEXT"

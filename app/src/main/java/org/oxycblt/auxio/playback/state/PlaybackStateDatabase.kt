@@ -83,7 +83,7 @@ class PlaybackStateDatabase(context: Context) :
             .append("${StateColumns.COLUMN_QUEUE_INDEX} INTEGER NOT NULL,")
             .append("${StateColumns.COLUMN_PLAYBACK_MODE} INTEGER NOT NULL,")
             .append("${StateColumns.COLUMN_IS_SHUFFLED} BOOLEAN NOT NULL,")
-            .append("${StateColumns.COLUMN_LOOP_MODE} INTEGER NOT NULL)")
+            .append("${StateColumns.COLUMN_REPEAT_MODE} INTEGER NOT NULL)")
 
         return command
     }
@@ -119,7 +119,7 @@ class PlaybackStateDatabase(context: Context) :
             val indexIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_QUEUE_INDEX)
             val modeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PLAYBACK_MODE)
             val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_IS_SHUFFLED)
-            val loopModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_LOOP_MODE)
+            val repeatModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_REPEAT_MODE)
 
             cursor.moveToFirst()
 
@@ -146,7 +146,8 @@ class PlaybackStateDatabase(context: Context) :
                     queueIndex = cursor.getInt(indexIndex),
                     playbackMode = mode,
                     isShuffled = cursor.getInt(shuffleIndex) == 1,
-                    loopMode = LoopMode.fromIntCode(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
+                    repeatMode = RepeatMode.fromIntCode(cursor.getInt(repeatModeIndex))
+                            ?: RepeatMode.NONE,
                 )
 
             logD("Successfully read playback state: $state")
@@ -173,7 +174,7 @@ class PlaybackStateDatabase(context: Context) :
                     put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
                     put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.intCode)
                     put(StateColumns.COLUMN_IS_SHUFFLED, state.isShuffled)
-                    put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.intCode)
+                    put(StateColumns.COLUMN_REPEAT_MODE, state.repeatMode.intCode)
                 }
 
             insert(TABLE_NAME_STATE, null, stateData)
@@ -262,7 +263,7 @@ class PlaybackStateDatabase(context: Context) :
         val queueIndex: Int,
         val playbackMode: PlaybackMode,
         val isShuffled: Boolean,
-        val loopMode: LoopMode,
+        val repeatMode: RepeatMode,
     )
 
     private object StateColumns {
@@ -273,7 +274,7 @@ class PlaybackStateDatabase(context: Context) :
         const val COLUMN_QUEUE_INDEX = "queue_index"
         const val COLUMN_PLAYBACK_MODE = "playback_mode"
         const val COLUMN_IS_SHUFFLED = "is_shuffling"
-        const val COLUMN_LOOP_MODE = "loop_mode"
+        const val COLUMN_REPEAT_MODE = "loop_mode"
     }
 
     private object QueueColumns {

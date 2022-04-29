@@ -62,13 +62,13 @@
         android:paddingBottom="@dimen/spacing_small">
 
         <android.widget.ImageButton
-            android:id="@+id/widget_loop"
+            android:id="@+id/widget_repeat"
             style="@style/Widget.Auxio.PlaybackButton.AppWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/desc_change_loop"
-            android:src="@drawable/ic_loop" />
+            android:contentDescription="@string/desc_change_repeat"
+            android:src="@drawable/ic_repeat" />
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"

@@ -37,8 +37,8 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * doesn't require a whole new icon set.
  *
  * This view also enables use of an "indicator", which is a dot that can denote when a button is
- * active. This is useful for the shuffle/loop buttons, as at times highlighting them is not enough
- * to differentiate them.
+ * active. This is useful for the shuffle/repeat buttons, as at times highlighting them is not
+ * enough to differentiate them.
  */
 class PlaybackButton
 @JvmOverloads

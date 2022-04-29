@@ -71,11 +71,11 @@ class PlaybackStateManager private constructor() {
     /** The current playback progress */
     var positionMs = 0L
         private set
-    /** The current [LoopMode] */
-    var loopMode = LoopMode.NONE
+    /** The current [RepeatMode] */
+    var repeatMode = RepeatMode.NONE
         set(value) {
             field = value
-            notifyLoopModeChanged()
+            notifyRepeatModeChanged()
         }
     /** Whether the queue is shuffled */
     var isShuffled = false
@@ -153,11 +153,11 @@ class PlaybackStateManager private constructor() {
     /** Go to the next song, along with doing all the checks that entails. */
     fun next() {
         // Increment the index, if it cannot be incremented any further, then
-        // loop and pause/resume playback depending on the setting
+        // repeat and pause/resume playback depending on the setting
         if (index < mutableQueue.lastIndex) {
             goto(++index, true)
         } else {
-            goto(0, loopMode == LoopMode.ALL)
+            goto(0, repeatMode == RepeatMode.ALL)
         }
     }
 
@@ -302,8 +302,13 @@ class PlaybackStateManager private constructor() {
     /** Rewind to the beginning of a song. */
     fun rewind() = seekTo(0)
 
-    /** Loop playback around to the beginning. */
-    fun loop() = seekTo(0)
+    /** Repeat the current song (in line with the user configuration). */
+    fun repeat() {
+        seekTo(0)
+        if (settingsManager.pauseOnRepeat) {
+            isPlaying = false
+        }
+    }
 
     // TODO: Rework these methods eventually
 
@@ -342,7 +347,7 @@ class PlaybackStateManager private constructor() {
                     index,
                     playbackMode,
                     isShuffled,
-                    loopMode,
+                    repeatMode,
                 ))
 
             database.writeQueue(mutableQueue)
@@ -377,12 +382,12 @@ class PlaybackStateManager private constructor() {
             parent = playbackState.parent
             mutableQueue = queue
             index = playbackState.queueIndex
-            loopMode = playbackState.loopMode
+            repeatMode = playbackState.repeatMode
             isShuffled = playbackState.isShuffled
 
             notifyNewPlayback()
             seekTo(playbackState.positionMs)
-            notifyLoopModeChanged()
+            notifyRepeatModeChanged()
             notifyShuffledChanged()
         }
 
@@ -423,9 +428,9 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    private fun notifyLoopModeChanged() {
+    private fun notifyRepeatModeChanged() {
         for (callback in callbacks) {
-            callback.onLoopModeChanged(loopMode)
+            callback.onRepeatChanged(repeatMode)
         }
     }
 
@@ -452,7 +457,7 @@ class PlaybackStateManager private constructor() {
 
         fun onPlayingChanged(isPlaying: Boolean) {}
         fun onPositionChanged(positionMs: Long) {}
-        fun onLoopModeChanged(loopMode: LoopMode) {}
+        fun onRepeatChanged(repeatMode: RepeatMode) {}
         fun onShuffledChanged(isShuffled: Boolean) {}
 
         fun onSeek(positionMs: Long) {}

@@ -19,7 +19,7 @@ package org.oxycblt.auxio.widgets
 
 import android.graphics.Bitmap
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.RepeatMode
 
 /*
  * An immutable condensed variant of the current playback state, used so that PlaybackStateManager
@@ -30,5 +30,5 @@ data class WidgetState(
     val albumArt: Bitmap?,
     val isPlaying: Boolean,
     val isShuffled: Boolean,
-    val loopMode: LoopMode,
+    val repeatMode: RepeatMode,
 )

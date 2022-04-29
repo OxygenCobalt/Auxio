@@ -116,12 +116,12 @@
         tools:text="16:16" />
 
     <org.oxycblt.auxio.playback.PlaybackButton
-        android:id="@+id/playback_loop"
+        android:id="@+id/playback_repeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_large"
-        android:contentDescription="@string/desc_change_loop"
-        android:src="@drawable/ic_loop"
+        android:contentDescription="@string/desc_change_repeat"
+        android:src="@drawable/ic_repeat"
         app:hasIndicator="true"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
         app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"

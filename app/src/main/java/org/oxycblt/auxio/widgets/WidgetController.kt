@@ -20,8 +20,8 @@ package org.oxycblt.auxio.widgets
 import android.content.Context
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 
@@ -82,7 +82,7 @@ class WidgetController(private val context: Context) :
         widget.update(context, playbackManager)
     }
 
-    override fun onLoopModeChanged(loopMode: LoopMode) {
+    override fun onRepeatChanged(repeatMode: RepeatMode) {
         widget.update(context, playbackManager)
     }
 

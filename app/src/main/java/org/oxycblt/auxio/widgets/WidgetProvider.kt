@@ -74,7 +74,7 @@ class WidgetProvider : AppWidgetProvider() {
                     bitmap,
                     playbackManager.isPlaying,
                     playbackManager.isShuffled,
-                    playbackManager.loopMode)
+                    playbackManager.repeatMode)
 
             // Map each widget form to the cells where it would look at least okay.
             val views =

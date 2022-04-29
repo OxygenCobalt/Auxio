@@ -92,7 +92,7 @@ to a name that can be used in UIs.
 
 Other data types represent a specific UI configuration or state:
 - Sealed classes like `Sort` contain data with them that can be modified.
-- Enums like `DisplayMode` and `LoopMode` only contain static data, such as a string resource.
+- Enums like `DisplayMode` and `RepeatMode` only contain static data, such as a string resource.
 
 Things to keep in mind while working with music data:
 - `id` is not derived from the `MediaStore` ID of the music data. It is actually a hash of the unique fields of the music data.

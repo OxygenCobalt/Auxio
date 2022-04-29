@@ -118,12 +118,12 @@
         tools:text="16:16" />
 
     <org.oxycblt.auxio.playback.PlaybackButton
-        android:id="@+id/playback_loop"
+        android:id="@+id/playback_repeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
-        android:contentDescription="@string/desc_change_loop"
-        android:src="@drawable/ic_loop"
+        android:contentDescription="@string/desc_change_repeat"
+        android:src="@drawable/ic_repeat"
         app:hasIndicator="true"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -138,7 +138,7 @@
         android:src="@drawable/ic_skip_prev"
         app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
         app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
-        app:layout_constraintStart_toEndOf="@+id/playback_loop"
+        app:layout_constraintStart_toEndOf="@+id/playback_repeat"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

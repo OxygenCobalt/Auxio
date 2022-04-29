@@ -62,7 +62,7 @@
     <string name="set_quality_covers">"Ignorovat obaly MediaStore"</string>
     <string name="set_quality_covers_desc">"Zlepší kvalitu obalů alb, ale znamená také delší časy načítání a vyšší využití paměti"</string>
     <string name="set_alt_action">"Použít alternativní ikonu oznámení"</string>
-    <string name="set_alt_loop">"Preferovat akci režimu opakování"</string>
+    <string name="set_alt_repeat">"Preferovat akci režimu opakování"</string>
     <string name="set_alt_shuffle">"Preferovat akci náhodného přehrávání"</string>
     <string name="set_audio">"Zvuk"</string>
     <string name="set_behavior">"Chování"</string>
@@ -71,8 +71,8 @@
     <string name="set_keep_shuffle_desc">"Ponechat náhodné při přehrávání nové skladby"</string>
     <string name="set_rewind_prev">"Přetočit před přeskočením zpět"</string>
     <string name="set_rewind_prev_desc">"Přetočit před přeskočením na předchozí skladbu"</string>
-    <string name="set_loop_pause">"Pozastavit při opakování"</string>
-    <string name="set_loop_pause_desc">"Pozastavit při opakování skladby"</string>
+    <string name="set_repeat_pause">"Pozastavit při opakování"</string>
+    <string name="set_repeat_pause_desc">"Pozastavit při opakování skladby"</string>
     <string name="set_content">"Obsah"</string>
     <string name="set_save">"Uložit stav přehrávání"</string>
     <string name="set_save_desc">"Nyní uložit aktuální stav přehrávání"</string>
@@ -94,7 +94,7 @@
     <string name="desc_play_pause">"Přehrát nebo pozastavit"</string>
     <string name="desc_skip_next">"Přeskočit na další skladbu"</string>
     <string name="desc_skip_prev">"Přeskočit na poslední skladbu"</string>
-    <string name="desc_change_loop">"Změnit režim opakování"</string>
+    <string name="desc_change_repeat">"Změnit režim opakování"</string>
     <string name="desc_shuffle">"Zapnout nebo vypnout náhodné"</string>
     <string name="desc_queue_handle">"Přesunout skladbu ve frontě"</string>
     <string name="desc_clear_search">"Vymazat vyhledávání"</string>

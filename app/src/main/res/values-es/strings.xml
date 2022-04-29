@@ -77,7 +77,7 @@
     <string name="set_round_covers">Carátulas redondeadas</string>
     <string name="set_round_covers_desc">Usar carátulas redondeadas para los álbumes</string>
     <string name="set_alt_action">Usar acciones de notificación alternativas</string>
-    <string name="set_alt_loop">Preferir acción de bucle</string>
+    <string name="set_alt_repeat">Preferir acción de bucle</string>
     <string name="set_alt_shuffle">Preferir acción de mezcla</string>
 
     <string name="set_audio">Sonido</string>
@@ -93,8 +93,8 @@
     <string name="set_keep_shuffle_desc">Mantener mezcla cuando se reproduce una nueva canción</string>
     <string name="set_rewind_prev">Rebobinar atrás</string>
     <string name="set_rewind_prev_desc">Rebobinar al saltar a la canción anterior</string>
-    <string name="set_loop_pause">Pausa en repetición</string>
-    <string name="set_loop_pause_desc">Pausa cuando se repite una canción</string>
+    <string name="set_repeat_pause">Pausa en repetición</string>
+    <string name="set_repeat_pause_desc">Pausa cuando se repite una canción</string>
 
     <string name="set_content">Contenido</string>
     <string name="set_save">Guardar estado de reproducción</string>
@@ -121,7 +121,7 @@
     <string name="desc_play_pause">Reproducir o pausar</string>
     <string name="desc_skip_next">Saltar a la siguiente canción</string>
     <string name="desc_skip_prev">Saltar a la última canción</string>
-    <string name="desc_change_loop">Cambiar modo de repetición</string>
+    <string name="desc_change_repeat">Cambiar modo de repetición</string>
     <string name="desc_shuffle">Act/des mezcla</string>
     <string name="desc_shuffle_all">Mezclar todo</string>
 

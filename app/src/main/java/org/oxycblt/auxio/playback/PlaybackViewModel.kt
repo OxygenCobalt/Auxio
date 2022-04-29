@@ -30,9 +30,9 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -62,7 +62,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // States
     private val mIsPlaying = MutableLiveData(false)
     private val mPositionSecs = MutableLiveData(0L)
-    private val mLoopMode = MutableLiveData(LoopMode.NONE)
+    private val mRepeatMode = MutableLiveData(RepeatMode.NONE)
     private val mIsShuffled = MutableLiveData(false)
 
     // Queue
@@ -83,9 +83,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /** The current playback position, in seconds */
     val positionSecs: LiveData<Long>
         get() = mPositionSecs
-    /** The current repeat mode, see [LoopMode] for more information */
-    val loopMode: LiveData<LoopMode>
-        get() = mLoopMode
+    /** The current repeat mode, see [RepeatMode] for more information */
+    val repeatMode: LiveData<RepeatMode>
+        get() = mRepeatMode
     val isShuffled: LiveData<Boolean>
         get() = mIsShuffled
 
@@ -263,9 +263,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.reshuffle(!playbackManager.isShuffled)
     }
 
-    /** Increment the loop status, e.g from off to loop once */
-    fun incrementLoop() {
-        playbackManager.loopMode = playbackManager.loopMode.increment()
+    /** Increment the repeat mode, e.g from [RepeatMode.NONE] to [RepeatMode.ALL] */
+    fun incrementRepeatMode() {
+        playbackManager.repeatMode = playbackManager.repeatMode.increment()
     }
 
     // --- SAVE/RESTORE FUNCTIONS ---
@@ -312,7 +312,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         onPositionChanged(playbackManager.positionMs)
         onPlayingChanged(playbackManager.isPlaying)
         onShuffledChanged(playbackManager.isShuffled)
-        onLoopModeChanged(playbackManager.loopMode)
+        onRepeatChanged(playbackManager.repeatMode)
     }
 
     // --- OVERRIDES ---
@@ -349,7 +349,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         mIsShuffled.value = isShuffled
     }
 
-    override fun onLoopModeChanged(loopMode: LoopMode) {
-        mLoopMode.value = loopMode
+    override fun onRepeatChanged(repeatMode: RepeatMode) {
+        mRepeatMode.value = repeatMode
     }
 }

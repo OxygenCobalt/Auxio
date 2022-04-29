@@ -24,13 +24,13 @@ import org.oxycblt.auxio.R
  * Enum that determines the playback repeat mode.
  * @author OxygenCobalt
  */
-enum class LoopMode {
+enum class RepeatMode {
     NONE,
     ALL,
     TRACK;
 
     /** Increment the LoopMode, e.g from [NONE] to [ALL] */
-    fun increment(): LoopMode {
+    fun increment(): RepeatMode {
         return when (this) {
             NONE -> ALL
             ALL -> TRACK
@@ -41,9 +41,9 @@ enum class LoopMode {
     val icon: Int
         get() =
             when (this) {
-                NONE -> R.drawable.ic_loop
-                ALL -> R.drawable.ic_loop_on
-                TRACK -> R.drawable.ic_loop_one
+                NONE -> R.drawable.ic_repeat
+                ALL -> R.drawable.ic_repeat_on
+                TRACK -> R.drawable.ic_repeat_one
             }
 
     /**
@@ -53,18 +53,18 @@ enum class LoopMode {
     val intCode: Int
         get() =
             when (this) {
-                NONE -> IntegerTable.LOOP_MODE_NONE
-                ALL -> IntegerTable.LOOP_MODE_ALL
-                TRACK -> IntegerTable.LOOP_MODE_TRACK
+                NONE -> IntegerTable.REPEAT_MODE_NONE
+                ALL -> IntegerTable.REPEAT_MODE_ALL
+                TRACK -> IntegerTable.REPEAT_MODE_TRACK
             }
 
     companion object {
         /** Convert an int [constant] into a LoopMode, or null if it isn't valid. */
-        fun fromIntCode(constant: Int): LoopMode? {
+        fun fromIntCode(constant: Int): RepeatMode? {
             return when (constant) {
-                IntegerTable.LOOP_MODE_NONE -> NONE
-                IntegerTable.LOOP_MODE_ALL -> ALL
-                IntegerTable.LOOP_MODE_TRACK -> TRACK
+                IntegerTable.REPEAT_MODE_NONE -> NONE
+                IntegerTable.REPEAT_MODE_ALL -> ALL
+                IntegerTable.REPEAT_MODE_TRACK -> TRACK
                 else -> null
             }
         }

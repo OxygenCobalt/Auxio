@@ -67,7 +67,7 @@
     <string name="set_round_covers">Abgerundete Cover</string>
     <string name="set_round_covers_desc">Rundet Ecken der Cover ab</string>
     <string name="set_alt_action">Alternative Aktionstaste verwenden</string>
-    <string name="set_alt_loop">Wiederholen-Aktionstaste bevorzugen</string>
+    <string name="set_alt_repeat">Wiederholen-Aktionstaste bevorzugen</string>
     <string name="set_alt_shuffle">Zufällig-Aktionstaste bevorzugen</string>
 
     <string name="set_audio">Audio</string>
@@ -109,7 +109,7 @@
     <string name="desc_play_pause">Abspielen oder Pausieren</string>
     <string name="desc_skip_prev">Zum letzten Lied springen</string>
     <string name="desc_skip_next">Zum nächsten Lied springen</string>
-    <string name="desc_change_loop">Art der Wiederholung ändern</string>
+    <string name="desc_change_repeat">Art der Wiederholung ändern</string>
 
     <string name="desc_clear_search">Suchanfrage löschen</string>
 
@@ -159,8 +159,8 @@
     <string name="lbl_sort_year">Jahr</string>
     <string name="set_black_mode">Schwarzes Thema</string>
     <string name="set_black_mode_desc">Ein schwarzes Thema für das dunkle verwenden</string>
-    <string name="set_loop_pause">Pause bei Wiederholung</string>
-    <string name="set_loop_pause_desc">Pausiert, wenn ein Song wiederholt wird</string>
+    <string name="set_repeat_pause">Pause bei Wiederholung</string>
+    <string name="set_repeat_pause_desc">Pausiert, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
     <string name="desc_queue_handle">Lied in der Warteschlange verschieben</string>
     <string name="desc_blacklist_delete">Ausgeschlossenes Verzechnis entfernen</string>

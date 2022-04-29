@@ -31,7 +31,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.LoopMode
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
@@ -52,7 +52,7 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         setContentIntent(context.newMainIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
-        addAction(buildLoopAction(context, LoopMode.NONE))
+        addAction(buildRepeatAction(context, RepeatMode.NONE))
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev))
         addAction(buildPlayPauseAction(context, true))
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
@@ -94,9 +94,9 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
-    /** Update the first action to reflect the [loopMode] given. */
-    fun setLoopMode(loopMode: LoopMode) {
-        mActions[0] = buildLoopAction(context, loopMode)
+    /** Update the first action to reflect the [repeatMode] given. */
+    fun setRepeatMode(repeatMode: RepeatMode) {
+        mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
     /** Update the first action to reflect whether the queue is shuffled or not */
@@ -123,15 +123,18 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
 
-    private fun buildLoopAction(context: Context, loopMode: LoopMode): NotificationCompat.Action {
+    private fun buildRepeatAction(
+        context: Context,
+        repeatMode: RepeatMode
+    ): NotificationCompat.Action {
         val drawableRes =
-            when (loopMode) {
-                LoopMode.NONE -> R.drawable.ic_remote_loop_off
-                LoopMode.ALL -> R.drawable.ic_loop
-                LoopMode.TRACK -> R.drawable.ic_loop_one
+            when (repeatMode) {
+                RepeatMode.NONE -> R.drawable.ic_remote_repeat_off
+                RepeatMode.ALL -> R.drawable.ic_repeat
+                RepeatMode.TRACK -> R.drawable.ic_repeat_one
             }
 
-        return buildAction(context, PlaybackService.ACTION_LOOP, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, drawableRes)
     }
 
     private fun buildShuffleAction(
@@ -141,7 +144,7 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         val drawableRes =
             if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
 
-        return buildAction(context, PlaybackService.ACTION_SHUFFLE, drawableRes)
+        return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }
 
     private fun buildAction(

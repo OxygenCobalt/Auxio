@@ -55,12 +55,12 @@ object IntegerTable {
     /** Intent request code */
     const val REQUEST_CODE = 0xA0C0
 
-    /** LoopMode.NONE */
-    const val LOOP_MODE_NONE = 0xA100
-    /** LoopMode.ALL */
-    const val LOOP_MODE_ALL = 0xA101
-    /** LoopMode.TRACK */
-    const val LOOP_MODE_TRACK = 0xA102
+    /** RepeatMode.NONE */
+    const val REPEAT_MODE_NONE = 0xA100
+    /** RepeatMode.ALL */
+    const val REPEAT_MODE_ALL = 0xA101
+    /** RepeatMode.TRACK */
+    const val REPEAT_MODE_TRACK = 0xA102
 
     /** PlaybackMode.IN_GENRE */
     const val PLAYBACK_MODE_IN_GENRE = 0xA103

@@ -76,7 +76,7 @@
     <string name="set_round_covers">专辑封面圆角</string>
     <string name="set_round_covers_desc">使用圆角设计的专辑封面</string>
     <string name="set_alt_action">使用替代通知操作方案</string>
-    <string name="set_alt_loop">偏好重复播放操作</string>
+    <string name="set_alt_repeat">偏好重复播放操作</string>
     <string name="set_alt_shuffle">偏好随机播放操作</string>
 
     <string name="set_audio">音频</string>
@@ -93,8 +93,8 @@
     <string name="set_keep_shuffle_desc">播放新曲目时保留随机播放模式</string>
     <string name="set_rewind_prev">切换上一曲前先倒带</string>
     <string name="set_rewind_prev_desc">切换至上一首歌曲前先进行倒带</string>
-    <string name="set_loop_pause">重复播放前暂停</string>
-    <string name="set_loop_pause_desc">曲目重复播放前暂停</string>
+    <string name="set_repeat_pause">重复播放前暂停</string>
+    <string name="set_repeat_pause_desc">曲目重复播放前暂停</string>
 
     <string name="set_content">内容</string>
     <string name="set_save">保存播放状态</string>
@@ -123,7 +123,7 @@
     <string name="desc_play_pause">播放或暂停</string>
     <string name="desc_skip_next">切换到下一首歌</string>
     <string name="desc_skip_prev">切换到上一首歌</string>
-    <string name="desc_change_loop">更改重复播放模式</string>
+    <string name="desc_change_repeat">更改重复播放模式</string>
     <string name="desc_shuffle">开启或关闭随机播放模式</string>
     <string name="desc_shuffle_all">随机播放所有曲目</string>
 
