@@ -47,9 +47,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
@@ -76,8 +73,6 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Move all external exposal from passing around PlaybackStateManager to passing around the
  * MediaMetadata instance. Generally makes it easier to encapsulate this class.
- *
- * TODO: Move restore and file opening to service
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -103,7 +98,8 @@ class PlaybackService :
     private var isForeground = false
 
     private val serviceJob = Job()
-    private val serviceScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val positionScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val saveScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     // --- SERVICE OVERRIDES ---
 
@@ -128,13 +124,13 @@ class PlaybackService :
 
         player = newPlayer()
         player.addListener(this@PlaybackService)
-        player.setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.CONTENT_TYPE_MUSIC)
-                .build(),
-            true)
 
+        positionScope.launch {
+            while (true) {
+                playbackManager.setPosition(player.currentPosition)
+                delay(POS_POLL_INTERVAL)
+            }
+        }
         // --- SYSTEM SETUP ---
 
         widgets = WidgetController(this)
@@ -198,9 +194,7 @@ class PlaybackService :
 
         // The service coroutines last job is to save the state to the DB, before terminating itself
         // FIXME: This is a terrible idea, move this to when the user closes the notification
-        // FIXME: Why not also encourage the user to disable battery optimizations while were
-        //  at it? Would help prevent state saving issues to an extent.
-        serviceScope.launch {
+        saveScope.launch {
             playbackManager.saveStateToDatabase(this@PlaybackService)
             serviceJob.cancel()
         }
@@ -219,7 +213,6 @@ class PlaybackService :
 
     override fun onPlaybackStateChanged(state: Int) {
         when (state) {
-            Player.STATE_READY -> startPolling()
             Player.STATE_ENDED -> {
                 if (playbackManager.loopMode == LoopMode.TRACK) {
                     playbackManager.loop()
@@ -236,7 +229,11 @@ class PlaybackService :
         playbackManager.next()
     }
 
-    override fun onPositionDiscontinuity(reason: Int) {
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
             playbackManager.setPosition(player.currentPosition)
         }
@@ -282,13 +279,7 @@ class PlaybackService :
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {
-        if (isPlaying && !player.isPlaying) {
-            player.play()
-            startPolling()
-        } else {
-            player.pause()
-        }
-
+        player.playWhenReady = isPlaying
         notification.setPlaying(isPlaying)
         startForegroundOrNotify()
     }
@@ -371,6 +362,12 @@ class PlaybackService :
         return ExoPlayer.Builder(this, audioRenderer)
             .setMediaSourceFactory(DefaultMediaSourceFactory(this, extractorsFactory))
             .setWakeMode(C.WAKE_MODE_LOCAL)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.CONTENT_TYPE_MUSIC)
+                    .build(),
+                true)
             .build()
     }
 
@@ -388,24 +385,6 @@ class PlaybackService :
 
         // Notify other classes that rely on this service to also update.
         widgets.update()
-    }
-
-    /** Start polling the position on a coroutine. */
-    private fun startPolling() {
-        val pollFlow =
-            flow {
-                    while (true) {
-                        emit(player.currentPosition)
-                        delay(POS_POLL_INTERVAL)
-                    }
-                }
-                .conflate()
-
-        serviceScope.launch {
-            pollFlow.takeWhile { player.isPlaying }.collect { pos ->
-                playbackManager.setPosition(pos)
-            }
-        }
     }
 
     /**
@@ -519,7 +498,7 @@ class PlaybackService :
     }
 
     companion object {
-        private const val POS_POLL_INTERVAL = 500L
+        private const val POS_POLL_INTERVAL = 1000L
 
         const val ACTION_LOOP = BuildConfig.APPLICATION_ID + ".action.LOOP"
         const val ACTION_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"
