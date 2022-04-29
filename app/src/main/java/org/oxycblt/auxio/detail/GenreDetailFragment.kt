@@ -116,7 +116,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
     private fun updateSong(song: Song?) {
         val binding = requireBinding()
-        if (playbackModel.playbackMode.value == PlaybackMode.IN_GENRE &&
+        if (playbackModel.parent.value is Genre &&
             playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
             detailAdapter.highlightSong(song, binding.detailRecycler)
         } else {

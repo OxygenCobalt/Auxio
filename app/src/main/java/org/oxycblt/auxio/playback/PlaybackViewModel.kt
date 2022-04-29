@@ -318,7 +318,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         onPositionUpdate(playbackManager.position)
         onParentUpdate(playbackManager.parent)
         onQueueUpdate(playbackManager.queue, playbackManager.index)
-        onModeUpdate(playbackManager.playbackMode)
         onPlayingUpdate(playbackManager.isPlaying)
         onShuffleUpdate(playbackManager.isShuffling)
         onLoopUpdate(playbackManager.loopMode)
@@ -344,10 +343,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onQueueUpdate(queue: List<Song>, index: Int) {
         mNextUp.value = queue.slice(index.inc() until queue.size)
-    }
-
-    override fun onModeUpdate(mode: PlaybackMode) {
-        mMode.value = mode
     }
 
     override fun onPlayingUpdate(isPlaying: Boolean) {

@@ -191,7 +191,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             }
         }
 
-        if (playbackModel.playbackMode.value == PlaybackMode.IN_ALBUM &&
+        if (playbackModel.parent.value is Album &&
             playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
             detailAdapter.highlightSong(song, binding.detailRecycler)
         } else {
