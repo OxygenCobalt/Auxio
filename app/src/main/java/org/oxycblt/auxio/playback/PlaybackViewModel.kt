@@ -61,16 +61,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     // States
     private val mIsPlaying = MutableLiveData(false)
-    private val mIsShuffling = MutableLiveData(false)
+    private val mPositionSecs = MutableLiveData(0L)
     private val mLoopMode = MutableLiveData(LoopMode.NONE)
-    private val mPositionSeconds = MutableLiveData(0L)
+    private val mIsShuffled = MutableLiveData(false)
 
     // Queue
     private val mNextUp = MutableLiveData(listOf<Song>())
-    private val mMode = MutableLiveData(PlaybackMode.ALL_SONGS)
 
     // Other
-    // TODO: Move URI management to PlaybackService (more capable of taking commands)
     private var mIntentUri: Uri? = null
 
     /** The current song. */
@@ -82,21 +80,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     val isPlaying: LiveData<Boolean>
         get() = mIsPlaying
-    val isShuffling: LiveData<Boolean>
-        get() = mIsShuffling
+    /** The current playback position, in seconds */
+    val positionSecs: LiveData<Long>
+        get() = mPositionSecs
     /** The current repeat mode, see [LoopMode] for more information */
     val loopMode: LiveData<LoopMode>
         get() = mLoopMode
-    /** The current playback position, in seconds */
-    val positionSeconds: LiveData<Long>
-        get() = mPositionSeconds
+    val isShuffled: LiveData<Boolean>
+        get() = mIsShuffled
 
     /** The queue, without the previous items. */
     val nextUp: LiveData<List<Song>>
         get() = mNextUp
-    /** The current [PlaybackMode] that also determines the queue */
-    val playbackMode: LiveData<PlaybackMode>
-        get() = mMode
 
     init {
         playbackManager.addCallback(this)
@@ -117,7 +112,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * mode of the user if not specified.
      */
     fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
-        playbackManager.playSong(song, mode)
+        playbackManager.play(song, mode)
     }
 
     /**
@@ -131,7 +126,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParent(album, shuffled)
+        playbackManager.play(album, shuffled)
     }
 
     /**
@@ -145,7 +140,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParent(artist, shuffled)
+        playbackManager.play(artist, shuffled)
     }
 
     /**
@@ -159,7 +154,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             return
         }
 
-        playbackManager.playParent(genre, shuffled)
+        playbackManager.play(genre, shuffled)
     }
 
     /**
@@ -192,7 +187,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /** Update the position and push it to [PlaybackStateManager] */
     fun setPosition(progress: Long) {
-        playbackManager.seekTo((progress * 1000))
+        playbackManager.seekTo(progress * 1000)
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -229,7 +224,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         val to = adapterTo + delta
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
             apply()
-            playbackManager.moveQueueItems(from, to)
+            playbackManager.moveQueueItem(from, to)
             return true
         }
 
@@ -259,18 +254,18 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- STATUS FUNCTIONS ---
 
     /** Flip the playing status, e.g from playing to paused */
-    fun invertPlayingStatus() {
-        playbackManager.setPlaying(!playbackManager.isPlaying)
+    fun invertPlaying() {
+        playbackManager.isPlaying = !playbackManager.isPlaying
     }
 
     /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
-    fun invertShuffleStatus() {
-        playbackManager.setShuffling(!playbackManager.isShuffling, true)
+    fun invertShuffled() {
+        playbackManager.reshuffle(!playbackManager.isShuffled)
     }
 
     /** Increment the loop status, e.g from off to loop once */
-    fun incrementLoopStatus() {
-        playbackManager.setLoopMode(playbackManager.loopMode.increment())
+    fun incrementLoop() {
+        playbackManager.loopMode = playbackManager.loopMode.increment()
     }
 
     // --- SAVE/RESTORE FUNCTIONS ---
@@ -314,12 +309,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state")
 
-        onSongChanged(playbackManager.song)
-        onPositionChanged(playbackManager.position)
-        onParentChanged(playbackManager.parent)
-        onQueueChanged(playbackManager.queue, playbackManager.index)
+        onPositionChanged(playbackManager.positionMs)
         onPlayingChanged(playbackManager.isPlaying)
-        onShuffleChanged(playbackManager.isShuffling)
+        onShuffledChanged(playbackManager.isShuffled)
         onLoopModeChanged(playbackManager.loopMode)
     }
 
@@ -329,28 +321,32 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         playbackManager.removeCallback(this)
     }
 
-    override fun onSongChanged(song: Song?) {
-        mSong.value = song
+    override fun onIndexMoved(index: Int) {
+        mSong.value = playbackManager.song
+        mNextUp.value = playbackManager.queue.slice(index.inc() until playbackManager.queue.size)
     }
 
-    override fun onParentChanged(parent: MusicParent?) {
-        mParent.value = parent
-    }
-
-    override fun onPositionChanged(position: Long) {
-        mPositionSeconds.value = position / 1000
-    }
-
-    override fun onQueueChanged(queue: List<Song>, index: Int) {
+    override fun onQueueChanged(index: Int, queue: List<Song>) {
+        mSong.value = playbackManager.song
         mNextUp.value = queue.slice(index.inc() until queue.size)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+        mParent.value = playbackManager.parent
+        mSong.value = playbackManager.song
+        mNextUp.value = queue.slice(index.inc() until queue.size)
+    }
+
+    override fun onPositionChanged(positionMs: Long) {
+        mPositionSecs.value = positionMs / 1000
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         mIsPlaying.value = isPlaying
     }
 
-    override fun onShuffleChanged(isShuffling: Boolean) {
-        mIsShuffling.value = isShuffling
+    override fun onShuffledChanged(isShuffled: Boolean) {
+        mIsShuffled.value = isShuffled
     }
 
     override fun onLoopModeChanged(loopMode: LoopMode) {

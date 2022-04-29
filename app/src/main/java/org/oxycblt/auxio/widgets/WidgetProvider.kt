@@ -73,7 +73,7 @@ class WidgetProvider : AppWidgetProvider() {
                     song,
                     bitmap,
                     playbackManager.isPlaying,
-                    playbackManager.isShuffling,
+                    playbackManager.isShuffled,
                     playbackManager.loopMode)
 
             // Map each widget form to the cells where it would look at least okay.

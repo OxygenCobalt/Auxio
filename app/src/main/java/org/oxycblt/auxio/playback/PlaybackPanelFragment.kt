@@ -29,7 +29,6 @@ import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
-import org.oxycblt.auxio.detail.DetailViewModel
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.toDuration
@@ -56,7 +55,6 @@ class PlaybackPanelFragment :
     Slider.OnSliderTouchListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val detailModel: DetailViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -114,26 +112,26 @@ class PlaybackPanelFragment :
                     .stateList
         }
 
-        binding.playbackLoop.setOnClickListener { playbackModel.incrementLoopStatus() }
+        binding.playbackLoop.setOnClickListener { playbackModel.incrementLoop() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.skipPrev() }
 
         binding.playbackPlayPause.apply {
             // Abuse the play/pause FAB (see style definition for more info)
             post { binding.playbackPlayPause.stateListAnimator = null }
-            setOnClickListener { playbackModel.invertPlayingStatus() }
+            setOnClickListener { playbackModel.invertPlaying() }
         }
 
         binding.playbackSkipNext.setOnClickListener { playbackModel.skipNext() }
-        binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffleStatus() }
+        binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
 
         // --- VIEWMODEL SETUP --
 
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
         playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
-        playbackModel.positionSeconds.observe(viewLifecycleOwner, ::updatePosition)
+        playbackModel.positionSecs.observe(viewLifecycleOwner, ::updatePosition)
         playbackModel.loopMode.observe(viewLifecycleOwner, ::updateLoop)
-        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updatePlayPause)
-        playbackModel.isShuffling.observe(viewLifecycleOwner, ::updateShuffle)
+        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updatePlaying)
+        playbackModel.isShuffled.observe(viewLifecycleOwner, ::updateShuffled)
 
         playbackModel.nextUp.observe(viewLifecycleOwner) { nextUp ->
             // The queue icon uses a selector that will automatically tint the icon as active or
@@ -206,11 +204,11 @@ class PlaybackPanelFragment :
         }
     }
 
-    private fun updatePlayPause(isPlaying: Boolean) {
+    private fun updatePlaying(isPlaying: Boolean) {
         requireBinding().playbackPlayPause.isActivated = isPlaying
     }
 
-    private fun updateShuffle(isShuffling: Boolean) {
-        requireBinding().playbackShuffle.isActivated = isShuffling
+    private fun updateShuffled(isShuffled: Boolean) {
+        requireBinding().playbackShuffle.isActivated = isShuffled
     }
 }

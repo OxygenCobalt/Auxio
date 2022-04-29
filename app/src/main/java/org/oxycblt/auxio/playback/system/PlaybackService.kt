@@ -73,6 +73,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * TODO: Move all external exposal from passing around PlaybackStateManager to passing around the
  * MediaMetadata instance. Generally makes it easier to encapsulate this class.
+ *
+ * TODO: Move hasPlayed to here as well.
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -131,6 +133,7 @@ class PlaybackService :
                 delay(POS_POLL_INTERVAL)
             }
         }
+
         // --- SYSTEM SETUP ---
 
         widgets = WidgetController(this)
@@ -161,9 +164,7 @@ class PlaybackService :
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
-        playbackManager.setHasPlayed(playbackManager.isPlaying)
         playbackManager.addCallback(this)
-
         if (playbackManager.song != null || playbackManager.isRestored) {
             restore()
         }
@@ -190,7 +191,7 @@ class PlaybackService :
         settingsManager.removeCallback(this)
 
         // Pause just in case this destruction was unexpected.
-        playbackManager.setPlaying(false)
+        playbackManager.isPlaying = false
 
         // The service coroutines last job is to save the state to the DB, before terminating itself
         // FIXME: This is a terrible idea, move this to when the user closes the notification
@@ -207,7 +208,7 @@ class PlaybackService :
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
         super.onPlayWhenReadyChanged(playWhenReady, reason)
         if (playbackManager.isPlaying != playWhenReady) {
-            playbackManager.setPlaying(playWhenReady)
+            playbackManager.isPlaying = playWhenReady
         }
     }
 
@@ -234,9 +235,7 @@ class PlaybackService :
         newPosition: Player.PositionInfo,
         reason: Int
     ) {
-        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.synchronizePosition(player.currentPosition)
-        }
+        playbackManager.synchronizePosition(player.currentPosition)
     }
 
     override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
@@ -258,7 +257,15 @@ class PlaybackService :
 
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
-    override fun onSongChanged(song: Song?) {
+    override fun onIndexMoved(index: Int) {
+        onSongChanged(playbackManager.song)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+        onSongChanged(playbackManager.song)
+    }
+
+    private fun onSongChanged(song: Song?) {
         if (song != null) {
             logD("Setting player to ${song.rawName}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
@@ -273,11 +280,6 @@ class PlaybackService :
         stopForegroundAndNotification()
     }
 
-    override fun onParentChanged(parent: MusicParent?) {
-        notification.setParent(parent)
-        startForegroundOrNotify()
-    }
-
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
         notification.setPlaying(isPlaying)
@@ -286,20 +288,20 @@ class PlaybackService :
 
     override fun onLoopModeChanged(loopMode: LoopMode) {
         if (!settingsManager.useAltNotifAction) {
-            notification.setLoop(loopMode)
+            notification.setLoopMode(loopMode)
             startForegroundOrNotify()
         }
     }
 
-    override fun onShuffleChanged(isShuffling: Boolean) {
+    override fun onShuffledChanged(isShuffled: Boolean) {
         if (settingsManager.useAltNotifAction) {
-            notification.setShuffle(isShuffling)
+            notification.setShuffled(isShuffled)
             startForegroundOrNotify()
         }
     }
 
-    override fun onSeek(position: Long) {
-        player.seekTo(position)
+    override fun onSeek(positionMs: Long) {
+        player.seekTo(positionMs)
     }
 
     // --- SETTINGSMANAGER OVERRIDES ---
@@ -313,9 +315,9 @@ class PlaybackService :
 
     override fun onNotifActionUpdate(useAltAction: Boolean) {
         if (useAltAction) {
-            notification.setShuffle(playbackManager.isShuffling)
+            notification.setShuffled(playbackManager.isShuffled)
         } else {
-            notification.setLoop(playbackManager.loopMode)
+            notification.setLoopMode(playbackManager.loopMode)
         }
 
         startForegroundOrNotify()
@@ -375,13 +377,10 @@ class PlaybackService :
     private fun restore() {
         logD("Restoring the service state")
 
-        // Re-call existing callbacks with the current values to restore everything
-        onParentChanged(playbackManager.parent)
-        onPlayingChanged(playbackManager.isPlaying)
-        onShuffleChanged(playbackManager.isShuffling)
-        onLoopModeChanged(playbackManager.loopMode)
         onSongChanged(playbackManager.song)
-        onSeek(playbackManager.position)
+        onSeek(playbackManager.positionMs)
+        onShuffledChanged(playbackManager.isShuffled)
+        onLoopModeChanged(playbackManager.loopMode)
 
         // Notify other classes that rely on this service to also update.
         widgets.update()
@@ -391,7 +390,7 @@ class PlaybackService :
      * Bring the service into the foreground and show the notification, or refresh the notification.
      */
     private fun startForegroundOrNotify() {
-        if (playbackManager.hasPlayed && playbackManager.song != null) {
+        if (/*playbackManager.hasPlayed &&*/ playbackManager.song != null) {
             logD("Starting foreground/notifying")
 
             if (!isForeground) {
@@ -450,14 +449,13 @@ class PlaybackService :
                 AudioManager.ACTION_AUDIO_BECOMING_NOISY -> pauseFromPlug()
 
                 // --- AUXIO EVENTS ---
-                ACTION_PLAY_PAUSE -> playbackManager.setPlaying(!playbackManager.isPlaying)
-                ACTION_LOOP -> playbackManager.setLoopMode(playbackManager.loopMode.increment())
-                ACTION_SHUFFLE ->
-                    playbackManager.setShuffling(!playbackManager.isShuffling, keepSong = true)
+                ACTION_PLAY_PAUSE -> playbackManager.isPlaying = !playbackManager.isPlaying
+                ACTION_LOOP -> playbackManager.loopMode = playbackManager.loopMode.increment()
+                ACTION_SHUFFLE -> playbackManager.reshuffle(!playbackManager.isShuffled)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
-                    playbackManager.setPlaying(false)
+                    playbackManager.isPlaying = false
                     stopForegroundAndNotification()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
@@ -478,7 +476,7 @@ class PlaybackService :
                 settingsManager.headsetAutoplay &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
-                playbackManager.setPlaying(true)
+                playbackManager.isPlaying = true
             }
         }
 
@@ -486,7 +484,7 @@ class PlaybackService :
         private fun pauseFromPlug() {
             if (playbackManager.song != null) {
                 logD("Device disconnected, pausing")
-                playbackManager.setPlaying(false)
+                playbackManager.isPlaying = false
             }
         }
     }

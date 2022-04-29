@@ -95,13 +95,13 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
     }
 
     /** Update the first action to reflect the [loopMode] given. */
-    fun setLoop(loopMode: LoopMode) {
+    fun setLoopMode(loopMode: LoopMode) {
         mActions[0] = buildLoopAction(context, loopMode)
     }
 
     /** Update the first action to reflect whether the queue is shuffled or not */
-    fun setShuffle(isShuffling: Boolean) {
-        mActions[0] = buildShuffleAction(context, isShuffling)
+    fun setShuffled(isShuffled: Boolean) {
+        mActions[0] = buildShuffleAction(context, isShuffled)
     }
 
     /** Apply the current [parent] to the header of the notification. */

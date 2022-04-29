@@ -82,7 +82,7 @@ class PlaybackStateDatabase(context: Context) :
             .append("${StateColumns.COLUMN_PARENT_HASH} LONG,")
             .append("${StateColumns.COLUMN_QUEUE_INDEX} INTEGER NOT NULL,")
             .append("${StateColumns.COLUMN_PLAYBACK_MODE} INTEGER NOT NULL,")
-            .append("${StateColumns.COLUMN_IS_SHUFFLING} BOOLEAN NOT NULL,")
+            .append("${StateColumns.COLUMN_IS_SHUFFLED} BOOLEAN NOT NULL,")
             .append("${StateColumns.COLUMN_LOOP_MODE} INTEGER NOT NULL)")
 
         return command
@@ -118,7 +118,7 @@ class PlaybackStateDatabase(context: Context) :
             val parentIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PARENT_HASH)
             val indexIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_QUEUE_INDEX)
             val modeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_PLAYBACK_MODE)
-            val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_IS_SHUFFLING)
+            val shuffleIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_IS_SHUFFLED)
             val loopModeIndex = cursor.getColumnIndexOrThrow(StateColumns.COLUMN_LOOP_MODE)
 
             cursor.moveToFirst()
@@ -141,11 +141,11 @@ class PlaybackStateDatabase(context: Context) :
             state =
                 SavedState(
                     song = song,
-                    position = cursor.getLong(posIndex),
+                    positionMs = cursor.getLong(posIndex),
                     parent = parent,
                     queueIndex = cursor.getInt(indexIndex),
                     playbackMode = mode,
-                    isShuffling = cursor.getInt(shuffleIndex) == 1,
+                    isShuffled = cursor.getInt(shuffleIndex) == 1,
                     loopMode = LoopMode.fromIntCode(cursor.getInt(loopModeIndex)) ?: LoopMode.NONE,
                 )
 
@@ -168,11 +168,11 @@ class PlaybackStateDatabase(context: Context) :
                 ContentValues(10).apply {
                     put(StateColumns.COLUMN_ID, 0)
                     put(StateColumns.COLUMN_SONG_HASH, state.song?.id)
-                    put(StateColumns.COLUMN_POSITION, state.position)
+                    put(StateColumns.COLUMN_POSITION, state.positionMs)
                     put(StateColumns.COLUMN_PARENT_HASH, state.parent?.id)
                     put(StateColumns.COLUMN_QUEUE_INDEX, state.queueIndex)
                     put(StateColumns.COLUMN_PLAYBACK_MODE, state.playbackMode.intCode)
-                    put(StateColumns.COLUMN_IS_SHUFFLING, state.isShuffling)
+                    put(StateColumns.COLUMN_IS_SHUFFLED, state.isShuffled)
                     put(StateColumns.COLUMN_LOOP_MODE, state.loopMode.intCode)
                 }
 
@@ -257,11 +257,11 @@ class PlaybackStateDatabase(context: Context) :
 
     data class SavedState(
         val song: Song?,
-        val position: Long,
+        val positionMs: Long,
         val parent: MusicParent?,
         val queueIndex: Int,
         val playbackMode: PlaybackMode,
-        val isShuffling: Boolean,
+        val isShuffled: Boolean,
         val loopMode: LoopMode,
     )
 
@@ -272,7 +272,7 @@ class PlaybackStateDatabase(context: Context) :
         const val COLUMN_PARENT_HASH = "parent"
         const val COLUMN_QUEUE_INDEX = "queue_index"
         const val COLUMN_PLAYBACK_MODE = "playback_mode"
-        const val COLUMN_IS_SHUFFLING = "is_shuffling"
+        const val COLUMN_IS_SHUFFLED = "is_shuffling"
         const val COLUMN_LOOP_MODE = "loop_mode"
     }
 

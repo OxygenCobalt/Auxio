@@ -25,6 +25,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.coil.loadBitmap
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -59,11 +60,11 @@ class PlaybackSessionConnector(
     // --- MEDIASESSION CALLBACKS ---
 
     override fun onPlay() {
-        playbackManager.setPlaying(true)
+        playbackManager.isPlaying = true
     }
 
     override fun onPause() {
-        playbackManager.setPlaying(false)
+        playbackManager.isPlaying = false
     }
 
     override fun onSkipToNext() {
@@ -80,25 +81,23 @@ class PlaybackSessionConnector(
 
     override fun onRewind() {
         playbackManager.rewind()
+        playbackManager.isPlaying = true
     }
 
     override fun onSetRepeatMode(repeatMode: Int) {
-        val mode =
+        playbackManager.loopMode =
             when (repeatMode) {
                 PlaybackStateCompat.REPEAT_MODE_ALL -> LoopMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_GROUP -> LoopMode.ALL
                 PlaybackStateCompat.REPEAT_MODE_ONE -> LoopMode.TRACK
                 else -> LoopMode.NONE
             }
-
-        playbackManager.setLoopMode(mode)
     }
 
     override fun onSetShuffleMode(shuffleMode: Int) {
-        playbackManager.setShuffling(
+        playbackManager.reshuffle(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
-            true)
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
     }
 
     override fun onStop() {
@@ -108,7 +107,19 @@ class PlaybackSessionConnector(
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onSongChanged(song: Song?) {
+    override fun onIndexMoved(index: Int) {
+        onSongChanged(playbackManager.song)
+    }
+
+    override fun onQueueChanged(index: Int, queue: List<Song>) {
+        onSongChanged(playbackManager.song)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+        onSongChanged(playbackManager.song)
+    }
+
+    fun onSongChanged(song: Song?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
             return

@@ -80,7 +80,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         binding.playbackSkipPrev?.setOnClickListener { playbackModel.skipPrev() }
 
-        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlayingStatus() }
+        binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 
         binding.playbackSkipNext?.setOnClickListener { playbackModel.skipNext() }
 
@@ -97,7 +97,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
         playbackModel.isPlaying.observe(viewLifecycleOwner, ::updateIsPlaying)
 
-        playbackModel.positionSeconds.observe(viewLifecycleOwner, ::updatePosition)
+        playbackModel.positionSecs.observe(viewLifecycleOwner, ::updatePosition)
     }
 
     private fun updateSong(song: Song?) {

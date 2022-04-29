@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.LoopMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -61,7 +62,15 @@ class WidgetController(private val context: Context) :
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onSongChanged(song: Song?) {
+    override fun onIndexMoved(index: Int) {
+        widget.update(context, playbackManager)
+    }
+
+    override fun onQueueChanged(index: Int, queue: List<Song>) {
+        widget.update(context, playbackManager)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
         widget.update(context, playbackManager)
     }
 
@@ -69,7 +78,7 @@ class WidgetController(private val context: Context) :
         widget.update(context, playbackManager)
     }
 
-    override fun onShuffleChanged(isShuffling: Boolean) {
+    override fun onShuffledChanged(isShuffled: Boolean) {
         widget.update(context, playbackManager)
     }
 
