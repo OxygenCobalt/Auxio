@@ -81,8 +81,8 @@ class PlaybackStateManager private constructor() {
     var isShuffled = false
         private set
 
-    /** Whether this instance has already been restored */
-    var isRestored = false
+    /** Whether this instance has been initialized */
+    var isInitialized = false
         private set
 
     // --- CALLBACKS ---
@@ -122,7 +122,9 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song, true)
         notifyNewPlayback()
         notifyShuffledChanged()
+        seekTo(0)
         isPlaying = true
+        isInitialized = true
     }
 
     /**
@@ -135,7 +137,9 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, shuffled, null, true)
         notifyNewPlayback()
         notifyShuffledChanged()
+        seekTo(0)
         isPlaying = true
+        isInitialized = true
     }
 
     /** Shuffle all songs. */
@@ -145,7 +149,9 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, true, null, true)
         notifyNewPlayback()
         notifyShuffledChanged()
+        seekTo(0)
         isPlaying = true
+        isInitialized = true
     }
 
     // --- QUEUE FUNCTIONS ---
@@ -175,6 +181,7 @@ class PlaybackStateManager private constructor() {
     private fun goto(idx: Int, play: Boolean) {
         index = idx
         notifyIndexMoved()
+        seekTo(0)
         isPlaying = play
     }
 
@@ -304,7 +311,7 @@ class PlaybackStateManager private constructor() {
 
     /** Repeat the current song (in line with the user configuration). */
     fun repeat() {
-        seekTo(0)
+        rewind()
         if (settingsManager.pauseOnRepeat) {
             isPlaying = false
         }
@@ -314,7 +321,7 @@ class PlaybackStateManager private constructor() {
 
     /** Mark this instance as restored. */
     fun markRestored() {
-        isRestored = true
+        isInitialized = true
     }
 
     // --- PERSISTENCE FUNCTIONS ---

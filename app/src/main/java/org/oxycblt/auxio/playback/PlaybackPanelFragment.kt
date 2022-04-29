@@ -36,6 +36,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
@@ -177,8 +178,9 @@ class PlaybackPanelFragment :
         val seconds = song.seconds
         binding.playbackDuration.textSafe = seconds.toDuration(false)
         binding.playbackSeekBar.apply {
-            valueTo = max(seconds, 1L).toFloat()
             isEnabled = seconds > 0L
+            valueTo = max(seconds, 1L).toFloat()
+            value = seconds.clamp(0, valueTo.toLong()).toFloat()
         }
     }
 

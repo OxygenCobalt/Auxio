@@ -24,6 +24,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
@@ -52,8 +53,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
@@ -98,26 +99,14 @@ class PlaybackService :
 
     // State
     private var isForeground = false
+    private var hasPlayed = false
 
+    // Coroutines
     private val serviceJob = Job()
     private val positionScope = CoroutineScope(serviceJob + Dispatchers.Main)
     private val saveScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     // --- SERVICE OVERRIDES ---
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
-            // Workaround to get GadgetBridge and other apps that blindly query for
-            // ACTION_MEDIA_BUTTON working.
-            MediaButtonReceiver.handleIntent(mediaSession, intent)
-        }
-
-        return START_NOT_STICKY
-    }
-
-    // No binding, service is headless
-    // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
-    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -142,7 +131,6 @@ class PlaybackService :
 
         // Then the notification/headset callbacks
         IntentFilter().apply {
-            addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(AudioManager.ACTION_HEADSET_PLUG)
 
@@ -165,7 +153,7 @@ class PlaybackService :
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
         playbackManager.addCallback(this)
-        if (playbackManager.song != null || playbackManager.isRestored) {
+        if (playbackManager.isInitialized) {
             restore()
         }
 
@@ -176,12 +164,29 @@ class PlaybackService :
         logD("Service created")
     }
 
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
+            // Workaround to get GadgetBridge and other apps that blindly query for
+            // ACTION_MEDIA_BUTTON working.
+            MediaButtonReceiver.handleIntent(mediaSession, intent)
+        }
+
+        return START_NOT_STICKY
+    }
+
+    // No binding, service is headless
+    // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
+    override fun onBind(intent: Intent): IBinder? = null
+
     override fun onDestroy() {
         super.onDestroy()
 
-        stopForegroundAndNotification()
+        stopForeground(true)
+        isForeground = false
+
         unregisterReceiver(systemReceiver)
 
+        serviceJob.cancel()
         player.release()
         connector.release()
         mediaSession.release()
@@ -193,13 +198,6 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.isPlaying = false
 
-        // The service coroutines last job is to save the state to the DB, before terminating itself
-        // FIXME: This is a terrible idea, move this to when the user closes the notification
-        saveScope.launch {
-            playbackManager.saveStateToDatabase(this@PlaybackService)
-            serviceJob.cancel()
-        }
-
         logD("Service destroyed")
     }
 
@@ -207,6 +205,11 @@ class PlaybackService :
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
         super.onPlayWhenReadyChanged(playWhenReady, reason)
+
+        if (playWhenReady) {
+            hasPlayed = true
+        }
+
         if (playbackManager.isPlaying != playWhenReady) {
             playbackManager.isPlaying = playWhenReady
         }
@@ -277,7 +280,7 @@ class PlaybackService :
         // Clear if there's nothing to play.
         logD("Nothing playing, stopping playback")
         player.stop()
-        stopForegroundAndNotification()
+        stopAndSave()
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
@@ -379,6 +382,7 @@ class PlaybackService :
 
         onSongChanged(playbackManager.song)
         onSeek(playbackManager.positionMs)
+        onPlayingChanged(playbackManager.isPlaying)
         onShuffledChanged(playbackManager.isShuffled)
         onRepeatChanged(playbackManager.repeatMode)
 
@@ -390,7 +394,7 @@ class PlaybackService :
      * Bring the service into the foreground and show the notification, or refresh the notification.
      */
     private fun startForegroundOrNotify() {
-        if (/*playbackManager.hasPlayed &&*/ playbackManager.song != null) {
+        if (hasPlayed && playbackManager.song != null) {
             logD("Starting foreground/notifying")
 
             if (!isForeground) {
@@ -413,11 +417,24 @@ class PlaybackService :
     }
 
     /** Stop the foreground state and hide the notification */
-    private fun stopForegroundAndNotification() {
+    private fun stopAndSave() {
         stopForeground(true)
-        notificationManager.cancel(IntegerTable.NOTIFICATION_CODE)
         isForeground = false
+
+        saveScope.launch { playbackManager.saveStateToDatabase(this@PlaybackService) }
     }
+
+    data class Metadata(
+        val title: String,
+        val album: String,
+        val artist: String,
+        val album_artist: String,
+        val genre: String,
+        val parent: String,
+        val year: Int,
+        val track: Int?,
+        val albumCover: Bitmap
+    )
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */
     private inner class PlaybackReceiver : BroadcastReceiver() {
@@ -450,13 +467,14 @@ class PlaybackService :
 
                 // --- AUXIO EVENTS ---
                 ACTION_PLAY_PAUSE -> playbackManager.isPlaying = !playbackManager.isPlaying
-                ACTION_INC_REPEAT_MODE -> playbackManager.repeatMode = playbackManager.repeatMode.increment()
+                ACTION_INC_REPEAT_MODE ->
+                    playbackManager.repeatMode = playbackManager.repeatMode.increment()
                 ACTION_INVERT_SHUFFLE -> playbackManager.reshuffle(!playbackManager.isShuffled)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
                     playbackManager.isPlaying = false
-                    stopForegroundAndNotification()
+                    stopAndSave()
                 }
                 WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
             }

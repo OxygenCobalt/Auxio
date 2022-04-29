@@ -100,7 +100,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         // around & the fact that we are in the init function], then attempt to restore the
         // ViewModel state. If it isn't, then wait for MainFragment to give the command to restore
         // PlaybackStateManager.
-        if (playbackManager.isRestored) {
+        if (playbackManager.isInitialized) {
             restorePlaybackState()
         }
     }
@@ -162,7 +162,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun playWithUri(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
-        if (playbackManager.isRestored && musicStore.library != null) {
+        if (playbackManager.isInitialized && musicStore.library != null) {
             playWithUriInternal(uri, context)
         } else {
             logD("Cant play this URI right now, waiting")
@@ -296,7 +296,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
             // Were not going to be restoring playbackManager after this, so mark it as such.
             playbackManager.markRestored()
-        } else if (!playbackManager.isRestored) {
+        } else if (!playbackManager.isInitialized) {
             // Otherwise just restore
             viewModelScope.launch { playbackManager.restoreFromDatabase(context) }
         }
