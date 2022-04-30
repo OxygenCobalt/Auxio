@@ -23,38 +23,50 @@ import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
 
 /**
- * Nightmarish class that coordinates communication between [MediaSessionCompat], [Player], and
- * [PlaybackStateManager].
  */
-class PlaybackSessionConnector(
-    private val context: Context,
-    private val player: Player,
-    private val mediaSession: MediaSessionCompat
-) : PlaybackStateManager.Callback, Player.Listener, MediaSessionCompat.Callback() {
+class MediaSessionComponent(private val context: Context, private val player: Player) :
+    PlaybackStateManager.Callback,
+    Player.Listener,
+    SettingsManager.Callback,
+    MediaSessionCompat.Callback() {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val emptyMetadata = MediaMetadataCompat.Builder().build()
+    private val settingsManager = SettingsManager.getInstance()
+
+    private val mediaSession = MediaSessionCompat(context, context.packageName)
+
+    val token: MediaSessionCompat.Token
+        get() = mediaSession.sessionToken
 
     init {
         mediaSession.setCallback(this)
         playbackManager.addCallback(this)
+        settingsManager.addCallback(this)
         player.addListener(this)
 
         onSongChanged(playbackManager.song)
         onPlayingChanged(playbackManager.isPlaying)
     }
 
+    fun handleMediaButtonIntent(intent: Intent) {
+        MediaButtonReceiver.handleIntent(mediaSession, intent)
+    }
+
     fun release() {
         playbackManager.removeCallback(this)
+        settingsManager.removeCallback(this)
         player.removeListener(this)
+        mediaSession.release()
     }
 
     // --- MEDIASESSION CALLBACKS ---
@@ -111,10 +123,6 @@ class PlaybackSessionConnector(
         onSongChanged(playbackManager.song)
     }
 
-    override fun onQueueChanged(index: Int, queue: List<Song>) {
-        onSongChanged(playbackManager.song)
-    }
-
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
         onSongChanged(playbackManager.song)
     }
@@ -152,18 +160,42 @@ class PlaybackSessionConnector(
         invalidateSessionState()
     }
 
-    // -- EXOPLAYER CALLBACKS ---
+    override fun onRepeatChanged(repeatMode: RepeatMode) {
+        mediaSession.setRepeatMode(
+            when (repeatMode) {
+                RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
+                RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
+                RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
+            })
+    }
 
-    override fun onEvents(player: Player, events: Player.Events) {
-        if (events.containsAny(
-            Player.EVENT_POSITION_DISCONTINUITY,
-            Player.EVENT_PLAYBACK_STATE_CHANGED,
-            Player.EVENT_PLAY_WHEN_READY_CHANGED,
-            Player.EVENT_IS_PLAYING_CHANGED,
-            Player.EVENT_REPEAT_MODE_CHANGED,
-            Player.EVENT_PLAYBACK_PARAMETERS_CHANGED)) {
-            invalidateSessionState()
-        }
+    override fun onShuffledChanged(isShuffled: Boolean) {
+        mediaSession.setShuffleMode(
+            if (isShuffled) {
+                PlaybackStateCompat.SHUFFLE_MODE_ALL
+            } else {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE
+            })
+    }
+
+    // -- SETTINGSMANAGER CALLBACKS --
+
+    override fun onShowCoverUpdate(showCovers: Boolean) {
+        onSongChanged(playbackManager.song)
+    }
+
+    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
+        onSongChanged(playbackManager.song)
+    }
+
+    // -- EXOPLAYER CALLBACKS --
+
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        invalidateSessionState()
     }
 
     // --- MISC ---
@@ -205,6 +237,8 @@ class PlaybackSessionConnector(
     }
 
     companion object {
+        private val emptyMetadata = MediaMetadataCompat.Builder().build()
+
         const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or
                 PlaybackStateCompat.ACTION_PAUSE or

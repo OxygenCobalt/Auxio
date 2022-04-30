@@ -66,10 +66,6 @@ class WidgetController(private val context: Context) :
         widget.update(context, playbackManager)
     }
 
-    override fun onQueueChanged(index: Int, queue: List<Song>) {
-        widget.update(context, playbackManager)
-    }
-
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
         widget.update(context, playbackManager)
     }

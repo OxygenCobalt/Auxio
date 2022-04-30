@@ -17,19 +17,13 @@
  
 package org.oxycblt.auxio.playback.system
 
-import android.app.NotificationManager
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.ServiceInfo
-import android.graphics.Bitmap
 import android.media.AudioManager
-import android.os.Build
 import android.os.IBinder
-import android.support.v4.media.session.MediaSessionCompat
-import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -56,7 +50,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetController
 import org.oxycblt.auxio.widgets.WidgetProvider
@@ -71,25 +64,16 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
  * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
- *
- * TODO: Move all external exposal from passing around PlaybackStateManager to passing around the
- * MediaMetadata instance. Generally makes it easier to encapsulate this class.
- *
- * TODO: Move hasPlayed to here as well.
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
     // Player components
     private lateinit var player: ExoPlayer
-    private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var connector: PlaybackSessionConnector
     private val replayGainProcessor = ReplayGainAudioProcessor()
 
-    // Notification components
-    private lateinit var notification: PlaybackNotification
-    private lateinit var notificationManager: NotificationManager
-
     // System backend components
+    private lateinit var notificationComponent: NotificationComponent
+    private lateinit var mediaSessionComponent: MediaSessionComponent
     private lateinit var widgets: WidgetController
     private val systemReceiver = PlaybackReceiver()
 
@@ -126,8 +110,8 @@ class PlaybackService :
         // --- SYSTEM SETUP ---
 
         widgets = WidgetController(this)
-        mediaSession = MediaSessionCompat(this, packageName).apply { isActive = true }
-        connector = PlaybackSessionConnector(this, player, mediaSession)
+        mediaSessionComponent = MediaSessionComponent(this, player)
+        notificationComponent = NotificationComponent(this, mediaSessionComponent.token)
 
         // Then the notification/headset callbacks
         IntentFilter().apply {
@@ -144,11 +128,6 @@ class PlaybackService :
 
             registerReceiver(systemReceiver, this)
         }
-
-        // --- NOTIFICATION SETUP ---
-
-        notificationManager = getSystemServiceSafe(NotificationManager::class)
-        notification = PlaybackNotification.from(this, notificationManager, mediaSession)
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
@@ -168,7 +147,7 @@ class PlaybackService :
         if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
             // Workaround to get GadgetBridge and other apps that blindly query for
             // ACTION_MEDIA_BUTTON working.
-            MediaButtonReceiver.handleIntent(mediaSession, intent)
+            mediaSessionComponent.handleMediaButtonIntent(intent)
         }
 
         return START_NOT_STICKY
@@ -188,8 +167,7 @@ class PlaybackService :
 
         serviceJob.cancel()
         player.release()
-        connector.release()
-        mediaSession.release()
+        mediaSessionComponent.release()
         widgets.release()
 
         playbackManager.removeCallback(this)
@@ -273,7 +251,8 @@ class PlaybackService :
             logD("Setting player to ${song.rawName}")
             player.setMediaItem(MediaItem.fromUri(song.uri))
             player.prepare()
-            notification.setMetadata(song, ::startForegroundOrNotify)
+            notificationComponent.updateMetadata(
+                song, playbackManager.parent, ::startForegroundOrNotify)
             return
         }
 
@@ -285,20 +264,20 @@ class PlaybackService :
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
-        notification.setPlaying(isPlaying)
+        notificationComponent.updatePlaying(isPlaying)
         startForegroundOrNotify()
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         if (!settingsManager.useAltNotifAction) {
-            notification.setRepeatMode(repeatMode)
+            notificationComponent.updateRepeatMode(repeatMode)
             startForegroundOrNotify()
         }
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
         if (settingsManager.useAltNotifAction) {
-            notification.setShuffled(isShuffled)
+            notificationComponent.updateShuffled(isShuffled)
             startForegroundOrNotify()
         }
     }
@@ -309,18 +288,11 @@ class PlaybackService :
 
     // --- SETTINGSMANAGER OVERRIDES ---
 
-    override fun onColorizeNotifUpdate(doColorize: Boolean) {
-        playbackManager.song?.let { song ->
-            connector.onSongChanged(song)
-            notification.setMetadata(song, ::startForegroundOrNotify)
-        }
-    }
-
     override fun onNotifActionUpdate(useAltAction: Boolean) {
         if (useAltAction) {
-            notification.setShuffled(playbackManager.isShuffled)
+            notificationComponent.updateShuffled(playbackManager.isShuffled)
         } else {
-            notification.setRepeatMode(playbackManager.repeatMode)
+            notificationComponent.updateRepeatMode(playbackManager.repeatMode)
         }
 
         startForegroundOrNotify()
@@ -328,14 +300,15 @@ class PlaybackService :
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
-            connector.onSongChanged(song)
-            notification.setMetadata(song, ::startForegroundOrNotify)
+            notificationComponent.updateMetadata(
+                song, playbackManager.parent, ::startForegroundOrNotify)
         }
     }
 
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
-            notification.setMetadata(song, ::startForegroundOrNotify)
+            notificationComponent.updateMetadata(
+                song, playbackManager.parent, ::startForegroundOrNotify)
         }
     }
 
@@ -398,20 +371,12 @@ class PlaybackService :
             logD("Starting foreground/notifying")
 
             if (!isForeground) {
-                // Specify that this is a media service, if supported.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    startForeground(
-                        IntegerTable.NOTIFICATION_CODE,
-                        notification.build(),
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
-                } else {
-                    startForeground(IntegerTable.NOTIFICATION_CODE, notification.build())
-                }
+                startForeground(IntegerTable.NOTIFICATION_CODE, notificationComponent.build())
 
                 isForeground = true
             } else {
                 // If we are already in foreground just update the notification
-                notificationManager.notify(IntegerTable.NOTIFICATION_CODE, notification.build())
+                notificationComponent.renotify()
             }
         }
     }
@@ -423,18 +388,6 @@ class PlaybackService :
 
         saveScope.launch { playbackManager.saveStateToDatabase(this@PlaybackService) }
     }
-
-    data class Metadata(
-        val title: String,
-        val album: String,
-        val artist: String,
-        val album_artist: String,
-        val genre: String,
-        val parent: String,
-        val year: Int,
-        val track: Int?,
-        val albumCover: Bitmap
-    )
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */
     private inner class PlaybackReceiver : BroadcastReceiver() {

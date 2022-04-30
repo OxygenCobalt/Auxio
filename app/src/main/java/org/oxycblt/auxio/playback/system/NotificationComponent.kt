@@ -27,24 +27,38 @@ import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.loadBitmap
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
+import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
 /**
- * The unified notification for [PlaybackService]. This is not self-sufficient, updates have to be
- * delivered manually.
+ * The unified notification for [PlaybackService]. Due to the nature of how this notification is
+ * used, it is *not self-sufficient*. Updates have to be delivered manually, as to prevent state
+ * inconsistency when the foreground state is started.
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
-class PlaybackNotification
-private constructor(private val context: Context, mediaToken: MediaSessionCompat.Token) :
+class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
     NotificationCompat.Builder(context, CHANNEL_ID) {
+    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
+
     init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel =
+                NotificationChannel(
+                    CHANNEL_ID,
+                    context.getString(R.string.info_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT)
+
+            notificationManager.createNotificationChannel(channel)
+        }
+
         setSmallIcon(R.drawable.ic_auxio)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
@@ -58,11 +72,11 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
         addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_exit))
 
-        setStyle(MediaStyle().setMediaSession(mediaToken).setShowActionsInCompactView(1, 2, 3))
+        setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
+    }
 
-        // Don't connect to PlaybackStateManager here. This is because it's possible for this
-        // notification to not be updated by PlaybackStateManager before PlaybackService pushes
-        // the notification, resulting in invalid metadata.
+    fun renotify() {
+        notificationManager.notify(IntegerTable.NOTIFICATION_CODE, build())
     }
 
     // --- STATE FUNCTIONS ---
@@ -71,13 +85,15 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
      * Set the metadata of the notification using [song].
      * @param onDone What to do when the loading of the album art is finished
      */
-    fun setMetadata(song: Song, onDone: () -> Unit) {
+    fun updateMetadata(song: Song, parent: MusicParent?, onDone: () -> Unit) {
         setContentTitle(song.resolveName(context))
         setContentText(song.resolveIndividualArtistName(context))
 
-        // On older versions of android [API <24], show the song's album on the subtext instead of
-        // the current mode, as that makes more sense for the old style of media notifications.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        // Starting in API 24, the subtext field changed semantics from being below the content
+        // text to being above the title.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setSubText(parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
+        } else {
             setSubText(song.resolveName(context))
         }
 
@@ -90,26 +106,18 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
     }
 
     /** Set the playing icon on the notification */
-    fun setPlaying(isPlaying: Boolean) {
+    fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
     }
 
     /** Update the first action to reflect the [repeatMode] given. */
-    fun setRepeatMode(repeatMode: RepeatMode) {
+    fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
     }
 
     /** Update the first action to reflect whether the queue is shuffled or not */
-    fun setShuffled(isShuffled: Boolean) {
+    fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
-    }
-
-    /** Apply the current [parent] to the header of the notification. */
-    fun setParent(parent: MusicParent?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
-
-        // A blank parent always means that the mode is ALL_SONGS
-        setSubText(parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---
@@ -161,24 +169,5 @@ private constructor(private val context: Context, mediaToken: MediaSessionCompat
 
     companion object {
         const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.PLAYBACK"
-
-        /** Build a new instance of [PlaybackNotification]. */
-        fun from(
-            context: Context,
-            notificationManager: NotificationManager,
-            mediaSession: MediaSessionCompat
-        ): PlaybackNotification {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel =
-                    NotificationChannel(
-                        CHANNEL_ID,
-                        context.getString(R.string.info_channel_name),
-                        NotificationManager.IMPORTANCE_DEFAULT)
-
-                notificationManager.createNotificationChannel(channel)
-            }
-
-            return PlaybackNotification(context, mediaSession.sessionToken)
-        }
     }
 }
