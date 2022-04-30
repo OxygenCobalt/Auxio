@@ -166,9 +166,9 @@ class PlaybackService :
         unregisterReceiver(systemReceiver)
 
         serviceJob.cancel()
-        player.release()
         mediaSessionComponent.release()
         widgets.release()
+        player.release()
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
@@ -385,7 +385,6 @@ class PlaybackService :
     private fun stopAndSave() {
         stopForeground(true)
         isForeground = false
-
         saveScope.launch { playbackManager.saveStateToDatabase(this@PlaybackService) }
     }
 
@@ -406,8 +405,7 @@ class PlaybackService :
                 // a non-starter since both require me to display a permission prompt
                 // 4. Some weird internal framework thing that also handles bluetooth headsets???
                 //
-                // They should have just stopped at ACTION_HEADSET_PLUG. Just use 1 and 2 so that
-                // *something* fills in the role.
+                // They should have just stopped at ACTION_HEADSET_PLUG.
                 AudioManager.ACTION_HEADSET_PLUG -> {
                     when (intent.getIntExtra("state", -1)) {
                         0 -> pauseFromPlug()

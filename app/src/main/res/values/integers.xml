@@ -2,7 +2,7 @@
 <resources>
     <integer name="detail_app_bar_title_anim_duration">150</integer>
 
-    <!-- FIXME: Unify this with the integer table object by simply defining a class for each dependency. Will reduce bugs. -->
+    <!-- FIXME: Unify this with the integer table object by simply defining a class for each setting. -->
     <!-- Preference values -->
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>

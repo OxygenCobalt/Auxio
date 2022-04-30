@@ -247,7 +247,6 @@ class SettingsManager private constructor(context: Context) :
      */
     interface Callback {
         fun onLibTabsUpdate(libTabs: Array<Tab>) {}
-        fun onColorizeNotifUpdate(doColorize: Boolean) {}
         fun onNotifActionUpdate(useAltAction: Boolean) {}
         fun onShowCoverUpdate(showCovers: Boolean) {}
         fun onQualityCoverUpdate(doQualityCovers: Boolean) {}

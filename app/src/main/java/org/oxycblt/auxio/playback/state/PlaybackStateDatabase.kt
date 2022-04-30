@@ -102,7 +102,7 @@ class PlaybackStateDatabase(context: Context) :
 
     /**
      * Read the stored [SavedState] from the database, if there is one.
-     * @param musicStore Required to transform database songs/parents into actual instances
+     * @param library Required to transform database songs/parents into actual instances
      * @return The stored [SavedState], null if there isn't one.
      */
     fun readState(library: MusicStore.Library): SavedState? {

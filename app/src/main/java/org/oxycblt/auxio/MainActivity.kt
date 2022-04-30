@@ -46,9 +46,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Rework some fragments to use listeners *even more*
  *
- * TODO: Unify all member variables under an m prefix
+ * TODO: Phase out m for _
  *
  * TODO: Fix how selection works in the RecyclerViews (doing it poorly right now)
+ *
+ * TODO: Rework padding ethos
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

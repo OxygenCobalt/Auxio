@@ -26,6 +26,8 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
+// TODO: Still need to change the default cover here
+
 /**
  * The default widget is displayed whenever there is no music playing. It just shows the message "No
  * music playing".

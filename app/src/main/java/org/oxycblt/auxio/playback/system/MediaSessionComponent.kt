@@ -127,7 +127,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         onSongChanged(playbackManager.song)
     }
 
-    fun onSongChanged(song: Song?) {
+    private fun onSongChanged(song: Song?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
             return

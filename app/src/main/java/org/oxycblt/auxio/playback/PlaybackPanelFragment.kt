@@ -49,6 +49,8 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  *
  * TODO: Handle RTL correctly in the playback buttons
+ *
+ * TODO: Make seek thumb grow when selected
  */
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
