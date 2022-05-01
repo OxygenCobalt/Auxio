@@ -151,7 +151,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     override fun onCleared() {
         super.onCleared()
-        musicStore.addCallback(this)
+        musicStore.removeCallback(this)
         settingsManager.removeCallback(this)
     }
 }

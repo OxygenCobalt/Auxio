@@ -64,6 +64,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
  * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
+ *
+ * TODO: Synchronize components in a less awful way.
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -247,19 +249,19 @@ class PlaybackService :
     }
 
     private fun onSongChanged(song: Song?) {
-        if (song != null) {
-            logD("Setting player to ${song.rawName}")
-            player.setMediaItem(MediaItem.fromUri(song.uri))
-            player.prepare()
-            notificationComponent.updateMetadata(
-                song, playbackManager.parent, ::startForegroundOrNotify)
+        if (song == null) {
+            // Clear if there's nothing to play.
+            logD("Nothing playing, stopping playback")
+            player.stop()
+            stopAndSave()
             return
         }
 
-        // Clear if there's nothing to play.
-        logD("Nothing playing, stopping playback")
-        player.stop()
-        stopAndSave()
+        logD("Loading ${song.rawName}")
+        player.setMediaItem(MediaItem.fromUri(song.uri))
+        player.prepare()
+        notificationComponent.updateMetadata(
+            song, playbackManager.parent, ::startForegroundOrNotify)
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
