@@ -276,7 +276,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun savePlaybackState(context: Context, onDone: () -> Unit) {
         viewModelScope.launch {
-            playbackManager.saveStateToDatabase(context)
+            playbackManager.saveState(context)
             onDone()
         }
     }
@@ -293,12 +293,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
             playWithUriInternal(intentUri, context)
             // Remove the uri after finishing the calls so that this does not fire again.
             mIntentUri = null
-
-            // Were not going to be restoring playbackManager after this, so mark it as such.
-            playbackManager.markRestored()
         } else if (!playbackManager.isInitialized) {
             // Otherwise just restore
-            viewModelScope.launch { playbackManager.restoreFromDatabase(context) }
+            viewModelScope.launch { playbackManager.restoreState(context) }
         }
     }
 
@@ -327,7 +324,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onQueueChanged(index: Int, queue: List<Song>) {
-        mSong.value = playbackManager.song
         mNextUp.value = queue.slice(index.inc() until queue.size)
     }
 

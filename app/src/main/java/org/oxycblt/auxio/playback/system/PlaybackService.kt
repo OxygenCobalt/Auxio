@@ -387,7 +387,7 @@ class PlaybackService :
     private fun stopAndSave() {
         stopForeground(true)
         isForeground = false
-        saveScope.launch { playbackManager.saveStateToDatabase(this@PlaybackService) }
+        saveScope.launch { playbackManager.saveState(this@PlaybackService) }
     }
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */

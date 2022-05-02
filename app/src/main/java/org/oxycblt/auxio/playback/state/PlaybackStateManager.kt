@@ -317,20 +317,50 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    // TODO: Rework these methods eventually
+    // --- PERSISTENCE FUNCTIONS ---
 
-    /** Mark this instance as restored. */
-    fun markRestored() {
+    /**
+     * Restore the state from the database
+     * @param context [Context] required.
+     */
+    suspend fun restoreState(context: Context) {
+        val library = musicStore.library ?: return
+        val start: Long
+        val database = PlaybackStateDatabase.getInstance(context)
+        val state: PlaybackStateDatabase.SavedState?
+
+        logD("Getting state from DB")
+
+        withContext(Dispatchers.IO) {
+            start = System.currentTimeMillis()
+            state = database.read(library)
+        }
+
+        logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
+
+        // Get off the IO coroutine since it will cause LiveData updates to throw an exception
+
+        if (state != null) {
+            index = state.index
+            parent = state.parent
+            mutableQueue = state.queue.toMutableList()
+            repeatMode = state.repeatMode
+            isShuffled = state.isShuffled
+
+            notifyNewPlayback()
+            seekTo(state.positionMs)
+            notifyRepeatModeChanged()
+            notifyShuffledChanged()
+        }
+
         isInitialized = true
     }
-
-    // --- PERSISTENCE FUNCTIONS ---
 
     /**
      * Save the current state to the database.
      * @param context [Context] required
      */
-    suspend fun saveStateToDatabase(context: Context) {
+    suspend fun saveState(context: Context) {
         logD("Saving state to DB")
 
         // Pack the entire state and save it to the database.
@@ -338,69 +368,20 @@ class PlaybackStateManager private constructor() {
             val start = System.currentTimeMillis()
             val database = PlaybackStateDatabase.getInstance(context)
 
-            val playbackMode =
-                when (parent) {
-                    is Album -> PlaybackMode.IN_ALBUM
-                    is Artist -> PlaybackMode.IN_ARTIST
-                    is Genre -> PlaybackMode.IN_GENRE
-                    null -> PlaybackMode.ALL_SONGS
-                }
-
-            database.writeState(
+            database.write(
                 PlaybackStateDatabase.SavedState(
-                    song,
-                    positionMs,
-                    parent,
-                    index,
-                    playbackMode,
-                    isShuffled,
-                    repeatMode,
-                ))
-
-            database.writeQueue(mutableQueue)
+                    index = index,
+                    parent = parent,
+                    queue = mutableQueue,
+                    positionMs = positionMs,
+                    isShuffled = isShuffled,
+                    repeatMode = repeatMode))
 
             this@PlaybackStateManager.logD(
                 "State save completed successfully in ${System.currentTimeMillis() - start}ms")
         }
-    }
 
-    /**
-     * Restore the state from the database
-     * @param context [Context] required.
-     */
-    suspend fun restoreFromDatabase(context: Context) {
-        logD("Getting state from DB")
-
-        val library = musicStore.library ?: return
-        val start: Long
-        val playbackState: PlaybackStateDatabase.SavedState?
-        val queue: MutableList<Song>
-
-        withContext(Dispatchers.IO) {
-            start = System.currentTimeMillis()
-            val database = PlaybackStateDatabase.getInstance(context)
-            playbackState = database.readState(library)
-            queue = database.readQueue(library)
-        }
-
-        // Get off the IO coroutine since it will cause LiveData updates to throw an exception
-
-        if (playbackState != null) {
-            parent = playbackState.parent
-            mutableQueue = queue
-            index = playbackState.queueIndex
-            repeatMode = playbackState.repeatMode
-            isShuffled = playbackState.isShuffled
-
-            notifyNewPlayback()
-            seekTo(playbackState.positionMs)
-            notifyRepeatModeChanged()
-            notifyShuffledChanged()
-        }
-
-        logD("State load completed successfully in ${System.currentTimeMillis() - start}ms")
-
-        markRestored()
+        isInitialized = true
     }
 
     // --- CALLBACKS ---
