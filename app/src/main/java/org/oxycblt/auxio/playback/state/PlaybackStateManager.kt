@@ -161,7 +161,7 @@ class PlaybackStateManager private constructor() {
         // Increment the index, if it cannot be incremented any further, then
         // repeat and pause/resume playback depending on the setting
         if (index < mutableQueue.lastIndex) {
-            goto(++index, true)
+            goto(index.inc(), true)
         } else {
             goto(0, repeatMode == RepeatMode.ALL)
         }
@@ -174,7 +174,7 @@ class PlaybackStateManager private constructor() {
             rewind()
             isPlaying = true
         } else {
-            goto(max(--index, 0), true)
+            goto(max(index.dec(), 0), true)
         }
     }
 
@@ -187,13 +187,13 @@ class PlaybackStateManager private constructor() {
 
     /** Add a [song] to the top of the queue. */
     fun playNext(song: Song) {
-        mutableQueue.add(++index, song)
+        mutableQueue.add(index.inc(), song)
         notifyQueueChanged()
     }
 
     /** Add a list of [songs] to the top of the queue. */
     fun playNext(songs: List<Song>) {
-        mutableQueue.addAll(++index, songs)
+        mutableQueue.addAll(index.inc(), songs)
         notifyQueueChanged()
     }
 

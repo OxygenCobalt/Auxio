@@ -65,7 +65,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  *
- * TODO: Synchronize components in a less awful way.
+ * TODO: Synchronize components in a less awful way (Fix issue where rapid-fire updates results
+ * in a desynced notification)
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -374,7 +375,6 @@ class PlaybackService :
 
             if (!isForeground) {
                 startForeground(IntegerTable.NOTIFICATION_CODE, notificationComponent.build())
-
                 isForeground = true
             } else {
                 // If we are already in foreground just update the notification
