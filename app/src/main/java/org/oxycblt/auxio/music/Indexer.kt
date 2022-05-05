@@ -88,9 +88,6 @@ import org.oxycblt.auxio.util.logD
  * I wish I was born in the neolithic.
  *
  * @author OxygenCobalt
- *
- * TODO: Experiment with making the exoplayer metadata system more effificent so that we could
- * leverage it here (maybe)
  */
 object Indexer {
     /**

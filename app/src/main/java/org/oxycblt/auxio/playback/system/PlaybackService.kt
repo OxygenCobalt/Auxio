@@ -65,8 +65,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * therefore there's no need to bind to it to deliver commands.
  * @author OxygenCobalt
  *
- * TODO: Synchronize components in a less awful way (Fix issue where rapid-fire updates results
- * in a desynced notification)
+ * TODO: Synchronize components in a less awful way (Fix issue where rapid-fire updates results in a
+ * desynced notification)
  */
 class PlaybackService :
     Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -219,7 +219,9 @@ class PlaybackService :
         newPosition: Player.PositionInfo,
         reason: Int
     ) {
-        playbackManager.synchronizePosition(player.currentPosition)
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            playbackManager.synchronizePosition(player.currentPosition)
+        }
     }
 
     override fun onTracksInfoChanged(tracksInfo: TracksInfo) {

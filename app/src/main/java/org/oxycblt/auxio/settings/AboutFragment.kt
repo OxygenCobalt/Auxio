@@ -32,6 +32,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -62,6 +63,20 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
         homeModel.songs.observe(viewLifecycleOwner) { songs ->
             binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
+            binding.aboutTotalDuration.textSafe =
+                getString(R.string.fmt_total_duration, songs.sumOf { it.seconds }.toDuration(false))
+        }
+
+        homeModel.albums.observe(viewLifecycleOwner) { albums ->
+            binding.aboutAlbumCount.textSafe = getString(R.string.fmt_albums_loaded, albums.size)
+        }
+
+        homeModel.artists.observe(viewLifecycleOwner) { artists ->
+            binding.aboutArtistCount.textSafe = getString(R.string.fmt_artists_loaded, artists.size)
+        }
+
+        homeModel.genres.observe(viewLifecycleOwner) { genres ->
+            binding.aboutGenreCount.textSafe = getString(R.string.fmt_genres_loaded, genres.size)
         }
     }
 

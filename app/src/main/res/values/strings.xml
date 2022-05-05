@@ -54,6 +54,7 @@
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenses</string>
     <string name="lbl_author">Developed by OxygenCobalt</string>
+    <string name="lbl_library_counts">Library statistics</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Settings</string>
@@ -168,6 +169,10 @@
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
+    <string name="fmt_albums_loaded">Albums loaded: %d</string>
+    <string name="fmt_artists_loaded">Artists loaded: %d</string>
+    <string name="fmt_genres_loaded">Genres loaded: %d</string>
+    <string name="fmt_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Song</item>

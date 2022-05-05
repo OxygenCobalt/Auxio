@@ -4,9 +4,11 @@
 
 #### What's New
 - Added ReplayGain support for below-reference volume tracks [i.e positive ReplayGain values] 
+- About screen now shows counts for multiple types of library items, alongside a total duration
 
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items
+- Fixed a variety of esoteric crashes with queue state
 
 #### What's Changed
 - Audio focus is no longer configurable
