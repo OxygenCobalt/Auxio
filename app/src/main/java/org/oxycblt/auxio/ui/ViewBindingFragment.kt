@@ -27,17 +27,17 @@ import org.oxycblt.auxio.util.logD
 
 /** A fragment enabling ViewBinding inflation and usage across the fragment lifecycle. */
 abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
-    private var mBinding: T? = null
+    private var _binding: T? = null
 
     protected abstract fun onCreateBinding(inflater: LayoutInflater): T
     protected open fun onBindingCreated(binding: T, savedInstanceState: Bundle?) {}
     protected open fun onDestroyBinding(binding: T) {}
 
     protected val binding: T?
-        get() = mBinding
+        get() = _binding
 
     protected fun requireBinding(): T {
-        return requireNotNull(mBinding) {
+        return requireNotNull(_binding) {
             "ViewBinding was not available, as the fragment was not in a valid state"
         }
     }
@@ -46,7 +46,7 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = onCreateBinding(inflater).also { mBinding = it }.root
+    ): View = onCreateBinding(inflater).also { _binding = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +57,6 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         onDestroyBinding(requireBinding())
-        mBinding = null
+        _binding = null
     }
 }

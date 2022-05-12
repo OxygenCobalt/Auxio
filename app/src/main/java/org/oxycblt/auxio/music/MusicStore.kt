@@ -60,16 +60,16 @@ class MusicStore private constructor() {
     }
 
     /** Load/Sort the entire music library. Should always be ran on a coroutine. */
-    suspend fun index(context: Context): Response {
+    suspend fun load(context: Context): Response {
         logD("Starting initial music load")
-        val newResponse = withContext(Dispatchers.IO) { indexImpl(context) }.also { response = it }
+        val newResponse = withContext(Dispatchers.IO) { loadImpl(context) }.also { response = it }
         for (callback in callbacks) {
             callback.onMusicUpdate(newResponse)
         }
         return newResponse
     }
 
-    private fun indexImpl(context: Context): Response {
+    private fun loadImpl(context: Context): Response {
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
@@ -81,7 +81,7 @@ class MusicStore private constructor() {
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = Indexer.run(context)
+                val library = Indexer.index(context)
                 if (library != null) {
                     logD(
                         "Music load completed successfully in ${System.currentTimeMillis() - start}ms")
@@ -132,8 +132,6 @@ class MusicStore private constructor() {
     /**
      * A response that [MusicStore] returns when loading music. And before you ask, yes, I do like
      * rust.
-     *
-     * TODO: Add the exception to the "FAILED" ErrorKind
      */
     sealed class Response {
         class Ok(val library: Library) : Response()

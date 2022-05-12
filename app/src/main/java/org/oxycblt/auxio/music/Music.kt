@@ -24,6 +24,7 @@ import android.provider.MediaStore
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
@@ -59,17 +60,17 @@ data class Song(
     /** The track number of this song, null if there isn't any. */
     val track: Int?,
     /** Internal field. Do not use. */
-    val internalMediaStoreId: Long,
+    val _mediaStoreId: Long,
     /** Internal field. Do not use. */
-    val internalMediaStoreYear: Int?,
+    val _mediaStoreYear: Int?,
     /** Internal field. Do not use. */
-    val internalMediaStoreAlbumName: String,
+    val _mediaStoreAlbumName: String,
     /** Internal field. Do not use. */
-    val internalMediaStoreAlbumId: Long,
+    val _mediaStoreAlbumId: Long,
     /** Internal field. Do not use. */
-    val internalMediaStoreArtistName: String?,
+    val _mediaStoreArtistName: String?,
     /** Internal field. Do not use. */
-    val internalMediaStoreAlbumArtistName: String?,
+    val _mediaStoreAlbumArtistName: String?,
 ) : Music() {
     override val id: Long
         get() {
@@ -89,68 +90,65 @@ data class Song(
     /** The URI for this song. */
     val uri: Uri
         get() =
-            ContentUris.withAppendedId(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, internalMediaStoreId)
+            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId)
     /** The duration of this song, in seconds (rounded down) */
     val seconds: Long
         get() = duration / 1000
 
-    private var mAlbum: Album? = null
+    private var _album: Album? = null
     /** The album of this song. */
     val album: Album
-        get() = unlikelyToBeNull(mAlbum)
+        get() = unlikelyToBeNull(_album)
 
-    private var mGenre: Genre? = null
+    private var _genre: Genre? = null
     /** The genre of this song. Will be an "unknown genre" if the song does not have any. */
     val genre: Genre
-        get() = unlikelyToBeNull(mGenre)
+        get() = unlikelyToBeNull(_genre)
 
     /**
      * The raw artist name for this song in particular. First uses the artist tag, and then falls
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
     val individualRawArtistName: String?
-        get() = internalMediaStoreArtistName ?: album.artist.rawName
+        get() = _mediaStoreArtistName ?: album.artist.rawName
 
     /**
      * Resolve the artist name for this song in particular. First uses the artist tag, and then
      * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
-        internalMediaStoreArtistName ?: album.artist.resolveName(context)
+        _mediaStoreArtistName ?: album.artist.resolveName(context)
 
     /** Internal field. Do not use. */
-    val internalAlbumGroupingId: Long
+    val _albumGroupingId: Long
         get() {
-            var result = internalGroupingArtistName.lowercase().hashCode().toLong()
-            result = 31 * result + internalMediaStoreAlbumName.lowercase().hashCode()
+            var result = _artistGroupingName.lowercase().hashCode().toLong()
+            result = 31 * result + _mediaStoreAlbumName.lowercase().hashCode()
             return result
         }
 
     /** Internal field. Do not use. */
-    val internalGroupingArtistName: String
-        get() =
-            internalMediaStoreAlbumArtistName
-                ?: internalMediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
+    val _artistGroupingName: String
+        get() = _mediaStoreAlbumArtistName ?: _mediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
 
     /** Internal field. Do not use. */
-    val internalIsMissingAlbum: Boolean
-        get() = mAlbum == null
+    val _isMissingAlbum: Boolean
+        get() = _album == null
     /** Internal field. Do not use. */
-    val internalIsMissingArtist: Boolean
-        get() = mAlbum?.internalIsMissingArtist ?: true
+    val _isMissingArtist: Boolean
+        get() = _album?._isMissingArtist ?: true
     /** Internal field. Do not use. */
-    val internalIsMissingGenre: Boolean
-        get() = mGenre == null
+    val _isMissingGenre: Boolean
+        get() = _genre == null
 
     /** Internal method. Do not use. */
-    fun internalLinkAlbum(album: Album) {
-        mAlbum = album
+    fun _linkAlbum(album: Album) {
+        _album = album
     }
 
     /** Internal method. Do not use. */
-    fun internalLinkGenre(genre: Genre) {
-        mGenre = genre
+    fun _linkGenre(genre: Genre) {
+        _genre = genre
     }
 }
 
@@ -164,11 +162,11 @@ data class Album(
     /** The songs of this album. */
     val songs: List<Song>,
     /** Internal field. Do not use. */
-    val internalGroupingArtistName: String,
+    val _artistGroupingName: String,
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song.internalLinkAlbum(this)
+            song._linkAlbum(this)
         }
     }
 
@@ -187,24 +185,24 @@ data class Album(
 
     /** The formatted total duration of this album */
     val totalDuration: String
-        get() = songs.sumOf { it.seconds }.toDuration(false)
+        get() = songs.sumOf { it.seconds }.formatDuration(false)
 
-    private var mArtist: Artist? = null
+    private var _artist: Artist? = null
     /** The parent artist of this album. */
     val artist: Artist
-        get() = unlikelyToBeNull(mArtist)
+        get() = unlikelyToBeNull(_artist)
 
     /** Internal field. Do not use. */
-    val internalArtistGroupingId: Long
-        get() = internalGroupingArtistName.lowercase().hashCode().toLong()
+    val _artistGroupingId: Long
+        get() = _artistGroupingName.lowercase().hashCode().toLong()
 
     /** Internal field. Do not use. */
-    val internalIsMissingArtist: Boolean
-        get() = mArtist == null
+    val _isMissingArtist: Boolean
+        get() = _artist == null
 
     /** Internal method. Do not use. */
-    fun internalLinkArtist(artist: Artist) {
-        mArtist = artist
+    fun _linkArtist(artist: Artist) {
+        _artist = artist
     }
 }
 
@@ -219,7 +217,7 @@ data class Artist(
 ) : MusicParent() {
     init {
         for (album in albums) {
-            album.internalLinkArtist(this)
+            album._linkArtist(this)
         }
     }
 
@@ -239,7 +237,7 @@ data class Artist(
 data class Genre(override val rawName: String?, val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
-            song.internalLinkGenre(this)
+            song._linkGenre(this)
         }
     }
 
@@ -254,7 +252,7 @@ data class Genre(override val rawName: String?, val songs: List<Song>) : MusicPa
 
     /** The formatted total duration of this genre */
     val totalDuration: String
-        get() = songs.sumOf { it.seconds }.toDuration(false)
+        get() = songs.sumOf { it.seconds }.formatDuration(false)
 }
 
 /**

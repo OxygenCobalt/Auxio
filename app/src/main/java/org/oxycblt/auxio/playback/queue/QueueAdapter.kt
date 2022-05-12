@@ -118,31 +118,31 @@ class HybridBackingData<T>(
     private val adapter: RecyclerView.Adapter<*>,
     diffCallback: DiffUtil.ItemCallback<T>
 ) : BackingData<T>() {
-    private var mCurrentList = mutableListOf<T>()
+    private var _currentList = mutableListOf<T>()
     val currentList: List<T>
-        get() = mCurrentList
+        get() = _currentList
 
     private val differ = AsyncListDiffer(adapter, diffCallback)
 
-    override fun getItem(position: Int): T = mCurrentList[position]
-    override fun getItemCount(): Int = mCurrentList.size
+    override fun getItem(position: Int): T = _currentList[position]
+    override fun getItemCount(): Int = _currentList.size
 
     fun submitList(newData: List<T>, onDone: () -> Unit = {}) {
-        if (newData != mCurrentList) {
-            mCurrentList = newData.toMutableList()
+        if (newData != _currentList) {
+            _currentList = newData.toMutableList()
             differ.submitList(newData, onDone)
         }
     }
 
     fun moveItems(from: Int, to: Int) {
-        mCurrentList.add(to, mCurrentList.removeAt(from))
-        differ.rewriteListUnsafe(mCurrentList)
+        _currentList.add(to, _currentList.removeAt(from))
+        differ.rewriteListUnsafe(_currentList)
         adapter.notifyItemMoved(from, to)
     }
 
     fun removeItem(at: Int) {
-        mCurrentList.removeAt(at)
-        differ.rewriteListUnsafe(mCurrentList)
+        _currentList.removeAt(at)
+        differ.rewriteListUnsafe(_currentList)
         adapter.notifyItemRemoved(at)
     }
 
@@ -152,7 +152,7 @@ class HybridBackingData<T>(
      * can do to marry the adapter primitives with DiffUtil.
      */
     private fun <T> AsyncListDiffer<T>.rewriteListUnsafe(newList: List<T>) {
-        differMaxGenerationsField.set(this, (differMaxGenerationsField.get(this) as Int).inc())
+        differMaxGenerationsField.set(this, (differMaxGenerationsField.get(this) as Int) + 1)
         differListField.set(this, newList.toMutableList())
         differImmutableListField.set(this, newList)
     }

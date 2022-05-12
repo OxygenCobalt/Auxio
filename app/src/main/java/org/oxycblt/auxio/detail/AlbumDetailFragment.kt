@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
@@ -54,23 +55,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setAlbumId(args.albumId)
 
-        setupToolbar(unlikelyToBeNull(detailModel.currentAlbum.value), R.menu.menu_album_detail) {
-            itemId ->
-            when (itemId) {
-                R.id.action_play_next -> {
-                    playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
-                    requireContext().showToast(R.string.lbl_queue_added)
-                    true
-                }
-                R.id.action_queue_add -> {
-                    playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
-                    requireContext().showToast(R.string.lbl_queue_added)
-                    true
-                }
-                else -> false
-            }
-        }
-
+        setupToolbar(unlikelyToBeNull(detailModel.currentAlbum.value), R.menu.menu_album_detail)
         requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -84,6 +69,22 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
         detailModel.albumData.observe(viewLifecycleOwner, detailAdapter.data::submitList)
         navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(unlikelyToBeNull(detailModel.currentAlbum.value))
+                requireContext().showToast(R.string.lbl_queue_added)
+                true
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentAlbum.value))
+                requireContext().showToast(R.string.lbl_queue_added)
+                true
+            }
+            else -> false
+        }
     }
 
     override fun onItemClick(item: Item) {

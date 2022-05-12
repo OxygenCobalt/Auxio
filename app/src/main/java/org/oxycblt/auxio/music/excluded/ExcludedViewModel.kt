@@ -37,9 +37,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * TODO: Unify with MusicViewModel
  */
 class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {
-    private val mPaths = MutableLiveData(mutableListOf<String>())
+    private val _paths = MutableLiveData(mutableListOf<String>())
     val paths: LiveData<MutableList<String>>
-        get() = mPaths
+        get() = _paths
 
     var isModified: Boolean = false
         private set
@@ -53,10 +53,10 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      * called.
      */
     fun addPath(path: String) {
-        val paths = unlikelyToBeNull(mPaths.value)
+        val paths = unlikelyToBeNull(_paths.value)
         if (!paths.contains(path)) {
             paths.add(path)
-            mPaths.value = mPaths.value
+            _paths.value = _paths.value
             isModified = true
         }
     }
@@ -66,8 +66,8 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
      * [save] is called.
      */
     fun removePath(path: String) {
-        unlikelyToBeNull(mPaths.value).remove(path)
-        mPaths.value = mPaths.value
+        unlikelyToBeNull(_paths.value).remove(path)
+        _paths.value = _paths.value
         isModified = true
     }
 
@@ -75,7 +75,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
     fun save(onDone: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val start = System.currentTimeMillis()
-            excludedDatabase.writePaths(unlikelyToBeNull(mPaths.value))
+            excludedDatabase.writePaths(unlikelyToBeNull(_paths.value))
             isModified = false
             onDone()
             this@ExcludedViewModel.logD(
@@ -90,7 +90,7 @@ class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewMo
             isModified = false
 
             val dbPaths = excludedDatabase.readPaths()
-            withContext(Dispatchers.Main) { mPaths.value = dbPaths.toMutableList() }
+            withContext(Dispatchers.Main) { _paths.value = dbPaths.toMutableList() }
 
             this@ExcludedViewModel.logD(
                 "Path load completed successfully in ${System.currentTimeMillis() - start}ms")

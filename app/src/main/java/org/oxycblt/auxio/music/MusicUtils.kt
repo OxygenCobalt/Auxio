@@ -17,28 +17,9 @@
  
 package org.oxycblt.auxio.music
 
-import android.text.format.DateUtils
-import org.oxycblt.auxio.util.logD
+
+
+
+
 
 // --- EXTENSION FUNCTIONS ---
-
-/**
- * Convert a [Long] of seconds into a string duration.
- * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--
- * will be returned if the second value is 0.
- */
-fun Long.toDuration(isElapsed: Boolean): String {
-    if (!isElapsed && this == 0L) {
-        logD("Non-elapsed duration is zero, using --:--")
-        return "--:--"
-    }
-
-    var durationString = DateUtils.formatElapsedTime(this)
-
-    // If the duration begins with a excess zero [e.g 01:42], then cut it off.
-    if (durationString[0] == '0') {
-        durationString = durationString.slice(1 until durationString.length)
-    }
-
-    return durationString
-}

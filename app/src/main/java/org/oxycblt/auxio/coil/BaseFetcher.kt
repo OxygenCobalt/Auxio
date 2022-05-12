@@ -275,6 +275,6 @@ abstract class BaseFetcher : Fetcher {
 
     private fun Dimension.mosaicSize(): Int {
         val size = pxOrElse { 512 }
-        return if (size.mod(2) != 0) size.inc() else size
+        return if (size.mod(2) > 0) size + 1 else size
     }
 }

@@ -55,43 +55,35 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private val settingsManager = SettingsManager.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    // Playback
-    private val mSong = MutableLiveData<Song?>()
-    private val mParent = MutableLiveData<MusicParent?>()
+    private var intentUri: Uri? = null
 
-    // States
-    private val mIsPlaying = MutableLiveData(false)
-    private val mPositionSecs = MutableLiveData(0L)
-    private val mRepeatMode = MutableLiveData(RepeatMode.NONE)
-    private val mIsShuffled = MutableLiveData(false)
-
-    // Queue
-    private val mNextUp = MutableLiveData(listOf<Song>())
-
-    // Other
-    private var mIntentUri: Uri? = null
-
+    private val _song = MutableLiveData<Song?>()
     /** The current song. */
     val song: LiveData<Song?>
-        get() = mSong
+        get() = _song
+    private val _parent = MutableLiveData<MusicParent?>()
     /** The current model that is being played from, such as an [Album] or [Artist] */
     val parent: LiveData<MusicParent?>
-        get() = mParent
-
+        get() = _parent
+    private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean>
-        get() = mIsPlaying
+        get() = _isPlaying
+    private val _positionSecs = MutableLiveData(0L)
     /** The current playback position, in seconds */
     val positionSecs: LiveData<Long>
-        get() = mPositionSecs
+        get() = _positionSecs
+    private val _repeatMode = MutableLiveData(RepeatMode.NONE)
     /** The current repeat mode, see [RepeatMode] for more information */
     val repeatMode: LiveData<RepeatMode>
-        get() = mRepeatMode
+        get() = _repeatMode
+    private val _isShuffled = MutableLiveData(false)
     val isShuffled: LiveData<Boolean>
-        get() = mIsShuffled
+        get() = _isShuffled
 
+    private val _nextUp = MutableLiveData(listOf<Song>())
     /** The queue, without the previous items. */
     val nextUp: LiveData<List<Song>>
-        get() = mNextUp
+        get() = _nextUp
 
     init {
         playbackManager.addCallback(this)
@@ -167,7 +159,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         } else {
             logD("Cant play this URI right now, waiting")
 
-            mIntentUri = uri
+            intentUri = uri
         }
     }
 
@@ -208,7 +200,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      */
     fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
         val index =
-            adapterIndex + (playbackManager.queue.size - unlikelyToBeNull(mNextUp.value).size)
+            adapterIndex + (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
         if (index in playbackManager.queue.indices) {
             apply()
             playbackManager.removeQueueItem(index)
@@ -219,7 +211,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * is called just before the change is committed so that the adapter can be updated.
      */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
-        val delta = (playbackManager.queue.size - unlikelyToBeNull(mNextUp.value).size)
+        val delta = (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
         val from = adapterFrom + delta
         val to = adapterTo + delta
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
@@ -287,12 +279,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * - Restore the last playback state if there is no active file intent.
      */
     fun setupPlayback(context: Context) {
-        val intentUri = mIntentUri
+        val intentUri = intentUri
 
         if (intentUri != null) {
             playWithUriInternal(intentUri, context)
             // Remove the uri after finishing the calls so that this does not fire again.
-            mIntentUri = null
+            this.intentUri = null
         } else if (!playbackManager.isInitialized) {
             // Otherwise just restore
             viewModelScope.launch { playbackManager.restoreState(context) }
@@ -319,33 +311,33 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     }
 
     override fun onIndexMoved(index: Int) {
-        mSong.value = playbackManager.song
-        mNextUp.value = playbackManager.queue.slice(index.inc() until playbackManager.queue.size)
+        _song.value = playbackManager.song
+        _nextUp.value = playbackManager.queue.slice(index + 1 until playbackManager.queue.size)
     }
 
     override fun onQueueChanged(index: Int, queue: List<Song>) {
-        mNextUp.value = queue.slice(index.inc() until queue.size)
+        _nextUp.value = queue.slice(index + 1 until queue.size)
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        mParent.value = playbackManager.parent
-        mSong.value = playbackManager.song
-        mNextUp.value = queue.slice(index.inc() until queue.size)
+        _parent.value = playbackManager.parent
+        _song.value = playbackManager.song
+        _nextUp.value = queue.slice(index + 1 until queue.size)
     }
 
     override fun onPositionChanged(positionMs: Long) {
-        mPositionSecs.value = positionMs / 1000
+        _positionSecs.value = positionMs / 1000
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
-        mIsPlaying.value = isPlaying
+        _isPlaying.value = isPlaying
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
-        mIsShuffled.value = isShuffled
+        _isShuffled.value = isShuffled
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
-        mRepeatMode.value = repeatMode
+        _repeatMode.value = repeatMode
     }
 }

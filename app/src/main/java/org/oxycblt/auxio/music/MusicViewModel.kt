@@ -28,8 +28,8 @@ import org.oxycblt.auxio.util.logD
 class MusicViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 
-    private val mLoaderResponse = MutableLiveData<MusicStore.Response?>(null)
-    val loaderResponse: LiveData<MusicStore.Response?> = mLoaderResponse
+    private val _loaderResponse = MutableLiveData<MusicStore.Response?>(null)
+    val loaderResponse: LiveData<MusicStore.Response?> = _loaderResponse
 
     private var isBusy = false
 
@@ -42,29 +42,29 @@ class MusicViewModel : ViewModel(), MusicStore.Callback {
      * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
-        if (mLoaderResponse.value != null || isBusy) {
+        if (_loaderResponse.value != null || isBusy) {
             logD("Loader is busy/already completed, not reloading")
             return
         }
 
         isBusy = true
-        mLoaderResponse.value = null
+        _loaderResponse.value = null
 
         viewModelScope.launch {
-            val result = musicStore.index(context)
-            mLoaderResponse.value = result
+            val result = musicStore.load(context)
+            _loaderResponse.value = result
             isBusy = false
         }
     }
 
     fun reloadMusic(context: Context) {
         logD("Reloading music library")
-        mLoaderResponse.value = null
+        _loaderResponse.value = null
         loadMusic(context)
     }
 
     override fun onMusicUpdate(response: MusicStore.Response) {
-        mLoaderResponse.value = response
+        _loaderResponse.value = response
     }
 
     override fun onCleared() {

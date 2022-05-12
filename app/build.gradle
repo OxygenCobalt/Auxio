@@ -6,9 +6,6 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "32.0.0"
-
     defaultConfig {
         applicationId "org.oxycblt.auxio"
         versionName "2.2.2"
@@ -20,6 +17,20 @@ android {
         buildFeatures {
             viewBinding true
         }
+    }
+
+    compileSdkVersion 32
+    buildToolsVersion "32.0.0"
+
+    // ExoPlayer needs Java 8 to compile.
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += "-Xjvm-default=all"
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -34,17 +45,6 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
-    }
-
-    // ExoPlayer needs Java 8 to compile.
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs += "-Xjvm-default=all"
-    }
-
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -102,7 +102,7 @@ dependencies {
     implementation "io.coil-kt:coil:2.0.0-rc03"
 
     // Material
-    implementation "com.google.android.material:material:1.6.0-rc01"
+    implementation "com.google.android.material:material:1.6.0"
 
     // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"

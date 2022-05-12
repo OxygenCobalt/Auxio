@@ -24,36 +24,39 @@ import org.oxycblt.auxio.music.Music
 
 /** A ViewModel that handles complicated navigation situations. */
 class NavigationViewModel : ViewModel() {
-    private val mMainNavigationAction = MutableLiveData<MainNavigationAction?>()
+    private val _mainNavigationAction = MutableLiveData<MainNavigationAction?>()
     /** Flag for main fragment navigation. Intended for MainFragment use only. */
     val mainNavigationAction: LiveData<MainNavigationAction?>
-        get() = mMainNavigationAction
+        get() = _mainNavigationAction
 
-    private val mExploreNavigationItem = MutableLiveData<Music?>()
-    /** Flag for unified navigation. Observe this to coordinate navigation to an item's UI. */
+    private val _exploreNavigationItem = MutableLiveData<Music?>()
+    /**
+     * Flag for navigation within the explore fragments. Observe this to coordinate navigation to an
+     * item's UI.
+     */
     val exploreNavigationItem: LiveData<Music?>
-        get() = mExploreNavigationItem
+        get() = _exploreNavigationItem
 
     /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */
     fun mainNavigateTo(action: MainNavigationAction) {
-        if (mMainNavigationAction.value != null) return
-        mMainNavigationAction.value = action
+        if (_mainNavigationAction.value != null) return
+        _mainNavigationAction.value = action
     }
 
     /** Mark that the main navigation process is done. */
     fun finishMainNavigation() {
-        mMainNavigationAction.value = null
+        _mainNavigationAction.value = null
     }
 
     /** Navigate to an item's detail menu, whether a song/album/artist */
     fun exploreNavigateTo(item: Music) {
-        if (mExploreNavigationItem.value != null) return
-        mExploreNavigationItem.value = item
+        if (_exploreNavigationItem.value != null) return
+        _exploreNavigationItem.value = item
     }
 
     /** Mark that the item navigation process is done. */
     fun finishExploreNavigation() {
-        mExploreNavigationItem.value = null
+        _exploreNavigationItem.value = null
     }
 }
 

@@ -29,7 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.util.logD
 
 abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
-    private var mBinding: T? = null
+    private var _binding: T? = null
 
     protected abstract fun onCreateBinding(inflater: LayoutInflater): T
     protected open fun onBindingCreated(binding: T, savedInstanceState: Bundle?) {}
@@ -37,10 +37,10 @@ abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
     protected open fun onConfigDialog(builder: AlertDialog.Builder) {}
 
     protected val binding: T?
-        get() = mBinding
+        get() = _binding
 
     protected fun requireBinding(): T {
-        return requireNotNull(mBinding) {
+        return requireNotNull(_binding) {
             "ViewBinding was not available, as the fragment was not in a valid state"
         }
     }
@@ -49,7 +49,7 @@ abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = onCreateBinding(inflater).also { mBinding = it }.root
+    ): View = onCreateBinding(inflater).also { _binding = it }.root
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireActivity(), theme).run {
@@ -68,6 +68,6 @@ abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         onDestroyBinding(requireBinding())
-        mBinding = null
+        _binding = null
     }
 }

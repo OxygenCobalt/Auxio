@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Note: Not actually transparent, making it transparent would actually make it translucent -->
     <color name="chrome_transparent">#01151515</color>
 
     <color name="red_primary">#FFB4A8</color>

@@ -41,13 +41,13 @@ import org.oxycblt.auxio.util.logD
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
+ *
+ * TODO: Add a controller role and move song loading/seeking to that TODO: Make PlaybackViewModel
+ * pass "delayed actions" to this and then await the service to start it???
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
-
-    // Playback
-    private var mutableQueue = mutableListOf<Song>()
 
     /** The currently playing song. Null if there isn't one */
     val song
@@ -55,9 +55,10 @@ class PlaybackStateManager private constructor() {
     /** The parent the queue is based on, null if all songs */
     var parent: MusicParent? = null
         private set
+    private var _queue = mutableListOf<Song>()
     /** The current queue determined by [parent] */
     val queue
-        get() = mutableQueue
+        get() = _queue
     /** The current position in the queue */
     var index = -1
         private set
@@ -160,8 +161,8 @@ class PlaybackStateManager private constructor() {
     fun next() {
         // Increment the index, if it cannot be incremented any further, then
         // repeat and pause/resume playback depending on the setting
-        if (index < mutableQueue.lastIndex) {
-            goto(index.inc(), true)
+        if (index < _queue.lastIndex) {
+            goto(index + 1, true)
         } else {
             goto(0, repeatMode == RepeatMode.ALL)
         }
@@ -174,7 +175,7 @@ class PlaybackStateManager private constructor() {
             rewind()
             isPlaying = true
         } else {
-            goto(max(index.dec(), 0), true)
+            goto(max(index - 1, 0), true)
         }
     }
 
@@ -187,39 +188,39 @@ class PlaybackStateManager private constructor() {
 
     /** Add a [song] to the top of the queue. */
     fun playNext(song: Song) {
-        mutableQueue.add(index.inc(), song)
+        _queue.add(index + 1, song)
         notifyQueueChanged()
     }
 
     /** Add a list of [songs] to the top of the queue. */
     fun playNext(songs: List<Song>) {
-        mutableQueue.addAll(index.inc(), songs)
+        _queue.addAll(index + 1, songs)
         notifyQueueChanged()
     }
 
     /** Add a [song] to the end of the queue. */
     fun addToQueue(song: Song) {
-        mutableQueue.add(song)
+        _queue.add(song)
         notifyQueueChanged()
     }
 
     /** Add a list of [songs] to the end of the queue. */
     fun addToQueue(songs: List<Song>) {
-        mutableQueue.addAll(songs)
+        _queue.addAll(songs)
         notifyQueueChanged()
     }
 
     /** Move a queue item at [from] to a position at [to]. Will ignore invalid indexes. */
     fun moveQueueItem(from: Int, to: Int) {
         logD("Moving item $from to position $to")
-        mutableQueue.add(to, mutableQueue.removeAt(from))
+        _queue.add(to, _queue.removeAt(from))
         notifyQueueChanged()
     }
 
     /** Remove a queue item at [index]. Will ignore invalid indexes. */
     fun removeQueueItem(index: Int) {
-        logD("Removing item ${mutableQueue[index].rawName}")
-        mutableQueue.removeAt(index)
+        logD("Removing item ${_queue[index].rawName}")
+        _queue.removeAt(index)
         notifyQueueChanged()
     }
 
@@ -240,7 +241,7 @@ class PlaybackStateManager private constructor() {
     ) {
         if (shuffled) {
             if (regenShuffledQueue) {
-                mutableQueue =
+                _queue =
                     parent
                         .let { parent ->
                             when (parent) {
@@ -253,15 +254,15 @@ class PlaybackStateManager private constructor() {
                         .toMutableList()
             }
 
-            mutableQueue.shuffle()
+            _queue.shuffle()
 
             if (keep != null) {
-                mutableQueue.add(0, mutableQueue.removeAt(mutableQueue.indexOf(keep)))
+                _queue.add(0, _queue.removeAt(_queue.indexOf(keep)))
             }
 
             index = 0
         } else {
-            mutableQueue =
+            _queue =
                 parent
                     .let { parent ->
                         when (parent) {
@@ -343,7 +344,7 @@ class PlaybackStateManager private constructor() {
         if (state != null) {
             index = state.index
             parent = state.parent
-            mutableQueue = state.queue.toMutableList()
+            _queue = state.queue.toMutableList()
             repeatMode = state.repeatMode
             isShuffled = state.isShuffled
 
@@ -372,7 +373,7 @@ class PlaybackStateManager private constructor() {
                 PlaybackStateDatabase.SavedState(
                     index = index,
                     parent = parent,
-                    queue = mutableQueue,
+                    queue = _queue,
                     positionMs = positionMs,
                     isShuffled = isShuffled,
                     repeatMode = repeatMode))

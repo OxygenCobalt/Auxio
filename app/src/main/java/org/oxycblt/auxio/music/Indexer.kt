@@ -106,7 +106,7 @@ object Indexer {
     private val Context.contentResolverSafe: ContentResolver
         get() = applicationContext.contentResolver
 
-    fun run(context: Context): MusicStore.Library? {
+    fun index(context: Context): MusicStore.Library? {
         val songs = loadSongs(context)
         if (songs.isEmpty()) return null
 
@@ -116,14 +116,12 @@ object Indexer {
 
         // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
         for (song in songs) {
-            if (song.internalIsMissingAlbum ||
-                song.internalIsMissingArtist ||
-                song.internalIsMissingGenre) {
+            if (song._isMissingAlbum || song._isMissingArtist || song._isMissingGenre) {
                 throw IllegalStateException(
                     "Found malformed song: ${song.rawName} [" +
-                        "album: ${!song.internalIsMissingAlbum} " +
-                        "artist: ${!song.internalIsMissingArtist} " +
-                        "genre: ${!song.internalIsMissingGenre}]")
+                        "album: ${!song._isMissingAlbum} " +
+                        "artist: ${!song._isMissingArtist} " +
+                        "genre: ${!song._isMissingGenre}]")
             }
         }
 
@@ -242,9 +240,9 @@ object Indexer {
             songs
                 .distinctBy {
                     it.rawName to
-                        it.internalMediaStoreAlbumName to
-                        it.internalMediaStoreArtistName to
-                        it.internalMediaStoreAlbumArtistName to
+                        it._mediaStoreAlbumName to
+                        it._mediaStoreArtistName to
+                        it._mediaStoreAlbumArtistName to
                         it.track to
                         it.duration
                 }
@@ -270,7 +268,7 @@ object Indexer {
      */
     private fun buildAlbums(songs: List<Song>): List<Album> {
         val albums = mutableListOf<Album>()
-        val songsByAlbum = songs.groupBy { it.internalAlbumGroupingId }
+        val songsByAlbum = songs.groupBy { it._albumGroupingId }
 
         for (entry in songsByAlbum) {
             val albumSongs = entry.value
@@ -289,13 +287,13 @@ object Indexer {
                 }
             }
 
-            val albumName = templateSong.internalMediaStoreAlbumName
-            val albumYear = templateSong.internalMediaStoreYear
+            val albumName = templateSong._mediaStoreAlbumName
+            val albumYear = templateSong._mediaStoreYear
             val albumCoverUri =
                 ContentUris.withAppendedId(
                     Uri.parse("content://media/external/audio/albumart"),
-                    templateSong.internalMediaStoreAlbumId)
-            val artistName = templateSong.internalGroupingArtistName
+                    templateSong._mediaStoreAlbumId)
+            val artistName = templateSong._artistGroupingName
 
             albums.add(
                 Album(
@@ -318,14 +316,14 @@ object Indexer {
      */
     private fun buildArtists(albums: List<Album>): List<Artist> {
         val artists = mutableListOf<Artist>()
-        val albumsByArtist = albums.groupBy { it.internalArtistGroupingId }
+        val albumsByArtist = albums.groupBy { it._artistGroupingId }
 
         for (entry in albumsByArtist) {
             val templateAlbum = entry.value[0]
             val artistName =
-                when (templateAlbum.internalGroupingArtistName) {
+                when (templateAlbum._artistGroupingName) {
                     MediaStore.UNKNOWN_STRING -> null
-                    else -> templateAlbum.internalGroupingArtistName
+                    else -> templateAlbum._artistGroupingName
                 }
             val artistAlbums = entry.value
 
@@ -366,7 +364,7 @@ object Indexer {
                 }
             }
 
-        val songsWithoutGenres = songs.filter { it.internalIsMissingGenre }
+        val songsWithoutGenres = songs.filter { it._isMissingGenre }
         if (songsWithoutGenres.isNotEmpty()) {
             // Songs that don't have a genre will be thrown into an unknown genre.
             val unknownGenre = Genre(null, songsWithoutGenres)
@@ -398,9 +396,7 @@ object Indexer {
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
-                    songs.find { it.internalMediaStoreId == id }?.let { song ->
-                        genreSongs.add(song)
-                    }
+                    songs.find { it._mediaStoreId == id }?.let { song -> genreSongs.add(song) }
                 }
             }
 

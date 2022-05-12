@@ -19,8 +19,10 @@ package org.oxycblt.auxio.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
@@ -53,7 +55,10 @@ import org.oxycblt.auxio.util.requireAttached
  * A [Fragment] that allows for the searching of the entire music library.
  * @author OxygenCobalt
  */
-class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemListener {
+class SearchFragment :
+    ViewBindingFragment<FragmentSearchBinding>(),
+    MenuItemListener,
+    Toolbar.OnMenuItemClickListener {
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -75,15 +80,7 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
                 findNavController().navigateUp()
             }
 
-            setOnMenuItemClickListener { item ->
-                if (item.itemId != R.id.submenu_filtering) {
-                    searchModel.updateFilterModeWithId(context, item.itemId)
-                    item.isChecked = true
-                    true
-                } else {
-                    false
-                }
-            }
+            setOnMenuItemClickListener(this@SearchFragment)
         }
 
         binding.searchEditText.apply {
@@ -116,9 +113,23 @@ class SearchFragment : ViewBindingFragment<FragmentSearchBinding>(), MenuItemLis
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
-        super.onDestroyBinding(binding)
+        binding.searchToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
         imm = null
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.submenu_filtering -> {}
+            else -> {
+                if (item.itemId != R.id.submenu_filtering) {
+                    searchModel.updateFilterModeWithId(requireContext(), item.itemId)
+                    item.isChecked = true
+                }
+            }
+        }
+
+        return true
     }
 
     override fun onItemClick(item: Item) {

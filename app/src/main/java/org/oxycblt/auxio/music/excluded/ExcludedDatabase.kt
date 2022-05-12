@@ -29,7 +29,7 @@ import org.oxycblt.auxio.util.requireBackgroundThread
 /**
  * Database for storing excluded directories. Note that the paths stored here will not work with
  * MediaStore unless you append a "%" at the end. Yes. I know Room exists. But that would needlessly
- * bloat my app and has crippling bugs.
+ * bloat my app and has crippling bugs. TODO: Migrate this to SharedPreferences?
  * @author OxygenCobalt
  */
 class ExcludedDatabase(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {

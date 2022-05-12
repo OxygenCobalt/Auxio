@@ -44,13 +44,13 @@ class DetailViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val mCurrentAlbum = MutableLiveData<Album?>()
+    private val _currentAlbum = MutableLiveData<Album?>()
     val currentAlbum: LiveData<Album?>
-        get() = mCurrentAlbum
+        get() = _currentAlbum
 
-    private val mAlbumData = MutableLiveData(listOf<Item>())
+    private val _albumData = MutableLiveData(listOf<Item>())
     val albumData: LiveData<List<Item>>
-        get() = mAlbumData
+        get() = _albumData
 
     var albumSort: Sort
         get() = settingsManager.detailAlbumSort
@@ -59,12 +59,12 @@ class DetailViewModel : ViewModel() {
             currentAlbum.value?.let(::refreshAlbumData)
         }
 
-    private val mCurrentArtist = MutableLiveData<Artist?>()
+    private val _currentArtist = MutableLiveData<Artist?>()
     val currentArtist: LiveData<Artist?>
-        get() = mCurrentArtist
+        get() = _currentArtist
 
-    private val mArtistData = MutableLiveData(listOf<Item>())
-    val artistData: LiveData<List<Item>> = mArtistData
+    private val _artistData = MutableLiveData(listOf<Item>())
+    val artistData: LiveData<List<Item>> = _artistData
 
     var artistSort: Sort
         get() = settingsManager.detailArtistSort
@@ -73,12 +73,12 @@ class DetailViewModel : ViewModel() {
             currentArtist.value?.let(::refreshArtistData)
         }
 
-    private val mCurrentGenre = MutableLiveData<Genre?>()
+    private val _currentGenre = MutableLiveData<Genre?>()
     val currentGenre: LiveData<Genre?>
-        get() = mCurrentGenre
+        get() = _currentGenre
 
-    private val mGenreData = MutableLiveData(listOf<Item>())
-    val genreData: LiveData<List<Item>> = mGenreData
+    private val _genreData = MutableLiveData(listOf<Item>())
+    val genreData: LiveData<List<Item>> = _genreData
 
     var genreSort: Sort
         get() = settingsManager.detailGenreSort
@@ -88,30 +88,30 @@ class DetailViewModel : ViewModel() {
         }
 
     fun setAlbumId(id: Long) {
-        if (mCurrentAlbum.value?.id == id) return
+        if (_currentAlbum.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
         val album =
             requireNotNull(library.albums.find { it.id == id }) { "Invalid album id provided " }
 
-        mCurrentAlbum.value = album
+        _currentAlbum.value = album
         refreshAlbumData(album)
     }
 
     fun setArtistId(id: Long) {
-        if (mCurrentArtist.value?.id == id) return
+        if (_currentArtist.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
         val artist =
             requireNotNull(library.artists.find { it.id == id }) { "Invalid artist id provided" }
-        mCurrentArtist.value = artist
+        _currentArtist.value = artist
         refreshArtistData(artist)
     }
 
     fun setGenreId(id: Long) {
-        if (mCurrentGenre.value?.id == id) return
+        if (_currentGenre.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
         val genre =
             requireNotNull(library.genres.find { it.id == id }) { "Invalid genre id provided" }
-        mCurrentGenre.value = genre
+        _currentGenre.value = genre
         refreshGenreData(genre)
     }
 
@@ -120,7 +120,7 @@ class DetailViewModel : ViewModel() {
         val data = mutableListOf<Item>(genre)
         data.add(SortHeader(-2, R.string.lbl_songs))
         data.addAll(genreSort.genre(genre))
-        mGenreData.value = data
+        _genreData.value = data
     }
 
     private fun refreshArtistData(artist: Artist) {
@@ -130,7 +130,7 @@ class DetailViewModel : ViewModel() {
         data.addAll(Sort.ByYear(false).albums(artist.albums))
         data.add(SortHeader(-3, R.string.lbl_songs))
         data.addAll(artistSort.artist(artist))
-        mArtistData.value = data.toList()
+        _artistData.value = data.toList()
     }
 
     private fun refreshAlbumData(album: Album) {
@@ -138,6 +138,6 @@ class DetailViewModel : ViewModel() {
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(id = -2, R.string.lbl_songs))
         data.addAll(albumSort.album(album))
-        mAlbumData.value = data
+        _albumData.value = data
     }
 }

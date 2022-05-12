@@ -161,13 +161,13 @@ abstract class BackingData<T> {
  * [AsyncBackingData] is not preferable due to bugs involving diffing.
  */
 class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : BackingData<T>() {
-    private var mCurrentList = mutableListOf<T>()
+    private var _currentList = mutableListOf<T>()
     /** The current list backing this adapter. */
     val currentList: List<T>
-        get() = mCurrentList
+        get() = _currentList
 
-    override fun getItem(position: Int): T = mCurrentList[position]
-    override fun getItemCount(): Int = mCurrentList.size
+    override fun getItem(position: Int): T = _currentList[position]
+    override fun getItemCount(): Int = _currentList.size
 
     /**
      * Update the list with a [newList]. This calls [RecyclerView.Adapter.notifyDataSetChanged]
@@ -175,7 +175,7 @@ class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : Ba
      */
     @Suppress("NotifyDatasetChanged")
     fun submitList(newList: List<T>) {
-        mCurrentList = newList.toMutableList()
+        _currentList = newList.toMutableList()
         adapter.notifyDataSetChanged()
     }
 }

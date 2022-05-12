@@ -20,6 +20,7 @@ package org.oxycblt.auxio.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -60,7 +61,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  *
  * TODO: Add duration and song count sorts
  */
-class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
+class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
@@ -73,11 +74,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
 
         binding.homeToolbar.apply {
             sortItem = menu.findItem(R.id.submenu_sorting)
-
-            setOnMenuItemClickListener { item ->
-                onMenuClick(item)
-                true
-            }
+            setOnMenuItemClickListener(this@HomeFragment)
         }
 
         binding.homePager.apply {
@@ -103,7 +100,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        homeModel.fastScrolling.observe(viewLifecycleOwner, ::updateFastScrolling)
+        homeModel.isFastScrolling.observe(viewLifecycleOwner, ::updateFastScrolling)
         homeModel.currentTab.observe(viewLifecycleOwner) { tab -> updateCurrentTab(sortItem, tab) }
         homeModel.recreateTabs.observe(viewLifecycleOwner, ::handleRecreateTabs)
 
@@ -111,7 +108,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
         navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
     }
 
-    private fun onMenuClick(item: MenuItem) {
+    override fun onDestroyBinding(binding: FragmentHomeBinding) {
+        super.onDestroyBinding(binding)
+        binding.homeToolbar.setOnMenuItemClickListener(null)
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_search -> {
                 logD("Navigating to search")
@@ -147,6 +149,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>() {
                             .assignId(item.itemId)))
             }
         }
+
+        return true
     }
 
     private fun updateFastScrolling(isFastScrolling: Boolean) {

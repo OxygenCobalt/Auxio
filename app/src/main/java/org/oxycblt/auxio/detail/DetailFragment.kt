@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -39,7 +40,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * A Base [Fragment] implementing the base features shared across all detail fragments.
  * @author OxygenCobalt
  */
-abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
+abstract class DetailFragment :
+    ViewBindingFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener {
     protected val detailModel: DetailViewModel by activityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
@@ -49,6 +51,7 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {
         super.onDestroyBinding(binding)
+        binding.detailToolbar.setOnMenuItemClickListener(null)
         binding.detailRecycler.adapter = null
     }
 
@@ -56,13 +59,8 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
      * Shortcut method for doing setup of the detail toolbar.
      * @param data Parent data to use as the toolbar title
      * @param menuId Menu resource to use
-     * @param onMenuClick (Optional) a click listener for that menu
      */
-    protected fun setupToolbar(
-        data: MusicParent,
-        @MenuRes menuId: Int = -1,
-        onMenuClick: ((itemId: Int) -> Boolean)? = null
-    ) {
+    protected fun setupToolbar(data: MusicParent, @MenuRes menuId: Int = -1) {
         requireBinding().detailToolbar.apply {
             title = data.resolveName(context)
 
@@ -71,10 +69,7 @@ abstract class DetailFragment : ViewBindingFragment<FragmentDetailBinding>() {
             }
 
             setNavigationOnClickListener { findNavController().navigateUp() }
-
-            onMenuClick?.let { onClick ->
-                setOnMenuItemClickListener { item -> onClick(item.itemId) }
-            }
+            setOnMenuItemClickListener(this@DetailFragment)
         }
     }
 

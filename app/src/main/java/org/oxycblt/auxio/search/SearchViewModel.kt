@@ -43,30 +43,30 @@ class SearchViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val mSearchResults = MutableLiveData(listOf<Item>())
-    private var mFilterMode: DisplayMode? = null
-    private var mLastQuery: String? = null
+    private val _searchResults = MutableLiveData(listOf<Item>())
+    private var _filterMode: DisplayMode? = null
+    private var lastQuery: String? = null
 
     /** Current search results from the last [search] call. */
     val searchResults: LiveData<List<Item>>
-        get() = mSearchResults
+        get() = _searchResults
     val filterMode: DisplayMode?
-        get() = mFilterMode
+        get() = _filterMode
 
     init {
-        mFilterMode = settingsManager.searchFilterMode
+        _filterMode = settingsManager.searchFilterMode
     }
 
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
      */
     fun search(context: Context, query: String?) {
-        mLastQuery = query
+        lastQuery = query
 
         val library = musicStore.library
         if (query.isNullOrEmpty() || library == null) {
             logD("No music/query, ignoring search")
-            mSearchResults.value = listOf()
+            _searchResults.value = listOf()
             return
         }
 
@@ -79,48 +79,48 @@ class SearchViewModel : ViewModel() {
 
             // Note: a filter mode of null means to not filter at all.
 
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ARTISTS) {
+            if (_filterMode == null || _filterMode == DisplayMode.SHOW_ARTISTS) {
                 library.artists.filterByOrNull(context, query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_ALBUMS) {
+            if (_filterMode == null || _filterMode == DisplayMode.SHOW_ALBUMS) {
                 library.albums.filterByOrNull(context, query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_GENRES) {
+            if (_filterMode == null || _filterMode == DisplayMode.SHOW_GENRES) {
                 library.genres.filterByOrNull(context, query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
-            if (mFilterMode == null || mFilterMode == DisplayMode.SHOW_SONGS) {
+            if (_filterMode == null || _filterMode == DisplayMode.SHOW_SONGS) {
                 library.songs.filterByOrNull(context, query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
                 }
             }
 
-            mSearchResults.value = results
+            _searchResults.value = results
         }
     }
 
     /** Re-search the library using the last query. Will push results to [searchResults]. */
     fun refresh(context: Context) {
-        search(context, mLastQuery)
+        search(context, lastQuery)
     }
 
     /**
      * Update the current filter mode with a menu [id]. New value will be pushed to [filterMode].
      */
     fun updateFilterModeWithId(context: Context, @IdRes id: Int) {
-        mFilterMode =
+        _filterMode =
             when (id) {
                 R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
                 R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
@@ -129,9 +129,9 @@ class SearchViewModel : ViewModel() {
                 else -> null
             }
 
-        logD("Updating filter mode to $mFilterMode")
+        logD("Updating filter mode to $_filterMode")
 
-        settingsManager.searchFilterMode = mFilterMode
+        settingsManager.searchFilterMode = _filterMode
 
         refresh(context)
     }

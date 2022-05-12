@@ -40,21 +40,21 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val mSongs = MutableLiveData(listOf<Song>())
+    private val _songs = MutableLiveData(listOf<Song>())
     val songs: LiveData<List<Song>>
-        get() = mSongs
+        get() = _songs
 
-    private val mAlbums = MutableLiveData(listOf<Album>())
+    private val _albums = MutableLiveData(listOf<Album>())
     val albums: LiveData<List<Album>>
-        get() = mAlbums
+        get() = _albums
 
-    private val mArtists = MutableLiveData(listOf<Artist>())
+    private val _artists = MutableLiveData(listOf<Artist>())
     val artists: LiveData<List<Artist>>
-        get() = mArtists
+        get() = _artists
 
-    private val mGenres = MutableLiveData(listOf<Genre>())
+    private val _genres = MutableLiveData(listOf<Genre>())
     val genres: LiveData<List<Genre>>
-        get() = mGenres
+        get() = _genres
 
     var tabs: List<DisplayMode> = visibleTabs
         private set
@@ -63,18 +63,18 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     private val visibleTabs: List<DisplayMode>
         get() = settingsManager.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
-    private val mCurrentTab = MutableLiveData(tabs[0])
-    val currentTab: LiveData<DisplayMode> = mCurrentTab
+    private val _currentTab = MutableLiveData(tabs[0])
+    val currentTab: LiveData<DisplayMode> = _currentTab
 
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
      * is set, all tabs (and their respective viewpager fragments) will be recreated from scratch.
      */
-    private val mRecreateTabs = MutableLiveData(false)
-    val recreateTabs: LiveData<Boolean> = mRecreateTabs
+    private val _shouldRecreateTabs = MutableLiveData(false)
+    val recreateTabs: LiveData<Boolean> = _shouldRecreateTabs
 
-    private val mFastScrolling = MutableLiveData(false)
-    val fastScrolling: LiveData<Boolean> = mFastScrolling
+    private val _isFastScrolling = MutableLiveData(false)
+    val isFastScrolling: LiveData<Boolean> = _isFastScrolling
 
     init {
         musicStore.addCallback(this)
@@ -84,11 +84,11 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     /** Update the current tab based off of the new ViewPager position. */
     fun updateCurrentTab(pos: Int) {
         logD("Updating current tab to ${tabs[pos]}")
-        mCurrentTab.value = tabs[pos]
+        _currentTab.value = tabs[pos]
     }
 
     fun finishRecreateTabs() {
-        mRecreateTabs.value = false
+        _shouldRecreateTabs.value = false
     }
 
     fun getSortForDisplay(displayMode: DisplayMode): Sort {
@@ -102,23 +102,23 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     /** Update the currently displayed item's [Sort]. */
     fun updateCurrentSort(sort: Sort) {
-        logD("Updating ${mCurrentTab.value} sort to $sort")
-        when (mCurrentTab.value) {
+        logD("Updating ${_currentTab.value} sort to $sort")
+        when (_currentTab.value) {
             DisplayMode.SHOW_SONGS -> {
                 settingsManager.libSongSort = sort
-                mSongs.value = sort.songs(unlikelyToBeNull(mSongs.value))
+                _songs.value = sort.songs(unlikelyToBeNull(_songs.value))
             }
             DisplayMode.SHOW_ALBUMS -> {
                 settingsManager.libAlbumSort = sort
-                mAlbums.value = sort.albums(unlikelyToBeNull(mAlbums.value))
+                _albums.value = sort.albums(unlikelyToBeNull(_albums.value))
             }
             DisplayMode.SHOW_ARTISTS -> {
                 settingsManager.libArtistSort = sort
-                mArtists.value = sort.artists(unlikelyToBeNull(mArtists.value))
+                _artists.value = sort.artists(unlikelyToBeNull(_artists.value))
             }
             DisplayMode.SHOW_GENRES -> {
                 settingsManager.libGenreSort = sort
-                mGenres.value = sort.genres(unlikelyToBeNull(mGenres.value))
+                _genres.value = sort.genres(unlikelyToBeNull(_genres.value))
             }
             else -> {}
         }
@@ -129,7 +129,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
      * begins to fast scroll.
      */
     fun updateFastScrolling(scrolling: Boolean) {
-        mFastScrolling.value = scrolling
+        _isFastScrolling.value = scrolling
     }
 
     // --- OVERRIDES ---
@@ -137,16 +137,16 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     override fun onMusicUpdate(response: MusicStore.Response) {
         if (response is MusicStore.Response.Ok) {
             val library = response.library
-            mSongs.value = settingsManager.libSongSort.songs(library.songs)
-            mAlbums.value = settingsManager.libAlbumSort.albums(library.albums)
-            mArtists.value = settingsManager.libArtistSort.artists(library.artists)
-            mGenres.value = settingsManager.libGenreSort.genres(library.genres)
+            _songs.value = settingsManager.libSongSort.songs(library.songs)
+            _albums.value = settingsManager.libAlbumSort.albums(library.albums)
+            _artists.value = settingsManager.libArtistSort.artists(library.artists)
+            _genres.value = settingsManager.libGenreSort.genres(library.genres)
         }
     }
 
     override fun onLibTabsUpdate(libTabs: Array<Tab>) {
         tabs = visibleTabs
-        mRecreateTabs.value = true
+        _shouldRecreateTabs.value = true
     }
 
     override fun onCleared() {

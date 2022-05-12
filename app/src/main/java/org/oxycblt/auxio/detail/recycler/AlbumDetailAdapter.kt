@@ -27,12 +27,12 @@ import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
@@ -185,7 +185,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         }
 
         binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songDuration.textSafe = item.seconds.toDuration(false)
+        binding.songDuration.textSafe = item.seconds.formatDuration(false)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }

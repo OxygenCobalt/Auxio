@@ -46,11 +46,11 @@ class DetailAppBarLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     EdgeAppBarLayout(context, attrs, defStyleAttr) {
-    private var mTitleView: AppCompatTextView? = null
-    private var mRecycler: RecyclerView? = null
+    private var titleView: AppCompatTextView? = null
+    private var recycler: RecyclerView? = null
 
     private var titleShown: Boolean? = null
-    private var mTitleAnimator: ValueAnimator? = null
+    private var titleAnimator: ValueAnimator? = null
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -58,7 +58,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun findTitleView(): AppCompatTextView? {
-        val titleView = mTitleView
+        val titleView = titleView
         if (titleView != null) {
             return titleView
         }
@@ -79,12 +79,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             }
 
         newTitleView.alpha = 0f
-        mTitleView = newTitleView
+        this.titleView = newTitleView
         return newTitleView
     }
 
     private fun findRecyclerView(): RecyclerView {
-        val recycler = mRecycler
+        val recycler = recycler
 
         if (recycler != null) {
             return recycler
@@ -92,7 +92,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         val newRecycler = (parent as ViewGroup).findViewById<RecyclerView>(liftOnScrollTargetViewId)
 
-        mRecycler = newRecycler
+        this.recycler = newRecycler
         return newRecycler
     }
 
@@ -101,10 +101,10 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         titleShown = visible
 
-        val titleAnimator = mTitleAnimator
+        val titleAnimator = titleAnimator
         if (titleAnimator != null) {
             titleAnimator.cancel()
-            mTitleAnimator = null
+            this.titleAnimator = null
         }
 
         val titleView = findTitleView()
@@ -121,7 +121,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         if (titleView?.alpha == to) return
 
-        mTitleAnimator =
+        this.titleAnimator =
             ValueAnimator.ofFloat(from, to).apply {
                 addUpdateListener { titleView?.alpha = it.animatedValue as Float }
 

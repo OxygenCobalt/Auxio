@@ -20,6 +20,7 @@ package org.oxycblt.auxio.playback
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -31,12 +32,12 @@ import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.music.toDuration
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.clamp
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.stateList
@@ -55,7 +56,8 @@ import org.oxycblt.auxio.util.textSafe
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
     Slider.OnChangeListener,
-    Slider.OnSliderTouchListener {
+    Slider.OnSliderTouchListener,
+    Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
@@ -77,16 +79,7 @@ class PlaybackPanelFragment :
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.COLLAPSE) }
-
-            setOnMenuItemClickListener { item ->
-                if (item.itemId == R.id.action_queue) {
-                    navModel.mainNavigateTo(MainNavigationAction.QUEUE)
-                    true
-                } else {
-                    false
-                }
-            }
-
+            setOnMenuItemClickListener(this@PlaybackPanelFragment)
             queueItem = menu.findItem(R.id.action_queue)
         }
 
@@ -127,6 +120,8 @@ class PlaybackPanelFragment :
         binding.playbackSkipNext.setOnClickListener { playbackModel.skipNext() }
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
 
+        binding.playbackSeekBar.apply {}
+
         // --- VIEWMODEL SETUP --
 
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
@@ -146,9 +141,20 @@ class PlaybackPanelFragment :
     }
 
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
+        binding.playbackToolbar.setOnMenuItemClickListener(null)
         binding.playbackSong.isSelected = false
         binding.playbackSeekBar.removeOnChangeListener(this)
         binding.playbackSeekBar.removeOnChangeListener(this)
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_queue -> {
+                navModel.mainNavigateTo(MainNavigationAction.QUEUE)
+                true
+            }
+            else -> false
+        }
     }
 
     override fun onStartTrackingTouch(slider: Slider) {
@@ -162,7 +168,7 @@ class PlaybackPanelFragment :
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         if (fromUser) {
-            requireBinding().playbackPosition.textSafe = value.toLong().toDuration(true)
+            requireBinding().playbackPosition.textSafe = value.toLong().formatDuration(true)
         }
     }
 
@@ -178,7 +184,7 @@ class PlaybackPanelFragment :
 
         // Normally if a song had a duration
         val seconds = song.seconds
-        binding.playbackDuration.textSafe = seconds.toDuration(false)
+        binding.playbackDuration.textSafe = seconds.formatDuration(false)
         binding.playbackSeekBar.apply {
             isEnabled = seconds > 0L
             valueTo = max(seconds, 1L).toFloat()
@@ -197,7 +203,7 @@ class PlaybackPanelFragment :
         val binding = requireBinding()
         if (!binding.playbackPosition.isActivated) {
             binding.playbackSeekBar.value = position.toFloat()
-            binding.playbackPosition.textSafe = position.toDuration(true)
+            binding.playbackPosition.textSafe = position.formatDuration(true)
         }
     }
 

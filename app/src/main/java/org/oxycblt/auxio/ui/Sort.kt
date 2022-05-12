@@ -276,10 +276,10 @@ sealed class Sort(open val isAscending: Boolean) {
      * a non-equal result being propagated upwards.
      */
     class MultiComparator<T>(vararg comparators: Comparator<T>) : Comparator<T> {
-        private val mComparators = comparators
+        private val _comparators = comparators
 
         override fun compare(a: T?, b: T?): Int {
-            for (comparator in mComparators) {
+            for (comparator in _comparators) {
                 val result = comparator.compare(a, b)
                 if (result != 0) {
                     return result

@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -68,6 +69,8 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
         playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
         playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
     }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean = false
 
     override fun onItemClick(item: Item) {
         when (item) {
