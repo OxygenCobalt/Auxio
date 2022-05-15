@@ -54,6 +54,7 @@
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenze</string>
     <string name="lbl_author">Sviluppato da OxygenCobalt</string>
+    <string name="lbl_library_counts">Statistiche libreria</string>
 
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Opzioni</string>
@@ -167,7 +168,11 @@
     <string name="clr_grey">Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Canzoni caricate: %d</string>
+    <string name="fmt_songs_loaded">Canzoni trovate: %d</string>
+    <string name="fmt_albums_loaded">Dischi trovati: %d</string>
+    <string name="fmt_artists_loaded">Artisti trovati: %d</string>
+    <string name="fmt_genres_loaded">Generi trovati: %d</string>
+    <string name="fmt_total_duration">Durata totale: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
