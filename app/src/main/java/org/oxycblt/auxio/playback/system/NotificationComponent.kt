@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
@@ -29,7 +30,7 @@ import androidx.media.app.NotificationCompat.MediaStyle
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.loadBitmap
+import org.oxycblt.auxio.coil.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -44,9 +45,13 @@ import org.oxycblt.auxio.util.newMainIntent
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
-class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
-    NotificationCompat.Builder(context, CHANNEL_ID) {
+class NotificationComponent(
+    private val context: Context,
+    private val callback: Callback,
+    sessionToken: MediaSessionCompat.Token
+) : NotificationCompat.Builder(context, CHANNEL_ID) {
     private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
+    private val provider = BitmapProvider(context)
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -79,13 +84,14 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         notificationManager.notify(IntegerTable.NOTIFICATION_CODE, build())
     }
 
+    fun release() {
+        provider.release()
+    }
+
     // --- STATE FUNCTIONS ---
 
-    /**
-     * Set the metadata of the notification using [song].
-     * @param onDone What to do when the loading of the album art is finished
-     */
-    fun updateMetadata(song: Song, parent: MusicParent?, onDone: () -> Unit) {
+    /** Set the metadata of the notification using [song]. */
+    fun updateMetadata(song: Song, parent: MusicParent?) {
         setContentTitle(song.resolveName(context))
         setContentText(song.resolveIndividualArtistName(context))
 
@@ -97,27 +103,41 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
             setSubText(song.resolveName(context))
         }
 
-        // loadBitmap() is concurrent, so only call back to the object calling this function when
-        // the loading is over.
-        loadBitmap(context, song) { bitmap ->
-            setLargeIcon(bitmap)
-            onDone()
-        }
+        provider.load(
+            song,
+            object : BitmapProvider.Target {
+                override fun onCompleted(bitmap: Bitmap?) {
+                    setLargeIcon(bitmap)
+                    callback.onNotificationChanged(this@NotificationComponent)
+                }
+            })
     }
 
     /** Set the playing icon on the notification */
     fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
+
+        if (!provider.isBusy) {
+            callback.onNotificationChanged(this)
+        }
     }
 
     /** Update the first action to reflect the [repeatMode] given. */
     fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
+
+        if (!provider.isBusy) {
+            callback.onNotificationChanged(this)
+        }
     }
 
     /** Update the first action to reflect whether the queue is shuffled or not */
     fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
+
+        if (!provider.isBusy) {
+            callback.onNotificationChanged(this)
+        }
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---
@@ -165,6 +185,10 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
                 iconRes, actionName, context.newBroadcastIntent(actionName))
 
         return action.build()
+    }
+
+    interface Callback {
+        fun onNotificationChanged(component: NotificationComponent)
     }
 
     companion object {

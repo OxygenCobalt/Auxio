@@ -51,7 +51,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.widgets.WidgetController
+import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
 
 /**
@@ -63,13 +63,17 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  *
  * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
  * therefore there's no need to bind to it to deliver commands.
- * @author OxygenCobalt
  *
- * TODO: Synchronize components in a less awful way (Fix issue where rapid-fire updates results in a
- * desynced notification)
+ * TODO: Android Auto
+ *
+ * @author OxygenCobalt
  */
 class PlaybackService :
-    Service(), Player.Listener, PlaybackStateManager.Callback, SettingsManager.Callback {
+    Service(),
+    Player.Listener,
+    NotificationComponent.Callback,
+    PlaybackStateManager.Callback,
+    SettingsManager.Callback {
     // Player components
     private lateinit var player: ExoPlayer
     private val replayGainProcessor = ReplayGainAudioProcessor()
@@ -77,7 +81,7 @@ class PlaybackService :
     // System backend components
     private lateinit var notificationComponent: NotificationComponent
     private lateinit var mediaSessionComponent: MediaSessionComponent
-    private lateinit var widgets: WidgetController
+    private lateinit var widgetComponent: WidgetComponent
     private val systemReceiver = PlaybackReceiver()
 
     // Managers
@@ -101,7 +105,7 @@ class PlaybackService :
         // --- PLAYER SETUP ---
 
         player = newPlayer()
-        player.addListener(this@PlaybackService)
+        player.addListener(this)
 
         positionScope.launch {
             while (true) {
@@ -110,13 +114,27 @@ class PlaybackService :
             }
         }
 
+        // --- PLAYBACKSTATEMANAGER SETUP ---
+
+        playbackManager.addCallback(this)
+        if (playbackManager.isInitialized) {
+            loadSong(playbackManager.song)
+            onSeek(playbackManager.positionMs)
+            onPlayingChanged(playbackManager.isPlaying)
+            onShuffledChanged(playbackManager.isShuffled)
+            onRepeatChanged(playbackManager.repeatMode)
+        }
+
+        // --- SETTINGSMANAGER SETUP ---
+
+        settingsManager.addCallback(this)
+
         // --- SYSTEM SETUP ---
 
-        widgets = WidgetController(this)
+        widgetComponent = WidgetComponent(this)
         mediaSessionComponent = MediaSessionComponent(this, player)
-        notificationComponent = NotificationComponent(this, mediaSessionComponent.token)
+        notificationComponent = NotificationComponent(this, this, mediaSessionComponent.token)
 
-        // Then the notification/headset callbacks
         IntentFilter().apply {
             addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
             addAction(AudioManager.ACTION_HEADSET_PLUG)
@@ -131,17 +149,6 @@ class PlaybackService :
 
             registerReceiver(systemReceiver, this)
         }
-
-        // --- PLAYBACKSTATEMANAGER SETUP ---
-
-        playbackManager.addCallback(this)
-        if (playbackManager.isInitialized) {
-            restore()
-        }
-
-        // --- SETTINGSMANAGER SETUP ---
-
-        settingsManager.addCallback(this)
 
         logD("Service created")
     }
@@ -166,23 +173,23 @@ class PlaybackService :
         stopForeground(true)
         isForeground = false
 
-        unregisterReceiver(systemReceiver)
-
-        serviceJob.cancel()
-        mediaSessionComponent.release()
-        widgets.release()
-        player.release()
+        // Pause just in case this destruction was unexpected.
+        playbackManager.isPlaying = false
 
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
+        unregisterReceiver(systemReceiver)
+        serviceJob.cancel()
 
-        // Pause just in case this destruction was unexpected.
-        playbackManager.isPlaying = false
+        widgetComponent.release()
+        mediaSessionComponent.release()
+        notificationComponent.release()
+        player.release()
 
         logD("Service destroyed")
     }
 
-    // --- PLAYER EVENT LISTENER OVERRIDES ---
+    // --- PLAYER OVERRIDES ---
 
     override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
         super.onPlayWhenReadyChanged(playWhenReady, reason)
@@ -244,14 +251,14 @@ class PlaybackService :
     // --- PLAYBACK STATE CALLBACK OVERRIDES ---
 
     override fun onIndexMoved(index: Int) {
-        onSongChanged(playbackManager.song)
+        loadSong(playbackManager.song)
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        onSongChanged(playbackManager.song)
+        loadSong(playbackManager.song)
     }
 
-    private fun onSongChanged(song: Song?) {
+    private fun loadSong(song: Song?) {
         if (song == null) {
             // Clear if there's nothing to play.
             logD("Nothing playing, stopping playback")
@@ -263,27 +270,24 @@ class PlaybackService :
         logD("Loading ${song.rawName}")
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
-        notificationComponent.updateMetadata(
-            song, playbackManager.parent, ::startForegroundOrNotify)
+        notificationComponent.updateMetadata(song, playbackManager.parent)
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
         notificationComponent.updatePlaying(isPlaying)
-        startForegroundOrNotify()
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         if (!settingsManager.useAltNotifAction) {
             notificationComponent.updateRepeatMode(repeatMode)
-            startForegroundOrNotify()
         }
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
+        logD("${settingsManager.useAltNotifAction}")
         if (settingsManager.useAltNotifAction) {
             notificationComponent.updateShuffled(isShuffled)
-            startForegroundOrNotify()
         }
     }
 
@@ -293,32 +297,44 @@ class PlaybackService :
 
     // --- SETTINGSMANAGER OVERRIDES ---
 
-    override fun onNotifActionUpdate(useAltAction: Boolean) {
-        if (useAltAction) {
-            notificationComponent.updateShuffled(playbackManager.isShuffled)
-        } else {
-            notificationComponent.updateRepeatMode(playbackManager.repeatMode)
-        }
-
-        startForegroundOrNotify()
+    override fun onReplayGainUpdate(mode: ReplayGainMode) {
+        onTracksInfoChanged(player.currentTracksInfo)
     }
 
     override fun onShowCoverUpdate(showCovers: Boolean) {
         playbackManager.song?.let { song ->
-            notificationComponent.updateMetadata(
-                song, playbackManager.parent, ::startForegroundOrNotify)
+            notificationComponent.updateMetadata(song, playbackManager.parent)
         }
     }
 
     override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
         playbackManager.song?.let { song ->
-            notificationComponent.updateMetadata(
-                song, playbackManager.parent, ::startForegroundOrNotify)
+            notificationComponent.updateMetadata(song, playbackManager.parent)
         }
     }
 
-    override fun onReplayGainUpdate(mode: ReplayGainMode) {
-        onTracksInfoChanged(player.currentTracksInfo)
+    override fun onNotifActionUpdate(useAltAction: Boolean) {
+        if (useAltAction) {
+            onShuffledChanged(playbackManager.isShuffled)
+        } else {
+            onRepeatChanged(playbackManager.repeatMode)
+        }
+    }
+
+    // --- NOTIFICATION CALLBACKS ---
+
+    override fun onNotificationChanged(component: NotificationComponent) {
+        if (hasPlayed && playbackManager.song != null) {
+            logD("Starting foreground/notifying")
+
+            if (!isForeground) {
+                startForeground(IntegerTable.NOTIFICATION_CODE, component.build())
+                isForeground = true
+            } else {
+                // If we are already in foreground just update the notification
+                notificationComponent.renotify()
+            }
+        }
     }
 
     // --- OTHER FUNCTIONS ---
@@ -352,37 +368,6 @@ class PlaybackService :
                     .build(),
                 true)
             .build()
-    }
-
-    /** Fully restore the notification and playback state */
-    private fun restore() {
-        logD("Restoring the service state")
-
-        onSongChanged(playbackManager.song)
-        onSeek(playbackManager.positionMs)
-        onPlayingChanged(playbackManager.isPlaying)
-        onShuffledChanged(playbackManager.isShuffled)
-        onRepeatChanged(playbackManager.repeatMode)
-
-        // Notify other classes that rely on this service to also update.
-        widgets.update()
-    }
-
-    /**
-     * Bring the service into the foreground and show the notification, or refresh the notification.
-     */
-    private fun startForegroundOrNotify() {
-        if (hasPlayed && playbackManager.song != null) {
-            logD("Starting foreground/notifying")
-
-            if (!isForeground) {
-                startForeground(IntegerTable.NOTIFICATION_CODE, notificationComponent.build())
-                isForeground = true
-            } else {
-                // If we are already in foreground just update the notification
-                notificationComponent.renotify()
-            }
-        }
     }
 
     /** Stop the foreground state and hide the notification */
@@ -431,7 +416,7 @@ class PlaybackService :
                     playbackManager.isPlaying = false
                     stopAndSave()
                 }
-                WidgetProvider.ACTION_WIDGET_UPDATE -> widgets.update()
+                WidgetProvider.ACTION_WIDGET_UPDATE -> widgetComponent.update()
             }
         }
 

@@ -15,6 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
+@file:Suppress(
+    "PropertyName",
+    "PropertyName",
+    "PropertyName",
+    "PropertyName",
+    "PropertyName",
+    "PropertyName",
+    "PropertyName")
+
 package org.oxycblt.auxio.music
 
 import android.content.ContentUris

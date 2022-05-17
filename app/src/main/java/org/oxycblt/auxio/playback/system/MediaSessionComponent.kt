@@ -19,13 +19,14 @@ package org.oxycblt.auxio.playback.system
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.Player
-import org.oxycblt.auxio.coil.loadBitmap
+import org.oxycblt.auxio.coil.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -36,26 +37,23 @@ import org.oxycblt.auxio.util.logD
 /**
  */
 class MediaSessionComponent(private val context: Context, private val player: Player) :
-    PlaybackStateManager.Callback,
     Player.Listener,
-    SettingsManager.Callback,
-    MediaSessionCompat.Callback() {
+    MediaSessionCompat.Callback(),
+    PlaybackStateManager.Callback,
+    SettingsManager.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settingsManager = SettingsManager.getInstance()
-
-    private val mediaSession = MediaSessionCompat(context, context.packageName)
+    private val mediaSession =
+        MediaSessionCompat(context, context.packageName).apply { isActive = true }
+    private val provider = BitmapProvider(context)
 
     val token: MediaSessionCompat.Token
         get() = mediaSession.sessionToken
 
     init {
-        mediaSession.setCallback(this)
-        playbackManager.addCallback(this)
-        settingsManager.addCallback(this)
         player.addListener(this)
-
-        onSongChanged(playbackManager.song)
-        onPlayingChanged(playbackManager.isPlaying)
+        playbackManager.addCallback(this)
+        mediaSession.setCallback(this)
     }
 
     fun handleMediaButtonIntent(intent: Intent) {
@@ -63,10 +61,111 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     }
 
     fun release() {
+        provider.release()
+        player.removeListener(this)
         playbackManager.removeCallback(this)
         settingsManager.removeCallback(this)
-        player.removeListener(this)
-        mediaSession.release()
+
+        mediaSession.apply {
+            isActive = false
+            release()
+        }
+    }
+
+    // --- PLAYBACKSTATEMANAGER CALLBACKS ---
+
+    override fun onIndexMoved(index: Int) {
+        updateMediaMetadata(playbackManager.song)
+    }
+
+    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
+        updateMediaMetadata(playbackManager.song)
+    }
+
+    private fun updateMediaMetadata(song: Song?) {
+        if (song == null) {
+            mediaSession.setMetadata(emptyMetadata)
+            return
+        }
+
+        val title = song.resolveName(context)
+        val artist = song.resolveIndividualArtistName(context)
+        val metadata =
+            MediaMetadataCompat.Builder()
+                .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                .putText(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.resolveName(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST,
+                    song.album.artist.resolveName(context))
+                .putText(MediaMetadataCompat.METADATA_KEY_AUTHOR, artist)
+                .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
+                .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
+                .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genre.resolveName(context))
+                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track?.toLong() ?: 0L)
+                .putText(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year?.toString())
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
+                .putText(
+                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
+                    song.album.albumCoverUri.toString())
+
+        // Normally, android expects one to provide a URI to the metadata instance instead of
+        // a full blown bitmap. In practice, this is not ideal in the slightest, as we cannot
+        // provide any user customization or quality of life improvements with a flat URI.
+        // Instead, we load a full size bitmap and use it within it's respective fields.
+        provider.load(
+            song,
+            object : BitmapProvider.Target {
+                override fun onCompleted(bitmap: Bitmap?) {
+                    metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
+                    metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
+                    mediaSession.setMetadata(metadata.build())
+                }
+            })
+    }
+
+    override fun onPlayingChanged(isPlaying: Boolean) {
+        invalidateSessionState()
+    }
+
+    override fun onRepeatChanged(repeatMode: RepeatMode) {
+        // TODO: Add the custom actions for Android 13
+        mediaSession.setRepeatMode(
+            when (repeatMode) {
+                RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
+                RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
+                RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
+            })
+    }
+
+    override fun onShuffledChanged(isShuffled: Boolean) {
+        mediaSession.setShuffleMode(
+            if (isShuffled) {
+                PlaybackStateCompat.SHUFFLE_MODE_ALL
+            } else {
+                PlaybackStateCompat.SHUFFLE_MODE_NONE
+            })
+    }
+
+    // --- SETTINGSMANAGER CALLBACKS ---
+
+    override fun onShowCoverUpdate(showCovers: Boolean) {
+        updateMediaMetadata(playbackManager.song)
+    }
+
+    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
+        updateMediaMetadata(playbackManager.song)
+    }
+
+    // --- EXOPLAYER CALLBACKS ---
+
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        invalidateSessionState()
     }
 
     // --- MEDIASESSION CALLBACKS ---
@@ -88,7 +187,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     }
 
     override fun onSeekTo(position: Long) {
-        player.seekTo(position)
+        playbackManager.seekTo(position)
     }
 
     override fun onRewind() {
@@ -117,93 +216,13 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         context.sendBroadcast(Intent(PlaybackService.ACTION_EXIT))
     }
 
-    // --- PLAYBACKSTATEMANAGER CALLBACKS ---
-
-    override fun onIndexMoved(index: Int) {
-        onSongChanged(playbackManager.song)
-    }
-
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        onSongChanged(playbackManager.song)
-    }
-
-    private fun onSongChanged(song: Song?) {
-        if (song == null) {
-            mediaSession.setMetadata(emptyMetadata)
-            return
-        }
-
-        val artistName = song.resolveIndividualArtistName(context)
-
-        val builder =
-            MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, song.resolveName(context))
-                .putString(
-                    MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, song.resolveName(context))
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistName)
-                .putString(MediaMetadataCompat.METADATA_KEY_AUTHOR, artistName)
-                .putString(MediaMetadataCompat.METADATA_KEY_COMPOSER, artistName)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ARTIST, artistName)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, song.album.resolveName(context))
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
-
-        // Load the cover asynchronously. This is the entire reason I don't use a plain
-        // MediaSessionConnector, which AFAIK makes it impossible to load this the way I do
-        // without a bunch of stupid race conditions.
-        loadBitmap(context, song) { bitmap ->
-            builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
-            mediaSession.setMetadata(builder.build())
-        }
-    }
-
-    override fun onPlayingChanged(isPlaying: Boolean) {
-        invalidateSessionState()
-    }
-
-    override fun onRepeatChanged(repeatMode: RepeatMode) {
-        mediaSession.setRepeatMode(
-            when (repeatMode) {
-                RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
-                RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
-                RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
-            })
-    }
-
-    override fun onShuffledChanged(isShuffled: Boolean) {
-        mediaSession.setShuffleMode(
-            if (isShuffled) {
-                PlaybackStateCompat.SHUFFLE_MODE_ALL
-            } else {
-                PlaybackStateCompat.SHUFFLE_MODE_NONE
-            })
-    }
-
-    // -- SETTINGSMANAGER CALLBACKS --
-
-    override fun onShowCoverUpdate(showCovers: Boolean) {
-        onSongChanged(playbackManager.song)
-    }
-
-    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
-        onSongChanged(playbackManager.song)
-    }
-
-    // -- EXOPLAYER CALLBACKS --
-
-    override fun onPositionDiscontinuity(
-        oldPosition: Player.PositionInfo,
-        newPosition: Player.PositionInfo,
-        reason: Int
-    ) {
-        invalidateSessionState()
-    }
-
     // --- MISC ---
 
     private fun invalidateSessionState() {
-        logD("Updating media session state")
+        logD("Updating media session playback state")
 
-        // Position updates arrive faster when you upload STATE_PAUSED for some insane reason.
+        // Position updates arrive faster when you upload STATE_PAUSED, as it resets the clock
+        // that updates the position.
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
@@ -216,30 +235,22 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
         mediaSession.setPlaybackState(state.build())
 
-        state.setState(
-            getPlayerState(), player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
+        val playerState =
+            if (playbackManager.isPlaying) {
+                PlaybackStateCompat.STATE_PLAYING
+            } else {
+                PlaybackStateCompat.STATE_PAUSED
+            }
+
+        state.setState(playerState, player.currentPosition, 1.0f, SystemClock.elapsedRealtime())
 
         mediaSession.setPlaybackState(state.build())
-    }
-
-    private fun getPlayerState(): Int {
-        if (playbackManager.song == null) {
-            // No song, player should be stopped
-            return PlaybackStateCompat.STATE_STOPPED
-        }
-
-        // Otherwise play/pause
-        return if (playbackManager.isPlaying) {
-            PlaybackStateCompat.STATE_PLAYING
-        } else {
-            PlaybackStateCompat.STATE_PAUSED
-        }
     }
 
     companion object {
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
 
-        const val ACTIONS =
+        private const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_PLAY_PAUSE or

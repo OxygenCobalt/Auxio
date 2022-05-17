@@ -23,22 +23,11 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
-import androidx.core.graphics.drawable.toBitmap
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.size.Size
-import coil.transform.RoundedCornersTransformation
-import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
-import org.oxycblt.auxio.coil.SquareFrameTransform
-import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.isLandscape
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -58,75 +47,22 @@ class WidgetProvider : AppWidgetProvider() {
     /*
      * Update the widget based on the playback state.
      */
-    fun update(context: Context, playbackManager: PlaybackStateManager) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val song = playbackManager.song
-
-        if (song == null) {
+    fun update(context: Context, state: WidgetComponent.WidgetState?) {
+        if (state == null) {
             reset(context)
             return
         }
 
-        loadWidgetBitmap(context, song) { bitmap ->
-            val state =
-                WidgetState(
-                    song,
-                    bitmap,
-                    playbackManager.isPlaying,
-                    playbackManager.isShuffled,
-                    playbackManager.repeatMode)
+        // Map each widget form to the cells where it would look at least okay.
+        val views =
+            mapOf(
+                SizeF(180f, 100f) to createTinyWidget(context, state),
+                SizeF(180f, 152f) to createSmallWidget(context, state),
+                SizeF(272f, 152f) to createWideWidget(context, state),
+                SizeF(180f, 270f) to createMediumWidget(context, state),
+                SizeF(272f, 270f) to createLargeWidget(context, state))
 
-            // Map each widget form to the cells where it would look at least okay.
-            val views =
-                mapOf(
-                    SizeF(180f, 100f) to createTinyWidget(context, state),
-                    SizeF(180f, 152f) to createSmallWidget(context, state),
-                    SizeF(272f, 152f) to createWideWidget(context, state),
-                    SizeF(180f, 270f) to createMediumWidget(context, state),
-                    SizeF(272f, 270f) to createLargeWidget(context, state))
-
-            appWidgetManager.applyViewsCompat(context, views)
-        }
-    }
-
-    /**
-     * Custom function for loading bitmaps to the widget in a way that works with the widget
-     * ImageView instances.
-     */
-    private fun loadWidgetBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-        val coverRequest =
-            ImageRequest.Builder(context)
-                .data(song.album)
-                .target(onError = { onDone(null) }, onSuccess = { onDone(it.toBitmap()) })
-
-        // The widget has two distinct styles that we must transform the album art to accommodate:
-        // - Before Android 12, the widget has hard edges, so we don't need to round out the album
-        //   art.
-        // - After Android 12, the widget has round edges, so we need to round out the album art.
-        //   I dislike this, but it's mainly for stylistic cohesion.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Use RoundedCornersTransformation. This is because our hack to get a 1:1 aspect
-            // ratio on widget ImageViews doesn't actually result in a square ImageView, so
-            // clipToOutline won't work.
-            val transform =
-                RoundedCornersTransformation(
-                    context
-                        .getDimenSizeSafe(android.R.dimen.system_app_widget_inner_radius)
-                        .toFloat())
-
-            // The output of RoundedCornersTransformation is dimension-dependent, so scale up the
-            // image to the screen size to ensure consistent radii.
-            val metrics = context.resources.displayMetrics
-            coverRequest
-                .transformations(SquareFrameTransform(), transform)
-                .size(min(metrics.widthPixels, metrics.heightPixels))
-        } else {
-            // Note: Explicitly use the "original" size as without it the scaling logic
-            // in coil breaks down and results in an error.
-            coverRequest.transformations(SquareFrameTransform()).size(Size.ORIGINAL)
-        }
-
-        context.imageLoader.enqueue(coverRequest.build())
+        AppWidgetManager.getInstance(context).applyViewsCompat(context, views)
     }
 
     /*

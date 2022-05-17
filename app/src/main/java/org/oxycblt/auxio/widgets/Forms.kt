@@ -40,7 +40,7 @@ fun createDefaultWidget(context: Context): RemoteViews {
  * The tiny widget is for an edge-case situation where a 2xN widget happens to be smaller than
  * 100dp. It just shows the cover, titles, and a button.
  */
-fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
+fun createTinyWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_tiny)
         .applyMeta(context, state)
         .applyPlayControls(context, state)
@@ -51,7 +51,7 @@ fun createTinyWidget(context: Context, state: WidgetState): RemoteViews {
  * generally because a Medium widget is too large for this widget size and a text-only widget is too
  * small for this widget size.
  */
-fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
+fun createSmallWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_small)
         .applyCover(context, state)
         .applyBasicControls(context, state)
@@ -61,21 +61,21 @@ fun createSmallWidget(context: Context, state: WidgetState): RemoteViews {
  * The medium widget is for 2x3 widgets and shows the cover art, title/artist, and three controls.
  * This is the default widget configuration.
  */
-fun createMediumWidget(context: Context, state: WidgetState): RemoteViews {
+fun createMediumWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_medium)
         .applyMeta(context, state)
         .applyBasicControls(context, state)
 }
 
 /** The wide widget is for Nx2 widgets and is like the small widget but with more controls. */
-fun createWideWidget(context: Context, state: WidgetState): RemoteViews {
+fun createWideWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_wide)
         .applyCover(context, state)
         .applyFullControls(context, state)
 }
 
 /** The large widget is for 3x4 widgets and shows all metadata and controls. */
-fun createLargeWidget(context: Context, state: WidgetState): RemoteViews {
+fun createLargeWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_large)
         .applyMeta(context, state)
         .applyFullControls(context, state)
@@ -87,7 +87,10 @@ private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
     return views
 }
 
-private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteViews {
+private fun RemoteViews.applyMeta(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
     applyCover(context, state)
 
     setTextViewText(R.id.widget_song, state.song.resolveName(context))
@@ -96,9 +99,12 @@ private fun RemoteViews.applyMeta(context: Context, state: WidgetState): RemoteV
     return this
 }
 
-private fun RemoteViews.applyCover(context: Context, state: WidgetState): RemoteViews {
-    if (state.albumArt != null) {
-        setImageViewBitmap(R.id.widget_cover, state.albumArt)
+private fun RemoteViews.applyCover(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
+    if (state.cover != null) {
+        setImageViewBitmap(R.id.widget_cover, state.cover)
         setContentDescription(
             R.id.widget_cover,
             context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
@@ -110,7 +116,10 @@ private fun RemoteViews.applyCover(context: Context, state: WidgetState): Remote
     return this
 }
 
-private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState): RemoteViews {
+private fun RemoteViews.applyPlayControls(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
     setOnClickPendingIntent(
         R.id.widget_play_pause, context.newBroadcastIntent(PlaybackService.ACTION_PLAY_PAUSE))
 
@@ -125,7 +134,10 @@ private fun RemoteViews.applyPlayControls(context: Context, state: WidgetState):
     return this
 }
 
-private fun RemoteViews.applyBasicControls(context: Context, state: WidgetState): RemoteViews {
+private fun RemoteViews.applyBasicControls(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
     applyPlayControls(context, state)
 
     setOnClickPendingIntent(
@@ -137,7 +149,10 @@ private fun RemoteViews.applyBasicControls(context: Context, state: WidgetState)
     return this
 }
 
-private fun RemoteViews.applyFullControls(context: Context, state: WidgetState): RemoteViews {
+private fun RemoteViews.applyFullControls(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
     applyBasicControls(context, state)
 
     setOnClickPendingIntent(

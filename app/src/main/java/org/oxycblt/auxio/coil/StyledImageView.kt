@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.coil
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -27,12 +26,8 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.graphics.drawable.toBitmap
 import coil.dispose
-import coil.imageLoader
 import coil.load
-import coil.request.ImageRequest
-import coil.size.Size
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.math.min
 import org.oxycblt.auxio.R
@@ -115,8 +110,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 }
 
-// TODO: Borg the extension methods into the view, move the loadBitmap call to the service
-// eventually
+// TODO: Borg the extension methods into the view
 
 /** Bind the album cover for a [song]. */
 fun StyledImageView.bindAlbumCover(song: Song) =
@@ -134,7 +128,11 @@ fun StyledImageView.bindArtistImage(artist: Artist) =
 fun StyledImageView.bindGenreImage(genre: Genre) =
     load(genre, R.drawable.ic_genre, R.string.desc_genre_image)
 
-fun <T : Music> StyledImageView.load(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
+private fun <T : Music> StyledImageView.load(
+    music: T,
+    @DrawableRes error: Int,
+    @StringRes desc: Int
+) {
     contentDescription = context.getString(desc, music.resolveName(context))
     dispose()
     load(music) {
@@ -152,20 +150,4 @@ fun <T : Music> StyledImageView.load(music: T, @DrawableRes error: Int, @StringR
                 scaleType = ImageView.ScaleType.MATRIX
             })
     }
-}
-
-// --- OTHER FUNCTIONS ---
-
-/**
- * Get a bitmap for a [song]. [onDone] will be called with the loaded bitmap, or null if loading
- * failed/shouldn't occur. **This not meant for UIs, instead use the Binding Adapters.**
- */
-fun loadBitmap(context: Context, song: Song, onDone: (Bitmap?) -> Unit) {
-    context.imageLoader.enqueue(
-        ImageRequest.Builder(context)
-            .data(song.album)
-            .size(Size.ORIGINAL)
-            .transformations(SquareFrameTransform())
-            .target(onError = { onDone(null) }, onSuccess = { onDone(it.toBitmap()) })
-            .build())
 }

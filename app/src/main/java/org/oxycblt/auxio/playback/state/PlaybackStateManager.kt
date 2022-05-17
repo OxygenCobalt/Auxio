@@ -42,8 +42,12 @@ import org.oxycblt.auxio.util.logD
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
  *
- * TODO: Add a controller role and move song loading/seeking to that TODO: Make PlaybackViewModel
- * pass "delayed actions" to this and then await the service to start it???
+ * TODO: Add a controller role and move song loading/seeking to that
+ *
+ * TODO: Make PlaybackViewModel pass "delayed actions" to this and then await the service to start
+ * it???
+ *
+ * TODO: Bug test app behavior when playback stops
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
