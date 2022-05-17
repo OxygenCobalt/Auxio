@@ -38,6 +38,7 @@ import org.oxycblt.auxio.util.getDimenSizeSafe
  * widget state based off of that. This cannot be rolled into [WidgetProvider] directly, as it may
  * result in memory leaks if [PlaybackStateManager]/[SettingsManager] gets created and bound to
  * without being released.
+ * @author OxygenCobalt
  */
 class WidgetComponent(private val context: Context) :
     PlaybackStateManager.Callback, SettingsManager.Callback {
@@ -55,7 +56,7 @@ class WidgetComponent(private val context: Context) :
      * Force-update the widget.
      */
     fun update() {
-        // Updating Auxio's widget is unlike the rest of Auxio for two reasons:
+        // Updating Auxio's widget is unlike the rest of Auxio for a few reasons:
         // 1. We can't use the typical primitives like ViewModels
         // 2. The component range is far smaller, so we have to do some odd hacks to get
         // the same UX.
@@ -67,6 +68,7 @@ class WidgetComponent(private val context: Context) :
             return
         }
 
+        // Note: Store these values here so they remain consistent once the bitmap is loaded.
         val isPlaying = playbackManager.isPlaying
         val repeatMode = playbackManager.repeatMode
         val isShuffled = playbackManager.isShuffled

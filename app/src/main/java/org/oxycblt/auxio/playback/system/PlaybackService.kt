@@ -154,12 +154,6 @@ class PlaybackService :
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
-            // Workaround to get GadgetBridge and other apps that blindly query for
-            // ACTION_MEDIA_BUTTON working.
-            mediaSessionComponent.handleMediaButtonIntent(intent)
-        }
-
         return START_NOT_STICKY
     }
 
@@ -285,7 +279,6 @@ class PlaybackService :
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
-        logD("${settingsManager.useAltNotifAction}")
         if (settingsManager.useAltNotifAction) {
             notificationComponent.updateShuffled(isShuffled)
         }

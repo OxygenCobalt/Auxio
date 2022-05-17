@@ -221,17 +221,16 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     private fun invalidateSessionState() {
         logD("Updating media session playback state")
 
-        // Position updates arrive faster when you upload STATE_PAUSED, as it resets the clock
-        // that updates the position.
+        // Position updates arrive faster when you upload a state that is different, as it
+        // forces the system to re-poll the position.
+        // FIXME: For some reason however, positions just DON'T UPDATE AT ALL when you
+        //  change from FROM THE APP ONLY WHEN THE PLAYER IS PAUSED. AAAAAAAAAAAAAAAAAAAAAAAAAA
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
                 .setBufferedPosition(player.bufferedPosition)
-                .setState(
-                    PlaybackStateCompat.STATE_PAUSED,
-                    player.currentPosition,
-                    1.0f,
-                    SystemClock.elapsedRealtime())
+
+        state.setState(PlaybackStateCompat.STATE_NONE, player.bufferedPosition, 1.0f)
 
         mediaSession.setPlaybackState(state.build())
 
