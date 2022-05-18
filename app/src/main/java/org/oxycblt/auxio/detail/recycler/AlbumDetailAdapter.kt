@@ -25,6 +25,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
+import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.BindingViewHolder
@@ -50,6 +51,7 @@ class AlbumDetailAdapter(listener: Listener) :
         super.getCreatorFromItem(item)
             ?: when (item) {
                 is Album -> AlbumDetailViewHolder.CREATOR
+                is DiscHeader -> DiscHeaderViewHolder.CREATOR
                 is Song -> AlbumSongViewHolder.CREATOR
                 else -> null
             }
@@ -58,6 +60,7 @@ class AlbumDetailAdapter(listener: Listener) :
         super.getCreatorFromViewType(viewType)
             ?: when (viewType) {
                 AlbumDetailViewHolder.CREATOR.viewType -> AlbumDetailViewHolder.CREATOR
+                DiscHeaderViewHolder.CREATOR.viewType -> DiscHeaderViewHolder.CREATOR
                 AlbumSongViewHolder.CREATOR.viewType -> AlbumSongViewHolder.CREATOR
                 else -> null
             }
@@ -67,6 +70,7 @@ class AlbumDetailAdapter(listener: Listener) :
 
         when (item) {
             is Album -> (viewHolder as AlbumDetailViewHolder).bind(item, listener)
+            is DiscHeader -> (viewHolder as DiscHeaderViewHolder).bind(item, Unit)
             is Song -> (viewHolder as AlbumSongViewHolder).bind(item, listener)
         }
     }
@@ -100,8 +104,8 @@ class AlbumDetailAdapter(listener: Listener) :
                     return when {
                         oldItem is Album && newItem is Album ->
                             AlbumDetailViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
-                        oldItem is SortHeader && newItem is SortHeader ->
-                            SortHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
+                        oldItem is DiscHeader && newItem is DiscHeader ->
+                            DiscHeaderViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         oldItem is Song && newItem is Song ->
                             AlbumSongViewHolder.DIFFER.areItemsTheSame(oldItem, newItem)
                         else -> DetailAdapter.DIFFER.areItemsTheSame(oldItem, newItem)
@@ -158,6 +162,32 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.year == newItem.year &&
                         oldItem.songs.size == newItem.songs.size &&
                         oldItem.totalDuration == newItem.totalDuration
+            }
+    }
+}
+
+data class DiscHeader(override val id: Long, val disc: Int) : Item()
+
+class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
+    BindingViewHolder<DiscHeader, Unit>(binding.root) {
+    override fun bind(item: DiscHeader, listener: Unit) {
+        binding.discNo.textSafe = "Disc 1"
+    }
+
+    companion object {
+        val CREATOR =
+            object : Creator<DiscHeaderViewHolder> {
+                override val viewType: Int
+                    get() = IntegerTable.ITEM_TYPE_DISC_HEADER
+
+                override fun create(context: Context) =
+                    DiscHeaderViewHolder(ItemDiscHeaderBinding.inflate(context.inflater))
+            }
+
+        val DIFFER =
+            object : SimpleItemCallback<DiscHeader>() {
+                override fun areItemsTheSame(oldItem: DiscHeader, newItem: DiscHeader) =
+                    oldItem.disc == newItem.disc
             }
     }
 }

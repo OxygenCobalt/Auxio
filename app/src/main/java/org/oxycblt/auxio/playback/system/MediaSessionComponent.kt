@@ -224,7 +224,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         // Position updates arrive faster when you upload a state that is different, as it
         // forces the system to re-poll the position.
         // FIXME: For some reason however, positions just DON'T UPDATE AT ALL when you
-        //  change from FROM THE APP ONLY WHEN THE PLAYER IS PAUSED. AAAAAAAAAAAAAAAAAAAAAAAAAA
+        //  change from FROM THE APP ONLY WHEN THE PLAYER IS PAUSED.
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)

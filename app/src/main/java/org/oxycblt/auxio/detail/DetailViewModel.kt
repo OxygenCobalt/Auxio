@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.recycler.DiscHeader
 import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -137,7 +138,7 @@ class DetailViewModel : ViewModel() {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(id = -2, R.string.lbl_songs))
-        data.addAll(albumSort.album(album))
+        data.add(DiscHeader(id = -3, 1))
         _albumData.value = data
     }
 }
