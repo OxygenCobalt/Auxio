@@ -116,12 +116,28 @@ class DetailViewModel : ViewModel() {
         refreshGenreData(genre)
     }
 
-    private fun refreshGenreData(genre: Genre) {
-        logD("Refreshing genre data")
-        val data = mutableListOf<Item>(genre)
-        data.add(SortHeader(-2, R.string.lbl_songs))
-        data.addAll(genreSort.genre(genre))
-        _genreData.value = data
+    private fun refreshAlbumData(album: Album) {
+        logD("Refreshing album data")
+        val data = mutableListOf<Item>(album)
+        data.add(SortHeader(id = -2, R.string.lbl_songs))
+
+        // To create a good user experience regarding disc numbers, we intersperse
+        // items that show the disc number throughout the album's songs. In the case
+        // that the  album does not have disc numbers, we omit the header.
+        val songs = albumSort.songs(album.songs)
+        val byDisc = songs.groupBy { it.disc ?: 1 }
+        if (byDisc.size > 1) {
+            for (entry in byDisc.entries) {
+                val disc = entry.key
+                val discSongs = entry.value
+                data.add(DiscHeader(id = -2L - disc, disc)) // Ensure ID uniqueness
+                data.addAll(discSongs)
+            }
+        } else {
+            data.addAll(songs)
+        }
+
+        _albumData.value = data
     }
 
     private fun refreshArtistData(artist: Artist) {
@@ -130,28 +146,15 @@ class DetailViewModel : ViewModel() {
         data.add(Header(-2, R.string.lbl_albums))
         data.addAll(Sort.ByYear(false).albums(artist.albums))
         data.add(SortHeader(-3, R.string.lbl_songs))
-        data.addAll(artistSort.artist(artist))
+        data.addAll(artistSort.songs(artist.songs))
         _artistData.value = data.toList()
     }
 
-    private fun refreshAlbumData(album: Album) {
-        logD("Refreshing album data")
-        val data = mutableListOf<Item>(album)
-        data.add(SortHeader(id = -2, R.string.lbl_songs))
-
-        val songs = albumSort.album(album)
-        val byDisc = songs.groupBy { it.disc ?: 1 }
-        if (byDisc.size > 1) {
-            for (entry in byDisc.entries) {
-                val disc = entry.key
-                val discSongs = entry.value
-                data.add(DiscHeader(id = -2L - disc, disc))
-                data.addAll(discSongs)
-            }
-        } else {
-            data.addAll(songs)
-        }
-
-        _albumData.value = data
+    private fun refreshGenreData(genre: Genre) {
+        logD("Refreshing genre data")
+        val data = mutableListOf<Item>(genre)
+        data.add(SortHeader(-2, R.string.lbl_songs))
+        data.addAll(genreSort.songs(genre.songs))
+        _genreData.value = data
     }
 }

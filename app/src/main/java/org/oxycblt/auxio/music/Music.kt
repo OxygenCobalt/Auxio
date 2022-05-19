@@ -15,14 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-@file:Suppress(
-    "PropertyName",
-    "PropertyName",
-    "PropertyName",
-    "PropertyName",
-    "PropertyName",
-    "PropertyName",
-    "PropertyName")
+@file:Suppress("PropertyName", "FunctionName")
 
 package org.oxycblt.auxio.music
 
@@ -57,7 +50,9 @@ sealed class Music : Item() {
  * [Music] variant that denotes that this object is a parent of other data objects, such as an
  * [Album] or [Artist]
  */
-sealed class MusicParent : Music()
+sealed class MusicParent : Music() {
+    abstract val songs: List<Song>
+}
 
 /** The data object for a song. */
 data class Song(
@@ -171,7 +166,7 @@ data class Album(
     /** The URI for the cover art corresponding to this album. */
     val albumCoverUri: Uri,
     /** The songs of this album. */
-    val songs: List<Song>,
+    override val songs: List<Song>,
     /** Internal field. Do not use. */
     val _artistGroupingName: String,
 ) : MusicParent() {
@@ -241,11 +236,11 @@ data class Artist(
     override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_artist)
 
     /** The songs of this artist. */
-    val songs = albums.flatMap { it.songs }
+    override val songs = albums.flatMap { it.songs }
 }
 
 /** The data object for a genre. */
-data class Genre(override val rawName: String?, val songs: List<Song>) : MusicParent() {
+data class Genre(override val rawName: String?, override val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
             song._linkGenre(this)

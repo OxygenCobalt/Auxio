@@ -124,7 +124,7 @@ class PlaybackStateManager private constructor() {
                 PlaybackMode.IN_GENRE -> song.genre
             }
 
-        applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song, true)
+        applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
         notifyNewPlayback()
         notifyShuffledChanged()
         seekTo(0)
@@ -136,10 +136,10 @@ class PlaybackStateManager private constructor() {
      * Play a [parent], such as an artist or album.
      * @param shuffled Whether the queue is shuffled or not
      */
-    fun play(parent: MusicParent?, shuffled: Boolean) {
+    fun play(parent: MusicParent, shuffled: Boolean) {
         val library = musicStore.library ?: return
         this.parent = parent
-        applyNewQueue(library, shuffled, null, true)
+        applyNewQueue(library, shuffled, null)
         notifyNewPlayback()
         notifyShuffledChanged()
         seekTo(0)
@@ -151,7 +151,7 @@ class PlaybackStateManager private constructor() {
     fun shuffleAll() {
         val library = musicStore.library ?: return
         parent = null
-        applyNewQueue(library, true, null, true)
+        applyNewQueue(library, true, null)
         notifyNewPlayback()
         notifyShuffledChanged()
         seekTo(0)
@@ -232,55 +232,41 @@ class PlaybackStateManager private constructor() {
     fun reshuffle(shuffled: Boolean) {
         val library = musicStore.library ?: return
         val song = song ?: return
-        applyNewQueue(library, shuffled, song, false)
+        applyNewQueue(library, shuffled, song)
         notifyQueueChanged()
         notifyShuffledChanged()
     }
 
-    private fun applyNewQueue(
-        library: MusicStore.Library,
-        shuffled: Boolean,
-        keep: Song?,
-        regenShuffledQueue: Boolean
-    ) {
-        if (shuffled) {
-            if (regenShuffledQueue) {
-                _queue =
-                    parent
-                        .let { parent ->
-                            when (parent) {
-                                null -> library.songs
-                                is Album -> parent.songs
-                                is Artist -> parent.songs
-                                is Genre -> parent.songs
-                            }
-                        }
-                        .toMutableList()
-            }
+    private fun applyNewQueue(library: MusicStore.Library, shuffled: Boolean, keep: Song?) {
+        val newQueue = (parent?.songs ?: library.songs).toMutableList()
+        val newIndex: Int
 
-            _queue.shuffle()
+        if (shuffled) {
+            newQueue.shuffle()
 
             if (keep != null) {
-                _queue.add(0, _queue.removeAt(_queue.indexOf(keep)))
+                newQueue.add(0, newQueue.removeAt(newQueue.indexOf(keep)))
             }
 
-            index = 0
+            newIndex = 0
         } else {
-            _queue =
-                parent
-                    .let { parent ->
-                        when (parent) {
-                            null -> settingsManager.libSongSort.songs(library.songs)
-                            is Album -> settingsManager.detailAlbumSort.album(parent)
-                            is Artist -> settingsManager.detailArtistSort.artist(parent)
-                            is Genre -> settingsManager.detailGenreSort.genre(parent)
-                        }
+            val sort =
+                parent.let { parent ->
+                    when (parent) {
+                        null -> settingsManager.libSongSort
+                        is Album -> settingsManager.detailAlbumSort
+                        is Artist -> settingsManager.detailArtistSort
+                        is Genre -> settingsManager.detailGenreSort
                     }
-                    .toMutableList()
+                }
 
-            index = keep?.let(queue::indexOf) ?: 0
+            sort.songsInPlace(newQueue)
+
+            newIndex = keep?.let(queue::indexOf) ?: 0
         }
 
+        _queue = newQueue
+        index = newIndex
         isShuffled = shuffled
     }
 

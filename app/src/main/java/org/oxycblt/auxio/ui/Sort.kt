@@ -25,15 +25,14 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
  * A data class representing the sort modes used in Auxio.
  *
- * Sorting can be done by Name, Artist, Album, or Year. Sorting of names is always case-insensitive
- * and article-aware. Certain datatypes may only support a subset of sorts since certain sorts
- * cannot be easily applied to them (For Example, [Artist] and [ByYear] or [ByAlbum]).
+ * Sorting can be done by Name, Artist, Album, and others. Sorting of names is always
+ * case-insensitive and article-aware. Certain datatypes may only support a subset of sorts since
+ * certain sorts cannot be easily applied to them (For Example, [Artist] and [ByYear] or [ByAlbum]).
  *
  * Internally, sorts are saved as an integer in the following format
  *
@@ -50,24 +49,44 @@ sealed class Sort(open val isAscending: Boolean) {
     protected abstract val sortIntCode: Int
     abstract val itemId: Int
 
-    open fun songs(songs: Collection<Song>): List<Song> {
+    fun songs(songs: Collection<Song>): List<Song> {
+        val mutable = songs.toMutableList()
+        songsInPlace(mutable)
+        return mutable
+    }
+
+    fun albums(albums: Collection<Album>): List<Album> {
+        val mutable = albums.toMutableList()
+        albumsInPlace(mutable)
+        return mutable
+    }
+
+    fun artists(artists: Collection<Artist>): List<Artist> {
+        val mutable = artists.toMutableList()
+        artistsInPlace(mutable)
+        return mutable
+    }
+
+    fun genres(genres: Collection<Genre>): List<Genre> {
+        val mutable = genres.toMutableList()
+        genresInPlace(mutable)
+        return mutable
+    }
+
+    open fun songsInPlace(songs: MutableList<Song>) {
         logW("This sort is not supported for songs")
-        return songs.toList()
     }
 
-    open fun albums(albums: Collection<Album>): List<Album> {
+    open fun albumsInPlace(albums: MutableList<Album>) {
         logW("This sort is not supported for albums")
-        return albums.toList()
     }
 
-    open fun artists(artists: Collection<Artist>): List<Artist> {
+    open fun artistsInPlace(artists: MutableList<Artist>) {
         logW("This sort is not supported for artists")
-        return artists.toList()
     }
 
-    open fun genres(genres: Collection<Genre>): List<Genre> {
+    open fun genresInPlace(genres: MutableList<Genre>) {
         logW("This sort is not supported for genres")
-        return genres.toList()
     }
 
     /**
@@ -84,20 +103,20 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_name
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            return songs.sortedWith(compareByDynamic(NameComparator()) { it })
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(compareByDynamic(NameComparator()) { it })
         }
 
-        override fun albums(albums: Collection<Album>): List<Album> {
-            return albums.sortedWith(compareByDynamic(NameComparator()) { it })
+        override fun albumsInPlace(albums: MutableList<Album>) {
+            albums.sortWith(compareByDynamic(NameComparator()) { it })
         }
 
-        override fun artists(artists: Collection<Artist>): List<Artist> {
-            return artists.sortedWith(compareByDynamic(NameComparator()) { it })
+        override fun artistsInPlace(artists: MutableList<Artist>) {
+            artists.sortWith(compareByDynamic(NameComparator()) { it })
         }
 
-        override fun genres(genres: Collection<Genre>): List<Genre> {
-            return genres.sortedWith(compareByDynamic(NameComparator()) { it })
+        override fun genresInPlace(genres: MutableList<Genre>) {
+            genres.sortWith(compareByDynamic(NameComparator()) { it })
         }
 
         override fun ascending(newIsAscending: Boolean): Sort {
@@ -113,8 +132,8 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_album
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            return songs.sortedWith(
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
                 MultiComparator(
                     compareByDynamic(NameComparator()) { it.album },
                     compareBy(NullableComparator()) { it.track },
@@ -134,8 +153,8 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_artist
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            return songs.sortedWith(
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
                 MultiComparator(
                     compareByDynamic(NameComparator()) { it.album.artist },
                     compareByDescending(NullableComparator()) { it.album.year },
@@ -144,8 +163,8 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun albums(albums: Collection<Album>): List<Album> {
-            return albums.sortedWith(
+        override fun albumsInPlace(albums: MutableList<Album>) {
+            albums.sortWith(
                 MultiComparator(
                     compareByDynamic(NameComparator()) { it.artist },
                     compareByDescending(NullableComparator()) { it.year },
@@ -165,8 +184,8 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_year
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            return songs.sortedWith(
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
                 MultiComparator(
                     compareByDynamic(NullableComparator()) { it.album.year },
                     compareByDescending(NameComparator()) { it.album },
@@ -174,8 +193,8 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun albums(albums: Collection<Album>): List<Album> {
-            return albums.sortedWith(
+        override fun albumsInPlace(albums: MutableList<Album>) {
+            albums.sortWith(
                 MultiComparator(
                     compareByDynamic(NullableComparator()) { it.year },
                     compareBy(NameComparator()) { it }))
@@ -198,9 +217,8 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_disc
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            logD(songs)
-            return songs.sortedWith(
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
                 MultiComparator(
                     compareByDynamic(NullableComparator()) { it.disc },
                     compareBy(NullableComparator()) { it.track },
@@ -223,9 +241,8 @@ sealed class Sort(open val isAscending: Boolean) {
         override val itemId: Int
             get() = R.id.option_sort_track
 
-        override fun songs(songs: Collection<Song>): List<Song> {
-            logD(songs)
-            return songs.sortedWith(
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
                 MultiComparator(
                     compareBy(NullableComparator()) { it.disc },
                     compareByDynamic(NullableComparator()) { it.track },
@@ -254,30 +271,6 @@ sealed class Sort(open val isAscending: Boolean) {
             R.id.option_sort_track -> ByTrack(isAscending)
             else -> null
         }
-    }
-
-    /**
-     * Sort the songs in an album.
-     * @see songs
-     */
-    fun album(album: Album): List<Song> {
-        return songs(album.songs)
-    }
-
-    /**
-     * Sort the songs in an artist.
-     * @see songs
-     */
-    fun artist(artist: Artist): List<Song> {
-        return songs(artist.songs)
-    }
-
-    /**
-     * Sort the songs in a genre.
-     * @see songs
-     */
-    fun genre(genre: Genre): List<Song> {
-        return songs(genre.songs)
     }
 
     protected inline fun <T : Music, K> compareByDynamic(
