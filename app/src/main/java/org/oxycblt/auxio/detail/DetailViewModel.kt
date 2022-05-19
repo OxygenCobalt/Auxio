@@ -139,6 +139,7 @@ class DetailViewModel : ViewModel() {
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(id = -2, R.string.lbl_songs))
         data.add(DiscHeader(id = -3, 1))
+        data.addAll(albumSort.album(album))
         _albumData.value = data
     }
 }

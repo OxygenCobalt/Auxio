@@ -192,8 +192,18 @@ object Indexer {
                     // and T is the track. This is dumb and insane and forces me to mangle track
                     // numbers above 1000, but there is nothing we can do that won't break the app
                     // below API 30.
-                    // TODO: Disk number support?
-                    val track = cursor.getIntOrNull(trackIndex)?.mod(1000)
+                    var track: Int? = null
+                    var disc: Int? = null
+
+                    val rawTrack = cursor.getIntOrNull(trackIndex)
+                    if (rawTrack != null) {
+                        track = rawTrack % 1000
+                        disc = rawTrack / 1000
+                        if (disc == 0) {
+                            // A disc number of 0 means that there is no disc.
+                            disc = null
+                        }
+                    }
 
                     val duration = cursor.getLong(durationIndex)
                     val year = cursor.getIntOrNull(yearIndex)
@@ -225,6 +235,7 @@ object Indexer {
                             fileName,
                             duration,
                             track,
+                            disc,
                             id,
                             year,
                             album,

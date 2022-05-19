@@ -68,6 +68,8 @@ data class Song(
     val duration: Long,
     /** The track number of this song, null if there isn't any. */
     val track: Int?,
+    /** The disc number of this song, null if there isn't any. */
+    val disc: Int?,
     /** Internal field. Do not use. */
     val _mediaStoreId: Long,
     /** Internal field. Do not use. */
