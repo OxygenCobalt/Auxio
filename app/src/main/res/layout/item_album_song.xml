@@ -15,6 +15,7 @@
         style="@style/Widget.Auxio.Image.Small"
         android:src="@drawable/ic_song"
         android:scaleType="matrix"
+        tools:src="@null"
         app:layout_constraintBottom_toBottomOf="@+id/song_track"
         app:layout_constraintEnd_toEndOf="@+id/song_track"
         app:layout_constraintStart_toStartOf="@+id/song_track"
@@ -33,6 +34,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
         android:textColor="@color/sel_on_cover_bg"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/song_name"
         app:layout_constraintHorizontal_bias="0.5"

@@ -9,8 +9,7 @@
     <org.oxycblt.auxio.coil.StyledImageView
         android:id="@+id/disc_item"
         style="@style/Widget.Auxio.Image.Small"
-        android:layout_width="@dimen/size_cover_compact"
-        android:scaleType="center"
+        android:scaleType="matrix"
         android:src="@drawable/ic_album"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

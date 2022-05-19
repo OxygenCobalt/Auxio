@@ -10,6 +10,7 @@
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items
 - Fixed a variety of esoteric crashes with queue state
+- Fixed music indexing error when the OS would not provide a file name
 
 #### What's Changed
 - Audio focus is no longer configurable

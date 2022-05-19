@@ -135,7 +135,8 @@ object Indexer {
      * songs are properly linked up.
      */
     private fun loadSongs(context: Context): List<Song> {
-        val blacklistDatabase = ExcludedDatabase.getInstance(context)
+        val excludedDatabase = ExcludedDatabase.getInstance(context)
+        val paths = excludedDatabase.readPaths()
         var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
         val args = mutableListOf<String>()
 
@@ -143,9 +144,7 @@ object Indexer {
         // DATA was deprecated in Android 10, but it was un-deprecated in Android 12L,
         // so it's probably okay to use it. The only reason we would want to use
         // another method is for external partitions support, but there is no demand for that.
-        // TODO: Determine if grokking the actual DATA value outside of SQL is more or less
-        //  efficient than the current system
-        for (path in blacklistDatabase.readPaths()) {
+        for (path in excludedDatabase.readPaths()) {
             selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
             args += "$path%" // Append % so that the selector properly detects children
         }
@@ -164,7 +163,8 @@ object Indexer {
                     MediaStore.Audio.AudioColumns.ALBUM,
                     MediaStore.Audio.AudioColumns.ALBUM_ID,
                     MediaStore.Audio.AudioColumns.ARTIST,
-                    AUDIO_COLUMN_ALBUM_ARTIST),
+                    AUDIO_COLUMN_ALBUM_ARTIST,
+                    MediaStore.Audio.AudioColumns.DATA),
                 selector,
                 args.toTypedArray(),
                 null)
@@ -182,11 +182,22 @@ object Indexer {
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
                 val artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
                 val albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+                val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idIndex)
                     val title = cursor.getString(titleIndex)
-                    val fileName = cursor.getString(fileIndex)
+
+                    // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
+                    // from the android system. Once gain though, OEM issues get in our way and
+                    // this field isn't available on some platforms. In that case, see if we can
+                    // grok a file name from the DATA field.
+                    val fileName =
+                        cursor.getStringOrNull(fileIndex)
+                            ?: cursor.getStringOrNull(dataIndex)?.run {
+                                substringAfterLast('/', "").ifEmpty { null }
+                            }
+                                ?: MediaStore.UNKNOWN_STRING
 
                     // The TRACK field is for some reason formatted as DTTT, where D is the disk
                     // and T is the track. This is dumb and insane and forces me to mangle track
@@ -223,11 +234,6 @@ object Indexer {
                         }
 
                     val albumArtist = cursor.getStringOrNull(albumArtistIndex)
-
-                    // Note: Directory parsing is currently disabled until artist images are added.
-                    // val dirs = cursor.getStringOrNull(dataIndex)?.run {
-                    //     substringBeforeLast("/", "").ifEmpty { null }
-                    // }
 
                     songs.add(
                         Song(
