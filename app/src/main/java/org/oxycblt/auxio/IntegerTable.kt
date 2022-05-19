@@ -92,6 +92,10 @@ object IntegerTable {
     const val SORT_BY_ALBUM = 0xA10E
     /** Sort.ByYear */
     const val SORT_BY_YEAR = 0xA10F
+    /** Sort.ByDisc */
+    const val SORT_BY_DISC = 0xA114
+    /** Sort.ByTrack */
+    const val SORT_BY_TRACK = 0xA115
 
     /** ReplayGainMode.Off */
     const val REPLAY_GAIN_MODE_OFF = 0xA110

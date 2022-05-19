@@ -24,6 +24,8 @@
     <string name="lbl_sort_artist">Artist</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
+    <string name="lbl_sort_disc">Disc</string>
+    <string name="lbl_sort_track">Track</string>
     <string name="lbl_sort_asc">Ascending</string>
 
     <string name="lbl_playback">Now Playing</string>
@@ -168,6 +170,7 @@
     <string name="clr_grey">Grey</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
+    <string name="fmt_disc_no">Disc %d</string>
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
     <string name="fmt_albums_loaded">Albums loaded: %d</string>
     <string name="fmt_artists_loaded">Artists loaded: %d</string>

@@ -110,7 +110,11 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             anchor,
             detailModel.albumSort,
             onConfirm = { detailModel.albumSort = it },
-            showItem = { it == R.id.option_sort_asc })
+            showItem = {
+                it == R.id.option_sort_asc ||
+                    it == R.id.option_sort_disc ||
+                    it == R.id.option_sort_track
+            })
     }
 
     override fun onNavigateToArtist() {

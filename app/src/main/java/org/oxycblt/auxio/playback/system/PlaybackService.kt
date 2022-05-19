@@ -114,21 +114,6 @@ class PlaybackService :
             }
         }
 
-        // --- PLAYBACKSTATEMANAGER SETUP ---
-
-        playbackManager.addCallback(this)
-        if (playbackManager.isInitialized) {
-            loadSong(playbackManager.song)
-            onSeek(playbackManager.positionMs)
-            onPlayingChanged(playbackManager.isPlaying)
-            onShuffledChanged(playbackManager.isShuffled)
-            onRepeatChanged(playbackManager.repeatMode)
-        }
-
-        // --- SETTINGSMANAGER SETUP ---
-
-        settingsManager.addCallback(this)
-
         // --- SYSTEM SETUP ---
 
         widgetComponent = WidgetComponent(this)
@@ -149,6 +134,21 @@ class PlaybackService :
 
             registerReceiver(systemReceiver, this)
         }
+
+        // --- PLAYBACKSTATEMANAGER SETUP ---
+
+        playbackManager.addCallback(this)
+        if (playbackManager.isInitialized) {
+            loadSong(playbackManager.song)
+            onSeek(playbackManager.positionMs)
+            onPlayingChanged(playbackManager.isPlaying)
+            onShuffledChanged(playbackManager.isShuffled)
+            onRepeatChanged(playbackManager.repeatMode)
+        }
+
+        // --- SETTINGSMANAGER SETUP ---
+
+        settingsManager.addCallback(this)
 
         logD("Service created")
     }

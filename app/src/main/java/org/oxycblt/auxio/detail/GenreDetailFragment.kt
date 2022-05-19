@@ -22,6 +22,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
 import org.oxycblt.auxio.detail.recycler.GenreDetailAdapter
@@ -90,7 +91,11 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onShowSortMenu(anchor: View) {
-        showSortMenu(anchor, detailModel.genreSort, onConfirm = { detailModel.genreSort = it })
+        showSortMenu(
+            anchor,
+            detailModel.genreSort,
+            onConfirm = { detailModel.genreSort = it },
+            showItem = { it != R.id.option_sort_disc && it != R.id.option_sort_track })
     }
 
     private fun handleNavigation(item: Music?) {

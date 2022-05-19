@@ -181,9 +181,17 @@ class SettingsManager private constructor(context: Context) :
 
     /** The detail album sort mode */
     var detailAlbumSort: Sort
-        get() =
-            Sort.fromIntCode(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+        get() {
+            var sort =
+                Sort.fromIntCode(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
+                    ?: Sort.ByDisc(true)
+
+            if (sort is Sort.ByName) {
+                sort = Sort.ByDisc(sort.isAscending)
+            }
+
+            return sort
+        }
         set(value) {
             prefs.edit {
                 putInt(KEY_DETAIL_ALBUM_SORT, value.intCode)

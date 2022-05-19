@@ -171,7 +171,7 @@ data class DiscHeader(override val id: Long, val disc: Int) : Item()
 class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
     BindingViewHolder<DiscHeader, Unit>(binding.root) {
     override fun bind(item: DiscHeader, listener: Unit) {
-        binding.discNo.textSafe = "Disc 1"
+        binding.discNo.textSafe = binding.context.getString(R.string.fmt_disc_no, item.disc)
     }
 
     companion object {

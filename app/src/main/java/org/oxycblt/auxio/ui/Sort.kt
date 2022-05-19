@@ -25,6 +25,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -185,6 +186,57 @@ sealed class Sort(open val isAscending: Boolean) {
         }
     }
 
+    /**
+     * Sort by the disc, and then track number of an item. Only supported by [Song]. Do not use this
+     * in a main sorting view, as it is not assigned to a particular item ID
+     */
+    class ByDisc(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_DISC
+
+        // Not an available option, so no ID is set
+        override val itemId: Int
+            get() = R.id.option_sort_disc
+
+        override fun songs(songs: Collection<Song>): List<Song> {
+            logD(songs)
+            return songs.sortedWith(
+                MultiComparator(
+                    compareByDynamic(NullableComparator()) { it.disc },
+                    compareBy(NullableComparator()) { it.track },
+                    compareBy(NameComparator()) { it }))
+        }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByDisc(newIsAscending)
+        }
+    }
+
+    /**
+     * Sort by the disc, and then track number of an item. Only supported by [Song]. Do not use this
+     * in a main sorting view, as it is not assigned to a particular item ID
+     */
+    class ByTrack(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_TRACK
+
+        override val itemId: Int
+            get() = R.id.option_sort_track
+
+        override fun songs(songs: Collection<Song>): List<Song> {
+            logD(songs)
+            return songs.sortedWith(
+                MultiComparator(
+                    compareBy(NullableComparator()) { it.disc },
+                    compareByDynamic(NullableComparator()) { it.track },
+                    compareBy(NameComparator()) { it }))
+        }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByTrack(newIsAscending)
+        }
+    }
+
     val intCode: Int
         get() = sortIntCode.shl(1) or if (isAscending) 1 else 0
 
@@ -198,6 +250,8 @@ sealed class Sort(open val isAscending: Boolean) {
             R.id.option_sort_artist -> ByArtist(isAscending)
             R.id.option_sort_album -> ByAlbum(isAscending)
             R.id.option_sort_year -> ByYear(isAscending)
+            R.id.option_sort_disc -> ByDisc(isAscending)
+            R.id.option_sort_track -> ByTrack(isAscending)
             else -> null
         }
     }
@@ -207,10 +261,7 @@ sealed class Sort(open val isAscending: Boolean) {
      * @see songs
      */
     fun album(album: Album): List<Song> {
-        return album.songs.sortedWith(
-            MultiComparator(
-                compareByDynamic(NullableComparator()) { it.track },
-                compareBy(NameComparator()) { it }))
+        return songs(album.songs)
     }
 
     /**
@@ -304,6 +355,8 @@ sealed class Sort(open val isAscending: Boolean) {
                 IntegerTable.SORT_BY_ARTIST -> ByArtist(ascending)
                 IntegerTable.SORT_BY_ALBUM -> ByAlbum(ascending)
                 IntegerTable.SORT_BY_YEAR -> ByYear(ascending)
+                IntegerTable.SORT_BY_DISC -> ByDisc(ascending)
+                IntegerTable.SORT_BY_TRACK -> ByTrack(ascending)
                 else -> null
             }
         }

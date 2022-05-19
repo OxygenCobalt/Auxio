@@ -65,6 +65,10 @@ class SongListFragment : HomeListFragment<Song>() {
 
             // Year -> Use Full Year
             is Sort.ByYear -> song.album.year?.toString()
+
+            // Unreachable state
+            is Sort.ByDisc,
+            is Sort.ByTrack -> null
         }
     }
 

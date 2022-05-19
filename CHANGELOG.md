@@ -3,6 +3,7 @@
 ## dev [v2.2.3, v2.3.0, or v3.0.0]
 
 #### What's New
+- Added disc number support
 - Added ReplayGain support for below-reference volume tracks [i.e positive ReplayGain values] 
 - About screen now shows counts for multiple types of library items, alongside a total duration
 

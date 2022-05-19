@@ -96,7 +96,11 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
             anchor,
             detailModel.artistSort,
             onConfirm = { detailModel.artistSort = it },
-            showItem = { id -> id != R.id.option_sort_artist })
+            showItem = { id ->
+                id != R.id.option_sort_artist &&
+                    id != R.id.option_sort_disc &&
+                    id != R.id.option_sort_track
+            })
     }
 
     private fun handleNavigation(item: Music?) {

@@ -138,8 +138,20 @@ class DetailViewModel : ViewModel() {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
         data.add(SortHeader(id = -2, R.string.lbl_songs))
-        data.add(DiscHeader(id = -3, 1))
-        data.addAll(albumSort.album(album))
+
+        val songs = albumSort.album(album)
+        val byDisc = songs.groupBy { it.disc ?: 1 }
+        if (byDisc.size > 1) {
+            for (entry in byDisc.entries) {
+                val disc = entry.key
+                val discSongs = entry.value
+                data.add(DiscHeader(id = -2L - disc, disc))
+                data.addAll(discSongs)
+            }
+        } else {
+            data.addAll(songs)
+        }
+
         _albumData.value = data
     }
 }
