@@ -36,7 +36,6 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
@@ -187,8 +186,7 @@ class PlaybackPanelFragment :
         binding.playbackDuration.textSafe = seconds.formatDuration(false)
         binding.playbackSeekBar.apply {
             isEnabled = seconds > 0L
-            valueTo = max(seconds, 1L).toFloat()
-            value = seconds.clamp(0, valueTo.toLong()).toFloat()
+            valueToSafe = max(seconds, 1L).toFloat()
         }
     }
 
@@ -202,7 +200,7 @@ class PlaybackPanelFragment :
         // around.
         val binding = requireBinding()
         if (!binding.playbackPosition.isActivated) {
-            binding.playbackSeekBar.value = position.toFloat()
+            binding.playbackSeekBar.valueSafe = position.toFloat()
             binding.playbackPosition.textSafe = position.formatDuration(true)
         }
     }
@@ -221,4 +219,26 @@ class PlaybackPanelFragment :
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
+
+    private var Slider.valueSafe: Float
+        get() = value
+        set(v) {
+            value =
+                if (v > valueTo) {
+                    valueTo
+                } else {
+                    v
+                }
+        }
+
+    private var Slider.valueToSafe: Float
+        get() = valueTo
+        set(v) {
+            valueTo =
+                if (value > v) {
+                    value
+                } else {
+                    v
+                }
+        }
 }

@@ -32,7 +32,7 @@ import org.oxycblt.auxio.music.Song
  * Pretty much each service component needs to load bitmaps of some kind, but doing a blind image
  * request with some target callbacks could result in overlapping requests causing unrelated
  * updates. This class (to an extent) resolves this by keeping track of the current request and
- * disposes of it every time a new request is created. This greatly reduces the surface for race
+ * disposing of it every time a new request is created. This greatly reduces the surface for race
  * conditions save the case of instruction-by-instruction data races, which are effectively
  * impossible to solve.
  *

@@ -7,6 +7,14 @@ assignees: ''
 
 ---
 
+<!--
+!!! PLEASE READ THIS BEFORE WRITING YOUR ISSUE !!!
+There have been several major features that Auxio has already rejected, due to either technical
+issues or due to it not being in scope for the app. To ensure that you are not requesting a
+feature that was already rejected, please go here:
+https://github.com/OxygenCobalt/Auxio/issues?q=label%3Awontadd-technical%2Cwontadd-out-of-scope+
+-->
+
 #### Describe the feature you want to implement:
 <!-- A clear and concise description of what you want to be added. -->
 

@@ -127,7 +127,6 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
         notifyNewPlayback()
         notifyShuffledChanged()
-        seekTo(0)
         isPlaying = true
         isInitialized = true
     }
@@ -142,7 +141,6 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, shuffled, null)
         notifyNewPlayback()
         notifyShuffledChanged()
-        seekTo(0)
         isPlaying = true
         isInitialized = true
     }
@@ -154,7 +152,6 @@ class PlaybackStateManager private constructor() {
         applyNewQueue(library, true, null)
         notifyNewPlayback()
         notifyShuffledChanged()
-        seekTo(0)
         isPlaying = true
         isInitialized = true
     }
@@ -186,7 +183,6 @@ class PlaybackStateManager private constructor() {
     private fun goto(idx: Int, play: Boolean) {
         index = idx
         notifyIndexMoved()
-        seekTo(0)
         isPlaying = play
     }
 
@@ -262,8 +258,10 @@ class PlaybackStateManager private constructor() {
 
             sort.songsInPlace(newQueue)
 
-            newIndex = keep?.let(queue::indexOf) ?: 0
+            newIndex = keep?.let(newQueue::indexOf) ?: 0
         }
+
+        logD("$newIndex $newQueue")
 
         _queue = newQueue
         index = newIndex

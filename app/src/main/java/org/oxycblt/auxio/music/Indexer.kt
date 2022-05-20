@@ -136,7 +136,6 @@ object Indexer {
      */
     private fun loadSongs(context: Context): List<Song> {
         val excludedDatabase = ExcludedDatabase.getInstance(context)
-        val paths = excludedDatabase.readPaths()
         var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
         val args = mutableListOf<String>()
 
@@ -189,14 +188,14 @@ object Indexer {
                     val title = cursor.getString(titleIndex)
 
                     // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
-                    // from the android system. Once gain though, OEM issues get in our way and
+                    // from the android system. Once again though, OEM issues get in our way and
                     // this field isn't available on some platforms. In that case, see if we can
                     // grok a file name from the DATA field.
                     val fileName =
                         cursor.getStringOrNull(fileIndex)
-                            ?: cursor.getStringOrNull(dataIndex)?.run {
-                                substringAfterLast('/', "").ifEmpty { null }
-                            }
+                            ?: cursor
+                                .getStringOrNull(dataIndex)
+                                ?.substringAfterLast('/', MediaStore.UNKNOWN_STRING)
                                 ?: MediaStore.UNKNOWN_STRING
 
                     // The TRACK field is for some reason formatted as DTTT, where D is the disk

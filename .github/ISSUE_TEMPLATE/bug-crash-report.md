@@ -26,12 +26,12 @@ assignees: ''
 If possible, provide a stack trace or a Logcat. This can help identify the issue. 
 To take a logcat, you must do the following:
 1. Use a desktop/laptop to download the android platform tools from https://developer.android.com/studio/releases/platform-tools.
-2. Extract the downloaded file to a folder
+2. Extract the downloaded file to a folder.
 3. Enable USB debugging on your phone [See https://developer.android.com/studio/command-line/adb#Enabling], and then connect your
 phone to a laptop. You will get a prompt to "Allow USB debugging" when you run the logcat command. Accept this.
 4. Open up a terminal/command prompt in that folder and run:
 	- `./adb -d logcat | grep -i "[DWE] Auxio"` in the case of a bug [may require some changes on windows]
-	- `./adb -d logcat AndroidRuntime:E *:S` in the case of a crash.
+	- `./adb -d logcat AndroidRuntime:E *:S` in the case of a crash
 5. Copy and paste the output to this area of the issue.
 -->
 

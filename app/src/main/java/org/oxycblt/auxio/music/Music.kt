@@ -51,6 +51,7 @@ sealed class Music : Item() {
  * [Album] or [Artist]
  */
 sealed class MusicParent : Music() {
+    /** The songs that this parent owns. */
     abstract val songs: List<Song>
 }
 

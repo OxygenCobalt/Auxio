@@ -294,6 +294,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     private fun restorePlaybackState() {
         logD("Attempting to restore playback state")
 
+        onNewPlayback(playbackManager.index, playbackManager.queue, playbackManager.parent)
         onPositionChanged(playbackManager.positionMs)
         onPlayingChanged(playbackManager.isPlaying)
         onShuffledChanged(playbackManager.isShuffled)

@@ -16,12 +16,6 @@ This does not rule out these additions, but they are not accepted as often as ot
 
 Feel free to fork Auxio to add your own feature set however.
 
-#### Additions that have already been rejected (and why):
-- Folder View/Grouping [#10] (Out of scope)
-- Recently added list [#18] (Out of scope)
-- Lyrics [#19] (Out of scope)
-- Tag editing [#33] (Out of scope)
-- Gapless Playback [#35] (Technical issues, may change in the future)
-- Reduce leading instrument [#45] (Technical issues, Out of scope)
-- Opening music through a provider [#30] (Out of scope)
-- Cuesheet support [#83]
+## Additions that have already been rejected
+
+To see an up-to-date list on all of the features that have been rejected, see [this link](https://github.com/OxygenCobalt/Auxio/issues?q=label%3Awontadd-technical%2Cwontadd-out-of-scope+)

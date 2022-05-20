@@ -262,6 +262,7 @@ class PlaybackService :
         }
 
         logD("Loading ${song.rawName}")
+        player.seekTo(0)
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
         notificationComponent.updateMetadata(song, playbackManager.parent)
