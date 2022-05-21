@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.replaygain
 
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.audio.AudioProcessor
@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
+import java.lang.UnsupportedOperationException
 import java.nio.ByteBuffer
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
@@ -38,8 +39,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * audio stream. Instead of leveraging the volume attribute like other implementations, this system
  * manipulates the bitstream itself to modify the volume, which allows the use of positive
  * ReplayGain values.
- *
- * TODO: Pre-amp values
  *
  * @author OxygenCobalt
  */
@@ -64,23 +63,21 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
      * Vanilla Music's implementation.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (metadata == null || settingsManager.replayGainMode == ReplayGainMode.OFF) {
-            logW(
-                "Not applying replaygain [" +
-                    "metadata: ${metadata != null}, " +
-                    "enabled: ${settingsManager.replayGainMode == ReplayGainMode.OFF}]")
+        if (settingsManager.replayGainMode == ReplayGainMode.OFF) {
+            logW("ReplayGain not enabled")
             volume = 1f
             return
         }
 
-        val gain = parseReplayGain(metadata)
+        val gain = metadata?.let(::parseReplayGain)
+        val preAmp = settingsManager.replayGainPreAmp
 
         val adjust =
             if (gain != null) {
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
                     when (settingsManager.replayGainMode) {
-                        ReplayGainMode.OFF -> error("Unreachable")
+                        ReplayGainMode.OFF -> throw UnsupportedOperationException()
 
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
@@ -96,17 +93,24 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                                 playbackManager.song?.album?.id == playbackManager.parent?.id
                     }
 
-                if (useAlbumGain) {
-                    logD("Using album gain")
-                    gain.album
-                } else {
-                    logD("Using track gain")
-                    gain.track
-                }
+                val resolvedGain =
+                    if (useAlbumGain) {
+                        logD("Using album gain")
+                        gain.album
+                    } else {
+                        logD("Using track gain")
+                        gain.track
+                    }
+
+                // Apply the "With tags" adjustment
+                resolvedGain + preAmp.with
             } else {
-                // No gain tags were present
-                0f
+                // No gain tags were present, just apply the adjustment without tags.
+                logD("No ReplayGain tags present ")
+                preAmp.without
             }
+
+        logD("Applying ReplayGain adjustment ${adjust}db")
 
         // Final adjustment along the volume curve.
         volume = 10f.pow(adjust / 20f)

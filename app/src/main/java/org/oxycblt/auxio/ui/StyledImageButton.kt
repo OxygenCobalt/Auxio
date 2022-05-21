@@ -35,9 +35,9 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * More specifically, this class add two features:
  * - Specification of the icon size. This is to accommodate the playback buttons, which tend to be
  * larger as by default the playback icons look terrible with the gobs of whitespace everywhere.
- * - Addition of an indicator, which is a dot that can denote when a button is active. This is
- * also useful for the playback buttons, as at times highlighting them is not enough to
- * differentiate them.
+ * - Addition of an indicator, which is a dot that can denote when a button is active. This is also
+ * useful for the playback buttons, as at times highlighting them is not enough to differentiate
+ * them.
  * @author OxygenCobalt
  */
 class StyledImageButton

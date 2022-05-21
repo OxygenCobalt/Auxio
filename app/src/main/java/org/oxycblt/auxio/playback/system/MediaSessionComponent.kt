@@ -52,6 +52,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     init {
         player.addListener(this)
         playbackManager.addCallback(this)
+        settingsManager.addCallback(this)
         mediaSession.setCallback(this)
     }
 
@@ -101,9 +102,6 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track?.toLong() ?: 0L)
                 .putText(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year?.toString())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
-                .putText(
-                    MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
-                    song.album.albumCoverUri.toString())
 
         // Normally, android expects one to provide a URI to the metadata instance instead of
         // a full blown bitmap. In practice, this is not ideal in the slightest, as we cannot
@@ -145,11 +143,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
     // --- SETTINGSMANAGER CALLBACKS ---
 
-    override fun onShowCoverUpdate(showCovers: Boolean) {
-        updateMediaMetadata(playbackManager.song)
-    }
-
-    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
+    override fun onCoverSettingsChanged() {
         updateMediaMetadata(playbackManager.song)
     }
 

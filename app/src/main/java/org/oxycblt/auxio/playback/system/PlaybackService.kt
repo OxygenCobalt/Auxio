@@ -47,6 +47,7 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
@@ -291,24 +292,18 @@ class PlaybackService :
 
     // --- SETTINGSMANAGER OVERRIDES ---
 
-    override fun onReplayGainUpdate(mode: ReplayGainMode) {
+    override fun onReplayGainSettingsChanged() {
         onTracksInfoChanged(player.currentTracksInfo)
     }
 
-    override fun onShowCoverUpdate(showCovers: Boolean) {
+    override fun onCoverSettingsChanged() {
         playbackManager.song?.let { song ->
             notificationComponent.updateMetadata(song, playbackManager.parent)
         }
     }
 
-    override fun onQualityCoverUpdate(doQualityCovers: Boolean) {
-        playbackManager.song?.let { song ->
-            notificationComponent.updateMetadata(song, playbackManager.parent)
-        }
-    }
-
-    override fun onNotifActionUpdate(useAltAction: Boolean) {
-        if (useAltAction) {
+    override fun onNotifSettingsChanged() {
+        if (settingsManager.useAltNotifAction) {
             onShuffledChanged(playbackManager.isShuffled)
         } else {
             onRepeatChanged(playbackManager.repeatMode)

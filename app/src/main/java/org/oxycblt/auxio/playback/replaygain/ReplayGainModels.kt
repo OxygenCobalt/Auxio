@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback.system
+package org.oxycblt.auxio.playback.replaygain
 
 import org.oxycblt.auxio.IntegerTable
 
@@ -42,3 +42,9 @@ enum class ReplayGainMode {
         }
     }
 }
+
+/** Represents the ReplayGain pre-amp */
+data class ReplayGainPreAmp(
+    val with: Float,
+    val without: Float,
+)

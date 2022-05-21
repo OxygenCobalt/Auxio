@@ -29,7 +29,6 @@ import android.content.Intent
  * KitKat don't break! To prevent Auxio from not showing up at all in these apps, we declare a
  * BroadcastReceiver in the manifest that actually does nothing. Any broadcast by apps should be
  * routed by the media session when the service exists.
- * @author OxygenCobalt
  */
 class MediaButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {}

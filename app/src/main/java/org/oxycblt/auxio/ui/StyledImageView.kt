@@ -45,8 +45,8 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
  * images.
  *
- * Default behavior includes the addition of a tonal background, automatic sizing of icons to
- * half of the view size, and corner radius application depending on user preference.
+ * Default behavior includes the addition of a tonal background, automatic sizing of icons to half
+ * of the view size, and corner radius application depending on user preference.
  * @author OxygenCobalt
  */
 class StyledImageView

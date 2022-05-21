@@ -24,7 +24,8 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.playback.state.PlaybackMode
-import org.oxycblt.auxio.playback.system.ReplayGainMode
+import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
+import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent
@@ -103,6 +104,20 @@ class SettingsManager private constructor(context: Context) :
         get() =
             ReplayGainMode.fromIntCode(prefs.getInt(KEY_REPLAY_GAIN, Int.MIN_VALUE))
                 ?: ReplayGainMode.OFF
+
+    /** The current ReplayGain pre-amp configuration */
+    var replayGainPreAmp: ReplayGainPreAmp
+        get() =
+            ReplayGainPreAmp(
+                prefs.getFloat(KEY_REPLAY_GAIN_PRE_AMP_WITH, 0f),
+                prefs.getFloat(KEY_REPLAY_GAIN_PRE_AMP_WITHOUT, 0f))
+        set(value) {
+            prefs.edit {
+                putFloat(KEY_REPLAY_GAIN_PRE_AMP_WITH, value.with)
+                putFloat(KEY_REPLAY_GAIN_PRE_AMP_WITHOUT, value.without)
+                apply()
+            }
+        }
 
     /** What queue to create when a song is selected (ex. From All Songs or Search) */
     val songPlaybackMode: PlaybackMode
@@ -186,6 +201,7 @@ class SettingsManager private constructor(context: Context) :
                 Sort.fromIntCode(prefs.getInt(KEY_DETAIL_ALBUM_SORT, Int.MIN_VALUE))
                     ?: Sort.ByDisc(true)
 
+            // Correct legacy album sort modes to Disc
             if (sort is Sort.ByName) {
                 sort = Sort.ByDisc(sort.isAscending)
             }
@@ -239,12 +255,11 @@ class SettingsManager private constructor(context: Context) :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
-            KEY_USE_ALT_NOTIFICATION_ACTION ->
-                callbacks.forEach { it.onNotifActionUpdate(useAltNotifAction) }
-            KEY_SHOW_COVERS -> callbacks.forEach { it.onShowCoverUpdate(showCovers) }
-            KEY_QUALITY_COVERS -> callbacks.forEach { it.onQualityCoverUpdate(useQualityCovers) }
-            KEY_LIB_TABS -> callbacks.forEach { it.onLibTabsUpdate(libTabs) }
-            KEY_REPLAY_GAIN -> callbacks.forEach { it.onReplayGainUpdate(replayGainMode) }
+            KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach { it.onNotifSettingsChanged() }
+            KEY_SHOW_COVERS, KEY_QUALITY_COVERS -> callbacks.forEach { it.onCoverSettingsChanged() }
+            KEY_LIB_TABS -> callbacks.forEach { it.onLibraryChanged() }
+            KEY_REPLAY_GAIN, KEY_REPLAY_GAIN_PRE_AMP_WITH, KEY_REPLAY_GAIN_PRE_AMP_WITHOUT ->
+                callbacks.forEach { it.onReplayGainSettingsChanged() }
         }
     }
 
@@ -254,11 +269,10 @@ class SettingsManager private constructor(context: Context) :
      * context.
      */
     interface Callback {
-        fun onLibTabsUpdate(libTabs: Array<Tab>) {}
-        fun onNotifActionUpdate(useAltAction: Boolean) {}
-        fun onShowCoverUpdate(showCovers: Boolean) {}
-        fun onQualityCoverUpdate(doQualityCovers: Boolean) {}
-        fun onReplayGainUpdate(mode: ReplayGainMode) {}
+        fun onLibraryChanged() {}
+        fun onNotifSettingsChanged() {}
+        fun onCoverSettingsChanged() {}
+        fun onReplayGainSettingsChanged() {}
     }
 
     companion object {
@@ -276,6 +290,9 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_HEADSET_AUTOPLAY = "auxio_headset_autoplay"
         const val KEY_REPLAY_GAIN = "auxio_replay_gain"
+        const val KEY_REPLAY_GAIN_PRE_AMP = "auxio_pre_amp"
+        const val KEY_REPLAY_GAIN_PRE_AMP_WITH = "auxio_pre_amp_with"
+        const val KEY_REPLAY_GAIN_PRE_AMP_WITHOUT = "auxio_pre_amp_without"
 
         const val KEY_SONG_PLAYBACK_MODE = "KEY_SONG_PLAY_MODE2"
         const val KEY_KEEP_SHUFFLE = "KEY_KEEP_SHUFFLE"

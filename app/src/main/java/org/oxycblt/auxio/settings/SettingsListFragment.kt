@@ -61,7 +61,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         preferenceManager.onDisplayPreferenceDialogListener = this
         preferenceScreen.children.forEach(::recursivelyHandlePreference)
 
-        // Make the RecycleBiew edge-to-edge capable
+        // Make the RecycleView edge-to-edge capable
         view.findViewById<RecyclerView>(androidx.preference.R.id.recycler_view).apply {
             clipToPadding = false
 

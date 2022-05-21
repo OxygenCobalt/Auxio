@@ -131,8 +131,7 @@ class WidgetComponent(private val context: Context) :
     override fun onPlayingChanged(isPlaying: Boolean) = update()
     override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
-    override fun onShowCoverUpdate(showCovers: Boolean) = update()
-    override fun onQualityCoverUpdate(doQualityCovers: Boolean) = update()
+    override fun onCoverSettingsChanged() = update()
 
     /*
      * An immutable condensed variant of the current playback state, used so that PlaybackStateManager

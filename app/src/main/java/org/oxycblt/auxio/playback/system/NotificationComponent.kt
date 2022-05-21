@@ -35,13 +35,14 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
 /**
  * The unified notification for [PlaybackService]. Due to the nature of how this notification is
  * used, it is *not self-sufficient*. Updates have to be delivered manually, as to prevent state
- * inconsistency when the foreground state is started.
+ * inconsistency derived from callback order.
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
@@ -108,6 +109,7 @@ class NotificationComponent(
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
                     setLargeIcon(bitmap)
+                    setLargeIcon(null)
                     callback.onNotificationChanged(this@NotificationComponent)
                 }
             })
