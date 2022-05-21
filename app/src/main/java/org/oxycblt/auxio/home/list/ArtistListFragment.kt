@@ -23,11 +23,14 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ArtistViewHolder
+import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.PrimitiveBackingData
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -46,8 +49,24 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         homeModel.artists.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
     }
 
-    override fun getPopup(pos: Int) =
-        unlikelyToBeNull(homeModel.artists.value)[pos].sortName?.run { first().uppercase() }
+    override fun getPopup(pos: Int): String? {
+        val artist = unlikelyToBeNull(homeModel.artists.value)[pos]
+
+        // Change how we display the popup depending on the mode.
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS)) {
+            // By Name -> Use Name
+            is Sort.ByName -> artist.sortName?.run { first().uppercase() }
+
+            // Duration -> Use formatted duration
+            is Sort.ByDuration -> artist.durationSecs.formatDuration(false)
+
+            // Count -> Use song count
+            is Sort.ByCount -> artist.songs.size.toString()
+
+            // Unsupported sort, error gracefully
+            else -> null
+        }
+    }
 
     override fun onItemClick(item: Item) {
         check(item is Music)

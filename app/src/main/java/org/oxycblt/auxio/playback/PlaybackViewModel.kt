@@ -99,7 +99,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Play a [song] with the [mode] specified. [mode] will default to the preferred song playback
      * mode of the user if not specified.
      */
-    fun playSong(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
+    fun play(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
         playbackManager.play(song, mode)
     }
 
@@ -107,10 +107,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Play an [album].
      * @param shuffled Whether to shuffle the new queue
      */
-    fun playAlbum(album: Album, shuffled: Boolean) {
+    fun play(album: Album, shuffled: Boolean) {
         if (album.songs.isEmpty()) {
             logE("Album is empty, Not playing")
-
             return
         }
 
@@ -121,10 +120,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Play an [artist].
      * @param shuffled Whether to shuffle the new queue
      */
-    fun playArtist(artist: Artist, shuffled: Boolean) {
+    fun play(artist: Artist, shuffled: Boolean) {
         if (artist.songs.isEmpty()) {
             logE("Artist is empty, Not playing")
-
             return
         }
 
@@ -135,10 +133,9 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
      * Play a [genre].
      * @param shuffled Whether to shuffle the new queue
      */
-    fun playGenre(genre: Genre, shuffled: Boolean) {
+    fun play(genre: Genre, shuffled: Boolean) {
         if (genre.songs.isEmpty()) {
             logE("Genre is empty, Not playing")
-
             return
         }
 
@@ -148,22 +145,21 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     /**
      * Play using a file [uri]. This will not play instantly during the initial startup sequence.
      */
-    fun playWithUri(uri: Uri, context: Context) {
+    fun play(uri: Uri, context: Context) {
         // Check if everything is already running to run the URI play
         if (playbackManager.isInitialized && musicStore.library != null) {
-            playWithUriInternal(uri, context)
+            playUriImpl(uri, context)
         } else {
             logD("Cant play this URI right now, waiting")
-
             intentUri = uri
         }
     }
 
-    /** Play with a file URI. This is called after [playWithUri] once its deemed safe to do so. */
-    private fun playWithUriInternal(uri: Uri, context: Context) {
+    /** Play with a file URI. This is called after [play] once its deemed safe to do so. */
+    private fun playUriImpl(uri: Uri, context: Context) {
         logD("Playing with uri $uri")
         val library = musicStore.library ?: return
-        library.findSongForUri(uri, context.contentResolver)?.let { song -> playSong(song) }
+        library.findSongForUri(uri, context.contentResolver)?.let { song -> play(song) }
     }
 
     /** Shuffle all songs */
@@ -174,19 +170,19 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
     // --- POSITION FUNCTIONS ---
 
     /** Update the position and push it to [PlaybackStateManager] */
-    fun setPosition(progress: Long) {
-        playbackManager.seekTo(progress * 1000)
+    fun seekTo(positionSecs: Long) {
+        playbackManager.seekTo(positionSecs * 1000)
     }
 
     // --- QUEUE FUNCTIONS ---
 
     /** Skip to the next song. */
-    fun skipNext() {
+    fun next() {
         playbackManager.next()
     }
 
     /** Skip to the previous song. */
-    fun skipPrev() {
+    fun prev() {
         playbackManager.prev()
     }
 
@@ -271,14 +267,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     /**
      * Restore playback on startup. This can do one of two things:
-     * - Play a file intent that was given by MainActivity in [playWithUri]
+     * - Play a file intent that was given by MainActivity in [play]
      * - Restore the last playback state if there is no active file intent.
      */
     fun setupPlayback(context: Context) {
         val intentUri = intentUri
 
         if (intentUri != null) {
-            playWithUriInternal(intentUri, context)
+            playUriImpl(intentUri, context)
             // Remove the uri after finishing the calls so that this does not fire again.
             this.intentUri = null
         } else if (!playbackManager.isInitialized) {

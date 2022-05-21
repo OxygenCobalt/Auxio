@@ -129,17 +129,17 @@ class ActionMenu(
         when (id) {
             R.id.action_play -> {
                 when (data) {
-                    is Album -> playbackModel.playAlbum(data, false)
-                    is Artist -> playbackModel.playArtist(data, false)
-                    is Genre -> playbackModel.playGenre(data, false)
+                    is Album -> playbackModel.play(data, false)
+                    is Artist -> playbackModel.play(data, false)
+                    is Genre -> playbackModel.play(data, false)
                     else -> {}
                 }
             }
             R.id.action_shuffle -> {
                 when (data) {
-                    is Album -> playbackModel.playAlbum(data, true)
-                    is Artist -> playbackModel.playArtist(data, true)
-                    is Genre -> playbackModel.playGenre(data, true)
+                    is Album -> playbackModel.play(data, true)
+                    is Artist -> playbackModel.play(data, true)
+                    is Genre -> playbackModel.play(data, true)
                     else -> {}
                 }
             }

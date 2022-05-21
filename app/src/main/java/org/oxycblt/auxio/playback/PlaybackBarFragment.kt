@@ -78,11 +78,11 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             }
         }
 
-        binding.playbackSkipPrev?.setOnClickListener { playbackModel.skipPrev() }
+        binding.playbackSkipPrev?.setOnClickListener { playbackModel.prev() }
 
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 
-        binding.playbackSkipNext?.setOnClickListener { playbackModel.skipNext() }
+        binding.playbackSkipNext?.setOnClickListener { playbackModel.next() }
 
         // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
         // we use colorSecondary instead of colorSurfaceVariant. This is because
@@ -107,7 +107,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             binding.playbackCover.bindAlbumCover(song)
             binding.playbackSong.textSafe = song.resolveName(context)
             binding.playbackInfo.textSafe = song.resolveIndividualArtistName(context)
-            binding.playbackProgressBar.max = song.seconds.toInt()
+            binding.playbackProgressBar.max = song.durationSecs.toInt()
         }
     }
 

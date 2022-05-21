@@ -260,7 +260,7 @@ object Indexer {
                         it._mediaStoreArtistName to
                         it._mediaStoreAlbumArtistName to
                         it.track to
-                        it.duration
+                        it.durationMs
                 }
                 .toMutableList()
 

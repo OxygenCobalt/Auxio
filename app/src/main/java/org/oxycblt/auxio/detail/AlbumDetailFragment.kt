@@ -89,7 +89,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
     override fun onItemClick(item: Item) {
         if (item is Song) {
-            playbackModel.playSong(item, PlaybackMode.IN_ALBUM)
+            playbackModel.play(item, PlaybackMode.IN_ALBUM)
         }
     }
 
@@ -98,11 +98,11 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playAlbum(unlikelyToBeNull(detailModel.currentAlbum.value), false)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playAlbum(unlikelyToBeNull(detailModel.currentAlbum.value), true)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentAlbum.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {

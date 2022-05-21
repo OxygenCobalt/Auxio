@@ -205,6 +205,74 @@ sealed class Sort(open val isAscending: Boolean) {
         }
     }
 
+    /** Sort by the duration of the item. Supports all items. */
+    class ByDuration(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_DURATION
+
+        override val itemId: Int
+            get() = R.id.option_sort_duration
+
+        override fun songsInPlace(songs: MutableList<Song>) {
+            songs.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.durationSecs }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun albumsInPlace(albums: MutableList<Album>) {
+            albums.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.durationSecs }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun artistsInPlace(artists: MutableList<Artist>) {
+            artists.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.durationSecs }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun genresInPlace(genres: MutableList<Genre>) {
+            genres.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.durationSecs }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByDuration(newIsAscending)
+        }
+    }
+
+    /** Sort by the amount of songs. Only applicable to music parents. */
+    class ByCount(override val isAscending: Boolean) : Sort(isAscending) {
+        override val sortIntCode: Int
+            get() = IntegerTable.SORT_BY_COUNT
+
+        override val itemId: Int
+            get() = R.id.option_sort_count
+
+        override fun albumsInPlace(albums: MutableList<Album>) {
+            albums.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.songs.size }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun artistsInPlace(artists: MutableList<Artist>) {
+            artists.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.songs.size }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun genresInPlace(genres: MutableList<Genre>) {
+            genres.sortWith(
+                MultiComparator(
+                    compareByDynamic { it.songs.size }, compareBy(NameComparator()) { it }))
+        }
+
+        override fun ascending(newIsAscending: Boolean): Sort {
+            return ByCount(newIsAscending)
+        }
+    }
+
     /**
      * Sort by the disc, and then track number of an item. Only supported by [Song]. Do not use this
      * in a main sorting view, as it is not assigned to a particular item ID
@@ -267,6 +335,8 @@ sealed class Sort(open val isAscending: Boolean) {
             R.id.option_sort_artist -> ByArtist(isAscending)
             R.id.option_sort_album -> ByAlbum(isAscending)
             R.id.option_sort_year -> ByYear(isAscending)
+            R.id.option_sort_duration -> ByDuration(isAscending)
+            R.id.option_sort_count -> ByCount(isAscending)
             R.id.option_sort_disc -> ByDisc(isAscending)
             R.id.option_sort_track -> ByTrack(isAscending)
             else -> null
@@ -281,6 +351,16 @@ sealed class Sort(open val isAscending: Boolean) {
             compareBy(comparator, selector)
         } else {
             compareByDescending(comparator, selector)
+        }
+    }
+
+    protected inline fun <T : Music, K : Comparable<K>> compareByDynamic(
+        crossinline selector: (T) -> K
+    ): Comparator<T> {
+        return if (isAscending) {
+            compareBy(selector)
+        } else {
+            compareByDescending(selector)
         }
     }
 
@@ -341,15 +421,17 @@ sealed class Sort(open val isAscending: Boolean) {
          * @return A [Sort] instance, null if the data is malformed.
          */
         fun fromIntCode(value: Int): Sort? {
-            val ascending = (value and 1) == 1
+            val isAscending = (value and 1) == 1
 
             return when (value.shr(1)) {
-                IntegerTable.SORT_BY_NAME -> ByName(ascending)
-                IntegerTable.SORT_BY_ARTIST -> ByArtist(ascending)
-                IntegerTable.SORT_BY_ALBUM -> ByAlbum(ascending)
-                IntegerTable.SORT_BY_YEAR -> ByYear(ascending)
-                IntegerTable.SORT_BY_DISC -> ByDisc(ascending)
-                IntegerTable.SORT_BY_TRACK -> ByTrack(ascending)
+                IntegerTable.SORT_BY_NAME -> ByName(isAscending)
+                IntegerTable.SORT_BY_ARTIST -> ByArtist(isAscending)
+                IntegerTable.SORT_BY_ALBUM -> ByAlbum(isAscending)
+                IntegerTable.SORT_BY_YEAR -> ByYear(isAscending)
+                IntegerTable.SORT_BY_DURATION -> ByDuration(isAscending)
+                IntegerTable.SORT_BY_COUNT -> ByCount(isAscending)
+                IntegerTable.SORT_BY_DISC -> ByDisc(isAscending)
+                IntegerTable.SORT_BY_TRACK -> ByTrack(isAscending)
                 else -> null
             }
         }

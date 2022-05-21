@@ -137,7 +137,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                     R.string.fmt_three,
                     item.year?.toString() ?: context.getString(R.string.def_date),
                     context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size),
-                    item.totalDuration)
+                    item.durationSecs.formatDuration(false))
         }
 
         binding.detailPlayButton.setOnClickListener { listener.onPlayParent() }
@@ -161,7 +161,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
                         oldItem.artist.rawName == newItem.artist.rawName &&
                         oldItem.year == newItem.year &&
                         oldItem.songs.size == newItem.songs.size &&
-                        oldItem.totalDuration == newItem.totalDuration
+                        oldItem.durationSecs == newItem.durationSecs
             }
     }
 }
@@ -215,7 +215,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         }
 
         binding.songName.textSafe = item.resolveName(binding.context)
-        binding.songDuration.textSafe = item.seconds.formatDuration(false)
+        binding.songDuration.textSafe = item.durationSecs.formatDuration(false)
 
         binding.root.apply {
             setOnClickListener { listener.onItemClick(item) }
@@ -245,7 +245,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
         val DIFFER =
             object : SimpleItemCallback<Song>() {
                 override fun areItemsTheSame(oldItem: Song, newItem: Song) =
-                    oldItem.rawName == newItem.rawName && oldItem.duration == newItem.duration
+                    oldItem.rawName == newItem.rawName && oldItem.durationMs == newItem.durationMs
             }
     }
 }

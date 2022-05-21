@@ -29,6 +29,7 @@ import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -66,15 +67,17 @@ class SongListFragment : HomeListFragment<Song>() {
             // Year -> Use Full Year
             is Sort.ByYear -> song.album.year?.toString()
 
-            // Unreachable state
-            is Sort.ByDisc,
-            is Sort.ByTrack -> null
+            // Duration -> Use formatted duration
+            is Sort.ByDuration -> song.durationSecs.formatDuration(false)
+
+            // Unsupported sort, error gracefully
+            else -> null
         }
     }
 
     override fun onItemClick(item: Item) {
         check(item is Song)
-        playbackModel.playSong(item)
+        playbackModel.play(item)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

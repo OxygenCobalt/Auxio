@@ -277,7 +277,7 @@ class PlaybackStateManager private constructor() {
      */
     fun synchronizePosition(positionMs: Long) {
         // Don't accept any bugged positions that are over the duration of the song.
-        val maxDuration = song?.duration ?: -1
+        val maxDuration = song?.durationMs ?: -1
         if (positionMs <= maxDuration) {
             this.positionMs = positionMs
             notifyPositionChanged()

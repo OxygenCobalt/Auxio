@@ -41,6 +41,8 @@
 
     <dimen name="slider_thumb_radius">6dp</dimen>
     <dimen name="slider_halo_radius">16dp</dimen>
+    <dimen name="slider_thumb_radius_collapsed">6dp</dimen>
+    <dimen name="slider_thumb_radius_expanded">10dp</dimen>
 
     <dimen name="recycler_fab_space_normal">88dp</dimen>
     <dimen name="recycler_fab_space_large">128dp</dimen>

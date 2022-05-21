@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             if (action == Intent.ACTION_VIEW && !isConsumed) {
                 // Mark the intent as used so this does not fire again
                 intent.putExtra(KEY_INTENT_USED, true)
-                intent.data?.let { fileUri -> playbackModel.playWithUri(fileUri, this) }
+                intent.data?.let { fileUri -> playbackModel.play(fileUri, this) }
             }
         }
     }

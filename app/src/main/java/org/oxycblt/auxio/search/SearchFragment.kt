@@ -134,7 +134,7 @@ class SearchFragment :
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> playbackModel.playSong(item)
+            is Song -> playbackModel.play(item)
             is MusicParent -> navModel.exploreNavigateTo(item)
         }
     }

@@ -74,7 +74,7 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> playbackModel.playSong(item, PlaybackMode.IN_ARTIST)
+            is Song -> playbackModel.play(item, PlaybackMode.IN_ARTIST)
             is Album -> navModel.exploreNavigateTo(item)
         }
     }
@@ -84,11 +84,11 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playArtist(unlikelyToBeNull(detailModel.currentArtist.value), false)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playArtist(unlikelyToBeNull(detailModel.currentArtist.value), true)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentArtist.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {

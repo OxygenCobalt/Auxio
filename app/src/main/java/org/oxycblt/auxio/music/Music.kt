@@ -26,7 +26,6 @@ import android.provider.MediaStore
 import androidx.core.text.isDigitsOnly
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---
@@ -53,6 +52,10 @@ sealed class Music : Item() {
 sealed class MusicParent : Music() {
     /** The songs that this parent owns. */
     abstract val songs: List<Song>
+
+    /** The formatted total duration of this genre */
+    val durationSecs: Long
+        get() = songs.sumOf { it.durationSecs }
 }
 
 /** The data object for a song. */
@@ -61,7 +64,7 @@ data class Song(
     /** The file name of this song, excluding the full path. */
     val fileName: String,
     /** The total duration of this song, in millis. */
-    val duration: Long,
+    val durationMs: Long,
     /** The track number of this song, null if there isn't any. */
     val track: Int?,
     /** The disc number of this song, null if there isn't any. */
@@ -85,7 +88,7 @@ data class Song(
             result = 31 * result + album.rawName.hashCode()
             result = 31 * result + album.artist.rawName.hashCode()
             result = 31 * result + (track ?: 0)
-            result = 31 * result + duration.hashCode()
+            result = 31 * result + durationMs.hashCode()
             return result
         }
 
@@ -99,8 +102,8 @@ data class Song(
         get() =
             ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId)
     /** The duration of this song, in seconds (rounded down) */
-    val seconds: Long
-        get() = duration / 1000
+    val durationSecs: Long
+        get() = durationMs / 1000
 
     private var _album: Album? = null
     /** The album of this song. */
@@ -190,10 +193,6 @@ data class Album(
 
     override fun resolveName(context: Context) = rawName
 
-    /** The formatted total duration of this album */
-    val totalDuration: String
-        get() = songs.sumOf { it.seconds }.formatDuration(false)
-
     private var _artist: Artist? = null
     /** The parent artist of this album. */
     val artist: Artist
@@ -256,10 +255,6 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
 
     override fun resolveName(context: Context) =
         rawName?.genreNameCompat ?: context.getString(R.string.def_genre)
-
-    /** The formatted total duration of this genre */
-    val totalDuration: String
-        get() = songs.sumOf { it.seconds }.formatDuration(false)
 }
 
 /**

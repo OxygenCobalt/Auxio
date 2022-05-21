@@ -24,6 +24,8 @@
     <string name="lbl_sort_artist">Artist</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Year</string>
+    <string name="lbl_sort_duration">Duration</string>
+    <string name="lbl_sort_count">Song Count</string>
     <string name="lbl_sort_disc">Disc</string>
     <string name="lbl_sort_track">Track</string>
     <string name="lbl_sort_asc">Ascending</string>
@@ -114,7 +116,7 @@
     <string name="err_load_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
-    <string name="err_bad_dir">This directory is not supported</string>
+    <string name="err_bad_dir">This folder is not supported</string>
     <string name="err_too_small">Auxio does not support this window size</string>
 
     <!-- Hint Namespace | EditText Hints -->

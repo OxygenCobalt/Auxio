@@ -100,7 +100,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genre.resolveName(context))
                 .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track?.toLong() ?: 0L)
                 .putText(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year?.toString())
-                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.duration)
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
                 .putText(
                     MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,
                     song.album.albumCoverUri.toString())

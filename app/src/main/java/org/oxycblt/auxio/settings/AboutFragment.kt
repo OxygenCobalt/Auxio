@@ -65,7 +65,8 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
             binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
             binding.aboutTotalDuration.textSafe =
                 getString(
-                    R.string.fmt_total_duration, songs.sumOf { it.seconds }.formatDuration(false))
+                    R.string.fmt_total_duration,
+                    songs.sumOf { it.durationSecs }.formatDuration(false))
         }
 
         homeModel.albums.observe(viewLifecycleOwner) { albums ->

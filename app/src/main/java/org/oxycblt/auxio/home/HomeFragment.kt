@@ -58,8 +58,6 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  *
  * TODO: Make tabs invisible when there is only one
- *
- * TODO: Add duration and song count sorts
  */
 class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
@@ -79,6 +77,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         binding.homePager.apply {
             adapter = HomePagerAdapter()
+
             // We know that there will only be a fixed amount of tabs, so we manually set this
             // limit to that. This also prevents the appbar lift state from being confused during
             // page transitions.
@@ -138,9 +137,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                             .getSortForDisplay(unlikelyToBeNull(homeModel.currentTab.value))
                             .ascending(item.isChecked)))
             }
-
-            // Sorting option was selected, mark it as selected and update the mode
             else -> {
+                // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true
                 homeModel.updateCurrentSort(
                     unlikelyToBeNull(
@@ -175,7 +173,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         val binding = requireBinding()
         when (tab) {
             DisplayMode.SHOW_SONGS -> {
-                updateSortMenu(sortItem, tab)
+                updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_count }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_song_list
             }
             DisplayMode.SHOW_ALBUMS -> {
@@ -183,11 +181,21 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_album_list
             }
             DisplayMode.SHOW_ARTISTS -> {
-                updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
+                updateSortMenu(sortItem, tab) { id ->
+                    id == R.id.option_sort_asc ||
+                        id == R.id.option_sort_name ||
+                        id == R.id.option_sort_count ||
+                        id == R.id.option_sort_duration
+                }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_artist_list
             }
             DisplayMode.SHOW_GENRES -> {
-                updateSortMenu(sortItem, tab) { id -> id == R.id.option_sort_asc }
+                updateSortMenu(sortItem, tab) { id ->
+                    id == R.id.option_sort_asc ||
+                        id == R.id.option_sort_name ||
+                        id == R.id.option_sort_count ||
+                        id == R.id.option_sort_duration
+                }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_genre_list
             }
         }
@@ -196,7 +204,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private fun updateSortMenu(
         item: MenuItem,
         displayMode: DisplayMode,
-        isVisible: (Int) -> Boolean = { true }
+        isVisible: (Int) -> Boolean
     ) {
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 

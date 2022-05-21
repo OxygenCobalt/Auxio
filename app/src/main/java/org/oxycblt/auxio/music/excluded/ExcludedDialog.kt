@@ -34,6 +34,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -144,7 +145,7 @@ class ExcludedDialog :
             return getRootPath() + "/" + typeAndPath.last()
         }
 
-        logD("Unsupported volume ${typeAndPath[0]}")
+        logW("Unsupported volume ${typeAndPath[0]}")
         return null
     }
 

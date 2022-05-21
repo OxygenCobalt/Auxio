@@ -30,6 +30,7 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -61,6 +62,12 @@ class AlbumListFragment : HomeListFragment<Album>() {
 
             // Year -> Use Full Year
             is Sort.ByYear -> album.year?.toString()
+
+            // Duration -> Use formatted duration
+            is Sort.ByDuration -> album.durationSecs.formatDuration(false)
+
+            // Count -> Use song count
+            is Sort.ByCount -> album.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null

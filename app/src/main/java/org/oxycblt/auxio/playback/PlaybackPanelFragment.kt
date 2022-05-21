@@ -108,7 +108,7 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
-        binding.playbackSkipPrev.setOnClickListener { playbackModel.skipPrev() }
+        binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
 
         binding.playbackPlayPause.apply {
             // Abuse the play/pause FAB (see style definition for more info)
@@ -116,7 +116,7 @@ class PlaybackPanelFragment :
             setOnClickListener { playbackModel.invertPlaying() }
         }
 
-        binding.playbackSkipNext.setOnClickListener { playbackModel.skipNext() }
+        binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
 
         binding.playbackSeekBar.apply {}
@@ -162,7 +162,7 @@ class PlaybackPanelFragment :
 
     override fun onStopTrackingTouch(slider: Slider) {
         requireBinding().playbackPosition.isActivated = false
-        playbackModel.setPosition(slider.value.toLong())
+        playbackModel.seekTo(slider.value.toLong())
     }
 
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
@@ -182,7 +182,7 @@ class PlaybackPanelFragment :
         binding.playbackAlbum.textSafe = song.album.resolveName(context)
 
         // Normally if a song had a duration
-        val seconds = song.seconds
+        val seconds = song.durationSecs
         binding.playbackDuration.textSafe = seconds.formatDuration(false)
         binding.playbackSeekBar.apply {
             isEnabled = seconds > 0L

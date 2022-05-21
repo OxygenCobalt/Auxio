@@ -71,7 +71,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> playbackModel.playSong(item, PlaybackMode.IN_GENRE)
+            is Song -> playbackModel.play(item, PlaybackMode.IN_GENRE)
             is Album ->
                 findNavController()
                     .navigate(ArtistDetailFragmentDirections.actionShowAlbum(item.id))
@@ -83,11 +83,11 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onPlayParent() {
-        playbackModel.playGenre(unlikelyToBeNull(detailModel.currentGenre.value), false)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value), false)
     }
 
     override fun onShuffleParent() {
-        playbackModel.playGenre(unlikelyToBeNull(detailModel.currentGenre.value), true)
+        playbackModel.play(unlikelyToBeNull(detailModel.currentGenre.value), true)
     }
 
     override fun onShowSortMenu(anchor: View) {
