@@ -91,9 +91,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
         _shouldRecreateTabs.value = false
     }
 
-    /**
-     * Get the specific sort for the given [DisplayMode].
-     */
+    /** Get the specific sort for the given [DisplayMode]. */
     fun getSortForDisplay(displayMode: DisplayMode): Sort {
         return when (displayMode) {
             DisplayMode.SHOW_SONGS -> settingsManager.libSongSort
