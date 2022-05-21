@@ -22,7 +22,6 @@ import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemAlbumSongBinding
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemDiscHeaderBinding
@@ -123,7 +122,7 @@ private class AlbumDetailViewHolder private constructor(private val binding: Ite
     BindingViewHolder<Album, AlbumDetailAdapter.Listener>(binding.root) {
 
     override fun bind(item: Album, listener: AlbumDetailAdapter.Listener) {
-        binding.detailCover.bindAlbumCover(item)
+        binding.detailCover.bind(item)
         binding.detailName.textSafe = item.resolveName(binding.context)
 
         binding.detailSubhead.apply {

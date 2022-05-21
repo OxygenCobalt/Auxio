@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * An adapter for one viewholder tied to one type of data. All functionality is derived from the
  * overridden values.
+ * @author OxygenCobalt
  */
 abstract class MonoAdapter<T, L, VH : BindingViewHolder<T, L>>(private val listener: L) :
     RecyclerView.Adapter<VH>() {
@@ -51,6 +52,7 @@ private typealias AnyCreator = BindingViewHolder.Creator<out RecyclerView.ViewHo
 /**
  * An adapter for many viewholders tied to many types of data. Deriving this is more complicated
  * than [MonoAdapter], as less overrides can be provided "for free".
+ * @author OxygenCobalt
  */
 abstract class MultiAdapter<L>(private val listener: L) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -99,6 +101,7 @@ abstract class MultiAdapter<L>(private val listener: L) :
  * A variation of [RecyclerView.ViewHolder] that enables ViewBinding. This is be used to provide a
  * universal surface for binding data to a ViewHolder, and can be used with [MonoAdapter] to get an
  * entire adapter implementation for free.
+ * @author OxygenCobalt
  */
 abstract class BindingViewHolder<T, L>(root: View) : RecyclerView.ViewHolder(root) {
     abstract fun bind(item: T, listener: L)
@@ -159,6 +162,7 @@ abstract class BackingData<T> {
 /**
  * A list-backed [BackingData] that is modified using adapter primitives. Useful in cases where
  * [AsyncBackingData] is not preferable due to bugs involving diffing.
+ * @author OxygenCobalt
  */
 class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : BackingData<T>() {
     private var _currentList = mutableListOf<T>()
@@ -184,6 +188,7 @@ class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : Ba
  * A list-backed [BackingData] that is modified with [AsyncListDiffer]. This is useful in cases
  * where data updates are rapid-fire and unpredictable, and where the benefits of asynchronously
  * diffing the adapter outweigh the shortcomings.
+ * @author OxygenCobalt
  */
 class AsyncBackingData<T>(
     adapter: RecyclerView.Adapter<*>,

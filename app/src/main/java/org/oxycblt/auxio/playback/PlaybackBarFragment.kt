@@ -25,7 +25,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.MainNavigationAction
@@ -104,7 +103,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         if (song != null) {
             val context = requireContext()
             val binding = requireBinding()
-            binding.playbackCover.bindAlbumCover(song)
+            binding.playbackCover.bind(song)
             binding.playbackSong.textSafe = song.resolveName(context)
             binding.playbackInfo.textSafe = song.resolveIndividualArtistName(context)
             binding.playbackProgressBar.max = song.durationSecs.toInt()

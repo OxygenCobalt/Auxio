@@ -21,7 +21,8 @@
     <dimen name="size_corners_small">8dp</dimen>
     <dimen name="size_corners_large">16dp</dimen>
 
-    <dimen name="size_playback_icon">32dp</dimen>
+    <dimen name="size_icon_normal">24dp</dimen>
+    <dimen name="size_icon_large">32dp</dimen>
 
     <dimen name="text_size_ext_label_larger">16sp</dimen>
     <dimen name="text_size_ext_title_mid_large">18sp</dimen>

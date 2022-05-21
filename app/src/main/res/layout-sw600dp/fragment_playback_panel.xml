@@ -15,7 +15,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.coil.StyledImageView
+    <org.oxycblt.auxio.ui.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_mid_large"
@@ -104,26 +104,28 @@
         app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
         tools:text="16:16" />
 
-    <org.oxycblt.auxio.playback.PlaybackButton
+    <org.oxycblt.auxio.ui.StyledImageButton
         android:id="@+id/playback_repeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_change_repeat"
         android:src="@drawable/ic_repeat"
+        app:iconSize="@dimen/size_icon_large"
         app:hasIndicator="true"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
         app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
-    <org.oxycblt.auxio.playback.PlaybackButton
+    <org.oxycblt.auxio.ui.StyledImageButton
         android:id="@+id/playback_skip_prev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_skip_prev"
         android:src="@drawable/ic_skip_prev"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
         app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
@@ -141,18 +143,19 @@
         app:layout_constraintStart_toStartOf="@+id/playback_seek_bar"
         tools:src="@drawable/ic_pause" />
 
-    <org.oxycblt.auxio.playback.PlaybackButton
+    <org.oxycblt.auxio.ui.StyledImageButton
         android:id="@+id/playback_skip_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_skip_next"
         android:src="@drawable/ic_skip_next"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
         app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-    <org.oxycblt.auxio.playback.PlaybackButton
+    <org.oxycblt.auxio.ui.StyledImageButton
         android:id="@+id/playback_shuffle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -160,6 +163,7 @@
         android:contentDescription="@string/desc_shuffle"
         android:src="@drawable/ic_shuffle"
         app:hasIndicator="true"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
         app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
         app:layout_constraintTop_toTopOf="@+id/playback_skip_next"

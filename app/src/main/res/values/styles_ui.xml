@@ -174,7 +174,7 @@
         -->
         <item name="fabSize">normal</item>
         <item name="fabCustomSize">@dimen/size_btn_large</item>
-        <item name="maxImageSize">@dimen/size_playback_icon</item>
+        <item name="maxImageSize">@dimen/size_icon_large</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
     </style>

@@ -21,8 +21,6 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
-import org.oxycblt.auxio.coil.bindArtistImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
@@ -139,7 +137,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
     BindingViewHolder<Artist, DetailAdapter.Listener>(binding.root) {
 
     override fun bind(item: Artist, listener: DetailAdapter.Listener) {
-        binding.detailCover.bindArtistImage(item)
+        binding.detailCover.bind(item)
         binding.detailName.textSafe = item.resolveName(binding.context)
 
         // Get the genre that corresponds to the most songs in this artist, which would be
@@ -181,7 +179,7 @@ private constructor(
     private val binding: ItemParentBinding,
 ) : BindingViewHolder<Album, MenuItemListener>(binding.root), Highlightable {
     override fun bind(item: Album, listener: MenuItemListener) {
-        binding.parentImage.bindAlbumCover(item)
+        binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             if (item.year != null) {
@@ -226,7 +224,7 @@ private constructor(
     private val binding: ItemSongBinding,
 ) : BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
     override fun bind(item: Song, listener: MenuItemListener) {
-        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
         binding.songInfo.textSafe = item.album.resolveName(binding.context)
 

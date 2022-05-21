@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.BackingData
@@ -71,7 +70,7 @@ private constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: Song, listener: QueueItemListener) {
-        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
         binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
 

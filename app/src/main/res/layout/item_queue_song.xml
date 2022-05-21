@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface">
 
-        <org.oxycblt.auxio.coil.StyledImageView
+        <org.oxycblt.auxio.ui.StyledImageView
             android:id="@+id/song_album_cover"
             style="@style/Widget.Auxio.Image.Small"
             android:layout_margin="@dimen/spacing_medium"

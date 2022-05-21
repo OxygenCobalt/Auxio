@@ -26,8 +26,6 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 
-// TODO: Still need to change the default cover here
-
 /**
  * The default widget is displayed whenever there is no music playing. It just shows the message "No
  * music playing".
@@ -109,7 +107,7 @@ private fun RemoteViews.applyCover(
             R.id.widget_cover,
             context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
     } else {
-        setImageViewResource(R.id.widget_cover, R.drawable.ic_widget_album)
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
 

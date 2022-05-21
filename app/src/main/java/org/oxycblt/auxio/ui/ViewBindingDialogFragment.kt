@@ -28,6 +28,10 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.util.logD
 
+/**
+ * A dialog fragment enabling ViewBinding inflation and usage across the dialog fragment lifecycle.
+ * @author OxygenCobalt
+ */
 abstract class ViewBindingDialogFragment<T : ViewBinding> : DialogFragment() {
     private var _binding: T? = null
 

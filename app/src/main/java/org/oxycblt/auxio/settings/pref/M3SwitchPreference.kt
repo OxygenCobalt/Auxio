@@ -29,7 +29,7 @@ import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
  * A [SwitchPreferenceCompat] that emulates the M3 switches until the design team actually bothers
- * to add them to MDC.
+ * to add them to MDC TODO: Remove this once MaterialSwitch is stabilized.
  */
 class M3SwitchPreference
 @JvmOverloads
@@ -45,7 +45,6 @@ constructor(
         // Lollipop cannot into ColorStateList, disable this feature on that version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val switch = holder.findViewById(androidx.preference.R.id.switchWidget)
-
             if (switch is SwitchCompat) {
                 switch.apply {
                     trackDrawable = context.getDrawableSafe(R.drawable.ui_m3_switch_track)

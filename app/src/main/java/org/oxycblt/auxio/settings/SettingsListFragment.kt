@@ -30,12 +30,12 @@ import androidx.preference.children
 import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
+import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD

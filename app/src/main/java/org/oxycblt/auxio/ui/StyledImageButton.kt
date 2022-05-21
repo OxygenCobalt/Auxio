@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.playback
+package org.oxycblt.auxio.ui
 
 import android.content.Context
 import android.graphics.Canvas
@@ -29,32 +29,32 @@ import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
- * An [AppCompatImageButton] designed for the buttons used in the playback display.
+ * An [AppCompatImageButton] that applies many of the stylistic choices that Auxio uses regarding
+ * buttons.
  *
- * Auxio's playback buttons have never followed the typical 24dp icon size that all other UI
- * elements do, mostly because those icons just look bad at that size with all the gobs of
- * whitespace surrounding them. So, this view resizes the icons to a fixed 32dp in a way that
- * doesn't require a whole new icon set.
- *
- * This view also enables use of an "indicator", which is a dot that can denote when a button is
- * active. This is useful for the shuffle/repeat buttons, as at times highlighting them is not
- * enough to differentiate them.
+ * More specifically, this class add two features:
+ * - Specification of the icon size. This is to accommodate the playback buttons, which tend to be
+ * larger as by default the playback icons look terrible with the gobs of whitespace everywhere.
+ * - Addition of an indicator, which is a dot that can denote when a button is active. This is
+ * also useful for the playback buttons, as at times highlighting them is not enough to
+ * differentiate them.
+ * @author OxygenCobalt
  */
-class PlaybackButton
+class StyledImageButton
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageButton(context, attrs, defStyleAttr) {
-    private val iconSize = context.getDimenSizeSafe(R.dimen.size_playback_icon)
-    private val centerMatrix = Matrix()
-    private val matrixSrc = RectF()
-    private val matrixDst = RectF()
-
-    private val indicatorDrawable = context.getDrawableSafe(R.drawable.ui_indicator)
+    private val iconSize: Int
     private var hasIndicator = false
         set(value) {
             field = value
             invalidate()
         }
+
+    private val centerMatrix = Matrix()
+    private val matrixSrc = RectF()
+    private val matrixDst = RectF()
+    private val indicatorDrawable = context.getDrawableSafe(R.drawable.ui_indicator)
 
     init {
         val size = context.getDimenSizeSafe(R.dimen.size_btn_small)
@@ -63,13 +63,21 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         scaleType = ScaleType.MATRIX
         setBackgroundResource(R.drawable.ui_large_unbounded_ripple)
 
-        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.PlaybackButton)
-        hasIndicator = styledAttrs.getBoolean(R.styleable.PlaybackButton_hasIndicator, false)
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageButton)
+        iconSize =
+            styledAttrs
+                .getDimension(
+                    R.styleable.StyledImageButton_iconSize,
+                    context.getDimenSizeSafe(R.dimen.size_icon_normal).toFloat())
+                .toInt()
+        hasIndicator = styledAttrs.getBoolean(R.styleable.StyledImageButton_hasIndicator, false)
         styledAttrs.recycle()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        // TODO: Scale this drawable based on available space after padding
 
         imageMatrix =
             centerMatrix.apply {

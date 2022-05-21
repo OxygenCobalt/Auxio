@@ -22,7 +22,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.oxycblt.auxio.music.Music
 
-/** A ViewModel that handles complicated navigation situations. */
+/**
+ * A ViewModel that handles complicated navigation situations.
+ * @author OxygenCobalt
+ */
 class NavigationViewModel : ViewModel() {
     private val _mainNavigationAction = MutableLiveData<MainNavigationAction?>()
     /** Flag for main fragment navigation. Intended for MainFragment use only. */

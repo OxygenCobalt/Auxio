@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <org.oxycblt.auxio.coil.StyledImageView
+    <org.oxycblt.auxio.ui.StyledImageView
         android:id="@+id/disc_item"
         style="@style/Widget.Auxio.Image.Small"
         android:scaleType="matrix"

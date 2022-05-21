@@ -21,8 +21,6 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
-import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Genre
@@ -114,7 +112,7 @@ class GenreDetailAdapter(listener: Listener) :
 private class GenreDetailViewHolder private constructor(private val binding: ItemDetailBinding) :
     BindingViewHolder<Genre, DetailAdapter.Listener>(binding.root) {
     override fun bind(item: Genre, listener: DetailAdapter.Listener) {
-        binding.detailCover.bindGenreImage(item)
+        binding.detailCover.bind(item)
         binding.detailName.textSafe = item.resolveName(binding.context)
         binding.detailSubhead.textSafe =
             binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
@@ -146,7 +144,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 class GenreSongViewHolder private constructor(private val binding: ItemSongBinding) :
     BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
     override fun bind(item: Song, listener: MenuItemListener) {
-        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
         binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
         binding.root.apply {

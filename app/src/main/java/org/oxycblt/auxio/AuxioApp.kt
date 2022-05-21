@@ -21,11 +21,11 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
-import org.oxycblt.auxio.coil.AlbumArtFetcher
-import org.oxycblt.auxio.coil.ArtistImageFetcher
-import org.oxycblt.auxio.coil.CrossfadeFactory
-import org.oxycblt.auxio.coil.GenreImageFetcher
-import org.oxycblt.auxio.coil.MusicKeyer
+import org.oxycblt.auxio.image.AlbumArtFetcher
+import org.oxycblt.auxio.image.ArtistImageFetcher
+import org.oxycblt.auxio.image.CrossfadeFactory
+import org.oxycblt.auxio.image.GenreImageFetcher
+import org.oxycblt.auxio.image.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
 
 @Suppress("UNUSED")

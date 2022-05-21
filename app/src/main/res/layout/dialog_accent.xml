@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/spacing_medium"
     android:paddingEnd="@dimen/spacing_medium"
     android:paddingBottom="@dimen/spacing_small"
-    app:layoutManager="org.oxycblt.auxio.accent.AccentGridLayoutManager"
+    app:layoutManager=".ui.accent.AccentGridLayoutManager"
     app:layout_constraintBottom_toTopOf="@+id/accent_cancel"
     app:layout_constraintTop_toBottomOf="@+id/accent_header"
     tools:itemCount="18"

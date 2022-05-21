@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.coil
+package org.oxycblt.auxio.image
 
 import coil.decode.DataSource
 import coil.drawable.CrossfadeDrawable

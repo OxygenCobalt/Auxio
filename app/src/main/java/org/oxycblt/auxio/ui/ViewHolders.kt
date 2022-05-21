@@ -20,9 +20,6 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
-import org.oxycblt.auxio.coil.bindArtistImage
-import org.oxycblt.auxio.coil.bindGenreImage
 import org.oxycblt.auxio.databinding.ItemHeaderBinding
 import org.oxycblt.auxio.databinding.ItemParentBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
@@ -35,11 +32,14 @@ import org.oxycblt.auxio.util.getPluralSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
-/** The shared ViewHolder for a [Song]. */
+/**
+ * The shared ViewHolder for a [Song].
+ * @author OxygenCobalt
+ */
 class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
-        binding.songAlbumCover.bindAlbumCover(item)
+        binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
         binding.songInfo.textSafe = item.resolveIndividualArtistName(binding.context)
         binding.root.apply {
@@ -70,14 +70,17 @@ class SongViewHolder private constructor(private val binding: ItemSongBinding) :
     }
 }
 
-/** The Shared ViewHolder for a [Album]. */
+/**
+ * The Shared ViewHolder for a [Album].
+ * @author OxygenCobalt
+ */
 class AlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
 ) : BindingViewHolder<Album, MenuItemListener>(binding.root) {
 
     override fun bind(item: Album, listener: MenuItemListener) {
-        binding.parentImage.bindAlbumCover(item)
+        binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe = item.artist.resolveName(binding.context)
         binding.root.apply {
@@ -108,12 +111,15 @@ private constructor(
     }
 }
 
-/** The Shared ViewHolder for a [Artist]. */
+/**
+ * The Shared ViewHolder for a [Artist].
+ * @author OxygenCobalt
+ */
 class ArtistViewHolder private constructor(private val binding: ItemParentBinding) :
     BindingViewHolder<Artist, MenuItemListener>(binding.root) {
 
     override fun bind(item: Artist, listener: MenuItemListener) {
-        binding.parentImage.bindArtistImage(item)
+        binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             binding.context.getString(
@@ -149,14 +155,17 @@ class ArtistViewHolder private constructor(private val binding: ItemParentBindin
     }
 }
 
-/** The Shared ViewHolder for a [Genre]. */
+/**
+ * The Shared ViewHolder for a [Genre].
+ * @author OxygenCobalt
+ */
 class GenreViewHolder
 private constructor(
     private val binding: ItemParentBinding,
 ) : BindingViewHolder<Genre, MenuItemListener>(binding.root) {
 
     override fun bind(item: Genre, listener: MenuItemListener) {
-        binding.parentImage.bindGenreImage(item)
+        binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
         binding.parentInfo.textSafe =
             binding.context.getPluralSafe(R.plurals.fmt_song_count, item.songs.size)
@@ -187,7 +196,10 @@ private constructor(
     }
 }
 
-/** The Shared ViewHolder for a [Header]. */
+/**
+ * The Shared ViewHolder for a [Header].
+ * @author OxygenCobalt
+ */
 class NewHeaderViewHolder private constructor(private val binding: ItemHeaderBinding) :
     BindingViewHolder<Header, Unit>(binding.root) {
 

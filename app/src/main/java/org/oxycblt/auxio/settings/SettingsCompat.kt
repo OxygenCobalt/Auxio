@@ -19,7 +19,7 @@ package org.oxycblt.auxio.settings
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import org.oxycblt.auxio.accent.Accent
+import org.oxycblt.auxio.ui.accent.Accent
 
 // A couple of utils for migrating from old settings values to the new formats
 

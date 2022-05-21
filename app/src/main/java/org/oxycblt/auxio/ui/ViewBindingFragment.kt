@@ -25,7 +25,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import org.oxycblt.auxio.util.logD
 
-/** A fragment enabling ViewBinding inflation and usage across the fragment lifecycle. */
+/**
+ * A fragment enabling ViewBinding inflation and usage across the fragment lifecycle.
+ * @author OxygenCobalt
+ */
 abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
     private var _binding: T? = null
 

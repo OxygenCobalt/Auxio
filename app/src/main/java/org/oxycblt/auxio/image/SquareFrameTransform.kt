@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.coil
+package org.oxycblt.auxio.image
 
 import android.graphics.Bitmap
 import coil.size.Size

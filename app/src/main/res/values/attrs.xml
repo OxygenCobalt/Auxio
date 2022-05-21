@@ -4,7 +4,8 @@
         <attr name="cornerRadius" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="PlaybackButton">
+    <declare-styleable name="StyledImageButton">
+        <attr name="iconSize" format="dimension" />
         <attr name="hasIndicator" format="boolean" />
     </declare-styleable>
 

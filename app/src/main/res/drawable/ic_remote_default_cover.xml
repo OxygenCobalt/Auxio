@@ -6,11 +6,11 @@
     android:viewportHeight="24">
     <!--
     Special album icon where the center is filled with the surface color.
-    This is used for widgets specifically, as it creates a contiguous surface
-    that looks nicer on the small widgets while also lining up with the preview.
 
-    This does cause issues when the theme is changed on older android versions, but
-    this is tolerable.
+    We would normally use a song icon with a filled-in background, but RemoteView
+    limitations make that effectively impossible. Once again, the widget has to
+    be inconsistent with the rest of the app because google refuses to dumpster
+    a terrible API.
     -->
     <path
         android:fillColor="?attr/colorPrimary"

@@ -42,13 +42,11 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Custom language support
  *
- * TODO: Rework menus [perhaps add multi-select]
- *
- * TODO: Rework some fragments to use listeners *even more*
- *
  * TODO: Fix how selection works in the RecyclerViews (doing it poorly right now)
  *
  * TODO: Rework padding ethos
+ *
+ * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {
     private val playbackModel: PlaybackViewModel by viewModels()

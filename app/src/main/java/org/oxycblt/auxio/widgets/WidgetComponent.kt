@@ -24,8 +24,8 @@ import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
 import kotlin.math.min
-import org.oxycblt.auxio.coil.BitmapProvider
-import org.oxycblt.auxio.coil.SquareFrameTransform
+import org.oxycblt.auxio.image.BitmapProvider
+import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -87,7 +87,7 @@ class WidgetComponent(private val context: Context) :
                         val metrics = context.resources.displayMetrics
 
                         // Use RoundedCornersTransformation. This is because our hack to get a 1:1
-                        // aspect  ratio on widget ImageViews doesn't actually result in a square
+                        // aspect ratio on widget ImageViews doesn't actually result in a square
                         // ImageView, so clipToOutline won't work.
                         builder
                             .transformations(

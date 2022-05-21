@@ -6,6 +6,10 @@
 - Added disc number support
 - Added ReplayGain support for below-reference volume tracks [i.e positive ReplayGain values] 
 - About screen now shows counts for multiple types of library items, alongside a total duration
+- New disc, track, song count, and duration sorting modes
+
+### What's Improved
+- The tab selector now hides itself when there is only one tab
 
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items

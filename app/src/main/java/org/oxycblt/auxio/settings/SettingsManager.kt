@@ -22,12 +22,12 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import org.oxycblt.auxio.accent.Accent
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.system.ReplayGainMode
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**

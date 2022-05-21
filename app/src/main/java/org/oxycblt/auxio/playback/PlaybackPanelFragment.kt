@@ -28,7 +28,6 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.coil.bindAlbumCover
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -176,7 +175,7 @@ class PlaybackPanelFragment :
 
         val binding = requireBinding()
         val context = requireContext()
-        binding.playbackCover.bindAlbumCover(song)
+        binding.playbackCover.bind(song)
         binding.playbackSong.textSafe = song.resolveName(context)
         binding.playbackArtist.textSafe = song.resolveIndividualArtistName(context)
         binding.playbackAlbum.textSafe = song.album.resolveName(context)
@@ -186,7 +185,7 @@ class PlaybackPanelFragment :
         binding.playbackDuration.textSafe = seconds.formatDuration(false)
         binding.playbackSeekBar.apply {
             isEnabled = seconds > 0L
-            valueToSafe = max(seconds, 1L).toFloat()
+            valueTo = max(seconds, 1L).toFloat()
         }
     }
 
@@ -200,7 +199,7 @@ class PlaybackPanelFragment :
         // around.
         val binding = requireBinding()
         if (!binding.playbackPosition.isActivated) {
-            binding.playbackSeekBar.valueSafe = position.toFloat()
+            binding.playbackSeekBar.value = position.toFloat()
             binding.playbackPosition.textSafe = position.formatDuration(true)
         }
     }
@@ -219,26 +218,4 @@ class PlaybackPanelFragment :
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
     }
-
-    private var Slider.valueSafe: Float
-        get() = value
-        set(v) {
-            value =
-                if (v > valueTo) {
-                    valueTo
-                } else {
-                    v
-                }
-        }
-
-    private var Slider.valueToSafe: Float
-        get() = valueTo
-        set(v) {
-            valueTo =
-                if (value > v) {
-                    value
-                } else {
-                    v
-                }
-        }
 }
