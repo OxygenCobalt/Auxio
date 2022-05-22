@@ -14,6 +14,9 @@
             android:id="@+id/option_sort_year"
             android:title="@string/lbl_sort_year" />
         <item
+            android:id="@+id/option_sort_duration"
+            android:title="@string/lbl_sort_duration" />
+        <item
             android:id="@+id/option_sort_disc"
             android:title="@string/lbl_sort_disc" />
         <item

@@ -44,11 +44,13 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     override fun onCreateBinding(inflater: LayoutInflater) = DialogTabsBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.set_lib_tabs)
+        builder
+            .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-            logD("Committing tab changes")
-            settingsManager.libTabs = tabAdapter.data.tabs
-        }.setNegativeButton(R.string.lbl_cancel, null)
+                logD("Committing tab changes")
+                settingsManager.libTabs = tabAdapter.data.tabs
+            }
+            .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {

@@ -33,8 +33,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
+import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
 import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog

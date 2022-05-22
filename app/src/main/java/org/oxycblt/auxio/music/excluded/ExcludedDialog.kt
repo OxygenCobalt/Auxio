@@ -54,7 +54,8 @@ class ExcludedDialog :
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         // Don't set the click listener here, we do some custom black magic in onCreateView instead.
-        builder.setTitle(R.string.set_excluded)
+        builder
+            .setTitle(R.string.set_excluded)
             .setNeutralButton(R.string.lbl_add, null)
             .setPositiveButton(R.string.lbl_save, null)
             .setNegativeButton(R.string.lbl_cancel, null)
