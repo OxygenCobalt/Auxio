@@ -35,10 +35,12 @@ import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * An [AudioProcessor] that automatically handles ReplayGain values and their amplification of the
- * audio stream. Instead of leveraging the volume attribute like other implementations, this system
- * manipulates the bitstream itself to modify the volume, which allows the use of positive
- * ReplayGain values.
+ * An [AudioProcessor] that handles ReplayGain values and their amplification of the audio stream.
+ * Instead of leveraging the volume attribute like other implementations, this system manipulates
+ * the bitstream itself to modify the volume, which allows the use of positive ReplayGain values.
+ *
+ * Note that you must still give it a [Metadata] instance for it to function, which should be done
+ * when the active track changes.
  *
  * @author OxygenCobalt
  */
@@ -59,9 +61,8 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     // --- REPLAYGAIN PARSING ---
 
     /**
-     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is
-     * tangentially based off Vanilla Music's implementation, but has diverged to a significant
-     * extent.
+     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is tangentially
+     * based off Vanilla Music's implementation, but has diverged to a significant extent.
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (settingsManager.replayGainMode == ReplayGainMode.OFF) {

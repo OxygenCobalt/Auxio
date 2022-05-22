@@ -41,7 +41,7 @@
 
     <string name="lbl_add">Toevoegen</string>
     <string name="lbl_save">Opslaan</string>
-    <string name="lbl_no_dirs">Geen Mappen</string>
+    <string name="err_no_dirs">Geen Mappen</string>
 
     <string name="lbl_about">Over</string>
     <string name="lbl_version">Versie</string>

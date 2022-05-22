@@ -32,8 +32,7 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.requireAttached
 
 /**
- * The dialog for customizing library tabs. This dialog does not rely on any specific ViewModel and
- * serializes it's state instead of
+ * The dialog for customizing library tabs.
  * @author OxygenCobalt
  */
 class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
@@ -46,14 +45,10 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder.setTitle(R.string.set_lib_tabs)
-
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
             logD("Committing tab changes")
             settingsManager.libTabs = tabAdapter.data.tabs
-        }
-
-        // Negative button just dismisses, no need for a listener.
-        builder.setNegativeButton(android.R.string.cancel, null)
+        }.setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogTabsBinding, savedInstanceState: Bundle?) {

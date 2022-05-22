@@ -46,7 +46,7 @@
 
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
-    <string name="lbl_no_dirs">Nessuna cartella</string>
+    <string name="err_no_dirs">Nessuna cartella</string>
 
     <string name="lbl_about">Informazioni</string>
     <string name="lbl_version">Versione</string>
@@ -105,7 +105,7 @@
     <string name="set_excluded">Cartelle escluse</string>
     <string name="set_excluded_desc">Il contenuto delle cartelle escluse sarà nascosto dalla tua libreria</string>
 
-    <string name="set_off">Spento</string>
+    <string name="lbl_off">Spento</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>

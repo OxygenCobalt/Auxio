@@ -38,7 +38,7 @@
     <string name="lbl_state_saved">"Stav uložen"</string>
     <string name="lbl_add">"Přidat"</string>
     <string name="lbl_save">"Uložit"</string>
-    <string name="lbl_no_dirs">"Žádné složky"</string>
+    <string name="err_no_dirs">"Žádné složky"</string>
     <string name="lbl_about">"O aplikaci"</string>
     <string name="lbl_version">"Verze"</string>
     <string name="lbl_code">"Zobrazit na GitHubu"</string>

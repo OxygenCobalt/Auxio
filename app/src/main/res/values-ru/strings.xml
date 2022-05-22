@@ -47,7 +47,7 @@
 
     <string name="lbl_add">Добавить</string>
     <string name="lbl_save">Сохранить</string>
-    <string name="lbl_no_dirs">Папок нет</string>
+    <string name="err_no_dirs">Папок нет</string>
 
     <string name="lbl_about">О программе</string>
     <string name="lbl_version">Версия</string>
@@ -84,7 +84,7 @@
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_off">Выкл.</string>
+    <string name="lbl_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>
     <string name="set_replay_gain_dynamic">Динамический</string>

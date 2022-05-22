@@ -53,12 +53,11 @@ class ExcludedDialog :
     override fun onCreateBinding(inflater: LayoutInflater) = DialogExcludedBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.set_excluded)
-
         // Don't set the click listener here, we do some custom black magic in onCreateView instead.
-        builder.setNeutralButton(R.string.lbl_add, null)
-        builder.setPositiveButton(R.string.lbl_save, null)
-        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.setTitle(R.string.set_excluded)
+            .setNeutralButton(R.string.lbl_add, null)
+            .setPositiveButton(R.string.lbl_save, null)
+            .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogExcludedBinding, savedInstanceState: Bundle?) {

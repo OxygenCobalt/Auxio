@@ -46,7 +46,7 @@
 
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
-    <string name="lbl_no_dirs">没有任何文件夹</string>
+    <string name="err_no_dirs">没有任何文件夹</string>
 
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
@@ -104,7 +104,7 @@
     <string name="set_excluded">排除文件夹</string>
     <string name="set_excluded_desc">被排除文件夹的内容将从媒体库中隐藏</string>
 
-    <string name="set_off">关闭</string>
+    <string name="lbl_off">关闭</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>

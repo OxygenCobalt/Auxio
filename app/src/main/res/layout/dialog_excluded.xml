@@ -26,7 +26,7 @@
         android:paddingStart="@dimen/spacing_medium"
         android:paddingEnd="@dimen/spacing_medium"
         android:paddingBottom="@dimen/spacing_medium"
-        android:text="@string/lbl_no_dirs"
+        android:text="@string/err_no_dirs"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
         android:textColor="?android:attr/textColorSecondary" />

@@ -42,7 +42,7 @@ class AccentCustomizeDialog :
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
             .setTitle(R.string.set_accent)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 if (accentAdapter.selectedAccent != settingsManager.accent) {
                     logD("Applying new accent")
                     settingsManager.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
@@ -51,9 +51,7 @@ class AccentCustomizeDialog :
 
                 dismiss()
             }
-
-            // Negative button just dismisses, no need for a listener.
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogAccentBinding, savedInstanceState: Bundle?) {

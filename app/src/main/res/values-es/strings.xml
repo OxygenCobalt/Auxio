@@ -47,7 +47,7 @@
 
     <string name="lbl_add">Agregar</string>
     <string name="lbl_save">Guardar</string>
-    <string name="lbl_no_dirs">Sin carpetas</string>
+    <string name="err_no_dirs">Sin carpetas</string>
 
     <string name="lbl_about">Acerca de</string>
     <string name="lbl_version">Versión</string>
@@ -82,7 +82,7 @@
 
     <string name="set_audio">Sonido</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_off">Desactivado</string>
+    <string name="lbl_off">Desactivado</string>
     <string name="set_replay_gain_track">Por pista</string>
     <string name="set_replay_gain_album">Por álbum</string>
     <string name="set_replay_gain_dynamic">Dinámico</string>

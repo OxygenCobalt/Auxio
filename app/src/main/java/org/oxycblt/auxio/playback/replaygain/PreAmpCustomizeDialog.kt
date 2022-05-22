@@ -33,7 +33,7 @@ import org.oxycblt.auxio.util.textSafe
  * The dialog for customizing the ReplayGain pre-amp values.
  * @author OxygenCobalt
  */
-class ReplayGainDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
+class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
     private val settingsManager = SettingsManager.getInstance()
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogPreAmpBinding.inflate(inflater)
@@ -41,12 +41,12 @@ class ReplayGainDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         builder
             .setTitle(R.string.set_pre_amp)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
+            .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 val binding = requireBinding()
                 settingsManager.replayGainPreAmp =
                     ReplayGainPreAmp(binding.withTagsSlider.value, binding.withoutTagsSlider.value)
             }
-            .setNegativeButton(android.R.string.cancel, null)
+            .setNegativeButton(R.string.lbl_cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogPreAmpBinding, savedInstanceState: Bundle?) {

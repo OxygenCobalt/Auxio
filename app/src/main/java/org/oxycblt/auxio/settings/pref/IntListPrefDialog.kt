@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.preference.PreferenceDialogFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.oxycblt.auxio.BuildConfig
+import org.oxycblt.auxio.R
 
 class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
     private val listPreference: IntListPreference
@@ -35,7 +36,7 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
         val builder = MaterialAlertDialogBuilder(requireContext(), theme)
         builder.setTitle(listPreference.title)
         builder.setPositiveButton(null, null)
-        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.setNegativeButton(R.string.lbl_cancel, null)
         builder.setSingleChoiceItems(listPreference.entries, listPreference.getValueIndex()) {
             _,
             index ->

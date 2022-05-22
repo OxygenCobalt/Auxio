@@ -34,6 +34,11 @@ import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
+/**
+ * A fragment showing the current playback state in a compact manner. Placed at the bottom of the
+ * screen. This expands into [PlaybackPanelFragment].
+ * @author OxygenCobalt
+ */
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()

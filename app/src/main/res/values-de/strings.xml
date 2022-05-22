@@ -40,7 +40,7 @@
 
     <string name="lbl_add">Hinzufügen</string>
     <string name="lbl_save">Speichern</string>
-    <string name="lbl_no_dirs">Keine Ordner</string>
+    <string name="err_no_dirs">Keine Ordner</string>
 
     <string name="lbl_about">Über</string>
     <string name="lbl_version">Version</string>
@@ -74,7 +74,7 @@
     <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_off">Aus</string>
+    <string name="lbl_off">Aus</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>
 

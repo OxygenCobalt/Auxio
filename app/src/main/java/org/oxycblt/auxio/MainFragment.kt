@@ -186,7 +186,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
     /**
      * A back press callback that handles how to respond to backwards navigation in the detail
-     * fragments and the playback panel.
+     * fragments and the playback panel. TODO: Migrate to new predictive API
      */
     inner class DynamicBackPressedCallback : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {

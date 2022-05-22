@@ -5,6 +5,7 @@
 #### What's New
 - Added disc number support
 - Added ReplayGain support for below-reference volume tracks [i.e positive ReplayGain values] 
+- Added ReplayGain pre-amp customization
 - About screen now shows counts for multiple types of library items, alongside a total duration
 - New disc, track, song count, and duration sorting modes
 

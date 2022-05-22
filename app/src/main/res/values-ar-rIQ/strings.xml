@@ -47,7 +47,7 @@
 
     <string name="lbl_add">أضف</string>
     <string name="lbl_save">احفظ</string>
-    <string name="lbl_no_dirs">لا مجلد</string>
+    <string name="err_no_dirs">لا مجلد</string>
 
     <string name="lbl_about">حول</string>
     <string name="lbl_version">الإصدار</string>
@@ -82,7 +82,7 @@
 
     <string name="set_audio">صوتيات</string>
     <string name="set_replay_gain">صخب الصوت</string>
-    <string name="set_off">اطفاء</string>
+    <string name="lbl_off">اطفاء</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>
     <string name="set_replay_gain_album">تفضيل الالبوم</string>
     <string name="set_replay_gain_dynamic">ديناميكي</string>

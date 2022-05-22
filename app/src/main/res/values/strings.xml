@@ -48,9 +48,13 @@
 
     <string name="lbl_state_saved">State saved</string>
 
+    <!-- Actual string: Ok -->
+    <string name="lbl_ok">@android:string/ok</string>
+    <!-- Actual string: Cancel -->
+    <string name="lbl_cancel">@android:string/cancel</string>
     <string name="lbl_add">Add</string>
     <string name="lbl_save">Save</string>
-    <string name="lbl_no_dirs">No Folders</string>
+    <string name="lbl_off">Off</string>
 
     <string name="lbl_about">About</string>
     <string name="lbl_version">Version</string>
@@ -114,14 +118,12 @@
     <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
 
-    <!-- TODO: Phase out android strings for in-house strings -->
-    <string name="set_off">Off</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
     <string name="err_load_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
+    <string name="err_no_dirs">No Folders</string>
     <string name="err_bad_dir">This folder is not supported</string>
     <string name="err_too_small">Auxio does not support this window size</string>
 
