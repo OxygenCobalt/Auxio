@@ -44,9 +44,6 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Add a controller role and move song loading/seeking to that
  *
- * TODO: Make PlaybackViewModel pass "delayed actions" to this and then await the service to start
- * it???
- *
  * TODO: Bug test app behavior when playback stops
  */
 class PlaybackStateManager private constructor() {
@@ -125,6 +122,7 @@ class PlaybackStateManager private constructor() {
             }
 
         applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
+        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -139,6 +137,7 @@ class PlaybackStateManager private constructor() {
         val library = musicStore.library ?: return
         this.parent = parent
         applyNewQueue(library, shuffled, null)
+        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -150,6 +149,7 @@ class PlaybackStateManager private constructor() {
         val library = musicStore.library ?: return
         parent = null
         applyNewQueue(library, true, null)
+        seekTo(0)
         notifyNewPlayback()
         notifyShuffledChanged()
         isPlaying = true
@@ -182,6 +182,7 @@ class PlaybackStateManager private constructor() {
 
     private fun goto(idx: Int, play: Boolean) {
         index = idx
+        seekTo(0)
         notifyIndexMoved()
         isPlaying = play
     }
@@ -260,8 +261,6 @@ class PlaybackStateManager private constructor() {
 
             newIndex = keep?.let(newQueue::indexOf) ?: 0
         }
-
-        logD("$newIndex $newQueue")
 
         _queue = newQueue
         index = newIndex

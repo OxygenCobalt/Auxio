@@ -29,7 +29,9 @@ import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
  * A [SwitchPreferenceCompat] that emulates the M3 switches until the design team actually bothers
- * to add them to MDC TODO: Remove this once MaterialSwitch is stabilized.
+ * to add them to MDC
+ *
+ * TODO: Remove this once MaterialSwitch is stabilized.
  */
 class M3SwitchPreference
 @JvmOverloads

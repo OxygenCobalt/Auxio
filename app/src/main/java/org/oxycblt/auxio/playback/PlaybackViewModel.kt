@@ -34,7 +34,6 @@ import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -46,12 +45,12 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * class.**
  * @author OxygenCobalt
  */
-class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
+class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    private var intentUri: Uri? = null
+    private var pendingDelayedAction: DelayedActionImpl? = null
 
     private val _song = MutableLiveData<Song?>()
     /** The current song. */
@@ -82,6 +81,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         get() = _nextUp
 
     init {
+        musicStore.addCallback(this)
         playbackManager.addCallback(this)
 
         // If the PlaybackViewModel was cleared [Signified by PlaybackStateManager still being
@@ -89,11 +89,52 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         // ViewModel state. If it isn't, then wait for MainFragment to give the command to restore
         // PlaybackStateManager.
         if (playbackManager.isInitialized) {
-            restorePlaybackState()
+            onNewPlayback(playbackManager.index, playbackManager.queue, playbackManager.parent)
+            onPositionChanged(playbackManager.positionMs)
+            onPlayingChanged(playbackManager.isPlaying)
+            onShuffledChanged(playbackManager.isShuffled)
+            onRepeatChanged(playbackManager.repeatMode)
         }
     }
 
     // --- PLAYING FUNCTIONS ---
+
+    /**
+     * Perform the given [DelayedAction].
+     *
+     * A "delayed action" is a class of playback actions that must have music present to function,
+     * usually alongside a context too. Examples include:
+     * - Opening files
+     * - Restoring the playback state
+     * - Future app shortcuts
+     *
+     * We would normally want to put this kind of functionality into PlaybackService, but it's
+     * lifecycle makes that more or less impossible.
+     */
+    fun performAction(context: Context, action: DelayedAction) {
+        val library = musicStore.library
+        val actionImpl = DelayedActionImpl(context.applicationContext, action)
+        if (library != null) {
+            performActionImpl(actionImpl, library)
+        } else {
+            pendingDelayedAction = actionImpl
+        }
+    }
+
+    private fun performActionImpl(action: DelayedActionImpl, library: MusicStore.Library) {
+        when (action.inner) {
+            is DelayedAction.RestoreState -> {
+                if (!playbackManager.isInitialized) {
+                    viewModelScope.launch { playbackManager.restoreState(action.context) }
+                }
+            }
+            is DelayedAction.Open -> {
+                library
+                    .findSongForUri(action.inner.uri, action.context.contentResolver)
+                    ?.let(::play)
+            }
+        }
+    }
 
     /**
      * Play a [song] with the [mode] specified. [mode] will default to the preferred song playback
@@ -140,26 +181,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
 
         playbackManager.play(genre, shuffled)
-    }
-
-    /**
-     * Play using a file [uri]. This will not play instantly during the initial startup sequence.
-     */
-    fun play(uri: Uri, context: Context) {
-        // Check if everything is already running to run the URI play
-        if (playbackManager.isInitialized && musicStore.library != null) {
-            playUriImpl(uri, context)
-        } else {
-            logD("Cant play this URI right now, waiting")
-            intentUri = uri
-        }
-    }
-
-    /** Play with a file URI. This is called after [play] once its deemed safe to do so. */
-    private fun playUriImpl(uri: Uri, context: Context) {
-        logD("Playing with uri $uri")
-        val library = musicStore.library ?: return
-        library.findSongForUri(uri, context.contentResolver)?.let { song -> play(song) }
     }
 
     /** Shuffle all songs */
@@ -265,42 +286,20 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
         }
     }
 
-    /**
-     * Restore playback on startup. This can do one of two things:
-     * - Play a file intent that was given by MainActivity in [play]
-     * - Restore the last playback state if there is no active file intent.
-     */
-    fun setupPlayback(context: Context) {
-        val intentUri = intentUri
-
-        if (intentUri != null) {
-            playUriImpl(intentUri, context)
-            // Remove the uri after finishing the calls so that this does not fire again.
-            this.intentUri = null
-        } else if (!playbackManager.isInitialized) {
-            // Otherwise just restore
-            viewModelScope.launch { playbackManager.restoreState(context) }
-        }
+    /** An action delayed until the complete load of the music library. */
+    sealed class DelayedAction {
+        object RestoreState : DelayedAction()
+        data class Open(val uri: Uri) : DelayedAction()
     }
 
-    /**
-     * Attempt to restore the current playback state from an existing [PlaybackStateManager]
-     * instance.
-     */
-    private fun restorePlaybackState() {
-        logD("Attempting to restore playback state")
-
-        onNewPlayback(playbackManager.index, playbackManager.queue, playbackManager.parent)
-        onPositionChanged(playbackManager.positionMs)
-        onPlayingChanged(playbackManager.isPlaying)
-        onShuffledChanged(playbackManager.isShuffled)
-        onRepeatChanged(playbackManager.repeatMode)
-    }
+    private data class DelayedActionImpl(val context: Context, val inner: DelayedAction)
 
     // --- OVERRIDES ---
 
     override fun onCleared() {
+        musicStore.removeCallback(this)
         playbackManager.removeCallback(this)
+        pendingDelayedAction = null
     }
 
     override fun onIndexMoved(index: Int) {
@@ -332,5 +331,15 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback {
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
         _repeatMode.value = repeatMode
+    }
+
+    override fun onMusicUpdate(response: MusicStore.Response) {
+        if (response is MusicStore.Response.Ok) {
+            val action = pendingDelayedAction
+            if (action != null) {
+                performActionImpl(action, response.library)
+                pendingDelayedAction = null
+            }
+        }
     }
 }

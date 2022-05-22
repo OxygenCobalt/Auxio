@@ -263,7 +263,6 @@ class PlaybackService :
         }
 
         logD("Loading ${song.rawName}")
-        player.seekTo(0)
         player.setMediaItem(MediaItem.fromUri(song.uri))
         player.prepare()
         notificationComponent.updateMetadata(song, playbackManager.parent)
@@ -287,6 +286,7 @@ class PlaybackService :
     }
 
     override fun onSeek(positionMs: Long) {
+        logD("Seeking to ${positionMs}ms")
         player.seekTo(positionMs)
     }
 
@@ -374,14 +374,12 @@ class PlaybackService :
             when (intent.action) {
                 // --- SYSTEM EVENTS ---
 
-                // Android has four different ways of handling audio plug events for some reason:
+                // Android has three different ways of handling audio plug events for some reason:
                 // 1. ACTION_HEADSET_PLUG, which only works with wired headsets
-                // 2. ACTION_SCO_AUDIO_STATE_UPDATED, which only works with pausing from a plug
-                // event and I'm not even sure if it's needed
-                // 3. ACTION_ACL_CONNECTED, which allows headset autoplay but also requires
+                // 2. ACTION_ACL_CONNECTED, which allows headset autoplay but also requires
                 // granting the BLUETOOTH/BLUETOOTH_CONNECT permissions, which is more or less
                 // a non-starter since both require me to display a permission prompt
-                // 4. Some weird internal framework thing that also handles bluetooth headsets???
+                // 3. Some weird internal framework thing that also handles bluetooth headsets???
                 //
                 // They should have just stopped at ACTION_HEADSET_PLUG.
                 AudioManager.ACTION_HEADSET_PLUG -> {

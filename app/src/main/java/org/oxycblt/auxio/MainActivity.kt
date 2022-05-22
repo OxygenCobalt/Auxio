@@ -18,6 +18,7 @@
 package org.oxycblt.auxio
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -68,13 +69,24 @@ class MainActivity : AppCompatActivity() {
 
         startService(Intent(this, PlaybackService::class.java))
 
-        // onNewIntent doesn't automatically call on startup, so call it here.
-        onNewIntent(intent)
+        // If we have a file URI already, open it. Otherwise, restore the playback state.
+        val action =
+            retrieveViewUri(intent)?.let { PlaybackViewModel.DelayedAction.Open(it) }
+                ?: PlaybackViewModel.DelayedAction.RestoreState
+
+        playbackModel.performAction(this, action)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
+        val uri = retrieveViewUri(intent)
+        if (uri != null) {
+            playbackModel.performAction(this, PlaybackViewModel.DelayedAction.Open(uri))
+        }
+    }
+
+    private fun retrieveViewUri(intent: Intent?): Uri? {
         // If this intent is a valid view intent that has not been used already, give it
         // to PlaybackViewModel to be used later.
         if (intent != null) {
@@ -84,9 +96,11 @@ class MainActivity : AppCompatActivity() {
             if (action == Intent.ACTION_VIEW && !isConsumed) {
                 // Mark the intent as used so this does not fire again
                 intent.putExtra(KEY_INTENT_USED, true)
-                intent.data?.let { fileUri -> playbackModel.play(fileUri, this) }
+                return intent.data
             }
         }
+
+        return null
     }
 
     private fun setupTheme() {

@@ -117,9 +117,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         // Handle the loader response.
         when (response) {
-            // Ok, start restoring playback now
-            is MusicStore.Response.Ok -> playbackModel.setupPlayback(requireContext())
-
             // Error, show the error to the user
             is MusicStore.Response.Err -> {
                 logD("Received Response.Err")
@@ -147,7 +144,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
                         show()
                     }
             }
-            null -> {}
+            else -> {}
         }
     }
 
