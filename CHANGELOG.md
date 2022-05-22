@@ -16,6 +16,7 @@
 - Fixed incorrect ellipsizing on song items
 - Fixed a variety of esoteric crashes with queue state
 - Fixed music indexing error when the OS would not provide a file name
+- Fixed icon corruptions on lollipop devices
 
 #### What's Changed
 - Audio focus is no longer configurable
@@ -29,6 +30,7 @@
 - Use native ExoPlayer AudioFocus implementation
 - Make ReplayGain functionality use AudioProcessor instead of volume
 - Removed databinding [Greatly reduces compile times]
+- Start using Material You dialogs
 - An uncountable amount of internal codebase improvements
 
 ## v2.2.2

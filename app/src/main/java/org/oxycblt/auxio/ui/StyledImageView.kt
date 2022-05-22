@@ -27,6 +27,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.drawable.DrawableCompat
 import coil.dispose
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -40,6 +41,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.logD
 
 /**
  * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
@@ -71,7 +73,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // If we have a pre-set drawable, ensure that it's half-size.
         val drawable = drawable
         if (drawable != null) {
-            setImageDrawable(HalfSizeDrawable(drawable))
+            setImageDrawable(StyledDrawable(context, drawable))
         }
     }
 
@@ -106,16 +108,29 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     private fun <T : Music> load(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
         dispose()
         load(music) {
-            error(HalfSizeDrawable(context, error))
+            error(StyledDrawable(context, error))
             transformations(SquareFrameTransform.INSTANCE)
         }
         contentDescription = context.getString(desc, music.resolveName(context))
     }
 
-    private class HalfSizeDrawable(private val src: Drawable) : Drawable() {
-        constructor(context: Context, @DrawableRes res: Int) : this(context.getDrawableSafe(res))
+    /**
+     * A companion drawable that can be used with the style that [StyledImageView] provides.
+     * @author OxygenCobalt
+     */
+    class StyledDrawable(context: Context, private val src: Drawable) : Drawable() {
+        constructor(
+            context: Context,
+            @DrawableRes res: Int
+        ) : this(context, context.getDrawableSafe(res))
+
+        init {
+            // Re-tint the drawable to something that will play along with the background
+            DrawableCompat.setTintList(src, context.getColorStateListSafe(R.color.sel_on_cover_bg))
+        }
 
         override fun draw(canvas: Canvas) {
+            logD(src.alpha)
             src.bounds.set(canvas.clipBounds)
             val adjustWidth = src.bounds.width() / 4
             val adjustHeight = src.bounds.height() / 4

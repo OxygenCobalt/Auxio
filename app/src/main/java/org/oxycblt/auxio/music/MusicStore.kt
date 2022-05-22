@@ -18,7 +18,6 @@
 package org.oxycblt.auxio.music
 
 import android.Manifest
-import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -27,6 +26,7 @@ import androidx.core.content.ContextCompat
 import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 
@@ -115,15 +115,16 @@ class MusicStore private constructor() {
          * uri.
          * @return The corresponding [Song] for this [uri], null if there isn't one.
          */
-        fun findSongForUri(uri: Uri, resolver: ContentResolver): Song? {
-            resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
-                cursor ->
-                cursor.moveToFirst()
-                val fileName =
-                    cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+        fun findSongForUri(context: Context, uri: Uri): Song? {
+            context.contentResolverSafe.query(
+                    uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { cursor ->
+                    cursor.moveToFirst()
+                    val fileName =
+                        cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                return songs.find { it.fileName == fileName }
-            }
+                    return songs.find { it.fileName == fileName }
+                }
 
             return null
         }

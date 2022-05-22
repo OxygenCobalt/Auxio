@@ -3,6 +3,7 @@
     <!-- Note: Not actually transparent, making it transparent would actually make it translucent -->
     <color name="chrome_transparent">#01fafafa</color>
     <color name="chrome_translucent">#80000000</color>
+    <color name="remote_translucent">#80ffffff</color>
 
     <color name="red_primary">#BC1714</color>
     <color name="red_on_primary">#FFFFFF</color>

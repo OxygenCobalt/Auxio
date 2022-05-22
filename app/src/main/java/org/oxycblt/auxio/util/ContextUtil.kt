@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.util
 
 import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -59,6 +60,13 @@ val Context.isNight: Boolean
 /** Returns if this device is in landscape. */
 val Context.isLandscape
     get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+/**
+ * Gets a content resolver in a way that does not mangle metadata on certain OEM skins. See
+ * https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
+ */
+val Context.contentResolverSafe: ContentResolver
+    get() = applicationContext.contentResolver
 
 /**
  * Convenience method for getting a plural.
@@ -178,6 +186,11 @@ fun Context.getDimenOffsetSafe(@DimenRes dimen: Int): Int {
     }
 }
 
+/**
+ * Calculates the pixels of the given dimension [dp].
+ * @param dp the dimension value
+ * @return The equivalent amount of pixels for [dp].
+ */
 @Px
 fun Context.pxOfDp(@Dimension dp: Float): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)

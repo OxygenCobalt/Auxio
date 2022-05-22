@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.music
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -26,6 +25,7 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -98,13 +98,6 @@ object Indexer {
      */
     @Suppress("InlinedApi")
     private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
-
-    /**
-     * Gets a content resolver in a way that does not mangle metadata on certain OEM skins. See
-     * https://github.com/OxygenCobalt/Auxio/issues/50 for more info.
-     */
-    private val Context.contentResolverSafe: ContentResolver
-        get() = applicationContext.contentResolver
 
     fun index(context: Context): MusicStore.Library? {
         val songs = loadSongs(context)

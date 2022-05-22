@@ -23,14 +23,13 @@ import android.view.LayoutInflater
 import android.view.WindowInsets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.color.MaterialColors
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.getAttrColorSafe
+import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
@@ -82,19 +81,16 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
             }
         }
 
+        // Load the track color in manually as it's unclear whether the track actually supports
+        // using a ColorStateList in the resources
+        binding.playbackProgressBar.trackColor =
+            requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
+
         binding.playbackSkipPrev?.setOnClickListener { playbackModel.prev() }
 
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 
         binding.playbackSkipNext?.setOnClickListener { playbackModel.next() }
-
-        // Deliberately override the progress bar color [in a Lollipop-friendly way] so that
-        // we use colorSecondary instead of colorSurfaceVariant. This is because
-        // colorSurfaceVariant is used with the assumption that the view that is using it is
-        // not elevated and is therefore not colored. This view is elevated.
-        binding.playbackProgressBar.trackColor =
-            MaterialColors.compositeARGBWithAlpha(
-                requireContext().getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt())
 
         // -- VIEWMODEL SETUP ---
 

@@ -78,7 +78,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:thumbRadius="@dimen/slider_thumb_radius" />
+        app:thumbRadius="@dimen/slider_thumb_radius"
+        app:trackColorInactive="@color/sel_track" />
 
     <TextView
         android:id="@+id/playback_position"
@@ -111,8 +112,8 @@
         android:layout_marginEnd="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_change_repeat"
         android:src="@drawable/ic_repeat"
-        app:iconSize="@dimen/size_icon_large"
         app:hasIndicator="true"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
         app:layout_constraintEnd_toStartOf="@+id/playback_skip_prev"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -161,7 +162,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_mid_large"
         android:contentDescription="@string/desc_shuffle"
-        android:src="@drawable/ic_shuffle"
+        android:src="@drawable/ic_shuffle_state"
         app:hasIndicator="true"
         app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"

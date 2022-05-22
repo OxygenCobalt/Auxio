@@ -22,15 +22,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/ui_unbounded_ripple"
+        android:contentDescription="@string/lbl_sort"
         android:minWidth="@dimen/size_btn_small"
         android:minHeight="@dimen/size_btn_small"
         android:paddingStart="@dimen/spacing_medium"
         android:paddingEnd="@dimen/spacing_medium"
+        android:src="@drawable/ic_sort"
         app:layout_constraintBottom_toTopOf="@id/header_divider"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/lbl_sort"
-        android:src="@drawable/ic_sort" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/header_divider"

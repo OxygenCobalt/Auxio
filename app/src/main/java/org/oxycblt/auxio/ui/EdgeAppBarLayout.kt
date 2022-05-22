@@ -33,9 +33,10 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
- * not properly respond to RecyclerView events. **Note:** This layout relies on
- * [AppBarLayout.liftOnScrollTargetViewId] to figure out what scrolling view to use. Failure to
- * specify this will result in the layout not working.
+ * not properly respond to RecyclerView events.
+ *
+ * **Note:** This layout relies on [AppBarLayout.liftOnScrollTargetViewId] to figure out what
+ * scrolling view to use. Failure to specify this will result in the layout not working.
  */
 open class EdgeAppBarLayout
 @JvmOverloads

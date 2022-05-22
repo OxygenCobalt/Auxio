@@ -24,7 +24,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.color.MaterialColors
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.R
@@ -36,9 +35,7 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.stateList
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
@@ -98,12 +95,6 @@ class PlaybackPanelFragment :
         binding.playbackSeekBar.apply {
             addOnChangeListener(this@PlaybackPanelFragment)
             addOnSliderTouchListener(this@PlaybackPanelFragment)
-
-            // Composite a tint list based on the active/inactive colors
-            trackInactiveTintList =
-                MaterialColors.compositeARGBWithAlpha(
-                        context.getAttrColorSafe(R.attr.colorSecondary), (255 * 0.2).toInt())
-                    .stateList
         }
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }

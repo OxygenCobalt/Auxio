@@ -8,7 +8,7 @@
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entries_theme"
             app:entryValues="@array/values_theme"
-            app:icon="@drawable/ic_day"
+            app:icon="@drawable/ic_light"
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="@bool/enable_theme_settings"
             app:key="KEY_THEME2"
@@ -95,12 +95,12 @@
             app:title="@string/set_replay_gain" />
 
         <Preference
+            app:allowDividerBelow="false"
+            app:dependency="auxio_replay_gain"
             app:iconSpaceReserved="false"
             app:key="auxio_pre_amp"
-            app:allowDividerBelow="false"
-            app:title="@string/set_pre_amp"
-            app:dependency="auxio_replay_gain"
-            app:summary="@string/set_pre_amp_desc"/>
+            app:summary="@string/set_pre_amp_desc"
+            app:title="@string/set_pre_amp" />
 
     </PreferenceCategory>
 

@@ -31,6 +31,7 @@ import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.SimpleItemCallback
+import org.oxycblt.auxio.ui.StyledImageView
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getPluralSafe
@@ -202,7 +203,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
                 contentDescription = context.getString(R.string.desc_track_number, item.track)
             }
 
-            binding.songTrackBg.imageAlpha = 0
+            binding.songTrackBg.setImageDrawable(null)
         } else {
             binding.songTrack.apply {
                 textSafe = ""
@@ -210,7 +211,12 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
                 contentDescription = context.getString(R.string.def_track)
             }
 
-            binding.songTrackBg.imageAlpha = 255
+            // Normally we would not re-load the drawable each time and instead
+            // change the alpha value, but Lollipop gets in our way yet again
+            // and does some stupid insanity with the alpha value that results
+            // in such branching.
+            binding.songTrackBg.setImageDrawable(
+                StyledImageView.StyledDrawable(binding.context, R.drawable.ic_song))
         }
 
         binding.songName.textSafe = item.resolveName(binding.context)

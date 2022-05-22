@@ -75,7 +75,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:thumbRadius="@dimen/slider_thumb_radius" />
+        app:thumbRadius="@dimen/slider_thumb_radius"
+        app:trackColorInactive="@color/sel_track" />
 
     <TextView
         android:id="@+id/playback_position"
@@ -161,9 +162,9 @@
         android:contentDescription="@string/desc_shuffle"
         android:minWidth="@dimen/size_btn_small"
         android:minHeight="@dimen/size_btn_small"
-        android:src="@drawable/ic_shuffle"
-        app:iconSize="@dimen/size_icon_large"
+        android:src="@drawable/ic_shuffle_state"
         app:hasIndicator="true"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/playback_skip_next"

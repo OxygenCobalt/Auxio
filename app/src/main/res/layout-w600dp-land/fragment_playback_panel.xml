@@ -37,7 +37,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/playback_cover"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintVertical_chainStyle="packed"
+        app:trackColorInactive="@color/sel_track">
 
         <TextView
             android:id="@+id/playback_song"
@@ -175,9 +176,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:contentDescription="@string/desc_shuffle"
-        android:src="@drawable/ic_shuffle"
-        app:iconSize="@dimen/size_icon_large"
+        android:src="@drawable/ic_shuffle_state"
         app:hasIndicator="true"
+        app:iconSize="@dimen/size_icon_large"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
         app:layout_constraintEnd_toEndOf="@+id/playback_seek_bar"
         app:layout_constraintTop_toTopOf="@+id/playback_skip_next"

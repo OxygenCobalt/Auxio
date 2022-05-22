@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
+        // See if the new intent is a file intent. If so, open it.
         val uri = retrieveViewUri(intent)
         if (uri != null) {
             playbackModel.performAction(this, PlaybackViewModel.DelayedAction.Open(uri))

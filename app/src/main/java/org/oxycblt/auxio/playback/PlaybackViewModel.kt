@@ -100,43 +100,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     // --- PLAYING FUNCTIONS ---
 
     /**
-     * Perform the given [DelayedAction].
-     *
-     * A "delayed action" is a class of playback actions that must have music present to function,
-     * usually alongside a context too. Examples include:
-     * - Opening files
-     * - Restoring the playback state
-     * - Future app shortcuts
-     *
-     * We would normally want to put this kind of functionality into PlaybackService, but it's
-     * lifecycle makes that more or less impossible.
-     */
-    fun performAction(context: Context, action: DelayedAction) {
-        val library = musicStore.library
-        val actionImpl = DelayedActionImpl(context.applicationContext, action)
-        if (library != null) {
-            performActionImpl(actionImpl, library)
-        } else {
-            pendingDelayedAction = actionImpl
-        }
-    }
-
-    private fun performActionImpl(action: DelayedActionImpl, library: MusicStore.Library) {
-        when (action.inner) {
-            is DelayedAction.RestoreState -> {
-                if (!playbackManager.isInitialized) {
-                    viewModelScope.launch { playbackManager.restoreState(action.context) }
-                }
-            }
-            is DelayedAction.Open -> {
-                library
-                    .findSongForUri(action.inner.uri, action.context.contentResolver)
-                    ?.let(::play)
-            }
-        }
-    }
-
-    /**
      * Play a [song] with the [mode] specified. [mode] will default to the preferred song playback
      * mode of the user if not specified.
      */
@@ -186,6 +149,41 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     /** Shuffle all songs */
     fun shuffleAll() {
         playbackManager.shuffleAll()
+    }
+
+    /**
+     * Perform the given [DelayedAction].
+     *
+     * A "delayed action" is a class of playback actions that must have music present to function,
+     * usually alongside a context too. Examples include:
+     * - Opening files
+     * - Restoring the playback state
+     * - Future app shortcuts
+     *
+     * We would normally want to put this kind of functionality into PlaybackService, but it's
+     * lifecycle makes that more or less impossible.
+     */
+    fun performAction(context: Context, action: DelayedAction) {
+        val library = musicStore.library
+        val actionImpl = DelayedActionImpl(context.applicationContext, action)
+        if (library != null) {
+            performActionImpl(actionImpl, library)
+        } else {
+            pendingDelayedAction = actionImpl
+        }
+    }
+
+    private fun performActionImpl(action: DelayedActionImpl, library: MusicStore.Library) {
+        when (action.inner) {
+            is DelayedAction.RestoreState -> {
+                if (!playbackManager.isInitialized) {
+                    viewModelScope.launch { playbackManager.restoreState(action.context) }
+                }
+            }
+            is DelayedAction.Open -> {
+                library.findSongForUri(action.context, action.inner.uri)?.let(::play)
+            }
+        }
     }
 
     // --- POSITION FUNCTIONS ---

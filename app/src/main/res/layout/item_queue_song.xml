@@ -18,7 +18,7 @@
         android:layout_gravity="end|center_vertical"
         android:contentDescription="@string/desc_clear_queue_item"
         android:padding="@dimen/spacing_medium"
-        android:src="@drawable/ic_clear"
+        android:src="@drawable/ic_delete"
         app:tint="?attr/colorSurface" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

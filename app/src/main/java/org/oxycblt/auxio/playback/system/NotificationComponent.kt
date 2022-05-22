@@ -64,7 +64,7 @@ class NotificationComponent(
             notificationManager.createNotificationChannel(channel)
         }
 
-        setSmallIcon(R.drawable.ic_auxio)
+        setSmallIcon(R.drawable.ic_song)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
@@ -75,7 +75,7 @@ class NotificationComponent(
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev))
         addAction(buildPlayPauseAction(context, true))
         addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
-        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_exit))
+        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_close))
 
         setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
     }
@@ -100,7 +100,7 @@ class NotificationComponent(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             setSubText(parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
         } else {
-            setSubText(song.resolveName(context))
+            setSubText(song.album.resolveName(context))
         }
 
         provider.load(
@@ -108,7 +108,6 @@ class NotificationComponent(
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
                     setLargeIcon(bitmap)
-                    setLargeIcon(null)
                     callback.onNotificationChanged(this@NotificationComponent)
                 }
             })
@@ -171,7 +170,7 @@ class NotificationComponent(
         isShuffled: Boolean
     ): NotificationCompat.Action {
         val drawableRes =
-            if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
+            if (isShuffled) R.drawable.ic_shuffle_state else R.drawable.ic_remote_shuffle_off
 
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }

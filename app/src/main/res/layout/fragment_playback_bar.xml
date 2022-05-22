@@ -62,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:trackColor="?attr/colorPrimary"
+        app:trackColor="@color/sel_track"
         tools:progress="70" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
