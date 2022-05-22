@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/spacing_small">
+    android:paddingTop="@dimen/spacing_medium">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/excluded_recycler"
@@ -22,7 +22,10 @@
         android:id="@+id/excluded_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_medium"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_medium"
         android:text="@string/lbl_no_dirs"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"

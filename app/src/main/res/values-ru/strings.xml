@@ -83,7 +83,7 @@
     <string name="set_audio">Звук</string>
     <string name="set_headset_autoplay">Воспроизводить при подключении</string>
     <string name="set_headset_autoplay_desc">Всегда начинать воспроизведение при подключении наушников (может работать не на всех устройствах)</string>
-    <string name="set_replay_gain">ReplayGain (экспериментально)</string>
+    <string name="set_replay_gain">ReplayGain</string>
     <string name="set_off">Выкл.</string>
     <string name="set_replay_gain_track">По треку</string>
     <string name="set_replay_gain_album">По альбому</string>

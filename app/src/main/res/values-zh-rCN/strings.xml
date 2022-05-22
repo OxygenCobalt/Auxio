@@ -82,7 +82,7 @@
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
-    <string name="set_replay_gain">回放增益（实验性）</string>
+    <string name="set_replay_gain">回放增益</string>
     <string name="set_replay_gain_track">偏好曲目</string>
     <string name="set_replay_gain_album">偏好专辑</string>
     <string name="set_replay_gain_dynamic">动态</string>

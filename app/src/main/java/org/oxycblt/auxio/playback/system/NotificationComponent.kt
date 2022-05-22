@@ -35,7 +35,6 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastIntent
 import org.oxycblt.auxio.util.newMainIntent
 

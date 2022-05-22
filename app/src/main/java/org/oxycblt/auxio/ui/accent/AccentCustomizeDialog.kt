@@ -40,20 +40,20 @@ class AccentCustomizeDialog :
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        builder.setTitle(R.string.set_accent)
+        builder
+            .setTitle(R.string.set_accent)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                if (accentAdapter.selectedAccent != settingsManager.accent) {
+                    logD("Applying new accent")
+                    settingsManager.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
+                    requireActivity().recreate()
+                }
 
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            if (accentAdapter.selectedAccent != settingsManager.accent) {
-                logD("Applying new accent")
-                settingsManager.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
-                requireActivity().recreate()
+                dismiss()
             }
 
-            dismiss()
-        }
-
-        // Negative button just dismisses, no need for a listener.
-        builder.setNegativeButton(android.R.string.cancel, null)
+            // Negative button just dismisses, no need for a listener.
+            .setNegativeButton(android.R.string.cancel, null)
     }
 
     override fun onBindingCreated(binding: DialogAccentBinding, savedInstanceState: Bundle?) {

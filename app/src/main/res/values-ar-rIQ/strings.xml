@@ -81,7 +81,7 @@
     <string name="set_alt_shuffle">تفضيل نشاط الخلط</string>
 
     <string name="set_audio">صوتيات</string>
-    <string name="set_replay_gain">صخب الصوت (تجريبي)</string>
+    <string name="set_replay_gain">صخب الصوت</string>
     <string name="set_off">اطفاء</string>
     <string name="set_replay_gain_track">تفضيل المقطع</string>
     <string name="set_replay_gain_album">تفضيل الالبوم</string>

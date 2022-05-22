@@ -87,10 +87,15 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Headset autoplay</string>
     <string name="set_headset_autoplay_desc">Always start playing when a headset is connected (may not work on all devices)</string>
-    <string name="set_replay_gain">ReplayGain (Experimental)</string>
+    <string name="set_replay_gain">ReplayGain</string>
     <string name="set_replay_gain_track">Prefer track</string>
     <string name="set_replay_gain_album">Prefer album</string>
     <string name="set_replay_gain_dynamic">Dynamic</string>
+    <string name="set_pre_amp">ReplayGain pre-amp</string>
+    <string name="set_pre_amp_desc">The pre-amp is applied to the existing adjustment during playback</string>
+    <string name="set_pre_amp_with">Adjustment with tags</string>
+    <string name="set_pre_amp_without">Adjustment without tags</string>
+    <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_behavior">Behavior</string>
     <string name="set_song_mode">When a song is selected</string>
@@ -109,6 +114,7 @@
     <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
 
+    <!-- TODO: Phase out android strings for in-house strings -->
     <string name="set_off">Off</string>
 
     <!-- Error Namespace | Error Labels -->
@@ -173,6 +179,10 @@
 
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_disc_no">Disc %d</string>
+
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
     <string name="fmt_albums_loaded">Albums loaded: %d</string>
     <string name="fmt_artists_loaded">Artists loaded: %d</string>

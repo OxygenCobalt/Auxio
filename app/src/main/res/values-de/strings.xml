@@ -73,7 +73,7 @@
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
-    <string name="set_replay_gain">ReplayGain (Experimentell)</string>
+    <string name="set_replay_gain">ReplayGain</string>
     <string name="set_off">Aus</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>

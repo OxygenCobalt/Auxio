@@ -94,6 +94,14 @@
             app:key="auxio_replay_gain"
             app:title="@string/set_replay_gain" />
 
+        <Preference
+            app:iconSpaceReserved="false"
+            app:key="auxio_pre_amp"
+            app:allowDividerBelow="false"
+            app:title="@string/set_pre_amp"
+            app:dependency="auxio_replay_gain"
+            app:summary="@string/set_pre_amp_desc"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

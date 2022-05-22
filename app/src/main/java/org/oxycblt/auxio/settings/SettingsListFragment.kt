@@ -33,6 +33,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.excluded.ExcludedDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.playback.replaygain.ReplayGainDialog
+import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
 import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
@@ -88,6 +90,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             // to adequately supply a "target fragment" (otherwise we will crash since the dialog
             // requires one), and then we need to actually show the dialog, making sure we use
             // the parent FragmentManager as again, it will crash if we don't.
+            //
             // Fragments were a mistake.
             val dialog = IntListPreferenceDialog.from(preference)
             dialog.setTargetFragment(this, 0)
@@ -150,7 +153,22 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, _ ->
                             Coil.imageLoader(requireContext()).apply { this.memoryCache?.clear() }
-
+                            true
+                        }
+                }
+                SettingsManager.KEY_REPLAY_GAIN -> {
+                    notifyDependencyChange(settingsManager.replayGainMode == ReplayGainMode.OFF)
+                    onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, value ->
+                            notifyDependencyChange(
+                                ReplayGainMode.fromIntCode(value as Int) == ReplayGainMode.OFF)
+                            true
+                        }
+                }
+                SettingsManager.KEY_PRE_AMP -> {
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            ReplayGainDialog().show(childFragmentManager, ReplayGainDialog.TAG)
                             true
                         }
                 }

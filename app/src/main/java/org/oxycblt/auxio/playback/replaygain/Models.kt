@@ -43,8 +43,10 @@ enum class ReplayGainMode {
     }
 }
 
-/** Represents the ReplayGain pre-amp */
+/** Represents the ReplayGain pre-amp values. */
 data class ReplayGainPreAmp(
+    /** The value to use when ReplayGain tags are present. */
     val with: Float,
+    /** The value to use when ReplayGain tags are not present. */
     val without: Float,
 )

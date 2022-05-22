@@ -59,8 +59,9 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
     // --- REPLAYGAIN PARSING ---
 
     /**
-     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is based off
-     * Vanilla Music's implementation.
+     * Updates the rough volume adjustment for [Metadata] with ReplayGain tags. This is
+     * tangentially based off Vanilla Music's implementation, but has diverged to a significant
+     * extent.
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (settingsManager.replayGainMode == ReplayGainMode.OFF) {
@@ -102,10 +103,11 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                         gain.track
                     }
 
-                // Apply the "With tags" adjustment
+                // Apply the adjustment specified when there is ReplayGain tags.
                 resolvedGain + preAmp.with
             } else {
-                // No gain tags were present, just apply the adjustment without tags.
+                // No ReplayGain tags existed, or no tags were parsable, or there was no metadata
+                // in the first place. Return the gain to use when there is no ReplayGain value.
                 logD("No ReplayGain tags present ")
                 preAmp.without
             }
@@ -157,7 +159,8 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             found = true
         }
 
-        // Case 2: R128 ReplayGain, most commonly found on FLAC files.
+        // Case 2: R128 ReplayGain, most commonly found on FLAC files and other lossless
+        // encodings to increase precision in volume adjustments.
         // While technically there is the R128 base gain in Opus files, that is automatically
         // applied by the media framework [which ExoPlayer relies on]. The only reason we would
         // want to read it is to zero previous ReplayGain values for being invalid, however there
@@ -215,8 +218,8 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         } else {
             for (i in position until limit step 2) {
                 // Ensure we clamp the values to the minimum and maximum values possible
-                // for the  encoding. This prevents issues where samples amplified beyond
-                // 1 << 16  will end up becoming truncated during the conversion to a short,
+                // for the encoding. This prevents issues where samples amplified beyond
+                // 1 << 16 will end up becoming truncated during the conversion to a short,
                 // resulting in popping.
                 var sample = inputBuffer.getLeShort(i)
                 sample =
@@ -232,10 +235,17 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         buffer.flip()
     }
 
+    // Normally, ByteBuffer endianness is determined by object state, which is possibly
+    // the most java thing I have ever heard. Instead of mutating that state and accidentally
+    // breaking downstream parsers of audio data, we have our own methods to always parse a
+    // little-endian value.
+
+    /** Always get a little-endian short value from a [ByteBuffer] */
     private fun ByteBuffer.getLeShort(at: Int): Short {
         return get(at + 1).toInt().shl(8).or(get(at).toInt().and(0xFF)).toShort()
     }
 
+    /** Always place a little-endian short value into a [ByteBuffer]. */
     private fun ByteBuffer.putLeShort(short: Short) {
         put(short.toByte())
         put(short.toInt().shr(8).toByte())
