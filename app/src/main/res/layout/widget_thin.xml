@@ -65,6 +65,14 @@
         android:layout_marginBottom="@dimen/spacing_medium"
         android:layout_marginEnd="@dimen/spacing_medium">
 
+        <android.widget.ImageButton
+            android:id="@+id/widget_repeat"
+            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/desc_change_repeat"
+            android:src="@drawable/ic_repeat" />
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"
@@ -92,6 +100,15 @@
             android:layout_weight="1"
             android:contentDescription="@string/desc_skip_next"
             android:src="@drawable/ic_skip_next" />
+
+        <android.widget.ImageButton
+            android:id="@+id/widget_shuffle"
+            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/desc_shuffle"
+            android:src="@drawable/ic_shuffle_state" />
 
     </android.widget.LinearLayout>
 </LinearLayout>

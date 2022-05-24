@@ -33,13 +33,20 @@ import org.oxycblt.auxio.util.newMainIntent
 fun createDefaultWidget(context: Context) = createViews(context, R.layout.widget_default)
 
 /**
- * The tiny widget is for an edge-case situation where a widget falls under the size class of the
- * small widget, either via landscape mode or exceptionally small screens.
+ * The tiny widget like a small or medium widget, but for landscape or exceptionally small screens.
  */
 fun createTinyWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_tiny)
-        .applyMeta(context, state)
+        .applyCover(context, state)
         .applyBasicControls(context, state)
+
+/**
+ * The thin widget is like a wide or large widget, but for landscape or exceptionally small screens.
+ */
+fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
+    createViews(context, R.layout.widget_thin)
+        .applyCover(context, state)
+        .applyFullControls(context, state)
 
 /**
  * The small widget is for 2x2 widgets and just shows the cover art and playback controls. This is

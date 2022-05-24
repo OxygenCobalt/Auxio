@@ -42,6 +42,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * changes. This is tolerable.
  *
  * For more specific details about these sub-widgets, see Forms.kt.
+ *
+ * @author OxygenCobalt
  */
 class WidgetProvider : AppWidgetProvider() {
     /*
@@ -57,6 +59,7 @@ class WidgetProvider : AppWidgetProvider() {
         val views =
             mapOf(
                 SizeF(180f, 100f) to createTinyWidget(context, state),
+                SizeF(372f, 100f) to createThinWidget(context, state),
                 SizeF(180f, 152f) to createSmallWidget(context, state),
                 SizeF(272f, 152f) to createWideWidget(context, state),
                 SizeF(180f, 270f) to createMediumWidget(context, state),
@@ -122,13 +125,6 @@ class WidgetProvider : AppWidgetProvider() {
         val name = ComponentName(context, WidgetProvider::class.java)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            for (id in getAppWidgetIds(name)) {
-                val options = getAppWidgetOptions(id)
-                logD(
-                    options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
-                        ?: "no sizes")
-            }
-
             // Widgets are automatically responsive on Android 12, no need to do anything.
             updateAppWidget(name, RemoteViews(views))
         } else {
