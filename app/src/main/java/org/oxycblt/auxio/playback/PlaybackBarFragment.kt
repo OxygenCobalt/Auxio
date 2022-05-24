@@ -17,10 +17,8 @@
  
 package org.oxycblt.auxio.playback
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.WindowInsets
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
@@ -30,7 +28,7 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -61,22 +59,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 // Since we swipe up this view, we need to make sure it does not collide with
                 // any gesture events. So, apply the system gesture insets if present and then
                 // only default to the system bar insets when there are no other options.
-                val gesturePadding =
-                    when {
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                            insets.getInsets(WindowInsets.Type.systemGestures()).bottom
-                        }
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                            @Suppress("DEPRECATION") insets.systemGestureInsets.bottom
-                        }
-                        else -> 0
-                    }
-
-                view.updatePadding(
-                    bottom =
-                        if (gesturePadding != 0) gesturePadding
-                        else insets.systemBarInsetsCompat.bottom)
-
+                val gesturePadding = insets.systemGestureInsetsCompat
+                view.updatePadding(bottom = gesturePadding.bottom)
                 insets
             }
         }
