@@ -17,8 +17,8 @@
 
         <android.widget.ImageView
             android:id="@+id/widget_cover"
-            android:layout_width="88dp"
-            android:layout_height="88dp"
+            android:layout_width="@dimen/size_cover_mid_large"
+            android:layout_height="@dimen/size_cover_mid_large"
             android:layout_marginEnd="@dimen/spacing_medium"
             android:contentDescription="@string/desc_no_cover"
             android:scaleType="centerCrop"

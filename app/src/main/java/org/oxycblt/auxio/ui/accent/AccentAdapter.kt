@@ -65,7 +65,7 @@ class AccentAdapter(listener: Listener) :
 
     class AccentData : BackingData<Accent>() {
         override fun getItem(position: Int) = Accent(position)
-        override fun getItemCount() = ACCENT_COUNT
+        override fun getItemCount() = Accent.MAX
     }
 }
 

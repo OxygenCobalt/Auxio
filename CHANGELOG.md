@@ -9,8 +9,10 @@
 - About screen now shows counts for multiple types of library items, alongside a total duration
 - New disc, track, song count, and duration sorting modes
 
-### What's Improved
+#### What's Improved
+- Re-enabled theme customization on Android 12
 - The tab selector now hides itself when there is only one tab
+- Added more buttons to the smallest widget form
 
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items

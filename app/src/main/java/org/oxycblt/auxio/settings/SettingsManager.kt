@@ -279,7 +279,7 @@ class SettingsManager private constructor(context: Context) :
         // with auxio_.
         const val KEY_THEME = "KEY_THEME2"
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
-        const val KEY_ACCENT = "auxio_accent"
+        const val KEY_ACCENT = "auxio_accent2"
 
         const val KEY_LIB_TABS = "auxio_lib_tabs"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"

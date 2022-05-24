@@ -16,8 +16,7 @@
 
         <Preference
             app:icon="@drawable/ic_accent"
-            app:isPreferenceVisible="@bool/enable_theme_settings"
-            app:key="auxio_accent"
+            app:key="auxio_accent2"
             app:title="@string/set_accent" />
 
         <org.oxycblt.auxio.settings.pref.M3SwitchPreference

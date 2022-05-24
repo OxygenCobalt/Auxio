@@ -5,6 +5,10 @@
     <color name="chrome_translucent">#80000000</color>
     <color name="remote_translucent">#80ffffff</color>
 
+    <color name="widget_surface">@color/material_dynamic_primary95</color>
+    <color name="widget_surface_inverse">@color/material_dynamic_neutral80</color>
+    <color name="widget_on_surface_inverse">@color/material_dynamic_neutral95</color>
+
     <color name="red_primary">#BC1714</color>
     <color name="red_on_primary">#FFFFFF</color>
     <color name="red_primary_container">#FFDAD3</color>
@@ -389,7 +393,5 @@
     <color name="grey_surface_inverse">#1f1f1f</color>
     <color name="grey_on_surface_inverse">#F0F0F0</color>
 
-    <color name="widget_surface">@color/material_dynamic_primary95</color>
-    <color name="widget_surface_inverse">@color/material_dynamic_neutral80</color>
-    <color name="widget_on_surface_inverse">@color/material_dynamic_neutral95</color>
+    <color name="dynamic_primary">@color/m3_ref_palette_dynamic_primary40</color>
 </resources>

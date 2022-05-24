@@ -108,26 +108,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupTheme() {
         val settingsManager = SettingsManager.getInstance()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Android 12, let dynamic colors be our accent and only enable the black theme option
-            if (isNight && settingsManager.useBlackTheme) {
-                logD("Applying black theme [dynamic colors]")
-                setTheme(R.style.Theme_Auxio_Black)
-            }
-        } else {
-            // Below android 12, load the accent and enable theme customization
+        // Disable theme customization above Android 12, as it's far enough in as a version to
+        // the point where most phones should have an automatic option for light/dark theming.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
-            val accent = settingsManager.accent
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
 
-            // The black theme has a completely separate set of styles since style attributes cannot
-            // be modified at runtime.
-            if (isNight && settingsManager.useBlackTheme) {
-                logD("Applying black theme [accent $accent]")
-                setTheme(accent.blackTheme)
-            } else {
-                logD("Applying normal theme [accent $accent]")
-                setTheme(accent.theme)
-            }
+        val accent = settingsManager.accent
+
+        // The black theme has a completely separate set of styles since style attributes cannot
+        // be modified at runtime.
+        if (isNight && settingsManager.useBlackTheme) {
+            logD("Applying black theme [accent $accent]")
+            setTheme(accent.blackTheme)
+        } else {
+            logD("Applying normal theme [accent $accent]")
+            setTheme(accent.theme)
         }
     }
 

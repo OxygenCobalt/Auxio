@@ -17,13 +17,14 @@
  
 package org.oxycblt.auxio.ui.accent
 
+import android.os.Build
 import org.oxycblt.auxio.R
 
 val ACCENT_COUNT: Int
     get() = ACCENT_NAMES.size
 
 private val ACCENT_NAMES =
-    arrayOf(
+    intArrayOf(
         R.string.clr_red,
         R.string.clr_pink,
         R.string.clr_purple,
@@ -40,10 +41,10 @@ private val ACCENT_NAMES =
         R.string.clr_orange,
         R.string.clr_brown,
         R.string.clr_grey,
-    )
+        R.string.clr_dynamic)
 
 private val ACCENT_THEMES =
-    arrayOf(
+    intArrayOf(
         R.style.Theme_Auxio_Red,
         R.style.Theme_Auxio_Pink,
         R.style.Theme_Auxio_Purple,
@@ -60,10 +61,11 @@ private val ACCENT_THEMES =
         R.style.Theme_Auxio_Orange,
         R.style.Theme_Auxio_Brown,
         R.style.Theme_Auxio_Grey,
-    )
+        R.style.Theme_Auxio_App // Dynamic colors are on the base theme
+        )
 
 private val ACCENT_BLACK_THEMES =
-    arrayOf(
+    intArrayOf(
         R.style.Theme_Auxio_Black_Red,
         R.style.Theme_Auxio_Black_Pink,
         R.style.Theme_Auxio_Black_Purple,
@@ -80,10 +82,11 @@ private val ACCENT_BLACK_THEMES =
         R.style.Theme_Auxio_Black_Orange,
         R.style.Theme_Auxio_Black_Brown,
         R.style.Theme_Auxio_Black_Grey,
-    )
+        R.style.Theme_Auxio_Black // Dynamic colors are on the base theme
+        )
 
 private val ACCENT_PRIMARY_COLORS =
-    arrayOf(
+    intArrayOf(
         R.color.red_primary,
         R.color.pink_primary,
         R.color.purple_primary,
@@ -100,7 +103,7 @@ private val ACCENT_PRIMARY_COLORS =
         R.color.orange_primary,
         R.color.brown_primary,
         R.color.grey_primary,
-    )
+        R.color.dynamic_primary)
 
 /**
  * The data object for an accent. In the UI this is known as a "Color Scheme." This can be nominally
@@ -122,4 +125,14 @@ data class Accent(val index: Int) {
         get() = ACCENT_BLACK_THEMES[index]
     val primary: Int
         get() = ACCENT_PRIMARY_COLORS[index]
+
+    companion object {
+        val MAX =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ACCENT_THEMES.size
+            } else {
+                // Disable the option for a dynamic accent
+                ACCENT_THEMES.size - 1
+            }
+    }
 }

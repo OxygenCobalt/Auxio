@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.settings
 
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.core.content.edit
 import org.oxycblt.auxio.ui.accent.Accent
 
@@ -43,8 +44,24 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
 
         prefs.edit {
-            putInt(SettingsManager.KEY_ACCENT, accent)
+            putInt(OldKeys.KEY_ACCENT3, accent)
             remove(OldKeys.KEY_ACCENT2)
+            apply()
+        }
+    }
+
+    if (prefs.contains(OldKeys.KEY_ACCENT3)) {
+        var accent = prefs.getInt(OldKeys.KEY_ACCENT3, 5)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Accents were previously frozen as soon as the OS was updated to android twelve,
+            // as dynamic colors were enabled by default. This is no longer the case, so we need
+            // to re-update the setting to dynamic colors here.
+            accent = 16
+        }
+
+        prefs.edit {
+            putInt(SettingsManager.KEY_ACCENT, accent)
+            remove(OldKeys.KEY_ACCENT3)
             apply()
         }
     }
@@ -55,4 +72,5 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
 /** Cache of the old keys used in Auxio. */
 private object OldKeys {
     const val KEY_ACCENT2 = "KEY_ACCENT2"
+    const val KEY_ACCENT3 = "auxio_accent"
 }
