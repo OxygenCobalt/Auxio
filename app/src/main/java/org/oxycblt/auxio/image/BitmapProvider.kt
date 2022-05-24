@@ -41,6 +41,7 @@ import org.oxycblt.auxio.music.Song
 class BitmapProvider(private val context: Context) {
     private var currentRequest: Request? = null
 
+    /* If this provider is currently attempting to load something. */
     val isBusy: Boolean
         get() = currentRequest?.run { !disposable.isDisposed } ?: false
 
@@ -53,7 +54,7 @@ class BitmapProvider(private val context: Context) {
         currentRequest = null
 
         val request =
-            target.setupRequest(
+            target.onConfigRequest(
                 ImageRequest.Builder(context)
                     .data(song)
                     .size(Size.ORIGINAL)
@@ -76,8 +77,15 @@ class BitmapProvider(private val context: Context) {
 
     private data class Request(val disposable: Disposable, val callback: Target)
 
+    /** Represents the target for a request. */
     interface Target {
-        fun setupRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
+        /** Modify the default request with custom attributes. */
+        fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder = builder
+
+        /**
+         * Called when the loading process is completed. [bitmap] will be null if there was an
+         * error.
+         */
         fun onCompleted(bitmap: Bitmap?)
     }
 }

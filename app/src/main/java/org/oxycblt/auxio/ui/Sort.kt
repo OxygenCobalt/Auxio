@@ -119,9 +119,7 @@ sealed class Sort(open val isAscending: Boolean) {
             genres.sortWith(compareByDynamic(NameComparator()) { it })
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByName(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByName(newIsAscending)
     }
 
     /** Sort by the album of an item, only supported by [Song] */
@@ -140,9 +138,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByAlbum(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByAlbum(newIsAscending)
     }
 
     /** Sort by the artist of an item, only supported by [Album] and [Song] */
@@ -171,9 +167,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByArtist(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByArtist(newIsAscending)
     }
 
     /** Sort by the year of an item, only supported by [Album] and [Song] */
@@ -200,9 +194,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByYear(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByYear(newIsAscending)
     }
 
     /** Sort by the duration of the item. Supports all items. */
@@ -237,9 +229,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareByDynamic { it.durationSecs }, compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByDuration(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByDuration(newIsAscending)
     }
 
     /** Sort by the amount of songs. Only applicable to music parents. */
@@ -268,9 +258,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareByDynamic { it.songs.size }, compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByCount(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByCount(newIsAscending)
     }
 
     /**
@@ -293,9 +281,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByDisc(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByDisc(newIsAscending)
     }
 
     /**
@@ -317,9 +303,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareBy(NameComparator()) { it }))
         }
 
-        override fun ascending(newIsAscending: Boolean): Sort {
-            return ByTrack(newIsAscending)
-        }
+        override fun ascending(newIsAscending: Boolean) = ByTrack(newIsAscending)
     }
 
     val intCode: Int

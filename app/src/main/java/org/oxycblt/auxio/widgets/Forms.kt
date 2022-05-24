@@ -35,13 +35,13 @@ fun createDefaultWidget(context: Context): RemoteViews {
 }
 
 /**
- * The tiny widget is for an edge-case situation where a 2xN widget happens to be smaller than
- * 100dp. It just shows the cover, titles, and a button.
+ * The tiny widget is for an edge-case situation where a widget falls under the size class of the
+ * small widget, either via landscape mode or exceptionally small screens.
  */
 fun createTinyWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews {
     return createViews(context, R.layout.widget_tiny)
         .applyMeta(context, state)
-        .applyPlayControls(context, state)
+        .applyBasicControls(context, state)
 }
 
 /**

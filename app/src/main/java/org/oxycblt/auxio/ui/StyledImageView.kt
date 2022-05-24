@@ -41,7 +41,6 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getDrawableSafe
-import org.oxycblt.auxio.util.logD
 
 /**
  * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
@@ -130,7 +129,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
 
         override fun draw(canvas: Canvas) {
-            logD(src.alpha)
             src.bounds.set(canvas.clipBounds)
             val adjustWidth = src.bounds.width() / 4
             val adjustHeight = src.bounds.height() / 4

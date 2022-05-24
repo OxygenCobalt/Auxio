@@ -122,6 +122,13 @@ class WidgetProvider : AppWidgetProvider() {
         val name = ComponentName(context, WidgetProvider::class.java)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            for (id in getAppWidgetIds(name)) {
+                val options = getAppWidgetOptions(id)
+                logD(
+                    options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+                        ?: "no sizes")
+            }
+
             // Widgets are automatically responsive on Android 12, no need to do anything.
             updateAppWidget(name, RemoteViews(views))
         } else {

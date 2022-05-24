@@ -50,6 +50,10 @@ class WidgetComponent(private val context: Context) :
     init {
         playbackManager.addCallback(this)
         settingsManager.addCallback(this)
+
+        if (playbackManager.isInitialized) {
+            update()
+        }
     }
 
     /*
@@ -76,7 +80,7 @@ class WidgetComponent(private val context: Context) :
         provider.load(
             song,
             object : BitmapProvider.Target {
-                override fun setupRequest(builder: ImageRequest.Builder): ImageRequest.Builder {
+                override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder {
                     // The widget has two distinct styles that we must transform the album art to
                     // accommodate:
                     // - Before Android 12, the widget has hard edges, so we don't need to round

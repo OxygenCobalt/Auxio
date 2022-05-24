@@ -71,9 +71,8 @@ class AlbumArtFetcher private constructor(private val context: Context, private 
     }
 
     class AlbumFactory : Fetcher.Factory<Album> {
-        override fun create(data: Album, options: Options, imageLoader: ImageLoader): Fetcher {
-            return AlbumArtFetcher(options.context, data)
-        }
+        override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
+            AlbumArtFetcher(options.context, data)
     }
 }
 
@@ -90,14 +89,12 @@ private constructor(
     override suspend fun fetch(): FetchResult? {
         val albums = Sort.ByName(true).albums(artist.albums)
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
-
         return createMosaic(context, results, size)
     }
 
     class Factory : Fetcher.Factory<Artist> {
-        override fun create(data: Artist, options: Options, imageLoader: ImageLoader): Fetcher {
-            return ArtistImageFetcher(options.context, options.size, data)
-        }
+        override fun create(data: Artist, options: Options, imageLoader: ImageLoader) =
+            ArtistImageFetcher(options.context, options.size, data)
     }
 }
 
@@ -115,14 +112,12 @@ private constructor(
         // Don't sort here to preserve compatibility with previous versions of this image.
         val albums = genre.songs.groupBy { it.album }.keys
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
-
         return createMosaic(context, results, size)
     }
 
     class Factory : Fetcher.Factory<Genre> {
-        override fun create(data: Genre, options: Options, imageLoader: ImageLoader): Fetcher {
-            return GenreImageFetcher(options.context, options.size, data)
-        }
+        override fun create(data: Genre, options: Options, imageLoader: ImageLoader) =
+            GenreImageFetcher(options.context, options.size, data)
     }
 }
 

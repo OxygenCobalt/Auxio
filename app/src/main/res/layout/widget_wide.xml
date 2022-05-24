@@ -8,14 +8,7 @@
     android:theme="@style/Theme.Widget">
 
     <!--
-    For this widget form to work, we need to scale the ImageView across a 1:1 aspect ratio.
-    However, since we are working with a RemoteViews instance, we can't just use ConstraintLayout
-    to achieve this. We can use RelativeLayout, but there's no way to force an aspect ratio with
-    that layout. However, if we create an invisible ImageView that contains a massive fixed-size
-    drawable and then clamp our main ImageView to it, we can make the view scale on a 1:1 aspect
-    ratio.
-
-    This is easily one of the worst layout hacks I've done, but it seems to work.
+    See widget_small.xml for an explanation for the ImageView setup
     -->
 
     <android.widget.ImageView
