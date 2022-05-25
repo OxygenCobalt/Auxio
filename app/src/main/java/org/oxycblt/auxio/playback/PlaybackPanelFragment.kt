@@ -37,7 +37,6 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -68,8 +67,7 @@ class PlaybackPanelFragment :
 
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
-            val gestures = insets.systemGestureInsetsCompat
-            binding.root.updatePadding(top = bars.top, bottom = gestures.bottom)
+            binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
 

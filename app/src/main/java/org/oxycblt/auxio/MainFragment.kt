@@ -113,9 +113,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     ) {
         val binding = requireBinding()
 
-        // Handle the loader response.
+        // Handle any error cases, showing a useful message.
         when (response) {
-            // Error, show the error to the user
             is MusicStore.Response.Err -> {
                 logD("Received Response.Err")
                 Snackbar.make(binding.root, R.string.err_load_failed, Snackbar.LENGTH_INDEFINITE)

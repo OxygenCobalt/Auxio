@@ -19,8 +19,11 @@ package org.oxycblt.auxio.music
 
 import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
@@ -100,7 +103,15 @@ object Indexer {
     private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
     fun index(context: Context): MusicStore.Library? {
-        val songs = loadSongs(context)
+        // Establish the compatibility object to use when loading songs.
+        val compat =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Api30AudioCompat()
+            } else {
+                Api21AudioCompat()
+            }
+
+        val songs = loadSongs(context, compat)
         if (songs.isEmpty()) return null
 
         val albums = buildAlbums(songs)
@@ -127,7 +138,7 @@ object Indexer {
      * [buildArtists], and [readGenres] functions must be called with the returned list so that all
      * songs are properly linked up.
      */
-    private fun loadSongs(context: Context): List<Song> {
+    private fun loadSongs(context: Context, compat: AudioDatabaseCompat): List<Song> {
         val excludedDatabase = ExcludedDatabase.getInstance(context)
         var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
         val args = mutableListOf<String>()
@@ -143,20 +154,25 @@ object Indexer {
 
         var songs = mutableListOf<Song>()
 
+        val columns =
+            mutableListOf(
+                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.DURATION,
+                MediaStore.Audio.AudioColumns.YEAR,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.AudioColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns.ARTIST,
+                AUDIO_COLUMN_ALBUM_ARTIST,
+                MediaStore.Audio.AudioColumns.DATA)
+
+        // Get the compat impl to add their version-specific columns.
+        compat.addSongColumns(columns)
+
         context.contentResolverSafe.query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(
-                    MediaStore.Audio.AudioColumns._ID,
-                    MediaStore.Audio.AudioColumns.TITLE,
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                    MediaStore.Audio.AudioColumns.TRACK,
-                    MediaStore.Audio.AudioColumns.DURATION,
-                    MediaStore.Audio.AudioColumns.YEAR,
-                    MediaStore.Audio.AudioColumns.ALBUM,
-                    MediaStore.Audio.AudioColumns.ALBUM_ID,
-                    MediaStore.Audio.AudioColumns.ARTIST,
-                    AUDIO_COLUMN_ALBUM_ARTIST,
-                    MediaStore.Audio.AudioColumns.DATA),
+                columns.toTypedArray(),
                 selector,
                 args.toTypedArray(),
                 null)
@@ -165,7 +181,6 @@ object Indexer {
                 val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
                 val fileIndex =
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
-                val trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
                 val durationIndex =
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
                 val yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
@@ -177,70 +192,45 @@ object Indexer {
                 val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
 
                 while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idIndex)
-                    val title = cursor.getString(titleIndex)
+                    val raw = RawSong()
+
+                    raw.songId = cursor.getLong(idIndex)
+                    raw.title = cursor.getString(titleIndex)
 
                     // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
                     // from the android system. Once again though, OEM issues get in our way and
                     // this field isn't available on some platforms. In that case, see if we can
                     // grok a file name from the DATA field.
-                    val fileName =
+                    raw.fileName =
                         cursor.getStringOrNull(fileIndex)
                             ?: cursor
                                 .getStringOrNull(dataIndex)
                                 ?.substringAfterLast('/', MediaStore.UNKNOWN_STRING)
                                 ?: MediaStore.UNKNOWN_STRING
 
-                    // The TRACK field is for some reason formatted as DTTT, where D is the disk
-                    // and T is the track. This is dumb and insane and forces me to mangle track
-                    // numbers above 1000, but there is nothing we can do that won't break the app
-                    // below API 30.
-                    var track: Int? = null
-                    var disc: Int? = null
+                    raw.duration = cursor.getLong(durationIndex)
+                    raw.year = cursor.getIntOrNull(yearIndex)
 
-                    val rawTrack = cursor.getIntOrNull(trackIndex)
-                    if (rawTrack != null) {
-                        track = rawTrack % 1000
-                        disc = rawTrack / 1000
-                        if (disc == 0) {
-                            // A disc number of 0 means that there is no disc.
-                            disc = null
-                        }
-                    }
-
-                    val duration = cursor.getLong(durationIndex)
-                    val year = cursor.getIntOrNull(yearIndex)
-
-                    val album = cursor.getString(albumIndex)
-                    val albumId = cursor.getLong(albumIdIndex)
+                    raw.album = cursor.getStringOrNull(albumIndex)
+                    raw.albumId = cursor.getLong(albumIdIndex)
 
                     // If the artist field is <unknown>, make it null. This makes handling the
                     // insanity of the artist field easier later on.
-                    val artist =
+                    raw.artist =
                         cursor.getStringOrNull(artistIndex)?.run {
-                            if (this == MediaStore.UNKNOWN_STRING) {
-                                null
-                            } else {
+                            if (this != MediaStore.UNKNOWN_STRING) {
                                 this
+                            } else {
+                                null
                             }
                         }
 
-                    val albumArtist = cursor.getStringOrNull(albumArtistIndex)
+                    raw.albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
-                    songs.add(
-                        Song(
-                            title,
-                            fileName,
-                            duration,
-                            track,
-                            disc,
-                            id,
-                            year,
-                            album,
-                            albumId,
-                            artist,
-                            albumArtist,
-                        ))
+                    // Allow the compatibility object to add their fields
+                    compat.mutateSong(cursor, raw)
+
+                    songs.add(raw.toSong())
                 }
             }
 
@@ -253,6 +243,7 @@ object Indexer {
                         it._mediaStoreArtistName to
                         it._mediaStoreAlbumArtistName to
                         it.track to
+                        it.disc to
                         it.durationMs
                 }
                 .toMutableList()
@@ -410,5 +401,120 @@ object Indexer {
             }
 
         return genreSongs.ifEmpty { null }
+    }
+
+    /**
+     * Represents a song currently being assembled by the indexer. There is no guarantee that
+     * metadata is sane or complete until it is transformed into a song with [toSong]
+     *
+     * TODO: Add manual metadata parsing.
+     */
+    private data class RawSong(
+        var songId: Long? = null,
+        var title: String? = null,
+        var fileName: String? = null,
+        var duration: Long? = null,
+        var track: Int? = null,
+        var disc: Int? = null,
+        var year: Int? = null,
+        var album: String? = null,
+        var albumId: Long? = null,
+        var artist: String? = null,
+        var albumArtist: String? = null,
+    ) {
+        // TODO: Bundle this conversion into the grouping process
+        fun toSong(): Song =
+            Song(
+                requireNotNull(title) { "Malformed song: No title" },
+                requireNotNull(fileName) { "Malformed song: No file name" },
+                requireNotNull(duration) { "Malformed song: No duration" },
+                track,
+                disc,
+                requireNotNull(songId) { "Malformed song: No song id" },
+                year,
+                requireNotNull(album) { "Malformed song: No album name" },
+                requireNotNull(albumId) { "Malformed song: No album id" },
+                artist,
+                albumArtist,
+            )
+    }
+
+    /** A compatibility interface to implement version-specific audio database querying. */
+    private interface AudioDatabaseCompat {
+        /** Add version-specific columns to the given projection. */
+        fun addSongColumns(columns: MutableList<String>)
+
+        /** Mutate a [raw] song by reading the columns added in [addSongColumns], */
+        fun mutateSong(cursor: Cursor, raw: RawSong)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private class Api30AudioCompat : AudioDatabaseCompat {
+        private var trackIndex: Int = -1
+        private var discIndex: Int = -1
+
+        override fun addSongColumns(columns: MutableList<String>) {
+            columns.add(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+            columns.add(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+        }
+
+        override fun mutateSong(cursor: Cursor, raw: RawSong) {
+            if (trackIndex == -1) {
+                trackIndex =
+                    cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+            }
+
+            if (discIndex == -1) {
+                discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+            }
+
+            // Both CD_TRACK_NUMBER and DISC_NUMBER tend to be formatted as they are in
+            // the tag itself, which is to say that it is formatted as NN/TT tracks, where
+            // N is the number and T is the total. Parse the number while leaving out the
+            // total, as we have no use for it.
+
+            val track = cursor.getStringOrNull(trackIndex)
+            val disc = cursor.getStringOrNull(discIndex)
+
+            if (track != null) {
+                raw.track = track.split('/', limit = 2).getOrNull(0)?.toIntOrNull()
+            }
+
+            if (disc != null) {
+                raw.disc = disc.split('/', limit = 2).getOrNull(0)?.toIntOrNull()
+            }
+        }
+    }
+
+    private class Api21AudioCompat : AudioDatabaseCompat {
+        private var trackIndex: Int = -1
+
+        override fun addSongColumns(columns: MutableList<String>) {
+            columns.add(MediaStore.Audio.AudioColumns.TRACK)
+        }
+
+        override fun mutateSong(cursor: Cursor, raw: RawSong) {
+            if (trackIndex == -1) {
+                trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+            }
+
+            // TRACK is formatted as DTTT where D is the disc number and T is the track number.
+            // At least, I think so. I've so far been unable to reproduce track numbers on older
+            // devices. Keep it around just in case.
+
+            val rawTrack = cursor.getIntOrNull(trackIndex)
+            if (rawTrack != null) {
+                raw.track = rawTrack % 1000
+
+                // A disc number of 0 means that there is no disc.
+                val disc = rawTrack / 1000
+                raw.disc =
+                    if (disc > 0) {
+                        disc
+                    } else {
+                        null
+                    }
+            }
+        }
     }
 }
