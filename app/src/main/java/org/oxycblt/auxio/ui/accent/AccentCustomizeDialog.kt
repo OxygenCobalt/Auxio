@@ -55,17 +55,17 @@ class AccentCustomizeDialog :
     }
 
     override fun onBindingCreated(binding: DialogAccentBinding, savedInstanceState: Bundle?) {
+        // --- UI SETUP ---
+
+        binding.accentRecycler.adapter = accentAdapter
+
         accentAdapter.setSelectedAccent(
             if (savedInstanceState != null) {
-                Accent(savedInstanceState.getInt(KEY_PENDING_ACCENT))
+                Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
                 settingsManager.accent
             },
             binding.accentRecycler)
-
-        // --- UI SETUP ---
-
-        binding.accentRecycler.adapter = accentAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

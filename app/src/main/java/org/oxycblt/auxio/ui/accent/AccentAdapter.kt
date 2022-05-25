@@ -30,7 +30,10 @@ import org.oxycblt.auxio.util.getColorSafe
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.stateList
 
-/** An adapter that displays the accent palette. */
+/**
+ * An adapter that displays the accent palette.
+ * @author OxygenCobalt
+ */
 class AccentAdapter(listener: Listener) :
     MonoAdapter<Accent, AccentAdapter.Listener, AccentViewHolder>(listener) {
     var selectedAccent: Accent? = null
@@ -64,7 +67,7 @@ class AccentAdapter(listener: Listener) :
     }
 
     class AccentData : BackingData<Accent>() {
-        override fun getItem(position: Int) = Accent(position)
+        override fun getItem(position: Int) = Accent.from(position)
         override fun getItemCount() = Accent.MAX
     }
 }
@@ -84,15 +87,15 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
     }
 
     fun setSelected(isSelected: Boolean) {
-        val context = binding.accent.context
-
-        binding.accent.isEnabled = !isSelected
-        binding.accent.imageTintList =
-            if (isSelected) {
-                context.getAttrColorSafe(R.attr.colorSurface).stateList
-            } else {
-                context.getColorSafe(android.R.color.transparent).stateList
-            }
+        binding.accent.apply {
+            isEnabled = !isSelected
+            imageTintList =
+                if (isSelected) {
+                    context.getAttrColorSafe(R.attr.colorSurface).stateList
+                } else {
+                    context.getColorSafe(android.R.color.transparent).stateList
+                }
+        }
     }
 
     companion object {

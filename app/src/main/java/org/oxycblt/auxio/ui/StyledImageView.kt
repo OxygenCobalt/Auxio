@@ -63,6 +63,12 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
         styledAttrs.recycle()
 
+        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
+        // could theoretically be used to round corners, the corner radius is dependent on the
+        // dimensions of the image, which will result in inconsistent corners across different
+        // album covers unless we resize all covers to be the same size. clipToOutline is both
+        // cheaper and more elegant. As a side-note, this also allows us to re-use the same
+        // background for both the tonal background color and the corner rounding.
         clipToOutline = true
         background =
             MaterialShapeDrawable().apply {
@@ -79,11 +85,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
-        // could theoretically be used to round corners, the corner radius is dependent on the
-        // dimensions of the image, which will result in inconsistent corners across different
-        // album covers unless we resize all covers to be the same size. clipToOutline is both
-        // cheaper and more elegant.
         if (!isInEditMode) {
             val settingsManager = SettingsManager.getInstance()
             if (settingsManager.roundCovers) {

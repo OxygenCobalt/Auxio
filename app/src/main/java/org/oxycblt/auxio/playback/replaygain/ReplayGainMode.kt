@@ -31,8 +31,9 @@ enum class ReplayGainMode {
     DYNAMIC;
 
     companion object {
-        fun fromIntCode(value: Int): ReplayGainMode? {
-            return when (value) {
+        /** Convert an int [code] into an instance, or null if it isn't valid. */
+        fun fromIntCode(code: Int): ReplayGainMode? {
+            return when (code) {
                 IntegerTable.REPLAY_GAIN_MODE_OFF -> OFF
                 IntegerTable.REPLAY_GAIN_MODE_TRACK -> TRACK
                 IntegerTable.REPLAY_GAIN_MODE_ALBUM -> ALBUM
@@ -42,11 +43,3 @@ enum class ReplayGainMode {
         }
     }
 }
-
-/** Represents the ReplayGain pre-amp values. */
-data class ReplayGainPreAmp(
-    /** The value to use when ReplayGain tags are present. */
-    val with: Float,
-    /** The value to use when ReplayGain tags are not present. */
-    val without: Float,
-)

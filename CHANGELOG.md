@@ -12,7 +12,7 @@
 #### What's Improved
 - Re-enabled theme customization on Android 12
 - The tab selector now hides itself when there is only one tab
-- Added more buttons to the smallest widget form
+- Made the cover on the thin widget larger
 
 #### What's Fixed
 - Fixed incorrect ellipsizing on song items

@@ -77,7 +77,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        // TODO: Scale this drawable based on available space after padding
+        // FIXME: Scale this drawable based on available space after padding
 
         imageMatrix =
             centerMatrix.apply {

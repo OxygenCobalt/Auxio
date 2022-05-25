@@ -58,8 +58,7 @@ class WidgetProvider : AppWidgetProvider() {
         // Map each widget form to the cells where it would look at least okay.
         val views =
             mapOf(
-                SizeF(180f, 100f) to createTinyWidget(context, state),
-                SizeF(372f, 100f) to createThinWidget(context, state),
+                SizeF(180f, 100f) to createThinWidget(context, state),
                 SizeF(180f, 152f) to createSmallWidget(context, state),
                 SizeF(272f, 152f) to createWideWidget(context, state),
                 SizeF(180f, 270f) to createMediumWidget(context, state),

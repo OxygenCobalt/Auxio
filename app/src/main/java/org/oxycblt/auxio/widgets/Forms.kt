@@ -33,20 +33,13 @@ import org.oxycblt.auxio.util.newMainIntent
 fun createDefaultWidget(context: Context) = createViews(context, R.layout.widget_default)
 
 /**
- * The tiny widget like a small or medium widget, but for landscape or exceptionally small screens.
- */
-fun createTinyWidget(context: Context, state: WidgetComponent.WidgetState) =
-    createViews(context, R.layout.widget_tiny)
-        .applyCover(context, state)
-        .applyBasicControls(context, state)
-
-/**
- * The thin widget is like a wide or large widget, but for landscape or exceptionally small screens.
+ * The thin widget is a weird outlier widget intended to work well on strange launchers or
+ * landscape grid launchers that allow really thin widget sizing.
  */
 fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_thin)
-        .applyCover(context, state)
-        .applyFullControls(context, state)
+        .applyMeta(context, state)
+        .applyBasicControls(context, state)
 
 /**
  * The small widget is for 2x2 widgets and just shows the cover art and playback controls. This is

@@ -66,8 +66,6 @@ class PlaybackPanelFragment :
     ) {
         // --- UI SETUP ---
 
-        logD(binding.root.paddingBottom)
-
         binding.root.setOnApplyWindowInsetsListener { _, insets ->
             val bars = insets.systemBarInsetsCompat
             val gestures = insets.systemGestureInsetsCompat

@@ -65,7 +65,7 @@ class SettingsManager private constructor(context: Context) :
         }
 
     /**
-     * Whether to display the LoopMode or the shuffle status on the notification. False if loop,
+     * Whether to display the RepeatMode or the shuffle status on the notification. False if repeat,
      * true if shuffle.
      */
     val useAltNotifAction: Boolean
@@ -256,7 +256,7 @@ class SettingsManager private constructor(context: Context) :
         when (key) {
             KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach { it.onNotifSettingsChanged() }
             KEY_SHOW_COVERS, KEY_QUALITY_COVERS -> callbacks.forEach { it.onCoverSettingsChanged() }
-            KEY_LIB_TABS -> callbacks.forEach { it.onLibraryChanged() }
+            KEY_LIB_TABS -> callbacks.forEach { it.onLibrarySettingsChanged() }
             KEY_REPLAY_GAIN, KEY_PRE_AMP_WITH, KEY_PRE_AMP_WITHOUT ->
                 callbacks.forEach { it.onReplayGainSettingsChanged() }
         }
@@ -268,7 +268,7 @@ class SettingsManager private constructor(context: Context) :
      * context.
      */
     interface Callback {
-        fun onLibraryChanged() {}
+        fun onLibrarySettingsChanged() {}
         fun onNotifSettingsChanged() {}
         fun onCoverSettingsChanged() {}
         fun onReplayGainSettingsChanged() {}

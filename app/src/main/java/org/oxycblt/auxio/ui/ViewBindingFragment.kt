@@ -32,16 +32,36 @@ import org.oxycblt.auxio.util.logD
 abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
     private var _binding: T? = null
 
+    /**
+     * Inflate the binding from the given [inflater]. This should usually be done by the binding
+     * implementation's inflate function.
+     */
     protected abstract fun onCreateBinding(inflater: LayoutInflater): T
+
+    /**
+     * Called during [onViewCreated] when the binding was successfully inflated and set as the view.
+     * This is where view setup should occur.
+     */
     protected open fun onBindingCreated(binding: T, savedInstanceState: Bundle?) {}
+
+    /**
+     * Called during [onDestroyView] when the binding should be destroyed and all callbacks or
+     * leaking elements be released.
+     */
     protected open fun onDestroyBinding(binding: T) {}
 
+    /** Maybe get the binding. This will be null outside of the fragment view lifecycle. */
     protected val binding: T?
         get() = _binding
 
+    /**
+     * Get the binding under the assumption that the fragment has a view at this state in the
+     * lifecycle. This will throw an exception if the fragment is not in a valid lifecycle.
+     */
     protected fun requireBinding(): T {
         return requireNotNull(_binding) {
-            "ViewBinding was not available, as the fragment was not in a valid state"
+            "ViewBinding was available. Fragment should be a valid state " +
+                "right now, but instead it was ${lifecycle.currentState}"
         }
     }
 
@@ -61,5 +81,6 @@ abstract class ViewBindingFragment<T : ViewBinding> : Fragment() {
         super.onDestroyView()
         onDestroyBinding(requireBinding())
         _binding = null
+        logD("Fragment destroyed")
     }
 }

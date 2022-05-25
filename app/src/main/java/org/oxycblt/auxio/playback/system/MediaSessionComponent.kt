@@ -32,6 +32,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  */
@@ -106,9 +107,20 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genre.resolveName(context))
-                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track?.toLong() ?: 0L)
-                .putText(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year?.toString())
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
+
+        if (song.track != null) {
+            metadata.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track.toLong())
+        }
+
+        if (song.disc != null) {
+            metadata.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, song.disc.toLong())
+        }
+
+        if (song.album.year != null) {
+            metadata.putString(
+                MediaMetadataCompat.METADATA_KEY_DATE, unlikelyToBeNull(song.album.year).toString())
+        }
 
         // Normally, android expects one to provide a URI to the metadata instance instead of
         // a full blown bitmap. In practice, this is not ideal in the slightest, as we cannot

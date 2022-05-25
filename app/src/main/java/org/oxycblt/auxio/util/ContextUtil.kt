@@ -222,22 +222,20 @@ fun Context.showToast(@StringRes str: Int) {
 }
 
 /** Create a [PendingIntent] that leads to Auxio's [MainActivity] */
-fun Context.newMainIntent(): PendingIntent {
-    return PendingIntent.getActivity(
+fun Context.newMainIntent(): PendingIntent =
+    PendingIntent.getActivity(
         this,
         IntegerTable.REQUEST_CODE,
         Intent(this, MainActivity::class.java),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-}
 
 /** Create a broadcast [PendingIntent] */
-fun Context.newBroadcastIntent(what: String): PendingIntent {
-    return PendingIntent.getBroadcast(
+fun Context.newBroadcastIntent(what: String): PendingIntent =
+    PendingIntent.getBroadcast(
         this,
         IntegerTable.REQUEST_CODE,
-        Intent(what),
+        Intent(what).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-}
 
 /** Hard-restarts the app. Useful for forcing the app to reload music. */
 fun Context.hardRestart() {

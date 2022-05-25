@@ -19,9 +19,7 @@ package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
-
-val ACCENT_COUNT: Int
-    get() = ACCENT_NAMES.size
+import org.oxycblt.auxio.util.logW
 
 private val ACCENT_NAMES =
     intArrayOf(
@@ -116,7 +114,7 @@ private val ACCENT_PRIMARY_COLORS =
  * @property primary The primary color resource for this accent
  * @author OxygenCobalt
  */
-data class Accent(val index: Int) {
+class Accent private constructor(val index: Int) {
     val name: Int
         get() = ACCENT_NAMES[index]
     val theme: Int
@@ -126,7 +124,24 @@ data class Accent(val index: Int) {
     val primary: Int
         get() = ACCENT_PRIMARY_COLORS[index]
 
+    override fun equals(other: Any?) = other is Accent && index == other.index
+
+    override fun hashCode() = index.hashCode()
+
     companion object {
+        fun from(index: Int): Accent {
+            if (index > (MAX - 1)) {
+                logW("Account outside of bounds [idx: $index, max: $MAX")
+                return Accent(5)
+            }
+
+            return Accent(index)
+        }
+
+        /**
+         * The maximum amount of accents that are valid. This excludes the dynamic accent on
+         * versions that do not support it.
+         */
         val MAX =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 ACCENT_THEMES.size

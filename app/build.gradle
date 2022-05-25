@@ -24,13 +24,13 @@ android {
 
     // ExoPlayer needs Java 8 to compile.
 
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += "-Xjvm-default=all"
-    }
-
-    compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -94,8 +94,7 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    def exoplayerVersion = "2.17.1"
-    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.17.1"
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading

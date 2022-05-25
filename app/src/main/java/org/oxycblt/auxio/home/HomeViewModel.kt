@@ -145,7 +145,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
         }
     }
 
-    override fun onLibraryChanged() {
+    override fun onLibrarySettingsChanged() {
         tabs = visibleTabs
         _shouldRecreateTabs.value = true
     }

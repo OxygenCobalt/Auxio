@@ -59,9 +59,9 @@ enum class RepeatMode {
             }
 
     companion object {
-        /** Convert an int [constant] into a LoopMode, or null if it isn't valid. */
-        fun fromIntCode(constant: Int): RepeatMode? {
-            return when (constant) {
+        /** Convert an int [code] into an instance, or null if it isn't valid. */
+        fun fromIntCode(code: Int): RepeatMode? {
+            return when (code) {
                 IntegerTable.REPEAT_MODE_NONE -> NONE
                 IntegerTable.REPEAT_MODE_ALL -> ALL
                 IntegerTable.REPEAT_MODE_TRACK -> TRACK

@@ -66,7 +66,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
     }
 
-    return Accent(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
+    return Accent.from(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
 }
 
 /** Cache of the old keys used in Auxio. */

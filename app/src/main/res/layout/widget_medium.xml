@@ -8,7 +8,7 @@
     android:theme="@style/Theme.Widget">
 
     <!--
-    See widget_small.xml for an explanation for the ImageView setup
+    See widget_small.xml for an explanation for the ImageView setup.
     -->
 
     <android.widget.ImageView
