@@ -33,14 +33,13 @@ import org.oxycblt.auxio.util.newMainIntent
 fun createDefaultWidget(context: Context) = createViews(context, R.layout.widget_default)
 
 /**
- * The thin widget is a weird outlier widget intended to work well on strange launchers or
- * landscape grid launchers that allow really thin widget sizing.
+ * The thin widget is a weird outlier widget intended to work well on strange launchers or landscape
+ * grid launchers that allow really thin widget sizing.
  */
 fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_thin)
         .applyMeta(context, state)
         .applyBasicControls(context, state)
-
 /**
  * The small widget is for 2x2 widgets and just shows the cover art and playback controls. This is
  * generally because a Medium widget is too large for this widget size and a text-only widget is too
@@ -107,7 +106,7 @@ private fun RemoteViews.applyCover(
     return this
 }
 
-private fun RemoteViews.applyBasicControls(
+private fun RemoteViews.applyPlayPauseControls(
     context: Context,
     state: WidgetComponent.WidgetState
 ): RemoteViews {
@@ -121,6 +120,15 @@ private fun RemoteViews.applyBasicControls(
         } else {
             R.drawable.ic_play
         })
+
+    return this
+}
+
+private fun RemoteViews.applyBasicControls(
+    context: Context,
+    state: WidgetComponent.WidgetState
+): RemoteViews {
+    applyPlayPauseControls(context, state)
 
     setOnClickPendingIntent(
         R.id.widget_skip_prev, context.newBroadcastIntent(PlaybackService.ACTION_SKIP_PREV))

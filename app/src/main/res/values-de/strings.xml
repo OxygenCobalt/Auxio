@@ -49,6 +49,8 @@
     <string name="lbl_licenses">Lizenzen</string>
     <string name="lbl_author">Entwickelt von OxygenCobalt</string>
 
+    <string name="lbl_off">Aus</string>
+
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Einstellungen</string>
 
@@ -74,7 +76,9 @@
     <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="lbl_off">Aus</string>
+    <string name="set_pre_amp_desc">Während Musikwiedergabe, Die Prälautverstärkung trifft zu dem aktuellem Abgleich</string>
+    <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
+    <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
     <string name="set_replay_gain_album">Album bevorzugen</string>
 
@@ -175,4 +179,20 @@
     <string name="desc_clear_queue_item">Lied in der Warteschlange löschen</string>
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
+    <string name="lbl_sort_duration">Dauer</string>
+    <string name="lbl_sort_count">Liedermenge</string>
+    <string name="lbl_sort_disc">Schallplatte</string>
+    <string name="lbl_sort_track">Titel</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_library_counts">Bibliotheke-statistiken</string>
+    <string name="set_replay_gain_dynamic">Dynamik</string>
+    <string name="clr_dynamic">Dynamiche farbe</string>
+    <string name="fmt_disc_no">Schallplatte %d</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_albums_loaded">Geladene Alben: %d</string>
+    <string name="fmt_artists_loaded">Geladene Künstler: %d</string>
+    <string name="fmt_genres_loaded">Geladene Genres: %d</string>
+    <string name="fmt_total_duration">Gesamt</string>
+    <string name="set_pre_amp">ReplayGain prälautverstärkung</string>
 </resources>

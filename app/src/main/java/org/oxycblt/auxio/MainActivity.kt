@@ -164,6 +164,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Apply blind padding to accommodate left/right window insets. This is done because
+     * implementing insets on *phone* landscape mode is pretty impractical.
+     */
     private fun WindowInsets.applyLeftRightInsets(contentView: View): WindowInsets {
         val bars = systemBarInsetsCompat
         contentView.updatePadding(left = bars.left, right = bars.right)
