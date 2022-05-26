@@ -170,7 +170,8 @@ object Indexer {
         // Get the compat impl to add their version-specific columns.
         compat.addSongColumns(columns)
 
-        context.contentResolverSafe.query(
+        context.contentResolverSafe
+            .query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 columns.toTypedArray(),
                 selector,
@@ -342,7 +343,8 @@ object Indexer {
     private fun readGenres(context: Context, songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
 
-        context.contentResolverSafe.query(
+        context.contentResolverSafe
+            .query(
                 MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
                 arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME),
                 null,
@@ -385,7 +387,8 @@ object Indexer {
         val genreSongs = mutableListOf<Song>()
 
         // Don't even bother blacklisting here as useless iterations are less expensive than IO
-        context.contentResolverSafe.query(
+        context.contentResolverSafe
+            .query(
                 MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
                 arrayOf(MediaStore.Audio.Genres.Members._ID),
                 null,

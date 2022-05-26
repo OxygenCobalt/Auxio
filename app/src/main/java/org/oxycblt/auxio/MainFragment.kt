@@ -62,8 +62,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
             }
 
         requireActivity()
-            .onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
+            .onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // Auxio's layout completely breaks down when it's window is resized too small,

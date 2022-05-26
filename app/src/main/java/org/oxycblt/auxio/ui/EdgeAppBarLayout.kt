@@ -51,8 +51,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
             if (child != null) {
                 val coordinator = parent as CoordinatorLayout
-                (layoutParams as CoordinatorLayout.LayoutParams).behavior?.onNestedPreScroll(
-                    coordinator, this, coordinator, 0, 0, tConsumed, 0)
+                (layoutParams as CoordinatorLayout.LayoutParams)
+                    .behavior?.onNestedPreScroll(coordinator, this, coordinator, 0, 0, tConsumed, 0)
             }
 
             true

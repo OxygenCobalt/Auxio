@@ -103,7 +103,8 @@ class ActionMenu(
         return when (data) {
             is Song -> {
                 when (flag) {
-                    FLAG_NONE, FLAG_IN_GENRE -> R.menu.menu_song_actions
+                    FLAG_NONE,
+                    FLAG_IN_GENRE -> R.menu.menu_song_actions
                     FLAG_IN_ALBUM -> R.menu.menu_album_song_actions
                     FLAG_IN_ARTIST -> R.menu.menu_artist_song_actions
                     else -> -1

@@ -150,15 +150,19 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         }
 
         // Case 1: Normal ReplayGain, most commonly found on MPEG files.
-        tags.findLast { tag -> tag.key == RG_TRACK }?.let { tag ->
-            trackGain = tag.value
-            found = true
-        }
+        tags
+            .findLast { tag -> tag.key == RG_TRACK }
+            ?.let { tag ->
+                trackGain = tag.value
+                found = true
+            }
 
-        tags.findLast { tag -> tag.key == RG_ALBUM }?.let { tag ->
-            albumGain = tag.value
-            found = true
-        }
+        tags
+            .findLast { tag -> tag.key == RG_ALBUM }
+            ?.let { tag ->
+                albumGain = tag.value
+                found = true
+            }
 
         // Case 2: R128 ReplayGain, most commonly found on FLAC files and other lossless
         // encodings to increase precision in volume adjustments.
@@ -166,15 +170,19 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         // applied by the media framework [which ExoPlayer relies on]. The only reason we would
         // want to read it is to zero previous ReplayGain values for being invalid, however there
         // is no demand to fix that edge case right now.
-        tags.findLast { tag -> tag.key == R128_TRACK }?.let { tag ->
-            trackGain += tag.value / 256f
-            found = true
-        }
+        tags
+            .findLast { tag -> tag.key == R128_TRACK }
+            ?.let { tag ->
+                trackGain += tag.value / 256f
+                found = true
+            }
 
-        tags.findLast { tag -> tag.key == R128_ALBUM }?.let { tag ->
-            albumGain += tag.value / 256f
-            found = true
-        }
+        tags
+            .findLast { tag -> tag.key == R128_ALBUM }
+            ?.let { tag ->
+                albumGain += tag.value / 256f
+                found = true
+            }
         return if (found) {
             Gain(trackGain, albumGain)
         } else {

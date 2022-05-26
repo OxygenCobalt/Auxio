@@ -46,9 +46,7 @@ enum class RepeatMode {
                 TRACK -> R.drawable.ic_repeat_one
             }
 
-    /**
-     * The integer code representing this particular mode.
-     */
+    /** The integer code representing this particular mode. */
     val intCode: Int
         get() =
             when (this) {

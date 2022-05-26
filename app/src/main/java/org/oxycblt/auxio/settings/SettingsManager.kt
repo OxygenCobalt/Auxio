@@ -255,10 +255,12 @@ class SettingsManager private constructor(context: Context) :
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             KEY_USE_ALT_NOTIFICATION_ACTION -> callbacks.forEach { it.onNotifSettingsChanged() }
-            KEY_SHOW_COVERS, KEY_QUALITY_COVERS -> callbacks.forEach { it.onCoverSettingsChanged() }
+            KEY_SHOW_COVERS,
+            KEY_QUALITY_COVERS -> callbacks.forEach { it.onCoverSettingsChanged() }
             KEY_LIB_TABS -> callbacks.forEach { it.onLibrarySettingsChanged() }
-            KEY_REPLAY_GAIN, KEY_PRE_AMP_WITH, KEY_PRE_AMP_WITHOUT ->
-                callbacks.forEach { it.onReplayGainSettingsChanged() }
+            KEY_REPLAY_GAIN,
+            KEY_PRE_AMP_WITH,
+            KEY_PRE_AMP_WITHOUT -> callbacks.forEach { it.onReplayGainSettingsChanged() }
         }
     }
 

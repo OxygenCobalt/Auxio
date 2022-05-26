@@ -50,11 +50,12 @@ class MusicKeyer : Keyer<Music> {
 }
 
 /**
- * Fetcher that returns the album cover for a given [Album] or [Song], depending on the factory used.
+ * Fetcher that returns the album cover for a given [Album] or [Song], depending on the factory
+ * used.
  * @author OxygenCobalt
  */
-class AlbumCoverFetcher private constructor(private val context: Context, private val album: Album) :
-    BaseFetcher() {
+class AlbumCoverFetcher
+private constructor(private val context: Context, private val album: Album) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         return fetchArt(context, album)?.let { stream ->
             SourceResult(

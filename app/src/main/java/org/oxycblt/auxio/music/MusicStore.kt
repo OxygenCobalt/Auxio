@@ -116,8 +116,8 @@ class MusicStore private constructor() {
          * @return The corresponding [Song] for this [uri], null if there isn't one.
          */
         fun findSongForUri(context: Context, uri: Uri): Song? {
-            context.contentResolverSafe.query(
-                    uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            context.contentResolverSafe
+                .query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
                 ?.use { cursor ->
                     cursor.moveToFirst()
                     val fileName =

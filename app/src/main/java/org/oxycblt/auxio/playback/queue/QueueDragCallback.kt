@@ -92,8 +92,7 @@ class QueueDragCallback(
 
             val bg = holder.bodyView.background as MaterialShapeDrawable
             val elevation = recyclerView.context.getDimenSafe(R.dimen.elevation_small)
-            holder
-                .itemView
+            holder.itemView
                 .animate()
                 .translationZ(elevation)
                 .setDuration(100)
@@ -130,8 +129,7 @@ class QueueDragCallback(
             logD("Dropping queue item")
 
             val bg = holder.bodyView.background as MaterialShapeDrawable
-            holder
-                .itemView
+            holder.itemView
                 .animate()
                 .translationZ(0.0f)
                 .setDuration(100)

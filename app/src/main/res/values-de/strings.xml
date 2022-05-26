@@ -194,6 +194,5 @@
     <string name="fmt_albums_loaded">Geladene Alben: %d</string>
     <string name="fmt_artists_loaded">Geladene Künstler: %d</string>
     <string name="fmt_genres_loaded">Geladene Genres: %d</string>
-    <string name="fmt_total_duration">Gesamt</string>
-    <string name="set_pre_amp">ReplayGain prälautverstärkung</string>
+    <string name="fmt_total_duration">Gesamt Dauer: %s</string>
 </resources>

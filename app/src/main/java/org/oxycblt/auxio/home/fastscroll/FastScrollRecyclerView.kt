@@ -349,7 +349,8 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     scrollToThumbOffset(thumbOffset)
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> dragging = false
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL -> dragging = false
         }
 
         lastY = eventY

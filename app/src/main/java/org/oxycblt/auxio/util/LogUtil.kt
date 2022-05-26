@@ -58,9 +58,7 @@ fun Throwable.logTraceOrThrow() {
     }
 }
 
-/**
- * Automatically creates a tag that identifies the object currently logging.
- */
+/** Automatically creates a tag that identifies the object currently logging. */
 private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 

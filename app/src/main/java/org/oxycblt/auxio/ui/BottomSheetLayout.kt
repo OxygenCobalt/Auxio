@@ -462,7 +462,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                     return false
                 }
             }
-            MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP ->
+            MotionEvent.ACTION_CANCEL,
+            MotionEvent.ACTION_UP ->
                 if (dragHelper.isDragging) {
                     // Stopped pressing while we were dragging, let the drag helper handle it
                     dragHelper.processTouchEvent(ev)
