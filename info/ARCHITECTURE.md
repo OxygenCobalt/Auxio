@@ -128,7 +128,7 @@ The diagram below highlights the overall structure and connections:
                    ┌──────────────────── PlaybackService ────────────────┐
                    │                             │                       │
 PlaybackStateManager [Communicates with]         │                       │
-                   │                             │ [Contains]            │
+                   │                             │ [Contains]            │ [Communicates with]
                    │                             │                       │
                    │                             ├ WidgetComponent       ┤
                    │                             ├ NotificationComponent ┤
@@ -137,7 +137,7 @@ PlaybackStateManager [Communicates with]         │                       │
                    │
                    │
                    └──────────────────── PlaybackViewModel  ───────────────────── UIs
-                                                             [Communicates With]
+                                                             [Communicates with]
 ```
 
 `PlaybackStateManager` is the shared object that contains the master copy of the playback state, doing all operations on it. This object should
@@ -203,10 +203,10 @@ Key classes in this package include:
 This module not only contains the playback system described above, but also multiple other components:
 
 - `queue` contains the Queue UI and it's fancy item UIs.
-- `state` contains the core playback state and persistence system.
 - `replaygain` contains the ReplayGain implementation and the UIs related to it. Auxio's ReplayGain implementation is
 somewhat different compared to other apps, as it leverages ExoPlayer's metadata and audio processing systems to not only
-parse ReplayGain
+parse ReplayGain tags, but also allow volume amplification above 100%.
+- `state` contains the core playback state and persistence system.
 - `system` contains the system-facing playback system, i.e `PlaybackService`
 
 The base package contains the user-facing UIs representing the playback state, specifically the playback bar and the

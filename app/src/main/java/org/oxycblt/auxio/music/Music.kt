@@ -88,6 +88,7 @@ data class Song(
             result = 31 * result + album.rawName.hashCode()
             result = 31 * result + album.artist.rawName.hashCode()
             result = 31 * result + (track ?: 0)
+            // TODO: Rework hashing to add discs and handle null values correctly
             result = 31 * result + durationMs.hashCode()
             return result
         }
@@ -152,12 +153,12 @@ data class Song(
         get() = _genre == null
 
     /** Internal method. Do not use. */
-    fun _linkAlbum(album: Album) {
+    fun _link(album: Album) {
         _album = album
     }
 
     /** Internal method. Do not use. */
-    fun _linkGenre(genre: Genre) {
+    fun _link(genre: Genre) {
         _genre = genre
     }
 }
@@ -176,7 +177,7 @@ data class Album(
 ) : MusicParent() {
     init {
         for (song in songs) {
-            song._linkAlbum(this)
+            song._link(this)
         }
     }
 
@@ -207,7 +208,7 @@ data class Album(
         get() = _artist == null
 
     /** Internal method. Do not use. */
-    fun _linkArtist(artist: Artist) {
+    fun _link(artist: Artist) {
         _artist = artist
     }
 }
@@ -223,7 +224,7 @@ data class Artist(
 ) : MusicParent() {
     init {
         for (album in albums) {
-            album._linkArtist(this)
+            album._link(this)
         }
     }
 
@@ -243,7 +244,7 @@ data class Artist(
 data class Genre(override val rawName: String?, override val songs: List<Song>) : MusicParent() {
     init {
         for (song in songs) {
-            song._linkGenre(this)
+            song._link(this)
         }
     }
 

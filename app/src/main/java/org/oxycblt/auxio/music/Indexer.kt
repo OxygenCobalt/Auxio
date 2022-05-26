@@ -106,9 +106,9 @@ object Indexer {
         // Establish the compatibility object to use when loading songs.
         val compat =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Api30AudioCompat()
+                Api30MediaStoreCompat()
             } else {
-                Api21AudioCompat()
+                Api21MediaStoreCompat()
             }
 
         val songs = loadSongs(context, compat)
@@ -138,7 +138,7 @@ object Indexer {
      * [buildArtists], and [readGenres] functions must be called with the returned list so that all
      * songs are properly linked up.
      */
-    private fun loadSongs(context: Context, compat: AudioDatabaseCompat): List<Song> {
+    private fun loadSongs(context: Context, compat: MediaStoreCompat): List<Song> {
         val excludedDatabase = ExcludedDatabase.getInstance(context)
         var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
         val args = mutableListOf<String>()
@@ -154,7 +154,8 @@ object Indexer {
 
         var songs = mutableListOf<Song>()
 
-        val columns =
+        // Establish the columns that work across all versions of android.
+        val proj =
             mutableListOf(
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
@@ -168,12 +169,12 @@ object Indexer {
                 MediaStore.Audio.AudioColumns.DATA)
 
         // Get the compat impl to add their version-specific columns.
-        compat.addSongColumns(columns)
+        compat.mutateAudioProjection(proj)
 
         context.contentResolverSafe
             .query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                columns.toTypedArray(),
+                proj.toTypedArray(),
                 selector,
                 args.toTypedArray(),
                 null)
@@ -193,16 +194,16 @@ object Indexer {
                 val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
 
                 while (cursor.moveToNext()) {
-                    val raw = RawSong()
+                    val raw = Audio()
 
-                    raw.songId = cursor.getLong(idIndex)
+                    raw.id = cursor.getLong(idIndex)
                     raw.title = cursor.getString(titleIndex)
 
                     // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
                     // from the android system. Once again though, OEM issues get in our way and
                     // this field isn't available on some platforms. In that case, see if we can
                     // grok a file name from the DATA field.
-                    raw.fileName =
+                    raw.displayName =
                         cursor.getStringOrNull(fileIndex)
                             ?: cursor
                                 .getStringOrNull(dataIndex)
@@ -229,7 +230,7 @@ object Indexer {
                     raw.albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
                     // Allow the compatibility object to add their fields
-                    compat.mutateSong(cursor, raw)
+                    compat.populateAudio(cursor, raw)
 
                     songs.add(raw.toSong())
                 }
@@ -322,9 +323,10 @@ object Indexer {
         for (entry in albumsByArtist) {
             val templateAlbum = entry.value[0]
             val artistName =
-                when (templateAlbum._artistGroupingName) {
-                    MediaStore.UNKNOWN_STRING -> null
-                    else -> templateAlbum._artistGroupingName
+                if (templateAlbum._artistGroupingName != MediaStore.UNKNOWN_STRING) {
+                    templateAlbum._artistGroupingName
+                } else {
+                    null
                 }
             val artistAlbums = entry.value
 
@@ -407,15 +409,16 @@ object Indexer {
     }
 
     /**
-     * Represents a song currently being assembled by the indexer. There is no guarantee that
-     * metadata is sane or complete until it is transformed into a song with [toSong]
+     * Represents a song as it is represented by MediaStore. This is progressively mutated over
+     * several steps of the music loading process until it is complete enough to be transformed into
+     * a song.
      *
      * TODO: Add manual metadata parsing.
      */
-    private data class RawSong(
-        var songId: Long? = null,
+    private data class Audio(
+        var id: Long? = null,
         var title: String? = null,
-        var fileName: String? = null,
+        var displayName: String? = null,
         var duration: Long? = null,
         var track: Int? = null,
         var disc: Int? = null,
@@ -425,15 +428,14 @@ object Indexer {
         var artist: String? = null,
         var albumArtist: String? = null,
     ) {
-        // TODO: Bundle this conversion into the grouping process
         fun toSong(): Song =
             Song(
                 requireNotNull(title) { "Malformed song: No title" },
-                requireNotNull(fileName) { "Malformed song: No file name" },
+                requireNotNull(displayName) { "Malformed song: No file name" },
                 requireNotNull(duration) { "Malformed song: No duration" },
                 track,
                 disc,
-                requireNotNull(songId) { "Malformed song: No song id" },
+                requireNotNull(id) { "Malformed song: No song id" },
                 year,
                 requireNotNull(album) { "Malformed song: No album name" },
                 requireNotNull(albumId) { "Malformed song: No album id" },
@@ -443,25 +445,24 @@ object Indexer {
     }
 
     /** A compatibility interface to implement version-specific audio database querying. */
-    private interface AudioDatabaseCompat {
-        /** Add version-specific columns to the given projection. */
-        fun addSongColumns(columns: MutableList<String>)
-
-        /** Mutate a [raw] song by reading the columns added in [addSongColumns], */
-        fun mutateSong(cursor: Cursor, raw: RawSong)
+    private interface MediaStoreCompat {
+        /** Mutate the pre-existing projection with version-specific values. */
+        fun mutateAudioProjection(proj: MutableList<String>)
+        /** Mutate [audio] with the columns added in [mutateAudioProjection], */
+        fun populateAudio(cursor: Cursor, audio: Audio)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private class Api30AudioCompat : AudioDatabaseCompat {
+    private class Api30MediaStoreCompat : MediaStoreCompat {
         private var trackIndex: Int = -1
         private var discIndex: Int = -1
 
-        override fun addSongColumns(columns: MutableList<String>) {
-            columns.add(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
-            columns.add(MediaStore.Audio.AudioColumns.DISC_NUMBER)
+        override fun mutateAudioProjection(proj: MutableList<String>) {
+            proj.add(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
+            proj.add(MediaStore.Audio.AudioColumns.DISC_NUMBER)
         }
 
-        override fun mutateSong(cursor: Cursor, raw: RawSong) {
+        override fun populateAudio(cursor: Cursor, audio: Audio) {
             if (trackIndex == -1) {
                 trackIndex =
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
@@ -476,47 +477,46 @@ object Indexer {
             // N is the number and T is the total. Parse the number while leaving out the
             // total, as we have no use for it.
 
-            val track = cursor.getStringOrNull(trackIndex)
-            val disc = cursor.getStringOrNull(discIndex)
-
-            if (track != null) {
-                raw.track = track.split('/', limit = 2).getOrNull(0)?.toIntOrNull()
-            }
-
-            if (disc != null) {
-                raw.disc = disc.split('/', limit = 2).getOrNull(0)?.toIntOrNull()
-            }
+            cursor
+                .getStringOrNull(trackIndex)
+                ?.split('/', limit = 2)
+                ?.getOrNull(0)
+                ?.toIntOrNull()
+                ?.let { audio.track = it }
+            cursor
+                .getStringOrNull(discIndex)
+                ?.split('/', limit = 2)
+                ?.getOrNull(0)
+                ?.toIntOrNull()
+                ?.let { audio.disc = it }
         }
     }
 
-    private class Api21AudioCompat : AudioDatabaseCompat {
+    private class Api21MediaStoreCompat : MediaStoreCompat {
         private var trackIndex: Int = -1
 
-        override fun addSongColumns(columns: MutableList<String>) {
-            columns.add(MediaStore.Audio.AudioColumns.TRACK)
+        override fun mutateAudioProjection(proj: MutableList<String>) {
+            proj.add(MediaStore.Audio.AudioColumns.TRACK)
         }
 
-        override fun mutateSong(cursor: Cursor, raw: RawSong) {
+        override fun populateAudio(cursor: Cursor, audio: Audio) {
             if (trackIndex == -1) {
                 trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
             }
 
             // TRACK is formatted as DTTT where D is the disc number and T is the track number.
-            // At least, I think so. I've so far been unable to reproduce track numbers on older
+            // At least, I think so. I've so far been unable to reproduce disc numbers on older
             // devices. Keep it around just in case.
 
             val rawTrack = cursor.getIntOrNull(trackIndex)
             if (rawTrack != null) {
-                raw.track = rawTrack % 1000
+                audio.track = rawTrack % 1000
 
                 // A disc number of 0 means that there is no disc.
                 val disc = rawTrack / 1000
-                raw.disc =
-                    if (disc > 0) {
-                        disc
-                    } else {
-                        null
-                    }
+                if (disc > 0) {
+                    audio.disc = disc
+                }
             }
         }
     }
