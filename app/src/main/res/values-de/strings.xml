@@ -76,6 +76,7 @@
     <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain">ReplayGain</string>
+    <string name="set_pre_amp">ReplayGain prälautverstärkung</string>
     <string name="set_pre_amp_desc">Während Musikwiedergabe, Die Prälautverstärkung trifft zu dem aktuellem Abgleich</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>

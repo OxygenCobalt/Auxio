@@ -29,7 +29,7 @@ enum class RepeatMode {
     ALL,
     TRACK;
 
-    /** Increment the LoopMode, e.g from [NONE] to [ALL] */
+    /** Increment the mode, e.g from [NONE] to [ALL] */
     fun increment(): RepeatMode {
         return when (this) {
             NONE -> ALL
@@ -47,8 +47,7 @@ enum class RepeatMode {
             }
 
     /**
-     * Convert the LoopMode to an int constant that is saved in PlaybackStateDatabase
-     * @return The int constant for this mode
+     * The integer code representing this particular mode.
      */
     val intCode: Int
         get() =

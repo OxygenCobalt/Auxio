@@ -30,7 +30,7 @@ import coil.transition.TransitionTarget
  * Like they used to.
  * @author Coil Team
  */
-class CrossfadeFactory : Transition.Factory {
+class CrossfadeTransitionFactory : Transition.Factory {
     override fun create(target: TransitionTarget, result: ImageResult): Transition {
         // Don't animate if the request was fulfilled by the memory cache.
         if (result is SuccessResult && result.dataSource == DataSource.MEMORY_CACHE) {

@@ -27,9 +27,7 @@ import org.oxycblt.auxio.BuildConfig
  * Shortcut method for logging a non-string [obj] to debug. Should only be used for debug
  * preferably.
  */
-fun Any.logD(obj: Any) {
-    logD(obj.toString())
-}
+fun Any.logD(obj: Any?) = logD("$obj")
 
 /**
  * Shortcut method for logging [msg] to the debug console. Handles debug builds and anonymous
@@ -38,19 +36,15 @@ fun Any.logD(obj: Any) {
 fun Any.logD(msg: String) {
     if (BuildConfig.DEBUG) {
         basedCopyleftNotice()
-        Log.d(name, msg)
+        Log.d(autoTag, msg)
     }
 }
 
 /** Shortcut method for logging [msg] as a warning to the console. Handles anonymous objects */
-fun Any.logW(msg: String) {
-    Log.w(name, msg)
-}
+fun Any.logW(msg: String) = Log.w(autoTag, msg)
 
 /** Shortcut method for logging [msg] as an error to the console. Handles anonymous objects */
-fun Any.logE(msg: String) {
-    Log.e(name, msg)
-}
+fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
 /**
  * Logs an error in production while still throwing it in debug mode. This is useful for
@@ -65,10 +59,9 @@ fun Throwable.logTraceOrThrow() {
 }
 
 /**
- * Get a non-nullable name, used so that logs will always show up by Auxio
- * @return The name of the object, otherwise "Anonymous Object"
+ * Automatically creates a tag that identifies the object currently logging.
  */
-private val Any.name: String
+private val Any.autoTag: String
     get() = "Auxio.${this::class.simpleName ?: "Anonymous Object"}"
 
 /**

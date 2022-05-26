@@ -50,10 +50,10 @@ class MusicKeyer : Keyer<Music> {
 }
 
 /**
- * Fetcher that returns the album art for a given [Album] or [Song], depending on the factory used.
+ * Fetcher that returns the album cover for a given [Album] or [Song], depending on the factory used.
  * @author OxygenCobalt
  */
-class AlbumArtFetcher private constructor(private val context: Context, private val album: Album) :
+class AlbumCoverFetcher private constructor(private val context: Context, private val album: Album) :
     BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
         return fetchArt(context, album)?.let { stream ->
@@ -66,13 +66,13 @@ class AlbumArtFetcher private constructor(private val context: Context, private 
 
     class SongFactory : Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader): Fetcher {
-            return AlbumArtFetcher(options.context, data.album)
+            return AlbumCoverFetcher(options.context, data.album)
         }
     }
 
     class AlbumFactory : Fetcher.Factory<Album> {
         override fun create(data: Album, options: Options, imageLoader: ImageLoader) =
-            AlbumArtFetcher(options.context, data)
+            AlbumCoverFetcher(options.context, data)
     }
 }
 
@@ -133,11 +133,11 @@ private inline fun <T : Any, R : Any> Collection<T>.mapAtMost(
     val out = mutableListOf<R>()
 
     for (item in this) {
-        if (out.size >= until) {
+        if (out.size < until) {
+            transform(item)?.let(out::add)
+        } else {
             break
         }
-
-        transform(item)?.let(out::add)
     }
 
     return out
