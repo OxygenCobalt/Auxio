@@ -134,6 +134,7 @@ sealed class Sort(open val isAscending: Boolean) {
             songs.sortWith(
                 MultiComparator(
                     compareByDynamic(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.disc },
                     compareBy(NullableComparator()) { it.track },
                     compareBy(NameComparator()) { it }))
         }
@@ -155,6 +156,7 @@ sealed class Sort(open val isAscending: Boolean) {
                     compareByDynamic(NameComparator()) { it.album.artist },
                     compareByDescending(NullableComparator()) { it.album.year },
                     compareByDescending(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.disc },
                     compareBy(NullableComparator()) { it.track },
                     compareBy(NameComparator()) { it }))
         }
@@ -183,6 +185,7 @@ sealed class Sort(open val isAscending: Boolean) {
                 MultiComparator(
                     compareByDynamic(NullableComparator()) { it.album.year },
                     compareByDescending(NameComparator()) { it.album },
+                    compareBy(NullableComparator()) { it.disc },
                     compareBy(NullableComparator()) { it.track },
                     compareBy(NameComparator()) { it }))
         }
