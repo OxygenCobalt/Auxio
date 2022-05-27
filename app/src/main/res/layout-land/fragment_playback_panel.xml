@@ -77,46 +77,14 @@
         app:layout_constraintTop_toBottomOf="@+id/playback_artist"
         tools:text="Album Name" />
 
-    <com.google.android.material.slider.Slider
+    <org.oxycblt.auxio.playback.StyledSeekBar
         android:id="@+id/playback_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_medium"
-        android:valueFrom="0"
-        android:valueTo="1"
-        app:haloRadius="@dimen/slider_halo_radius"
-        app:labelBehavior="gone"
-        app:labelStyle="@style/TextAppearance.Auxio.BodySmall"
         app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
         app:layout_constraintEnd_toEndOf="@+id/playback_song_container"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:thumbRadius="@dimen/slider_thumb_radius"
-        app:trackColorInactive="@color/sel_track" />
-
-    <TextView
-        android:id="@+id/playback_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_small_inv"
-        android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
-        android:textColor="@color/sel_accented_secondary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
-        tools:text="11:38" />
-
-    <TextView
-        android:id="@+id/playback_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small_inv"
-        android:layout_marginEnd="@dimen/spacing_medium"
-        android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
-        android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
-        tools:text="16:16" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <org.oxycblt.auxio.ui.StyledImageButton
         android:id="@+id/playback_repeat"

@@ -102,6 +102,7 @@ data class Song(
     val uri: Uri
         get() =
             ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId)
+
     /** The duration of this song, in seconds (rounded down) */
     val durationSecs: Long
         get() = durationMs / 1000

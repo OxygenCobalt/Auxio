@@ -57,6 +57,10 @@ class MusicViewModel : ViewModel(), MusicStore.Callback {
         }
     }
 
+    /**
+     * Reload the music library. Note that this call will result in unexpected behavior in the case
+     * that music is reloaded after a loading process has already exceeded.
+     */
     fun reloadMusic(context: Context) {
         logD("Reloading music library")
         _loaderResponse.value = null

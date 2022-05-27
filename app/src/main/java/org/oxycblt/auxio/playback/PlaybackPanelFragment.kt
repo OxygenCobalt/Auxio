@@ -24,8 +24,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.slider.Slider
-import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.music.MusicParent
@@ -34,7 +32,6 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
@@ -50,8 +47,7 @@ import org.oxycblt.auxio.util.textSafe
  */
 class PlaybackPanelFragment :
     ViewBindingFragment<FragmentPlaybackPanelBinding>(),
-    Slider.OnChangeListener,
-    Slider.OnSliderTouchListener,
+    StyledSeekBar.Callback,
     Toolbar.OnMenuItemClickListener {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
@@ -93,10 +89,7 @@ class PlaybackPanelFragment :
             playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
         }
 
-        binding.playbackSeekBar.apply {
-            addOnChangeListener(this@PlaybackPanelFragment)
-            addOnSliderTouchListener(this@PlaybackPanelFragment)
-        }
+        binding.playbackSeekBar.callback = this
 
         binding.playbackRepeat.setOnClickListener { playbackModel.incrementRepeatMode() }
         binding.playbackSkipPrev.setOnClickListener { playbackModel.prev() }
@@ -109,8 +102,6 @@ class PlaybackPanelFragment :
 
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
         binding.playbackShuffle.setOnClickListener { playbackModel.invertShuffled() }
-
-        binding.playbackSeekBar.apply {}
 
         // --- VIEWMODEL SETUP --
 
@@ -133,8 +124,7 @@ class PlaybackPanelFragment :
     override fun onDestroyBinding(binding: FragmentPlaybackPanelBinding) {
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         binding.playbackSong.isSelected = false
-        binding.playbackSeekBar.removeOnChangeListener(this)
-        binding.playbackSeekBar.removeOnChangeListener(this)
+        binding.playbackSeekBar.callback = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -147,19 +137,8 @@ class PlaybackPanelFragment :
         }
     }
 
-    override fun onStartTrackingTouch(slider: Slider) {
-        requireBinding().playbackPosition.isActivated = true
-    }
-
-    override fun onStopTrackingTouch(slider: Slider) {
-        requireBinding().playbackPosition.isActivated = false
-        playbackModel.seekTo(slider.value.toLong())
-    }
-
-    override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-        if (fromUser) {
-            requireBinding().playbackPosition.textSafe = value.toLong().formatDuration(true)
-        }
+    override fun seekTo(positionSecs: Long) {
+        playbackModel.seekTo(positionSecs)
     }
 
     private fun updateSong(song: Song?) {
@@ -171,14 +150,7 @@ class PlaybackPanelFragment :
         binding.playbackSong.textSafe = song.resolveName(context)
         binding.playbackArtist.textSafe = song.resolveIndividualArtistName(context)
         binding.playbackAlbum.textSafe = song.album.resolveName(context)
-
-        // Normally if a song had a duration
-        val seconds = song.durationSecs
-        binding.playbackDuration.textSafe = seconds.formatDuration(false)
-        binding.playbackSeekBar.apply {
-            isEnabled = seconds > 0L
-            valueTo = max(seconds, 1L).toFloat()
-        }
+        binding.playbackSeekBar.durationSecs = song.durationSecs
     }
 
     private fun updateParent(parent: MusicParent?) {
@@ -186,14 +158,8 @@ class PlaybackPanelFragment :
             parent?.resolveName(requireContext()) ?: getString(R.string.lbl_all_songs)
     }
 
-    private fun updatePosition(position: Long) {
-        // Don't update the progress while we are seeking, that will make the SeekBar jump
-        // around.
-        val binding = requireBinding()
-        if (!binding.playbackPosition.isActivated) {
-            binding.playbackSeekBar.value = position.toFloat()
-            binding.playbackPosition.textSafe = position.formatDuration(true)
-        }
+    private fun updatePosition(positionSecs: Long) {
+        requireBinding().playbackSeekBar.positionSecs = positionSecs
     }
 
     private fun updateRepeat(repeatMode: RepeatMode) {

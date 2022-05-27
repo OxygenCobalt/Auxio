@@ -2,6 +2,9 @@
 
 ## dev [v2.3.1, v2.4.0, or v3.0.0]
 
+#### What's Fixed
+- Fixed crash when seeking to the end of a track as the track changed to a track with a lower duration 
+
 ## v2.3.0
 
 #### What's New
