@@ -58,7 +58,7 @@ class NotificationComponent(
             val channel =
                 NotificationChannel(
                     CHANNEL_ID,
-                    context.getString(R.string.info_channel_name),
+                    context.getString(R.string.info_playback_channel_name),
                     NotificationManager.IMPORTANCE_DEFAULT)
 
             notificationManager.createNotificationChannel(channel)
@@ -81,7 +81,7 @@ class NotificationComponent(
     }
 
     fun renotify() {
-        notificationManager.notify(IntegerTable.NOTIFICATION_CODE, build())
+        notificationManager.notify(IntegerTable.PLAYBACK_NOTIFICATION_CODE, build())
     }
 
     fun release() {

@@ -2,7 +2,7 @@
 <resources>
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">Un semplice, razionale lettore musicale per android.</string>
-    <string name="info_channel_name">Riproduzione musicale</string>
+    <string name="info_playback_channel_name">Riproduzione musicale</string>
     <string name="info_widget_desc">Vedi e gestisci la riproduzione musicale</string>
 
     <!-- Label Namespace | Static Labels -->

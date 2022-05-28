@@ -25,21 +25,20 @@ import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.textSafe
 
 /**
  * A wrapper around [Slider] that shows not only position and duration values, but also basically
  * hacks in behavior consistent with a normal SeekBar in a way that will not crash the app.
  *
- * SeekBar, like most android OS components, is a version-specific mess that requires constant
- * hacks on older versions. Instead, we use the more "modern" slider component, but it is not
- * designed for the job that Auxio's progress bar has. It does not gracefully degrade when
- * positions don't make sense (which happens incredibly often), it just crashes the entire app,
- * which is insane but also checks out for something more meant for configuration than seeking.
+ * SeekBar, like most android OS components, is a version-specific mess that requires constant hacks
+ * on older versions. Instead, we use the more "modern" [Slider] component, but it is not designed
+ * for the job that Auxio's progress bar has. It does not gracefully degrade when positions don't
+ * make sense (which happens incredibly often), it just crashes the entire app, which is insane but
+ * also checks out for something more meant for configuration than seeking.
  *
- * Instead, we wrap it in a safe class that hopefully implements enough safety to not crash the
- * app or result in blatantly janky behavior. Mostly.
+ * Instead, we wrap it in a safe class that hopefully implements enough safety to not crash the app
+ * or result in blatantly janky behavior. Mostly.
  *
  * @author OxygenCobalt
  */
@@ -78,8 +77,8 @@ constructor(
         }
 
     /**
-     * The current duration, in seconds. This is the end value of the SeekBar and is indicated
-     * by the end TextView in the layout.
+     * The current duration, in seconds. This is the end value of the SeekBar and is indicated by
+     * the end TextView in the layout.
      */
     var durationSecs: Long
         get() = binding.seekBarSlider.valueTo.toLong()
@@ -117,8 +116,7 @@ constructor(
 
     interface Callback {
         /**
-         * Called when a seek event was completed and the new position must be seeked to by
-         * the app.
+         * Called when a seek event was completed and the new position must be seeked to by the app.
          */
         fun seekTo(positionSecs: Long)
     }

@@ -3,7 +3,7 @@
 
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">"Jednoduchý, rozumný hudební přehrávač pro Android."</string>
-    <string name="info_channel_name">"Přehrávání hudby"</string>
+    <string name="info_playback_channel_name">"Přehrávání hudby"</string>
     <string name="info_widget_desc">"Zobrazit a ovládat hrající hudbu"</string>
 
     <!-- Label Namespace | Static Labels -->

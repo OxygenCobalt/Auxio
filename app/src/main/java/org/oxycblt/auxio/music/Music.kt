@@ -81,6 +81,8 @@ data class Song(
     val _mediaStoreArtistName: String?,
     /** Internal field. Do not use. */
     val _mediaStoreAlbumArtistName: String?,
+    /** Internal field. Do not use. */
+    val _mediaStoreGenreName: String?
 ) : Music() {
     override val id: Long
         get() {

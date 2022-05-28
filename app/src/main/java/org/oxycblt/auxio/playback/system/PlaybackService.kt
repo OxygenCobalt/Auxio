@@ -154,9 +154,7 @@ class PlaybackService :
         logD("Service created")
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        return START_NOT_STICKY
-    }
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int) = START_NOT_STICKY
 
     // No binding, service is headless
     // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.
@@ -317,7 +315,7 @@ class PlaybackService :
             logD("Starting foreground/notifying")
 
             if (!isForeground) {
-                startForeground(IntegerTable.NOTIFICATION_CODE, component.build())
+                startForeground(IntegerTable.PLAYBACK_NOTIFICATION_CODE, component.build())
                 isForeground = true
             } else {
                 // If we are already in foreground just update the notification

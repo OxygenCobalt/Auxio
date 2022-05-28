@@ -30,7 +30,7 @@
 - Made the layout of album songs more similar to other songs
 
 #### Dev/Meta
-- Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese, Gsset -> Russian]
+- Updated translations [Konstantin Tutsch -> German, cccClyde -> Chinese, Gsset -> Russian, enricocid -> Italian]
 - Switched to spotless and ktfmt instead of ktlint
 - Migrated constants to centralized table
 - Introduced new RecyclerView framework

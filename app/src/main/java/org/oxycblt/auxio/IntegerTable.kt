@@ -53,7 +53,7 @@ object IntegerTable {
     const val ITEM_TYPE_QUEUE_SONG = 0xA00E
 
     /** "Music playback" Notification code */
-    const val NOTIFICATION_CODE = 0xA0A0
+    const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
     /** Intent request code */
     const val REQUEST_CODE = 0xA0C0
 

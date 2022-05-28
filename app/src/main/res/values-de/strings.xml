@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Info namespace | App labels -->
-    <string name="info_channel_name">Musikwiedergabe</string>
+    <string name="info_playback_channel_name">Musikwiedergabe</string>
 
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Erneut versuchen</string>

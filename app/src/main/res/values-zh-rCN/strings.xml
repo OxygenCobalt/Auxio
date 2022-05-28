@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Info namespace | App labels -->
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
-    <string name="info_channel_name">音乐播放</string>
+    <string name="info_playback_channel_name">音乐播放</string>
     <string name="info_widget_desc">查看并控制音乐播放</string>
 
     <!-- Label Namespace | Static Labels -->
