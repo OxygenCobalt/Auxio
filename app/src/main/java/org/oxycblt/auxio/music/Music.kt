@@ -19,7 +19,6 @@
 
 package org.oxycblt.auxio.music
 
-import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
@@ -63,6 +62,8 @@ data class Song(
     override val rawName: String,
     /** The file name of this song, excluding the full path. */
     val fileName: String,
+    /** The URI linking to this song's file. */
+    val uri: Uri,
     /** The total duration of this song, in millis. */
     val durationMs: Long,
     /** The track number of this song, null if there isn't any. */
@@ -70,19 +71,17 @@ data class Song(
     /** The disc number of this song, null if there isn't any. */
     val disc: Int?,
     /** Internal field. Do not use. */
-    val _mediaStoreId: Long,
+    val _year: Int?,
     /** Internal field. Do not use. */
-    val _mediaStoreYear: Int?,
+    val _albumName: String,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumName: String,
+    val _albumCoverUri: Uri,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumId: Long,
+    val _artistName: String?,
     /** Internal field. Do not use. */
-    val _mediaStoreArtistName: String?,
+    val _albumArtistName: String?,
     /** Internal field. Do not use. */
-    val _mediaStoreAlbumArtistName: String?,
-    /** Internal field. Do not use. */
-    val _mediaStoreGenreName: String?
+    val _genreName: String?
 ) : Music() {
     override val id: Long
         get() {
@@ -99,11 +98,6 @@ data class Song(
         get() = rawName.withoutArticle
 
     override fun resolveName(context: Context) = rawName
-
-    /** The URI for this song. */
-    val uri: Uri
-        get() =
-            ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, _mediaStoreId)
 
     /** The duration of this song, in seconds (rounded down) */
     val durationSecs: Long
@@ -124,26 +118,27 @@ data class Song(
      * back to the album artist tag (i.e parent artist name). Null if name is unknown.
      */
     val individualRawArtistName: String?
-        get() = _mediaStoreArtistName ?: album.artist.rawName
+        get() = _artistName ?: album.artist.rawName
 
     /**
      * Resolve the artist name for this song in particular. First uses the artist tag, and then
      * falls back to the album artist tag (i.e parent artist name)
      */
     fun resolveIndividualArtistName(context: Context) =
-        _mediaStoreArtistName ?: album.artist.resolveName(context)
+        _artistName ?: album.artist.resolveName(context)
 
     /** Internal field. Do not use. */
     val _albumGroupingId: Long
         get() {
-            var result = _artistGroupingName.lowercase().hashCode().toLong()
-            result = 31 * result + _mediaStoreAlbumName.lowercase().hashCode()
+            var result =
+                (_artistGroupingName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+            result = 31 * result + _albumName.lowercase().hashCode()
             return result
         }
 
     /** Internal field. Do not use. */
-    val _artistGroupingName: String
-        get() = _mediaStoreAlbumArtistName ?: _mediaStoreArtistName ?: MediaStore.UNKNOWN_STRING
+    val _artistGroupingName: String?
+        get() = _albumArtistName ?: _artistName
 
     /** Internal field. Do not use. */
     val _isMissingAlbum: Boolean
@@ -176,7 +171,7 @@ data class Album(
     /** The songs of this album. */
     override val songs: List<Song>,
     /** Internal field. Do not use. */
-    val _artistGroupingName: String,
+    val _artistGroupingName: String?,
 ) : MusicParent() {
     init {
         for (song in songs) {
@@ -204,7 +199,7 @@ data class Album(
 
     /** Internal field. Do not use. */
     val _artistGroupingId: Long
-        get() = _artistGroupingName.lowercase().hashCode().toLong()
+        get() = (_artistGroupingName?.lowercase() ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     /** Internal field. Do not use. */
     val _isMissingArtist: Boolean

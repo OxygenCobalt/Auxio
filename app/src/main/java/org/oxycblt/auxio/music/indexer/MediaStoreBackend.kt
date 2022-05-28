@@ -17,8 +17,10 @@
  
 package org.oxycblt.auxio.music.indexer
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
@@ -27,10 +29,12 @@ import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.contentResolverSafe
+import org.oxycblt.auxio.util.queryCursor
+import org.oxycblt.auxio.util.useQuery
 
 /*
- * This class acts as the base for most the black magic required to get a remotely sensible music
- * indexing system while still optimizing for time. I would recommend you leave this module now
+ * This file acts as the base for most the black magic required to get a remotely sensible music
+ * indexing system while still optimizing for time. I would recommend you leave this file now
  * before you lose your sanity trying to understand the hoops I had to jump through for this system,
  * but if you really want to stay, here's a debrief on why this code is so awful.
  *
@@ -88,6 +92,11 @@ import org.oxycblt.auxio.util.contentResolverSafe
  * I wish I was born in the neolithic.
  */
 
+/**
+ * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
+ * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
+ * @author OxygenCobalt
+ */
 abstract class MediaStoreBackend : Indexer.Backend {
     private var idIndex = -1
     private var titleIndex = -1
@@ -115,12 +124,11 @@ abstract class MediaStoreBackend : Indexer.Backend {
         }
 
         return requireNotNull(
-            context.contentResolverSafe.query(
+            context.contentResolverSafe.queryCursor(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
                 selector,
-                args.toTypedArray(),
-                null)) { "Content resolver failure: No Cursor returned" }
+                args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
     }
 
     override fun loadSongs(context: Context, cursor: Cursor): Collection<Song> {
@@ -129,56 +137,63 @@ abstract class MediaStoreBackend : Indexer.Backend {
             audios.add(buildAudio(context, cursor))
         }
 
-        context.contentResolverSafe
-            .query(
-                MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME),
-                null,
-                null,
-                null)
-            ?.use { genreCursor ->
-                val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
-                val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+        // The audio is not actually complete at this point, as we cannot obtain a genre
+        // through a song query. Instead, we have to do the hack where we iterate through
+        // every genre and assign it's name to each component song.
 
-                while (genreCursor.moveToNext()) {
-                    // Genre names can be a normal name, an ID3v2 constant, or null. Normal names
-                    // are resolved as usual, but null values don't make sense and are often junk
-                    // anyway, so we skip genres that have them.
-                    val id = genreCursor.getLong(idIndex)
-                    val name = genreCursor.getStringOrNull(nameIndex) ?: continue
-                    linkGenreAudios(context, id, name, audios)
-                }
+        context.contentResolverSafe.useQuery(
+            MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
+            val idIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
+            val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+
+            while (genreCursor.moveToNext()) {
+                // Genre names can be a normal name, an ID3v2 constant, or null. Normal names
+                // are resolved as usual, but null values don't make sense and are often junk
+                // anyway, so we skip genres that have them.
+                val id = genreCursor.getLong(idIndex)
+                val name = genreCursor.getStringOrNull(nameIndex) ?: continue
+                linkGenreAudios(context, id, name, audios)
             }
+        }
 
         return audios.map { it.toSong() }
     }
 
+    /**
+     * Links up the given genre data ([genreId] and [genreName]) to the child audios connected to
+     * [genreId].
+     */
     private fun linkGenreAudios(
         context: Context,
         genreId: Long,
         genreName: String,
         audios: List<Audio>
     ) {
-        context.contentResolverSafe
-            .query(
-                MediaStore.Audio.Genres.Members.getContentUri("external", genreId),
-                arrayOf(MediaStore.Audio.Genres.Members._ID),
-                null,
-                null,
-                null)
-            ?.use { cursor ->
-                val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
+        context.contentResolverSafe.useQuery(
+            MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, genreId),
+            arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
 
-                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(idIndex)
-                    audios.find { it.id == id }?.let { song -> song.genre = genreName }
-                }
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                audios.find { it.id == id }?.let { song -> song.genre = genreName }
             }
+        }
     }
 
+    /**
+     * The projection to use when querying media. Add version-specific columns here in our
+     * implementation.
+     */
     open val projection: Array<String>
-        get() = PROJECTION
+        get() = BASE_PROJECTION
 
+    /**
+     * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
+     * an upstream [Audio] first, and then populate it with version-specific fields outlined in
+     * [projection].
+     */
     open fun buildAudio(context: Context, cursor: Cursor): Audio {
         // Initialize our cursor indices if we haven't already.
         if (idIndex == -1) {
@@ -254,18 +269,22 @@ abstract class MediaStoreBackend : Indexer.Backend {
     ) {
         fun toSong(): Song =
             Song(
-                requireNotNull(title) { "Malformed song: No title" },
-                requireNotNull(displayName) { "Malformed song: No file name" },
-                requireNotNull(duration) { "Malformed song: No duration" },
-                track,
-                disc,
-                requireNotNull(id) { "Malformed song: No song id" },
-                year,
-                requireNotNull(album) { "Malformed song: No album name" },
-                requireNotNull(albumId) { "Malformed song: No album id" },
-                artist,
-                albumArtist,
-                genre)
+                rawName = requireNotNull(title) { "Malformed audio: No title" },
+                fileName = requireNotNull(displayName) { "Malformed audio: No file name" },
+                uri = ContentUris.withAppendedId(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    requireNotNull(id) { "Malformed audio: No song id" }),
+                durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
+                track = track,
+                disc = disc,
+                _year = year,
+                _albumName = requireNotNull(album) { "Malformed song: No album name" },
+                _albumCoverUri = ContentUris.withAppendedId(
+                    EXTERNAL_ALBUM_ART_URI,
+                    requireNotNull(albumId) { "Malformed song: No album id" }),
+                _artistName = artist,
+                _albumArtistName = albumArtist,
+                _genreName = genre)
     }
 
     companion object {
@@ -278,7 +297,23 @@ abstract class MediaStoreBackend : Indexer.Backend {
         @Suppress("InlinedApi")
         private const val AUDIO_COLUMN_ALBUM_ARTIST = MediaStore.Audio.AudioColumns.ALBUM_ARTIST
 
-        private val PROJECTION =
+        /**
+         * External has existed since at least API 21, but no constant existed for it until API 29.
+         * This constant is safe to use.
+         */
+        @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
+
+        /**
+         * For some reason the album art URI namespace does not have a member in [MediaStore], but
+         * it still works since at least API 21.
+         */
+        private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
+
+        /**
+         * The basic projection that works across all versions of android. Is incomplete, hence why
+         * sub-implementations should be used instead.
+         */
+        private val BASE_PROJECTION =
             arrayOf(
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
@@ -293,6 +328,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
     }
 }
 
+/**
+ * A [MediaStoreBackend] that completes the music loading process in a way compatible from
+ * @author OxygenCobalt
+ */
 class Api21MediaStoreBackend : MediaStoreBackend() {
     private var trackIndex = -1
 
@@ -325,6 +364,11 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
     }
 }
 
+/**
+ * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
+ * API 30.
+ * @author OxygenCobalt
+ */
 @RequiresApi(Build.VERSION_CODES.R)
 class Api30MediaStoreBackend : MediaStoreBackend() {
     private var trackIndex: Int = -1
@@ -350,16 +394,16 @@ class Api30MediaStoreBackend : MediaStoreBackend() {
         // N is the number and T is the total. Parse the number while leaving out the
         // total, as we have no use for it.
 
-        cursor
-            .getStringOrNull(trackIndex)
-            ?.split('/', limit = 2)
-            ?.getOrNull(0)
-            ?.toIntOrNull()
-            ?.let { audio.track = it }
-        cursor.getStringOrNull(discIndex)?.split('/', limit = 2)?.getOrNull(0)?.toIntOrNull()?.let {
-            audio.disc = it
-        }
+        cursor.getStringOrNull(trackIndex)?.no?.let { audio.track = it }
+        cursor.getStringOrNull(discIndex)?.no?.let { audio.disc = it }
 
         return audio
     }
+
+    /**
+     * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
+     * CD_TRACK_NUMBER.
+     */
+    private val String.no: Int?
+        get() = split('/', limit = 2).getOrNull(0)?.toIntOrNull()
 }

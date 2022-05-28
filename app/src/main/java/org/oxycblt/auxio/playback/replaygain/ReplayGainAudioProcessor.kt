@@ -133,10 +133,15 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
             val value: String
 
             when (entry) {
+                // ID3v2 text information frame, usually these are formatted in lowercase
+                // (like "replaygain_track_gain"), but can also be uppercase. Make sure that
+                // capitalization is consistent before continuing.
                 is TextInformationFrame -> {
                     key = entry.description?.uppercase()
                     value = entry.value
                 }
+                // Vorbis comment. These are nearly always uppercase, so a check for such is
+                // skipped.
                 is VorbisComment -> {
                     key = entry.key
                     value = entry.value
@@ -183,6 +188,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                 albumGain += tag.value / 256f
                 found = true
             }
+
         return if (found) {
             Gain(trackGain, albumGain)
         } else {

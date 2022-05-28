@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.res.ColorStateList
 import android.database.Cursor
@@ -24,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.graphics.Insets
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
@@ -153,6 +155,23 @@ fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from
  */
 fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
+
+/** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
+fun ContentResolver.queryCursor(
+    uri: Uri,
+    projection: Array<out String>,
+    selector: String? = null,
+    args: Array<String>? = null
+) = query(uri, projection, selector, args, null)
+
+/** Shortcut for making a [ContentResolver] query and using the particular cursor with [use]. */
+fun <R> ContentResolver.useQuery(
+    uri: Uri,
+    projection: Array<out String>,
+    selector: String? = null,
+    args: Array<String>? = null,
+    block: (Cursor) -> R
+): R? = queryCursor(uri, projection, selector, args)?.use(block)
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view

@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.indexer.Indexer
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.useQuery
 
 /**
  * The main storage for music items. Getting an instance of this object is more complicated as it
@@ -117,17 +118,15 @@ class MusicStore private constructor() {
          * @return The corresponding [Song] for this [uri], null if there isn't one.
          */
         fun findSongForUri(context: Context, uri: Uri): Song? {
-            context.contentResolverSafe
-                .query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-                ?.use { cursor ->
-                    cursor.moveToFirst()
-                    val fileName =
-                        cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+            return context.contentResolverSafe.useQuery(
+                uri, arrayOf(OpenableColumns.DISPLAY_NAME)) { cursor ->
+                cursor.moveToFirst()
 
-                    return songs.find { it.fileName == fileName }
-                }
+                val displayName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-            return null
+                songs.find { it.fileName == displayName }
+            }
         }
     }
 

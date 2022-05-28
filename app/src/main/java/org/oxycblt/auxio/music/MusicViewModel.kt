@@ -25,6 +25,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
+/**
+ * A [ViewModel] that represents the current music indexing state.
+ */
 class MusicViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 

@@ -73,6 +73,10 @@ constructor(
             // to jump around).
             if (value <= durationSecs && !isActivated) {
                 binding.seekBarSlider.value = value.toFloat()
+
+                // We would want to keep this in the callback, but the callback only fires when
+                // a value changes completely, and sometimes that does not happen with this view.
+                binding.seekBarPosition.textSafe = value.formatDuration(true)
             }
         }
 

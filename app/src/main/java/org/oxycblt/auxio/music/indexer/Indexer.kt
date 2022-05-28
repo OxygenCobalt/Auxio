@@ -17,10 +17,8 @@
  
 package org.oxycblt.auxio.music.indexer
 
-import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import org.oxycblt.auxio.music.Album
@@ -62,7 +60,7 @@ object Indexer {
     }
 
     /**
-     * Does the initial query over the song database, including excluded directory checks. The songs
+     * Does the initial query over the song database using [backend]. The songs
      * returned by this function are **not** well-formed. The companion [buildAlbums],
      * [buildArtists], and [buildGenres] functions must be called with the returned list so that all
      * songs are properly linked up.
@@ -74,10 +72,10 @@ object Indexer {
         songs =
             songs.distinctBy {
                 it.rawName to
-                    it._mediaStoreAlbumName to
-                    it._mediaStoreArtistName to
-                    it._mediaStoreAlbumArtistName to
-                    it._mediaStoreGenreName to
+                    it._albumName to
+                    it._artistName to
+                    it._albumArtistName to
+                    it._genreName to
                     it.track to
                     it.disc to
                     it.durationMs
@@ -122,22 +120,13 @@ object Indexer {
                 }
             }
 
-            val albumName = templateSong._mediaStoreAlbumName
-            val albumYear = templateSong._mediaStoreYear
-            val albumCoverUri =
-                ContentUris.withAppendedId(
-                    Uri.parse("content://media/external/audio/albumart"),
-                    templateSong._mediaStoreAlbumId)
-            val artistName = templateSong._artistGroupingName
-
             albums.add(
                 Album(
-                    albumName,
-                    albumYear,
-                    albumCoverUri,
-                    albumSongs,
-                    artistName,
-                ))
+                    rawName = templateSong._albumName,
+                    year = templateSong._year,
+                    albumCoverUri = templateSong._albumCoverUri,
+                    _artistGroupingName = templateSong._artistGroupingName,
+                    songs = entry.value))
         }
 
         logD("Successfully built ${albums.size} albums")
@@ -154,16 +143,13 @@ object Indexer {
         val albumsByArtist = albums.groupBy { it._artistGroupingId }
 
         for (entry in albumsByArtist) {
+            // The first album will suffice for template metadata.
             val templateAlbum = entry.value[0]
-            val artistName =
-                if (templateAlbum._artistGroupingName != MediaStore.UNKNOWN_STRING) {
-                    templateAlbum._artistGroupingName
-                } else {
-                    null
-                }
-            val artistAlbums = entry.value
 
-            artists.add(Artist(artistName, artistAlbums))
+            artists.add(Artist(
+                rawName = templateAlbum._artistGroupingName,
+                albums = entry.value
+            ))
         }
 
         logD("Successfully built ${artists.size} artists")
@@ -172,16 +158,15 @@ object Indexer {
     }
 
     /**
-     * Read all genres and link them up to the given songs. This is the code that requires me to
-     * make dozens of useless queries just to link genres up.
+     * Build genres and link them to their particular songs.
      */
     private fun buildGenres(songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
-        val songsByGenre = songs.groupBy { it._mediaStoreGenreName?.hashCode() }
+        val songsByGenre = songs.groupBy { it._genreName?.hashCode() }
 
         for (entry in songsByGenre) {
             val templateSong = entry.value[0]
-            genres.add(Genre(templateSong._mediaStoreGenreName, entry.value))
+            genres.add(Genre(rawName = templateSong._genreName, songs = entry.value))
         }
 
         logD("Successfully built ${genres.size} genres")
@@ -190,7 +175,10 @@ object Indexer {
     }
 
     interface Backend {
+        /** Query the media database for an initial cursor. */
         fun query(context: Context): Cursor
+
+        /** Create a list of songs from the [Cursor] queried in [query]. */
         fun loadSongs(context: Context, cursor: Cursor): Collection<Song>
     }
 }
