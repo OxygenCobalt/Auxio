@@ -25,9 +25,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
-/**
- * A [ViewModel] that represents the current music indexing state.
- */
+/** A [ViewModel] that represents the current music indexing state. */
 class MusicViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
 
@@ -45,7 +43,7 @@ class MusicViewModel : ViewModel(), MusicStore.Callback {
      * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
-        if (_loaderResponse.value != null || isBusy) {
+        if (musicStore.library != null || isBusy) {
             logD("Loader is busy/already completed, not reloading")
             return
         }

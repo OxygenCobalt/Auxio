@@ -27,10 +27,10 @@ import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.indexer.Indexer
+import org.oxycblt.auxio.music.indexer.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.useQuery
 
 /**
  * The main storage for music items. Getting an instance of this object is more complicated as it

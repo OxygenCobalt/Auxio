@@ -29,8 +29,6 @@ import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.contentResolverSafe
-import org.oxycblt.auxio.util.queryCursor
-import org.oxycblt.auxio.util.useQuery
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -271,17 +269,19 @@ abstract class MediaStoreBackend : Indexer.Backend {
             Song(
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
                 fileName = requireNotNull(displayName) { "Malformed audio: No file name" },
-                uri = ContentUris.withAppendedId(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                    requireNotNull(id) { "Malformed audio: No song id" }),
+                uri =
+                    ContentUris.withAppendedId(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        requireNotNull(id) { "Malformed audio: No song id" }),
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,
                 disc = disc,
                 _year = year,
                 _albumName = requireNotNull(album) { "Malformed song: No album name" },
-                _albumCoverUri = ContentUris.withAppendedId(
-                    EXTERNAL_ALBUM_ART_URI,
-                    requireNotNull(albumId) { "Malformed song: No album id" }),
+                _albumCoverUri =
+                    ContentUris.withAppendedId(
+                        EXTERNAL_ALBUM_ART_URI,
+                        requireNotNull(albumId) { "Malformed song: No album id" }),
                 _artistName = artist,
                 _albumArtistName = albumArtist,
                 _genreName = genre)
@@ -384,6 +384,7 @@ class Api30MediaStoreBackend : MediaStoreBackend() {
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
         val audio = super.buildAudio(context, cursor)
 
+        // Populate our indices if we have not already.
         if (trackIndex == -1) {
             trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.CD_TRACK_NUMBER)
             discIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISC_NUMBER)
@@ -399,11 +400,4 @@ class Api30MediaStoreBackend : MediaStoreBackend() {
 
         return audio
     }
-
-    /**
-     * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
-     * CD_TRACK_NUMBER.
-     */
-    private val String.no: Int?
-        get() = split('/', limit = 2).getOrNull(0)?.toIntOrNull()
 }

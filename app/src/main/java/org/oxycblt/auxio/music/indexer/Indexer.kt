@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.indexer
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
-import android.provider.MediaStore
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -29,18 +28,44 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 
+/**
+ * Auxio's media indexer.
+ *
+ * Auxio's media indexer is somewhat complicated, as it has grown to support a variety of use cases
+ * (and hacky garbage) in order to produce the best possible experience. It is split into three
+ * distinct steps:
+ *
+ * 1. Finding a [Backend] to use and then querying the media database with it.
+ * 2. Using the [Backend] and the media data to create songs
+ * 3. Using the songs to build the library, which primarily involves linking up all data objects
+ * with their corresponding parents/children.
+ *
+ * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the other
+ * files in the module.
+ *
+ * @author OxygenCobalt
+ */
 object Indexer {
     fun index(context: Context): MusicStore.Library? {
         // Establish the backend to use when initially loading songs.
-        val backend =
+        val mediaStoreBackend =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()
                 else -> Api21MediaStoreBackend()
             }
 
-        val songs = buildSongs(context, backend)
+        // Disabled until direct parsing is fully capable of integration into Auxio's
+        // architecture.
+        // val backend = if (settingsManager.useQualityMetadata) {
+        //     ExoPlayerBackend(mediaStoreBackend)
+        // } else {
+        //     mediaStoreBackend
+        // }
+
+        val songs = buildSongs(context, mediaStoreBackend)
         if (songs.isEmpty()) return null
 
+        val buildStart = System.currentTimeMillis()
         val albums = buildAlbums(songs)
         val artists = buildArtists(albums)
         val genres = buildGenres(songs)
@@ -56,17 +81,27 @@ object Indexer {
             }
         }
 
+        logD("Successfully built library in ${System.currentTimeMillis() - buildStart}ms")
+
         return MusicStore.Library(genres, artists, albums, songs)
     }
 
     /**
-     * Does the initial query over the song database using [backend]. The songs
-     * returned by this function are **not** well-formed. The companion [buildAlbums],
-     * [buildArtists], and [buildGenres] functions must be called with the returned list so that all
-     * songs are properly linked up.
+     * Does the initial query over the song database using [backend]. The songs returned by this
+     * function are **not** well-formed. The companion [buildAlbums], [buildArtists], and
+     * [buildGenres] functions must be called with the returned list so that all songs are properly
+     * linked up.
      */
     private fun buildSongs(context: Context, backend: Backend): List<Song> {
-        var songs = backend.query(context).use { cursor -> backend.loadSongs(context, cursor) }
+        val queryStart = System.currentTimeMillis()
+        var songs =
+            backend.query(context).use { cursor ->
+                val loadStart = System.currentTimeMillis()
+                logD("Successfully queried media database in ${loadStart - queryStart}ms")
+                val songs = backend.loadSongs(context, cursor)
+                logD("Successfully loaded songs in ${System.currentTimeMillis() - loadStart}ms")
+                songs
+            }
 
         // Deduplicate songs to prevent (most) deformed music clones
         songs =
@@ -125,8 +160,8 @@ object Indexer {
                     rawName = templateSong._albumName,
                     year = templateSong._year,
                     albumCoverUri = templateSong._albumCoverUri,
-                    _artistGroupingName = templateSong._artistGroupingName,
-                    songs = entry.value))
+                    songs = entry.value,
+                    _artistGroupingName = templateSong._artistGroupingName))
         }
 
         logD("Successfully built ${albums.size} albums")
@@ -146,10 +181,7 @@ object Indexer {
             // The first album will suffice for template metadata.
             val templateAlbum = entry.value[0]
 
-            artists.add(Artist(
-                rawName = templateAlbum._artistGroupingName,
-                albums = entry.value
-            ))
+            artists.add(Artist(rawName = templateAlbum._artistGroupingName, albums = entry.value))
         }
 
         logD("Successfully built ${artists.size} artists")
@@ -157,9 +189,7 @@ object Indexer {
         return artists
     }
 
-    /**
-     * Build genres and link them to their particular songs.
-     */
+    /** Build genres and link them to their particular songs. */
     private fun buildGenres(songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
         val songsByGenre = songs.groupBy { it._genreName?.hashCode() }
@@ -174,6 +204,7 @@ object Indexer {
         return genres
     }
 
+    /** Represents a backend that metadata can be extracted from. */
     interface Backend {
         /** Query the media database for an initial cursor. */
         fun query(context: Context): Cursor
