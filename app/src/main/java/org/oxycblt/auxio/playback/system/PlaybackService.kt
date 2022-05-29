@@ -139,13 +139,6 @@ class PlaybackService :
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
         playbackManager.addCallback(this)
-        if (playbackManager.isInitialized) {
-            loadSong(playbackManager.song)
-            onSeek(playbackManager.positionMs)
-            onPlayingChanged(playbackManager.isPlaying)
-            onShuffledChanged(playbackManager.isShuffled)
-            onRepeatChanged(playbackManager.repeatMode)
-        }
 
         // --- SETTINGSMANAGER SETUP ---
 

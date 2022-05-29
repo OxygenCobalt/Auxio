@@ -96,6 +96,15 @@ class PlaybackStateManager private constructor() {
      * [removeCallback] when done.
      */
     fun addCallback(callback: Callback) {
+        if (isInitialized) {
+            callback.onNewPlayback(index, queue, parent)
+            callback.onSeek(positionMs)
+            callback.onPositionChanged(positionMs)
+            callback.onRepeatChanged(repeatMode)
+            callback.onShuffledChanged(isShuffled)
+            callback.onPlayingChanged(isPlaying)
+        }
+
         callbacks.add(callback)
     }
 

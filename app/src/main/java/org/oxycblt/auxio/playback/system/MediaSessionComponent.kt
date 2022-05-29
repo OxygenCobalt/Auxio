@@ -55,13 +55,6 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         playbackManager.addCallback(this)
         settingsManager.addCallback(this)
         mediaSession.setCallback(this)
-
-        if (playbackManager.isInitialized) {
-            updateMediaMetadata(playbackManager.song)
-            invalidateSessionState()
-            onRepeatChanged(playbackManager.repeatMode)
-            onShuffledChanged(playbackManager.isShuffled)
-        }
     }
 
     fun release() {

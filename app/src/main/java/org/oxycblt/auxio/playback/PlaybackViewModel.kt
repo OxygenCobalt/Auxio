@@ -83,18 +83,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     init {
         musicStore.addCallback(this)
         playbackManager.addCallback(this)
-
-        // If the PlaybackViewModel was cleared [Signified by PlaybackStateManager still being
-        // around & the fact that we are in the init function], then attempt to restore the
-        // ViewModel state. If it isn't, then wait for MainFragment to give the command to restore
-        // PlaybackStateManager.
-        if (playbackManager.isInitialized) {
-            onNewPlayback(playbackManager.index, playbackManager.queue, playbackManager.parent)
-            onPositionChanged(playbackManager.positionMs)
-            onPlayingChanged(playbackManager.isPlaying)
-            onShuffledChanged(playbackManager.isShuffled)
-            onRepeatChanged(playbackManager.repeatMode)
-        }
     }
 
     // --- PLAYING FUNCTIONS ---

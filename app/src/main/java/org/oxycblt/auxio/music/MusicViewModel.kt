@@ -43,7 +43,7 @@ class MusicViewModel : ViewModel(), MusicStore.Callback {
      * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
-        if (musicStore.library != null || isBusy) {
+        if (_loaderResponse.value != null || isBusy) {
             logD("Loader is busy/already completed, not reloading")
             return
         }

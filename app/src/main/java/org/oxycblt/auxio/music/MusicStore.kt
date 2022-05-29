@@ -54,6 +54,7 @@ class MusicStore private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
     fun addCallback(callback: Callback) {
+        response?.let(callback::onMusicUpdate)
         callbacks.add(callback)
     }
 
