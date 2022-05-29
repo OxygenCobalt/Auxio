@@ -73,14 +73,12 @@ import org.oxycblt.auxio.util.contentResolverSafe
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged
  * google to fix glaring issues with MediaStore or to just take the API behind the woodshed and
  * shoot it. Largely because they have zero incentive to improve it given how "obscure" local music
- * listening is. As a result, some players like Vanilla and VLC just hack their own
- * pseudo-MediaStore implementation from their own (better) parsers, but this is both infeasible for
- * Auxio due to how incredibly slow it is to get a file handle from the android sandbox AND how much
- * harder it is to manage a database of your own media that mirrors the filesystem perfectly. And
- * even if I set aside those crippling issues and changed my indexer to that, it would face the even
- * larger problem of how google keeps trying to kill the filesystem and force you into their
- * ContentResolver API. In the future MediaStore could be the only system we have, which is also the
- * day that greenland melts and birthdays stop happening forever.
+ * listening is. As a result, Auxio exposes an option to use an internal parser based on ExoPlayer
+ * that at least tries to correct the insane metadata that this API returns, but not only is that
+ * system horrifically slow and bug-prone, it also faces the even larger issue of how google keeps
+ * trying to kill the filesystem and force you into their ContentResolver API. In the future
+ * MediaStore could be the only system we have, which is also the day that greenland melts and
+ * birthdays stop happening forever.
  *
  * I'm pretty sure nothing is going to happen and MediaStore will continue to be neglected and
  * probably deprecated eventually for a "new" API that just coincidentally excludes music indexing.
@@ -181,7 +179,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     }
 
     /**
-     * The projection to use when querying media. Add version-specific columns here in our
+     * The projection to use when querying media. Add version-specific columns here in an
      * implementation.
      */
     open val projection: Array<String>
@@ -230,8 +228,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.album = cursor.getStringOrNull(albumIndex)
         audio.albumId = cursor.getLong(albumIdIndex)
 
-        // If the artist field is <unknown>, make it null. This makes handling the
-        // insanity of the artist field easier later on.
+        // Android does not make a non-existent artist tag null, it instead fills it in
+        // as <unknown>, which makes absolutely no sense given how other fields default
+        // to null if they are not present. If this field is <unknown>, null it so that
+        // it's easier to handle later.
         audio.artist =
             cursor.getStringOrNull(artistIndex)?.run {
                 if (this != MediaStore.UNKNOWN_STRING) {
@@ -267,21 +267,20 @@ abstract class MediaStoreBackend : Indexer.Backend {
     ) {
         fun toSong(): Song =
             Song(
+                // Assert that the fields that should exist are present. I can't confirm that
+                // every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
                 fileName = requireNotNull(displayName) { "Malformed audio: No file name" },
-                uri =
-                    ContentUris.withAppendedId(
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        requireNotNull(id) { "Malformed audio: No song id" }),
+                uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,
                 disc = disc,
                 _year = year,
-                _albumName = requireNotNull(album) { "Malformed song: No album name" },
+                _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumCoverUri =
                     ContentUris.withAppendedId(
                         EXTERNAL_ALBUM_ART_URI,
-                        requireNotNull(albumId) { "Malformed song: No album id" }),
+                        requireNotNull(albumId) { "Malformed audio: No album id" }),
                 _artistName = artist,
                 _albumArtistName = albumArtist,
                 _genreName = genre)

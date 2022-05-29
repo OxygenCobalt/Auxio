@@ -17,10 +17,8 @@
  
 package org.oxycblt.auxio.music.indexer
 
-import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.provider.MediaStore
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.Metadata
@@ -29,7 +27,6 @@ import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -39,11 +36,20 @@ import org.oxycblt.auxio.util.logW
 /**
  * A [Indexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
  *
+ * Normally, leveraging ExoPlayer's metadata system would be a terrible idea, as it is horrifically
+ * slow. However, if we parallelize it, we can get similar throughput to other metadata extractors,
+ * which is nice as it means we don't have to bundle a redundant metadata library like JAudioTagger.
+ *
+ * Now, ExoPlayer's metadata API is not the best. It's opaque, undocumented, and prone to weird
+ * pitfalls given ExoPlayer's cozy relationship with native code. However, this backend should do
+ * enough to eliminate such issues.
+ *
  * TODO: This class is currently not used, as there are a number of technical improvements that must
- * be made first before it is practical.
+ * be made first before it can be integrated.
  *
  * @author OxygenCobalt
  */
+@Suppress("UNUSED")
 class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     private val runningTasks: Array<Future<TrackGroupArray>?> = arrayOfNulls(TASK_CAPACITY)
 
@@ -58,21 +64,21 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         while (cursor.moveToNext()) {
             val audio = inner.buildAudio(context, cursor)
 
-            val audioUri =
-                ContentUris.withAppendedId(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, requireNotNull(audio.id))
+            val audioUri = requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri
 
             while (true) {
                 // Spin until a task slot opens up, then start trying to parse metadata.
-                val idx = runningTasks.indexOfFirst { it == null }
-                if (idx != -1) {
+                val index = runningTasks.indexOfFirst { it == null }
+                if (index != -1) {
                     val task =
                         MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(audioUri))
 
                     Futures.addCallback(
-                        task, AudioCallback(audio, songs, idx), Executors.newSingleThreadExecutor())
+                        task,
+                        AudioCallback(audio, songs, index),
+                        Executors.newSingleThreadExecutor())
 
-                    runningTasks[idx] = task
+                    runningTasks[index] = task
 
                     break
                 }
@@ -89,7 +95,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     private inner class AudioCallback(
         private val audio: MediaStoreBackend.Audio,
         private val dest: ConcurrentLinkedQueue<Song>,
-        private val taskIdx: Int
+        private val taskIndex: Int
     ) : FutureCallback<TrackGroupArray> {
         override fun onSuccess(result: TrackGroupArray) {
             val metadata = result[0].getFormat(0).metadata
@@ -100,30 +106,33 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             }
 
             dest.add(audio.toSong())
-            runningTasks[taskIdx] = null
+            runningTasks[taskIndex] = null
         }
 
         override fun onFailure(t: Throwable) {
             logW("Unable to extract metadata for ${audio.title}")
             logW(t.stackTraceToString())
             dest.add(audio.toSong())
-            runningTasks[taskIdx] = null
+            runningTasks[taskIndex] = null
         }
     }
 
     private fun completeAudio(audio: MediaStoreBackend.Audio, metadata: Metadata) {
         for (i in 0 until metadata.length()) {
+            // We only support two formats as it stands:
+            // - ID3v2 text frames
+            // - Vorbis comments
+            // This should be enough to cover the vast, vast majority of audio formats.
+            // It is also assumed that a file only has either ID3v2 text frames or vorbis
+            // comments.
             when (val tag = metadata.get(i)) {
-                // ID3v2 text information frame.
                 is TextInformationFrame ->
                     if (tag.value.isNotEmpty()) {
-                        handleId3TextFrame(tag.id, tag.value.sanitize(), audio)
+                        handleId3v2TextFrame(tag.id.sanitize(), tag.value.sanitize(), audio)
                     }
-                // Vorbis comment. It is assumed that a Metadata can only have vorbis
-                // comments/pictures or ID3 frames, never both.
                 is VorbisComment ->
                     if (tag.value.isNotEmpty()) {
-                        handleVorbisComment(tag.key, tag.value.sanitize(), audio)
+                        handleVorbisComment(tag.key.sanitize(), tag.value.sanitize(), audio)
                     }
             }
         }
@@ -138,12 +147,12 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
      *
      * This function mitigates it by first encoding the string as UTF-8 bytes (replacing malformed
      * characters with the replacement in the process), and then re-interpreting it as a new string,
-     * which hopefully fixes encoding sanity while also copying the string out of dodgy native
+     * which hopefully fixes encoding insanity while also copying the string out of dodgy native
      * memory.
      */
-    private fun String.sanitize() = String(encodeToByteArray(), StandardCharsets.UTF_8)
+    private fun String.sanitize() = String(encodeToByteArray())
 
-    private fun handleId3TextFrame(id: String, value: String, audio: MediaStoreBackend.Audio) {
+    private fun handleId3v2TextFrame(id: String, value: String, audio: MediaStoreBackend.Audio) {
         // It's assumed that duplicate frames are eliminated by ExoPlayer's metadata parser.
         when (id) {
             "TIT2" -> audio.title = value // Title

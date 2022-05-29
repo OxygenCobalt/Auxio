@@ -40,6 +40,8 @@ import org.oxycblt.auxio.util.textSafe
  * Instead, we wrap it in a safe class that hopefully implements enough safety to not crash the app
  * or result in blatantly janky behavior. Mostly.
  *
+ * TODO: Add smooth seeking
+ *
  * @author OxygenCobalt
  */
 class StyledSeekBar

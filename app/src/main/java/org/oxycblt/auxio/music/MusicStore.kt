@@ -53,11 +53,17 @@ class MusicStore private constructor() {
 
     private val callbacks = mutableListOf<Callback>()
 
+    /**
+     * Add a callback to this instance. Make sure to remove it when done.
+     */
     fun addCallback(callback: Callback) {
         response?.let(callback::onMusicUpdate)
         callbacks.add(callback)
     }
 
+    /**
+     * Remove a callback from this instance.
+     */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }

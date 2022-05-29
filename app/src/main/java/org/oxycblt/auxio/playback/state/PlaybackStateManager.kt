@@ -71,8 +71,7 @@ class PlaybackStateManager private constructor() {
             notifyPlayingChanged()
         }
     /** The current playback progress */
-    var positionMs = 0L
-        private set
+    private var positionMs = 0L
     /** The current [RepeatMode] */
     var repeatMode = RepeatMode.NONE
         set(value) {
@@ -92,8 +91,7 @@ class PlaybackStateManager private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
     /**
-     * Add a [PlaybackStateManager.Callback] to this instance. Make sure to remove the callback with
-     * [removeCallback] when done.
+     * Add a callback to this instance. Make sure to remove it when done.
      */
     fun addCallback(callback: Callback) {
         if (isInitialized) {

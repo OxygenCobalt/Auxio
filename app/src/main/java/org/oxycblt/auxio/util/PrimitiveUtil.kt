@@ -44,9 +44,6 @@ fun <T> unlikelyToBeNull(value: T?): T {
 /** Shortcut to clamp an integer between [min] and [max] */
 fun Int.clamp(min: Int, max: Int): Int = MathUtils.clamp(this, min, max)
 
-/** Shortcut to clamp an integer between [min] and [max] */
-fun Long.clamp(min: Long, max: Long): Long = MathUtils.clamp(this, min, max)
-
 /**
  * Convert a [Long] of seconds into a string duration.
  * @param isElapsed Whether this duration is represents elapsed time. If this is false, then --:--

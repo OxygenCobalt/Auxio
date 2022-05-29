@@ -66,6 +66,7 @@ object Indexer {
         if (songs.isEmpty()) return null
 
         val buildStart = System.currentTimeMillis()
+
         val albums = buildAlbums(songs)
         val artists = buildArtists(albums)
         val genres = buildGenres(songs)
@@ -206,7 +207,7 @@ object Indexer {
 
     /** Represents a backend that metadata can be extracted from. */
     interface Backend {
-        /** Query the media database for an initial cursor. */
+        /** Query the media database for a basic cursor. */
         fun query(context: Context): Cursor
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
