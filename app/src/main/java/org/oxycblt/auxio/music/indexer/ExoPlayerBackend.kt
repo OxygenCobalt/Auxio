@@ -62,8 +62,10 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         val songs = ConcurrentLinkedQueue<Song>()
 
         while (cursor.moveToNext()) {
+            // Note: This call to buildAudio does not populate the genre field. This is
+            // because indexing genres is quite slow with MediaStore, and so keeping the
+            // field blank on unsupported ExoPlayer formats ends up being preferable.
             val audio = inner.buildAudio(context, cursor)
-
             val audioUri = requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri
 
             while (true) {
@@ -182,11 +184,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     }
 
     companion object {
-        /**
-         * The amount of tasks this backend can run efficiently at one time. Eight was chosen here
-         * as higher values made little difference in speed, and lower values generally caused
-         * bottlenecks.
-         */
+        /** The amount of tasks this backend can run efficiently at once. */
         private const val TASK_CAPACITY = 8
     }
 }

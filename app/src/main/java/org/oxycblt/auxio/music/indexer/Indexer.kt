@@ -74,11 +74,11 @@ object Indexer {
         // Sanity check: Ensure that all songs are linked up to albums/artists/genres.
         for (song in songs) {
             if (song._isMissingAlbum || song._isMissingArtist || song._isMissingGenre) {
-                throw IllegalStateException(
-                    "Found malformed song: ${song.rawName} [" +
-                        "album: ${!song._isMissingAlbum} " +
-                        "artist: ${!song._isMissingArtist} " +
-                        "genre: ${!song._isMissingGenre}]")
+                error(
+                    "Found unlinked song: ${song.rawName} [" +
+                        "missing album: ${song._isMissingAlbum} " +
+                        "missing artist: ${song._isMissingArtist} " +
+                        "missing genre: ${song._isMissingGenre}]")
             }
         }
 
@@ -99,8 +99,10 @@ object Indexer {
             backend.query(context).use { cursor ->
                 val loadStart = System.currentTimeMillis()
                 logD("Successfully queried media database in ${loadStart - queryStart}ms")
+
                 val songs = backend.loadSongs(context, cursor)
                 logD("Successfully loaded songs in ${System.currentTimeMillis() - loadStart}ms")
+
                 songs
             }
 
@@ -181,7 +183,6 @@ object Indexer {
         for (entry in albumsByArtist) {
             // The first album will suffice for template metadata.
             val templateAlbum = entry.value[0]
-
             artists.add(Artist(rawName = templateAlbum._artistGroupingName, albums = entry.value))
         }
 
@@ -212,5 +213,11 @@ object Indexer {
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
         fun loadSongs(context: Context, cursor: Cursor): Collection<Song>
+    }
+
+    sealed class Event {
+        object Query : Event()
+        object LoadSongs : Event()
+        object BuildLibrary : Event()
     }
 }

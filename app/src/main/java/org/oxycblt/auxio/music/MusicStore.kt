@@ -53,17 +53,13 @@ class MusicStore private constructor() {
 
     private val callbacks = mutableListOf<Callback>()
 
-    /**
-     * Add a callback to this instance. Make sure to remove it when done.
-     */
+    /** Add a callback to this instance. Make sure to remove it when done. */
     fun addCallback(callback: Callback) {
         response?.let(callback::onMusicUpdate)
         callbacks.add(callback)
     }
 
-    /**
-     * Remove a callback from this instance.
-     */
+    /** Remove a callback from this instance. */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
@@ -78,7 +74,7 @@ class MusicStore private constructor() {
         return newResponse
     }
 
-    private fun loadImpl(context: Context): Response {
+    private suspend fun loadImpl(context: Context): Response {
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED

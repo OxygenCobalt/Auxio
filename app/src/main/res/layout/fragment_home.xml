@@ -28,13 +28,62 @@
 
     </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/home_pager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        tools:layout="@layout/fragment_home_list" />
+        android:animateLayoutChanges="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home_loading_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:paddingStart="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_medium"
+            tools:visibility="invisible">
+
+            <TextView
+                android:id="@+id/home_loading_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+                app:layout_constraintBottom_toTopOf="@+id/home_loading_action"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Status" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/home_loading_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:indeterminateAnimationType="disjoint"
+                app:layout_constraintBottom_toBottomOf="@+id/home_loading_action"
+                app:layout_constraintTop_toTopOf="@+id/home_loading_action"
+                app:trackColor="@color/sel_track" />
+
+            <Button
+                android:id="@+id/home_loading_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_retry"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/home_loading_status" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/home_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:layout="@layout/fragment_home_list" />
+
+    </FrameLayout>
 
     <org.oxycblt.auxio.home.EdgeFabContainer
         android:layout_width="wrap_content"

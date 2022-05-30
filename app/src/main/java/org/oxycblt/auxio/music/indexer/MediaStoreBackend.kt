@@ -135,7 +135,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         // The audio is not actually complete at this point, as we cannot obtain a genre
         // through a song query. Instead, we have to do the hack where we iterate through
-        // every genre and assign it's name to each component song.
+        // every genre and assign it's name to audios that match it's child ID.
 
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
@@ -149,33 +149,22 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 // anyway, so we skip genres that have them.
                 val id = genreCursor.getLong(idIndex)
                 val name = genreCursor.getStringOrNull(nameIndex) ?: continue
-                linkGenreAudios(context, id, name, audios)
+
+                context.contentResolverSafe.useQuery(
+                    MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),
+                    arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
+                    val songIdIndex =
+                        cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
+
+                    while (cursor.moveToNext()) {
+                        val songId = cursor.getLong(songIdIndex)
+                        audios.find { it.id == songId }?.let { song -> song.genre = name }
+                    }
+                }
             }
         }
 
         return audios.map { it.toSong() }
-    }
-
-    /**
-     * Links up the given genre data ([genreId] and [genreName]) to the child audios connected to
-     * [genreId].
-     */
-    private fun linkGenreAudios(
-        context: Context,
-        genreId: Long,
-        genreName: String,
-        audios: List<Audio>
-    ) {
-        context.contentResolverSafe.useQuery(
-            MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, genreId),
-            arrayOf(MediaStore.Audio.Genres.Members._ID)) { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members._ID)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idIndex)
-                audios.find { it.id == id }?.let { song -> song.genre = genreName }
-            }
-        }
     }
 
     /**

@@ -6,6 +6,7 @@
     <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
+    <string name="lbl_loading">Loading your music library…</string>
     <string name="lbl_retry">Retry</string>
     <string name="lbl_grant">Grant</string>
 

@@ -17,12 +17,17 @@
  
 package org.oxycblt.auxio.home
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.core.view.iterator
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -51,6 +56,8 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
+import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.textSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -69,12 +76,23 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
         val sortItem: MenuItem
 
+        // Build the permission launcher here as you can only do it in onCreateView/onCreate
+        val permLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                musicModel.reloadMusic(requireContext())
+            }
+
         binding.homeToolbar.apply {
             sortItem = menu.findItem(R.id.submenu_sorting)
             setOnMenuItemClickListener(this@HomeFragment)
         }
 
         updateTabConfiguration()
+
+        binding.homeLoadingContainer.setOnApplyWindowInsetsListener { v, insets ->
+            v.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+            insets
+        }
 
         binding.homePager.apply {
             adapter = HomePagerAdapter()
@@ -104,7 +122,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         homeModel.currentTab.observe(viewLifecycleOwner) { tab -> updateCurrentTab(sortItem, tab) }
         homeModel.recreateTabs.observe(viewLifecycleOwner, ::handleRecreateTabs)
 
-        musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
+        musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
+            handleLoaderResponse(response, permLauncher)
+        }
+
         navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
     }
 
@@ -236,15 +257,61 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoaderResponse(response: MusicStore.Response?) {
+    private fun handleLoaderResponse(
+        response: MusicStore.Response?,
+        permLauncher: ActivityResultLauncher<String>
+    ) {
         val binding = requireBinding()
-        when (response) {
-            is MusicStore.Response.Ok -> binding.homeFab.show()
 
-            // While loading or during an error, make sure we keep the shuffle fab hidden so
-            // that any kind of playback is impossible. PlaybackStateManager also relies on this
-            // invariant, so please don't change it.
-            else -> binding.homeFab.hide()
+        if (response is MusicStore.Response.Ok) {
+            binding.homeFab.show()
+            binding.homeLoadingContainer.visibility = View.INVISIBLE
+            binding.homePager.visibility = View.VISIBLE
+        } else {
+            binding.homeFab.hide()
+            binding.homePager.visibility = View.INVISIBLE
+            binding.homeLoadingContainer.visibility = View.VISIBLE
+
+            logD("Received non-ok response $response")
+
+            when (response) {
+                is MusicStore.Response.Ok -> error("Unreachable")
+                is MusicStore.Response.Err -> {
+                    logD("Received Response.Err")
+                    binding.homeLoadingProgress.visibility = View.INVISIBLE
+                    binding.homeLoadingStatus.textSafe = getString(R.string.err_load_failed)
+                    binding.homeLoadingAction.apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.reloadMusic(requireContext()) }
+                    }
+                }
+                is MusicStore.Response.NoMusic -> {
+                    binding.homeLoadingProgress.visibility = View.INVISIBLE
+                    binding.homeLoadingStatus.textSafe = getString(R.string.err_no_music)
+                    binding.homeLoadingAction.apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.lbl_retry)
+                        setOnClickListener { musicModel.reloadMusic(requireContext()) }
+                    }
+                }
+                is MusicStore.Response.NoPerms -> {
+                    binding.homeLoadingProgress.visibility = View.INVISIBLE
+                    binding.homeLoadingStatus.textSafe = getString(R.string.err_no_perms)
+                    binding.homeLoadingAction.apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.lbl_grant)
+                        setOnClickListener {
+                            permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
+                    }
+                }
+                null -> {
+                    binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
+                    binding.homeLoadingAction.visibility = View.INVISIBLE
+                    binding.homeLoadingProgress.visibility = View.VISIBLE
+                }
+            }
         }
     }
 

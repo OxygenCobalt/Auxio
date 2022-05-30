@@ -90,9 +90,7 @@ class PlaybackStateManager private constructor() {
 
     private val callbacks = mutableListOf<Callback>()
 
-    /**
-     * Add a callback to this instance. Make sure to remove it when done.
-     */
+    /** Add a callback to this instance. Make sure to remove it when done. */
     fun addCallback(callback: Callback) {
         if (isInitialized) {
             callback.onNewPlayback(index, queue, parent)

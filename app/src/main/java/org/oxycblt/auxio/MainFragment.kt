@@ -17,28 +17,23 @@
  
 package org.oxycblt.auxio
 
-import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.util.logD
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -86,11 +81,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         // TODO: Move this to a service [automatic rescanning]
         musicModel.loadMusic(requireContext())
 
-        // Handle the music loader response.
-        musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
-            handleLoaderResponse(response, permLauncher)
-        }
-
         navModel.mainNavigationAction.observe(viewLifecycleOwner, ::handleMainNavigation)
         navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleExploreNavigation)
 
@@ -105,44 +95,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     override fun onPause() {
         super.onPause()
         callback?.isEnabled = false
-    }
-
-    private fun handleLoaderResponse(
-        response: MusicStore.Response?,
-        permLauncher: ActivityResultLauncher<String>
-    ) {
-        val binding = requireBinding()
-
-        // Handle any error cases, showing a useful message.
-        when (response) {
-            is MusicStore.Response.Err -> {
-                logD("Received Response.Err")
-                Snackbar.make(binding.root, R.string.err_load_failed, Snackbar.LENGTH_INDEFINITE)
-                    .apply {
-                        setAction(R.string.lbl_retry) { musicModel.reloadMusic(context) }
-                        show()
-                    }
-            }
-            is MusicStore.Response.NoMusic -> {
-                logD("Received Response.NoMusic")
-                Snackbar.make(binding.root, R.string.err_no_music, Snackbar.LENGTH_INDEFINITE)
-                    .apply {
-                        setAction(R.string.lbl_retry) { musicModel.reloadMusic(context) }
-                        show()
-                    }
-            }
-            is MusicStore.Response.NoPerms -> {
-                logD("Received Response.NoPerms")
-                Snackbar.make(binding.root, R.string.err_no_perms, Snackbar.LENGTH_INDEFINITE)
-                    .apply {
-                        setAction(R.string.lbl_grant) {
-                            permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        }
-                        show()
-                    }
-            }
-            else -> {}
-        }
     }
 
     private fun handleMainNavigation(action: MainNavigationAction?) {
