@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.music.Album
@@ -49,6 +50,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.requireAttached
 
 /**
@@ -107,9 +109,9 @@ class SearchFragment :
 
         // --- VIEWMODEL SETUP ---
 
-        searchModel.searchResults.observe(viewLifecycleOwner, ::updateResults)
-        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
-        musicModel.loaderResponse.observe(viewLifecycleOwner, ::handleLoaderResponse)
+        launch { searchModel.searchResults.collect(::updateResults) }
+        launch { musicModel.response.collect(::handleLoaderResponse) }
+        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
@@ -144,10 +146,6 @@ class SearchFragment :
     }
 
     private fun updateResults(results: List<Item>) {
-        if (isDetached) {
-            error("Fragment not attached to activity")
-        }
-
         val binding = requireBinding()
 
         searchAdapter.data.submitList(results.toMutableList()) {

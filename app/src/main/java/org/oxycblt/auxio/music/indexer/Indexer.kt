@@ -191,12 +191,16 @@ object Indexer {
         return artists
     }
 
-    /** Build genres and link them to their particular songs. */
+    /**
+     * Group up songs into genres. This is a relatively simple step compared to the other library
+     * steps, as there is no demand to deduplicate genres by a lowercase name.
+     */
     private fun buildGenres(songs: List<Song>): List<Genre> {
         val genres = mutableListOf<Genre>()
-        val songsByGenre = songs.groupBy { it._genreName?.hashCode() }
+        val songsByGenre = songs.groupBy { it._genreGroupingId }
 
         for (entry in songsByGenre) {
+            // The first song fill suffice for template metadata.
             val templateSong = entry.value[0]
             genres.add(Genre(rawName = templateSong._genreName, songs = entry.value))
         }
@@ -213,11 +217,5 @@ object Indexer {
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
         fun loadSongs(context: Context, cursor: Cursor): Collection<Song>
-    }
-
-    sealed class Event {
-        object Query : Event()
-        object LoadSongs : Event()
-        object BuildLibrary : Event()
     }
 }

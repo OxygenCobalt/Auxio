@@ -31,9 +31,14 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 
 /**
@@ -146,6 +151,18 @@ val @receiver:ColorRes Int.stateList
 
 /** Require the fragment is attached to an activity. */
 fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from activity" }
+
+/**
+ * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a
+ * shortcut intended to correctly launch a co-routine on a fragment in a way that won't cause
+ * miscellaneous coroutine insanity.
+ */
+fun Fragment.launch(
+    state: Lifecycle.State = Lifecycle.State.STARTED,
+    block: suspend CoroutineScope.() -> Unit
+) {
+    viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
+}
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned. Will

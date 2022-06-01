@@ -28,12 +28,14 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.flow.collect
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.systemBarInsetsCompat
@@ -61,24 +63,37 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
-        homeModel.songs.observe(viewLifecycleOwner) { songs ->
-            binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
-            binding.aboutTotalDuration.textSafe =
-                getString(
-                    R.string.fmt_total_duration,
-                    songs.sumOf { it.durationSecs }.formatDuration(false))
+        launch {
+            homeModel.songs.collect { songs ->
+                binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
+                binding.aboutTotalDuration.textSafe =
+                    getString(
+                        R.string.fmt_total_duration,
+                        getString(
+                            R.string.fmt_total_duration,
+                            songs.sumOf { it.durationSecs }.formatDuration(false)))
+            }
         }
 
-        homeModel.albums.observe(viewLifecycleOwner) { albums ->
-            binding.aboutAlbumCount.textSafe = getString(R.string.fmt_albums_loaded, albums.size)
+        launch {
+            homeModel.albums.collect { albums ->
+                binding.aboutAlbumCount.textSafe =
+                    getString(R.string.fmt_albums_loaded, albums.size)
+            }
         }
 
-        homeModel.artists.observe(viewLifecycleOwner) { artists ->
-            binding.aboutArtistCount.textSafe = getString(R.string.fmt_artists_loaded, artists.size)
+        launch {
+            homeModel.artists.collect { artists ->
+                binding.aboutArtistCount.textSafe =
+                    getString(R.string.fmt_artists_loaded, artists.size)
+            }
         }
 
-        homeModel.genres.observe(viewLifecycleOwner) { genres ->
-            binding.aboutGenreCount.textSafe = getString(R.string.fmt_genres_loaded, genres.size)
+        launch {
+            homeModel.genres.collect { genres ->
+                binding.aboutGenreCount.textSafe =
+                    getString(R.string.fmt_genres_loaded, genres.size)
+            }
         }
     }
 

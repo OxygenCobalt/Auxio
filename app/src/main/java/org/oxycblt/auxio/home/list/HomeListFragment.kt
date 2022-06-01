@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
@@ -40,8 +39,6 @@ abstract class HomeListFragment<T : Item> :
     MenuItemListener,
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.OnFastScrollListener {
-    abstract fun setupRecycler(recycler: RecyclerView)
-
     protected val playbackModel: PlaybackViewModel by activityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
     protected val homeModel: HomeViewModel by activityViewModels()
@@ -50,7 +47,6 @@ abstract class HomeListFragment<T : Item> :
         FragmentHomeListBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
-        setupRecycler(binding.homeRecycler)
         binding.homeRecycler.popupProvider = this
         binding.homeRecycler.listener = this
     }

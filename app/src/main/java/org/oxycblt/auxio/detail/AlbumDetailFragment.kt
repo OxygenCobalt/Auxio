@@ -25,6 +25,7 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
@@ -39,6 +40,7 @@ import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.canScroll
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
@@ -66,9 +68,9 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
         // -- VIEWMODEL SETUP ---
 
-        detailModel.albumData.observe(viewLifecycleOwner, detailAdapter.data::submitList)
-        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
-        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+        launch { detailModel.albumData.collect(detailAdapter.data::submitList) }
+        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
+        launch { playbackModel.song.collect(::updateSong) }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

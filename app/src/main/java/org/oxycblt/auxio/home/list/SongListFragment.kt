@@ -17,9 +17,11 @@
  
 package org.oxycblt.auxio.home.list
 
+import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
@@ -30,6 +32,7 @@ import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -39,20 +42,22 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class SongListFragment : HomeListFragment<Song>() {
     private val homeAdapter = SongsAdapter(this)
 
-    override fun setupRecycler(recycler: RecyclerView) {
-        recycler.apply {
+    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        binding.homeRecycler.apply {
             id = R.id.home_song_list
             adapter = homeAdapter
         }
 
-        homeModel.songs.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
+        launch { homeModel.songs.collect(homeAdapter.data::submitList) }
     }
 
     override fun getPopup(pos: Int): String? {
         val song = unlikelyToBeNull(homeModel.songs.value)[pos]
 
         // Change how we display the popup depending on the mode.
-        // We don't use the more correct resolve(Model)Name here, as sorts are largely
+        // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
             // Name -> Use name

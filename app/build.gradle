@@ -22,7 +22,7 @@ android {
     compileSdkVersion 32
     buildToolsVersion "32.0.0"
 
-    // ExoPlayer needs Java 8 to compile.
+    // ExoPlayer, AndroidX, and Material Components all need Java 8 to compile.
 
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
@@ -76,6 +76,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     // Navigation
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
@@ -91,7 +92,7 @@ dependencies {
     // --- THIRD PARTY ---
 
     // Exoplayer
-    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE FLAC EXTENSION.
+    // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
     implementation "com.google.android.exoplayer:exoplayer-core:2.17.1"
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
@@ -109,7 +110,7 @@ dependencies {
 spotless {
     kotlin {
         target "src/**/*.kt"
-        ktfmt('0.37').dropboxStyle()
+        ktfmt("0.37").dropboxStyle()
         licenseHeaderFile("NOTICE")
     }
 }

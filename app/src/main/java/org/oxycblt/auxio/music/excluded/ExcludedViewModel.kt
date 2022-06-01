@@ -18,12 +18,12 @@
 package org.oxycblt.auxio.music.excluded
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.logD
@@ -37,8 +37,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * TODO: Unify with MusicViewModel
  */
 class ExcludedViewModel(private val excludedDatabase: ExcludedDatabase) : ViewModel() {
-    private val _paths = MutableLiveData(mutableListOf<String>())
-    val paths: LiveData<MutableList<String>>
+    private val _paths = MutableStateFlow(mutableListOf<String>())
+    val paths: StateFlow<MutableList<String>>
         get() = _paths
 
     var isModified: Boolean = false

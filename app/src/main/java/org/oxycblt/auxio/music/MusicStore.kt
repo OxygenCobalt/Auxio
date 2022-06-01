@@ -74,7 +74,7 @@ class MusicStore private constructor() {
         return newResponse
     }
 
-    private suspend fun loadImpl(context: Context): Response {
+    private fun loadImpl(context: Context): Response {
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
@@ -110,19 +110,18 @@ class MusicStore private constructor() {
         val albums: List<Album>,
         val songs: List<Song>
     ) {
-        /** Find a song in a faster manner using an ID for its album as well. */
-        fun findSongFast(songId: Long, albumId: Long): Song? {
-            return albums.find { it.id == albumId }?.songs?.find { it.id == songId }
-        }
+        /** Find a song in a faster manner by using the album ID as well.. */
+        fun findSongFast(songId: Long, albumId: Long) =
+            albums.find { it.id == albumId }.run { songs.find { it.id == songId } }
 
         /**
          * Find a song for a [uri], this is similar to [findSongFast], but with some kind of content
          * uri.
          * @return The corresponding [Song] for this [uri], null if there isn't one.
          */
-        fun findSongForUri(context: Context, uri: Uri): Song? {
-            return context.contentResolverSafe.useQuery(
-                uri, arrayOf(OpenableColumns.DISPLAY_NAME)) { cursor ->
+        fun findSongForUri(context: Context, uri: Uri) =
+            context.contentResolverSafe.useQuery(uri, arrayOf(OpenableColumns.DISPLAY_NAME)) {
+                cursor ->
                 cursor.moveToFirst()
 
                 val displayName =
@@ -130,16 +129,11 @@ class MusicStore private constructor() {
 
                 songs.find { it.fileName == displayName }
             }
-        }
     }
 
-    /**
-     * A response that [MusicStore] returns when loading music. And before you ask, yes, I do like
-     * rust.
-     */
     sealed class Response {
-        class Ok(val library: Library) : Response()
-        class Err(throwable: Throwable) : Response()
+        data class Ok(val library: Library) : Response()
+        data class Err(val throwable: Throwable) : Response()
         object NoMusic : Response()
         object NoPerms : Response()
     }

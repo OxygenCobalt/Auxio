@@ -33,6 +33,7 @@ import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.hardRestart
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
@@ -92,7 +93,7 @@ class ExcludedDialog :
 
         // --- VIEWMODEL SETUP ---
 
-        excludedModel.paths.observe(viewLifecycleOwner, ::updatePaths)
+        launch { excludedModel.paths.collect(::updatePaths) }
 
         logD("Dialog created")
     }

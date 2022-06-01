@@ -18,42 +18,38 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
 /** A [ViewModel] that represents the current music indexing state. */
-class MusicViewModel : ViewModel(), MusicStore.Callback {
+class MusicViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
 
-    private val _loaderResponse = MutableLiveData<MusicStore.Response?>(null)
-    val loaderResponse: LiveData<MusicStore.Response?> = _loaderResponse
+    private val _response = MutableStateFlow<MusicStore.Response?>(null)
+    val response: StateFlow<MusicStore.Response?> = _response
 
     private var isBusy = false
-
-    init {
-        musicStore.addCallback(this)
-    }
 
     /**
      * Initiate the loading process. This is done here since HomeFragment will be the first fragment
      * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
-        if (_loaderResponse.value != null || isBusy) {
+        if (_response.value != null || isBusy) {
             logD("Loader is busy/already completed, not reloading")
             return
         }
 
         isBusy = true
-        _loaderResponse.value = null
+        _response.value = null
 
         viewModelScope.launch {
             val result = musicStore.load(context)
-            _loaderResponse.value = result
+            _response.value = result
             isBusy = false
         }
     }
@@ -64,16 +60,7 @@ class MusicViewModel : ViewModel(), MusicStore.Callback {
      */
     fun reloadMusic(context: Context) {
         logD("Reloading music library")
-        _loaderResponse.value = null
+        _response.value = null
         loadMusic(context)
-    }
-
-    override fun onMusicUpdate(response: MusicStore.Response) {
-        _loaderResponse.value = response
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        musicStore.removeCallback(this)
     }
 }

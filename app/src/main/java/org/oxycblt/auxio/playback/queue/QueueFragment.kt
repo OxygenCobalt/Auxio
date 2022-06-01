@@ -28,6 +28,7 @@ import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.requireAttached
 
 /**
@@ -52,7 +53,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         // --- VIEWMODEL SETUP ----
 
-        playbackModel.nextUp.observe(viewLifecycleOwner, ::updateQueue)
+        launch { playbackModel.nextUp.collect(::updateQueue) }
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {

@@ -19,11 +19,11 @@ package org.oxycblt.auxio.search
 
 import android.content.Context
 import androidx.annotation.IdRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.text.Normalizer
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Music
@@ -43,15 +43,16 @@ class SearchViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val _searchResults = MutableLiveData(listOf<Item>())
-    private var _filterMode: DisplayMode? = null
-    private var lastQuery: String? = null
-
+    private val _searchResults = MutableStateFlow(listOf<Item>())
     /** Current search results from the last [search] call. */
-    val searchResults: LiveData<List<Item>>
+    val searchResults: StateFlow<List<Item>>
         get() = _searchResults
+
+    private var _filterMode: DisplayMode? = null
     val filterMode: DisplayMode?
         get() = _filterMode
+
+    private var lastQuery: String? = null
 
     init {
         _filterMode = settingsManager.searchFilterMode

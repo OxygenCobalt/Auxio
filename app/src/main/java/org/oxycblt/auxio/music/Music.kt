@@ -138,6 +138,10 @@ data class Song(
         }
 
     /** Internal field. Do not use. */
+    val _genreGroupingId: Long
+        get() = (_genreName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
+
+    /** Internal field. Do not use. */
     val _artistGroupingName: String?
         get() = _albumArtistName ?: _artistName
 

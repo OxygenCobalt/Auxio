@@ -31,7 +31,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,8 +39,7 @@
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             android:paddingStart="@dimen/spacing_medium"
-            android:paddingEnd="@dimen/spacing_medium"
-            tools:visibility="invisible">
+            android:paddingEnd="@dimen/spacing_medium">
 
             <TextView
                 android:id="@+id/home_loading_status"
@@ -70,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lbl_retry"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/home_loading_status" />
 

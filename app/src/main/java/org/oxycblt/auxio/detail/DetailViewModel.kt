@@ -17,9 +17,9 @@
  
 package org.oxycblt.auxio.detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.recycler.DiscHeader
 import org.oxycblt.auxio.detail.recycler.SortHeader
@@ -45,12 +45,12 @@ class DetailViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val _currentAlbum = MutableLiveData<Album?>()
-    val currentAlbum: LiveData<Album?>
+    private val _currentAlbum = MutableStateFlow<Album?>(null)
+    val currentAlbum: StateFlow<Album?>
         get() = _currentAlbum
 
-    private val _albumData = MutableLiveData(listOf<Item>())
-    val albumData: LiveData<List<Item>>
+    private val _albumData = MutableStateFlow(listOf<Item>())
+    val albumData: StateFlow<List<Item>>
         get() = _albumData
 
     var albumSort: Sort
@@ -60,12 +60,12 @@ class DetailViewModel : ViewModel() {
             currentAlbum.value?.let(::refreshAlbumData)
         }
 
-    private val _currentArtist = MutableLiveData<Artist?>()
-    val currentArtist: LiveData<Artist?>
+    private val _currentArtist = MutableStateFlow<Artist?>(null)
+    val currentArtist: StateFlow<Artist?>
         get() = _currentArtist
 
-    private val _artistData = MutableLiveData(listOf<Item>())
-    val artistData: LiveData<List<Item>> = _artistData
+    private val _artistData = MutableStateFlow(listOf<Item>())
+    val artistData: StateFlow<List<Item>> = _artistData
 
     var artistSort: Sort
         get() = settingsManager.detailArtistSort
@@ -74,12 +74,12 @@ class DetailViewModel : ViewModel() {
             currentArtist.value?.let(::refreshArtistData)
         }
 
-    private val _currentGenre = MutableLiveData<Genre?>()
-    val currentGenre: LiveData<Genre?>
+    private val _currentGenre = MutableStateFlow<Genre?>(null)
+    val currentGenre: StateFlow<Genre?>
         get() = _currentGenre
 
-    private val _genreData = MutableLiveData(listOf<Item>())
-    val genreData: LiveData<List<Item>> = _genreData
+    private val _genreData = MutableStateFlow(listOf<Item>())
+    val genreData: StateFlow<List<Item>> = _genreData
 
     var genreSort: Sort
         get() = settingsManager.detailGenreSort

@@ -28,6 +28,7 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
@@ -78,10 +79,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // -- VIEWMODEL SETUP ---
 
-        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
-        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updateIsPlaying)
-
-        playbackModel.positionSecs.observe(viewLifecycleOwner, ::updatePosition)
+        launch { playbackModel.song.collect(::updateSong) }
+        launch { playbackModel.isPlaying.collect(::updateIsPlaying) }
+        launch { playbackModel.positionSecs.collect(::updatePosition) }
     }
 
     private fun updateSong(song: Song?) {

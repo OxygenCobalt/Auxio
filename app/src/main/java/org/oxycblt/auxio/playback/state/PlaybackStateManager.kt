@@ -331,8 +331,6 @@ class PlaybackStateManager private constructor() {
 
         logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
 
-        // Get off the IO coroutine since it will cause LiveData updates to throw an exception
-
         if (state != null) {
             index = state.index
             parent = state.parent

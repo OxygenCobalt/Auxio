@@ -19,10 +19,10 @@ package org.oxycblt.auxio.playback
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -52,32 +52,32 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     private var pendingDelayedAction: DelayedActionImpl? = null
 
-    private val _song = MutableLiveData<Song?>()
+    private val _song = MutableStateFlow<Song?>(null)
     /** The current song. */
-    val song: LiveData<Song?>
+    val song: StateFlow<Song?>
         get() = _song
-    private val _parent = MutableLiveData<MusicParent?>()
+    private val _parent = MutableStateFlow<MusicParent?>(null)
     /** The current model that is being played from, such as an [Album] or [Artist] */
-    val parent: LiveData<MusicParent?>
+    val parent: StateFlow<MusicParent?>
         get() = _parent
-    private val _isPlaying = MutableLiveData(false)
-    val isPlaying: LiveData<Boolean>
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
-    private val _positionSecs = MutableLiveData(0L)
+    private val _positionSecs = MutableStateFlow(0L)
     /** The current playback position, in seconds */
-    val positionSecs: LiveData<Long>
+    val positionSecs: StateFlow<Long>
         get() = _positionSecs
-    private val _repeatMode = MutableLiveData(RepeatMode.NONE)
+    private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
     /** The current repeat mode, see [RepeatMode] for more information */
-    val repeatMode: LiveData<RepeatMode>
+    val repeatMode: StateFlow<RepeatMode>
         get() = _repeatMode
-    private val _isShuffled = MutableLiveData(false)
-    val isShuffled: LiveData<Boolean>
+    private val _isShuffled = MutableStateFlow(false)
+    val isShuffled: StateFlow<Boolean>
         get() = _isShuffled
 
-    private val _nextUp = MutableLiveData(listOf<Song>())
+    private val _nextUp = MutableStateFlow(listOf<Song>())
     /** The queue, without the previous items. */
-    val nextUp: LiveData<List<Song>>
+    val nextUp: StateFlow<List<Song>>
         get() = _nextUp
 
     init {

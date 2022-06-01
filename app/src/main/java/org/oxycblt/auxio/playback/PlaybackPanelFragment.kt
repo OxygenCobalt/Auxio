@@ -32,6 +32,7 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
@@ -52,6 +53,8 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
+    private var queueItem: MenuItem? = null
+
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
 
@@ -66,8 +69,6 @@ class PlaybackPanelFragment :
             binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
-
-        val queueItem: MenuItem
 
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.COLLAPSE) }
@@ -105,18 +106,13 @@ class PlaybackPanelFragment :
 
         // --- VIEWMODEL SETUP --
 
-        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
-        playbackModel.parent.observe(viewLifecycleOwner, ::updateParent)
-        playbackModel.positionSecs.observe(viewLifecycleOwner, ::updatePosition)
-        playbackModel.repeatMode.observe(viewLifecycleOwner, ::updateRepeat)
-        playbackModel.isPlaying.observe(viewLifecycleOwner, ::updatePlaying)
-        playbackModel.isShuffled.observe(viewLifecycleOwner, ::updateShuffled)
-
-        playbackModel.nextUp.observe(viewLifecycleOwner) { nextUp ->
-            // The queue icon uses a selector that will automatically tint the icon as active or
-            // inactive. We just need to set the flag.
-            queueItem.isEnabled = nextUp.isNotEmpty()
-        }
+        launch { playbackModel.song.collect(::updateSong) }
+        launch { playbackModel.parent.collect(::updateParent) }
+        launch { playbackModel.positionSecs.collect(::updatePosition) }
+        launch { playbackModel.repeatMode.collect(::updateRepeat) }
+        launch { playbackModel.isPlaying.collect(::updatePlaying) }
+        launch { playbackModel.isShuffled.collect(::updateShuffled) }
+        launch { playbackModel.nextUp.collect(::updateNextUp) }
 
         logD("Fragment Created")
     }
@@ -175,5 +171,10 @@ class PlaybackPanelFragment :
 
     private fun updateShuffled(isShuffled: Boolean) {
         requireBinding().playbackShuffle.isActivated = isShuffled
+    }
+
+    private fun updateNextUp(nextUp: List<Song>) {
+        requireNotNull(queueItem) { "Cannot update next up in non-view state" }.isEnabled =
+            nextUp.isNotEmpty()
     }
 }

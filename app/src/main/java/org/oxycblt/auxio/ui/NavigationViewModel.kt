@@ -17,9 +17,9 @@
  
 package org.oxycblt.auxio.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Music
 
 /**
@@ -27,17 +27,17 @@ import org.oxycblt.auxio.music.Music
  * @author OxygenCobalt
  */
 class NavigationViewModel : ViewModel() {
-    private val _mainNavigationAction = MutableLiveData<MainNavigationAction?>()
+    private val _mainNavigationAction = MutableStateFlow<MainNavigationAction?>(null)
     /** Flag for main fragment navigation. Intended for MainFragment use only. */
-    val mainNavigationAction: LiveData<MainNavigationAction?>
+    val mainNavigationAction: StateFlow<MainNavigationAction?>
         get() = _mainNavigationAction
 
-    private val _exploreNavigationItem = MutableLiveData<Music?>()
+    private val _exploreNavigationItem = MutableStateFlow<Music?>(null)
     /**
      * Flag for navigation within the explore fragments. Observe this to coordinate navigation to an
      * item's UI.
      */
-    val exploreNavigationItem: LiveData<Music?>
+    val exploreNavigationItem: StateFlow<Music?>
         get() = _exploreNavigationItem
 
     /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */

@@ -17,9 +17,11 @@
  
 package org.oxycblt.auxio.home.list
 
+import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.ArtistViewHolder
@@ -31,6 +33,7 @@ import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.formatDuration
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -40,13 +43,15 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class ArtistListFragment : HomeListFragment<Artist>() {
     private val homeAdapter = ArtistAdapter(this)
 
-    override fun setupRecycler(recycler: RecyclerView) {
-        recycler.apply {
+    override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
+        super.onBindingCreated(binding, savedInstanceState)
+
+        binding.homeRecycler.apply {
             id = R.id.home_artist_list
             adapter = homeAdapter
         }
 
-        homeModel.artists.observe(viewLifecycleOwner) { list -> homeAdapter.data.submitList(list) }
+        launch { homeModel.artists.collect(homeAdapter.data::submitList) }
     }
 
     override fun getPopup(pos: Int): String? {

@@ -22,10 +22,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.flow.collect
 import org.oxycblt.auxio.databinding.FragmentMainBinding
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicViewModel
@@ -34,6 +34,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.launch
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -50,12 +51,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
     override fun onBindingCreated(binding: FragmentMainBinding, savedInstanceState: Bundle?) {
         // --- UI SETUP ---
-        // Build the permission launcher here as you can only do it in onCreateView/onCreate
-        val permLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                musicModel.reloadMusic(requireContext())
-            }
-
         requireActivity()
             .onBackPressedDispatcher.addCallback(
                 viewLifecycleOwner, DynamicBackPressedCallback().also { callback = it })
@@ -81,10 +76,9 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         // TODO: Move this to a service [automatic rescanning]
         musicModel.loadMusic(requireContext())
 
-        navModel.mainNavigationAction.observe(viewLifecycleOwner, ::handleMainNavigation)
-        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleExploreNavigation)
-
-        playbackModel.song.observe(viewLifecycleOwner, ::updateSong)
+        launch { navModel.mainNavigationAction.collect(::handleMainNavigation) }
+        launch { navModel.exploreNavigationItem.collect(::handleExploreNavigation) }
+        launch { playbackModel.song.collect(::updateSong) }
     }
 
     override fun onResume() {

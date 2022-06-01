@@ -91,6 +91,8 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             // Spin until all tasks are complete
         }
 
+        // TODO: Stabilize sorting order
+
         return songs
     }
 
@@ -124,9 +126,8 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             // We only support two formats as it stands:
             // - ID3v2 text frames
             // - Vorbis comments
-            // This should be enough to cover the vast, vast majority of audio formats.
-            // It is also assumed that a file only has either ID3v2 text frames or vorbis
-            // comments.
+            // TODO: Formats like flac can have both ID3v2 and OGG tags, so we might want to split
+            //  up this logic.
             when (val tag = metadata.get(i)) {
                 is TextInformationFrame ->
                     if (tag.value.isNotEmpty()) {

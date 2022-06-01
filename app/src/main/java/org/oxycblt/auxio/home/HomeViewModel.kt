@@ -17,9 +17,9 @@
  
 package org.oxycblt.auxio.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -40,20 +40,20 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
-    private val _songs = MutableLiveData(listOf<Song>())
-    val songs: LiveData<List<Song>>
+    private val _songs = MutableStateFlow(listOf<Song>())
+    val songs: StateFlow<List<Song>>
         get() = _songs
 
-    private val _albums = MutableLiveData(listOf<Album>())
-    val albums: LiveData<List<Album>>
+    private val _albums = MutableStateFlow(listOf<Album>())
+    val albums: StateFlow<List<Album>>
         get() = _albums
 
-    private val _artists = MutableLiveData(listOf<Artist>())
-    val artists: LiveData<List<Artist>>
+    private val _artists = MutableStateFlow(listOf<Artist>())
+    val artists: MutableStateFlow<List<Artist>>
         get() = _artists
 
-    private val _genres = MutableLiveData(listOf<Genre>())
-    val genres: LiveData<List<Genre>>
+    private val _genres = MutableStateFlow(listOf<Genre>())
+    val genres: StateFlow<List<Genre>>
         get() = _genres
 
     var tabs: List<DisplayMode> = visibleTabs
@@ -63,18 +63,18 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     private val visibleTabs: List<DisplayMode>
         get() = settingsManager.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
-    private val _currentTab = MutableLiveData(tabs[0])
-    val currentTab: LiveData<DisplayMode> = _currentTab
+    private val _currentTab = MutableStateFlow(tabs[0])
+    val currentTab: StateFlow<DisplayMode> = _currentTab
 
     /**
      * Marker to recreate all library tabs, usually initiated by a settings change. When this flag
      * is set, all tabs (and their respective viewpager fragments) will be recreated from scratch.
      */
-    private val _shouldRecreateTabs = MutableLiveData(false)
-    val recreateTabs: LiveData<Boolean> = _shouldRecreateTabs
+    private val _shouldRecreateTabs = MutableStateFlow(false)
+    val recreateTabs: StateFlow<Boolean> = _shouldRecreateTabs
 
-    private val _isFastScrolling = MutableLiveData(false)
-    val isFastScrolling: LiveData<Boolean> = _isFastScrolling
+    private val _isFastScrolling = MutableStateFlow(false)
+    val isFastScrolling: StateFlow<Boolean> = _isFastScrolling
 
     init {
         musicStore.addCallback(this)
@@ -121,7 +121,6 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
                 settingsManager.libGenreSort = sort
                 _genres.value = sort.genres(unlikelyToBeNull(_genres.value))
             }
-            else -> {}
         }
     }
 

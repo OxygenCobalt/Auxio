@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.home.list.AlbumListFragment
@@ -53,6 +54,7 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
@@ -71,13 +73,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val homeModel: HomeViewModel by activityViewModels()
     private val musicModel: MusicViewModel by activityViewModels()
 
+    private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
+    private var sortItem: MenuItem? = null
+
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
-        val sortItem: MenuItem
-
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
-        val permLauncher =
+        storagePermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 musicModel.reloadMusic(requireContext())
             }
@@ -89,8 +92,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         updateTabConfiguration()
 
-        binding.homeLoadingContainer.setOnApplyWindowInsetsListener { v, insets ->
-            v.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+        binding.homeLoadingContainer.setOnApplyWindowInsetsListener { view, insets ->
+            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 
@@ -118,20 +121,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // --- VIEWMODEL SETUP ---
 
-        homeModel.isFastScrolling.observe(viewLifecycleOwner, ::updateFastScrolling)
-        homeModel.currentTab.observe(viewLifecycleOwner) { tab -> updateCurrentTab(sortItem, tab) }
-        homeModel.recreateTabs.observe(viewLifecycleOwner, ::handleRecreateTabs)
-
-        musicModel.loaderResponse.observe(viewLifecycleOwner) { response ->
-            handleLoaderResponse(response, permLauncher)
-        }
-
-        navModel.exploreNavigationItem.observe(viewLifecycleOwner, ::handleNavigation)
+        launch { homeModel.isFastScrolling.collect(::updateFastScrolling) }
+        launch { homeModel.currentTab.collect(::updateCurrentTab) }
+        launch { homeModel.recreateTabs.collect(::handleRecreateTabs) }
+        launch { musicModel.response.collect(::handleLoaderResponse) }
+        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         binding.homeToolbar.setOnMenuItemClickListener(null)
+        storagePermissionLauncher = null
+        sortItem = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -178,7 +179,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // Make sure an update here doesn't mess up the FAB state when it comes to the
         // loader response.
-        if (musicModel.loaderResponse.value !is MusicStore.Response.Ok) {
+        if (musicModel.response.value !is MusicStore.Response.Ok) {
             return
         }
 
@@ -189,21 +190,21 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateCurrentTab(sortItem: MenuItem, tab: DisplayMode) {
+    private fun updateCurrentTab(tab: DisplayMode) {
         // Make sure that we update the scrolling view and allowed menu items whenever
         // the tab changes.
         val binding = requireBinding()
         when (tab) {
             DisplayMode.SHOW_SONGS -> {
-                updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_count }
+                updateSortMenu(tab) { id -> id != R.id.option_sort_count }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_song_list
             }
             DisplayMode.SHOW_ALBUMS -> {
-                updateSortMenu(sortItem, tab) { id -> id != R.id.option_sort_album }
+                updateSortMenu(tab) { id -> id != R.id.option_sort_album }
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_album_list
             }
             DisplayMode.SHOW_ARTISTS -> {
-                updateSortMenu(sortItem, tab) { id ->
+                updateSortMenu(tab) { id ->
                     id == R.id.option_sort_asc ||
                         id == R.id.option_sort_name ||
                         id == R.id.option_sort_count ||
@@ -212,7 +213,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 binding.homeAppbar.liftOnScrollTargetViewId = R.id.home_artist_list
             }
             DisplayMode.SHOW_GENRES -> {
-                updateSortMenu(sortItem, tab) { id ->
+                updateSortMenu(tab) { id ->
                     id == R.id.option_sort_asc ||
                         id == R.id.option_sort_name ||
                         id == R.id.option_sort_count ||
@@ -223,14 +224,13 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun updateSortMenu(
-        item: MenuItem,
-        displayMode: DisplayMode,
-        isVisible: (Int) -> Boolean
-    ) {
+    private fun updateSortMenu(displayMode: DisplayMode, isVisible: (Int) -> Boolean) {
+        val sortItem =
+            requireNotNull(sortItem) { "Cannot update sort menu when view does not exist" }
+
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 
-        for (option in item.subMenu) {
+        for (option in sortItem.subMenu) {
             if (option.itemId == toHighlight.itemId) {
                 option.isChecked = true
             }
@@ -257,10 +257,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoaderResponse(
-        response: MusicStore.Response?,
-        permLauncher: ActivityResultLauncher<String>
-    ) {
+    private fun handleLoaderResponse(response: MusicStore.Response?) {
         val binding = requireBinding()
 
         if (response is MusicStore.Response.Ok) {
@@ -296,13 +293,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     }
                 }
                 is MusicStore.Response.NoPerms -> {
+                    val launcher =
+                        requireNotNull(storagePermissionLauncher) {
+                            "Cannot access permission launcher while in non-view state"
+                        }
+
                     binding.homeLoadingProgress.visibility = View.INVISIBLE
                     binding.homeLoadingStatus.textSafe = getString(R.string.err_no_perms)
                     binding.homeLoadingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_grant)
                         setOnClickListener {
-                            permLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            launcher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                         }
                     }
                 }
