@@ -183,7 +183,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
                 // If the recyclerview can scroll, its certain that it will have to scroll to
                 // correctly center the playing item, so make sure that the Toolbar is lifted in
                 // that case.
-                binding.detailAppbar.isLifted = binding.detailRecycler.canScroll()
+                binding.detailAppbar.isLifted = binding.detailRecycler.canScroll
             }
         }
     }

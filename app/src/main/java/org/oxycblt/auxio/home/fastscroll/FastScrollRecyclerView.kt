@@ -289,7 +289,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     private fun updateScrollbarState() {
-        if (!canScroll() || childCount == 0) {
+        if (!canScroll || childCount == 0) {
             return
         }
 

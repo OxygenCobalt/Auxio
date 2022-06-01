@@ -151,10 +151,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     private var initMotionY = 0f
     private val tRect = Rect()
 
-    /** See [isDragging] */
-    private val dragStateField =
-        ViewDragHelper::class.java.getDeclaredField("mDragState").apply { isAccessible = true }
-
     init {
         setWillNotDraw(false)
     }
@@ -487,7 +483,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // want to vendor ViewDragHelper so I just do reflection instead.
             val state =
                 try {
-                    dragStateField.get(this)
+                    DRAG_STATE_FIELD.get(this)
                 } catch (e: Exception) {
                     ViewDragHelper.STATE_IDLE
                 }
@@ -540,7 +536,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // desynchronizing [reminder that this view also applies the bottom window inset]
             // and we can't apply padding to the whole container layout since that would adjust
             // the size of the panel view. This seems to be the least obtrusive way to do this.
-            lastInsets?.systemBarInsetsCompat?.let { bars ->
+            lastInsets?.let { insets ->
+                val bars = insets.systemBarInsetsCompat
                 val params = layoutParams as MarginLayoutParams
                 val oldTopMargin = params.topMargin
 
@@ -586,10 +583,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         get() = panelState != PanelState.HIDDEN && isEnabled
 
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
-        override fun tryCaptureView(child: View, pointerId: Int): Boolean {
-            // Only capture on a fully expanded panel view
-            return child === containerView && panelOffset >= 0
-        }
+        // Only capture on a fully expanded panel view
+        override fun tryCaptureView(child: View, pointerId: Int) =
+            child === containerView && panelOffset >= 0
 
         override fun onViewDragStateChanged(state: Int) {
             if (state == ViewDragHelper.STATE_IDLE) {
@@ -655,9 +651,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             invalidate()
         }
 
-        override fun getViewVerticalDragRange(child: View): Int {
-            return panelRange
-        }
+        override fun getViewVerticalDragRange(child: View) = panelRange
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
             val collapsedTop = computePanelTopPosition(0f)
@@ -668,7 +662,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     companion object {
         private val INIT_PANEL_STATE = PanelState.HIDDEN
+        private val DRAG_STATE_FIELD =
+            ViewDragHelper::class.java.getDeclaredField("mDragState").apply { isAccessible = true }
+
         private const val MIN_FLING_VEL = 400
-        private const val KEY_PANEL_STATE = BuildConfig.APPLICATION_ID + ".key.panel_state"
+        private const val KEY_PANEL_STATE = BuildConfig.APPLICATION_ID + ".key.PANEL_STATE"
     }
 }

@@ -108,16 +108,21 @@ object Indexer {
 
         // Deduplicate songs to prevent (most) deformed music clones
         songs =
-            songs.distinctBy {
-                it.rawName to
-                    it._albumName to
-                    it._artistName to
-                    it._albumArtistName to
-                    it._genreName to
-                    it.track to
-                    it.disc to
-                    it.durationMs
-            }
+            songs
+                .distinctBy {
+                    it.rawName to
+                        it._albumName to
+                        it._artistName to
+                        it._albumArtistName to
+                        it._genreName to
+                        it.track to
+                        it.disc to
+                        it.durationMs
+                }
+                .toMutableList()
+
+        // Ensure that sorting order is consistent so that grouping is also consistent.
+        Sort.ByName(true).songsInPlace(songs)
 
         logD("Successfully loaded ${songs.size} songs")
 

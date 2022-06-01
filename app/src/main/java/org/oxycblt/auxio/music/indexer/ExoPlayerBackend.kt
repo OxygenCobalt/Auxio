@@ -82,6 +82,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
 
                     runningTasks[index] = task
 
+
                     break
                 }
             }
@@ -90,8 +91,6 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         while (runningTasks.any { it != null }) {
             // Spin until all tasks are complete
         }
-
-        // TODO: Stabilize sorting order
 
         return songs
     }
@@ -122,22 +121,75 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     }
 
     private fun completeAudio(audio: MediaStoreBackend.Audio, metadata: Metadata) {
+        if (metadata.length() == 0) {
+            return
+        }
+
+        // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
+        // of audio formats. Some formats (like FLAC) can contain both ID3v2 and vorbis tags, but
+        // this isn't too big of a deal, as we generally let the "source of truth" for metadata
+        // be the last instance of a particular tag in a file.
         for (i in 0 until metadata.length()) {
-            // We only support two formats as it stands:
-            // - ID3v2 text frames
-            // - Vorbis comments
-            // TODO: Formats like flac can have both ID3v2 and OGG tags, so we might want to split
-            //  up this logic.
-            when (val tag = metadata.get(i)) {
-                is TextInformationFrame ->
-                    if (tag.value.isNotEmpty()) {
-                        handleId3v2TextFrame(tag.id.sanitize(), tag.value.sanitize(), audio)
-                    }
-                is VorbisComment ->
-                    if (tag.value.isNotEmpty()) {
-                        handleVorbisComment(tag.key.sanitize(), tag.value.sanitize(), audio)
-                    }
+            when (val tag = metadata[i]) {
+                is TextInformationFrame -> populateWithId3v2(audio, tag)
+                is VorbisComment -> populateWithVorbis(audio, tag)
             }
+        }
+    }
+
+    private fun populateWithId3v2(audio: MediaStoreBackend.Audio, frame: TextInformationFrame) {
+        val id = frame.id.sanitize()
+        val value = frame.value.sanitize()
+        if (value.isEmpty()) {
+            return
+        }
+
+        when (id) {
+            // Title
+            "TIT2" -> audio.title = value
+            // Track, as NN/TT
+            "TRCK" -> value.no?.let { audio.track = it }
+            // Disc
+            "TPOS" -> value.no?.let { audio.disc = it }
+            // ID3v2.3 year, should be digits
+            "TYER" -> value.toIntOrNull()?.let { audio.year = it }
+            // ID3v2.4 year, parse as ISO-8601
+            "TDRC" -> value.iso8601year?.let { audio.year = it }
+            // Album
+            "TALB" -> audio.album = value
+            // Artist
+            "TPE1" -> audio.artist = value
+            // Album artist
+            "TPE2" -> audio.albumArtist = value
+            // Genre, with the weird ID3v2 rules
+            "TCON" -> audio.genre = value
+        }
+    }
+
+    private fun populateWithVorbis(audio: MediaStoreBackend.Audio, comment: VorbisComment) {
+        val key = comment.key.sanitize()
+        val value = comment.value.sanitize()
+        if (value.isEmpty()) {
+            return
+        }
+
+        when (key) {
+            // Title
+            "TITLE" -> audio.title = value
+            // Track, presumably as NN/TT
+            "TRACKNUMBER" -> value.no?.let { audio.track = it }
+            // Disc, presumably as NN/TT
+            "DISCNUMBER" -> value.no?.let { audio.disc = it }
+            // Date, presumably as ISO-8601
+            "DATE" -> value.iso8601year?.let { audio.year = it }
+            // Album
+            "ALBUM" -> audio.album = value
+            // Artist
+            "ARTIST" -> audio.artist = value
+            // Album artist
+            "ALBUMARTIST" -> audio.albumArtist = value
+            // Genre, assumed that ID3v2 rules will apply here too.
+            "GENRE" -> audio.genre = value
         }
     }
 
@@ -154,35 +206,6 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
      * memory.
      */
     private fun String.sanitize() = String(encodeToByteArray())
-
-    private fun handleId3v2TextFrame(id: String, value: String, audio: MediaStoreBackend.Audio) {
-        // It's assumed that duplicate frames are eliminated by ExoPlayer's metadata parser.
-        when (id) {
-            "TIT2" -> audio.title = value // Title
-            "TRCK" -> value.no?.let { audio.track = it } // Track, as NN/TT
-            "TPOS" -> value.no?.let { audio.disc = it } // Disc, as NN/TT
-            "TYER" -> value.toIntOrNull()?.let { audio.year = it } // ID3v2.3 year, should be digits
-            "TDRC" -> value.iso8601year?.let { audio.year = it } // ID3v2.4 date, parse year field
-            "TALB" -> audio.album = value // Album
-            "TPE1" -> audio.artist = value // Artist
-            "TPE2" -> audio.albumArtist = value // Album artist
-            "TCON" -> audio.genre = value // Genre, with the weird ID3v2 rules
-        }
-    }
-
-    private fun handleVorbisComment(key: String, value: String, audio: MediaStoreBackend.Audio) {
-        // It's assumed that duplicate tags are eliminated by ExoPlayer's metadata parser.
-        when (key) {
-            "TITLE" -> audio.title = value // Title, presumably as NN/TT
-            "TRACKNUMBER" -> value.no?.let { audio.track = it } // Track, presumably as NN/TT
-            "DISCNUMBER" -> value.no?.let { audio.disc = it } // Disc, presumably as NN/TT
-            "DATE" -> value.iso8601year?.let { audio.year = it } // Date, presumably as ISO-8601
-            "ALBUM" -> audio.album = value // Album
-            "ARTIST" -> audio.artist = value // Artist
-            "ALBUMARTIST" -> audio.albumArtist = value // Album artist
-            "GENRE" -> audio.genre = value // Genre, assumed that ID3v2 rules will apply here too.
-        }
-    }
 
     companion object {
         /** The amount of tasks this backend can run efficiently at once. */

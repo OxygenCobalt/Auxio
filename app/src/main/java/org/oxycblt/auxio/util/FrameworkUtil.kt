@@ -58,10 +58,9 @@ fun View.disableDropShadowCompat() {
  * Determines if the point given by [x] and [y] falls within this view.
  * @param minTouchTargetSize The minimum touch size, independent of the view's size (Optional)
  */
-fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0): Boolean {
-    return isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
+fun View.isUnder(x: Float, y: Float, minTouchTargetSize: Int = 0) =
+    isUnderImpl(x, left, right, (parent as View).width, minTouchTargetSize) &&
         isUnderImpl(y, top, bottom, (parent as View).height, minTouchTargetSize)
-}
 
 private fun isUnderImpl(
     position: Float,
@@ -143,14 +142,17 @@ fun RecyclerView.applySpans(shouldBeFullWidth: ((Int) -> Boolean)? = null) {
 }
 
 /** Returns whether a recyclerview can scroll. */
-fun RecyclerView.canScroll(): Boolean = computeVerticalScrollRange() > height
+val RecyclerView.canScroll: Boolean
+    get() = computeVerticalScrollRange() > height
 
 /** Converts this color to a single-color [ColorStateList]. */
 val @receiver:ColorRes Int.stateList
     get() = ColorStateList.valueOf(this)
 
 /** Require the fragment is attached to an activity. */
-fun Fragment.requireAttached() = check(!isDetached) { "Fragment is detached from activity" }
+fun Fragment.requireAttached() {
+    check(!isDetached) { "Fragment is detached from activity" }
+}
 
 /**
  * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a
