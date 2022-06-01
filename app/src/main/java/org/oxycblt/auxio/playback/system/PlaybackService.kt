@@ -147,7 +147,13 @@ class PlaybackService :
         logD("Service created")
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int) = START_NOT_STICKY
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (intent.action == Intent.ACTION_MEDIA_BUTTON) {
+            mediaSessionComponent.handleMediaButtonIntent(intent)
+        }
+
+        return START_NOT_STICKY
+    }
 
     // No binding, service is headless
     // Communicate using PlaybackStateManager, SettingsManager, or Broadcasts instead.

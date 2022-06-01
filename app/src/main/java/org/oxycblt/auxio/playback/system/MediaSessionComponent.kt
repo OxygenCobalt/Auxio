@@ -24,6 +24,7 @@ import android.os.SystemClock
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.Player
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
@@ -55,6 +56,10 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         playbackManager.addCallback(this)
         settingsManager.addCallback(this)
         mediaSession.setCallback(this)
+    }
+
+    fun handleMediaButtonIntent(intent: Intent) {
+        MediaButtonReceiver.handleIntent(mediaSession, intent)
     }
 
     fun release() {
