@@ -23,7 +23,6 @@ import android.os.Build
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
-import kotlin.math.min
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
@@ -103,7 +102,9 @@ class WidgetComponent(private val context: Context) :
                                         .toFloat()))
                             // The output of RoundedCornersTransformation is dimension-dependent,
                             // so scale up the image to the screen size to ensure consistent radii.
-                            .size(min(metrics.widthPixels, metrics.heightPixels))
+                            // Make sure we stop at 1024, so we don't accidentally make a massive
+                            // bitmap on very large screens.
+                            .size(minOf(metrics.widthPixels, metrics.heightPixels, 1024))
                     } else {
                         // Note: Explicitly use the "original" size as without it the scaling logic
                         // in coil breaks down and results in an error.

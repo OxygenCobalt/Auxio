@@ -22,7 +22,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.ArtistDetailAdapter
@@ -136,8 +135,6 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?) {
-        val binding = requireBinding()
-
         if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
             detailAdapter.highlightSong(song)
         } else {

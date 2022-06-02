@@ -49,6 +49,8 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * Default behavior includes the addition of a tonal background, automatic sizing of icons to half
  * of the view size, and corner radius application depending on user preference.
  * @author OxygenCobalt
+ *
+ * TODO: Add an activation indicator to this view too
  */
 class StyledImageView
 @JvmOverloads

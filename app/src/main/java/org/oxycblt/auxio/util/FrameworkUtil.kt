@@ -39,7 +39,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
@@ -170,9 +169,9 @@ fun Fragment.launch(
 }
 
 /**
- * Combines the called flow with the given flow and then collects them both into [block].
- * This is a bit of a dumb hack with [combine], as when we have to combine flows, we often
- * just want to call the same block with both functions, and not do any transformations.
+ * Combines the called flow with the given flow and then collects them both into [block]. This is a
+ * bit of a dumb hack with [combine], as when we have to combine flows, we often just want to call
+ * the same block with both functions, and not do any transformations.
  */
 suspend fun <T1, T2> Flow<T1>.collectWith(other: Flow<T2>, block: suspend (T1, T2) -> Unit) {
     combine(this, other) { a, b -> a to b }.collect { block(it.first, it.second) }

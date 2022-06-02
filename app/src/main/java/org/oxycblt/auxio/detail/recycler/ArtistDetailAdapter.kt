@@ -230,7 +230,7 @@ private constructor(
     }
 
     override fun setHighlighted(isHighlighted: Boolean) {
-        binding.songName.isActivated = isHighlighted
+        binding.root.isActivated = isHighlighted
     }
 
     companion object {

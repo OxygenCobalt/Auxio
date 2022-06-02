@@ -63,8 +63,6 @@ private typealias AnyCreator = BindingViewHolder.Creator<out RecyclerView.ViewHo
  * An adapter for many viewholders tied to many types of data. Deriving this is more complicated
  * than [MonoAdapter], as less overrides can be provided "for free".
  * @author OxygenCobalt
- *
- * TODO: Force impls to handle payload situations.
  */
 abstract class MultiAdapter<L>(private val listener: L) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

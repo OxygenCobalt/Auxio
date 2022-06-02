@@ -19,7 +19,6 @@ package org.oxycblt.auxio.home.list
 
 import android.os.Bundle
 import android.view.View
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Album

@@ -37,7 +37,7 @@ import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
-import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
+import org.oxycblt.auxio.ui.accent.AccentDialog
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -135,8 +135,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 SettingsManager.KEY_ACCENT -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
-                            AccentCustomizeDialog()
-                                .show(childFragmentManager, AccentCustomizeDialog.TAG)
+                            AccentDialog().show(childFragmentManager, AccentDialog.TAG)
                             true
                         }
 

@@ -126,11 +126,10 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     private fun updatePlayback(song: Song?, parent: MusicParent?) {
-        val binding = requireBinding()
         if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
             detailAdapter.highlightSong(song)
         } else {
-            // Clear the ViewHolders if the mode isn't ALL_SONGS
+            // Clear any highlighting if playback is not occuring from this item.
             detailAdapter.highlightSong(null)
         }
     }

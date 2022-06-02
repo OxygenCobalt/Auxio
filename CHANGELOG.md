@@ -12,6 +12,7 @@
 - Fixed issue where items would not highlight properly in the detail UI
 
 #### Dev/Meta
+- New translations [yurical -> Korean, qwerty287 -> German]
 - Switched from `LiveData` to `StateFlow`
 - Use `notifyItemChanged` instead of directly mutating `ViewHolder` instances.
 

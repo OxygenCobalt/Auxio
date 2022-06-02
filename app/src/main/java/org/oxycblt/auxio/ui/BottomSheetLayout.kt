@@ -73,6 +73,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
+ *
+ * TODO: Implement rounded corners on the bar (when rounded covers is enabled)
  */
 class BottomSheetLayout
 @JvmOverloads

@@ -228,9 +228,7 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
     }
 
     override fun setHighlighted(isHighlighted: Boolean) {
-        binding.songName.isActivated = isHighlighted
-        binding.songTrack.isActivated = isHighlighted
-        binding.songTrackBg.isActivated = isHighlighted
+        binding.root.isActivated = isHighlighted
     }
 
     companion object {
