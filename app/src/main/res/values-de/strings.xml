@@ -29,7 +29,7 @@
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
 
     <string name="lbl_queue">Warteschlange</string>
-    <string name="lbl_play_next">Spiele als nächstes</string>
+    <string name="lbl_play_next">Spiele als Nächstes</string>
     <string name="lbl_queue_add">Zur Warteschlange hinzufügen</string>
     <string name="lbl_queue_added">Der Warteschlange hinzugefügt</string>
 
@@ -111,7 +111,7 @@
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Titel %d</string>
 
-    <string name="desc_play_pause">Abspielen oder Pausieren</string>
+    <string name="desc_play_pause">Abspielen oder pausieren</string>
     <string name="desc_skip_prev">Zum letzten Lied springen</string>
     <string name="desc_skip_next">Zum nächsten Lied springen</string>
     <string name="desc_change_repeat">Art der Wiederholung ändern</string>
@@ -163,9 +163,9 @@
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Jahr</string>
     <string name="set_black_mode">Schwarzes Thema</string>
-    <string name="set_black_mode_desc">Ein schwarzes Thema für das dunkle verwenden</string>
+    <string name="set_black_mode_desc">Ein schwarzes Thema für das dunkle Design verwenden</string>
     <string name="set_repeat_pause">Pause bei Wiederholung</string>
-    <string name="set_repeat_pause_desc">Pausiert, wenn ein Song wiederholt wird</string>
+    <string name="set_repeat_pause_desc">Pausieren, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
     <string name="desc_queue_handle">Lied in der Warteschlange verschieben</string>
     <string name="desc_blacklist_delete">Ausgeschlossenes Verzechnis entfernen</string>
@@ -181,18 +181,18 @@
     <string name="desc_tab_handle">Tab versetzen</string>
     <string name="def_artist">Unbekannter Künstler</string>
     <string name="lbl_sort_duration">Dauer</string>
-    <string name="lbl_sort_count">Liedermenge</string>
+    <string name="lbl_sort_count">Anzahl der Lieder</string>
     <string name="lbl_sort_disc">Schallplatte</string>
     <string name="lbl_sort_track">Titel</string>
     <string name="lbl_ok">OK</string>
-    <string name="lbl_library_counts">Bibliotheke-statistiken</string>
+    <string name="lbl_library_counts">Bibliotheksstatistiken</string>
     <string name="set_replay_gain_dynamic">Dynamik</string>
-    <string name="clr_dynamic">Dynamiche farbe</string>
+    <string name="clr_dynamic">Dynamische Farbe</string>
     <string name="fmt_disc_no">Schallplatte %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
     <string name="fmt_albums_loaded">Geladene Alben: %d</string>
     <string name="fmt_artists_loaded">Geladene Künstler: %d</string>
     <string name="fmt_genres_loaded">Geladene Genres: %d</string>
-    <string name="fmt_total_duration">Gesamt Dauer: %s</string>
+    <string name="fmt_total_duration">Gesamtdauer: %s</string>
 </resources>
