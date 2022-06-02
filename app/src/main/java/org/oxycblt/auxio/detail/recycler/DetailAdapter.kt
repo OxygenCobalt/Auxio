@@ -71,10 +71,17 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
             else -> null
         }
 
-    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: L) {
-        when (item) {
-            is Header -> (viewHolder as NewHeaderViewHolder).bind(item, Unit)
-            is SortHeader -> (viewHolder as SortHeaderViewHolder).bind(item, listener)
+    override fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: L,
+        payload: List<Any>
+    ) {
+        if (payload.isEmpty()) {
+            when (item) {
+                is Header -> (viewHolder as NewHeaderViewHolder).bind(item, Unit)
+                is SortHeader -> (viewHolder as SortHeaderViewHolder).bind(item, listener)
+            }
         }
 
         if (viewHolder is Highlightable) {

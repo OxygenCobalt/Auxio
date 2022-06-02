@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.textSafe
 class GenreDetailAdapter(listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
-    private var currentHighlightedSongPos: Int? = null
+    private var currentSongPos: Int? = null
 
     override fun getCreatorFromItem(item: Item) =
         super.getCreatorFromItem(item)
@@ -61,12 +61,19 @@ class GenreDetailAdapter(listener: Listener) :
                 else -> null
             }
 
-    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: Listener) {
-        super.onBind(viewHolder, item, listener)
-        when (item) {
-            is Genre -> (viewHolder as GenreDetailViewHolder).bind(item, listener)
-            is Song -> (viewHolder as GenreSongViewHolder).bind(item, listener)
-            else -> {}
+    override fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: Listener,
+        payload: List<Any>
+    ) {
+        super.onBind(viewHolder, item, listener, payload)
+        if (payload.isEmpty()) {
+            when (item) {
+                is Genre -> (viewHolder as GenreDetailViewHolder).bind(item, listener)
+                is Song -> (viewHolder as GenreSongViewHolder).bind(item, listener)
+                else -> {}
+            }
         }
     }
 
@@ -78,8 +85,8 @@ class GenreDetailAdapter(listener: Listener) :
     fun highlightSong(song: Song?) {
         if (song == currentSong) return
         currentSong = song
-        currentHighlightedSongPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
-        currentHighlightedSongPos = highlightItem(song)
+        currentSongPos?.let { pos -> notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED) }
+        currentSongPos = highlightItem(song)
     }
 
     companion object {

@@ -60,7 +60,8 @@ class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>
     override fun onBind(
         viewHolder: RecyclerView.ViewHolder,
         item: Item,
-        listener: MenuItemListener
+        listener: MenuItemListener,
+        payload: List<Any>
     ) {
         when (item) {
             is Song -> (viewHolder as SongViewHolder).bind(item, listener)

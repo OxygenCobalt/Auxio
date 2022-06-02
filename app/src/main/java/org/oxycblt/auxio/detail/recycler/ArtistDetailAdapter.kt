@@ -45,7 +45,7 @@ import org.oxycblt.auxio.util.textSafe
 class ArtistDetailAdapter(listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentAlbum: Album? = null
-    private var currentHighlightedAlbumPos: Int? = null
+    private var currentAlbumPos: Int? = null
 
     private var currentSong: Song? = null
     private var currentHighlightedSongPos: Int? = null
@@ -68,29 +68,35 @@ class ArtistDetailAdapter(listener: Listener) :
                 else -> null
             }
 
-    override fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: Listener) {
-        super.onBind(viewHolder, item, listener)
-        when (item) {
-            is Artist -> (viewHolder as ArtistDetailViewHolder).bind(item, listener)
-            is Album -> (viewHolder as ArtistAlbumViewHolder).bind(item, listener)
-            is Song -> (viewHolder as ArtistSongViewHolder).bind(item, listener)
-            else -> {}
+    override fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: Listener,
+        payload: List<Any>
+    ) {
+        super.onBind(viewHolder, item, listener, payload)
+        if (payload.isEmpty()) {
+            when (item) {
+                is Artist -> (viewHolder as ArtistDetailViewHolder).bind(item, listener)
+                is Album -> (viewHolder as ArtistAlbumViewHolder).bind(item, listener)
+                is Song -> (viewHolder as ArtistSongViewHolder).bind(item, listener)
+                else -> {}
+            }
         }
     }
 
     override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
         viewHolder.setHighlighted(
             (item is Album && item.id == currentAlbum?.id) ||
-                (item is Song && item.id == currentSong?.id)
-        )
+                (item is Song && item.id == currentSong?.id))
     }
 
     /** Update the current [album] that this adapter should highlight */
     fun highlightAlbum(album: Album?) {
         if (album == currentAlbum) return
         currentAlbum = album
-        currentHighlightedAlbumPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
-        currentHighlightedAlbumPos = highlightItem(album)
+        currentAlbumPos?.let { pos -> notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED) }
+        currentAlbumPos = highlightItem(album)
     }
 
     /** Update the [song] that this adapter should highlight */

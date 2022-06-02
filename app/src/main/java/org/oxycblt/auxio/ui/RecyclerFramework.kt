@@ -37,13 +37,23 @@ abstract class MonoAdapter<T, L, VH : BindingViewHolder<T, L>>(private val liste
     /** The creator instance that all viewholders will be derived from. */
     protected abstract val creator: BindingViewHolder.Creator<VH>
 
+    /**
+     * An optional override to further modify the given [viewHolder]. The normal operation is to
+     * bind the viewholder, with nothing more.
+     */
+    open fun onBind(viewHolder: VH, item: T, listener: L, payload: List<Any>) {
+        viewHolder.bind(item, listener)
+    }
+
     override fun getItemCount(): Int = data.getItemCount()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         creator.create(parent.context)
 
-    override fun onBindViewHolder(viewHolder: VH, position: Int) {
-        viewHolder.bind(data.getItem(position), listener)
+    override fun onBindViewHolder(holder: VH, position: Int) = throw UnsupportedOperationException()
+
+    override fun onBindViewHolder(viewHolder: VH, position: Int, payload: List<Any>) {
+        onBind(viewHolder, data.getItem(position), listener, payload)
     }
 }
 
@@ -53,7 +63,7 @@ private typealias AnyCreator = BindingViewHolder.Creator<out RecyclerView.ViewHo
  * An adapter for many viewholders tied to many types of data. Deriving this is more complicated
  * than [MonoAdapter], as less overrides can be provided "for free".
  * @author OxygenCobalt
- * 
+ *
  * TODO: Force impls to handle payload situations.
  */
 abstract class MultiAdapter<L>(private val listener: L) :
@@ -78,7 +88,12 @@ abstract class MultiAdapter<L>(private val listener: L) :
      * Bind the given viewholder to an item. Casting must be done on the consumer's end due to
      * bounds on [BindingViewHolder].
      */
-    protected abstract fun onBind(viewHolder: RecyclerView.ViewHolder, item: Item, listener: L)
+    protected abstract fun onBind(
+        viewHolder: RecyclerView.ViewHolder,
+        item: Item,
+        listener: L,
+        payload: List<Any>
+    )
 
     override fun getItemCount(): Int = data.getItemCount()
 
@@ -94,8 +109,15 @@ abstract class MultiAdapter<L>(private val listener: L) :
             }
             .create(parent.context)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        onBind(holder, data.getItem(position), listener)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
+        throw UnsupportedOperationException()
+
+    override fun onBindViewHolder(
+        viewHolder: RecyclerView.ViewHolder,
+        position: Int,
+        payload: List<Any>
+    ) {
+        onBind(viewHolder, data.getItem(position), listener, payload)
     }
 }
 

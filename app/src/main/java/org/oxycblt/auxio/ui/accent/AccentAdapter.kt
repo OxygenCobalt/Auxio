@@ -19,7 +19,6 @@ package org.oxycblt.auxio.ui.accent
 
 import android.content.Context
 import androidx.appcompat.widget.TooltipCompat
-import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
 import org.oxycblt.auxio.ui.BackingData
@@ -38,28 +37,28 @@ class AccentAdapter(listener: Listener) :
     MonoAdapter<Accent, AccentAdapter.Listener, AccentViewHolder>(listener) {
     var selectedAccent: Accent? = null
         private set
-    private var selectedViewHolder: AccentViewHolder? = null
 
     override val data = AccentData()
     override val creator = AccentViewHolder.CREATOR
 
-    override fun onBindViewHolder(viewHolder: AccentViewHolder, position: Int) {
-        super.onBindViewHolder(viewHolder, position)
-
-        if (data.getItem(position) == selectedAccent) {
-            selectedViewHolder?.setSelected(false)
-            selectedViewHolder = viewHolder
-            viewHolder.setSelected(true)
+    override fun onBind(
+        viewHolder: AccentViewHolder,
+        item: Accent,
+        listener: Listener,
+        payload: List<Any>
+    ) {
+        if (payload.isEmpty()) {
+            super.onBind(viewHolder, item, listener, payload)
         }
+
+        viewHolder.setSelected(item == selectedAccent)
     }
 
-    fun setSelectedAccent(accent: Accent, recycler: RecyclerView) {
+    fun setSelectedAccent(accent: Accent) {
         if (accent == selectedAccent) return
+        selectedAccent?.let { old -> notifyItemChanged(old.index, PAYLOAD_SELECTION_CHANGED) }
         selectedAccent = accent
-        selectedViewHolder?.setSelected(false)
-        selectedViewHolder =
-            recycler.findViewHolderForAdapterPosition(accent.index) as AccentViewHolder?
-        selectedViewHolder?.setSelected(true)
+        notifyItemChanged(accent.index, PAYLOAD_SELECTION_CHANGED)
     }
 
     interface Listener {
@@ -69,6 +68,10 @@ class AccentAdapter(listener: Listener) :
     class AccentData : BackingData<Accent>() {
         override fun getItem(position: Int) = Accent.from(position)
         override fun getItemCount() = Accent.MAX
+    }
+
+    companion object {
+        val PAYLOAD_SELECTION_CHANGED = Any()
     }
 }
 

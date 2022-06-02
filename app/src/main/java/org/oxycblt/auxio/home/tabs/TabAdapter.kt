@@ -53,6 +53,7 @@ class TabAdapter(listener: Listener) :
 
         fun setTab(at: Int, tab: Tab) {
             tabs[at] = tab
+            adapter.notifyItemChanged(at, PAYLOAD_TAB_CHANGED)
         }
 
         fun moveItems(from: Int, to: Int) {
@@ -63,18 +64,17 @@ class TabAdapter(listener: Listener) :
             adapter.notifyItemMoved(from, to)
         }
     }
+
+    companion object {
+        val PAYLOAD_TAB_CHANGED = Any()
+    }
 }
 
 class TabViewHolder private constructor(private val binding: ItemTabBinding) :
     BindingViewHolder<Tab, TabAdapter.Listener>(binding.root) {
     @SuppressLint("ClickableViewAccessibility")
     override fun bind(item: Tab, listener: TabAdapter.Listener) {
-        binding.root.apply {
-            setOnClickListener {
-                binding.tabIcon.isChecked = !binding.tabIcon.isChecked
-                listener.onVisibilityToggled(item.mode)
-            }
-        }
+        binding.root.apply { setOnClickListener { listener.onVisibilityToggled(item.mode) } }
 
         binding.tabIcon.apply {
             setText(item.mode.string)
