@@ -123,7 +123,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         launch { homeModel.isFastScrolling.collect(::updateFastScrolling) }
         launch { homeModel.currentTab.collect(::updateCurrentTab) }
         launch { homeModel.recreateTabs.collect(::handleRecreateTabs) }
-        launch { musicModel.response.collect(::handleLoaderResponse) }
+        launch { musicModel.loadState.collect(::handleLoadEvent) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
@@ -178,7 +178,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // Make sure an update here doesn't mess up the FAB state when it comes to the
         // loader response.
-        if (musicModel.response.value !is MusicStore.Response.Ok) {
+        val state = musicModel.loadState.value
+        if (!(state is MusicStore.LoadState.Complete && state.response is MusicStore.Response.Ok)) {
             return
         }
 
@@ -256,9 +257,17 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoaderResponse(response: MusicStore.Response?) {
+    private fun handleLoadEvent(state: MusicStore.LoadState?) {
         val binding = requireBinding()
 
+        if (state is MusicStore.LoadState.Complete) {
+            handleLoaderResponse(binding, state.response)
+        } else {
+            handleLoadEvent(binding, state)
+        }
+    }
+
+    private fun handleLoaderResponse(binding: FragmentHomeBinding, response: MusicStore.Response) {
         if (response is MusicStore.Response.Ok) {
             binding.homeFab.show()
             binding.homeLoadingContainer.visibility = View.INVISIBLE
@@ -307,12 +316,27 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                         }
                     }
                 }
-                null -> {
-                    binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
-                    binding.homeLoadingAction.visibility = View.INVISIBLE
-                    binding.homeLoadingProgress.visibility = View.VISIBLE
-                }
             }
+        }
+    }
+
+    private fun handleLoadEvent(binding: FragmentHomeBinding, event: MusicStore.LoadState?) {
+        binding.homePager.visibility = View.INVISIBLE
+        binding.homeLoadingContainer.visibility = View.VISIBLE
+        binding.homeLoadingProgress.visibility = View.VISIBLE
+        binding.homeLoadingAction.visibility = View.INVISIBLE
+
+        if (event is MusicStore.LoadState.Indexing) {
+            binding.homeLoadingStatus.textSafe =
+                getString(R.string.fmt_indexing, event.current, event.total)
+            binding.homeLoadingProgress.apply {
+                isIndeterminate = false
+                max = event.total
+                progress = event.current
+            }
+        } else {
+            binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
+            binding.homeLoadingProgress.isIndeterminate = true
         }
     }
 

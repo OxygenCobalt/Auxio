@@ -46,7 +46,7 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 object Indexer {
-    fun index(context: Context): MusicStore.Library? {
+    fun index(context: Context, callback: MusicStore.LoadCallback): MusicStore.Library? {
         // Establish the backend to use when initially loading songs.
         val mediaStoreBackend =
             when {
@@ -62,7 +62,7 @@ object Indexer {
         //     mediaStoreBackend
         // }
 
-        val songs = buildSongs(context, mediaStoreBackend)
+        val songs = buildSongs(context, mediaStoreBackend, callback)
         if (songs.isEmpty()) {
             return null
         }
@@ -95,17 +95,20 @@ object Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(context: Context, backend: Backend): List<Song> {
-        val queryStart = System.currentTimeMillis()
+    private fun buildSongs(
+        context: Context,
+        backend: Backend,
+        callback: MusicStore.LoadCallback
+    ): List<Song> {
+        val start = System.currentTimeMillis()
+
         var songs =
             backend.query(context).use { cursor ->
-                val loadStart = System.currentTimeMillis()
-                logD("Successfully queried media database in ${loadStart - queryStart}ms")
+                logD(
+                    "Successfully queried media database " +
+                        "in ${System.currentTimeMillis() - start}ms")
 
-                val songs = backend.loadSongs(context, cursor)
-                logD("Successfully loaded songs in ${System.currentTimeMillis() - loadStart}ms")
-
-                songs
+                backend.loadSongs(context, cursor, callback)
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -126,7 +129,7 @@ object Indexer {
         // Ensure that sorting order is consistent so that grouping is also consistent.
         Sort.ByName(true).songsInPlace(songs)
 
-        logD("Successfully loaded ${songs.size} songs")
+        logD("Successfully loaded ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
 
         return songs
     }
@@ -223,6 +226,10 @@ object Indexer {
         fun query(context: Context): Cursor
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
-        fun loadSongs(context: Context, cursor: Cursor): Collection<Song>
+        fun loadSongs(
+            context: Context,
+            cursor: Cursor,
+            callback: MusicStore.LoadCallback
+        ): Collection<Song>
     }
 }

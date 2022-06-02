@@ -4,10 +4,12 @@
 
 #### What's Improved
 - Loading UI is now more clear and easy-to-use
+- Made album/artist/genre grouping order consistent (May change genre images)
 
 #### What's Fixed
 - Fixed crash when seeking to the end of a track as the track changed to a track with a lower duration 
 - Fixed regression where GadgetBridge media controls would no longer work
+- Fixed bug where music would be incorrectly reloaded on a hot restart
 - Fixed issue where the album/artist/genre would not be correctly restored
 - Fixed issue where items would not highlight properly in the detail UI
 

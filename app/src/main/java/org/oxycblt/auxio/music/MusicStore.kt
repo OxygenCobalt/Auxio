@@ -25,6 +25,7 @@ import android.provider.OpenableColumns
 import androidx.core.content.ContextCompat
 import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.indexer.Indexer
 import org.oxycblt.auxio.music.indexer.useQuery
@@ -65,16 +66,22 @@ class MusicStore private constructor() {
     }
 
     /** Load/Sort the entire music library. Should always be ran on a coroutine. */
-    suspend fun load(context: Context): Response {
+    suspend fun load(context: Context, callback: LoadCallback): Response {
         logD("Starting initial music load")
-        val newResponse = withContext(Dispatchers.IO) { loadImpl(context) }.also { response = it }
-        for (callback in callbacks) {
-            callback.onMusicUpdate(newResponse)
+
+        callback.onLoadStateChanged(null)
+        val newResponse =
+            withContext(Dispatchers.IO) { loadImpl(context, callback) }.also { response = it }
+
+        callback.onLoadStateChanged(LoadState.Complete(newResponse))
+        for (responseCallbacks in callbacks) {
+            responseCallbacks.onMusicUpdate(newResponse)
         }
+
         return newResponse
     }
 
-    private fun loadImpl(context: Context): Response {
+    private fun loadImpl(context: Context, callback: LoadCallback): Response {
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
@@ -86,10 +93,11 @@ class MusicStore private constructor() {
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = Indexer.index(context)
+                val library = Indexer.index(context, callback)
                 if (library != null) {
                     logD(
-                        "Music load completed successfully in ${System.currentTimeMillis() - start}ms")
+                        "Music load completed successfully in " +
+                            "${System.currentTimeMillis() - start}ms")
                     Response.Ok(library)
                 } else {
                     logE("No music found")
@@ -131,6 +139,25 @@ class MusicStore private constructor() {
             }
     }
 
+    /** Represents the current state of the loading process. */
+    sealed class LoadState {
+        data class Indexing(val current: Int, val total: Int) : LoadState()
+        data class Complete(val response: Response) : LoadState()
+    }
+
+    /**
+     * A callback for events that occur during the loading process. This is used by [load] in order
+     * to have a separate callback interface that is more efficient for rapid-fire updates.
+     */
+    interface LoadCallback {
+        /**
+         * Called when the state of the loading process changes. A value of null represents the
+         * beginning of a loading process.
+         */
+        fun onLoadStateChanged(state: LoadState?)
+    }
+
+    /** Represents the possible outcomes of a loading process. */
     sealed class Response {
         data class Ok(val library: Library) : Response()
         data class Err(val throwable: Throwable) : Response()
@@ -138,6 +165,7 @@ class MusicStore private constructor() {
         object NoPerms : Response()
     }
 
+    /** A callback for awaiting the loading of music. */
     interface Callback {
         fun onMusicUpdate(response: Response)
     }

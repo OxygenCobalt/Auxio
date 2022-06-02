@@ -26,11 +26,11 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
 /** A [ViewModel] that represents the current music indexing state. */
-class MusicViewModel : ViewModel() {
+class MusicViewModel : ViewModel(), MusicStore.LoadCallback {
     private val musicStore = MusicStore.getInstance()
 
-    private val _response = MutableStateFlow<MusicStore.Response?>(null)
-    val response: StateFlow<MusicStore.Response?> = _response
+    private val _loadState = MutableStateFlow<MusicStore.LoadState?>(null)
+    val loadState: StateFlow<MusicStore.LoadState?> = _loadState
 
     private var isBusy = false
 
@@ -39,17 +39,16 @@ class MusicViewModel : ViewModel() {
      * navigated to and because SnackBars will have the best UX here.
      */
     fun loadMusic(context: Context) {
-        if (_response.value != null || isBusy) {
+        if (_loadState.value != null || isBusy) {
             logD("Loader is busy/already completed, not reloading")
             return
         }
 
         isBusy = true
-        _response.value = null
+        _loadState.value = null
 
         viewModelScope.launch {
-            val result = musicStore.load(context)
-            _response.value = result
+            musicStore.load(context, this@MusicViewModel)
             isBusy = false
         }
     }
@@ -60,7 +59,11 @@ class MusicViewModel : ViewModel() {
      */
     fun reloadMusic(context: Context) {
         logD("Reloading music library")
-        _response.value = null
+        _loadState.value = null
         loadMusic(context)
+    }
+
+    override fun onLoadStateChanged(state: MusicStore.LoadState?) {
+        _loadState.value = state
     }
 }

@@ -187,6 +187,8 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
 
+    <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
+
     <string name="fmt_songs_loaded">Songs loaded: %d</string>
     <string name="fmt_albums_loaded">Albums loaded: %d</string>
     <string name="fmt_artists_loaded">Artists loaded: %d</string>

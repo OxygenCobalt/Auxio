@@ -26,6 +26,7 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.contentResolverSafe
@@ -127,7 +128,15 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
     }
 
-    override fun loadSongs(context: Context, cursor: Cursor): Collection<Song> {
+    override fun loadSongs(
+        context: Context,
+        cursor: Cursor,
+        callback: MusicStore.LoadCallback
+    ): Collection<Song> {
+        // Note: We do not actually update the callback with an Indexing state, this is because
+        // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
+        // with genre loading and querying the media database itself. As a result, a progress bar
+        // is not really that applicable.
         val audios = mutableListOf<Audio>()
         while (cursor.moveToNext()) {
             audios.add(buildAudio(context, cursor))

@@ -109,7 +109,7 @@ class SearchFragment :
         // --- VIEWMODEL SETUP ---
 
         launch { searchModel.searchResults.collect(::updateResults) }
-        launch { musicModel.response.collect(::handleLoaderResponse) }
+        launch { musicModel.loadState.collect(::handleLoadState) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
@@ -171,8 +171,8 @@ class SearchFragment :
         requireImm().hide()
     }
 
-    private fun handleLoaderResponse(response: MusicStore.Response?) {
-        if (response is MusicStore.Response.Ok) {
+    private fun handleLoadState(state: MusicStore.LoadState?) {
+        if (state is MusicStore.LoadState.Complete && state.response is MusicStore.Response.Ok) {
             searchModel.refresh(requireContext())
         }
     }

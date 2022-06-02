@@ -30,6 +30,7 @@ import com.google.common.util.concurrent.Futures
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logW
 
@@ -57,7 +58,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     // MediaStore.
     override fun query(context: Context) = inner.query(context)
 
-    override fun loadSongs(context: Context, cursor: Cursor): Collection<Song> {
+    override fun loadSongs(
+        context: Context,
+        cursor: Cursor,
+        callback: MusicStore.LoadCallback
+    ): Collection<Song> {
         // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
         // add a completed song to the list. To prevent a crash in that case, we use the
         // concurrent counterpart to a typical mutable list.
@@ -81,8 +86,13 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
 
                     Futures.addCallback(
                         task,
-                        AudioCallback(audio, songs, index),
-                        Executors.newSingleThreadExecutor())
+                        AudioCallback(audio) {
+                            runningTasks[index] = null
+                            songs.add(it)
+                            callback.onLoadStateChanged(
+                                MusicStore.LoadState.Indexing(songs.size, cursor.count))
+                        },
+                        CALLBACK_EXECUTOR)
 
                     runningTasks[index] = task
 
@@ -100,8 +110,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
 
     private inner class AudioCallback(
         private val audio: MediaStoreBackend.Audio,
-        private val dest: ConcurrentLinkedQueue<Song>,
-        private val taskIndex: Int
+        private val onComplete: (Song) -> Unit,
     ) : FutureCallback<TrackGroupArray> {
         override fun onSuccess(result: TrackGroupArray) {
             val metadata = result[0].getFormat(0).metadata
@@ -111,15 +120,13 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                 logW("No metadata was found for ${audio.title}")
             }
 
-            dest.add(audio.toSong())
-            runningTasks[taskIndex] = null
+            onComplete(audio.toSong())
         }
 
         override fun onFailure(t: Throwable) {
             logW("Unable to extract metadata for ${audio.title}")
             logW(t.stackTraceToString())
-            dest.add(audio.toSong())
-            runningTasks[taskIndex] = null
+            onComplete(audio.toSong())
         }
     }
 
@@ -213,5 +220,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     companion object {
         /** The amount of tasks this backend can run efficiently at once. */
         private const val TASK_CAPACITY = 8
+
+        private val CALLBACK_EXECUTOR = Executors.newSingleThreadExecutor()
     }
 }
