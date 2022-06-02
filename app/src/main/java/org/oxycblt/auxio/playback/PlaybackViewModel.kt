@@ -58,8 +58,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
         get() = _song
     private val _parent = MutableStateFlow<MusicParent?>(null)
     /** The current model that is being played from, such as an [Album] or [Artist] */
-    val parent: StateFlow<MusicParent?>
-        get() = _parent
+    val parent: StateFlow<MusicParent?> = _parent
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying: StateFlow<Boolean>
         get() = _isPlaying
@@ -298,8 +297,8 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     }
 
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        _parent.value = playbackManager.parent
         _song.value = playbackManager.song
+        _parent.value = playbackManager.parent
         _nextUp.value = queue.slice(index + 1 until queue.size)
     }
 

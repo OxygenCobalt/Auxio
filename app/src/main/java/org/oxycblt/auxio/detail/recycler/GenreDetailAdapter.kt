@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.textSafe
 class GenreDetailAdapter(listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
-    private var currentHolder: Highlightable? = null
+    private var currentHighlightedSongPos: Int? = null
 
     override fun getCreatorFromItem(item: Item) =
         super.getCreatorFromItem(item)
@@ -71,26 +71,15 @@ class GenreDetailAdapter(listener: Listener) :
     }
 
     override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
-        // If the item corresponds to a currently playing song/album then highlight it
-        if (item.id == currentSong?.id) {
-            // Reset the last ViewHolder before assigning the new, correct one to be highlighted
-            currentHolder?.setHighlighted(false)
-            currentHolder = viewHolder
-            viewHolder.setHighlighted(true)
-        } else {
-            viewHolder.setHighlighted(false)
-        }
+        viewHolder.setHighlighted(item.id == currentSong?.id)
     }
 
-    /**
-     * Update the [song] that this adapter should highlight
-     * @param recycler The recyclerview the highlighting should act on.
-     */
-    fun highlightSong(song: Song?, recycler: RecyclerView) {
+    /** Update the [song] that this adapter should highlight */
+    fun highlightSong(song: Song?) {
         if (song == currentSong) return
         currentSong = song
-        currentHolder?.setHighlighted(false)
-        currentHolder = highlightItem(song, recycler)
+        currentHighlightedSongPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
+        currentHighlightedSongPos = highlightItem(song)
     }
 
     companion object {

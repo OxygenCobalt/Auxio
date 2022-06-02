@@ -35,7 +35,6 @@ import org.oxycblt.auxio.ui.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.textSafe
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
@@ -44,10 +43,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 ) : MultiAdapter<L>(listener) {
     abstract fun onHighlightViewHolder(viewHolder: Highlightable, item: Item)
 
-    protected inline fun <reified T : Item> highlightItem(
-        newItem: T?,
-        recycler: RecyclerView
-    ): Highlightable? {
+    protected inline fun <reified T : Item> highlightItem(newItem: T?): Int? {
         if (newItem == null) {
             return null
         }
@@ -55,19 +51,8 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
         // Use existing data instead of having to re-sort it.
         // We also have to account for the album count when searching for the ViewHolder.
         val pos = data.currentList.indexOfFirst { item -> item.id == newItem.id && item is T }
-
-        // Check if the ViewHolder for this song is visible, if it is then highlight it.
-        // If the ViewHolder is not visible, then the adapter should take care of it if
-        // it does become visible.
-        val viewHolder = recycler.findViewHolderForAdapterPosition(pos)
-
-        return if (viewHolder is Highlightable) {
-            viewHolder.setHighlighted(true)
-            viewHolder
-        } else {
-            logW("ViewHolder intended to highlight was not Highlightable")
-            null
-        }
+        notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
+        return pos
     }
 
     @Suppress("LeakingThis") override val data = AsyncBackingData(this, diffCallback)
@@ -98,6 +83,13 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     }
 
     companion object {
+        // This payload value serves two purposes:
+        // 1. It disables animations from notifyItemChanged, which looks bad when highlighting
+        // values.
+        // 2. It instructs adapters to avoid re-binding information, and instead simply
+        // change the highlight state.
+        val PAYLOAD_HIGHLIGHT_CHANGED = Any()
+
         val DIFFER =
             object : SimpleItemCallback<Item>() {
                 override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {

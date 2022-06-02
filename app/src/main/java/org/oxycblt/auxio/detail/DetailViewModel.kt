@@ -123,7 +123,7 @@ class DetailViewModel : ViewModel() {
 
         // To create a good user experience regarding disc numbers, we intersperse
         // items that show the disc number throughout the album's songs. In the case
-        // that the  album does not have disc numbers, we omit the header.
+        // that the  album does not have distinct disc numbers, we omit the header.
         val songs = albumSort.songs(album.songs)
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {

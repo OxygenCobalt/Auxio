@@ -44,8 +44,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  *
  * TODO: Custom language support
  *
- * TODO: Fix how selection works in the RecyclerViews (doing it poorly right now)
- *
  * TODO: Rework padding ethos
  *
  * @author OxygenCobalt

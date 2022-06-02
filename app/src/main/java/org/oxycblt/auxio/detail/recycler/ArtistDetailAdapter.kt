@@ -45,10 +45,10 @@ import org.oxycblt.auxio.util.textSafe
 class ArtistDetailAdapter(listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentAlbum: Album? = null
-    private var currentAlbumHolder: Highlightable? = null
+    private var currentHighlightedAlbumPos: Int? = null
 
     private var currentSong: Song? = null
-    private var currentSongHolder: Highlightable? = null
+    private var currentHighlightedSongPos: Int? = null
 
     override fun getCreatorFromItem(item: Item) =
         super.getCreatorFromItem(item)
@@ -79,40 +79,26 @@ class ArtistDetailAdapter(listener: Listener) :
     }
 
     override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
-        // If the item corresponds to a currently playing song/album then highlight it
-        if (item.id == currentAlbum?.id && item is Album) {
-            currentAlbumHolder?.setHighlighted(false)
-            currentAlbumHolder = viewHolder
-            viewHolder.setHighlighted(true)
-        } else if (item.id == currentSong?.id && item is Song) {
-            currentSongHolder?.setHighlighted(false)
-            currentSongHolder = viewHolder
-            viewHolder.setHighlighted(true)
-        } else {
-            viewHolder.setHighlighted(false)
-        }
+        viewHolder.setHighlighted(
+            (item is Album && item.id == currentAlbum?.id) ||
+                (item is Song && item.id == currentSong?.id)
+        )
     }
 
-    /**
-     * Update the current [album] that this adapter should highlight
-     * @param recycler The recyclerview the highlighting should act on.
-     */
-    fun highlightAlbum(album: Album?, recycler: RecyclerView) {
+    /** Update the current [album] that this adapter should highlight */
+    fun highlightAlbum(album: Album?) {
         if (album == currentAlbum) return
         currentAlbum = album
-        currentAlbumHolder?.setHighlighted(false)
-        currentAlbumHolder = highlightItem(album, recycler)
+        currentHighlightedAlbumPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
+        currentHighlightedAlbumPos = highlightItem(album)
     }
 
-    /**
-     * Update the [song] that this adapter should highlight
-     * @param recycler The recyclerview the highlighting should act on.
-     */
-    fun highlightSong(song: Song?, recycler: RecyclerView) {
+    /** Update the [song] that this adapter should highlight */
+    fun highlightSong(song: Song?) {
         if (song == currentSong) return
         currentSong = song
-        currentSongHolder?.setHighlighted(false)
-        currentSongHolder = highlightItem(song, recycler)
+        currentHighlightedSongPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
+        currentHighlightedSongPos = highlightItem(song)
     }
 
     companion object {

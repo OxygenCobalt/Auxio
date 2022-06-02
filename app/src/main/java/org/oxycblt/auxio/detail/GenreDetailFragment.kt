@@ -22,7 +22,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.DetailAdapter
@@ -32,12 +31,14 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
+import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -66,7 +67,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         launch { detailModel.genreData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
-        launch { playbackModel.song.collect(::updateSong) }
+        launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean = false
@@ -124,14 +125,13 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
         }
     }
 
-    private fun updateSong(song: Song?) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?) {
         val binding = requireBinding()
-        if (playbackModel.parent.value is Genre &&
-            playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
-            detailAdapter.highlightSong(song, binding.detailRecycler)
+        if (parent is Genre && parent.id == unlikelyToBeNull(detailModel.currentGenre.value).id) {
+            detailAdapter.highlightSong(song)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null, binding.detailRecycler)
+            detailAdapter.highlightSong(null)
         }
     }
 }

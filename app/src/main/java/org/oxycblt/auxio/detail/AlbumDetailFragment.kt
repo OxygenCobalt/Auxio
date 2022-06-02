@@ -25,7 +25,6 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSmoothScroller
-import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentDetailBinding
 import org.oxycblt.auxio.detail.recycler.AlbumDetailAdapter
@@ -33,6 +32,7 @@ import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.Header
@@ -40,6 +40,7 @@ import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.canScroll
+import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -70,7 +71,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
         launch { detailModel.albumData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
-        launch { playbackModel.song.collect(::updateSong) }
+        launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -188,22 +189,24 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
         }
     }
 
-    /** Updates the queue actions when a song is present or not */
-    private fun updateSong(song: Song?) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?) {
         val binding = requireBinding()
 
         for (item in binding.detailToolbar.menu.children) {
+            // If there is no playback going in, any queue additions will be wiped as soon as
+            // something is played. Disable these actions when playback is going on so that
+            // it isn't possible to add anything during that time.
             if (item.itemId == R.id.action_play_next || item.itemId == R.id.action_queue_add) {
                 item.isEnabled = song != null
             }
         }
 
-        if (playbackModel.parent.value is Album &&
-            playbackModel.parent.value?.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            detailAdapter.highlightSong(song, binding.detailRecycler)
+        if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
+            logD("update $song")
+            detailAdapter.highlightSong(song)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null, binding.detailRecycler)
+            detailAdapter.highlightSong(null)
         }
     }
 

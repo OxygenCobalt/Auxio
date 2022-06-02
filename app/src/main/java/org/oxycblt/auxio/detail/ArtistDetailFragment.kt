@@ -38,6 +38,7 @@ import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.applySpans
+import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -68,8 +69,7 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         launch { detailModel.artistData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
-        launch { playbackModel.song.collect(::updateSong) }
-        launch { playbackModel.parent.collect(::updateParent) }
+        launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean = false
@@ -135,23 +135,22 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
         }
     }
 
-    private fun updateSong(song: Song?) {
+    private fun updatePlayback(song: Song?, parent: MusicParent?) {
         val binding = requireBinding()
-        if (playbackModel.parent.value is Artist &&
-            playbackModel.parent.value?.id == detailModel.currentArtist.value?.id) {
-            detailAdapter.highlightSong(song, binding.detailRecycler)
-        } else {
-            // Clear the ViewHolders if the mode isn't ALL_SONGS
-            detailAdapter.highlightSong(null, binding.detailRecycler)
-        }
-    }
 
-    private fun updateParent(parent: MusicParent?) {
-        val binding = requireBinding()
-        if (parent is Album?) {
-            detailAdapter.highlightAlbum(parent, binding.detailRecycler)
+        if (parent is Artist && parent.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
+            detailAdapter.highlightSong(song)
         } else {
-            detailAdapter.highlightAlbum(null, binding.detailRecycler)
+            // Clear the ViewHolders if the given song is not part of this artist.
+            detailAdapter.highlightSong(null)
+        }
+
+        if (parent is Album &&
+            parent.artist.id == unlikelyToBeNull(detailModel.currentArtist.value).id) {
+            detailAdapter.highlightAlbum(parent)
+        } else {
+            // Clear out the album viewholder if the parent is not an album.
+            detailAdapter.highlightAlbum(null)
         }
     }
 }
