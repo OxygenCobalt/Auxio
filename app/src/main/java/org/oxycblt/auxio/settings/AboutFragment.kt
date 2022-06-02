@@ -28,11 +28,14 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.coroutines.flow.collect
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentAboutBinding
 import org.oxycblt.auxio.home.HomeViewModel
+import org.oxycblt.auxio.music.Album
+import org.oxycblt.auxio.music.Artist
+import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
@@ -63,38 +66,33 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
-        launch {
-            homeModel.songs.collect { songs ->
-                binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
-                binding.aboutTotalDuration.textSafe =
-                    getString(
-                        R.string.fmt_total_duration,
-                        getString(
-                            R.string.fmt_total_duration,
-                            songs.sumOf { it.durationSecs }.formatDuration(false)))
-            }
-        }
+        launch { homeModel.songs.collect(::updateSongCount) }
+        launch { homeModel.albums.collect(::updateAlbumCount) }
+        launch { homeModel.artists.collect(::updateArtistCount) }
+        launch { homeModel.genres.collect(::updateGenreCount) }
+    }
 
-        launch {
-            homeModel.albums.collect { albums ->
-                binding.aboutAlbumCount.textSafe =
-                    getString(R.string.fmt_albums_loaded, albums.size)
-            }
-        }
+    private fun updateSongCount(songs: List<Song>) {
+        val binding = requireBinding()
+        binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
+        binding.aboutTotalDuration.textSafe =
+            getString(
+                R.string.fmt_total_duration, songs.sumOf { it.durationSecs }.formatDuration(false))
+    }
 
-        launch {
-            homeModel.artists.collect { artists ->
-                binding.aboutArtistCount.textSafe =
-                    getString(R.string.fmt_artists_loaded, artists.size)
-            }
-        }
+    private fun updateAlbumCount(albums: List<Album>) {
+        requireBinding().aboutAlbumCount.textSafe =
+            getString(R.string.fmt_albums_loaded, albums.size)
+    }
 
-        launch {
-            homeModel.genres.collect { genres ->
-                binding.aboutGenreCount.textSafe =
-                    getString(R.string.fmt_genres_loaded, genres.size)
-            }
-        }
+    private fun updateArtistCount(artists: List<Artist>) {
+        requireBinding().aboutArtistCount.textSafe =
+            getString(R.string.fmt_artists_loaded, artists.size)
+    }
+
+    private fun updateGenreCount(genres: List<Genre>) {
+        requireBinding().aboutGenreCount.textSafe =
+            getString(R.string.fmt_genres_loaded, genres.size)
     }
 
     /** Go through the process of opening a [link] in a browser. */

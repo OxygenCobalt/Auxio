@@ -53,6 +53,8 @@ import org.oxycblt.auxio.util.logW
 class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     private val runningTasks: Array<Future<TrackGroupArray>?> = arrayOfNulls(TASK_CAPACITY)
 
+    // No need to implement our own query logic, as this backend is still reliant on
+    // MediaStore.
     override fun query(context: Context) = inner.query(context)
 
     override fun loadSongs(context: Context, cursor: Cursor): Collection<Song> {
@@ -69,7 +71,9 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             val audioUri = requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri
 
             while (true) {
-                // Spin until a task slot opens up, then start trying to parse metadata.
+                // In order to properly parallelize ExoPlayer's parser, we have an array containing
+                // a few slots for ongoing futures. As soon as a finished task opens up their slot,
+                // we begin loading metadata for this audio.
                 val index = runningTasks.indexOfFirst { it == null }
                 if (index != -1) {
                     val task =
@@ -81,7 +85,6 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         Executors.newSingleThreadExecutor())
 
                     runningTasks[index] = task
-
 
                     break
                 }

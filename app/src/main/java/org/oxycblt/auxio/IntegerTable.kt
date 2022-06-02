@@ -84,6 +84,9 @@ object IntegerTable {
     /** DisplayMode.SHOW_SONGS */
     const val DISPLAY_MODE_SHOW_SONGS = 0xA10B
 
+    // Note: Sort integer codes are non-contiguous due to significant amounts of time
+    // passing between the additions of new sort modes.
+
     /** Sort.ByName */
     const val SORT_BY_NAME = 0xA10C
     /** Sort.ByArtist */

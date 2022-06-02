@@ -155,7 +155,8 @@ class PlaybackStateDatabase(context: Context) :
                 isShuffled = cursor.getInt(shuffleIndex) == 1,
                 songId = cursor.getLong(songIdIndex),
                 parentId = cursor.getLongOrNull(parentIdIndex),
-                playbackMode = PlaybackMode.fromInt(playbackModeIndex) ?: PlaybackMode.ALL_SONGS)
+                playbackMode = PlaybackMode.fromInt(cursor.getInt(playbackModeIndex))
+                        ?: PlaybackMode.ALL_SONGS)
         }
     }
 

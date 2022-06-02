@@ -63,7 +63,9 @@ object Indexer {
         // }
 
         val songs = buildSongs(context, mediaStoreBackend)
-        if (songs.isEmpty()) return null
+        if (songs.isEmpty()) {
+            return null
+        }
 
         val buildStart = System.currentTimeMillis()
 

@@ -56,7 +56,7 @@ val String.no: Int?
 
 /**
  * Parse out the year field from a (presumably) ISO-8601-like date. This differs across tag formats
- * and has no real consistent, but it's assumed that most will format granular dates as YYYY-MM-DD
+ * and has no real consistency, but it's assumed that most will format granular dates as YYYY-MM-DD
  * (...) and thus we can parse the year out by splitting at the first -.
  */
 val String.iso8601year: Int?

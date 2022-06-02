@@ -8,6 +8,7 @@
 #### What's Fixed
 - Fixed crash when seeking to the end of a track as the track changed to a track with a lower duration 
 - Fixed regression where GadgetBridge media controls would no longer work
+- Fixed issue where the album/artist/genre would not be correctly restored
 
 #### Dev/Meta
 - Switched from `LiveData` to `StateFlow`

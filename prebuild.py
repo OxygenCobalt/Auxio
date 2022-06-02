@@ -86,7 +86,7 @@ if ndk_path is None or not os.path.isfile(os.path.join(ndk_path, "ndk-build")):
     else:
         print(FATAL + "fatal:" + NC + " the android ndk was not installed at a " + 
             "recognized location.")
-        system.exit(1)
+        sys.exit(1)
 
 ndk_build_path = os.path.join(ndk_path, "ndk-build")
 

@@ -63,12 +63,12 @@ import org.oxycblt.auxio.util.contentResolverSafe
  * table, so we have to go for the less efficient "make a big query on all the songs lol" method so
  * that songs don't end up fragmented across artists. Pretty much every OEM has added some extension
  * or quirk to MediaStore that I cannot reproduce, with some OEMs (COUGHSAMSUNGCOUGH) crippling the
- * normal tables so that you're railroaded into their music app. The way I do blacklisting relies on
- * a semi-deprecated method, and the supposedly "modern" method is SLOWER and causes even more
- * problems since I have to manage databases across version boundaries. Sometimes music will have a
- * deformed clone that I can't filter out, sometimes Genres will just break for no reason, and
- * sometimes tags encoded in UTF-8 will be interpreted as anything from UTF-16 to Latin-1 to *Shift
- * JIS* WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY
+ * normal tables so that you're railroaded into their music app. I have to use a semi-deprecated
+ * field to work with file paths, and the supposedly "modern" method is SLOWER and causes even more
+ * problems since some devices just don't expose those fields for some insane reason. Sometimes
+ * music will have a deformed clone that I can't filter out, sometimes Genres will just break for
+ * no reason, and sometimes tags encoded in UTF-8 will be interpreted as anything from UTF-16 to
+ * Latin-1 to *Shift JIS* WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY WHY
  *
  * Is there anything we can do about it? No. Google has routinely shut down issues that begged
  * google to fix glaring issues with MediaStore or to just take the API behind the woodshed and
@@ -214,7 +214,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.duration = cursor.getLong(durationIndex)
         audio.year = cursor.getIntOrNull(yearIndex)
 
-        audio.album = cursor.getStringOrNull(albumIndex)
+        // A non-existent album name should theoretically be the name of the folder it contained
+        // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
+        // file is not actually in the root internal storage directory.
+        audio.album = cursor.getString(albumIndex)
         audio.albumId = cursor.getLong(albumIdIndex)
 
         // Android does not make a non-existent artist tag null, it instead fills it in
@@ -230,6 +233,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 }
             }
 
+        // The album artist field is nullable and never has placeholder values.
         audio.albumArtist = cursor.getStringOrNull(albumArtistIndex)
 
         return audio
