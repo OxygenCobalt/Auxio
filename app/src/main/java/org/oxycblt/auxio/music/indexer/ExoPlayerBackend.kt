@@ -32,6 +32,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -113,9 +114,12 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         private val onComplete: (Song) -> Unit,
     ) : FutureCallback<TrackGroupArray> {
         override fun onSuccess(result: TrackGroupArray) {
-            val metadata = result[0].getFormat(0).metadata
-            if (metadata != null) {
-                completeAudio(audio, metadata)
+            val metadata = result[0].getFormat(0)
+
+            logD("${metadata.sampleMimeType} ${metadata.averageBitrate} ${metadata.sampleRate}")
+
+            if (metadata.metadata != null) {
+                completeAudio(audio, metadata.metadata!!)
             } else {
                 logW("No metadata was found for ${audio.title}")
             }
@@ -131,10 +135,6 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     }
 
     private fun completeAudio(audio: MediaStoreBackend.Audio, metadata: Metadata) {
-        if (metadata.length() == 0) {
-            return
-        }
-
         // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
         // of audio formats. Some formats (like FLAC) can contain both ID3v2 and vorbis tags, but
         // this isn't too big of a deal, as we generally let the "source of truth" for metadata

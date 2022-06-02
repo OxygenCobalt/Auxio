@@ -12,11 +12,13 @@
 - Fixed bug where music would be incorrectly reloaded on a hot restart
 - Fixed issue where the album/artist/genre would not be correctly restored
 - Fixed issue where items would not highlight properly in the detail UI
+- Fixed hypothetical issue where widget would cause an OOM on large devices
 
 #### Dev/Meta
 - New translations [yurical -> Korean, qwerty287 -> German]
 - Switched from `LiveData` to `StateFlow`
 - Use `notifyItemChanged` instead of directly mutating `ViewHolder` instances.
+- Added highly experimental ExoPlayer metadata backend (not enabled in-app)
 
 ## v2.3.0
 

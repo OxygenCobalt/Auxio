@@ -54,14 +54,6 @@ object Indexer {
                 else -> Api21MediaStoreBackend()
             }
 
-        // Disabled until direct parsing is fully capable of integration into Auxio's
-        // architecture.
-        // val backend = if (settingsManager.useQualityMetadata) {
-        //     ExoPlayerBackend(mediaStoreBackend)
-        // } else {
-        //     mediaStoreBackend
-        // }
-
         val songs = buildSongs(context, mediaStoreBackend, callback)
         if (songs.isEmpty()) {
             return null
@@ -71,6 +63,7 @@ object Indexer {
 
         val albums = buildAlbums(songs)
         val artists = buildArtists(albums)
+
         val genres = buildGenres(songs)
 
         // Sanity check: Ensure that all songs are linked up to albums/artists/genres.

@@ -25,7 +25,6 @@ import android.provider.OpenableColumns
 import androidx.core.content.ContextCompat
 import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.indexer.Indexer
 import org.oxycblt.auxio.music.indexer.useQuery

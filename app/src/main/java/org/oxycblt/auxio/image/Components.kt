@@ -110,7 +110,7 @@ private constructor(
     private val genre: Genre,
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        // Don't sort here to preserve compatibility with previous versions of this image.
+        // Don't sort here to preserve compatibility with previous versions of this images
         val albums = genre.songs.groupBy { it.album }.keys
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
         return createMosaic(context, results, size)

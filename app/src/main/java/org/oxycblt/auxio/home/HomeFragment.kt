@@ -321,6 +321,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun handleLoadEvent(binding: FragmentHomeBinding, event: MusicStore.LoadState?) {
+        binding.homeFab.hide()
         binding.homePager.visibility = View.INVISIBLE
         binding.homeLoadingContainer.visibility = View.VISIBLE
         binding.homeLoadingProgress.visibility = View.VISIBLE
