@@ -41,7 +41,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     listener: L,
     diffCallback: DiffUtil.ItemCallback<Item>
 ) : MultiAdapter<L>(listener) {
-    abstract fun onHighlightViewHolder(viewHolder: Highlightable, item: Item)
+    abstract fun shouldHighlightViewHolder(item: Item): Boolean
 
     protected inline fun <reified T : Item> highlightItem(newItem: T?): Int? {
         if (newItem == null) {
@@ -84,9 +84,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
             }
         }
 
-        if (viewHolder is Highlightable) {
-            onHighlightViewHolder(viewHolder, item)
-        }
+        viewHolder.itemView.isActivated = shouldHighlightViewHolder(item)
     }
 
     companion object {
@@ -146,9 +144,4 @@ class SortHeaderViewHolder(private val binding: ItemSortHeaderBinding) :
                     oldItem.string == newItem.string
             }
     }
-}
-
-/** Interface that allows the highlighting of certain ViewHolders */
-interface Highlightable {
-    fun setHighlighted(isHighlighted: Boolean)
 }

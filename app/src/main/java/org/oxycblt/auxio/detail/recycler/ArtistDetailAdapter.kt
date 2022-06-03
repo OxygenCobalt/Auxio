@@ -85,11 +85,9 @@ class ArtistDetailAdapter(listener: Listener) :
         }
     }
 
-    override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
-        viewHolder.setHighlighted(
-            (item is Album && item.id == currentAlbum?.id) ||
-                (item is Song && item.id == currentSong?.id))
-    }
+    override fun shouldHighlightViewHolder(item: Item) =
+        (item is Album && item.id == currentAlbum?.id) ||
+            (item is Song && item.id == currentSong?.id)
 
     /** Update the current [album] that this adapter should highlight */
     fun highlightAlbum(album: Album?) {
@@ -169,7 +167,7 @@ private class ArtistDetailViewHolder private constructor(private val binding: It
 private class ArtistAlbumViewHolder
 private constructor(
     private val binding: ItemParentBinding,
-) : BindingViewHolder<Album, MenuItemListener>(binding.root), Highlightable {
+) : BindingViewHolder<Album, MenuItemListener>(binding.root) {
     override fun bind(item: Album, listener: MenuItemListener) {
         binding.parentImage.bind(item)
         binding.parentName.textSafe = item.resolveName(binding.context)
@@ -187,10 +185,6 @@ private constructor(
                 true
             }
         }
-    }
-
-    override fun setHighlighted(isHighlighted: Boolean) {
-        binding.parentName.isActivated = isHighlighted
     }
 
     companion object {
@@ -214,7 +208,7 @@ private constructor(
 private class ArtistSongViewHolder
 private constructor(
     private val binding: ItemSongBinding,
-) : BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
+) : BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
@@ -227,10 +221,6 @@ private constructor(
                 true
             }
         }
-    }
-
-    override fun setHighlighted(isHighlighted: Boolean) {
-        binding.root.isActivated = isHighlighted
     }
 
     companion object {

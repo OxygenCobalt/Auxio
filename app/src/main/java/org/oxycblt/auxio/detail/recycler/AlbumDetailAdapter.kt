@@ -81,9 +81,7 @@ class AlbumDetailAdapter(listener: Listener) :
         }
     }
 
-    override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
-        viewHolder.setHighlighted(item.id == currentSong?.id)
-    }
+    override fun shouldHighlightViewHolder(item: Item) = item.id == currentSong?.id
 
     /** Update the [song] that this adapter should highlight */
     fun highlightSong(song: Song?) {
@@ -189,7 +187,7 @@ class DiscHeaderViewHolder(private val binding: ItemDiscHeaderBinding) :
 }
 
 private class AlbumSongViewHolder private constructor(private val binding: ItemAlbumSongBinding) :
-    BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
+    BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         // Hide the track number view if the song does not have a track.
         if (item.track != null) {
@@ -225,10 +223,6 @@ private class AlbumSongViewHolder private constructor(private val binding: ItemA
                 true
             }
         }
-    }
-
-    override fun setHighlighted(isHighlighted: Boolean) {
-        binding.root.isActivated = isHighlighted
     }
 
     companion object {

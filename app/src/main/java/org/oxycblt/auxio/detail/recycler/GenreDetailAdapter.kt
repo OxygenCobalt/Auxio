@@ -77,9 +77,7 @@ class GenreDetailAdapter(listener: Listener) :
         }
     }
 
-    override fun onHighlightViewHolder(viewHolder: Highlightable, item: Item) {
-        viewHolder.setHighlighted(item.id == currentSong?.id)
-    }
+    override fun shouldHighlightViewHolder(item: Item) = item.id == currentSong?.id
 
     /** Update the [song] that this adapter should highlight */
     fun highlightSong(song: Song?) {
@@ -138,7 +136,7 @@ private class GenreDetailViewHolder private constructor(private val binding: Ite
 }
 
 class GenreSongViewHolder private constructor(private val binding: ItemSongBinding) :
-    BindingViewHolder<Song, MenuItemListener>(binding.root), Highlightable {
+    BindingViewHolder<Song, MenuItemListener>(binding.root) {
     override fun bind(item: Song, listener: MenuItemListener) {
         binding.songAlbumCover.bind(item)
         binding.songName.textSafe = item.resolveName(binding.context)
@@ -150,10 +148,6 @@ class GenreSongViewHolder private constructor(private val binding: ItemSongBindi
                 true
             }
         }
-    }
-
-    override fun setHighlighted(isHighlighted: Boolean) {
-        binding.songName.isActivated = isHighlighted
     }
 
     companion object {
