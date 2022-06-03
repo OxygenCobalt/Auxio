@@ -1,6 +1,8 @@
 # Changelog
 
-## dev [v2.3.1, v2.4.0, or v3.0.0]
+## dev [v2.3.2, v2.4.0, or v3.0.0]
+
+## v2.3.1
 
 #### What's Improved
 - Loading UI is now more clear and easy-to-use

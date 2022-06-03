@@ -103,10 +103,9 @@ val String.id3v2GenreName: String
             //  should copy mutagen's implementation?
             //  https://github.com/quodlibet/mutagen/blob/master/mutagen/id3/_frames.py
 
-            val genreInt = substring(1 until lastIndex).toIntOrNull()
-            if (genreInt != null) {
-                return genreConstantTable.getOrNull(genreInt) ?: this
-            }
+            return substring(1 until lastIndex).toIntOrNull()?.run {
+                genreConstantTable.getOrNull(this)
+            } ?: this
         }
 
         // Current name is fine.

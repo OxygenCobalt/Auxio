@@ -54,7 +54,7 @@ object Indexer {
                 else -> Api21MediaStoreBackend()
             }
 
-        val songs = buildSongs(context, mediaStoreBackend, callback)
+        val songs = buildSongs(context, ExoPlayerBackend(mediaStoreBackend), callback)
         if (songs.isEmpty()) {
             return null
         }

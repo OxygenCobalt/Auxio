@@ -28,8 +28,9 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logW
@@ -92,7 +93,9 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                             callback.onLoadStateChanged(
                                 MusicStore.LoadState.Indexing(songs.size, cursor.count))
                         },
-                        CALLBACK_EXECUTOR)
+                        // Normal JVM dispatcher will suffice here, as there is no IO work
+                        // going on (and there is no cost from switching contexts with executors)
+                        Dispatchers.Default.asExecutor())
 
                     runningTasks[index] = task
 
@@ -114,7 +117,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     ) : FutureCallback<TrackGroupArray> {
         override fun onSuccess(result: TrackGroupArray) {
             val metadata = result[0].getFormat(0).metadata
-            
+
             if (metadata != null) {
                 completeAudio(audio, metadata)
             } else {
@@ -217,7 +220,5 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     companion object {
         /** The amount of tasks this backend can run efficiently at once. */
         private const val TASK_CAPACITY = 8
-
-        private val CALLBACK_EXECUTOR = Executors.newSingleThreadExecutor()
     }
 }

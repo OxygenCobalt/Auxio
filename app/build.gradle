@@ -56,12 +56,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
 
     // --- SUPPORT ---
 
     // General
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
 
@@ -100,7 +100,7 @@ dependencies {
     implementation "io.coil-kt:coil:2.1.0"
 
     // Material
-    implementation "com.google.android.material:material:1.6.0"
+    implementation "com.google.android.material:material:1.6.1"
 
     // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.9.1"
