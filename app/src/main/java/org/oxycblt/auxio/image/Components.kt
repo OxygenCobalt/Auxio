@@ -56,14 +56,13 @@ class MusicKeyer : Keyer<Music> {
  */
 class AlbumCoverFetcher
 private constructor(private val context: Context, private val album: Album) : BaseFetcher() {
-    override suspend fun fetch(): FetchResult? {
-        return fetchArt(context, album)?.let { stream ->
+    override suspend fun fetch(): FetchResult? =
+        fetchArt(context, album)?.let { stream ->
             SourceResult(
                 source = ImageSource(stream.source().buffer(), context),
                 mimeType = null,
                 dataSource = DataSource.DISK)
         }
-    }
 
     class SongFactory : Fetcher.Factory<Song> {
         override fun create(data: Song, options: Options, imageLoader: ImageLoader): Fetcher {
@@ -110,8 +109,21 @@ private constructor(
     private val genre: Genre,
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        // Don't sort here to preserve compatibility with previous versions of this images
-        val albums = genre.songs.groupBy { it.album }.keys
+        // Genre logic is the most complicated, as we want to ensure album cover variation (i.e
+        // all four covers shouldn't be from the same artist) while also still leveraging mosaics
+        // whenever possible. So, if there are more than four distinct artists in a genre, make
+        // it so that one artist only adds one album cover to the mosaic. Otherwise, use order
+        // albums normally.
+        val artists = genre.songs.groupBy { it.album.artist.id }.keys
+        val albums =
+            Sort.ByName(true).albums(genre.songs.groupBy { it.album }.keys).run {
+                if (artists.size > 4) {
+                    distinctBy { it.artist.rawName }
+                } else {
+                    this
+                }
+            }
+
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
         return createMosaic(context, results, size)
     }
