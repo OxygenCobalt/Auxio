@@ -26,8 +26,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.launch
 class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
+    private val musicModel: IndexerViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)
@@ -73,7 +73,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
         // Initialize music loading. Do it here so that it shows on every fragment that this
         // one contains.
         // TODO: Move this to a service [automatic rescanning]
-        musicModel.loadMusic(requireContext())
+        musicModel.index(requireContext())
 
         launch { navModel.mainNavigationAction.collect(::handleMainNavigation) }
         launch { navModel.exploreNavigationItem.collect(::handleExploreNavigation) }

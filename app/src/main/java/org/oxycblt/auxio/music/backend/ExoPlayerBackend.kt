@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.indexer
+package org.oxycblt.auxio.music.backend
 
 import android.content.Context
 import android.database.Cursor
@@ -31,12 +31,12 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Future
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
-import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.util.logW
 
 /**
- * A [Indexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
+ * A [OldIndexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
  *
  * Normally, leveraging ExoPlayer's metadata system would be a terrible idea, as it is horrifically
  * slow. However, if we parallelize it, we can get similar throughput to other metadata extractors,
@@ -62,7 +62,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     override fun loadSongs(
         context: Context,
         cursor: Cursor,
-        callback: MusicStore.LoadCallback
+        onAddSong: (count: Int, total: Int) -> Unit
     ): Collection<Song> {
         // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
         // add a completed song to the list. To prevent a crash in that case, we use the
@@ -90,8 +90,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         AudioCallback(audio) {
                             runningTasks[index] = null
                             songs.add(it)
-                            callback.onLoadStateChanged(
-                                MusicStore.LoadState.Indexing(songs.size, cursor.count))
+                            onAddSong(songs.size, cursor.count)
                         },
                         // Normal JVM dispatcher will suffice here, as there is no IO work
                         // going on (and there is no cost from switching contexts with executors)

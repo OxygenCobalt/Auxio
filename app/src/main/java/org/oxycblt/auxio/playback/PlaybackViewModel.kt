@@ -318,11 +318,11 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
         _repeatMode.value = repeatMode
     }
 
-    override fun onMusicUpdate(response: MusicStore.Response) {
-        if (response is MusicStore.Response.Ok) {
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
             val action = pendingDelayedAction
             if (action != null) {
-                performActionImpl(action, response.library)
+                performActionImpl(action, library)
                 pendingDelayedAction = null
             }
         }

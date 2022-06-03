@@ -44,9 +44,9 @@ import org.oxycblt.auxio.home.list.SongListFragment
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Indexer
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
@@ -70,7 +70,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private val homeModel: HomeViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
+    private val indexerModel: IndexerViewModel by activityViewModels()
 
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
     private var sortItem: MenuItem? = null
@@ -81,7 +81,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
         storagePermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                musicModel.reloadMusic(requireContext())
+                indexerModel.reindex(requireContext())
             }
 
         binding.homeToolbar.apply {
@@ -123,7 +123,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         launch { homeModel.isFastScrolling.collect(::updateFastScrolling) }
         launch { homeModel.currentTab.collect(::updateCurrentTab) }
         launch { homeModel.recreateTabs.collect(::handleRecreateTabs) }
-        launch { musicModel.loadState.collect(::handleLoadEvent) }
+        launch { indexerModel.state.collect(::handleIndexerState) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
@@ -178,8 +178,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // Make sure an update here doesn't mess up the FAB state when it comes to the
         // loader response.
-        val state = musicModel.loadState.value
-        if (!(state is MusicStore.LoadState.Complete && state.response is MusicStore.Response.Ok)) {
+        val state = indexerModel.state.value
+        if (!(state is Indexer.State.Complete && state.response is Indexer.Response.Ok)) {
             return
         }
 
@@ -257,18 +257,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoadEvent(state: MusicStore.LoadState?) {
+    private fun handleIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
 
-        if (state is MusicStore.LoadState.Complete) {
+        if (state is Indexer.State.Complete) {
             handleLoaderResponse(binding, state.response)
         } else {
-            handleLoadEvent(binding, state)
+            handleLoadingState(binding, state)
         }
     }
 
-    private fun handleLoaderResponse(binding: FragmentHomeBinding, response: MusicStore.Response) {
-        if (response is MusicStore.Response.Ok) {
+    private fun handleLoaderResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
+        if (response is Indexer.Response.Ok) {
             binding.homeFab.show()
             binding.homeLoadingContainer.visibility = View.INVISIBLE
             binding.homePager.visibility = View.VISIBLE
@@ -280,30 +280,29 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             logD("Received non-ok response $response")
 
             when (response) {
-                is MusicStore.Response.Ok -> error("Unreachable")
-                is MusicStore.Response.Err -> {
-                    logD("Received Response.Err")
+                is Indexer.Response.Ok -> error("Unreachable")
+                is Indexer.Response.Err -> {
                     binding.homeLoadingProgress.visibility = View.INVISIBLE
                     binding.homeLoadingStatus.textSafe = getString(R.string.err_load_failed)
                     binding.homeLoadingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reloadMusic(requireContext()) }
+                        setOnClickListener { indexerModel.reindex(requireContext()) }
                     }
                 }
-                is MusicStore.Response.NoMusic -> {
+                is Indexer.Response.NoMusic -> {
                     binding.homeLoadingProgress.visibility = View.INVISIBLE
                     binding.homeLoadingStatus.textSafe = getString(R.string.err_no_music)
                     binding.homeLoadingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { musicModel.reloadMusic(requireContext()) }
+                        setOnClickListener { indexerModel.reindex(requireContext()) }
                     }
                 }
-                is MusicStore.Response.NoPerms -> {
+                is Indexer.Response.NoPerms -> {
                     val launcher =
                         requireNotNull(storagePermissionLauncher) {
-                            "Cannot access permission launcher while in non-view state"
+                            "Cannot access permission launcher while detached"
                         }
 
                     binding.homeLoadingProgress.visibility = View.INVISIBLE
@@ -320,14 +319,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoadEvent(binding: FragmentHomeBinding, event: MusicStore.LoadState?) {
+    private fun handleLoadingState(binding: FragmentHomeBinding, event: Indexer.State?) {
         binding.homeFab.hide()
         binding.homePager.visibility = View.INVISIBLE
         binding.homeLoadingContainer.visibility = View.VISIBLE
         binding.homeLoadingProgress.visibility = View.VISIBLE
         binding.homeLoadingAction.visibility = View.INVISIBLE
 
-        if (event is MusicStore.LoadState.Indexing) {
+        if (event is Indexer.State.Loading) {
             binding.homeLoadingStatus.textSafe =
                 getString(R.string.fmt_indexing, event.current, event.total)
             binding.homeLoadingProgress.apply {

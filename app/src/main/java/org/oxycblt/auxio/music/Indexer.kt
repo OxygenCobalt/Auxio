@@ -15,18 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.indexer
+package org.oxycblt.auxio.music
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
-import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.music.Artist
-import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.Song
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
+import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
+import org.oxycblt.auxio.music.backend.ExoPlayerBackend
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logE
 
 /**
  * Auxio's media indexer.
@@ -40,13 +45,93 @@ import org.oxycblt.auxio.util.logD
  * 3. Using the songs to build the library, which primarily involves linking up all data objects
  * with their corresponding parents/children.
  *
- * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the other
- * files in the module.
+ * This class in particular handles 3 primarily. For the code that handles 1 and 2, see the
+ * [Backend] implementations.
+ *
+ * This class also fulfills the role of maintaining the current music loading state, which seems
+ * like a job for [MusicStore] but in practice is only really leveraged by the components that
+ * directly work with music loading, making such redundant.
  *
  * @author OxygenCobalt
  */
-object Indexer {
-    fun index(context: Context, callback: MusicStore.LoadCallback): MusicStore.Library? {
+class Indexer {
+    private var state: State? = null
+    private var currentGeneration: Long = 0
+    private val callbacks = mutableListOf<Callback>()
+
+    fun addCallback(callback: Callback) {
+        callback.onIndexerStateChanged(state)
+        callbacks.add(callback)
+    }
+
+    fun removeCallback(callback: Callback) {
+        callbacks.remove(callback)
+    }
+
+    suspend fun index(context: Context) {
+        val generation = synchronized(this) { ++currentGeneration }
+
+        val notGranted =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_DENIED
+
+        if (notGranted) {
+            emitState(State.Complete(Response.NoPerms), generation)
+        }
+
+        val response =
+            try {
+                val start = System.currentTimeMillis()
+                val library = withContext(Dispatchers.IO) { indexImpl(context, generation) }
+                if (library != null) {
+                    logD(
+                        "Music load completed successfully in " +
+                            "${System.currentTimeMillis() - start}ms")
+                    Response.Ok(library)
+                } else {
+                    logE("No music found")
+                    Response.NoMusic
+                }
+            } catch (e: Exception) {
+                logE("Music loading failed.")
+                logE(e.stackTraceToString())
+                Response.Err(e)
+            }
+
+        emitState(State.Complete(response), generation)
+    }
+
+    /**
+     * "Cancel" the last job by making it unable to send further state updates. This should be
+     * called if an object that called [index] is about to be destroyed and thus will have it's task
+     * canceled, in which it would be useful for any ongoing loading process to not accidentally
+     * corrupt the current state.
+     */
+    fun cancelLast() {
+        synchronized(this) {
+            currentGeneration++
+            emitState(null, currentGeneration)
+        }
+    }
+
+    private fun emitState(newState: State?, generation: Long) {
+        synchronized(this) {
+            if (currentGeneration == generation) {
+                state = newState
+                for (callback in callbacks) {
+                    callback.onIndexerStateChanged(newState)
+                }
+            }
+        }
+    }
+
+    /**
+     * Run the proper music loading process. [generation] must be a truthful value of the generation
+     * calling this function.
+     */
+    private fun indexImpl(context: Context, generation: Long): MusicStore.Library? {
+        emitState(State.Query, generation)
+
         // Establish the backend to use when initially loading songs.
         val mediaStoreBackend =
             when {
@@ -54,7 +139,7 @@ object Indexer {
                 else -> Api21MediaStoreBackend()
             }
 
-        val songs = buildSongs(context, ExoPlayerBackend(mediaStoreBackend), callback)
+        val songs = buildSongs(context, ExoPlayerBackend(mediaStoreBackend), generation)
         if (songs.isEmpty()) {
             return null
         }
@@ -88,11 +173,7 @@ object Indexer {
      * [buildGenres] functions must be called with the returned list so that all songs are properly
      * linked up.
      */
-    private fun buildSongs(
-        context: Context,
-        backend: Backend,
-        callback: MusicStore.LoadCallback
-    ): List<Song> {
+    private fun buildSongs(context: Context, backend: Backend, generation: Long): List<Song> {
         val start = System.currentTimeMillis()
 
         var songs =
@@ -101,7 +182,9 @@ object Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.loadSongs(context, cursor, callback)
+                backend.loadSongs(context, cursor) { count, total ->
+                    emitState(State.Loading(count, total), generation)
+                }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -213,6 +296,25 @@ object Indexer {
         return genres
     }
 
+    /** Represents the current indexer state. */
+    sealed class State {
+        object Query : State()
+        data class Loading(val current: Int, val total: Int) : State()
+        data class Complete(val response: Response) : State()
+    }
+
+    /** Represents the possible outcomes of a loading process. */
+    sealed class Response {
+        data class Ok(val library: MusicStore.Library) : Response()
+        data class Err(val throwable: Throwable) : Response()
+        object NoMusic : Response()
+        object NoPerms : Response()
+    }
+
+    interface Callback {
+        fun onIndexerStateChanged(state: State?)
+    }
+
     /** Represents a backend that metadata can be extracted from. */
     interface Backend {
         /** Query the media database for a basic cursor. */
@@ -222,7 +324,26 @@ object Indexer {
         fun loadSongs(
             context: Context,
             cursor: Cursor,
-            callback: MusicStore.LoadCallback
+            onAddSong: (count: Int, total: Int) -> Unit
         ): Collection<Song>
+    }
+
+    companion object {
+        @Volatile private var INSTANCE: Indexer? = null
+
+        /** Get the process-level instance of [Indexer]. */
+        fun getInstance(): Indexer {
+            val currentInstance = INSTANCE
+
+            if (currentInstance != null) {
+                return currentInstance
+            }
+
+            synchronized(this) {
+                val newInstance = Indexer()
+                INSTANCE = newInstance
+                return newInstance
+            }
+        }
     }
 }

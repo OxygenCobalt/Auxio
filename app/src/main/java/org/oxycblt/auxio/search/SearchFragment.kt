@@ -35,10 +35,10 @@ import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.Indexer
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
-import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.music.MusicViewModel
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Header
@@ -64,7 +64,7 @@ class SearchFragment :
     private val searchModel: SearchViewModel by viewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val musicModel: MusicViewModel by activityViewModels()
+    private val indexerModel: IndexerViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -109,7 +109,7 @@ class SearchFragment :
         // --- VIEWMODEL SETUP ---
 
         launch { searchModel.searchResults.collect(::updateResults) }
-        launch { musicModel.loadState.collect(::handleLoadState) }
+        launch { indexerModel.state.collect(::handleIndexerState) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
@@ -171,8 +171,8 @@ class SearchFragment :
         requireImm().hide()
     }
 
-    private fun handleLoadState(state: MusicStore.LoadState?) {
-        if (state is MusicStore.LoadState.Complete && state.response is MusicStore.Response.Ok) {
+    private fun handleIndexerState(state: Indexer.State?) {
+        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
             searchModel.refresh(requireContext())
         }
     }

@@ -15,18 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.indexer
+package org.oxycblt.auxio.music.backend
 
-import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
 import org.oxycblt.auxio.util.contentResolverSafe
@@ -90,8 +88,9 @@ import org.oxycblt.auxio.util.contentResolverSafe
  */
 
 /**
- * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
- * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
+ * Represents a [OldIndexer.Backend] that loads music from the media database ([MediaStore]). This
+ * is not a fully-featured class by itself, and it's API-specific derivatives should be used
+ * instead.
  * @author OxygenCobalt
  */
 abstract class MediaStoreBackend : Indexer.Backend {
@@ -131,7 +130,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     override fun loadSongs(
         context: Context,
         cursor: Cursor,
-        callback: MusicStore.LoadCallback
+        onAddSong: (count: Int, total: Int) -> Unit
     ): Collection<Song> {
         // Note: We do not actually update the callback with an Indexing state, this is because
         // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
@@ -280,9 +279,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _year = year,
                 _albumName = requireNotNull(album) { "Malformed audio: No album name" },
                 _albumCoverUri =
-                    ContentUris.withAppendedId(
-                        EXTERNAL_ALBUM_ART_URI,
-                        requireNotNull(albumId) { "Malformed audio: No album id" }),
+                    requireNotNull(albumId) { "Malformed audio: No album id" }.albumCoverUri,
                 _artistName = artist,
                 _albumArtistName = albumArtist,
                 _genreName = genre)
@@ -303,12 +300,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
          * This constant is safe to use.
          */
         @Suppress("InlinedApi") private const val VOLUME_EXTERNAL = MediaStore.VOLUME_EXTERNAL
-
-        /**
-         * For some reason the album art URI namespace does not have a member in [MediaStore], but
-         * it still works since at least API 21.
-         */
-        private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
 
         /**
          * The basic projection that works across all versions of android. Is incomplete, hence why

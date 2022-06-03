@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.indexer
+package org.oxycblt.auxio.music.backend
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -41,11 +41,19 @@ fun <R> ContentResolver.useQuery(
     block: (Cursor) -> R
 ): R? = queryCursor(uri, projection, selector, args)?.use(block)
 
+/**
+ * For some reason the album art URI namespace does not have a member in [MediaStore], but it still
+ * works since at least API 21.
+ */
+private val EXTERNAL_ALBUM_ART_URI = Uri.parse("content://media/external/audio/albumart")
+
 /** Converts a [Long] Audio ID into a URI to that particular audio file. */
 val Long.audioUri: Uri
-    get() =
-        ContentUris.withAppendedId(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, requireNotNull(this))
+    get() = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, this)
+
+/** Converts a [Long] Album ID into a URI pointing to MediaStore-cached album art. */
+val Long.albumCoverUri: Uri
+    get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
 
 /**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
@@ -105,7 +113,8 @@ val String.id3v2GenreName: String
 
             return substring(1 until lastIndex).toIntOrNull()?.run {
                 genreConstantTable.getOrNull(this)
-            } ?: this
+            }
+                ?: this
         }
 
         // Current name is fine.

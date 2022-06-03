@@ -25,45 +25,52 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.util.logD
 
-/** A [ViewModel] that represents the current music indexing state. */
-class MusicViewModel : ViewModel(), MusicStore.LoadCallback {
+/** A ViewModel representing the current music indexing state. */
+class IndexerViewModel : ViewModel(), Indexer.Callback {
+    private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
 
-    private val _loadState = MutableStateFlow<MusicStore.LoadState?>(null)
-    val loadState: StateFlow<MusicStore.LoadState?> = _loadState
+    private val _state = MutableStateFlow<Indexer.State?>(null)
+    val state: StateFlow<Indexer.State?> = _state
 
-    private var isBusy = false
+    init {
+        indexer.addCallback(this)
+    }
 
-    /**
-     * Initiate the loading process. This is done here since HomeFragment will be the first fragment
-     * navigated to and because SnackBars will have the best UX here.
-     */
-    fun loadMusic(context: Context) {
-        if (_loadState.value != null || isBusy) {
-            logD("Loader is busy/already completed, not reloading")
+    /** Initiate the indexing process. */
+    fun index(context: Context) {
+        if (state.value != null) {
+            logD("Loader is already loading/is completed, not reloading")
             return
         }
 
-        isBusy = true
-        _loadState.value = null
-
-        viewModelScope.launch {
-            musicStore.load(context, this@MusicViewModel)
-            isBusy = false
-        }
+        indexImpl(context)
     }
 
     /**
      * Reload the music library. Note that this call will result in unexpected behavior in the case
      * that music is reloaded after a loading process has already exceeded.
      */
-    fun reloadMusic(context: Context) {
+    fun reindex(context: Context) {
         logD("Reloading music library")
-        _loadState.value = null
-        loadMusic(context)
+        indexImpl(context)
     }
 
-    override fun onLoadStateChanged(state: MusicStore.LoadState?) {
-        _loadState.value = state
+    private fun indexImpl(context: Context) {
+        viewModelScope.launch { indexer.index(context) }
+    }
+
+    override fun onIndexerStateChanged(state: Indexer.State?) {
+        _state.value = state
+
+        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
+            musicStore.library = state.response.library
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        indexer.cancelLast()
+        indexer.removeCallback(this)
     }
 }

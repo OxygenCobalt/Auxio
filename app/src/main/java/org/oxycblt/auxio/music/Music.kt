@@ -23,8 +23,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.music.indexer.id3v2GenreName
-import org.oxycblt.auxio.music.indexer.withoutArticle
+import org.oxycblt.auxio.music.backend.id3v2GenreName
+import org.oxycblt.auxio.music.backend.withoutArticle
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.util.unlikelyToBeNull
 

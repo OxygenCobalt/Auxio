@@ -134,9 +134,8 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     // --- OVERRIDES ---
 
-    override fun onMusicUpdate(response: MusicStore.Response) {
-        if (response is MusicStore.Response.Ok) {
-            val library = response.library
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
             _songs.value = settingsManager.libSongSort.songs(library.songs)
             _albums.value = settingsManager.libAlbumSort.albums(library.albums)
             _artists.value = settingsManager.libArtistSort.artists(library.artists)
