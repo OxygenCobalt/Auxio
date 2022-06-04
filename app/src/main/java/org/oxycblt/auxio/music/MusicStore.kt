@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import org.oxycblt.auxio.music.backend.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**

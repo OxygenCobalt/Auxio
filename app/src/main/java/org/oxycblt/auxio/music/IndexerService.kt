@@ -78,19 +78,20 @@ class IndexerService : Service(), Indexer.Callback {
     override fun onDestroy() {
         super.onDestroy()
 
-        stopForeground(true)
-        isForeground = false
-
-        indexer.removeCallback(this)
+        // cancelLast actually stops foreground for us as it updates the loading state to
+        // null or completed.
         indexer.cancelLast()
+        indexer.removeCallback(this)
         serviceJob.cancel()
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         when (state) {
             is Indexer.State.Complete -> {
-                if (state.response is Indexer.Response.Ok) {
-                    // Load was completed successfully, so apply the new library.
+                if (state.response is Indexer.Response.Ok && musicStore.library == null) {
+                    // Load was completed successfully, so apply the new library if we
+                    // have not already.
+                    // TODO: Change null check for equality check [automatic rescanning]
                     musicStore.library = state.response.library
                 }
 
@@ -104,12 +105,20 @@ class IndexerService : Service(), Indexer.Callback {
                 // database.
                 stopForegroundSession()
             }
-            is Indexer.State.Query,
             is Indexer.State.Loading -> {
-                // We are loading, so we want to the enter the foreground state so that android
-                // does not kill our app. Note that while we would prefer to display the current
-                // loading progress, updates tend to be too rapid-fire for it too work well.
-                startForegroundSession()
+                // When loading, we want to enter the foreground state so that android does
+                // not shut off the loading process. Note that while we will always post the
+                // notification when initially starting, we will not update the notification
+                // unless it indicates that we have changed it.
+                val changed = notification.updateLoadingState(state.loading)
+                if (!isForeground) {
+                    logD("Starting foreground session")
+                    startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification.build())
+                    isForeground = true
+                } else if (changed) {
+                    logD("Notification changed, re-posting notification")
+                    notification.renotify()
+                }
             }
             null -> {
                 // Null is the indeterminate state that occurs on app startup or after
@@ -124,14 +133,6 @@ class IndexerService : Service(), Indexer.Callback {
         indexScope.launch { indexer.index(this@IndexerService) }
     }
 
-    private fun startForegroundSession() {
-        if (!isForeground) {
-            logD("Starting foreground service")
-            startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification.build())
-            isForeground = true
-        }
-    }
-
     private fun stopForegroundSession() {
         if (isForeground) {
             stopForeground(true)
@@ -140,7 +141,7 @@ class IndexerService : Service(), Indexer.Callback {
     }
 }
 
-private class IndexerNotification(context: Context) :
+private class IndexerNotification(private val context: Context) :
     NotificationCompat.Builder(context, CHANNEL_ID) {
     private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
 
@@ -164,6 +165,31 @@ private class IndexerNotification(context: Context) :
         setContentTitle(context.getString(R.string.info_indexer_channel_name))
         setContentText(context.getString(R.string.lbl_loading))
         setProgress(0, 0, true)
+    }
+
+    fun renotify() {
+        notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
+    }
+
+    fun updateLoadingState(loading: Indexer.Loading): Boolean {
+        when (loading) {
+            is Indexer.Loading.Indeterminate -> {
+                setContentText(context.getString(R.string.lbl_loading))
+                setProgress(0, 0, true)
+                return true
+            }
+            is Indexer.Loading.Songs -> {
+                // Only update the notification every 50 songs to prevent excessive updates.
+                if (loading.current % 50 == 0) {
+                    setContentText(
+                        context.getString(R.string.fmt_indexing, loading.current, loading.total))
+                    setProgress(loading.total, loading.current, false)
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     companion object {

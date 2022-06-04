@@ -2,6 +2,9 @@
 
 ## dev [v2.3.2, v2.4.0, or v3.0.0]
 
+#### Dev/Meta
+- Moved music loading to a foreground service
+
 ## v2.3.1
 
 #### What's Improved

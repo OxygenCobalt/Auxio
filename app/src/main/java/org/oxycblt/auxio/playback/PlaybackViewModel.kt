@@ -40,9 +40,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
  *
- * **PLEASE Use this instead of [PlaybackStateManager], UIs are extremely volatile and this
- * provides an interface that properly sanitizes input and abstracts functions unlike the master
- * class.**
+ * **PLEASE Use this instead of [PlaybackStateManager], UIs are extremely volatile and this provides
+ * an interface that properly sanitizes input and abstracts functions unlike the master class.**
  *
  * @author OxygenCobalt
  */

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.backend
+package org.oxycblt.auxio.music
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -98,27 +98,27 @@ val String.withoutArticle: String
  */
 val String.id3v2GenreName: String
     get() {
-        if (isDigitsOnly()) {
-            // ID3v1, just parse as an integer
-            return genreConstantTable.getOrNull(toInt()) ?: this
-        }
+        val newName =
+            when {
+                // ID3v1, should just be digits
+                isDigitsOnly() -> genreConstantTable.getOrNull(toInt())
+                // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
+                // Any genres formatted as "(CHARS)" will be ignored.
+                startsWith('(') && endsWith(')') -> {
 
-        if (startsWith('(') && endsWith(')')) {
-            // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
-            // Any genres formatted as "(CHARS)" will be ignored.
+                    // TODO: Technically, the spec for genres is far more complex here. Perhaps we
+                    //  should copy mutagen's implementation?
+                    //  https://github.com/quodlibet/mutagen/blob/master/mutagen/id3/_frames.py
 
-            // TODO: Technically, the spec for genres is far more complex here. Perhaps we
-            //  should copy mutagen's implementation?
-            //  https://github.com/quodlibet/mutagen/blob/master/mutagen/id3/_frames.py
-
-            return substring(1 until lastIndex).toIntOrNull()?.run {
-                genreConstantTable.getOrNull(this)
+                    substring(1 until lastIndex).toIntOrNull()?.let {
+                        genreConstantTable.getOrNull(it)
+                    }
+                }
+                // Current name is fine
+                else -> null
             }
-                ?: this
-        }
 
-        // Current name is fine.
-        return this
+        return newName ?: this
     }
 
 /**

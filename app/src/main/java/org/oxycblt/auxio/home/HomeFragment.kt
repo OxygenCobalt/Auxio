@@ -57,6 +57,7 @@ import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -260,10 +261,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private fun handleIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
 
-        if (state is Indexer.State.Complete) {
-            handleLoaderResponse(binding, state.response)
-        } else {
-            handleLoadingState(binding, state)
+        when (state) {
+            is Indexer.State.Complete -> handleLoaderResponse(binding, state.response)
+            is Indexer.State.Loading -> handleLoadingState(binding, state.loading)
+            null -> {
+                logW("Loading is in indeterminate state, doing nothing")
+            }
         }
     }
 
@@ -319,24 +322,27 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoadingState(binding: FragmentHomeBinding, event: Indexer.State?) {
+    private fun handleLoadingState(binding: FragmentHomeBinding, loading: Indexer.Loading) {
         binding.homeFab.hide()
         binding.homePager.visibility = View.INVISIBLE
         binding.homeLoadingContainer.visibility = View.VISIBLE
         binding.homeLoadingProgress.visibility = View.VISIBLE
         binding.homeLoadingAction.visibility = View.INVISIBLE
 
-        if (event is Indexer.State.Loading) {
-            binding.homeLoadingStatus.textSafe =
-                getString(R.string.fmt_indexing, event.current, event.total)
-            binding.homeLoadingProgress.apply {
-                isIndeterminate = false
-                max = event.total
-                progress = event.current
+        when (loading) {
+            is Indexer.Loading.Indeterminate -> {
+                binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
+                binding.homeLoadingProgress.isIndeterminate = true
             }
-        } else {
-            binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
-            binding.homeLoadingProgress.isIndeterminate = true
+            is Indexer.Loading.Songs -> {
+                binding.homeLoadingStatus.textSafe =
+                    getString(R.string.fmt_indexing, loading.current, loading.total)
+                binding.homeLoadingProgress.apply {
+                    isIndeterminate = false
+                    max = loading.total
+                    progress = loading.current
+                }
+            }
         }
     }
 

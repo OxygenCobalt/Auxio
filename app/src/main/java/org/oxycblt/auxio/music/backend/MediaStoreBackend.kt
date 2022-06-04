@@ -26,7 +26,12 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.albumCoverUri
+import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
+import org.oxycblt.auxio.music.no
+import org.oxycblt.auxio.music.queryCursor
+import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /*
@@ -88,9 +93,8 @@ import org.oxycblt.auxio.util.contentResolverSafe
  */
 
 /**
- * Represents a [OldIndexer.Backend] that loads music from the media database ([MediaStore]). This
- * is not a fully-featured class by itself, and it's API-specific derivatives should be used
- * instead.
+ * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
+ * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
  * @author OxygenCobalt
  */
 abstract class MediaStoreBackend : Indexer.Backend {
@@ -130,7 +134,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     override fun loadSongs(
         context: Context,
         cursor: Cursor,
-        onAddSong: (count: Int, total: Int) -> Unit
+        emitLoading: (Indexer.Loading) -> Unit
     ): Collection<Song> {
         // Note: We do not actually update the callback with an Indexing state, this is because
         // loading music from MediaStore tends to be quite fast, with the only bottlenecks being

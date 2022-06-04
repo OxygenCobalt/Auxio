@@ -33,10 +33,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.iso8601year
+import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.util.logW
 
 /**
- * A [OldIndexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
+ * A [Indexer.Backend] that leverages ExoPlayer's metadata retrieval system to index metadata.
  *
  * Normally, leveraging ExoPlayer's metadata system would be a terrible idea, as it is horrifically
  * slow. However, if we parallelize it, we can get similar throughput to other metadata extractors,
@@ -46,12 +49,8 @@ import org.oxycblt.auxio.util.logW
  * pitfalls given ExoPlayer's cozy relationship with native code. However, this backend should do
  * enough to eliminate such issues.
  *
- * TODO: This class is currently not used, as there are a number of technical improvements that must
- * be made first before it can be integrated.
- *
  * @author OxygenCobalt
  */
-@Suppress("UNUSED")
 class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     private val runningTasks: Array<Future<TrackGroupArray>?> = arrayOfNulls(TASK_CAPACITY)
 
@@ -62,7 +61,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     override fun loadSongs(
         context: Context,
         cursor: Cursor,
-        onAddSong: (count: Int, total: Int) -> Unit
+        emitLoading: (Indexer.Loading) -> Unit
     ): Collection<Song> {
         // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
         // add a completed song to the list. To prevent a crash in that case, we use the
@@ -90,7 +89,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         AudioCallback(audio) {
                             runningTasks[index] = null
                             songs.add(it)
-                            onAddSong(songs.size, cursor.count)
+                            emitLoading(Indexer.Loading.Songs(songs.size, cursor.count))
                         },
                         // Normal JVM dispatcher will suffice here, as there is no IO work
                         // going on (and there is no cost from switching contexts with executors)

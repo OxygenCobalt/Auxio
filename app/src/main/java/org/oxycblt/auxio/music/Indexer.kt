@@ -54,12 +54,17 @@ import org.oxycblt.auxio.util.logE
  * @author OxygenCobalt
  */
 class Indexer {
-    private var state: State? = null
+    private var lastResponse: Response? = null
+    private var loadingState: Loading? = null
+
     private var currentGeneration: Long = 0
     private val callbacks = mutableListOf<Callback>()
 
     fun addCallback(callback: Callback) {
-        callback.onIndexerStateChanged(state)
+        val currentState =
+            loadingState?.let { State.Loading(it) } ?: lastResponse?.let { State.Complete(it) }
+
+        callback.onIndexerStateChanged(currentState)
         callbacks.add(callback)
     }
 
@@ -75,7 +80,7 @@ class Indexer {
                 PackageManager.PERMISSION_DENIED
 
         if (notGranted) {
-            emitState(State.Complete(Response.NoPerms), generation)
+            emitCompletion(Response.NoPerms, generation)
             return
         }
 
@@ -98,9 +103,13 @@ class Indexer {
                 Response.Err(e)
             }
 
-        emitState(State.Complete(response), generation)
+        emitCompletion(response, generation)
     }
 
+    /**
+     * Request that re-indexing should be done. This should be used by components that do not manage
+     * the indexing process to re-index music.
+     */
     fun requestReindex() {
         for (callback in callbacks) {
             callback.onRequestReindex()
@@ -116,17 +125,41 @@ class Indexer {
     fun cancelLast() {
         synchronized(this) {
             currentGeneration++
-            emitState(null, currentGeneration)
+            emitLoading(null, currentGeneration)
         }
     }
 
-    private fun emitState(newState: State?, generation: Long) {
+    private fun emitLoading(loading: Loading?, generation: Long) {
         synchronized(this) {
-            if (currentGeneration == generation) {
-                state = newState
-                for (callback in callbacks) {
-                    callback.onIndexerStateChanged(newState)
-                }
+            if (currentGeneration != generation) {
+                return
+            }
+
+            loadingState = loading
+
+            // If we have canceled the loading process, we want to revert to a previous completion
+            // whenever possible to prevent state inconsistency.
+            val state =
+                loadingState?.let { State.Loading(it) } ?: lastResponse?.let { State.Complete(it) }
+
+            for (callback in callbacks) {
+                callback.onIndexerStateChanged(state)
+            }
+        }
+    }
+
+    private fun emitCompletion(response: Response, generation: Long) {
+        synchronized(this) {
+            if (currentGeneration != generation) {
+                return
+            }
+
+            lastResponse = response
+            loadingState = null
+
+            val state = State.Complete(response)
+            for (callback in callbacks) {
+                callback.onIndexerStateChanged(state)
             }
         }
     }
@@ -136,7 +169,7 @@ class Indexer {
      * calling this function.
      */
     private fun indexImpl(context: Context, generation: Long): MusicStore.Library? {
-        emitState(State.Query, generation)
+        emitLoading(Loading.Indeterminate, generation)
 
         // Establish the backend to use when initially loading songs.
         val mediaStoreBackend =
@@ -188,9 +221,7 @@ class Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.loadSongs(context, cursor) { count, total ->
-                    emitState(State.Loading(count, total), generation)
-                }
+                backend.loadSongs(context, cursor) { loading -> emitLoading(loading, generation) }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -304,9 +335,13 @@ class Indexer {
 
     /** Represents the current indexer state. */
     sealed class State {
-        object Query : State()
-        data class Loading(val current: Int, val total: Int) : State()
+        data class Loading(val loading: Indexer.Loading) : State()
         data class Complete(val response: Response) : State()
+    }
+
+    sealed class Loading {
+        object Indeterminate : Loading()
+        class Songs(val current: Int, val total: Int) : Loading()
     }
 
     /** Represents the possible outcomes of a loading process. */
@@ -318,6 +353,14 @@ class Indexer {
     }
 
     interface Callback {
+        /**
+         * Called when the current state of the Indexer changed.
+         *
+         * Notes:
+         * - Null means that no loading is going on, but no load has completed either.
+         * - [State.Complete] may represent a previous load, if the current loading process was
+         * canceled for one reason or another.
+         */
         fun onIndexerStateChanged(state: State?)
         fun onRequestReindex() {}
     }
@@ -331,7 +374,7 @@ class Indexer {
         fun loadSongs(
             context: Context,
             cursor: Cursor,
-            onAddSong: (count: Int, total: Int) -> Unit
+            emitLoading: (Loading) -> Unit
         ): Collection<Song>
     }
 
