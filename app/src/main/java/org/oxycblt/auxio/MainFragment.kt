@@ -70,11 +70,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        // Initialize music loading. Do it here so that it shows on every fragment that this
-        // one contains.
-        // TODO: Move this to a service [automatic rescanning]
-        musicModel.index(requireContext())
-
         launch { navModel.mainNavigationAction.collect(::handleMainNavigation) }
         launch { navModel.exploreNavigationItem.collect(::handleExploreNavigation) }
         launch { playbackModel.song.collect(::updateSong) }

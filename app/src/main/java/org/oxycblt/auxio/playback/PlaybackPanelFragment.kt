@@ -121,6 +121,7 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         binding.playbackSong.isSelected = false
         binding.playbackSeekBar.callback = null
+        queueItem = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {

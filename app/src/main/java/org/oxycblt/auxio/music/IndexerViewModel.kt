@@ -17,18 +17,13 @@
  
 package org.oxycblt.auxio.music
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.oxycblt.auxio.util.logD
 
 /** A ViewModel representing the current music indexing state. */
 class IndexerViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
-    private val musicStore = MusicStore.getInstance()
 
     private val _state = MutableStateFlow<Indexer.State?>(null)
     val state: StateFlow<Indexer.State?> = _state
@@ -37,40 +32,15 @@ class IndexerViewModel : ViewModel(), Indexer.Callback {
         indexer.addCallback(this)
     }
 
-    /** Initiate the indexing process. */
-    fun index(context: Context) {
-        if (state.value != null) {
-            logD("Loader is already loading/is completed, not reloading")
-            return
-        }
-
-        indexImpl(context)
-    }
-
-    /**
-     * Reload the music library. Note that this call will result in unexpected behavior in the case
-     * that music is reloaded after a loading process has already exceeded.
-     */
-    fun reindex(context: Context) {
-        logD("Reloading music library")
-        indexImpl(context)
-    }
-
-    private fun indexImpl(context: Context) {
-        viewModelScope.launch { indexer.index(context) }
+    fun reindex() {
+        indexer.requestReindex()
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
         _state.value = state
-
-        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
-            musicStore.library = state.response.library
-        }
     }
 
     override fun onCleared() {
-        super.onCleared()
-        indexer.cancelLast()
         indexer.removeCallback(this)
     }
 }

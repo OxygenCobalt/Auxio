@@ -81,7 +81,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         // Build the permission launcher here as you can only do it in onCreateView/onCreate
         storagePermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                indexerModel.reindex(requireContext())
+                indexerModel.reindex()
             }
 
         binding.homeToolbar.apply {
@@ -287,7 +287,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeLoadingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { indexerModel.reindex(requireContext()) }
+                        setOnClickListener { indexerModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
@@ -296,7 +296,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     binding.homeLoadingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
-                        setOnClickListener { indexerModel.reindex(requireContext()) }
+                        setOnClickListener { indexerModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoPerms -> {

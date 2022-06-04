@@ -52,8 +52,10 @@ object IntegerTable {
     /** QueueSongViewHolder */
     const val ITEM_TYPE_QUEUE_SONG = 0xA00E
 
-    /** "Music playback" Notification code */
+    /** "Music playback" notification code */
     const val PLAYBACK_NOTIFICATION_CODE = 0xA0A0
+    /** "Music loading" notification code */
+    const val INDEXER_NOTIFICATION_CODE = 0xA0A1
     /** Intent request code */
     const val REQUEST_CODE = 0xA0C0
 

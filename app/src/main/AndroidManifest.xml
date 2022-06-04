@@ -68,11 +68,19 @@
         </activity>
 
         <service
+            android:name=".music.IndexerService"
+            android:foregroundServiceType="dataSync"
+            android:icon="@mipmap/ic_launcher"
+            android:exported="false"
+            android:roundIcon="@mipmap/ic_launcher" />
+
+        <service
             android:name=".playback.system.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="false"
             android:roundIcon="@mipmap/ic_launcher" />
+
 
         <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.

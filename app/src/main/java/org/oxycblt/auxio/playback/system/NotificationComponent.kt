@@ -35,8 +35,8 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.newBroadcastIntent
-import org.oxycblt.auxio.util.newMainIntent
+import org.oxycblt.auxio.util.newBroadcastPendingIntent
+import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
  * The unified notification for [PlaybackService]. Due to the nature of how this notification is
@@ -68,7 +68,7 @@ class NotificationComponent(
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
-        setContentIntent(context.newMainIntent())
+        setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
@@ -182,7 +182,7 @@ class NotificationComponent(
     ): NotificationCompat.Action {
         val action =
             NotificationCompat.Action.Builder(
-                iconRes, actionName, context.newBroadcastIntent(actionName))
+                iconRes, actionName, context.newBroadcastPendingIntent(actionName))
 
         return action.build()
     }

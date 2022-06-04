@@ -24,7 +24,6 @@ import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
@@ -77,6 +76,7 @@ class Indexer {
 
         if (notGranted) {
             emitState(State.Complete(Response.NoPerms), generation)
+            return
         }
 
         val response =
@@ -99,6 +99,12 @@ class Indexer {
             }
 
         emitState(State.Complete(response), generation)
+    }
+
+    fun requestReindex() {
+        for (callback in callbacks) {
+            callback.onRequestReindex()
+        }
     }
 
     /**
@@ -313,6 +319,7 @@ class Indexer {
 
     interface Callback {
         fun onIndexerStateChanged(state: State?)
+        fun onRequestReindex() {}
     }
 
     /** Represents a backend that metadata can be extracted from. */

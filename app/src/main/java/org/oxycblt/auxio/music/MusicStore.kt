@@ -24,8 +24,8 @@ import org.oxycblt.auxio.music.backend.useQuery
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
- * The main storage for music items. Getting an instance of this object is more complicated as it
- * loads asynchronously. See the companion object for more.
+ * The main storage for music items. The items themselves are located in a [Library], however this
+ * might not be available at all times.
  *
  * TODO: Add automatic rescanning [major change]
  * @author OxygenCobalt
@@ -88,6 +88,7 @@ class MusicStore private constructor() {
     companion object {
         @Volatile private var INSTANCE: MusicStore? = null
 
+        /** Get the process-level instance of [MusicStore] */
         fun getInstance(): MusicStore {
             val currentInstance = INSTANCE
 

@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.databinding.ActivityMainBinding
+import org.oxycblt.auxio.music.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        startService(Intent(this, IndexerService::class.java))
         startService(Intent(this, PlaybackService::class.java))
 
         // If we have a file URI already, open it. Otherwise, restore the playback state.

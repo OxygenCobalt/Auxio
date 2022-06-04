@@ -23,8 +23,8 @@ import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.util.newBroadcastIntent
-import org.oxycblt.auxio.util.newMainIntent
+import org.oxycblt.auxio.util.newBroadcastPendingIntent
+import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
  * The default widget is displayed whenever there is no music playing. It just shows the message "No
@@ -73,7 +73,7 @@ fun createLargeWidget(context: Context, state: WidgetComponent.WidgetState): Rem
 
 private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layout)
-    views.setOnClickPendingIntent(android.R.id.background, context.newMainIntent())
+    views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
     return views
 }
 
@@ -111,7 +111,8 @@ private fun RemoteViews.applyPlayPauseControls(
     state: WidgetComponent.WidgetState
 ): RemoteViews {
     setOnClickPendingIntent(
-        R.id.widget_play_pause, context.newBroadcastIntent(PlaybackService.ACTION_PLAY_PAUSE))
+        R.id.widget_play_pause,
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
 
     setImageViewResource(
         R.id.widget_play_pause,
@@ -131,10 +132,10 @@ private fun RemoteViews.applyBasicControls(
     applyPlayPauseControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_skip_prev, context.newBroadcastIntent(PlaybackService.ACTION_SKIP_PREV))
+        R.id.widget_skip_prev, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_PREV))
 
     setOnClickPendingIntent(
-        R.id.widget_skip_next, context.newBroadcastIntent(PlaybackService.ACTION_SKIP_NEXT))
+        R.id.widget_skip_next, context.newBroadcastPendingIntent(PlaybackService.ACTION_SKIP_NEXT))
 
     return this
 }
@@ -146,10 +147,12 @@ private fun RemoteViews.applyFullControls(
     applyBasicControls(context, state)
 
     setOnClickPendingIntent(
-        R.id.widget_repeat, context.newBroadcastIntent(PlaybackService.ACTION_INC_REPEAT_MODE))
+        R.id.widget_repeat,
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_INC_REPEAT_MODE))
 
     setOnClickPendingIntent(
-        R.id.widget_shuffle, context.newBroadcastIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
+        R.id.widget_shuffle,
+        context.newBroadcastPendingIntent(PlaybackService.ACTION_INVERT_SHUFFLE))
 
     // Like notifications, use the remote variants of icons since we really don't want to hack
     // indicators.

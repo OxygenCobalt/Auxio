@@ -222,7 +222,7 @@ fun Context.showToast(@StringRes str: Int) {
 }
 
 /** Create a [PendingIntent] that leads to Auxio's [MainActivity] */
-fun Context.newMainIntent(): PendingIntent =
+fun Context.newMainPendingIntent(): PendingIntent =
     PendingIntent.getActivity(
         this,
         IntegerTable.REQUEST_CODE,
@@ -230,7 +230,7 @@ fun Context.newMainIntent(): PendingIntent =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 
 /** Create a broadcast [PendingIntent] */
-fun Context.newBroadcastIntent(what: String): PendingIntent =
+fun Context.newBroadcastPendingIntent(what: String): PendingIntent =
     PendingIntent.getBroadcast(
         this,
         IntegerTable.REQUEST_CODE,
