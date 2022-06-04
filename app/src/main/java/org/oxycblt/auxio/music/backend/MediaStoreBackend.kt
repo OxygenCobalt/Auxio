@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.excluded.ExcludedDatabase
+import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.useQuery
@@ -156,11 +157,12 @@ abstract class MediaStoreBackend : Indexer.Backend {
             val nameIndex = genreCursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
 
             while (genreCursor.moveToNext()) {
-                // Genre names can be a normal name, an ID3v2 constant, or null. Normal names
-                // are resolved as usual, but null values don't make sense and are often junk
-                // anyway, so we skip genres that have them.
+                // Genre names could theoretically be anything, including null for some reason.
+                // Null values are junk and should be ignored, but since we cannot assume the
+                // format a genre was derived from, we have to treat them like they are ID3
+                // genres, even when they might not be.
                 val id = genreCursor.getLong(idIndex)
-                val name = genreCursor.getStringOrNull(nameIndex) ?: continue
+                val name = (genreCursor.getStringOrNull(nameIndex) ?: continue).id3GenreName
 
                 context.contentResolverSafe.useQuery(
                     MediaStore.Audio.Genres.Members.getContentUri(VOLUME_EXTERNAL, id),

@@ -93,38 +93,62 @@ val String.withoutArticle: String
     }
 
 /**
- * Decodes the genre name from an ID3(v2) constant. See [genreConstantTable] for the genre constant
- * map that Auxio uses.
+ * Decodes the genre name from an ID3(v2) constant. See [GENRE_TABLE] for the genre constant map
+ * that Auxio uses.
  */
-val String.id3v2GenreName: String
-    get() {
-        val newName =
-            when {
-                // ID3v1, should just be digits
-                isDigitsOnly() -> genreConstantTable.getOrNull(toInt())
-                // ID3v2.3/ID3v2.4, parse out the parentheses and get the integer
-                // Any genres formatted as "(CHARS)" will be ignored.
-                startsWith('(') && endsWith(')') -> {
+val String.id3GenreName: String
+    get() = parseId3v1Genre() ?: parseId3v2Genre() ?: this
 
-                    // TODO: Technically, the spec for genres is far more complex here. Perhaps we
-                    //  should copy mutagen's implementation?
-                    //  https://github.com/quodlibet/mutagen/blob/master/mutagen/id3/_frames.py
+private fun String.parseId3v1Genre(): String? =
+    when {
+        // ID3v1 genres are a plain integer value without formatting, so in that case
+        // try to index the genre table with such.
+        isDigitsOnly() -> GENRE_TABLE.getOrNull(toInt())
 
-                    substring(1 until lastIndex).toIntOrNull()?.let {
-                        genreConstantTable.getOrNull(it)
-                    }
-                }
-                // Current name is fine
-                else -> null
-            }
-
-        return newName ?: this
+        // CR and RX are not technically ID3v1, but are formatted similarly to a plain number.
+        this == "CR" -> "Cover"
+        this == "RX" -> "Remix"
+        else -> null
     }
+
+private fun String.parseId3v2Genre(): String? {
+    val groups = GENRE_RE.matchEntire(this)?.groups ?: return null
+    val genres = mutableListOf<String>()
+
+    // ID3v2 genres are far more complex and require string grokking to properly implement.
+    // You can read the spec for it here: https://id3.org/id3v2.3.0#TCON
+    // This implementation in particular is based off Mutagen's genre parser.
+
+    // Case 1: Genre IDs in the format (DIGITS|RX|CR). If these exist, parse them as
+    // ID3v1 tags.
+    val genreIds = groups[1]
+    if (genreIds != null && genreIds.value.isNotEmpty()) {
+        val ids = genreIds.value.substring(1 until genreIds.value.lastIndex).split(")(")
+        for (id in ids) {
+            id.parseId3v1Genre()?.let(genres::add)
+        }
+    }
+
+    // Case 2: Genre names as a normal string. The only case we have to look out for are
+    // escaped strings formatted as ((genre).
+    val genreName = groups[3]
+    if (genreName != null && genreName.value.isNotEmpty()) {
+        if (genreName.value.startsWith("((")) {
+            genres.add(genreName.value.substring(1))
+        } else {
+            genres.add(genreName.value)
+        }
+    }
+
+    return genres.distinctBy { it }.joinToString(separator = ", ").ifEmpty { null }
+}
+
+private val GENRE_RE = Regex("((?:\\(([0-9]+|RX|CR)\\))*)(.+)?")
 
 /**
  * A complete table of all the constant genre values for ID3(v2), including non-standard extensions.
  */
-private val genreConstantTable =
+private val GENRE_TABLE =
     arrayOf(
         // ID3 Standard
         "Blues",

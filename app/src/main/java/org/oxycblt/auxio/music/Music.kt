@@ -253,8 +253,7 @@ data class Genre(override val rawName: String?, override val songs: List<Song>) 
         get() = (rawName ?: MediaStore.UNKNOWN_STRING).hashCode().toLong()
 
     override val sortName: String?
-        get() = rawName?.id3v2GenreName
+        get() = rawName
 
-    override fun resolveName(context: Context) =
-        rawName?.id3v2GenreName ?: context.getString(R.string.def_genre)
+    override fun resolveName(context: Context) = rawName ?: context.getString(R.string.def_genre)
 }

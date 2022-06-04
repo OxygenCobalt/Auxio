@@ -34,6 +34,7 @@ import kotlinx.coroutines.asExecutor
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.util.logW
@@ -169,8 +170,8 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             "TPE1" -> audio.artist = value
             // Album artist
             "TPE2" -> audio.albumArtist = value
-            // Genre, with the weird ID3v2 rules
-            "TCON" -> audio.genre = value
+            // Genre, with the weird ID3 rules
+            "TCON" -> audio.genre = value.id3GenreName
         }
     }
 
@@ -196,7 +197,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             "ARTIST" -> audio.artist = value
             // Album artist
             "ALBUMARTIST" -> audio.albumArtist = value
-            // Genre, assumed that ID3v2 rules will apply here too.
+            // Genre, assumed that ID3 rules do not apply here.
             "GENRE" -> audio.genre = value
         }
     }
