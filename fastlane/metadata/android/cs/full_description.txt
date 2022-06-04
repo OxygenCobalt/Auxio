@@ -1,0 +1,16 @@
+Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spousty zbytečných funkcí, které mají ostatní hudební přehrávače. Díky postavení na systému <a href="https://exoplayer.dev/">Exoplayer</a> má Auxio mnohem lepší zážitek z poslechu v porovnání s ostatními aplikacemi, které používají nativní API MediaPlayer. Ve zkratce prostě <b>přehrává hudbu</b>.
+
+<b>Funkce</b>
+
+- Přehrávač založený na systému ExoPlayer
+- Přizpůsobitelné rozhraní a chování
+- Pokročilé indexování médií, které upřednostňuje správná metadata
+- Spolehlivé uchovávání stavu přehrávání
+- Podpora ReplayGain (na MP3, MP4, FLAC, OGG, a OPUS)
+- Material You (pouze Android 12+)
+- Edge-to-edge
+- Podpora vložených obalů
+- Funkce hledání
+- Zaměření zvuku/headsetu
+- Plně soukromý a offline
+- Žádné zakulacené obaly alb (Pokud je tedy nechcete. Jinak jsou k dispozici.)
