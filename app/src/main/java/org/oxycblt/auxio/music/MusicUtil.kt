@@ -108,6 +108,8 @@ private fun String.parseId3v1Genre(): String? =
         // CR and RX are not technically ID3v1, but are formatted similarly to a plain number.
         this == "CR" -> "Cover"
         this == "RX" -> "Remix"
+
+        // Current name is fine.
         else -> null
     }
 
@@ -119,7 +121,7 @@ private fun String.parseId3v2Genre(): String? {
     // You can read the spec for it here: https://id3.org/id3v2.3.0#TCON
     // This implementation in particular is based off Mutagen's genre parser.
 
-    // Case 1: Genre IDs in the format (DIGITS|RX|CR). If these exist, parse them as
+    // Case 1: Genre IDs in the format (INT|RX|CR). If these exist, parse them as
     // ID3v1 tags.
     val genreIds = groups[1]
     if (genreIds != null && genreIds.value.isNotEmpty()) {
@@ -143,6 +145,7 @@ private fun String.parseId3v2Genre(): String? {
     return genres.distinctBy { it }.joinToString(separator = ", ").ifEmpty { null }
 }
 
+/** Regex that implements matching for ID3v2's genre format. */
 private val GENRE_RE = Regex("((?:\\(([0-9]+|RX|CR)\\))*)(.+)?")
 
 /**

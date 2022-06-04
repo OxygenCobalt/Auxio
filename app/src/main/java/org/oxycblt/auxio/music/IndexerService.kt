@@ -88,10 +88,10 @@ class IndexerService : Service(), Indexer.Callback {
     override fun onIndexerStateChanged(state: Indexer.State?) {
         when (state) {
             is Indexer.State.Complete -> {
-                if (state.response is Indexer.Response.Ok && musicStore.library == null) {
+                if (state.response is Indexer.Response.Ok &&
+                    state.response.library != musicStore.library) {
                     // Load was completed successfully, so apply the new library if we
                     // have not already.
-                    // TODO: Change null check for equality check [automatic rescanning]
                     musicStore.library = state.response.library
                 }
 

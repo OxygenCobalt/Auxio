@@ -57,7 +57,7 @@ class Indexer {
     private var lastResponse: Response? = null
     private var loadingState: Loading? = null
 
-    private var currentGeneration: Long = 0
+    private var currentGeneration = 0L
     private val callbacks = mutableListOf<Callback>()
 
     fun addCallback(callback: Callback) {

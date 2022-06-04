@@ -2,7 +2,11 @@
 
 ## dev [v2.3.2, v2.4.0, or v3.0.0]
 
+#### What's Improved
+- Genre parsing now handles multiple integer values and cover/remix indicators
+
 #### Dev/Meta
+- New translations [Fjuro -> Czech]
 - Moved music loading to a foreground service
 
 ## v2.3.1
