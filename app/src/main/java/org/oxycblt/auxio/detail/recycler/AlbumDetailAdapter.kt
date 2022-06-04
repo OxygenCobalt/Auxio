@@ -45,7 +45,6 @@ import org.oxycblt.auxio.util.textSafe
 class AlbumDetailAdapter(listener: Listener) :
     DetailAdapter<AlbumDetailAdapter.Listener>(listener, DIFFER) {
     private var currentSong: Song? = null
-    private var currentSongPos: Int? = null
 
     override fun getCreatorFromItem(item: Item) =
         super.getCreatorFromItem(item)
@@ -81,14 +80,13 @@ class AlbumDetailAdapter(listener: Listener) :
         }
     }
 
-    override fun shouldHighlightViewHolder(item: Item) = item.id == currentSong?.id
+    override fun shouldHighlightViewHolder(item: Item) = item is Song && item.id == currentSong?.id
 
     /** Update the [song] that this adapter should highlight */
     fun highlightSong(song: Song?) {
         if (song == currentSong) return
+        highlightImpl(currentSong, song)
         currentSong = song
-        currentSongPos?.let { pos -> notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED) }
-        currentSongPos = highlightItem(song)
     }
 
     companion object {

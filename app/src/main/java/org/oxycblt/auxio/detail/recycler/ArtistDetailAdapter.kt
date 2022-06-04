@@ -45,10 +45,7 @@ import org.oxycblt.auxio.util.textSafe
 class ArtistDetailAdapter(listener: Listener) :
     DetailAdapter<DetailAdapter.Listener>(listener, DIFFER) {
     private var currentAlbum: Album? = null
-    private var currentAlbumPos: Int? = null
-
     private var currentSong: Song? = null
-    private var currentHighlightedSongPos: Int? = null
 
     override fun getCreatorFromItem(item: Item) =
         super.getCreatorFromItem(item)
@@ -92,17 +89,15 @@ class ArtistDetailAdapter(listener: Listener) :
     /** Update the current [album] that this adapter should highlight */
     fun highlightAlbum(album: Album?) {
         if (album == currentAlbum) return
+        highlightImpl(currentAlbum, album)
         currentAlbum = album
-        currentAlbumPos?.let { pos -> notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED) }
-        currentAlbumPos = highlightItem(album)
     }
 
     /** Update the [song] that this adapter should highlight */
     fun highlightSong(song: Song?) {
         if (song == currentSong) return
+        highlightImpl(currentSong, song)
         currentSong = song
-        currentHighlightedSongPos?.let { notifyItemChanged(it, PAYLOAD_HIGHLIGHT_CHANGED) }
-        currentHighlightedSongPos = highlightItem(song)
     }
 
     companion object {

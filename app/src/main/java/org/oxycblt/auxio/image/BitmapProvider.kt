@@ -25,7 +25,6 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
 
 /**
  * A utility to provide bitmaps in a manner less prone to race conditions.

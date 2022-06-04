@@ -35,6 +35,7 @@ import org.oxycblt.auxio.ui.NewHeaderViewHolder
 import org.oxycblt.auxio.ui.SimpleItemCallback
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.textSafe
 
 abstract class DetailAdapter<L : DetailAdapter.Listener>(
@@ -43,16 +44,26 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
 ) : MultiAdapter<L>(listener) {
     abstract fun shouldHighlightViewHolder(item: Item): Boolean
 
-    protected inline fun <reified T : Item> highlightItem(newItem: T?): Int? {
-        if (newItem == null) {
-            return null
+    protected inline fun <reified T : Item> highlightImpl(oldItem: T?, newItem: T?) {
+        if (oldItem != null) {
+            val pos = data.currentList.indexOfFirst { item -> item.id == oldItem.id && item is T }
+
+            if (pos > -1) {
+                notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
+            } else {
+                logW("oldItem was not in adapter data")
+            }
         }
 
-        // Use existing data instead of having to re-sort it.
-        // We also have to account for the album count when searching for the ViewHolder.
-        val pos = data.currentList.indexOfFirst { item -> item.id == newItem.id && item is T }
-        notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
-        return pos
+        if (newItem != null) {
+            val pos = data.currentList.indexOfFirst { item -> item is T && item.id == newItem.id }
+
+            if (pos > -1) {
+                notifyItemChanged(pos, PAYLOAD_HIGHLIGHT_CHANGED)
+            } else {
+                logW("newItem was not in adapter data")
+            }
+        }
     }
 
     @Suppress("LeakingThis") override val data = AsyncBackingData(this, diffCallback)
@@ -90,7 +101,7 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
     companion object {
         // This payload value serves two purposes:
         // 1. It disables animations from notifyItemChanged, which looks bad when highlighting
-        // values.
+        // ViewHolders.
         // 2. It instructs adapters to avoid re-binding information, and instead simply
         // change the highlight state.
         val PAYLOAD_HIGHLIGHT_CHANGED = Any()
