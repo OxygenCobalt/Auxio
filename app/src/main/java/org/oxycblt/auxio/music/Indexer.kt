@@ -61,6 +61,13 @@ class Indexer {
     private var currentGeneration = 0L
     private val callbacks = mutableListOf<Callback>()
 
+    /**
+     * Whether this instance is in an indeterminate state or not, where nothing has been previously
+     * loaded, yet no loading is going on.
+     */
+    val isIndeterminate: Boolean
+        get() = lastResponse == null && loadingState == null
+
     fun addCallback(callback: Callback) {
         val currentState =
             loadingState?.let { State.Loading(it) } ?: lastResponse?.let { State.Complete(it) }
