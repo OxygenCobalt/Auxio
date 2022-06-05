@@ -62,6 +62,7 @@ class IndexerService : Service(), Indexer.Callback {
 
         notification = IndexerNotification(this)
 
+        // FIXME: Do not re-index if Indexer has already completed
         indexer.addCallback(this)
         if (musicStore.library == null) {
             logD("No library present, loading music now")

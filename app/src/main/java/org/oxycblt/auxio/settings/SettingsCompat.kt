@@ -17,10 +17,17 @@
  
 package org.oxycblt.auxio.settings
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
+import android.os.Environment
 import androidx.core.content.edit
+import org.oxycblt.auxio.music.excluded.ExcludedDirectory
 import org.oxycblt.auxio.ui.accent.Accent
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.queryAll
 
 // A couple of utils for migrating from old settings values to the new formats
 
@@ -67,6 +74,67 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     }
 
     return Accent.from(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
+}
+
+/**
+ * Converts paths from the old excluded directory database to a list of modern [ExcludedDirectory]
+ * instances.
+ *
+ * Historically, Auxio used an excluded directory database shamelessly ripped from Phonograph. This
+ * was a dumb idea, as the choice of a full-blown database for a few paths was overkill, version
+ * boundaries were not respected, and the data format limited us to grokking DATA.
+ *
+ * In 2.4.0, Auxio switched to a system based on SharedPreferences, also switching from a flat
+ * path-based excluded system to a volume-based excluded system at the same time. These are both
+ * rolled into this conversion.
+ */
+fun handleExcludedCompat(context: Context): List<ExcludedDirectory> {
+    val db = LegacyExcludedDatabase(context)
+    val primaryPrefix = Environment.getExternalStorageDirectory().absolutePath + '/'
+    return db.readPaths().map { path ->
+        val relativePath = path.removePrefix(primaryPrefix)
+        ExcludedDirectory(ExcludedDirectory.Volume.Primary, relativePath)
+    }
+}
+
+class LegacyExcludedDatabase(context: Context) :
+    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS $TABLE_NAME ($COLUMN_PATH TEXT NOT NULL)")
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        onCreate(db)
+    }
+
+    override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        onUpgrade(db, newVersion, oldVersion)
+    }
+
+    /** Get the current list of paths from the database. */
+    fun readPaths(): List<String> {
+        val paths = mutableListOf<String>()
+        readableDatabase.queryAll(TABLE_NAME) { cursor ->
+            while (cursor.moveToNext()) {
+                paths.add(cursor.getString(0))
+            }
+        }
+
+        logD("Successfully read ${paths.size} paths from db")
+
+        return paths
+    }
+
+    companion object {
+        // Blacklist is still used here for compatibility reasons, please don't get
+        // your pants in a twist about it.
+        const val DB_VERSION = 1
+        const val DB_NAME = "auxio_blacklist_database.db"
+
+        const val TABLE_NAME = "blacklist_dirs_table"
+        const val COLUMN_PATH = "COLUMN_PATH"
+    }
 }
 
 /** Cache of the old keys used in Auxio. */

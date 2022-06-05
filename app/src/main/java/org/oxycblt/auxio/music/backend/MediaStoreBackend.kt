@@ -20,6 +20,7 @@ package org.oxycblt.auxio.music.backend
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
@@ -28,12 +29,14 @@ import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
-import org.oxycblt.auxio.music.excluded.ExcludedDatabase
+import org.oxycblt.auxio.music.excluded.ExcludedDirectory
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.useQuery
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.contentResolverSafe
+import org.oxycblt.auxio.util.logW
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -111,25 +114,15 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var dataIndex = -1
 
     override fun query(context: Context): Cursor {
-        val excludedDatabase = ExcludedDatabase.getInstance(context)
-        var selector = "${MediaStore.Audio.Media.IS_MUSIC}=1"
-        val args = mutableListOf<String>()
-
-        // Apply the excluded directories by filtering out specific DATA values.
-        // DATA was deprecated in Android 10, but it was un-deprecated in Android 12L,
-        // so it's probably okay to use it. The only reason we would want to use
-        // another method is for external partitions support, but there is no demand for that.
-        for (path in excludedDatabase.readPaths()) {
-            selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
-            args += "$path%" // Append % so that the selector properly detects children
-        }
+        val settingsManager = SettingsManager.getInstance()
+        val selector = buildExcludedSelector(settingsManager.excludedDirs)
 
         return requireNotNull(
             context.contentResolverSafe.queryCursor(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
-                selector,
-                args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
+                selector.selector,
+                selector.args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
     }
 
     override fun loadSongs(
@@ -137,7 +130,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         cursor: Cursor,
         emitLoading: (Indexer.Loading) -> Unit
     ): Collection<Song> {
-        // Note: We do not actually update the callback with an Indexing state, this is because
+        // Note: We do not actually update the callback with a current/total value, this is because
         // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
         // with genre loading and querying the media database itself. As a result, a progress bar
         // is not really that applicable.
@@ -149,7 +142,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // The audio is not actually complete at this point, as we cannot obtain a genre
         // through a song query. Instead, we have to do the hack where we iterate through
         // every genre and assign it's name to audios that match it's child ID.
-
         context.contentResolverSafe.useQuery(
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI,
             arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)) { genreCursor ->
@@ -187,6 +179,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
      */
     open val projection: Array<String>
         get() = BASE_PROJECTION
+
+    abstract fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector
 
     /**
      * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
@@ -252,6 +246,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         return audio
     }
+
+    data class Selector(val selector: String, val args: List<String>)
 
     /**
      * Represents a song as it is represented by MediaStore. This is progressively mutated over
@@ -323,6 +319,12 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 MediaStore.Audio.AudioColumns.ARTIST,
                 AUDIO_COLUMN_ALBUM_ARTIST,
                 MediaStore.Audio.AudioColumns.DATA)
+
+        /**
+         * The base selector that works across all versions of android. Does not exclude
+         * directories.
+         */
+        @JvmStatic protected val BASE_SELECTOR = "${MediaStore.Audio.Media.IS_MUSIC}=1"
     }
 }
 
@@ -335,6 +337,25 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
     override val projection: Array<String>
         get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
+
+    override fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector {
+        val base = Environment.getExternalStorageDirectory().absolutePath
+        var selector = BASE_SELECTOR
+        val args = mutableListOf<String>()
+
+        // Apply the excluded directories by filtering out specific DATA values.
+        for (dir in dirs) {
+            if (dir.volume is ExcludedDirectory.Volume.Secondary) {
+                logW("Cannot exclude directories on secondary drives")
+                continue
+            }
+
+            selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
+            args += "${base}/${dir.relativePath}%"
+        }
+
+        return Selector(selector, args)
+    }
 
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
         val audio = super.buildAudio(context, cursor)
@@ -364,11 +385,52 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
 /**
  * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
+ * API 29.
+ * @author OxygenCobalt
+ */
+@RequiresApi(Build.VERSION_CODES.Q)
+open class Api29MediaStoreBackend : MediaStoreBackend() {
+    override val projection: Array<String>
+        get() =
+            super.projection +
+                arrayOf(
+                    MediaStore.Audio.AudioColumns.VOLUME_NAME,
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+
+    override fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector {
+        var selector = BASE_SELECTOR
+        val args = mutableListOf<String>()
+
+        // Starting in Android Q, we finally have access to the volume name. This allows
+        // use to properly exclude folders on secondary devices such as SD cards.
+
+        for (dir in dirs) {
+            selector +=
+                " AND NOT (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                    "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+
+            // Assume that volume names are always lowercase counterparts to the volume
+            // name stored in-app. I have no idea how well this holds up on other devices.
+            args +=
+                when (dir.volume) {
+                    is ExcludedDirectory.Volume.Primary -> MediaStore.VOLUME_EXTERNAL_PRIMARY
+                    is ExcludedDirectory.Volume.Secondary -> dir.volume.name.lowercase()
+                }
+
+            args += "${dir.relativePath}%"
+        }
+
+        return Selector(selector, args)
+    }
+}
+
+/**
+ * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
  * API 30.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreBackend : MediaStoreBackend() {
+class Api30MediaStoreBackend : Api29MediaStoreBackend() {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 

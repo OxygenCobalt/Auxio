@@ -114,8 +114,8 @@ private fun String.parseId3v1Genre(): String? =
     }
 
 private fun String.parseId3v2Genre(): String? {
-    val groups = GENRE_RE.matchEntire(this)?.groups ?: return null
-    val genres = mutableListOf<String>()
+    val groups = (GENRE_RE.matchEntire(this) ?: return null).groups
+    val genres = mutableSetOf<String>()
 
     // ID3v2 genres are far more complex and require string grokking to properly implement.
     // You can read the spec for it here: https://id3.org/id3v2.3.0#TCON
@@ -142,7 +142,7 @@ private fun String.parseId3v2Genre(): String? {
         }
     }
 
-    return genres.distinctBy { it }.joinToString(separator = ", ").ifEmpty { null }
+    return genres.joinToString(separator = ", ").ifEmpty { null }
 }
 
 /** Regex that implements matching for ID3v2's genre format. */

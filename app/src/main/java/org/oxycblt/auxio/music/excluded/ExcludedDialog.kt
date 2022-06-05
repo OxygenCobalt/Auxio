@@ -19,23 +19,22 @@ package org.oxycblt.auxio.music.excluded
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import kotlinx.coroutines.delay
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -44,9 +43,7 @@ import org.oxycblt.auxio.util.showToast
  */
 class ExcludedDialog :
     ViewBindingDialogFragment<DialogExcludedBinding>(), ExcludedAdapter.Listener {
-    private val excludedModel: ExcludedViewModel by viewModels {
-        ExcludedViewModel.Factory(requireContext())
-    }
+    private val settingsManager = SettingsManager.getInstance()
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val excludedAdapter = ExcludedAdapter(this)
@@ -54,7 +51,7 @@ class ExcludedDialog :
     override fun onCreateBinding(inflater: LayoutInflater) = DialogExcludedBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
-        // Don't set the click listener here, we do some custom black magic in onCreateView instead.
+        // Don't set the click listener here, we do some custom magic in onCreateView instead.
         builder
             .setTitle(R.string.set_excluded)
             .setNeutralButton(R.string.lbl_add, null)
@@ -66,22 +63,20 @@ class ExcludedDialog :
         val launcher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
 
-        binding.excludedRecycler.adapter = excludedAdapter
-
         // Now that the dialog exists, we get the view manually when the dialog is shown
         // and override its click listener so that the dialog does not auto-dismiss when we
         // click the "Add"/"Save" buttons. This prevents the dialog from disappearing in the former
         // and the app from crashing in the latter.
-        val dialog = requireDialog() as AlertDialog
+        requireDialog().setOnShowListener {
+            val dialog = it as AlertDialog
 
-        dialog.setOnShowListener {
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
                 logD("Opening launcher")
                 launcher.launch(null)
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                if (excludedModel.isModified) {
+                if (settingsManager.excludedDirs != excludedAdapter.data.currentList) {
                     logD("Committing changes")
                     saveAndRestart()
                 } else {
@@ -91,11 +86,23 @@ class ExcludedDialog :
             }
         }
 
-        // --- VIEWMODEL SETUP ---
+        binding.excludedRecycler.adapter = excludedAdapter
 
-        launch { excludedModel.paths.collect(::updatePaths) }
+        if (savedInstanceState != null) {
+            val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
+            if (pendingDirs != null) {
+                updateDirectories(pendingDirs.mapNotNull(ExcludedDirectory::fromString))
+                return
+            }
+        }
 
-        logD("Dialog created")
+        updateDirectories(settingsManager.excludedDirs)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(
+            KEY_PENDING_DIRS, ArrayList(excludedAdapter.data.currentList.map { it.toString() }))
     }
 
     override fun onDestroyBinding(binding: DialogExcludedBinding) {
@@ -103,65 +110,56 @@ class ExcludedDialog :
         binding.excludedRecycler.adapter = null
     }
 
-    override fun onRemovePath(path: String) {
-        excludedModel.removePath(path)
-    }
-
-    private fun updatePaths(paths: MutableList<String>) {
-        excludedAdapter.data.submitList(paths)
-        requireBinding().excludedEmpty.isVisible = paths.isEmpty()
+    override fun onRemoveDirectory(dir: ExcludedDirectory) {
+        updateDirectories(excludedAdapter.data.currentList.toMutableList().also { it.remove(dir) })
     }
 
     private fun addDocTreePath(uri: Uri?) {
-        // A null URI means that the user left the file picker without picking a directory
         if (uri == null) {
+            // A null URI means that the user left the file picker without picking a directory
             logD("No URI given (user closed the dialog)")
             return
         }
 
-        val path = parseDocTreePath(uri)
-
-        if (path != null) {
-            excludedModel.addPath(path)
+        val dir = parseExcludedUri(uri)
+        if (dir != null) {
+            updateDirectories(excludedAdapter.data.currentList.toMutableList().also { it.add(dir) })
         } else {
             requireContext().showToast(R.string.err_bad_dir)
         }
     }
 
-    private fun parseDocTreePath(uri: Uri): String? {
+    private fun parseExcludedUri(uri: Uri): ExcludedDirectory? {
         // Turn the raw URI into a document tree URI
         val docUri =
             DocumentsContract.buildDocumentUriUsingTree(
                 uri, DocumentsContract.getTreeDocumentId(uri))
 
         // Turn it into a semi-usable path
-        val typeAndPath = DocumentsContract.getTreeDocumentId(docUri).split(":")
+        val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
-        // Only the main drive is supported, since that's all we can get from MediaColumns.DATA
-        // Unless I change the system to use the drive/directory system, that is. But there's no
-        // demand for that.
-        // TODO: You are going to split the queries into pre-Q and post-Q versions, so perhaps
-        //  you should try to add external partition support again.
-
-        if (typeAndPath[0] == "primary") {
-            return getRootPath() + "/" + typeAndPath.last()
-        }
-
-        logW("Unsupported volume ${typeAndPath[0]}")
-        return null
+        // ExcludedDirectory handles the rest
+        return ExcludedDirectory.fromString(treeUri)
     }
 
-    private fun getRootPath(): String {
-        return Environment.getExternalStorageDirectory().absolutePath
+    private fun updateDirectories(dirs: List<ExcludedDirectory>) {
+        excludedAdapter.data.submitList(dirs)
+        requireBinding().excludedEmpty.isVisible = dirs.isEmpty()
     }
 
     private fun saveAndRestart() {
-        excludedModel.save {
+        settingsManager.excludedDirs = excludedAdapter.data.currentList
+
+        // TODO: Dumb stopgap measure until automatic rescanning, REMOVE THIS BEFORE
+        //  MAKING ANY RELEASE!!!!!!
+        launch {
+            delay(1000)
             playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
         }
     }
 
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.EXCLUDED"
+        const val KEY_PENDING_DIRS = BuildConfig.APPLICATION_ID + ".key.PENDING_DIRS"
     }
 }

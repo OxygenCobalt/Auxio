@@ -23,12 +23,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.music.excluded.ExcludedDirectory
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -39,10 +41,6 @@ class SettingsManager private constructor(context: Context) :
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val inner = PreferenceManager.getDefaultSharedPreferences(context)
-
-    init {
-        inner.registerOnSharedPreferenceChangeListener(this)
-    }
 
     // --- VALUES ---
 
@@ -138,6 +136,18 @@ class SettingsManager private constructor(context: Context) :
      */
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(KEY_PAUSE_ON_REPEAT, false)
+
+    /** The list of directories excluded from indexing. */
+    var excludedDirs: List<ExcludedDirectory>
+        get() =
+            (inner.getStringSet(KEY_EXCLUDED, null) ?: emptySet()).mapNotNull(
+                ExcludedDirectory::fromString)
+        set(value) {
+            inner.edit {
+                putStringSet(KEY_EXCLUDED, value.map { it.toString() }.toSet())
+                apply()
+            }
+        }
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
@@ -237,6 +247,18 @@ class SettingsManager private constructor(context: Context) :
                 apply()
             }
         }
+
+    init {
+        inner.registerOnSharedPreferenceChangeListener(this)
+
+        if (!inner.contains(KEY_EXCLUDED)) {
+            logD("Attempting to migrate excluded directories")
+            // We need to migrate this setting now while we have a context. Note that while
+            // this does do IO work, the old excluded directory database is so small as to make
+            // it negligible.
+            excludedDirs = handleExcludedCompat(context)
+        }
+    }
 
     // --- CALLBACKS ---
 

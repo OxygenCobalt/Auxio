@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
+import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
 import org.oxycblt.auxio.music.backend.ExoPlayerBackend
 import org.oxycblt.auxio.ui.Sort
@@ -175,6 +176,7 @@ class Indexer {
         val mediaStoreBackend =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend()
                 else -> Api21MediaStoreBackend()
             }
 
@@ -362,6 +364,11 @@ class Indexer {
          * canceled for one reason or another.
          */
         fun onIndexerStateChanged(state: State?)
+
+        /**
+         * Called when some piece of code that cannot index music requests a reindex. Callbacks that
+         * can index music should begin reindexing at this call.
+         */
         fun onRequestReindex() {}
     }
 

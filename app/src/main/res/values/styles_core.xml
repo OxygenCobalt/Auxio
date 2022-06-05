@@ -7,11 +7,9 @@
         <item name="android:statusBarColor">@color/chrome_translucent</item>
         <item name="android:navigationBarColor">@color/chrome_translucent</item>
     </style>
-    <!-- Android 12 configuration -->
-    <style name="Theme.Auxio.V31" parent="Theme.Auxio.V27" />
 
     <!-- Base theme -->
-    <style name="Theme.Auxio.App" parent="Theme.Auxio.V31">
+    <style name="Theme.Auxio.App" parent="Theme.Auxio.V27">
         <!-- Values -->
         <item name="colorAccent">?attr/colorSecondary</item>
         <item name="colorOutline">@color/overlay_stroke</item>

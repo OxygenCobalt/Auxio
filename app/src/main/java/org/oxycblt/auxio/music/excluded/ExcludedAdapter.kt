@@ -30,21 +30,21 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  */
 class ExcludedAdapter(listener: Listener) :
-    MonoAdapter<String, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
-    override val data = PrimitiveBackingData<String>(this)
+    MonoAdapter<ExcludedDirectory, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
+    override val data = PrimitiveBackingData<ExcludedDirectory>(this)
     override val creator = ExcludedViewHolder.CREATOR
 
     interface Listener {
-        fun onRemovePath(path: String)
+        fun onRemoveDirectory(dir: ExcludedDirectory)
     }
 }
 
 /** The viewholder for [ExcludedAdapter]. Not intended for use in other adapters. */
 class ExcludedViewHolder private constructor(private val binding: ItemExcludedDirBinding) :
-    BindingViewHolder<String, ExcludedAdapter.Listener>(binding.root) {
-    override fun bind(item: String, listener: ExcludedAdapter.Listener) {
-        binding.excludedPath.textSafe = item
-        binding.excludedClear.setOnClickListener { listener.onRemovePath(item) }
+    BindingViewHolder<ExcludedDirectory, ExcludedAdapter.Listener>(binding.root) {
+    override fun bind(item: ExcludedDirectory, listener: ExcludedAdapter.Listener) {
+        binding.excludedPath.textSafe = item.toString()
+        binding.excludedClear.setOnClickListener { listener.onRemoveDirectory(item) }
     }
 
     companion object {

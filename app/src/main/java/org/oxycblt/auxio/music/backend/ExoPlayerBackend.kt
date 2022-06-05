@@ -68,6 +68,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         // add a completed song to the list. To prevent a crash in that case, we use the
         // concurrent counterpart to a typical mutable list.
         val songs = ConcurrentLinkedQueue<Song>()
+        val total = cursor.count
 
         while (cursor.moveToNext()) {
             // Note: This call to buildAudio does not populate the genre field. This is
@@ -90,7 +91,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         AudioCallback(audio) {
                             runningTasks[index] = null
                             songs.add(it)
-                            emitLoading(Indexer.Loading.Songs(songs.size, cursor.count))
+                            emitLoading(Indexer.Loading.Songs(songs.size, total))
                         },
                         // Normal JVM dispatcher will suffice here, as there is no IO work
                         // going on (and there is no cost from switching contexts with executors)
@@ -115,7 +116,8 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         private val onComplete: (Song) -> Unit,
     ) : FutureCallback<TrackGroupArray> {
         override fun onSuccess(result: TrackGroupArray) {
-            val metadata = result[0].getFormat(0).metadata
+            val format = result[0].getFormat(0)
+            val metadata = format.metadata
 
             if (metadata != null) {
                 completeAudio(audio, metadata)
