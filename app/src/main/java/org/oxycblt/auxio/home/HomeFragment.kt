@@ -53,6 +53,7 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -92,10 +93,15 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         updateTabConfiguration()
 
-        binding.homeLoadingContainer.setOnApplyWindowInsetsListener { view, insets ->
+        binding.homeIndexingContainer.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
+
+        // Load the track color in manually as it's unclear whether the track actually supports
+        // using a ColorStateList in the resources
+        binding.homeIndexingProgress.trackColor =
+            requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
 
         binding.homePager.apply {
             adapter = HomePagerAdapter()
@@ -262,41 +268,41 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         val binding = requireBinding()
 
         when (state) {
-            is Indexer.State.Complete -> handleLoaderResponse(binding, state.response)
-            is Indexer.State.Loading -> handleLoadingState(binding, state.loading)
+            is Indexer.State.Complete -> handleIndexerResponse(binding, state.response)
+            is Indexer.State.Indexing -> handleIndexingState(binding, state.indexing)
             null -> {
-                logW("Loading is in indeterminate state, doing nothing")
+                logW("Indexer is in indeterminate state, doing nothing")
             }
         }
     }
 
-    private fun handleLoaderResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
+    private fun handleIndexerResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
         if (response is Indexer.Response.Ok) {
             binding.homeFab.show()
-            binding.homeLoadingContainer.visibility = View.INVISIBLE
+            binding.homeIndexingContainer.visibility = View.INVISIBLE
             binding.homePager.visibility = View.VISIBLE
         } else {
             binding.homeFab.hide()
             binding.homePager.visibility = View.INVISIBLE
-            binding.homeLoadingContainer.visibility = View.VISIBLE
+            binding.homeIndexingContainer.visibility = View.VISIBLE
 
             logD("Received non-ok response $response")
 
             when (response) {
                 is Indexer.Response.Ok -> error("Unreachable")
                 is Indexer.Response.Err -> {
-                    binding.homeLoadingProgress.visibility = View.INVISIBLE
-                    binding.homeLoadingStatus.textSafe = getString(R.string.err_load_failed)
-                    binding.homeLoadingAction.apply {
+                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    binding.homeIndexingStatus.textSafe = getString(R.string.err_index_failed)
+                    binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
                         setOnClickListener { indexerModel.reindex() }
                     }
                 }
                 is Indexer.Response.NoMusic -> {
-                    binding.homeLoadingProgress.visibility = View.INVISIBLE
-                    binding.homeLoadingStatus.textSafe = getString(R.string.err_no_music)
-                    binding.homeLoadingAction.apply {
+                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    binding.homeIndexingStatus.textSafe = getString(R.string.err_no_music)
+                    binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_retry)
                         setOnClickListener { indexerModel.reindex() }
@@ -308,9 +314,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                             "Cannot access permission launcher while detached"
                         }
 
-                    binding.homeLoadingProgress.visibility = View.INVISIBLE
-                    binding.homeLoadingStatus.textSafe = getString(R.string.err_no_perms)
-                    binding.homeLoadingAction.apply {
+                    binding.homeIndexingProgress.visibility = View.INVISIBLE
+                    binding.homeIndexingStatus.textSafe = getString(R.string.err_no_perms)
+                    binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_grant)
                         setOnClickListener {
@@ -322,25 +328,25 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
     }
 
-    private fun handleLoadingState(binding: FragmentHomeBinding, loading: Indexer.Loading) {
+    private fun handleIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
         binding.homeFab.hide()
         binding.homePager.visibility = View.INVISIBLE
-        binding.homeLoadingContainer.visibility = View.VISIBLE
-        binding.homeLoadingProgress.visibility = View.VISIBLE
-        binding.homeLoadingAction.visibility = View.INVISIBLE
+        binding.homeIndexingContainer.visibility = View.VISIBLE
+        binding.homeIndexingProgress.visibility = View.VISIBLE
+        binding.homeIndexingAction.visibility = View.INVISIBLE
 
-        when (loading) {
-            is Indexer.Loading.Indeterminate -> {
-                binding.homeLoadingStatus.textSafe = getString(R.string.lbl_loading)
-                binding.homeLoadingProgress.isIndeterminate = true
+        when (indexing) {
+            is Indexer.Indexing.Indeterminate -> {
+                binding.homeIndexingStatus.textSafe = getString(R.string.lbl_indexing)
+                binding.homeIndexingProgress.isIndeterminate = true
             }
-            is Indexer.Loading.Songs -> {
-                binding.homeLoadingStatus.textSafe =
-                    getString(R.string.fmt_indexing, loading.current, loading.total)
-                binding.homeLoadingProgress.apply {
+            is Indexer.Indexing.Songs -> {
+                binding.homeIndexingStatus.textSafe =
+                    getString(R.string.fmt_indexing, indexing.current, indexing.total)
+                binding.homeIndexingProgress.apply {
                     isIndeterminate = false
-                    max = loading.total
-                    progress = loading.current
+                    max = indexing.total
+                    progress = indexing.current
                 }
             }
         }

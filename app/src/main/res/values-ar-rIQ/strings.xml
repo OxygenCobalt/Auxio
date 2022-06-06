@@ -104,7 +104,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">لم يتم ايجاد موسيقى</string>
-    <string name="err_load_failed">فشل تحميل الموسيقى</string>
+    <string name="err_index_failed">فشل تحميل الموسيقى</string>
     <string name="err_no_perms">اوكسيو يحتاج إلى صلاحيات لقراءة للاطلاع على مكتبتك للموسيقى</string>
     <string name="err_no_app">لا يوجد تطبيق لفتح هذا الرابط</string>
     <string name="err_bad_dir">هذا المجلد غير مدعوم</string>
@@ -161,7 +161,7 @@
     <string name="clr_grey">رمادي</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">الاغنية المُحملة: %d</string>
+    <string name="fmt_song_count">الاغنية المُحملة: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="zero">%d اغاني</item>

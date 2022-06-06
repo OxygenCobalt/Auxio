@@ -79,7 +79,7 @@
     <string name="clr_grey">Grisalho</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Músicas carregado: %d</string>
+    <string name="fmt_song_count">Músicas carregado: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Música</item>

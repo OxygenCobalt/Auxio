@@ -7,7 +7,7 @@
     <string name="info_widget_desc">Zobrazení a ovládání přehrávání hudby</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_loading">Načítání vaší hudební knihovny…</string>
+    <string name="lbl_indexing">Načítání vaší hudební knihovny…</string>
     <string name="lbl_retry">Zkusit znovu</string>
     <string name="lbl_grant">Udělit</string>
 
@@ -115,14 +115,14 @@
     <string name="set_content">Obsah</string>
     <string name="set_save">Uložit stav přehrávání</string>
     <string name="set_save_desc">Uložit aktuální stav přehrávání</string>
-    <string name="set_reload">Znovu načíst hudbu</string>
-    <string name="set_reload_desc">Aplikace bude restartována</string>
+    <string name="set_reindex">Znovu načíst hudbu</string>
+    <string name="set_reindex_desc">Aplikace bude restartována</string>
     <string name="set_excluded">Vyloučené složky</string>
     <string name="set_excluded_desc">Obsah vyloučených složek je skrytý z vaší knihovny</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenalezena žádná hudba</string>
-    <string name="err_load_failed">Načítání hudby selhalo</string>
+    <string name="err_index_failed">Načítání hudby selhalo</string>
     <string name="err_no_perms">Auxio potřebuje oprávnění ke čtení vaší hudební knihovny</string>
     <string name="err_no_app">Žádná aplikace nedokáže otevřít tento odkaz</string>
     <string name="err_no_dirs">Žádné složky</string>
@@ -190,10 +190,10 @@
 
     <string name="fmt_indexing">Načítání hudební knihovny… (%1$d/%2$d)</string>
 
-    <string name="fmt_songs_loaded">Načtených skladeb: %d</string>
-    <string name="fmt_albums_loaded">Načtených alb: %d</string>
-    <string name="fmt_artists_loaded">Načtených umělců: %d</string>
-    <string name="fmt_genres_loaded">Načtených žánrů: %d</string>
+    <string name="fmt_song_count">Načtených skladeb: %d</string>
+    <string name="fmt_album_count">Načtených alb: %d</string>
+    <string name="fmt_artist_count">Načtených umělců: %d</string>
+    <string name="fmt_genre_count">Načtených žánrů: %d</string>
     <string name="fmt_total_duration">Celková doba trvání: %s</string>
 
     <plurals name="fmt_song_count">

@@ -183,7 +183,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_RELOAD -> {
+                SettingsManager.KEY_REINDEX -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             playbackModel.savePlaybackState(requireContext()) {

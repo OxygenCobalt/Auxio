@@ -7,7 +7,7 @@
     <string name="info_widget_desc">View and control music playback</string>
 
     <!-- Label Namespace | Static Labels -->
-    <string name="lbl_loading">Loading your music library…</string>
+    <string name="lbl_indexing">Loading your music library…</string>
     <string name="lbl_retry">Retry</string>
     <string name="lbl_grant">Grant</string>
 
@@ -115,14 +115,14 @@
     <string name="set_content">Content</string>
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
-    <string name="set_reload">Reload music</string>
-    <string name="set_reload_desc">Will restart app</string>
+    <string name="set_reindex">Reload music</string>
+    <string name="set_reindex_desc">Will restart app</string>
     <string name="set_excluded">Excluded folders</string>
     <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
-    <string name="err_load_failed">Music loading failed</string>
+    <string name="err_index_failed">Music loading failed</string>
     <string name="err_no_perms">Auxio needs permission to read your music library</string>
     <string name="err_no_app">No app can open this link</string>
     <string name="err_no_dirs">No Folders</string>
@@ -190,10 +190,10 @@
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
 
-    <string name="fmt_songs_loaded">Songs loaded: %d</string>
-    <string name="fmt_albums_loaded">Albums loaded: %d</string>
-    <string name="fmt_artists_loaded">Artists loaded: %d</string>
-    <string name="fmt_genres_loaded">Genres loaded: %d</string>
+    <string name="fmt_song_count">Songs loaded: %d</string>
+    <string name="fmt_album_count">Albums loaded: %d</string>
+    <string name="fmt_artist_count">Artists loaded: %d</string>
+    <string name="fmt_genre_count">Genres loaded: %d</string>
     <string name="fmt_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">

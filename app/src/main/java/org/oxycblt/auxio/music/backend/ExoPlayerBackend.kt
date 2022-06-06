@@ -59,10 +59,10 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
     // MediaStore.
     override fun query(context: Context) = inner.query(context)
 
-    override fun loadSongs(
+    override fun buildSongs(
         context: Context,
         cursor: Cursor,
-        emitLoading: (Indexer.Loading) -> Unit
+        emitIndexing: (Indexer.Indexing) -> Unit
     ): Collection<Song> {
         // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
         // add a completed song to the list. To prevent a crash in that case, we use the
@@ -91,7 +91,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
                         AudioCallback(audio) {
                             runningTasks[index] = null
                             songs.add(it)
-                            emitLoading(Indexer.Loading.Songs(songs.size, total))
+                            emitIndexing(Indexer.Indexing.Songs(songs.size, total))
                         },
                         // Normal JVM dispatcher will suffice here, as there is no IO work
                         // going on (and there is no cost from switching contexts with executors)

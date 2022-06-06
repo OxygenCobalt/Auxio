@@ -60,7 +60,7 @@
     <string name="desc_play_pause">Відтворити/Зупинити</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Пісні завантажено: %d</string>
+    <string name="fmt_song_count">Пісні завантажено: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Пісня</item>

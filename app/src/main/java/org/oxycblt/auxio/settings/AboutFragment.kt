@@ -74,7 +74,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     private fun updateSongCount(songs: List<Song>) {
         val binding = requireBinding()
-        binding.aboutSongCount.textSafe = getString(R.string.fmt_songs_loaded, songs.size)
+        binding.aboutSongCount.textSafe = getString(R.string.fmt_song_count, songs.size)
         binding.aboutTotalDuration.textSafe =
             getString(
                 R.string.fmt_total_duration, songs.sumOf { it.durationSecs }.formatDuration(false))
@@ -82,17 +82,17 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     private fun updateAlbumCount(albums: List<Album>) {
         requireBinding().aboutAlbumCount.textSafe =
-            getString(R.string.fmt_albums_loaded, albums.size)
+            getString(R.string.fmt_album_count, albums.size)
     }
 
     private fun updateArtistCount(artists: List<Artist>) {
         requireBinding().aboutArtistCount.textSafe =
-            getString(R.string.fmt_artists_loaded, artists.size)
+            getString(R.string.fmt_artist_count, artists.size)
     }
 
     private fun updateGenreCount(genres: List<Genre>) {
         requireBinding().aboutGenreCount.textSafe =
-            getString(R.string.fmt_genres_loaded, genres.size)
+            getString(R.string.fmt_genre_count, genres.size)
     }
 
     /** Go through the process of opening a [link] in a browser. */

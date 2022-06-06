@@ -56,7 +56,7 @@ import org.oxycblt.auxio.util.logE
  */
 class Indexer {
     private var lastResponse: Response? = null
-    private var loadingState: Loading? = null
+    private var indexingState: Indexing? = null
 
     private var currentGeneration = 0L
     private val callbacks = mutableListOf<Callback>()
@@ -66,11 +66,11 @@ class Indexer {
      * loaded, yet no loading is going on.
      */
     val isIndeterminate: Boolean
-        get() = lastResponse == null && loadingState == null
+        get() = lastResponse == null && indexingState == null
 
     fun addCallback(callback: Callback) {
         val currentState =
-            loadingState?.let { State.Loading(it) } ?: lastResponse?.let { State.Complete(it) }
+            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
 
         callback.onIndexerStateChanged(currentState)
         callbacks.add(callback)
@@ -98,7 +98,7 @@ class Indexer {
                 val library = withContext(Dispatchers.IO) { indexImpl(context, generation) }
                 if (library != null) {
                     logD(
-                        "Music load completed successfully in " +
+                        "Music indexing completed successfully in " +
                             "${System.currentTimeMillis() - start}ms")
                     Response.Ok(library)
                 } else {
@@ -106,7 +106,7 @@ class Indexer {
                     Response.NoMusic
                 }
             } catch (e: Exception) {
-                logE("Music loading failed.")
+                logE("Music indexing failed.")
                 logE(e.stackTraceToString())
                 Response.Err(e)
             }
@@ -133,22 +133,22 @@ class Indexer {
     fun cancelLast() {
         synchronized(this) {
             currentGeneration++
-            emitLoading(null, currentGeneration)
+            emitIndexing(null, currentGeneration)
         }
     }
 
-    private fun emitLoading(loading: Loading?, generation: Long) {
+    private fun emitIndexing(indexing: Indexing?, generation: Long) {
         synchronized(this) {
             if (currentGeneration != generation) {
                 return
             }
 
-            loadingState = loading
+            indexingState = indexing
 
             // If we have canceled the loading process, we want to revert to a previous completion
             // whenever possible to prevent state inconsistency.
             val state =
-                loadingState?.let { State.Loading(it) } ?: lastResponse?.let { State.Complete(it) }
+                indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
 
             for (callback in callbacks) {
                 callback.onIndexerStateChanged(state)
@@ -163,7 +163,7 @@ class Indexer {
             }
 
             lastResponse = response
-            loadingState = null
+            indexingState = null
 
             val state = State.Complete(response)
             for (callback in callbacks) {
@@ -177,11 +177,10 @@ class Indexer {
      * calling this function.
      */
     private fun indexImpl(context: Context, generation: Long): MusicStore.Library? {
-        emitLoading(Loading.Indeterminate, generation)
+        emitIndexing(Indexing.Indeterminate, generation)
 
         // Establish the backend to use when initially loading songs.
-        val mediaStoreBackend =
-            when {
+        val mediaStoreBackend = when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend()
                 else -> Api21MediaStoreBackend()
@@ -230,7 +229,7 @@ class Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.loadSongs(context, cursor) { loading -> emitLoading(loading, generation) }
+                backend.buildSongs(context, cursor) { indexing -> emitIndexing(indexing, generation) }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones
@@ -251,7 +250,7 @@ class Indexer {
         // Ensure that sorting order is consistent so that grouping is also consistent.
         Sort.ByName(true).songsInPlace(songs)
 
-        logD("Successfully loaded ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
+        logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
 
         return songs
     }
@@ -344,13 +343,13 @@ class Indexer {
 
     /** Represents the current indexer state. */
     sealed class State {
-        data class Loading(val loading: Indexer.Loading) : State()
+        data class Indexing(val indexing: Indexer.Indexing) : State()
         data class Complete(val response: Response) : State()
     }
 
-    sealed class Loading {
-        object Indeterminate : Loading()
-        class Songs(val current: Int, val total: Int) : Loading()
+    sealed class Indexing {
+        object Indeterminate : Indexing()
+        class Songs(val current: Int, val total: Int) : Indexing()
     }
 
     /** Represents the possible outcomes of a loading process. */
@@ -385,10 +384,10 @@ class Indexer {
         fun query(context: Context): Cursor
 
         /** Create a list of songs from the [Cursor] queried in [query]. */
-        fun loadSongs(
+        fun buildSongs(
             context: Context,
             cursor: Cursor,
-            emitLoading: (Loading) -> Unit
+            emitIndexing: (Indexing) -> Unit
         ): Collection<Song>
     }
 

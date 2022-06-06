@@ -101,14 +101,14 @@
     <string name="set_content">Библиотека</string>
     <string name="set_save">Запоминать позицию</string>
     <string name="set_save_desc">Запоминать позицию в треке</string>
-    <string name="set_reload">Перезагрузить музыку</string>
-    <string name="set_reload_desc">Это перезапустит приложение</string>
+    <string name="set_reindex">Перезагрузить музыку</string>
+    <string name="set_reindex_desc">Это перезапустит приложение</string>
     <string name="set_excluded">Исключённые папки</string>
     <string name="set_excluded_desc">Содержимое исключённых папок будет скрыто из библиотеки</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
-    <string name="err_load_failed">Ошибка чтения библиотеки</string>
+    <string name="err_index_failed">Ошибка чтения библиотеки</string>
     <string name="err_no_perms">Auxio требуется разрешение на чтение музыкальной библиотеки</string>
     <string name="err_no_app">Нет приложений для открытия данной ссылки</string>
     <string name="err_bad_dir">Эта папка не поддерживается</string>
@@ -166,7 +166,7 @@
     <string name="clr_grey">Серый</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Всего треков: %d</string>
+    <string name="fmt_song_count">Всего треков: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d трек</item>

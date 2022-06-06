@@ -86,7 +86,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Geen muziek aangetroffen</string>
-    <string name="err_load_failed">Laden van muziek mislukt</string>
+    <string name="err_index_failed">Laden van muziek mislukt</string>
     <string name="err_no_perms">Auxio heeft toestemming nodig om uw muziekbibliotheek te lezen</string>
     <string name="err_no_app">Geen app kan deze link openen</string>
     <string name="err_bad_dir">Deze map wordt niet ondersteund</string>
@@ -133,7 +133,7 @@
     <string name="clr_grey">Grijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Nummers geladen: %d</string>
+    <string name="fmt_song_count">Nummers geladen: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Nummer</item>

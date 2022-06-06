@@ -99,8 +99,8 @@
     <string name="set_content">内容</string>
     <string name="set_save">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
-    <string name="set_reload">重新加载音乐</string>
-    <string name="set_reload_desc">将会重启应用</string>
+    <string name="set_reindex">重新加载音乐</string>
+    <string name="set_reindex_desc">将会重启应用</string>
     <string name="set_excluded">排除文件夹</string>
     <string name="set_excluded_desc">被排除文件夹的内容将从媒体库中隐藏</string>
 
@@ -108,7 +108,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
-    <string name="err_load_failed">加载音乐失败</string>
+    <string name="err_index_failed">加载音乐失败</string>
     <string name="err_no_perms">Auxio 需要权限来读取音乐库</string>
     <string name="err_no_app">没有可以打开该链接的应用</string>
     <string name="err_bad_dir">该目录不受支持</string>
@@ -167,7 +167,7 @@
     <string name="clr_grey">灰色</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">已加载 %d 首曲目</string>
+    <string name="fmt_song_count">已加载 %d 首曲目</string>
 
     <plurals name="fmt_song_count">
         <item quantity="other">"%d 首歌曲"</item>

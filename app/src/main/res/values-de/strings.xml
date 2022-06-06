@@ -93,14 +93,14 @@
     <string name="set_content">Inhalt</string>
     <string name="set_save">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
-    <string name="set_reload">Musik neu laden</string>
-    <string name="set_reload_desc">Startet die App neu</string>
+    <string name="set_reindex">Musik neu laden</string>
+    <string name="set_reindex_desc">Startet die App neu</string>
     <string name="set_excluded">Ausgeschlossene Ordner</string>
     <string name="set_excluded_desc">Die Inhalte der ausgeschlossenen Ordner werden nicht deiner Musikbibliothek angezeigt</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
-    <string name="err_load_failed">Laden der Musik fehlgeschlagen</string>
+    <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
     <string name="err_no_perms">Auxio benötigt die Berechtigung, um deine Musikbibliothek zu lesen</string>
     <string name="err_no_app">Link konnte nicht geöffnet werden</string>
     <string name="err_bad_dir">Das Verzeichnis wird nicht unterstützt</string>
@@ -146,7 +146,7 @@
     <string name="clr_grey">Grau</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Geladene Lieder: %d</string>
+    <string name="fmt_song_count">Geladene Lieder: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Lied</item>
@@ -191,8 +191,8 @@
     <string name="fmt_disc_no">Schallplatte %d</string>
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_albums_loaded">Geladene Alben: %d</string>
-    <string name="fmt_artists_loaded">Geladene Künstler: %d</string>
-    <string name="fmt_genres_loaded">Geladene Genres: %d</string>
+    <string name="fmt_album_count">Geladene Alben: %d</string>
+    <string name="fmt_artist_count">Geladene Künstler: %d</string>
+    <string name="fmt_genre_count">Geladene Genres: %d</string>
     <string name="fmt_total_duration">Gesamtdauer: %s</string>
 </resources>

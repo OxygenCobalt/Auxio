@@ -74,7 +74,7 @@
     <string name="clr_grey">Γκρί</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Τραγούδια φορτώθηκε: %d</string>
+    <string name="fmt_song_count">Τραγούδια φορτώθηκε: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Τραγούδι</item>

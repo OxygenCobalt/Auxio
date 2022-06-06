@@ -153,9 +153,9 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_reload"
-            app:summary="@string/set_reload_desc"
-            app:title="@string/set_reload" />
+            app:key="auxio_reindex"
+            app:summary="@string/set_reindex_desc"
+            app:title="@string/set_reindex" />
 
         <Preference
             app:iconSpaceReserved="false"

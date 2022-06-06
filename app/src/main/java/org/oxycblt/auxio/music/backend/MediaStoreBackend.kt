@@ -125,10 +125,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 selector.args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
     }
 
-    override fun loadSongs(
+    override fun buildSongs(
         context: Context,
         cursor: Cursor,
-        emitLoading: (Indexer.Loading) -> Unit
+        emitIndexing: (Indexer.Indexing) -> Unit
     ): Collection<Song> {
         // Note: We do not actually update the callback with a current/total value, this is because
         // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
@@ -210,8 +210,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system. Once again though, OEM issues get in our way and
-        // this field isn't available on some platforms. In that case, see if we can
-        // grok a file name from the DATA field.
+        // this field isn't available on some platforms. In that case, version-specific
+        // implementation will fall back to the equivalent of the path field if it
+        // cannot be obtained here.
         audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)

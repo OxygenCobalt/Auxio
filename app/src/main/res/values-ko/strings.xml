@@ -113,14 +113,14 @@
     <string name="set_content">내용</string>
     <string name="set_save">재생 상태 저장</string>
     <string name="set_save_desc">현재 재생 상태를 지금 저장</string>
-    <string name="set_reload">음악 다시 불러오기</string>
-    <string name="set_reload_desc">앱이 다시 시작됩니다.</string>
+    <string name="set_reindex">음악 다시 불러오기</string>
+    <string name="set_reindex_desc">앱이 다시 시작됩니다.</string>
     <string name="set_excluded">폴더 제외</string>
     <string name="set_excluded_desc">제외한 폴더는 라이브러리에서 숨겨집니다.</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">음악 없음</string>
-    <string name="err_load_failed">음악 불러오기 실패</string>
+    <string name="err_index_failed">음악 불러오기 실패</string>
     <string name="err_no_perms">앱에서 음악 라이브러리를 읽기 위해 권한이 필요합니다.</string>
     <string name="err_no_app">이 링크를 열 수 있는 앱 없음</string>
     <string name="err_no_dirs">폴더 없음</string>
@@ -186,10 +186,10 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
 
-    <string name="fmt_songs_loaded">불러온 음악: %d</string>
-    <string name="fmt_albums_loaded">불러온 앨범: %d</string>
-    <string name="fmt_artists_loaded">불러온 아티스트: %d</string>
-    <string name="fmt_genres_loaded">불러온 장르: %d</string>
+    <string name="fmt_song_count">불러온 음악: %d</string>
+    <string name="fmt_album_count">불러온 앨범: %d</string>
+    <string name="fmt_artist_count">불러온 아티스트: %d</string>
+    <string name="fmt_genre_count">불러온 장르: %d</string>
     <string name="fmt_total_duration">총 길이: %s</string>
 
     <plurals name="fmt_song_count">

@@ -99,14 +99,14 @@
     <string name="set_content">Contenido</string>
     <string name="set_save">Guardar estado de reproducción</string>
     <string name="set_save_desc">Guardar el estado de reproduccion ahora</string>
-    <string name="set_reload">Recargar música</string>
-    <string name="set_reload_desc">Se reiniciará la aplicación</string>
+    <string name="set_reindex">Recargar música</string>
+    <string name="set_reindex_desc">Se reiniciará la aplicación</string>
     <string name="set_excluded">Directorios excluidos</string>
     <string name="set_excluded_desc">El contenido de los directorios excluidos no se mostrará</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Sin música</string>
-    <string name="err_load_failed">Falló la carga de música</string>
+    <string name="err_index_failed">Falló la carga de música</string>
     <string name="err_no_perms">Auxio necesita permiso para leer su biblioteca de música</string>
     <string name="err_no_app">Sin aplicación para abrir este enlace</string>
     <string name="err_bad_dir">Directorio no soportado</string>
@@ -165,7 +165,7 @@
     <string name="clr_grey">Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Canciones cargadas: %d</string>
+    <string name="fmt_song_count">Canciones cargadas: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Canción</item>

@@ -100,8 +100,8 @@
     <string name="set_content">Contenuti</string>
     <string name="set_save">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
-    <string name="set_reload">Ricarica musica</string>
-    <string name="set_reload_desc">L\'applicazione sarà riavviata</string>
+    <string name="set_reindex">Ricarica musica</string>
+    <string name="set_reindex_desc">L\'applicazione sarà riavviata</string>
     <string name="set_excluded">Cartelle escluse</string>
     <string name="set_excluded_desc">Il contenuto delle cartelle escluse sarà nascosto dalla tua libreria</string>
 
@@ -109,7 +109,7 @@
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
-    <string name="err_load_failed">Caricamento musica fallito</string>
+    <string name="err_index_failed">Caricamento musica fallito</string>
     <string name="err_no_perms">Auxio ha bisogno del permesso per leggere la tua libreria musicale</string>
     <string name="err_no_app">Nessuna app può aprire il link</string>
     <string name="err_bad_dir">Questa cartella non è supportata</string>
@@ -168,10 +168,10 @@
     <string name="clr_grey">Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_songs_loaded">Canzoni trovate: %d</string>
-    <string name="fmt_albums_loaded">Dischi trovati: %d</string>
-    <string name="fmt_artists_loaded">Artisti trovati: %d</string>
-    <string name="fmt_genres_loaded">Generi trovati: %d</string>
+    <string name="fmt_song_count">Canzoni trovate: %d</string>
+    <string name="fmt_album_count">Dischi trovati: %d</string>
+    <string name="fmt_artist_count">Artisti trovati: %d</string>
+    <string name="fmt_genre_count">Generi trovati: %d</string>
     <string name="fmt_total_duration">Durata totale: %s</string>
 
     <plurals name="fmt_song_count">

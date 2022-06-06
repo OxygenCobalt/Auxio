@@ -28,7 +28,6 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
@@ -64,7 +63,7 @@ class IndexerService : Service(), Indexer.Callback {
 
         indexer.addCallback(this)
         if (musicStore.library == null && indexer.isIndeterminate) {
-            logD("No library present and no previous response, loading music now")
+            logD("No library present and no previous response, indexing music now")
             onRequestReindex()
         }
 
@@ -105,12 +104,12 @@ class IndexerService : Service(), Indexer.Callback {
                 // database.
                 stopForegroundSession()
             }
-            is Indexer.State.Loading -> {
+            is Indexer.State.Indexing -> {
                 // When loading, we want to enter the foreground state so that android does
                 // not shut off the loading process. Note that while we will always post the
                 // notification when initially starting, we will not update the notification
                 // unless it indicates that we have changed it.
-                val changed = notification.updateLoadingState(state.loading)
+                val changed = notification.updateIndexingState(state.indexing)
                 if (!isForeground) {
                     logD("Starting foreground session")
                     startForeground(IntegerTable.INDEXER_NOTIFICATION_CODE, notification.build())
@@ -163,7 +162,7 @@ private class IndexerNotification(private val context: Context) :
         setContentIntent(context.newMainPendingIntent())
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         setContentTitle(context.getString(R.string.info_indexer_channel_name))
-        setContentText(context.getString(R.string.lbl_loading))
+        setContentText(context.getString(R.string.lbl_indexing))
         setProgress(0, 0, true)
     }
 
@@ -171,19 +170,19 @@ private class IndexerNotification(private val context: Context) :
         notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
     }
 
-    fun updateLoadingState(loading: Indexer.Loading): Boolean {
-        when (loading) {
-            is Indexer.Loading.Indeterminate -> {
-                setContentText(context.getString(R.string.lbl_loading))
+    fun updateIndexingState(indexing: Indexer.Indexing): Boolean {
+        when (indexing) {
+            is Indexer.Indexing.Indeterminate -> {
+                setContentText(context.getString(R.string.lbl_indexing))
                 setProgress(0, 0, true)
                 return true
             }
-            is Indexer.Loading.Songs -> {
+            is Indexer.Indexing.Songs -> {
                 // Only update the notification every 50 songs to prevent excessive updates.
-                if (loading.current % 50 == 0) {
+                if (indexing.current % 50 == 0) {
                     setContentText(
-                        context.getString(R.string.fmt_indexing, loading.current, loading.total))
-                    setProgress(loading.total, loading.current, false)
+                        context.getString(R.string.fmt_indexing, indexing.current, indexing.total))
+                    setProgress(indexing.total, indexing.current, false)
                     return true
                 }
             }
