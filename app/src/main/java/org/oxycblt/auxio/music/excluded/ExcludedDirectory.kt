@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.music.excluded
 
 import android.os.Build
+import java.io.File
 import org.oxycblt.auxio.util.logW
 
 data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
@@ -44,10 +45,9 @@ data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
     }
 
     companion object {
-        private const val VOLUME_SEPARATOR = ':'
-
         fun fromString(dir: String): ExcludedDirectory? {
-            val split = dir.split(VOLUME_SEPARATOR, limit = 2)
+            val split = dir.split(File.pathSeparator, limit = 2)
+
             val volume = Volume.fromString(split.getOrNull(0) ?: return null)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && volume is Volume.Secondary) {
                 logW("Cannot use secondary volumes below API 29")
@@ -55,6 +55,7 @@ data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
             }
 
             val relativePath = split.getOrNull(1) ?: return null
+
             return ExcludedDirectory(volume, relativePath)
         }
     }

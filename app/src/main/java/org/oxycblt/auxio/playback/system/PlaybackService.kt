@@ -139,9 +139,6 @@ class PlaybackService :
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
         playbackManager.addCallback(this)
-
-        // --- SETTINGSMANAGER SETUP ---
-
         settingsManager.addCallback(this)
 
         logD("Service created")

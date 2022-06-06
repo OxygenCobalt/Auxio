@@ -2,8 +2,11 @@
 
 ## dev [v2.3.2, v2.4.0, or v3.0.0]
 
+#### What's New
+- Folders on external drives can now be excluded on Android Q+ [#134]
+
 #### What's Improved
-- Genre parsing now handles multiple integer values and cover/remix indicators
+- Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech]

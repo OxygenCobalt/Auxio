@@ -21,7 +21,10 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-/** A ViewModel representing the current music indexing state. */
+/**
+ * A ViewModel representing the current music indexing state.
+ * @author OxygenCobalt
+ */
 class IndexerViewModel : ViewModel(), Indexer.Callback {
     private val indexer = Indexer.getInstance()
 

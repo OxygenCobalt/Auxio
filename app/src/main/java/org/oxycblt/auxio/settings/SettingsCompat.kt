@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.Environment
 import androidx.core.content.edit
+import java.io.File
 import org.oxycblt.auxio.music.excluded.ExcludedDirectory
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
@@ -90,7 +91,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
  */
 fun handleExcludedCompat(context: Context): List<ExcludedDirectory> {
     val db = LegacyExcludedDatabase(context)
-    val primaryPrefix = Environment.getExternalStorageDirectory().absolutePath + '/'
+    val primaryPrefix = Environment.getExternalStorageDirectory().absolutePath + File.separatorChar
     return db.readPaths().map { path ->
         val relativePath = path.removePrefix(primaryPrefix)
         ExcludedDirectory(ExcludedDirectory.Volume.Primary, relativePath)
