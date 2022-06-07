@@ -81,8 +81,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     }
 
     private fun updateAlbumCount(albums: List<Album>) {
-        requireBinding().aboutAlbumCount.textSafe =
-            getString(R.string.fmt_album_count, albums.size)
+        requireBinding().aboutAlbumCount.textSafe = getString(R.string.fmt_album_count, albums.size)
     }
 
     private fun updateArtistCount(artists: List<Artist>) {
@@ -91,8 +90,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
     }
 
     private fun updateGenreCount(genres: List<Genre>) {
-        requireBinding().aboutGenreCount.textSafe =
-            getString(R.string.fmt_genre_count, genres.size)
+        requireBinding().aboutGenreCount.textSafe = getString(R.string.fmt_genre_count, genres.size)
     }
 
     /** Go through the process of opening a [link] in a browser. */

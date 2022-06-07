@@ -148,7 +148,8 @@ class Indexer {
             // If we have canceled the loading process, we want to revert to a previous completion
             // whenever possible to prevent state inconsistency.
             val state =
-                indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
+                indexingState?.let { State.Indexing(it) }
+                    ?: lastResponse?.let { State.Complete(it) }
 
             for (callback in callbacks) {
                 callback.onIndexerStateChanged(state)
@@ -180,7 +181,8 @@ class Indexer {
         emitIndexing(Indexing.Indeterminate, generation)
 
         // Establish the backend to use when initially loading songs.
-        val mediaStoreBackend = when {
+        val mediaStoreBackend =
+            when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> Api29MediaStoreBackend()
                 else -> Api21MediaStoreBackend()
@@ -229,7 +231,9 @@ class Indexer {
                     "Successfully queried media database " +
                         "in ${System.currentTimeMillis() - start}ms")
 
-                backend.buildSongs(context, cursor) { indexing -> emitIndexing(indexing, generation) }
+                backend.buildSongs(context, cursor) { indexing ->
+                    emitIndexing(indexing, generation)
+                }
             }
 
         // Deduplicate songs to prevent (most) deformed music clones

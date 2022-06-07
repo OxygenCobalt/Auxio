@@ -69,6 +69,7 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
 
         // -- VIEWMODEL SETUP ---
 
+        launch { detailModel.currentAlbum.collect(::handleItemChange) }
         launch { detailModel.albumData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
@@ -125,6 +126,12 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
             .navigate(
                 AlbumDetailFragmentDirections.actionShowArtist(
                     unlikelyToBeNull(detailModel.currentAlbum.value).artist.id))
+    }
+
+    private fun handleItemChange(album: Album?) {
+        if (album == null) {
+            findNavController().navigateUp()
+        }
     }
 
     private fun handleNavigation(item: Music?) {

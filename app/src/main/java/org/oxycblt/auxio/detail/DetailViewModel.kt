@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * - Menu triggers for each fragment
  * @author OxygenCobalt
  */
-class DetailViewModel : ViewModel() {
+class DetailViewModel : ViewModel(), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
 
@@ -116,6 +116,10 @@ class DetailViewModel : ViewModel() {
         refreshGenreData(genre)
     }
 
+    init {
+        musicStore.addCallback(this)
+    }
+
     private fun refreshAlbumData(album: Album) {
         logD("Refreshing album data")
         val data = mutableListOf<Item>(album)
@@ -156,5 +160,39 @@ class DetailViewModel : ViewModel() {
         data.add(SortHeader(-2, R.string.lbl_songs))
         data.addAll(genreSort.songs(genre.songs))
         _genreData.value = data
+    }
+
+    // --- CALLBACKS ---
+
+    override fun onLibraryChanged(library: MusicStore.Library?) {
+        if (library != null) {
+            val album = currentAlbum.value
+            if (album != null) {
+                val newAlbum = library.sanitize(album).also { _currentAlbum.value = it }
+                if (newAlbum != null) {
+                    refreshAlbumData(newAlbum)
+                }
+            }
+
+            val artist = currentArtist.value
+            if (artist != null) {
+                val newArtist = library.sanitize(artist).also { _currentArtist.value = it }
+                if (newArtist != null) {
+                    refreshArtistData(newArtist)
+                }
+            }
+
+            val genre = currentGenre.value
+            if (genre != null) {
+                val newGenre = library.sanitize(genre).also { _currentGenre.value = it }
+                if (newGenre != null) {
+                    refreshGenreData(newGenre)
+                }
+            }
+        }
+    }
+
+    override fun onCleared() {
+        musicStore.removeCallback(this)
     }
 }

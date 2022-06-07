@@ -66,6 +66,7 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         // --- VIEWMODEL SETUP ---
 
+        launch { detailModel.currentArtist.collect(::handleItemChange) }
         launch { detailModel.artistData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
@@ -102,6 +103,12 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
                     id != R.id.option_sort_disc &&
                     id != R.id.option_sort_track
             })
+    }
+
+    private fun handleItemChange(artist: Artist?) {
+        if (artist == null) {
+            findNavController().navigateUp()
+        }
     }
 
     private fun handleNavigation(item: Music?) {

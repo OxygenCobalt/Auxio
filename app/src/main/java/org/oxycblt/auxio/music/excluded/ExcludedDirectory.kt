@@ -21,6 +21,13 @@ import android.os.Build
 import java.io.File
 import org.oxycblt.auxio.util.logW
 
+/**
+ * Represents a directory excluded from the music loading process. This is a in-code
+ * representation of a typical document tree URI scheme, designed to not only provide
+ * support for external volumes, but also provide it in a way compatible with older
+ * android versions.
+ * @author OxygenCobalt
+ */
 data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
     override fun toString(): String = "${volume}:$relativePath"
 
@@ -50,6 +57,9 @@ data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
 
             val volume = Volume.fromString(split.getOrNull(0) ?: return null)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && volume is Volume.Secondary) {
+                // While Android Q provides a stable way of accessing volumes, we can't trust
+                // that DATA provides a stable volume scheme on older versions, so external
+                // volumes are not supported.
                 logW("Cannot use secondary volumes below API 29")
                 return null
             }

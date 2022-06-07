@@ -65,6 +65,7 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
 
         // --- VIEWMODEL SETUP ---
 
+        launch { detailModel.currentGenre.collect(::handleItemChange) }
         launch { detailModel.genreData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
@@ -99,6 +100,12 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
             detailModel.genreSort,
             onConfirm = { detailModel.genreSort = it },
             showItem = { it != R.id.option_sort_disc && it != R.id.option_sort_track })
+    }
+
+    private fun handleItemChange(genre: Genre?) {
+        if (genre == null) {
+            findNavController().navigateUp()
+        }
     }
 
     private fun handleNavigation(item: Music?) {
