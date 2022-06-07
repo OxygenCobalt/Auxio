@@ -112,6 +112,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var albumIdIndex = -1
     private var artistIndex = -1
     private var albumArtistIndex = -1
+    private var dataIndex = -1
 
     override fun query(context: Context): Cursor {
         val settingsManager = SettingsManager.getInstance()
@@ -129,7 +130,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         context: Context,
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
-    ): Collection<Song> {
+    ): List<Song> {
         // Note: We do not actually update the callback with a current/total value, this is because
         // loading music from MediaStore tends to be quite fast, with the only bottlenecks being
         // with genre loading and querying the media database itself. As a result, a progress bar
@@ -190,7 +191,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
     open fun buildAudio(context: Context, cursor: Cursor): Audio {
         // Initialize our cursor indices if we haven't already.
         if (idIndex == -1) {
-            // We need to initialize the cursor indices.
             idIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)
             titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
             displayNameIndex =
@@ -201,6 +201,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
             albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
             artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
             albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
+            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
         }
 
         val audio = Audio()
@@ -210,17 +211,22 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system. Once again though, OEM issues get in our way and
-        // this field isn't available on some platforms. In that case, version-specific
-        // implementation will fall back to the equivalent of the path field if it
-        // cannot be obtained here.
-        audio.displayName = cursor.getStringOrNull(displayNameIndex)
+        // this field isn't available on some platforms. In that case, we have to rely
+        // on DATA to get a reasonable file name.
+        audio.displayName =
+            cursor.getStringOrNull(displayNameIndex)
+                ?: cursor
+                    .getStringOrNull(dataIndex)
+                    ?.substringAfterLast(File.separatorChar, MediaStore.UNKNOWN_STRING)
+                    ?: MediaStore.UNKNOWN_STRING
 
         audio.duration = cursor.getLong(durationIndex)
         audio.year = cursor.getIntOrNull(yearIndex)
 
         // A non-existent album name should theoretically be the name of the folder it contained
         // in, but in practice it is more often "0" (as in /storage/emulated/0), even when it the
-        // file is not actually in the root internal storage directory.
+        // file is not actually in the root internal storage directory. We can't do anything to
+        // fix this, really.
         audio.album = cursor.getString(albumIndex)
         audio.albumId = cursor.getLong(albumIdIndex)
 
@@ -313,7 +319,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST)
+                AUDIO_COLUMN_ALBUM_ARTIST,
+                MediaStore.Audio.AudioColumns.DATA)
 
         /**
          * The base selector that works across all versions of android. Does not exclude
@@ -329,7 +336,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
  */
 class Api21MediaStoreBackend : MediaStoreBackend() {
     private var trackIndex = -1
-    private var dataIndex = -1
 
     override val projection: Array<String>
         get() =
@@ -361,7 +367,6 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
         // Initialize the TRACK index if we have not already.
         if (trackIndex == -1) {
             trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
         }
 
         // TRACK is formatted as DTTT where D is the disc number and T is the track number.
@@ -378,14 +383,6 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
             }
         }
 
-        if (audio.displayName == null) {
-            audio.displayName =
-                cursor
-                    .getStringOrNull(dataIndex)
-                    ?.substringAfterLast(File.separatorChar, MediaStore.UNKNOWN_STRING)
-                    ?: MediaStore.UNKNOWN_STRING
-        }
-
         return audio
     }
 }
@@ -397,11 +394,6 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 open class Api29MediaStoreBackend : MediaStoreBackend() {
-    private var relativePathIndex = -1
-
-    override val projection: Array<String>
-        get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-
     override fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector {
         var selector = BASE_SELECTOR
         val args = mutableListOf<String>()
@@ -426,25 +418,6 @@ open class Api29MediaStoreBackend : MediaStoreBackend() {
         }
 
         return Selector(selector, args)
-    }
-
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
-
-        if (relativePathIndex != -1) {
-            relativePathIndex =
-                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
-        }
-
-        if (audio.displayName == null) {
-            audio.displayName =
-                cursor
-                    .getStringOrNull(relativePathIndex)
-                    ?.substringAfterLast(File.separatorChar, MediaStore.UNKNOWN_STRING)
-                    ?: MediaStore.UNKNOWN_STRING
-        }
-
-        return audio
     }
 }
 

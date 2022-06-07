@@ -392,7 +392,7 @@ class Indexer {
             context: Context,
             cursor: Cursor,
             emitIndexing: (Indexing) -> Unit
-        ): Collection<Song>
+        ): List<Song>
     }
 
     companion object {

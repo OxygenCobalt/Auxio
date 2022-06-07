@@ -22,10 +22,9 @@ import java.io.File
 import org.oxycblt.auxio.util.logW
 
 /**
- * Represents a directory excluded from the music loading process. This is a in-code
- * representation of a typical document tree URI scheme, designed to not only provide
- * support for external volumes, but also provide it in a way compatible with older
- * android versions.
+ * Represents a directory excluded from the music loading process. This is a in-code representation
+ * of a typical document tree URI scheme, designed to not only provide support for external volumes,
+ * but also provide it in a way compatible with older android versions.
  * @author OxygenCobalt
  */
 data class ExcludedDirectory(val volume: Volume, val relativePath: String) {
