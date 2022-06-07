@@ -22,10 +22,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.WindowInsets
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.IndexerService
@@ -34,7 +34,6 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
@@ -130,48 +129,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyEdgeToEdgeWindow(contentView: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            logD("Doing R+ edge-to-edge")
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            window?.setDecorFitsSystemWindows(false)
-
-            // Instead of automatically fetching these insets and exposing them,
-            // the R+ SDK decides to make you specify the insets yourself with a barely
-            // documented API that isn't even mentioned in any of the edge-to-edge
-            // tutorials. Thanks android, very cool!
-            contentView.setOnApplyWindowInsetsListener { view, insets ->
-                WindowInsets.Builder()
-                    .setInsets(
-                        WindowInsets.Type.systemBars(),
-                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars()))
-                    .setInsets(
-                        WindowInsets.Type.systemGestures(),
-                        insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemGestures()))
-                    .build()
-                    .applyLeftRightInsets(view)
-            }
-        } else {
-            // Do old edge-to-edge otherwise.
-            logD("Doing legacy edge-to-edge")
-
-            @Suppress("DEPRECATION")
-            contentView.apply {
-                systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-
-                setOnApplyWindowInsetsListener { view, insets -> insets.applyLeftRightInsets(view) }
-            }
+        contentView.setOnApplyWindowInsetsListener { view, insets ->
+            val bars = insets.systemBarInsetsCompat
+            view.updatePadding(left = bars.left, right = bars.right)
+            insets
         }
-    }
-
-    /**
-     * Apply blind padding to accommodate left/right window insets. This is done because
-     * implementing insets on *phone* landscape mode is pretty impractical.
-     */
-    private fun WindowInsets.applyLeftRightInsets(contentView: View): WindowInsets {
-        val bars = systemBarInsetsCompat
-        contentView.updatePadding(left = bars.left, right = bars.right)
-        return replaceSystemBarInsetsCompat(0, bars.top, 0, bars.bottom)
     }
 
     companion object {

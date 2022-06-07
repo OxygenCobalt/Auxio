@@ -21,15 +21,15 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.graphics.Insets
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
 import androidx.annotation.ColorRes
+import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -188,61 +188,27 @@ fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the frustrating changes that were made between Android 8-11.
  */
-val WindowInsets.systemBarInsetsCompat: Rect
+val WindowInsets.systemBarInsetsCompat: Insets
     get() =
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                getInsets(WindowInsets.Type.systemBars()).run { Rect(left, top, right, bottom) }
-            }
-            else -> {
-                @Suppress("DEPRECATION")
-                Rect(
-                    systemWindowInsetLeft,
-                    systemWindowInsetTop,
-                    systemWindowInsetRight,
-                    systemWindowInsetBottom)
-            }
-        }
+        WindowInsetsCompat.toWindowInsetsCompat(this)
+            .getInsets(WindowInsetsCompat.Type.systemBars())
 
 /**
  * Resolve gesture insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the frustrating changes that were made between Android 8-11.
  */
-val WindowInsets.systemGestureInsetsCompat: Rect
+val WindowInsets.systemGestureInsetsCompat: Insets
     get() =
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                getInsets(WindowInsets.Type.systemGestures()).run { Rect(left, top, right, bottom) }
-            }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
-                @Suppress("DEPRECATION") val gestureInsets = systemGestureInsets
-                Rect(
-                    gestureInsets.left,
-                    gestureInsets.top,
-                    gestureInsets.right,
-                    gestureInsets.bottom)
-            }
-            else -> Rect(0, 0, 0, 0)
-        }
+        WindowInsetsCompat.toWindowInsetsCompat(this)
+            .getInsets(WindowInsetsCompat.Type.systemGestures())
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets
  * for child views in a way that follows all of the frustrating changes that were made between 8-11.
  */
-fun WindowInsets.replaceSystemBarInsetsCompat(
-    left: Int,
-    top: Int,
-    right: Int,
-    bottom: Int
-): WindowInsets {
-    return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            WindowInsets.Builder(this)
-                .setInsets(WindowInsets.Type.systemBars(), Insets.of(left, top, right, bottom))
-                .build()
-        }
-        else -> {
-            @Suppress("DEPRECATION") replaceSystemWindowInsets(left, top, right, bottom)
-        }
-    }
-}
+fun WindowInsets.replaceSystemBarInsetsCompat(left: Int, top: Int, right: Int, bottom: Int) =
+    requireNotNull(
+        WindowInsetsCompat.Builder(WindowInsetsCompat.toWindowInsetsCompat(this))
+            .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(left, top, right, bottom))
+            .build()
+            .toWindowInsets())
