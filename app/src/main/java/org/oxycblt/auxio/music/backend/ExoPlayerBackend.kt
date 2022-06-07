@@ -30,6 +30,7 @@ import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
 import org.oxycblt.auxio.music.no
+import org.oxycblt.auxio.music.year
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -158,72 +159,115 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
     }
 
     private fun completeAudio(metadata: Metadata) {
+        val id3v2Tags = mutableMapOf<String, String>()
+        val vorbisTags = mutableMapOf<String, String>()
+
         // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
-        // of audio formats. Some formats (like FLAC) can contain both ID3v2 and vorbis tags, but
-        // this isn't too big of a deal, as we generally let the "source of truth" for metadata
-        // be the last instance of a particular tag in a file.
+        // of audio formats. Load both of these types of tags into separate maps, letting the
+        // "source of truth" be the last of a particular tag in a file.
         for (i in 0 until metadata.length()) {
             when (val tag = metadata[i]) {
-                is TextInformationFrame -> populateWithId3v2(tag)
-                is VorbisComment -> populateWithVorbis(tag)
+                is TextInformationFrame -> {
+                    val id = tag.id.sanitize()
+                    val value = tag.value.sanitize()
+                    if (value.isNotEmpty()) {
+                        id3v2Tags[id] = value
+                    }
+                }
+                is VorbisComment -> {
+                    val id = tag.value.sanitize()
+                    val value = tag.value.sanitize()
+                    if (value.isNotEmpty()) {
+                        vorbisTags[id] = value
+                    }
+                }
+            }
+        }
+
+        when {
+            vorbisTags.isEmpty() -> populateId3v2(id3v2Tags)
+            id3v2Tags.isEmpty() -> populateVorbis(vorbisTags)
+            else -> {
+                // Some formats (like FLAC) can contain both ID3v2 and Vorbis, so we apply
+                // them both with priority given to vorbis.
+                populateId3v2(id3v2Tags)
+                populateVorbis(vorbisTags)
             }
         }
     }
 
-    private fun populateWithId3v2(frame: TextInformationFrame) {
-        val id = frame.id.sanitize()
-        val value = frame.value.sanitize()
-        if (value.isEmpty()) {
-            return
-        }
+    private fun populateId3v2(tags: Map<String, String>) {
+        // Title
+        tags["TIT2"]?.let { audio.title = it }
 
-        when (id) {
-            // Title
-            "TIT2" -> audio.title = value
-            // Track, as NN/TT
-            "TRCK" -> value.no?.let { audio.track = it }
-            // Disc, as NN/TT
-            "TPOS" -> value.no?.let { audio.disc = it }
-            // ID3v2.3 year, should be digits
-            "TYER" -> value.toIntOrNull()?.let { audio.year = it }
-            // ID3v2.4 year, parse as ISO-8601
-            "TDRC" -> value.iso8601year?.let { audio.year = it }
-            // Album
-            "TALB" -> audio.album = value
-            // Artist
-            "TPE1" -> audio.artist = value
-            // Album artist
-            "TPE2" -> audio.albumArtist = value
-            // Genre, with the weird ID3 rules
-            "TCON" -> audio.genre = value.id3GenreName
-        }
+        // Track, as NN/TT
+        tags["TRCK"]?.no?.let { audio.track = it }
+
+        // Disc, as NN/TT
+        tags["TPOS"]?.no?.let { audio.disc = it }
+
+        // Dates are somewhat complicated, as not only did their semantics change from a flat year
+        // value  in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
+        // date types.
+        // Our hierarchy for dates is as such:
+        // 1. ID3v2.4 Original Date, as it resolves the "Released in X, Remastered in Y" issue
+        // 2. ID3v2.4 Recording Date, as it is the most common date type
+        // 3. ID3v2.4 Release Date, as it is the second most common date type
+        // 4. ID3v2.3 Original Date, as it is like #1
+        // 5. ID3v2.3 Release Year, as it is the most common date type
+        tags["TYER"]?.year?.let { audio.year = it }
+        tags["TORY"]?.year?.let { audio.year = it }
+        tags["TDRL"]?.iso8601year?.let { audio.year = it }
+        tags["TDRC"]?.iso8601year?.let { audio.year = it }
+        tags["TDOR"]?.iso8601year?.let { audio.year = it }
+
+        // Album
+        tags["TALB"]?.let { audio.album = it }
+
+        // Artist
+        tags["TPE1"]?.let { audio.artist = it }
+
+        // Album artist
+        tags["TPE2"]?.let { audio.albumArtist = it }
+
+        // Genre, with the weird ID3 rules.
+        tags["TCON"]?.let { audio.genre = it.id3GenreName }
     }
 
-    private fun populateWithVorbis(comment: VorbisComment) {
-        val key = comment.key.sanitize()
-        val value = comment.value.sanitize()
-        if (value.isEmpty()) {
-            return
-        }
+    private fun populateVorbis(tags: Map<String, String>) {
+        // Title
+        tags["TITLE"]?.let { audio.title = it }
 
-        when (key) {
-            // Title
-            "TITLE" -> audio.title = value
-            // Track, might be NN/TT
-            "TRACKNUMBER" -> value.no?.let { audio.track = it }
-            // Disc, might be NN/TT
-            "DISCNUMBER" -> value.no?.let { audio.disc = it }
-            // Date, presumably as ISO-8601
-            "DATE" -> value.iso8601year?.let { audio.year = it }
-            // Album
-            "ALBUM" -> audio.album = value
-            // Artist
-            "ARTIST" -> audio.artist = value
-            // Album artist
-            "ALBUMARTIST" -> audio.albumArtist = value
-            // Genre, assumed that ID3 rules do not apply here.
-            "GENRE" -> audio.genre = value
-        }
+        // Track, might be NN/TT, most often though TOTALTRACKS handles T.
+        tags["TRACKNUMBER"]?.no?.let { audio.track = it }
+
+        // Disc, might be NN/TT, most often though TOTALDISCS handles T.
+        tags["DISCNUMBER"]?.no?.let { audio.disc = it }
+
+        // Vorbis dates are less complicated, but there are still several types
+        // Our hierarchy for dates is as such:
+        // 1. Original Date, as it solves the "Released in X, Remastered in Y" issue
+        // 2. Date, as it is the most common date type
+        // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
+        // tag that android supports, so it must be 15 years old or more!)
+        tags["YEAR"]?.year?.let { audio.year = it }
+        tags["DATE"]?.iso8601year?.let { audio.year = it }
+        tags["ORIGINALDATE"]?.iso8601year?.let { audio.year = it }
+
+        // Album
+        tags["ALBUM"]?.let { audio.album = it }
+
+        // Artist
+        tags["ARTIST"]?.let { audio.title }
+
+        // Album artist. This actually comes into two flavors:
+        // 1. ALBUMARTIST, which is the most common
+        // 2. ALBUM ARTIST, which is present on older vorbis tags
+        tags["ALBUM ARTIST"]?.let { audio.albumArtist = it }
+        tags["ALBUMARTIST"]?.let { audio.albumArtist = it }
+
+        // Genre, no ID3 rules here
+        tags["GENRE"]?.let { audio.genre = it }
     }
 
     /**

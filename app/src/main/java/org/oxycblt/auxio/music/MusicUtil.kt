@@ -57,18 +57,26 @@ val Long.albumCoverUri: Uri
 
 /**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
- * CD_TRACK_NUMBER.
+ * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
  */
 val String.no: Int?
-    get() = split('/', limit = 2).getOrNull(0)?.toIntOrNull()
+    get() = split('/', limit = 2)[0].toIntOrNull()?.let { if (it > 0) it else null }
+
+/**
+ * Parse out a plain year from a string. Values of 0 will be ignored under the assumption that they
+ * are invalid.
+ */
+val String.year: Int?
+    get() = toIntOrNull()?.let { if (it > 0) it else null }
 
 /**
  * Parse out the year field from a (presumably) ISO-8601-like date. This differs across tag formats
  * and has no real consistency, but it's assumed that most will format granular dates as YYYY-MM-DD
- * (...) and thus we can parse the year out by splitting at the first -.
+ * (...) and thus we can parse the year out by splitting at the first -. Values of 0 will be ignored
+ * under the assumption that they are invalid.
  */
 val String.iso8601year: Int?
-    get() = split('-', limit = 2).getOrNull(0)?.toIntOrNull()
+    get() = split('-', limit = 2)[0].toIntOrNull()?.let { if (it > 0) it else null }
 
 /**
  * Slice a string so that any preceding articles like The/A(n) are truncated. This is hilariously
