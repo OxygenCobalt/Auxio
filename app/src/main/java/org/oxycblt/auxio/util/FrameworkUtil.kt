@@ -173,7 +173,10 @@ fun Fragment.launch(
  * bit of a dumb hack with [combine], as when we have to combine flows, we often just want to call
  * the same block with both functions, and not do any transformations.
  */
-suspend fun <T1, T2> Flow<T1>.collectWith(other: Flow<T2>, block: suspend (T1, T2) -> Unit) {
+suspend inline fun <T1, T2> Flow<T1>.collectWith(
+    other: Flow<T2>,
+    crossinline block: (T1, T2) -> Unit
+) {
     combine(this, other) { a, b -> a to b }.collect { block(it.first, it.second) }
 }
 

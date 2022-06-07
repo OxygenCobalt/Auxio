@@ -122,6 +122,15 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
+                SettingsManager.KEY_ACCENT -> {
+                    onPreferenceClickListener =
+                        Preference.OnPreferenceClickListener {
+                            AccentDialog().show(childFragmentManager, AccentDialog.TAG)
+                            true
+                        }
+
+                    summary = context.getString(settingsManager.accent.name)
+                }
                 SettingsManager.KEY_BLACK_THEME -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
@@ -132,14 +141,12 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_ACCENT -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            AccentDialog().show(childFragmentManager, AccentDialog.TAG)
+                SettingsManager.KEY_EDGE_TO_EDGE -> {
+                    onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, _ ->
+                            requireActivity().recreate()
                             true
                         }
-
-                    summary = context.getString(settingsManager.accent.name)
                 }
                 SettingsManager.KEY_LIB_TABS -> {
                     onPreferenceClickListener =

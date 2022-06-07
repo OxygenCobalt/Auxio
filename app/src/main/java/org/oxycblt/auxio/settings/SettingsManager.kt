@@ -62,6 +62,10 @@ class SettingsManager private constructor(context: Context) :
             }
         }
 
+    /** Whether edge-to-edge is enabled. */
+    val edgeToEdge: Boolean
+        get() = inner.getBoolean(KEY_EDGE_TO_EDGE, true)
+
     /**
      * Whether to display the RepeatMode or the shuffle status on the notification. False if repeat,
      * true if shuffle.
@@ -304,6 +308,7 @@ class SettingsManager private constructor(context: Context) :
         const val KEY_THEME = "KEY_THEME2"
         const val KEY_BLACK_THEME = "KEY_BLACK_THEME"
         const val KEY_ACCENT = "auxio_accent2"
+        const val KEY_EDGE_TO_EDGE = "auxio_edge"
 
         const val KEY_LIB_TABS = "auxio_lib_tabs"
         const val KEY_SHOW_COVERS = "KEY_SHOW_COVERS"
