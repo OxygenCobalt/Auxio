@@ -24,19 +24,13 @@ import com.google.android.exoplayer2.MetadataRetriever
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.Future
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
 import org.oxycblt.auxio.music.no
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -53,7 +47,7 @@ import org.oxycblt.auxio.util.logW
  * @author OxygenCobalt
  */
 class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
-    private val runningTasks: Array<Future<TrackGroupArray>?> = arrayOfNulls(TASK_CAPACITY)
+    private val runningTasks: Array<Task?> = arrayOfNulls(TASK_CAPACITY)
 
     // No need to implement our own query logic, as this backend is still reliant on
     // MediaStore.
@@ -63,11 +57,11 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         context: Context,
         cursor: Cursor,
         emitIndexing: (Indexer.Indexing) -> Unit
-    ): Collection<Song> {
+    ): List<Song> {
         // Metadata retrieval with ExoPlayer is asynchronous, so a callback may at any point
         // add a completed song to the list. To prevent a crash in that case, we use the
         // concurrent counterpart to a typical mutable list.
-        val songs = ConcurrentLinkedQueue<Song>()
+        val songs = mutableListOf<Song>()
         val total = cursor.count
 
         while (cursor.moveToNext()) {
@@ -75,80 +69,108 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             // because indexing genres is quite slow with MediaStore, and so keeping the
             // field blank on unsupported ExoPlayer formats ends up being preferable.
             val audio = inner.buildAudio(context, cursor)
-            val audioUri = requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri
 
-            while (true) {
-                // In order to properly parallelize ExoPlayer's parser, we have an array containing
-                // a few slots for ongoing futures. As soon as a finished task opens up their slot,
-                // we begin loading metadata for this audio.
-                val index = runningTasks.indexOfFirst { it == null }
-                if (index != -1) {
-                    val task =
-                        MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(audioUri))
+            // Spin until there is an open slot we can insert a task in. Note that we do
+            // not add callbacks to our new tasks, as Future callbacks run on a different
+            // executor and thus will crash the app if an error occurs instead of bubbling
+            // back up to Indexer.
+            spin@ while (true) {
+                for (i in runningTasks.indices) {
+                    val task = runningTasks[i]
 
-                    Futures.addCallback(
-                        task,
-                        AudioCallback(audio) {
-                            runningTasks[index] = null
-                            songs.add(it)
+                    if (task != null) {
+                        val song = task.get()
+                        if (song != null) {
+                            songs.add(song)
                             emitIndexing(Indexer.Indexing.Songs(songs.size, total))
-                        },
-                        // Normal JVM dispatcher will suffice here, as there is no IO work
-                        // going on (and there is no cost from switching contexts with executors)
-                        Dispatchers.Default.asExecutor())
-
-                    runningTasks[index] = task
-
-                    break
+                            runningTasks[i] = Task(context, audio)
+                            break@spin
+                        }
+                    } else {
+                        runningTasks[i] = Task(context, audio)
+                        break@spin
+                    }
                 }
             }
         }
 
-        while (runningTasks.any { it != null }) {
-            // Spin until all tasks are complete
+        spin@ while (true) {
+            // Spin until all of the remaining tasks are complete.
+            for (i in runningTasks.indices) {
+                val task = runningTasks[i]
+
+                if (task != null) {
+                    val song = task.get() ?: continue@spin
+                    songs.add(song)
+                    emitIndexing(Indexer.Indexing.Songs(songs.size, total))
+                    runningTasks[i] = null
+                }
+            }
+
+            break
         }
 
         return songs
     }
 
-    private inner class AudioCallback(
-        private val audio: MediaStoreBackend.Audio,
-        private val onComplete: (Song) -> Unit,
-    ) : FutureCallback<TrackGroupArray> {
-        override fun onSuccess(result: TrackGroupArray) {
-            val format = result[0].getFormat(0)
-            val metadata = format.metadata
+    companion object {
+        /** The amount of tasks this backend can run efficiently at once. */
+        private const val TASK_CAPACITY = 8
+    }
+}
 
-            if (metadata != null) {
-                completeAudio(audio, metadata)
-            } else {
-                logW("No metadata was found for ${audio.title}")
+/**
+ * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
+ *
+ * @author OxygenCobalt
+ */
+class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
+    private val future =
+        MetadataRetriever.retrieveMetadata(
+            context,
+            MediaItem.fromUri(requireNotNull(audio.id) { "Malformed audio: No id" }.audioUri))
+
+    /**
+     * Get the song that this task is trying to complete. If the task is still busy, this will
+     * return null. Otherwise, it will return a song.
+     */
+    fun get(): Song? {
+        if (!future.isDone) {
+            return null
+        }
+
+        val metadata =
+            try {
+                future.get()[0].getFormat(0).metadata
+            } catch (e: Exception) {
+                logW("Unable to extract metadata for ${audio.title}")
+                logW(e.stackTraceToString())
+                null
             }
 
-            onComplete(audio.toSong())
+        if (metadata != null) {
+            completeAudio(metadata)
+        } else {
+            logD("No metadata could be extracted for ${audio.title}")
         }
 
-        override fun onFailure(t: Throwable) {
-            logW("Unable to extract metadata for ${audio.title}")
-            logW(t.stackTraceToString())
-            onComplete(audio.toSong())
-        }
+        return audio.toSong()
     }
 
-    private fun completeAudio(audio: MediaStoreBackend.Audio, metadata: Metadata) {
+    private fun completeAudio(metadata: Metadata) {
         // ExoPlayer only exposes ID3v2 and Vorbis metadata, which constitutes the vast majority
         // of audio formats. Some formats (like FLAC) can contain both ID3v2 and vorbis tags, but
         // this isn't too big of a deal, as we generally let the "source of truth" for metadata
         // be the last instance of a particular tag in a file.
         for (i in 0 until metadata.length()) {
             when (val tag = metadata[i]) {
-                is TextInformationFrame -> populateWithId3v2(audio, tag)
-                is VorbisComment -> populateWithVorbis(audio, tag)
+                is TextInformationFrame -> populateWithId3v2(tag)
+                is VorbisComment -> populateWithVorbis(tag)
             }
         }
     }
 
-    private fun populateWithId3v2(audio: MediaStoreBackend.Audio, frame: TextInformationFrame) {
+    private fun populateWithId3v2(frame: TextInformationFrame) {
         val id = frame.id.sanitize()
         val value = frame.value.sanitize()
         if (value.isEmpty()) {
@@ -160,7 +182,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
             "TIT2" -> audio.title = value
             // Track, as NN/TT
             "TRCK" -> value.no?.let { audio.track = it }
-            // Disc
+            // Disc, as NN/TT
             "TPOS" -> value.no?.let { audio.disc = it }
             // ID3v2.3 year, should be digits
             "TYER" -> value.toIntOrNull()?.let { audio.year = it }
@@ -177,7 +199,7 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         }
     }
 
-    private fun populateWithVorbis(audio: MediaStoreBackend.Audio, comment: VorbisComment) {
+    private fun populateWithVorbis(comment: VorbisComment) {
         val key = comment.key.sanitize()
         val value = comment.value.sanitize()
         if (value.isEmpty()) {
@@ -187,9 +209,9 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
         when (key) {
             // Title
             "TITLE" -> audio.title = value
-            // Track, presumably as NN/TT
+            // Track, might be NN/TT
             "TRACKNUMBER" -> value.no?.let { audio.track = it }
-            // Disc, presumably as NN/TT
+            // Disc, might be NN/TT
             "DISCNUMBER" -> value.no?.let { audio.disc = it }
             // Date, presumably as ISO-8601
             "DATE" -> value.iso8601year?.let { audio.year = it }
@@ -217,9 +239,4 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
      * memory.
      */
     private fun String.sanitize() = String(encodeToByteArray())
-
-    companion object {
-        /** The amount of tasks this backend can run efficiently at once. */
-        private const val TASK_CAPACITY = 8
-    }
 }
