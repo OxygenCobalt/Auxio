@@ -32,9 +32,9 @@ import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -64,9 +64,9 @@ class PlaybackPanelFragment :
     ) {
         // --- UI SETUP ---
 
-        binding.root.setOnApplyWindowInsetsListener { _, insets ->
-            val bars = insets.systemBarInsetsCompat
-            binding.root.updatePadding(top = bars.top, bottom = bars.bottom)
+        binding.root.setOnApplyWindowInsetsListener { view, insets ->
+            val bars = insets.getSystemBarInsetsCompat(view)
+            view.updatePadding(top = bars.top, bottom = bars.bottom)
             insets
         }
 

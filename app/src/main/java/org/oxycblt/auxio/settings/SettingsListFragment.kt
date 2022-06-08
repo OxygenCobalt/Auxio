@@ -38,11 +38,11 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.pref.IntListPreference
 import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
 import org.oxycblt.auxio.ui.accent.AccentDialog
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -68,7 +68,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             clipToPadding = false
 
             setOnApplyWindowInsetsListener { _, insets ->
-                updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+                updatePadding(bottom = insets.getSystemBarInsetsCompat(this).bottom)
                 insets
             }
         }

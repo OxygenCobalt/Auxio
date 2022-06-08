@@ -40,9 +40,9 @@ import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.getDimenOffsetSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isRtl
 import org.oxycblt.auxio.util.isUnder
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A [RecyclerView] that enables better fast-scrolling. This is fundamentally a implementation of
@@ -283,7 +283,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         super.onApplyWindowInsets(insets)
-        val bars = insets.systemBarInsetsCompat
+        val bars = insets.getSystemBarInsetsCompat(this)
         thumbPadding.bottom = bars.bottom
         return insets
     }

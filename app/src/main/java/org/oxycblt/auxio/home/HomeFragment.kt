@@ -56,12 +56,12 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -108,7 +108,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         updateTabConfiguration()
 
         binding.homeIndexingContainer.setOnApplyWindowInsetsListener { view, insets ->
-            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+            view.updatePadding(bottom = insets.getSystemBarInsetsCompat(view).bottom)
             insets
         }
 

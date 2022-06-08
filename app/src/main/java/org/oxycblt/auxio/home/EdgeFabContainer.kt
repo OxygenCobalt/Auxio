@@ -23,7 +23,7 @@ import android.view.WindowInsets
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
-import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 
 /**
  * A container for a FloatingActionButton that enables edge-to-edge support.
@@ -42,7 +42,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
-        updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
+        updatePadding(bottom = insets.getSystemBarInsetsCompat(this).bottom)
         return insets
     }
 }

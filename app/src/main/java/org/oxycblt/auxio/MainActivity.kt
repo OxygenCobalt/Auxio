@@ -34,9 +34,9 @@ import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.getColorSafe
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The single [AppCompatActivity] for Auxio.
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         contentView.setOnApplyWindowInsetsListener { view, insets ->
-            val bars = insets.systemBarInsetsCompat
+            val bars = insets.getSystemBarInsetsCompat(view)
             view.updatePadding(left = bars.left, right = bars.right)
             insets
         }

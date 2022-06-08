@@ -191,19 +191,17 @@ fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the frustrating changes that were made between Android 8-11.
  */
-val WindowInsets.systemBarInsetsCompat: Insets
-    get() =
-        WindowInsetsCompat.toWindowInsetsCompat(this)
-            .getInsets(WindowInsetsCompat.Type.systemBars())
+fun WindowInsets.getSystemBarInsetsCompat(view: View) =
+    WindowInsetsCompat.toWindowInsetsCompat(this, view)
+        .getInsets(WindowInsetsCompat.Type.systemBars())
 
 /**
  * Resolve gesture insets in a version-aware manner. This can be used to apply padding to a view
  * that properly follows all the frustrating changes that were made between Android 8-11.
  */
-val WindowInsets.systemGestureInsetsCompat: Insets
-    get() =
-        WindowInsetsCompat.toWindowInsetsCompat(this)
-            .getInsets(WindowInsetsCompat.Type.systemGestures())
+fun WindowInsets.getSystemGestureInsetsCompat(view: View) =
+    WindowInsetsCompat.toWindowInsetsCompat(this, view)
+        .getInsets(WindowInsetsCompat.Type.systemGestures())
 
 /**
  * Replaces the system bar insets in a version-aware manner. This can be used to modify the insets

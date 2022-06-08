@@ -29,9 +29,9 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.getSystemBarInsetsCompat
+import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
 import org.oxycblt.auxio.util.launch
-import org.oxycblt.auxio.util.systemBarInsetsCompat
-import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -63,8 +63,8 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
                 // any gesture events. So, apply the system gesture insets if present as long
                 // as they are *larger* than the bar insets. This is to resolve issues where
                 // the gesture insets are not sane on OEM devices.
-                val bars = insets.systemBarInsetsCompat
-                val gestures = insets.systemGestureInsetsCompat
+                val bars = insets.getSystemBarInsetsCompat(view)
+                val gestures = insets.getSystemGestureInsetsCompat(view)
                 view.updatePadding(bottom = max(bars.bottom, gestures.bottom))
                 insets
             }
