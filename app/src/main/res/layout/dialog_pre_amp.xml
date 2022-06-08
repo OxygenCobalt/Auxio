@@ -28,14 +28,9 @@
             android:stepSize="0.1"
             android:valueFrom="-15.0"
             android:valueTo="15.0"
-            app:haloRadius="@dimen/slider_halo_radius"
-            app:labelBehavior="gone"
             app:layout_constraintEnd_toStartOf="@+id/with_tags_ticker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/with_tags_header"
-            app:thumbRadius="@dimen/slider_thumb_radius"
-            app:tickVisible="false"
-            app:trackColorInactive="@color/sel_track"
             tools:value="0.0" />
 
         <TextView
@@ -70,14 +65,9 @@
             android:stepSize="0.1"
             android:valueFrom="-15.0"
             android:valueTo="15.0"
-            app:haloRadius="@dimen/slider_halo_radius"
-            app:labelBehavior="gone"
             app:layout_constraintEnd_toStartOf="@+id/without_tags_ticker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/without_tags_header"
-            app:thumbRadius="@dimen/slider_thumb_radius"
-            app:tickVisible="false"
-            app:trackColorInactive="@color/sel_track"
             tools:value="0.0" />
 
         <TextView

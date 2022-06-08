@@ -26,7 +26,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentMainBinding
-import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
@@ -43,7 +42,6 @@ import org.oxycblt.auxio.util.launch
 class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val musicModel: IndexerViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentMainBinding.inflate(inflater)

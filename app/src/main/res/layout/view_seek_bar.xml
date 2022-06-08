@@ -12,15 +12,10 @@
         android:layout_marginBottom="@dimen/spacing_medium"
         android:valueFrom="0"
         android:valueTo="1"
-        app:haloRadius="@dimen/slider_halo_radius"
-        app:labelBehavior="gone"
-        app:labelStyle="@style/TextAppearance.Auxio.BodySmall"
         app:layout_constraintBottom_toTopOf="@+id/playback_play_pause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:thumbRadius="@dimen/slider_thumb_radius"
-        app:trackColorInactive="@color/sel_track" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/seek_bar_position"

@@ -73,6 +73,19 @@
         <item name="android:paddingBottom">@dimen/recycler_fab_space_normal</item>
     </style>
 
+    <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
+        <item name="trackColorInactive">@color/sel_track</item>
+        <item name="haloRadius">@dimen/spacing_medium</item>
+        <item name="thumbRadius">@dimen/slider_thumb_radius</item>
+        <item name="labelBehavior">gone</item>
+        <item name="tickVisible">false</item>
+    </style>
+
+    <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="trackColor">@color/sel_track</item>
+        <item name="trackCornerRadius">@dimen/size_corners_large</item>
+    </style>
+
     <style name="ThemeOverlay.Accent" parent="">
         <item name="colorOnPrimary">?attr/colorSurface</item>
     </style>

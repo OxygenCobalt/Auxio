@@ -89,10 +89,11 @@
         android:id="@+id/playback_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:trackColor="@color/sel_track"
         tools:progress="70" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

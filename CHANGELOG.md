@@ -7,6 +7,7 @@
 - Added toggle for edge-to-edge mode [#149]
 
 #### What's Improved
+- The toolbar in the home UI now collapses when scrolling
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
 
 #### Dev/Meta
