@@ -80,7 +80,7 @@
     <string name="clr_grey">Gris</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">Titres chargés: %d</string>
+    <string name="fmt_lib_song_count">Titres chargés: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%s Titre</item>

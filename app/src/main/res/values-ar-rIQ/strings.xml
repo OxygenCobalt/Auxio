@@ -161,7 +161,7 @@
     <string name="clr_grey">رمادي</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">الاغنية المُحملة: %d</string>
+    <string name="fmt_lib_song_count">الاغنية المُحملة: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="zero">%d اغاني</item>

@@ -67,6 +67,10 @@
             </intent-filter>
         </activity>
 
+        <!--
+        IndexerService handles querying the media database,
+        extracting metadata, and constructing the music library.
+        -->
         <service
             android:name=".music.IndexerService"
             android:foregroundServiceType="dataSync"
@@ -74,13 +78,15 @@
             android:exported="false"
             android:roundIcon="@mipmap/ic_launcher" />
 
+        <!--
+        PlaybackService handles music playback, system components, and state saving.
+        -->
         <service
             android:name=".playback.system.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:icon="@mipmap/ic_launcher"
             android:exported="false"
             android:roundIcon="@mipmap/ic_launcher" />
-
 
         <!--
         Work around apps that blindly query for ACTION_MEDIA_BUTTON working.
@@ -94,7 +100,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- Auxio's one and only AppWidget -->
+        <!-- Auxio's one and only AppWidget. -->
         <receiver
             android:name=".widgets.WidgetProvider"
             android:exported="false"

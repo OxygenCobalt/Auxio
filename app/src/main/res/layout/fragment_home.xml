@@ -14,6 +14,7 @@
             android:id="@+id/home_toolbar"
             style="@style/Widget.Auxio.Toolbar"
             app:menu="@menu/menu_home"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/info_app_name" />
 
         <com.google.android.material.tabs.TabLayout

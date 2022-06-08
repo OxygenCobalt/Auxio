@@ -39,6 +39,8 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * useful for the playback buttons, as at times highlighting them is not enough to differentiate
  * them.
  * @author OxygenCobalt
+ *
+ * TODO: Remove this for Material Buttons (I hope)
  */
 class StyledImageButton
 @JvmOverloads

@@ -29,6 +29,7 @@ import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.applySpans
 
 /**
  * A Base [Fragment] implementing the base features shared across all list fragments in the home UI.
@@ -49,6 +50,7 @@ abstract class HomeListFragment<T : Item> :
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         binding.homeRecycler.popupProvider = this
         binding.homeRecycler.listener = this
+        binding.homeRecycler.applySpans()
     }
 
     override fun onDestroyBinding(binding: FragmentHomeListBinding) {

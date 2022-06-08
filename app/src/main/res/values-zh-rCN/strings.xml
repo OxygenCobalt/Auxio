@@ -167,7 +167,7 @@
     <string name="clr_grey">灰色</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">已加载 %d 首曲目</string>
+    <string name="fmt_lib_song_count">已加载 %d 首曲目</string>
 
     <plurals name="fmt_song_count">
         <item quantity="other">"%d 首歌曲"</item>

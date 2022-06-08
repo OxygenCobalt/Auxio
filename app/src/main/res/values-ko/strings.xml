@@ -186,11 +186,11 @@
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
 
-    <string name="fmt_song_count">불러온 음악: %d</string>
-    <string name="fmt_album_count">불러온 앨범: %d</string>
-    <string name="fmt_artist_count">불러온 아티스트: %d</string>
-    <string name="fmt_genre_count">불러온 장르: %d</string>
-    <string name="fmt_total_duration">총 길이: %s</string>
+    <string name="fmt_lib_song_count">불러온 음악: %d</string>
+    <string name="fmt_lib_album_count">불러온 앨범: %d</string>
+    <string name="fmt_lib_artist_count">불러온 아티스트: %d</string>
+    <string name="fmt_lib_genre_count">불러온 장르: %d</string>
+    <string name="fmt_lib_total_duration">총 길이: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="other">%d 곡</item>

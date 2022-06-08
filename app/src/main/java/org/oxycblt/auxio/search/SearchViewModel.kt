@@ -36,8 +36,11 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 
 /**
- * The [ViewModel] for the search functionality
+ * The [ViewModel] for search functionality
  * @author OxygenCobalt
+ *
+ * TODO: Add a context to this ViewModel, not because I want to, but because it just makes the code
+ * easier to work with.
  */
 class SearchViewModel : ViewModel() {
     private val musicStore = MusicStore.getInstance()
@@ -143,9 +146,9 @@ class SearchViewModel : ViewModel() {
      */
     private fun <T : Music> List<T>.filterByOrNull(context: Context, value: String): List<T>? {
         val filtered = filter {
-            // First see if the normal item name will work. If that fails, try the "normalized"
-            // [e.g all accented/unicode chars become latin chars] instead. Hopefully this
-            // shouldn't break other language's search functionality.
+            // Compare normalized names, which are names with unicode characters that are
+            // normalized to their non-unicode forms. This is just for quality-of-life,
+            // and I hope it doesn't bork search functionality for other languages.
             it.resolveNameNormalized(context).contains(value, ignoreCase = true) ||
                 it.resolveNameNormalized(context).contains(value, ignoreCase = true)
         }

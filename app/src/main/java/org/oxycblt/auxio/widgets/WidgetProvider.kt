@@ -183,7 +183,7 @@ class WidgetProvider : AppWidgetProvider() {
                     logW("No good widget layout found")
 
                     val minimum =
-                        unlikelyToBeNull(views.minByOrNull { it.key.width * it.key.height }?.value)
+                        unlikelyToBeNull(views.minByOrNull { it.key.width * it.key.height }).value
 
                     updateAppWidget(id, minimum)
                 }

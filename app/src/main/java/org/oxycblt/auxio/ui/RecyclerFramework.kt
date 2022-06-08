@@ -218,8 +218,8 @@ class SyncBackingData<T>(adapter: RecyclerView.Adapter<*>, diffCallback: DiffUti
 
 /**
  * Like [AsyncListDiffer], but synchronous. This may seem like it would be inefficient, but in
- * practice Auxio's lists tend to be small enough to the point where this does not matter,
- * and situations that would be inefficient are ruled out with [SyncBackingData.replaceList].
+ * practice Auxio's lists tend to be small enough to the point where this does not matter, and
+ * situations that would be inefficient are ruled out with [SyncBackingData.replaceList].
  */
 private class SyncListDiffer<T>(
     adapter: RecyclerView.Adapter<*>,
@@ -301,7 +301,7 @@ private class SyncListDiffer<T>(
                             }
                         }
                     })
-            
+
             _currentList = newList
             result.dispatchUpdatesTo(updateCallback)
         }

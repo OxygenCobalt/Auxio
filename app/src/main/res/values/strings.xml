@@ -192,11 +192,11 @@
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
 
-    <string name="fmt_song_count">Songs loaded: %d</string>
-    <string name="fmt_album_count">Albums loaded: %d</string>
-    <string name="fmt_artist_count">Artists loaded: %d</string>
-    <string name="fmt_genre_count">Genres loaded: %d</string>
-    <string name="fmt_total_duration">Total duration: %s</string>
+    <string name="fmt_lib_song_count">Songs loaded: %d</string>
+    <string name="fmt_lib_album_count">Albums loaded: %d</string>
+    <string name="fmt_lib_artist_count">Artists loaded: %d</string>
+    <string name="fmt_lib_genre_count">Genres loaded: %d</string>
+    <string name="fmt_lib_total_duration">Total duration: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Song</item>

@@ -168,11 +168,11 @@
     <string name="clr_grey">Grigio</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">Canzoni trovate: %d</string>
-    <string name="fmt_album_count">Dischi trovati: %d</string>
-    <string name="fmt_artist_count">Artisti trovati: %d</string>
-    <string name="fmt_genre_count">Generi trovati: %d</string>
-    <string name="fmt_total_duration">Durata totale: %s</string>
+    <string name="fmt_lib_song_count">Canzoni trovate: %d</string>
+    <string name="fmt_lib_album_count">Dischi trovati: %d</string>
+    <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
+    <string name="fmt_lib_genre_count">Generi trovati: %d</string>
+    <string name="fmt_lib_total_duration">Durata totale: %s</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>

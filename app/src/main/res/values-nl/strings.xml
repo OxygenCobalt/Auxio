@@ -133,7 +133,7 @@
     <string name="clr_grey">Grijis</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">Nummers geladen: %d</string>
+    <string name="fmt_lib_song_count">Nummers geladen: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Nummer</item>

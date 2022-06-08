@@ -34,7 +34,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
 import org.oxycblt.auxio.home.list.AlbumListFragment
@@ -85,6 +87,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 indexerModel.reindex()
             }
+
+        binding.homeAppbar.apply {
+            addOnOffsetChangedListener(
+                AppBarLayout.OnOffsetChangedListener { _, offset ->
+                    val range = binding.homeAppbar.totalScrollRange
+
+                    binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
+
+                    binding.homePager.updatePadding(
+                        bottom = binding.homeAppbar.totalScrollRange + offset)
+                })
+        }
 
         binding.homeToolbar.apply {
             sortItem = menu.findItem(R.id.submenu_sorting)

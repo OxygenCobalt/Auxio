@@ -78,7 +78,7 @@
     <string name="clr_grey">Szary</string>
 
     <!-- Format Namespace | Value formatting/plurals -->
-    <string name="fmt_song_count">Utwory uruchamia się: %d</string>
+    <string name="fmt_lib_song_count">Utwory uruchamia się: %d</string>
 
     <plurals name="fmt_song_count">
         <item quantity="one">%d Utwór</item>
