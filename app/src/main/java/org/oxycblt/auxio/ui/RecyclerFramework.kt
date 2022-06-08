@@ -20,6 +20,7 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -188,6 +189,7 @@ abstract class BackingData<T> {
  */
 class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : BackingData<T>() {
     private var _currentList = mutableListOf<T>()
+
     /** The current list backing this adapter. */
     val currentList: List<T>
         get() = _currentList
@@ -196,13 +198,34 @@ class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : Ba
     override fun getItemCount(): Int = _currentList.size
 
     /**
-     * Update the list with a [newList]. This calls [RecyclerView.Adapter.notifyDataSetChanged]
-     * internally, which is inefficient but also the most reliable update callback.
+     * Update the list with a [newList]. This does a basic animation that removes all items and
+     * replaces them with the new ones.
      */
     @Suppress("NotifyDatasetChanged")
     fun submitList(newList: List<T>) {
+        if (_currentList.isNotEmpty()) {
+            val oldListSize = _currentList.size
+            _currentList.clear()
+            adapter.notifyItemRangeRemoved(0, oldListSize)
+        }
+
         _currentList = newList.toMutableList()
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRangeInserted(0, _currentList.size)
+    }
+
+    /** Add an item to the list. */
+    fun add(item: T) {
+        _currentList.add(item)
+        adapter.notifyItemInserted(_currentList.lastIndex)
+    }
+
+    /** Remove an item from the list. */
+    fun remove(item: T) {
+        val idx = _currentList.indexOf(item)
+        if (idx != -1) {
+            _currentList.removeAt(idx)
+            adapter.notifyItemRemoved(idx)
+        }
     }
 }
 

@@ -4,6 +4,7 @@
 
 #### What's New
 - Folders on external drives can now be excluded on Android Q+ [#134]
+- Added toggle for edge-to-edge mode [#149]
 
 #### What's Improved
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)

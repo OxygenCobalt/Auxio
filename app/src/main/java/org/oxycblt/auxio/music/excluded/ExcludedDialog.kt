@@ -86,17 +86,19 @@ class ExcludedDialog :
             }
         }
 
-        binding.excludedRecycler.adapter = excludedAdapter
-
-        if (savedInstanceState != null) {
-            val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
-            if (pendingDirs != null) {
-                updateDirectories(pendingDirs.mapNotNull(ExcludedDirectory::fromString))
-                return
-            }
+        binding.excludedRecycler.apply {
+            adapter = excludedAdapter
+            itemAnimator = null
         }
 
-        updateDirectories(settingsManager.excludedDirs)
+        val dirs =
+            savedInstanceState
+                ?.getStringArrayList(KEY_PENDING_DIRS)
+                ?.mapNotNull(ExcludedDirectory::fromString)
+                ?: settingsManager.excludedDirs
+
+        excludedAdapter.data.submitList(dirs)
+        requireBinding().excludedEmpty.isVisible = dirs.isEmpty()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -111,7 +113,8 @@ class ExcludedDialog :
     }
 
     override fun onRemoveDirectory(dir: ExcludedDirectory) {
-        updateDirectories(excludedAdapter.data.currentList.toMutableList().also { it.remove(dir) })
+        excludedAdapter.data.remove(dir)
+        requireBinding().excludedEmpty.isVisible = excludedAdapter.data.currentList.isEmpty()
     }
 
     private fun addDocTreePath(uri: Uri?) {
@@ -123,7 +126,8 @@ class ExcludedDialog :
 
         val dir = parseExcludedUri(uri)
         if (dir != null) {
-            updateDirectories(excludedAdapter.data.currentList.toMutableList().also { it.add(dir) })
+            excludedAdapter.data.add(dir)
+            requireBinding().excludedEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_dir)
         }
@@ -140,11 +144,6 @@ class ExcludedDialog :
 
         // ExcludedDirectory handles the rest
         return ExcludedDirectory.fromString(treeUri)
-    }
-
-    private fun updateDirectories(dirs: List<ExcludedDirectory>) {
-        excludedAdapter.data.submitList(dirs)
-        requireBinding().excludedEmpty.isVisible = dirs.isEmpty()
     }
 
     private fun saveAndRestart() {
