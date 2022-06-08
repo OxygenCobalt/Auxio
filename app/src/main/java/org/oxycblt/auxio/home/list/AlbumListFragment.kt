@@ -28,8 +28,8 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
-import org.oxycblt.auxio.ui.PrimitiveBackingData
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
@@ -50,7 +50,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
             adapter = homeAdapter
         }
 
-        launch { homeModel.albums.collect(homeAdapter.data::submitList) }
+        launch { homeModel.albums.collect(homeAdapter.data::replaceList) }
     }
 
     override fun getPopup(pos: Int): String? {
@@ -89,7 +89,7 @@ class AlbumListFragment : HomeListFragment<Album>() {
 
     class AlbumAdapter(listener: MenuItemListener) :
         MonoAdapter<Album, MenuItemListener, AlbumViewHolder>(listener) {
-        override val data = PrimitiveBackingData<Album>(this)
+        override val data = SyncBackingData(this, AlbumViewHolder.DIFFER)
         override val creator = AlbumViewHolder.CREATOR
     }
 }

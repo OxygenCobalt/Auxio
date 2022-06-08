@@ -20,8 +20,8 @@ package org.oxycblt.auxio.ui
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import androidx.annotation.StringRes
+import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -183,50 +183,128 @@ abstract class BackingData<T> {
 }
 
 /**
- * A list-backed [BackingData] that is modified using adapter primitives. Useful in cases where
- * [AsyncBackingData] is not preferable due to bugs involving diffing.
+ * A list-backed [BackingData] that is modified synchronously. This is generally the recommended
+ * option for most adapters.
  * @author OxygenCobalt
  */
-class PrimitiveBackingData<T>(private val adapter: RecyclerView.Adapter<*>) : BackingData<T>() {
-    private var _currentList = mutableListOf<T>()
-
+class SyncBackingData<T>(adapter: RecyclerView.Adapter<*>, diffCallback: DiffUtil.ItemCallback<T>) :
+    BackingData<T>() {
+    private var differ = SyncListDiffer(adapter, diffCallback)
     /** The current list backing this adapter. */
     val currentList: List<T>
-        get() = _currentList
+        get() = differ.currentList
 
-    override fun getItem(position: Int): T = _currentList[position]
-    override fun getItemCount(): Int = _currentList.size
+    override fun getItem(position: Int): T = differ.currentList[position]
+    override fun getItemCount(): Int = differ.currentList.size
+
+    /** Submit a list normally, doing a diff synchronously. */
+    fun submitList(newList: List<T>) {
+        differ.currentList = newList
+    }
 
     /**
-     * Update the list with a [newList]. This does a basic animation that removes all items and
-     * replaces them with the new ones.
+     * Replace this list with a new list. This is useful for very large list diffs that would
+     * generally be too chaotic and slow to provide a good UX.
      */
-    @Suppress("NotifyDatasetChanged")
-    fun submitList(newList: List<T>) {
-        if (_currentList.isNotEmpty()) {
-            val oldListSize = _currentList.size
-            _currentList.clear()
-            adapter.notifyItemRangeRemoved(0, oldListSize)
+    fun replaceList(newList: List<T>) {
+        if (newList == differ.currentList) {
+            return
         }
 
-        _currentList = newList.toMutableList()
-        adapter.notifyItemRangeInserted(0, _currentList.size)
+        differ.currentList = emptyList()
+        differ.currentList = newList
     }
+}
 
-    /** Add an item to the list. */
-    fun add(item: T) {
-        _currentList.add(item)
-        adapter.notifyItemInserted(_currentList.lastIndex)
-    }
+/**
+ * Like [AsyncListDiffer], but synchronous. This may seem like it would be inefficient, but in
+ * practice Auxio's lists tend to be small enough to the point where this does not matter,
+ * and situations that would be inefficient are ruled out with [SyncBackingData.replaceList].
+ */
+private class SyncListDiffer<T>(
+    adapter: RecyclerView.Adapter<*>,
+    private val diffCallback: DiffUtil.ItemCallback<T>
+) {
+    private val updateCallback = AdapterListUpdateCallback(adapter)
 
-    /** Remove an item from the list. */
-    fun remove(item: T) {
-        val idx = _currentList.indexOf(item)
-        if (idx != -1) {
-            _currentList.removeAt(idx)
-            adapter.notifyItemRemoved(idx)
+    private var _currentList: List<T> = emptyList()
+    var currentList: List<T>
+        get() = _currentList
+        set(newList) {
+            if (newList === _currentList || newList.isEmpty() && _currentList.isEmpty()) {
+                return
+            }
+
+            if (newList.isEmpty()) {
+                val oldListSize = _currentList.size
+                _currentList = emptyList()
+                updateCallback.onRemoved(0, oldListSize)
+                return
+            }
+
+            if (_currentList.isEmpty()) {
+                _currentList = newList
+                updateCallback.onInserted(0, newList.size)
+                return
+            }
+
+            val oldList = _currentList
+            val result =
+                DiffUtil.calculateDiff(
+                    object : DiffUtil.Callback() {
+                        override fun getOldListSize(): Int {
+                            return oldList.size
+                        }
+
+                        override fun getNewListSize(): Int {
+                            return newList.size
+                        }
+
+                        override fun areItemsTheSame(
+                            oldItemPosition: Int,
+                            newItemPosition: Int
+                        ): Boolean {
+                            val oldItem: T? = oldList[oldItemPosition]
+                            val newItem: T? = newList[newItemPosition]
+                            return if (oldItem != null && newItem != null) {
+                                diffCallback.areItemsTheSame(oldItem, newItem)
+                            } else {
+                                oldItem == null && newItem == null
+                            }
+                        }
+
+                        override fun areContentsTheSame(
+                            oldItemPosition: Int,
+                            newItemPosition: Int
+                        ): Boolean {
+                            val oldItem: T? = oldList[oldItemPosition]
+                            val newItem: T? = newList[newItemPosition]
+                            return if (oldItem != null && newItem != null) {
+                                diffCallback.areContentsTheSame(oldItem, newItem)
+                            } else if (oldItem == null && newItem == null) {
+                                true
+                            } else {
+                                throw AssertionError()
+                            }
+                        }
+
+                        override fun getChangePayload(
+                            oldItemPosition: Int,
+                            newItemPosition: Int
+                        ): Any? {
+                            val oldItem: T? = oldList[oldItemPosition]
+                            val newItem: T? = newList[newItemPosition]
+                            return if (oldItem != null && newItem != null) {
+                                diffCallback.getChangePayload(oldItem, newItem)
+                            } else {
+                                throw AssertionError()
+                            }
+                        }
+                    })
+            
+            _currentList = newList
+            result.dispatchUpdatesTo(updateCallback)
         }
-    }
 }
 
 /**

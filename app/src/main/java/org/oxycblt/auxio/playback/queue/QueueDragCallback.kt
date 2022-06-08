@@ -148,17 +148,12 @@ class QueueDragCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
-    ): Boolean {
-        val from = viewHolder.bindingAdapterPosition
-        val to = target.bindingAdapterPosition
-
-        return playbackModel.moveQueueDataItems(from, to) { queueAdapter.data.moveItems(from, to) }
-    }
+    ): Boolean =
+        playbackModel.moveQueueDataItems(
+            viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition) {
-            queueAdapter.data.removeItem(viewHolder.bindingAdapterPosition)
-        }
+        playbackModel.removeQueueDataItem(viewHolder.bindingAdapterPosition)
     }
 
     override fun isLongPressDragEnabled(): Boolean = false

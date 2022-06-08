@@ -192,28 +192,20 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
         playbackManager.prev()
     }
 
-    /**
-     * Remove a queue item using it's recyclerview adapter index. If the indices are valid, [apply]
-     * is called just before the change is committed so that the adapter can be updated.
-     */
-    fun removeQueueDataItem(adapterIndex: Int, apply: () -> Unit) {
+    /** Remove a queue item using it's recyclerview adapter index. */
+    fun removeQueueDataItem(adapterIndex: Int) {
         val index =
             adapterIndex + (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
         if (index in playbackManager.queue.indices) {
-            apply()
             playbackManager.removeQueueItem(index)
         }
     }
-    /**
-     * Move queue items using their recyclerview adapter indices. If the indices are valid, [apply]
-     * is called just before the change is committed so that the adapter can be updated.
-     */
-    fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int, apply: () -> Unit): Boolean {
+    /** Move queue items using their recyclerview adapter indices. */
+    fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
         val delta = (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
         val from = adapterFrom + delta
         val to = adapterTo + delta
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {
-            apply()
             playbackManager.moveQueueItem(from, to)
             return true
         }

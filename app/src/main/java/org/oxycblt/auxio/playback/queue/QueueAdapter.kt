@@ -23,17 +23,15 @@ import android.graphics.drawable.ColorDrawable
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.isInvisible
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.BackingData
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater
@@ -42,7 +40,7 @@ import org.oxycblt.auxio.util.textSafe
 
 class QueueAdapter(listener: QueueItemListener) :
     MonoAdapter<Song, QueueItemListener, QueueSongViewHolder>(listener) {
-    override val data = HybridBackingData(this, QueueSongViewHolder.DIFFER)
+    override val data = SyncBackingData(this, QueueSongViewHolder.DIFFER)
     override val creator = QueueSongViewHolder.CREATOR
 }
 
@@ -105,69 +103,5 @@ private constructor(
             }
 
         val DIFFER = SongViewHolder.DIFFER
-    }
-}
-
-/**
- * A list-backed [BackingData] that can be modified with both adapter primitives and
- * [AsyncListDiffer]. This is incredibly dangerous and can probably crash the app if you look at it
- * the wrong way, so please don't use it outside of the queue module.
- */
-class HybridBackingData<T>(
-    private val adapter: RecyclerView.Adapter<*>,
-    diffCallback: DiffUtil.ItemCallback<T>
-) : BackingData<T>() {
-    private var _currentList = mutableListOf<T>()
-    val currentList: List<T>
-        get() = _currentList
-
-    private val differ = AsyncListDiffer(adapter, diffCallback)
-
-    override fun getItem(position: Int): T = _currentList[position]
-    override fun getItemCount(): Int = _currentList.size
-
-    fun submitList(newData: List<T>, onDone: () -> Unit = {}) {
-        if (newData != _currentList) {
-            _currentList = newData.toMutableList()
-            differ.submitList(newData, onDone)
-        }
-    }
-
-    fun moveItems(from: Int, to: Int) {
-        _currentList.add(to, _currentList.removeAt(from))
-        differ.rewriteListUnsafe(_currentList)
-        adapter.notifyItemMoved(from, to)
-    }
-
-    fun removeItem(at: Int) {
-        _currentList.removeAt(at)
-        differ.rewriteListUnsafe(_currentList)
-        adapter.notifyItemRemoved(at)
-    }
-
-    /**
-     * Rewrites the AsyncListDiffer's internal list, cancelling any diffs that are currently in
-     * progress. I cannot describe in words how dangerous this is, but it's also the only thing I
-     * can do to marry the adapter primitives with DiffUtil.
-     */
-    private fun <T> AsyncListDiffer<T>.rewriteListUnsafe(newList: List<T>) {
-        differMaxGenerationsField.set(this, (differMaxGenerationsField.get(this) as Int) + 1)
-        differListField.set(this, newList.toMutableList())
-        differImmutableListField.set(this, newList)
-    }
-
-    companion object {
-        private val differListField =
-            AsyncListDiffer::class.java.getDeclaredField("mList").apply { isAccessible = true }
-
-        private val differImmutableListField =
-            AsyncListDiffer::class.java.getDeclaredField("mReadOnlyList").apply {
-                isAccessible = true
-            }
-
-        private val differMaxGenerationsField =
-            AsyncListDiffer::class.java.getDeclaredField("mMaxScheduledGeneration").apply {
-                isAccessible = true
-            }
     }
 }

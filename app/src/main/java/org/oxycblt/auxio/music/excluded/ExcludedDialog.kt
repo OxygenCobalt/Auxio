@@ -97,7 +97,7 @@ class ExcludedDialog :
                 ?.mapNotNull(ExcludedDirectory::fromString)
                 ?: settingsManager.excludedDirs
 
-        excludedAdapter.data.submitList(dirs)
+        excludedAdapter.data.addAll(dirs)
         requireBinding().excludedEmpty.isVisible = dirs.isEmpty()
     }
 
