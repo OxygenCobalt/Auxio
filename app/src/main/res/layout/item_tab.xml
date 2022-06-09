@@ -16,6 +16,7 @@
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_small"
         android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_medium"
         android:clickable="false"
         android:focusable="false"
         android:paddingStart="@dimen/spacing_medium"
@@ -28,20 +29,14 @@
         tools:ignore="RtlSymmetry,contentDescription"
         tools:text="Artist" />
 
-    <ImageView
+    <Button
         android:id="@+id/tab_drag_handle"
+        android:layout_marginEnd="@dimen/spacing_button_dialog"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:clickable="true"
         android:contentDescription="@string/desc_tab_handle"
-        android:focusable="true"
-        android:minWidth="@dimen/size_btn_small"
-        android:minHeight="@dimen/size_btn_small"
-        android:paddingStart="@dimen/spacing_medium"
-        android:paddingEnd="@dimen/spacing_medium"
-        android:scaleType="center"
-        android:src="@drawable/ic_handle"
+        app:icon="@drawable/ic_handle"
         app:layout_constraintBottom_toBottomOf="@+id/tab_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tab_icon" />

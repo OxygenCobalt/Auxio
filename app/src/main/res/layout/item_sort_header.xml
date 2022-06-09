@@ -16,18 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Songs" />
 
-    <ImageButton
+    <Button
         android:id="@+id/header_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/ui_unbounded_ripple"
         android:contentDescription="@string/lbl_sort"
-        android:minWidth="@dimen/size_btn_small"
-        android:minHeight="@dimen/size_btn_small"
-        android:paddingStart="@dimen/spacing_medium"
-        android:paddingEnd="@dimen/spacing_medium"
-        android:src="@drawable/ic_sort"
+        android:layout_marginEnd="@dimen/spacing_tiny"
+        app:icon="@drawable/ic_sort"
         app:layout_constraintBottom_toTopOf="@id/header_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

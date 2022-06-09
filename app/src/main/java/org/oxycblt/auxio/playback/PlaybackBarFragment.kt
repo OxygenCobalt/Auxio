@@ -75,11 +75,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackProgressBar.trackColor =
             requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
 
-        binding.playbackSkipPrev?.setOnClickListener { playbackModel.prev() }
-
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 
-        binding.playbackSkipNext?.setOnClickListener { playbackModel.next() }
+        binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
 
         // -- VIEWMODEL SETUP ---
 

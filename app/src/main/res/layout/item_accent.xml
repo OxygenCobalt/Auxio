@@ -3,19 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_small"
-    android:paddingBottom="@dimen/spacing_small"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/spacing_small"
     android:theme="@style/ThemeOverlay.Accent">
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/accent"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ui_accent_circle"
-        android:padding="@dimen/spacing_medium"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_check"
+        app:icon="@drawable/ic_check"
+        app:iconTint="?attr/colorSurface"
         tools:backgroundTint="?attr/colorPrimary"
         tools:ignore="ContentDescription, SpeakableTextPresentCheck" />
 

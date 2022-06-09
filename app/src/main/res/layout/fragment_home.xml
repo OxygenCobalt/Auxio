@@ -12,7 +12,9 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/home_toolbar"
-            style="@style/Widget.Auxio.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Auxio.Toolbar.Actions"
             app:menu="@menu/menu_home"
             app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/info_app_name" />
@@ -30,6 +32,7 @@
     </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
     <FrameLayout
+        android:id="@+id/home_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
@@ -98,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_medium"
             android:contentDescription="@string/desc_shuffle_all"
-            android:src="@drawable/ic_shuffle_state" />
+            android:src="@drawable/ic_shuffle" />
 
     </org.oxycblt.auxio.home.EdgeFabContainer>
 

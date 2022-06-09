@@ -74,6 +74,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
     }
 
+    // TODO: Default accent on android 12 should be dynamic colors
     return Accent.from(prefs.getInt(SettingsManager.KEY_ACCENT, 5))
 }
 

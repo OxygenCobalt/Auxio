@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/desc_shuffle"
-            android:src="@drawable/ic_shuffle_state" />
+            android:src="@drawable/ic_shuffle" />
 
     </android.widget.LinearLayout>
 </android.widget.RelativeLayout>

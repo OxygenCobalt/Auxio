@@ -92,7 +92,7 @@ class AccentViewHolder private constructor(private val binding: ItemAccentBindin
     fun setSelected(isSelected: Boolean) {
         binding.accent.apply {
             isEnabled = !isSelected
-            imageTintList =
+            iconTint =
                 if (isSelected) {
                     context.getAttrColorSafe(R.attr.colorSurface).stateList
                 } else {

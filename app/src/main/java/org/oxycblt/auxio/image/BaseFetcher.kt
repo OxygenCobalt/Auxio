@@ -75,6 +75,7 @@ abstract class BaseFetcher : Fetcher {
             }
         } catch (e: Exception) {
             logW("Unable to extract album art due to an error")
+            logW(e.stackTraceToString())
             null
         }
     }
@@ -114,6 +115,9 @@ abstract class BaseFetcher : Fetcher {
     }
 
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
+        // FIXME: Do not use use here, as Lollipop devices apparently do not have
+        // MediaMetadataRetriever implemented as AutoClosable.
+
         MediaMetadataRetriever().use { ext ->
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.

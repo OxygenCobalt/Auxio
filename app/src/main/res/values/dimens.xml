@@ -7,7 +7,11 @@
     <dimen name="spacing_mid_large">24dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
 
+    <dimen name="spacing_tiny_inv">-4dp</dimen>
     <dimen name="spacing_small_inv">-8dp</dimen>
+
+    <dimen name="spacing_medium_icon">6dp</dimen>
+    <dimen name="spacing_button_dialog">12dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_btn_small">48dp</dimen>
@@ -23,7 +27,8 @@
     <dimen name="size_corners_small">8dp</dimen>
     <dimen name="size_corners_large">16dp</dimen>
 
-    <dimen name="size_icon_normal">24dp</dimen>
+    <dimen name="size_icon_small">24dp</dimen>
+    <dimen name="size_icon_medium">28dp</dimen>
     <dimen name="size_icon_large">32dp</dimen>
 
     <dimen name="text_size_ext_label_larger">16sp</dimen>
@@ -52,4 +57,6 @@
     <dimen name="widget_height_min">110dp</dimen>
     <dimen name="widget_width_def">@dimen/widget_width_min</dimen>
     <dimen name="widget_height_def">@dimen/widget_height_min</dimen>
+    
+    <dimen name="abc_action_bar_default_padding_start_material">4dp</dimen>
 </resources>

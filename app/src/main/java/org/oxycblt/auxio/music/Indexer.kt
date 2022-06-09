@@ -28,7 +28,6 @@ import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
-import org.oxycblt.auxio.music.backend.ExoPlayerBackend
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -188,7 +187,7 @@ class Indexer {
                 else -> Api21MediaStoreBackend()
             }
 
-        val songs = buildSongs(context, ExoPlayerBackend(mediaStoreBackend), generation)
+        val songs = buildSongs(context, mediaStoreBackend, generation)
         if (songs.isEmpty()) {
             return null
         }

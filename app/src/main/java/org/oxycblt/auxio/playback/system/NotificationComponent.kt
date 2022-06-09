@@ -170,7 +170,7 @@ class NotificationComponent(
         isShuffled: Boolean
     ): NotificationCompat.Action {
         val drawableRes =
-            if (isShuffled) R.drawable.ic_shuffle_state else R.drawable.ic_remote_shuffle_off
+            if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
 
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }

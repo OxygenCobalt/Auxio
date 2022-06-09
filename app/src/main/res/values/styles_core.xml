@@ -20,6 +20,8 @@
         <item name="android:colorBackground">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:scrollbars">none</item>
+        <item name="toolbarNavigationButtonStyle">@style/Widget.Auxio.Toolbar.Navigation</item>
+        <item name="actionOverflowButtonStyle">@style/Widget.Auxio.Button.Overflow</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -52,6 +54,7 @@
         <item name="textAppearanceBodyMedium">@style/TextAppearance.Auxio.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.Auxio.BodySmall</item>
     </style>
+
 
     <!--
     Theming widgets is technically possible below Android 12, but I *really* don't care enough

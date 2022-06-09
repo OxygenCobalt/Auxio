@@ -8,19 +8,88 @@
     </style>
 
     <!-- Base toolbar style -->
-    <style name="Widget.Auxio.Toolbar" parent="">
+    <style name="Widget.Auxio.Toolbar.Base" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <!-- Toolbar sub-style with a nav icon -->
-    <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar">
+    <style name="Widget.Auxio.Toolbar.Actions" parent="Widget.Auxio.Toolbar.Base">
+        <!--
+        Material guidelines state that there should be 16dp end padding with actions,
+        but Toolbar only has 12dp. Fix that by adding a 4dp margin.
+         -->
+        <item name="android:layout_marginEnd">4dp</item>
+    </style>
+\
+    <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
-
-    <!-- Toolbar sub-style with a downwards nav icon -->
-    <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar">
+\
+    <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
+        <item name="navigationIcon">@drawable/ic_back</item>
+    </style>
+\
+    <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_down</item>
+    </style>
+\
+    <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
+        <item name="navigationIcon">@drawable/ic_down</item>
+    </style>
+
+    <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
+        <item name="trackColorInactive">@color/sel_track</item>
+        <item name="haloRadius">@dimen/spacing_medium</item>
+        <item name="thumbRadius">@dimen/slider_thumb_radius</item>
+        <item name="labelBehavior">gone</item>
+        <item name="tickVisible">false</item>
+    </style>
+
+    <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="trackColor">@color/sel_track</item>
+        <item name="trackCornerRadius">@dimen/size_corners_large</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Icon.Base" parent="Widget.Material3.Button.TextButton">
+        <item name="iconPadding">0dp</item>
+        <item name="iconTint">?attr/colorControlNormal</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+        <item name="android:minWidth">@dimen/size_btn_small</item>
+        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:maxWidth">@dimen/size_btn_small</item>
+        <item name="android:maxHeight">@dimen/size_btn_small</item>
+    </style>
+    
+    <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
+        <item name="iconSize">@dimen/size_icon_small</item>
+        <item name="android:insetTop">@dimen/spacing_tiny</item>
+        <item name="android:insetBottom">@dimen/spacing_tiny</item>
+        <item name="android:insetLeft">@dimen/spacing_tiny</item>
+        <item name="android:insetRight">@dimen/spacing_tiny</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Icon.Medium" parent="Widget.Auxio.Button.Icon.Small">
+        <item name="iconSize">@dimen/size_icon_medium</item>
+        <item name="android:paddingStart">@dimen/spacing_medium_icon</item>
+        <item name="android:paddingEnd">@dimen/spacing_medium_icon</item>
+        <item name="android:paddingTop">@dimen/spacing_medium_icon</item>
+        <item name="android:paddingBottom">@dimen/spacing_medium_icon</item>
+    </style>
+
+    <style name="Widget.Auxio.Button.Icon.Large" parent="Widget.Auxio.Button.Icon.Base">
+        <item name="iconSize">@dimen/size_icon_large</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:paddingStart">@dimen/spacing_small</item>
+        <item name="android:paddingEnd">@dimen/spacing_small</item>
+        <item name="android:paddingTop">@dimen/spacing_small</item>
+        <item name="android:paddingBottom">@dimen/spacing_small</item>
     </style>
 
     <style name="Widget.Auxio.Image.Small" parent="">
@@ -71,19 +140,6 @@
 
     <style name="Widget.Auxio.RecyclerView.WithAdaptiveFab" parent="">
         <item name="android:paddingBottom">@dimen/recycler_fab_space_normal</item>
-    </style>
-
-    <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
-        <item name="trackColorInactive">@color/sel_track</item>
-        <item name="haloRadius">@dimen/spacing_medium</item>
-        <item name="thumbRadius">@dimen/slider_thumb_radius</item>
-        <item name="labelBehavior">gone</item>
-        <item name="tickVisible">false</item>
-    </style>
-
-    <style name="Widget.Auxio.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
-        <item name="trackColor">@color/sel_track</item>
-        <item name="trackCornerRadius">@dimen/size_corners_large</item>
     </style>
 
     <style name="ThemeOverlay.Accent" parent="">

@@ -12,7 +12,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/search_toolbar"
-            style="@style/Widget.Auxio.Toolbar.Icon"
+            style="@style/Widget.Auxio.Toolbar.Icon.Actions"
             app:menu="@menu/menu_search">
 
             <com.google.android.material.textfield.TextInputLayout

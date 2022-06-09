@@ -95,7 +95,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
                     binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
-                    binding.homePager.updatePadding(
+                    binding.homeContent.updatePadding(
                         bottom = binding.homeAppbar.totalScrollRange + offset)
                 })
         }
@@ -246,8 +246,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun updateSortMenu(displayMode: DisplayMode, isVisible: (Int) -> Boolean) {
-        val sortItem =
-            requireNotNull(sortItem) { "Cannot update sort menu when view does not exist" }
+        val sortItem = requireNotNull(sortItem) { "Cannot update sort menu while detached" }
 
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 

@@ -43,14 +43,25 @@
         app:layout_constraintTop_toBottomOf="@+id/playback_song"
         tools:text="Artist Name / Album Name" />
 
-    <org.oxycblt.auxio.ui.StyledImageButton
+    <Button
         android:id="@+id/playback_play_pause"
+        style="@style/Widget.Auxio.Button.Icon.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_small"
         android:contentDescription="@string/desc_play_pause"
-        android:src="@drawable/sel_playing_state"
-        app:iconSize="@dimen/size_icon_large"
+        app:icon="@drawable/sel_playing_state"
+        app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
+        app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/playback_skip_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Auxio.Button.Icon.Medium"
+        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:contentDescription="@string/desc_play_pause"
+        app:icon="@drawable/ic_skip_next"
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="0dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/excluded_path"
@@ -25,20 +24,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="/storage/emulated/0/directory" />
 
-    <ImageButton
+    <Button
         android:id="@+id/excluded_clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:background="@drawable/ui_unbounded_ripple"
+        android:layout_marginEnd="@dimen/spacing_button_dialog"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:contentDescription="@string/desc_blacklist_delete"
-        android:minWidth="@dimen/size_btn_small"
-        android:minHeight="@dimen/size_btn_small"
-        android:paddingStart="@dimen/spacing_medium"
-        android:paddingTop="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_medium"
-        android:paddingBottom="@dimen/spacing_small"
-        android:src="@drawable/ic_delete"
+        app:icon="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
