@@ -82,7 +82,7 @@
     Hacks around the incorrectly-sized navigation icon in the Toolbar, changing it from
     56dp to 48dp.
     -->
-    <style name="Widget.Auxio.Toolbar.Navigation" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
+    <style name="Widget.Auxio.Toolbar.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:minWidth">@dimen/size_btn_small</item>
     </style>
 
@@ -90,7 +90,7 @@
     Hacks around the old overflow button that was deliberately downsized to 36dp
     (presumably for compat with older devices)
     -->
-    <style name="Widget.Auxio.Button.Overflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+    <style name="Widget.Auxio.Button.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:minWidth">@dimen/size_btn_small</item>
         <item name="android:minHeight">@dimen/size_btn_small</item>
         <item name="android:paddingStart">0dp</item>

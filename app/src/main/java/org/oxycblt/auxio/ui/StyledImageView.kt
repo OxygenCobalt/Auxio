@@ -50,7 +50,7 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * of the view size, and corner radius application depending on user preference.
  * @author OxygenCobalt
  *
- * TODO: Add an activation indicator to this view too
+ * TODO: Rework this layout into a total ViewGroup that enables more customization + an indicator
  */
 class StyledImageView
 @JvmOverloads

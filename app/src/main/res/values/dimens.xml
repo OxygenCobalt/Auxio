@@ -57,6 +57,6 @@
     <dimen name="widget_height_min">110dp</dimen>
     <dimen name="widget_width_def">@dimen/widget_width_min</dimen>
     <dimen name="widget_height_def">@dimen/widget_height_min</dimen>
-    
+
     <dimen name="abc_action_bar_default_padding_start_material">4dp</dimen>
 </resources>

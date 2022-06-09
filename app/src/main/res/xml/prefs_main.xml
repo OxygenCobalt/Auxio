@@ -27,14 +27,6 @@
             app:summary="@string/set_black_mode_desc"
             app:title="@string/set_black_mode" />
 
-        <org.oxycblt.auxio.settings.pref.M3SwitchPreference
-            app:allowDividerBelow="false"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false"
-            app:key="auxio_edge"
-            app:summary="@string/set_edge_to_edge_desc"
-            app:title="@string/set_edge_to_edge" />
-
     </PreferenceCategory>
 
     <PreferenceCategory

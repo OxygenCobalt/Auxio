@@ -63,11 +63,11 @@
 
         <Button
             android:id="@+id/song_drag_handle"
+            style="@style/Widget.Auxio.Button.Icon.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.Button.Icon.Small"
-            android:contentDescription="@string/desc_queue_handle"
             android:layout_marginEnd="@dimen/spacing_tiny"
+            android:contentDescription="@string/desc_queue_handle"
             app:icon="@drawable/ic_handle"
             app:layout_constraintBottom_toBottomOf="@+id/song_album_cover"
             app:layout_constraintEnd_toEndOf="parent"

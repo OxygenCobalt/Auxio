@@ -86,9 +86,9 @@
 
     <org.oxycblt.auxio.ui.IndicatorMaterialButton
         android:id="@+id/playback_repeat"
+        style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_marginEnd="@dimen/spacing_large"
         android:contentDescription="@string/desc_change_repeat"
         app:icon="@drawable/ic_repeat"
@@ -100,12 +100,12 @@
 
     <Button
         android:id="@+id/playback_skip_prev"
+        style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/desc_skip_prev"
-        style="@style/Widget.Auxio.Button.Icon.Large"
-        app:icon="@drawable/ic_skip_prev"
         android:layout_marginEnd="@dimen/spacing_large"
+        android:contentDescription="@string/desc_skip_prev"
+        app:icon="@drawable/ic_skip_prev"
         app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
         app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
@@ -125,25 +125,25 @@
 
     <Button
         android:id="@+id/playback_skip_next"
+        style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.Auxio.Button.Icon.Large"
-        app:icon="@drawable/ic_skip_next"
         android:layout_marginStart="@dimen/spacing_large"
         android:contentDescription="@string/desc_skip_next"
+        app:icon="@drawable/ic_skip_next"
         app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
         app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
     <org.oxycblt.auxio.ui.IndicatorMaterialButton
         android:id="@+id/playback_shuffle"
+        style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.Auxio.Button.Icon.Large"
-        app:icon="@drawable/ic_shuffle"
-        app:iconTint="@color/sel_accented"
         android:layout_marginStart="@dimen/spacing_large"
         android:contentDescription="@string/desc_shuffle"
+        app:icon="@drawable/ic_shuffle"
+        app:iconTint="@color/sel_accented"
         app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
         app:layout_constraintStart_toEndOf="@+id/playback_skip_next"
         app:layout_constraintTop_toTopOf="@+id/playback_skip_next"

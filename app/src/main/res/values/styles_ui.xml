@@ -20,19 +20,23 @@
          -->
         <item name="android:layout_marginEnd">4dp</item>
     </style>
-\
+    \
+
     <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
-\
+    \
+
     <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
-\
+    \
+
     <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
-\
+    \
+
     <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
@@ -59,7 +63,7 @@
         <item name="android:maxWidth">@dimen/size_btn_small</item>
         <item name="android:maxHeight">@dimen/size_btn_small</item>
     </style>
-    
+
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
         <item name="iconSize">@dimen/size_icon_small</item>
         <item name="android:insetTop">@dimen/spacing_tiny</item>

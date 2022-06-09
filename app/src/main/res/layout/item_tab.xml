@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginBottom="@dimen/spacing_small"
         android:layout_marginEnd="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_small"
         android:clickable="false"
         android:focusable="false"
         android:paddingStart="@dimen/spacing_medium"
@@ -31,10 +31,10 @@
 
     <Button
         android:id="@+id/tab_drag_handle"
-        android:layout_marginEnd="@dimen/spacing_button_dialog"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_button_dialog"
         android:contentDescription="@string/desc_tab_handle"
         app:icon="@drawable/ic_handle"
         app:layout_constraintBottom_toBottomOf="@+id/tab_icon"

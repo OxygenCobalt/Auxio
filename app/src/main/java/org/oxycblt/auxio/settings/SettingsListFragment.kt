@@ -141,13 +141,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_EDGE_TO_EDGE -> {
-                    onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, _ ->
-                            requireActivity().recreate()
-                            true
-                        }
-                }
                 SettingsManager.KEY_LIB_TABS -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {

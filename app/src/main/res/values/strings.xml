@@ -76,8 +76,6 @@
     <string name="set_accent">Color scheme</string>
     <string name="set_black_mode">Black theme</string>
     <string name="set_black_mode_desc">Use a pure-black dark theme</string>
-    <string name="set_edge_to_edge">Edge-to-edge</string>
-    <string name="set_edge_to_edge_desc">May not work on all devices</string>
 
     <string name="set_display">Display</string>
     <string name="set_lib_tabs">Library tabs</string>

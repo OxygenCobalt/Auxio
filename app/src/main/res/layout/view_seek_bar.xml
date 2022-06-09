@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <com.google.android.material.slider.Slider
         android:id="@+id/seek_bar_slider"
@@ -21,22 +21,22 @@
         android:id="@+id/seek_bar_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_tiny"
         android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
         android:textColor="@color/sel_accented_secondary"
-        android:layout_marginBottom="@dimen/spacing_tiny"
-        android:layout_gravity="bottom|start"
         tools:text="11:38" />
 
     <TextView
         android:id="@+id/seek_bar_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:textAppearance="@style/TextAppearance.Auxio.BodyMedium"
         android:textColor="?android:attr/textColorSecondary"
-        android:layout_gravity="bottom|end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_seek_bar"
         tools:text="16:16" />

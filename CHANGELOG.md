@@ -4,15 +4,19 @@
 
 #### What's New
 - Folders on external drives can now be excluded on Android Q+ [#134]
-- Added toggle for edge-to-edge mode [#149]
+- Playback bar now has a skip action
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling
+- The toolbar layout is now consistent with Material Design 3
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
+- Playback bar now picks the larger inset in case that gesture inset is missing [#149]
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech]
 - Moved music loading to a foreground service
+- Phased out `ImageButton` for `MaterialButton`
+- Unified icon sizing
 
 ## v2.3.1
 

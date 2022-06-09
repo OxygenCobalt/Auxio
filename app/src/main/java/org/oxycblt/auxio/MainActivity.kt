@@ -32,8 +32,6 @@ import org.oxycblt.auxio.music.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.ui.accent.Accent
-import org.oxycblt.auxio.util.getColorSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -56,13 +54,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val settingsManager = SettingsManager.getInstance()
-
-        setupTheme(settingsManager.theme, settingsManager.accent, settingsManager.useBlackTheme)
+        setupTheme()
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupEdgeToEdge(binding.root, settingsManager.edgeToEdge)
+        setupEdgeToEdge(binding.root)
 
         logD("Activity created")
     }
@@ -111,41 +107,30 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    private fun setupTheme(theme: Int, accent: Accent, useBlackTheme: Boolean) {
+    private fun setupTheme() {
+        val settingsManager = SettingsManager.getInstance()
+
         // Disable theme customization above Android 12, as it's far enough in as a version to
         // the point where most phones should have an automatic option for light/dark theming.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            AppCompatDelegate.setDefaultNightMode(theme)
+            AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
 
         // The black theme has a completely separate set of styles since style attributes cannot
         // be modified at runtime.
-        if (isNight && useBlackTheme) {
-            logD("Applying black theme [accent $accent]")
-            setTheme(accent.blackTheme)
+        if (isNight && settingsManager.useBlackTheme) {
+            logD("Applying black theme [accent ${settingsManager.accent}]")
+            setTheme(settingsManager.accent.blackTheme)
         } else {
-            logD("Applying normal theme [accent $accent]")
-            setTheme(accent.theme)
+            logD("Applying normal theme [accent ${settingsManager.accent}]")
+            setTheme(settingsManager.accent.theme)
         }
     }
 
-    private fun setupEdgeToEdge(contentView: View, enabled: Boolean) {
-        val fitsSystemWindows = !enabled
-        WindowCompat.setDecorFitsSystemWindows(window, fitsSystemWindows)
-        if (fitsSystemWindows) {
-            // Auxio's theme is normally set up to anticipate edge to edge mode being
-            // enabled. In the case that it is not, we have to update the values during
-            // runtime.
-            val controller = WindowCompat.getInsetsController(window, window.decorView)
-            val black = getColorSafe(android.R.color.black)
-
-            window.statusBarColor = black
-            controller.isAppearanceLightStatusBars = false
-            window.navigationBarColor = black
-            controller.isAppearanceLightNavigationBars = false
-        }
+    private fun setupEdgeToEdge(contentView: View) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         contentView.setOnApplyWindowInsetsListener { view, insets ->
             val bars = insets.getSystemBarInsetsCompat(view)

@@ -26,10 +26,10 @@
 
     <Button
         android:id="@+id/excluded_clear"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_button_dialog"
-        style="@style/Widget.Auxio.Button.Icon.Small"
         android:contentDescription="@string/desc_blacklist_delete"
         app:icon="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="parent"

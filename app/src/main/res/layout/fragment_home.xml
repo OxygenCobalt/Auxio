@@ -12,11 +12,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/home_toolbar"
+            style="@style/Widget.Auxio.Toolbar.Actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.Auxio.Toolbar.Actions"
-            app:menu="@menu/menu_home"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:menu="@menu/menu_home"
             app:title="@string/info_app_name" />
 
         <com.google.android.material.tabs.TabLayout
@@ -49,8 +49,8 @@
                 android:id="@+id/home_indexing_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginBottom="@dimen/spacing_medium"
+                android:gravity="center"
                 android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
                 app:layout_constraintBottom_toTopOf="@+id/home_indexing_action"
                 app:layout_constraintTop_toTopOf="parent"
