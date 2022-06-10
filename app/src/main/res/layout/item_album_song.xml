@@ -8,7 +8,8 @@
     <!--
     We don't want to show an album cover, but we still want the spacing of this song
     to be alike to other songs. So, add a pastel-ish background to each track number
-    view. The way we do this is odd, but it's designed this way-->
+    view. The way we do this is odd, but it's designed this way.
+    -->
 
     <org.oxycblt.auxio.ui.StyledImageView
         android:id="@+id/song_track_bg"
@@ -27,7 +28,7 @@
         android:maxLines="1"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-        android:textColor="@color/sel_on_cover_bg"
+        android:textColor="@color/sel_track_cover"
         app:autoSizeMaxTextSize="@dimen/text_size_track_number_max"
         app:autoSizeMinTextSize="@dimen/text_size_track_number_min"
         app:autoSizeStepGranularity="@dimen/text_size_track_number_step"

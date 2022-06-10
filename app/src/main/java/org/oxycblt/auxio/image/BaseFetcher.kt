@@ -74,8 +74,7 @@ abstract class BaseFetcher : Fetcher {
                 fetchMediaStoreCovers(context, album)
             }
         } catch (e: Exception) {
-            logW("Unable to extract album art due to an error")
-            logW(e.stackTraceToString())
+            logW("Unable to extract album art due to an error: $e")
             null
         }
     }

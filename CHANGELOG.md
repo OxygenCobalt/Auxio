@@ -10,6 +10,8 @@
 - The toolbar in the home UI now collapses when scrolling
 - The toolbar layout is now consistent with Material Design 3
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
+
+#### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
 
 #### Dev/Meta

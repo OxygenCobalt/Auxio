@@ -29,6 +29,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.drawable.DrawableCompat
 import coil.dispose
+import coil.drawable.CrossfadeDrawable
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
@@ -50,19 +51,18 @@ import org.oxycblt.auxio.util.getDrawableSafe
  * of the view size, and corner radius application depending on user preference.
  * @author OxygenCobalt
  *
- * TODO: Rework this layout into a total ViewGroup that enables more customization + an indicator
+ * TODO: I'll need to make it a whole ViewGroup eventually
  */
 class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
     private var cornerRadius = 0f
+    private var indicator = StyledDrawable(context, R.drawable.ic_equalizer)
 
     init {
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
-
         cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
-
         styledAttrs.recycle()
 
         // Use clipToOutline and a background drawable to crop images. While Coil's transformation
@@ -95,19 +95,35 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         }
     }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (isActivated) {
+            // We can't modify the view alpha since that would change the background opacity,
+            // but we also can't modify the image alpha since that breaks CrossfadeDrawable.
+            // Instead, we just draw the background again when activated in order to obscure
+            // the actual image, and then draw the indicator. The only other option is to make
+            // a proper ViewGroup, and I really don't want that.
+            val src = drawable?.let { if (it is CrossfadeDrawable) it.end else it }
+            background.alpha = if (src is StyledDrawable) 255 else 128
+            background.draw(canvas)
+            background.alpha = 255
+            indicator.draw(canvas)
+        }
+    }
+
     /** Bind the album cover for a [song]. */
-    fun bind(song: Song) = load(song, R.drawable.ic_song, R.string.desc_album_cover)
+    fun bind(song: Song) = loadImpl(song, R.drawable.ic_song, R.string.desc_album_cover)
 
     /** Bind the album cover for an [album]. */
-    fun bind(album: Album) = load(album, R.drawable.ic_album, R.string.desc_album_cover)
+    fun bind(album: Album) = loadImpl(album, R.drawable.ic_album, R.string.desc_album_cover)
 
     /** Bind the image for an [artist] */
-    fun bind(artist: Artist) = load(artist, R.drawable.ic_artist, R.string.desc_artist_image)
+    fun bind(artist: Artist) = loadImpl(artist, R.drawable.ic_artist, R.string.desc_artist_image)
 
     /** Bind the image for a [genre] */
-    fun bind(genre: Genre) = load(genre, R.drawable.ic_genre, R.string.desc_genre_image)
+    fun bind(genre: Genre) = loadImpl(genre, R.drawable.ic_genre, R.string.desc_genre_image)
 
-    private fun <T : Music> load(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
+    private fun <T : Music> loadImpl(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
         dispose()
         load(music) {
             error(StyledDrawable(context, error))

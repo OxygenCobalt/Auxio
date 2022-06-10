@@ -54,7 +54,7 @@ constructor(
     FrameLayout(context, attrs, defStyleAttr),
     Slider.OnSliderTouchListener,
     Slider.OnChangeListener {
-    private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
+    private val binding = ViewSeekBarBinding.inflate(context.inflater, this)
 
     init {
         binding.seekBarSlider.addOnSliderTouchListener(this)
