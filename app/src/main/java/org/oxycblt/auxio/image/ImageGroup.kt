@@ -102,14 +102,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
-        if (!isInEditMode) {
-            val settingsManager = SettingsManager.getInstance()
-            if (settingsManager.roundCovers) {
-                (background as MaterialShapeDrawable).setCornerSize(cornerRadius)
-            }
-        }
-
         invalidateIndicator()
     }
 
