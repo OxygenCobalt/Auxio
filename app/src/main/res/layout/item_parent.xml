@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.ItemLayout">
 
-    <org.oxycblt.auxio.ui.StyledImageView
+    <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/parent_image"
         style="@style/Widget.Auxio.Image.Medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_artist" />
+        tools:staticIcon="@drawable/ic_artist" />
 
     <TextView
         android:id="@+id/parent_name"

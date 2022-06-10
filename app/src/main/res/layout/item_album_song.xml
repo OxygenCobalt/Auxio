@@ -11,34 +11,36 @@
     view. The way we do this is odd, but it's designed this way.
     -->
 
-    <org.oxycblt.auxio.ui.StyledImageView
+    <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/song_track_bg"
         style="@style/Widget.Auxio.Image.Small"
-        android:scaleType="matrix"
-        app:layout_constraintBottom_toBottomOf="@+id/song_track"
-        app:layout_constraintEnd_toEndOf="@+id/song_track"
-        app:layout_constraintStart_toStartOf="@+id/song_track"
-        app:layout_constraintTop_toTopOf="@+id/song_track" />
-
-    <TextView
-        android:id="@+id/song_track"
-        android:layout_width="@dimen/size_btn_small"
-        android:layout_height="@dimen/size_btn_small"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
-        android:textColor="@color/sel_track_cover"
-        app:autoSizeMaxTextSize="@dimen/text_size_track_number_max"
-        app:autoSizeMinTextSize="@dimen/text_size_track_number_min"
-        app:autoSizeStepGranularity="@dimen/text_size_track_number_step"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/song_name"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="16" />
+        app:staticIcon="@drawable/ic_song"
+        tools:visibility="invisible">
+
+        <TextView
+            android:id="@+id/song_track"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textColor="@color/sel_on_cover_bg"
+            app:autoSizeMaxTextSize="@dimen/text_size_track_number_max"
+            app:autoSizeMinTextSize="@dimen/text_size_track_number_min"
+            app:autoSizeStepGranularity="@dimen/text_size_track_number_step"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_name"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="16" />
+
+    </org.oxycblt.auxio.image.ImageGroup>
+
 
     <TextView
         android:id="@+id/song_name"
@@ -48,8 +50,8 @@
         android:textColor="@color/sel_accented_primary"
         app:layout_constraintBottom_toTopOf="@+id/song_duration"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/song_track"
-        app:layout_constraintTop_toTopOf="@+id/song_track"
+        app:layout_constraintStart_toEndOf="@+id/song_track_bg"
+        app:layout_constraintTop_toTopOf="@+id/song_track_bg"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Song Name" />
 
@@ -59,9 +61,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
-        app:layout_constraintBottom_toBottomOf="@+id/song_track"
+        app:layout_constraintBottom_toBottomOf="@+id/song_track_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/song_track"
+        app:layout_constraintStart_toEndOf="@+id/song_track_bg"
         app:layout_constraintTop_toBottomOf="@+id/song_name"
         tools:text="16:16" />
 

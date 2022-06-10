@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <!--
+    Yes, this whole file is all 30 frames of Spotify's equalizer animation,
+    modified to look like the material equalizer icon, and inlined into an
+    animation list using aapt:attr so that it doesn't clutter the drawable
+    field. It looks better than if I did it programmatically, though.
+    -->
+
+    <!-- Frame 1 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064 3.9997559 L 9.9999064 19.999813 L 14.000179 19.999813 L 14.000179 3.9997559 L 9.9999064 3.9997559 z M 3.9997559 10.999845 L 3.9997559 19.999813 L 8.0000285 19.999813 L 8.0000285 10.999845 L 3.9997559 10.999845 z M 16.000057 10.999845 L 16.000057 19.999813 L 19.999813 19.999813 L 19.999813 10.999845 L 16.000057 10.999845 z  " />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 2 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064 5.0002116 L 9.9999064 19.999813 L 14.000179 19.999813 L 14.000179 5.0002116 L 9.9999064 5.0002116 z M 3.9997559 9.9999064 L 3.9997559 19.999813 L 8.0000285 19.999813 L 8.0000285 9.9999064 L 3.9997559 9.9999064 z M 16.000057 14.000179 L 16.000057 19.999813 L 19.999813 19.999813 L 19.999813 14.000179 L 16.000057 14.000179 z " />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 3 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,5.0002116 V 19.999813 H 14.000179 V 5.0002116 Z M 3.9997559,9 V 19.999813 H 8.0000285 V 9 Z m 12.0003011,7 v 3.999813 h 3.999756 V 16 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 4 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,7 V 19.999813 H 14.000179 V 7 Z m -6.0001505,4 v 8.999813 H 8.0000285 V 11 Z m 12.0003011,6 v 2.999813 h 3.999756 V 17 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 5 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,9 V 19.999813 H 14.000179 V 9 Z m -6.0001505,1 v 9.999813 H 8.0000285 V 10 Z M 16,18 l 5.7e-5,1.999813 h 3.999756 V 18 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 6 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,11 v 8.999813 H 14.000179 V 11 Z M 3.9997559,9 V 19.999813 H 8.0000285 V 9 Z M 16,18 l 5.7e-5,1.999813 h 3.999756 V 18 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 7 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,13 v 6.999813 H 14.000179 V 13 Z M 3.9997559,8 V 19.999813 H 8.0000285 V 8 Z M 16,18 l 5.7e-5,1.999813 h 3.999756 V 18 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 8 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,16 v 3.999813 H 14.000179 V 16 Z M 3.9997559,7 V 19.999813 H 8.0000285 V 7 Z M 16,17 l 5.7e-5,2.999813 h 3.999756 V 17 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 9 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,17 v 2.999813 H 14.000179 V 17 Z M 3.9997559,6 V 19.999813 H 8.0000285 V 6 Z M 16,17 l 5.7e-5,2.999813 h 3.999756 V 17 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 10 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,18 v 1.999813 H 14.000179 V 18 Z M 3.9997559,5 V 19.999813 H 8.0000285 V 5 Z M 16,15 l 5.7e-5,4.999813 h 3.999756 V 15 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 11 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,18 v 1.999813 H 14.000179 V 18 Z M 3.9997559,5 V 19.999813 H 8.0000285 V 5 Z M 16,14 l 5.7e-5,5.999813 h 3.999756 V 14 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 12 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,17 v 2.999813 H 14.000179 V 17 Z M 3.9997559,4 V 19.999813 H 8.0000285 V 4 Z M 16,12 l 5.7e-5,7.999813 h 3.999756 V 12 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 13 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,17 v 2.999813 H 14.000179 V 17 Z M 3.9997559,4 V 19.999813 H 8.0000285 V 4 Z M 16,11 l 5.7e-5,8.999813 h 3.999756 V 11 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 14 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,17 v 2.999813 H 14.000179 V 17 Z M 3.9997559,4 V 19.999813 H 8.0000285 V 4 Z M 16,10 l 5.7e-5,9.999813 h 3.999756 V 10 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 15 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,15 v 4.999813 H 14.000179 V 15 Z M 3.9997559,5 V 19.999813 H 8.0000285 V 5 Z M 16,10 l 5.7e-5,9.999813 h 3.999756 V 10 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 16 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,14 v 5.999813 H 14.000179 V 14 Z M 3.9997559,5 V 19.999813 H 8.0000285 V 5 Z M 16,9 l 5.7e-5,10.999813 h 3.999756 V 9 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 17 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,12 v 7.999813 H 14.000179 V 12 Z M 3.9997559,7 V 19.999813 H 8.0000285 V 7 Z M 16,10 l 5.7e-5,9.999813 h 3.999756 V 10 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 18 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,10 v 9.999813 H 14.000179 V 10 Z M 4,10 3.9997559,19.999813 H 8.0000285 V 10 Z m 12,-1 5.7e-5,10.999813 h 3.999756 V 9 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 19 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,10 v 9.999813 H 14.000179 V 10 Z M 4,13 3.9997559,19.999813 H 8.0000285 V 13 Z m 12,-4 5.7e-5,10.999813 h 3.999756 V 9 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 20 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,9 V 19.999813 H 14.000179 V 9 Z M 4,15 3.9997559,19.999813 H 8.0000285 V 15 Z m 12,-7 5.7e-5,11.999813 h 3.999756 V 8 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 21 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 9.9999064,10 v 9.999813 H 14.000179 V 10 Z M 4,17 3.9997559,19.999813 H 8.0000285 V 17 Z m 12,-10 5.7e-5,12.999813 h 3.999756 V 7 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 22 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,9 V 19.999813 H 14.000179 V 9 Z M 4,17 3.9997559,19.999813 H 8.0000285 V 17 Z m 12,-11 5.7e-5,13.999813 h 3.999756 V 6 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 23 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,9 V 19.999813 H 14.000179 V 9 Z M 4,18 3.9997559,19.999813 H 8.0000285 V 18 Z m 12,-13 5.7e-5,14.999813 h 3.999756 V 5 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 24 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,9 V 19.999813 H 14.000179 V 9 Z M 4,18 3.9997559,19.999813 H 8.0000285 V 18 Z m 12,-13 5.7e-5,14.999813 h 3.999756 V 5 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 25 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="M 9.9999064,8 V 19.999813 H 14.000179 V 8 Z M 4,17 3.9997559,19.999813 H 8.0000285 V 17 Z m 12,-13 5.7e-5,15.999813 h 3.999756 V 4 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 26 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 10,7 -9.36e-5,12.999813 H 14.000179 L 14,7 Z M 4,17 3.9997559,19.999813 H 8.0000285 V 17 Z m 12,-13 5.7e-5,15.999813 h 3.999756 V 4 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 27 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 10,6 -9.36e-5,13.999813 H 14.000179 L 14,6 Z M 4,16 3.9997559,19.999813 H 8.0000285 V 16 Z m 12,-11 5.7e-5,14.999813 h 3.999756 V 5 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 28 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 10,5 -9.36e-5,14.999813 H 14.000179 L 14,5 Z m -6,9 -2.441e-4,5.999813 H 8.0000285 V 14 Z m 12,-9 5.7e-5,14.999813 h 3.999756 V 5 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 29 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 10,5 -9.36e-5,14.999813 H 14.000179 L 14,5 Z m -6,8 -2.441e-4,6.999813 H 8.0000285 V 13 Z m 12,-7 5.7e-5,13.999813 h 3.999756 V 6 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+
+    <!-- Frame 30 -->
+    <item android:duration="30">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="24dp"
+                android:height="24dp"
+                android:tint="?attr/colorControlNormal"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <path
+                    android:fillColor="@android:color/white"
+                    android:pathData="m 10,4 -9.36e-5,15.999813 H 14.000179 L 14,4 Z m -6,7 -2.441e-4,8.999813 H 8.0000285 V 11 Z m 12,-2 5.7e-5,10.999813 h 3.999756 V 9 Z" />
+            </vector>
+        </aapt:attr>
+    </item>
+</animation-list>

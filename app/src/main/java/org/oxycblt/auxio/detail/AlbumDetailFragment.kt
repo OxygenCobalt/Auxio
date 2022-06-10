@@ -209,7 +209,6 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
         }
 
         if (parent is Album && parent.id == unlikelyToBeNull(detailModel.currentAlbum.value).id) {
-            logD("update $song")
             detailAdapter.highlightSong(song)
         } else {
             // Clear the ViewHolders if the mode isn't ALL_SONGS

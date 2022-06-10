@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.image
 
 import android.content.Context
 import android.graphics.Canvas
@@ -25,111 +25,67 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.graphics.drawable.DrawableCompat
 import coil.dispose
-import coil.drawable.CrossfadeDrawable
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
- * An [AppCompatImageView] that applies many of the stylistic choices that Auxio uses regarding
- * images.
+ * The base class for Auxio's images. Do not use this class outside of this module.
  *
- * Default behavior includes the addition of a tonal background, automatic sizing of icons to half
- * of the view size, and corner radius application depending on user preference.
+ * Default behavior includes the addition of a tonal background and automatic icon sizing. Other
+ * behavior is implemented by [StyledImageView] and [ImageGroup].
+ *
  * @author OxygenCobalt
- *
- * TODO: I'll need to make it a whole ViewGroup eventually
  */
-class StyledImageView
+open class BaseStyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
-    private var cornerRadius = 0f
-    private var indicator = StyledDrawable(context, R.drawable.ic_equalizer)
+    private var staticIcon = 0
 
     init {
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.StyledImageView)
-        cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
+        staticIcon = styledAttrs.getResourceId(R.styleable.StyledImageView_staticIcon, -1)
         styledAttrs.recycle()
 
-        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
-        // could theoretically be used to round corners, the corner radius is dependent on the
-        // dimensions of the image, which will result in inconsistent corners across different
-        // album covers unless we resize all covers to be the same size. clipToOutline is both
-        // cheaper and more elegant. As a side-note, this also allows us to re-use the same
-        // background for both the tonal background color and the corner rounding.
-        clipToOutline = true
         background =
             MaterialShapeDrawable().apply {
                 fillColor = context.getColorStateListSafe(R.color.sel_cover_bg)
             }
-
-        // If we have a pre-set drawable, ensure that it's half-size.
-        val drawable = drawable
-        if (drawable != null) {
-            setImageDrawable(StyledDrawable(context, drawable))
-        }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        if (!isInEditMode) {
-            val settingsManager = SettingsManager.getInstance()
-            if (settingsManager.roundCovers) {
-                (background as MaterialShapeDrawable).setCornerSize(cornerRadius)
-            }
-        }
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        if (isActivated) {
-            // We can't modify the view alpha since that would change the background opacity,
-            // but we also can't modify the image alpha since that breaks CrossfadeDrawable.
-            // Instead, we just draw the background again when activated in order to obscure
-            // the actual image, and then draw the indicator. The only other option is to make
-            // a proper ViewGroup, and I really don't want that.
-            val src = drawable?.let { if (it is CrossfadeDrawable) it.end else it }
-            background.alpha = if (src is StyledDrawable) 255 else 128
-            background.draw(canvas)
-            background.alpha = 255
-            indicator.draw(canvas)
-        }
     }
 
     /** Bind the album cover for a [song]. */
-    fun bind(song: Song) = loadImpl(song, R.drawable.ic_song, R.string.desc_album_cover)
+    open fun bind(song: Song) = loadImpl(song, R.drawable.ic_song)
 
     /** Bind the album cover for an [album]. */
-    fun bind(album: Album) = loadImpl(album, R.drawable.ic_album, R.string.desc_album_cover)
+    open fun bind(album: Album) = loadImpl(album, R.drawable.ic_album)
 
     /** Bind the image for an [artist] */
-    fun bind(artist: Artist) = loadImpl(artist, R.drawable.ic_artist, R.string.desc_artist_image)
+    open fun bind(artist: Artist) = loadImpl(artist, R.drawable.ic_artist)
 
     /** Bind the image for a [genre] */
-    fun bind(genre: Genre) = loadImpl(genre, R.drawable.ic_genre, R.string.desc_genre_image)
+    open fun bind(genre: Genre) = loadImpl(genre, R.drawable.ic_genre)
 
-    private fun <T : Music> loadImpl(music: T, @DrawableRes error: Int, @StringRes desc: Int) {
+    private fun <T : Music> loadImpl(music: T, @DrawableRes error: Int) {
+        if (staticIcon > -1) {
+            throw IllegalStateException("Static StyledImageViews cannot bind new images")
+        }
+
         dispose()
         load(music) {
             error(StyledDrawable(context, error))
             transformations(SquareFrameTransform.INSTANCE)
         }
-        contentDescription = context.getString(desc, music.resolveName(context))
     }
 
     /**

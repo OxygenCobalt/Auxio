@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.ItemLayout">
 
-    <org.oxycblt.auxio.ui.StyledImageView
+    <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/song_album_cover"
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_album" />
+        tools:staticIcon="@drawable/ic_album" />
 
     <TextView
         android:id="@+id/song_name"

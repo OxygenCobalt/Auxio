@@ -5,6 +5,7 @@
 #### What's New
 - Folders on external drives can now be excluded on Android Q+ [#134]
 - Playback bar now has a skip action
+- When playing, the cover now shows an animated indicator
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling

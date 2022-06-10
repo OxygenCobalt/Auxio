@@ -15,7 +15,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.ui.StyledImageView
+    <org.oxycblt.auxio.image.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_mid_large"
@@ -73,7 +73,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <org.oxycblt.auxio.ui.IndicatorMaterialButton
+    <org.oxycblt.auxio.playback.IndicatorMaterialButton
         android:id="@+id/playback_repeat"
         style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
         app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
         app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-    <org.oxycblt.auxio.ui.IndicatorMaterialButton
+    <org.oxycblt.auxio.playback.IndicatorMaterialButton
         android:id="@+id/playback_shuffle"
         style="@style/Widget.Auxio.Button.Icon.Large"
         android:layout_width="wrap_content"
