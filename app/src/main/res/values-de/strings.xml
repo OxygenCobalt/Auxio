@@ -76,8 +76,8 @@
     <string name="set_headset_autoplay">Kopfhörer automatische Wiedergabe</string>
     <string name="set_headset_autoplay_desc">Beginne die Wiedergabe immer, wenn Kopfhörer verbunden sind (funktioniert nicht auf allen Geräten)</string>
     <string name="set_replay_gain">ReplayGain</string>
-    <string name="set_pre_amp">ReplayGain prälautverstärkung</string>
-    <string name="set_pre_amp_desc">Während Musikwiedergabe, Die Prälautverstärkung trifft zu dem aktuellem Abgleich</string>
+    <string name="set_pre_amp">ReplayGain-Prälautverstärkung</string>
+    <string name="set_pre_amp_desc">Während der Musikwiedergabe, trifft die Prälautverstärkung dem aktuellem Abgleich zu</string>
     <string name="set_pre_amp_with">Abgleich mit Metadaten</string>
     <string name="set_pre_amp_without">Abgleich ohne Metadaten</string>
     <string name="set_replay_gain_track">Titel bevorzugen</string>
@@ -87,8 +87,8 @@
     <string name="set_song_mode">Wenn ein Lied ausgewählt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
-    <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen bevor zurück gegangen wird</string>
-    <string name="set_rewind_prev_desc">Zurückspulen bevor zum vorheriger Lied gegangen wird</string>
+    <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>
+    <string name="set_rewind_prev_desc">Zurückspulen, bevor zum vorheriger Lied gewechselt wird</string>
 
     <string name="set_content">Inhalt</string>
     <string name="set_save">Wiedergabezustand speichern</string>
