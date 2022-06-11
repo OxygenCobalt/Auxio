@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +29,7 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
@@ -53,6 +55,13 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (song != null) {
             binding.detailContainer.isGone = false
+            binding.detailFileName.setText(song.song.path.name)
+            binding.detailRelativeDir.setText(song.song.path.parent.resolveName(requireContext()))
+            binding.detailFormat.setText(
+                mimeTypes.getExtensionFromMimeType(song.song.mimeType)?.uppercase()
+                    ?: getString(R.string.def_format))
+            binding.detailSize.setText(Formatter.formatFileSize(requireContext(), song.song.size))
+            binding.detailDuration.setText(song.song.durationSecs.formatDuration(true))
 
             if (song.bitrateKbps != null) {
                 binding.detailBitrate.setText(getString(R.string.fmt_bitrate, song.bitrateKbps))

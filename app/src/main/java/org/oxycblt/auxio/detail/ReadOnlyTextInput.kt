@@ -25,6 +25,13 @@ import android.view.View
 import androidx.annotation.AttrRes
 import com.google.android.material.textfield.TextInputEditText
 
+/**
+ * A [TextInputEditText] that deliberately restricts all input except for selection. Yes, this is a
+ * blatant abuse of Material Design Guidelines, but I also don't want to figure out how to main
+ * plain text selectable.
+ *
+ * @author OxygenCobalt
+ */
 class ReadOnlyTextInput : TextInputEditText {
     constructor(context: Context) : super(context)
 
