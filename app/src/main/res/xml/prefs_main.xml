@@ -54,10 +54,8 @@
             app:summary="@string/set_quality_covers_desc"
             app:title="@string/set_quality_covers" />
 
-        <!-- FIXME: Should not be dependent on cover option -->
         <org.oxycblt.auxio.settings.pref.M3SwitchPreference
             app:defaultValue="false"
-            app:dependency="KEY_SHOW_COVERS"
             app:iconSpaceReserved="false"
             app:key="auxio_round_covers"
             app:summary="@string/set_round_covers_desc"
