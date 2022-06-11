@@ -18,19 +18,12 @@
 package org.oxycblt.auxio.detail
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
-import androidx.core.graphics.drawable.DrawableCompat.setTint
-import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.textfield.TextInputEditText
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getAttrStateListSafe
 
 class ReadOnlyTextInput : TextInputEditText {
     constructor(context: Context) : super(context)

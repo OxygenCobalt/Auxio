@@ -19,9 +19,11 @@ package org.oxycblt.auxio.music.excluded
 
 import android.content.Context
 import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
+import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.ui.BackingData
 import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.inflater
 import org.oxycblt.auxio.util.textSafe
 
@@ -30,23 +32,22 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  */
 class ExcludedAdapter(listener: Listener) :
-    MonoAdapter<ExcludedDirectory, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
+    MonoAdapter<Dir.Relative, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
     override val data = ExcludedBackingData(this)
     override val creator = ExcludedViewHolder.CREATOR
 
     interface Listener {
-        fun onRemoveDirectory(dir: ExcludedDirectory)
+        fun onRemoveDirectory(dir: Dir.Relative)
     }
 
-    class ExcludedBackingData(private val adapter: ExcludedAdapter) :
-        BackingData<ExcludedDirectory>() {
-        private val _currentList = mutableListOf<ExcludedDirectory>()
-        val currentList: List<ExcludedDirectory> = _currentList
+    class ExcludedBackingData(private val adapter: ExcludedAdapter) : BackingData<Dir.Relative>() {
+        private val _currentList = mutableListOf<Dir.Relative>()
+        val currentList: List<Dir.Relative> = _currentList
 
         override fun getItemCount(): Int = _currentList.size
-        override fun getItem(position: Int): ExcludedDirectory = _currentList[position]
+        override fun getItem(position: Int): Dir.Relative = _currentList[position]
 
-        fun add(dir: ExcludedDirectory) {
+        fun add(dir: Dir.Relative) {
             if (_currentList.contains(dir)) {
                 return
             }
@@ -55,13 +56,13 @@ class ExcludedAdapter(listener: Listener) :
             adapter.notifyItemInserted(_currentList.lastIndex)
         }
 
-        fun addAll(dirs: List<ExcludedDirectory>) {
+        fun addAll(dirs: List<Dir.Relative>) {
             val oldLastIndex = dirs.lastIndex
             _currentList.addAll(dirs)
             adapter.notifyItemRangeInserted(oldLastIndex, dirs.size)
         }
 
-        fun remove(dir: ExcludedDirectory) {
+        fun remove(dir: Dir.Relative) {
             val idx = _currentList.indexOf(dir)
             _currentList.removeAt(idx)
             adapter.notifyItemRemoved(idx)
@@ -71,9 +72,9 @@ class ExcludedAdapter(listener: Listener) :
 
 /** The viewholder for [ExcludedAdapter]. Not intended for use in other adapters. */
 class ExcludedViewHolder private constructor(private val binding: ItemExcludedDirBinding) :
-    BindingViewHolder<ExcludedDirectory, ExcludedAdapter.Listener>(binding.root) {
-    override fun bind(item: ExcludedDirectory, listener: ExcludedAdapter.Listener) {
-        binding.excludedPath.textSafe = item.toString()
+    BindingViewHolder<Dir.Relative, ExcludedAdapter.Listener>(binding.root) {
+    override fun bind(item: Dir.Relative, listener: ExcludedAdapter.Listener) {
+        binding.excludedPath.textSafe = item.resolveName(binding.context)
         binding.excludedClear.setOnClickListener { listener.onRemoveDirectory(item) }
     }
 

@@ -29,6 +29,7 @@ import kotlinx.coroutines.delay
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogExcludedBinding
+import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
@@ -94,7 +95,7 @@ class ExcludedDialog :
         val dirs =
             savedInstanceState
                 ?.getStringArrayList(KEY_PENDING_DIRS)
-                ?.mapNotNull(ExcludedDirectory::fromString)
+                ?.mapNotNull(ExcludedDirectories::fromString)
                 ?: settingsManager.excludedDirs
 
         excludedAdapter.data.addAll(dirs)
@@ -112,7 +113,7 @@ class ExcludedDialog :
         binding.excludedRecycler.adapter = null
     }
 
-    override fun onRemoveDirectory(dir: ExcludedDirectory) {
+    override fun onRemoveDirectory(dir: Dir.Relative) {
         excludedAdapter.data.remove(dir)
         requireBinding().excludedEmpty.isVisible = excludedAdapter.data.currentList.isEmpty()
     }
@@ -133,7 +134,7 @@ class ExcludedDialog :
         }
     }
 
-    private fun parseExcludedUri(uri: Uri): ExcludedDirectory? {
+    private fun parseExcludedUri(uri: Uri): Dir.Relative? {
         // Turn the raw URI into a document tree URI
         val docUri =
             DocumentsContract.buildDocumentUriUsingTree(
@@ -142,8 +143,8 @@ class ExcludedDialog :
         // Turn it into a semi-usable path
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
-        // ExcludedDirectory handles the rest
-        return ExcludedDirectory.fromString(treeUri)
+        // Parsing handles the rest
+        return ExcludedDirectories.fromString(treeUri)
     }
 
     private fun saveAndRestart() {

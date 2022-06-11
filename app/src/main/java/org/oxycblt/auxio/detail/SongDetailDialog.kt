@@ -19,6 +19,7 @@ package org.oxycblt.auxio.detail
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
@@ -31,6 +32,7 @@ import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
+    private val mimeTypes = MimeTypeMap.getSingleton()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSongDetailBinding.inflate(inflater)
@@ -51,7 +53,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
         if (song != null) {
             binding.detailContainer.isGone = false
-            binding.detailFileName.setText(song.song.fileName)
 
             if (song.bitrateKbps != null) {
                 binding.detailBitrate.setText(getString(R.string.fmt_bitrate, song.bitrateKbps))

@@ -25,7 +25,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.core.content.edit
 import java.io.File
-import org.oxycblt.auxio.music.excluded.ExcludedDirectory
+import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
@@ -79,7 +79,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
 }
 
 /**
- * Converts paths from the old excluded directory database to a list of modern [ExcludedDirectory]
+ * Converts paths from the old excluded directory database to a list of modern [Dir.Relative]
  * instances.
  *
  * Historically, Auxio used an excluded directory database shamelessly ripped from Phonograph. This
@@ -90,12 +90,12 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
  * path-based excluded system to a volume-based excluded system at the same time. These are both
  * rolled into this conversion.
  */
-fun handleExcludedCompat(context: Context): List<ExcludedDirectory> {
+fun handleExcludedCompat(context: Context): List<Dir.Relative> {
     val db = LegacyExcludedDatabase(context)
     val primaryPrefix = Environment.getExternalStorageDirectory().absolutePath + File.separatorChar
     return db.readPaths().map { path ->
         val relativePath = path.removePrefix(primaryPrefix)
-        ExcludedDirectory(ExcludedDirectory.Volume.Primary, relativePath)
+        Dir.Relative(Dir.Volume.Primary, relativePath)
     }
 }
 

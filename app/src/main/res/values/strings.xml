@@ -169,6 +169,7 @@
     <string name="def_date">No Date</string>
     <string name="def_track">No Track Number</string>
     <string name="def_playback">No music playing</string>
+    <string name="def_format">Unknown Format</string>
     <string name="def_bitrate">No Bitrate</string>
     <string name="def_sample_rate">No Sample Rate</string>
     <string name="def_widget_song">Song Name</string>

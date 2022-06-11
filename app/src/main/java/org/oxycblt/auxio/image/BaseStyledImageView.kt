@@ -58,6 +58,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         staticIcon = styledAttrs.getResourceId(R.styleable.StyledImageView_staticIcon, -1)
         styledAttrs.recycle()
 
+        if (staticIcon > -1) {
+            @Suppress("LeakingThis")
+            setImageDrawable(StyledDrawable(context, context.getDrawableSafe(staticIcon)))
+        }
+
         background =
             MaterialShapeDrawable().apply {
                 fillColor = context.getColorStateListSafe(R.color.sel_cover_bg)

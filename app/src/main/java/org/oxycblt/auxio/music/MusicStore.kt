@@ -75,7 +75,7 @@ class MusicStore private constructor() {
                 val displayName =
                     cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
 
-                songs.find { it.fileName == displayName }
+                songs.find { it.path.name == displayName }
             }
 
         /** "Sanitize" a music object from a previous library iteration. */

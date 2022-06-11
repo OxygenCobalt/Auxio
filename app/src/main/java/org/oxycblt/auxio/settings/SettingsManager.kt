@@ -23,7 +23,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.excluded.ExcludedDirectory
+import org.oxycblt.auxio.music.Dir
+import org.oxycblt.auxio.music.excluded.ExcludedDirectories
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -138,13 +139,13 @@ class SettingsManager private constructor(context: Context) :
         get() = inner.getBoolean(KEY_PAUSE_ON_REPEAT, false)
 
     /** The list of directories excluded from indexing. */
-    var excludedDirs: List<ExcludedDirectory>
+    var excludedDirs: List<Dir.Relative>
         get() =
             (inner.getStringSet(KEY_EXCLUDED, null) ?: emptySet()).mapNotNull(
-                ExcludedDirectory::fromString)
+                ExcludedDirectories::fromString)
         set(value) {
             inner.edit {
-                putStringSet(KEY_EXCLUDED, value.map { it.toString() }.toSet())
+                putStringSet(KEY_EXCLUDED, value.map(ExcludedDirectories::toString).toSet())
                 apply()
             }
         }

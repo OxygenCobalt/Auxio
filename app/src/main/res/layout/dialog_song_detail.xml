@@ -42,7 +42,7 @@
                 app:expandedHintEnabled="false">
 
                 <org.oxycblt.auxio.detail.ReadOnlyTextInput
-                    android:id="@+id/detail_relative_path"
+                    android:id="@+id/detail_relative_dir"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="/path/to" />

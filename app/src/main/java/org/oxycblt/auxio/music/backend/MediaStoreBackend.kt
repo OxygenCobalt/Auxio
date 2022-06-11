@@ -26,11 +26,12 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
+import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.music.Indexer
+import org.oxycblt.auxio.music.Path
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
-import org.oxycblt.auxio.music.excluded.ExcludedDirectory
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
@@ -97,6 +98,8 @@ import org.oxycblt.auxio.util.logW
  * I wish I was born in the neolithic.
  */
 
+// TODO: Leverage StorageVolume to extend volume support to earlier versions
+
 /**
  * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
  * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
@@ -106,6 +109,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var idIndex = -1
     private var titleIndex = -1
     private var displayNameIndex = -1
+    private var mimeTypeIndex = -1
+    private var sizeIndex = -1
     private var durationIndex = -1
     private var yearIndex = -1
     private var albumIndex = -1
@@ -181,7 +186,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     open val projection: Array<String>
         get() = BASE_PROJECTION
 
-    abstract fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector
+    abstract fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector
 
     /**
      * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
@@ -195,6 +200,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
             titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)
             displayNameIndex =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DISPLAY_NAME)
+            mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.MIME_TYPE)
+            sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)
             durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)
             yearIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.YEAR)
             albumIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)
@@ -209,16 +216,14 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.id = cursor.getLong(idIndex)
         audio.title = cursor.getString(titleIndex)
 
+        audio.mimeType = cursor.getString(mimeTypeIndex)
+        audio.size = cursor.getLong(sizeIndex)
+
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
         // from the android system. Once again though, OEM issues get in our way and
         // this field isn't available on some platforms. In that case, we have to rely
         // on DATA to get a reasonable file name.
-        audio.displayName =
-            cursor.getStringOrNull(displayNameIndex)
-                ?: cursor
-                    .getStringOrNull(dataIndex)
-                    ?.substringAfterLast(File.separatorChar, MediaStore.UNKNOWN_STRING)
-                    ?: MediaStore.UNKNOWN_STRING
+        audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)
         audio.year = cursor.getIntOrNull(yearIndex)
@@ -260,6 +265,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var id: Long? = null,
         var title: String? = null,
         var displayName: String? = null,
+        var dir: Dir? = null,
+        var mimeType: String? = null,
+        var size: Long? = null,
         var duration: Long? = null,
         var track: Int? = null,
         var disc: Int? = null,
@@ -270,13 +278,18 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var albumArtist: String? = null,
         var genre: String? = null
     ) {
-        fun toSong(): Song =
-            Song(
+        fun toSong(): Song {
+            return Song(
                 // Assert that the fields that should exist are present. I can't confirm that
                 // every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
-                fileName = requireNotNull(displayName) { "Malformed audio: No file name" },
+                path =
+                    Path(
+                        name = requireNotNull(displayName) { "Malformed audio: No display name" },
+                        parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
                 uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
+                mimeType = requireNotNull(mimeType) { "Malformed audio: No mime type" },
+                size = requireNotNull(size) { "Malformed audio: No size" },
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,
                 disc = disc,
@@ -287,6 +300,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 _artistName = artist,
                 _albumArtistName = albumArtist,
                 _genreName = genre)
+        }
     }
 
     companion object {
@@ -314,6 +328,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 MediaStore.Audio.AudioColumns._ID,
                 MediaStore.Audio.AudioColumns.TITLE,
                 MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.MIME_TYPE,
+                MediaStore.Audio.AudioColumns.SIZE,
                 MediaStore.Audio.AudioColumns.DURATION,
                 MediaStore.Audio.AudioColumns.YEAR,
                 MediaStore.Audio.AudioColumns.ALBUM,
@@ -334,22 +350,23 @@ abstract class MediaStoreBackend : Indexer.Backend {
  * A [MediaStoreBackend] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-class Api21MediaStoreBackend : MediaStoreBackend() {
+open class Api21MediaStoreBackend : MediaStoreBackend() {
     private var trackIndex = -1
+    private var dataIndex = -1
 
     override val projection: Array<String>
         get() =
             super.projection +
                 arrayOf(MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATA)
 
-    override fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector {
+    override fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector {
         val base = Environment.getExternalStorageDirectory().absolutePath
         var selector = BASE_SELECTOR
         val args = mutableListOf<String>()
 
         // Apply the excluded directories by filtering out specific DATA values.
         for (dir in dirs) {
-            if (dir.volume is ExcludedDirectory.Volume.Secondary) {
+            if (dir.volume is Dir.Volume.Secondary) {
                 logW("Cannot exclude directories on secondary drives")
                 continue
             }
@@ -364,9 +381,10 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
         val audio = super.buildAudio(context, cursor)
 
-        // Initialize the TRACK index if we have not already.
+        // Initialize our indices if we have not already.
         if (trackIndex == -1) {
             trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
         }
 
         // TRACK is formatted as DTTT where D is the disc number and T is the track number.
@@ -383,6 +401,18 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
             }
         }
 
+        val data = cursor.getStringOrNull(dataIndex)
+        if (data != null) {
+            if (audio.displayName == null) {
+                audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+            }
+
+            audio.dir =
+                data.substringBeforeLast(File.separatorChar, "").let { dir ->
+                    if (dir.isNotEmpty()) Dir.Absolute(dir) else null
+                }
+        }
+
         return audio
     }
 }
@@ -393,8 +423,18 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend : MediaStoreBackend() {
-    override fun buildExcludedSelector(dirs: List<ExcludedDirectory>): Selector {
+open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
+    private var volumeIndex = -1
+    private var relativePathIndex = -1
+
+    override val projection: Array<String>
+        get() =
+            super.projection +
+                arrayOf(
+                    MediaStore.Audio.AudioColumns.VOLUME_NAME,
+                    MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+
+    override fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector {
         var selector = BASE_SELECTOR
         val args = mutableListOf<String>()
 
@@ -410,14 +450,40 @@ open class Api29MediaStoreBackend : MediaStoreBackend() {
             // name stored in-app. I have no idea how well this holds up on other devices.
             args +=
                 when (dir.volume) {
-                    is ExcludedDirectory.Volume.Primary -> MediaStore.VOLUME_EXTERNAL_PRIMARY
-                    is ExcludedDirectory.Volume.Secondary -> dir.volume.name.lowercase()
+                    is Dir.Volume.Primary -> MediaStore.VOLUME_EXTERNAL_PRIMARY
+                    is Dir.Volume.Secondary -> dir.volume.name.lowercase()
                 }
 
             args += "${dir.relativePath}%"
         }
 
         return Selector(selector, args)
+    }
+
+    override fun buildAudio(context: Context, cursor: Cursor): Audio {
+        val audio = super.buildAudio(context, cursor)
+
+        if (volumeIndex == -1) {
+            volumeIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.VOLUME_NAME)
+            relativePathIndex =
+                cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
+        }
+
+        val volume = cursor.getStringOrNull(volumeIndex)
+        val relativePath = cursor.getStringOrNull(relativePathIndex)
+
+        if (volume != null && relativePath != null) {
+            audio.dir =
+                Dir.Relative(
+                    volume =
+                        when (volume) {
+                            MediaStore.VOLUME_EXTERNAL_PRIMARY -> Dir.Volume.Primary
+                            else -> Dir.Volume.Secondary(volume)
+                        },
+                    relativePath = relativePath)
+        }
+
+        return audio
     }
 }
 

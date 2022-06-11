@@ -59,10 +59,14 @@ sealed class MusicParent : Music() {
 /** The data object for a song. */
 data class Song(
     override val rawName: String,
-    /** The file name of this song, excluding the full path. */
-    val fileName: String,
+    /** The path of this song. */
+    val path: Path,
     /** The URI linking to this song's file. */
     val uri: Uri,
+    /** The mime type of this song. */
+    val mimeType: String,
+    /** The size of this song (in bytes) */
+    val size: Long,
     /** The total duration of this song, in millis. */
     val durationMs: Long,
     /** The track number of this song, null if there isn't any. */
