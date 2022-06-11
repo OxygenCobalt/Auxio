@@ -47,6 +47,15 @@
 
     <string name="lbl_go_artist">Go to artist</string>
     <string name="lbl_go_album">Go to album</string>
+    <string name="lbl_song_detail">View properties</string>
+
+    <string name="lbl_props">File properties</string>
+    <string name="lbl_file_name">File name</string>
+    <string name="lbl_relative_path">Relative path</string>
+    <string name="lbl_format">Format</string>
+    <string name="lbl_size">Size</string>
+    <string name="lbl_bitrate">Bitrate</string>
+    <string name="lbl_sample_rate">Sample rate</string>
 
     <string name="lbl_state_saved">State saved</string>
 
@@ -160,6 +169,8 @@
     <string name="def_date">No Date</string>
     <string name="def_track">No Track Number</string>
     <string name="def_playback">No music playing</string>
+    <string name="def_bitrate">No Bitrate</string>
+    <string name="def_sample_rate">No Sample Rate</string>
     <string name="def_widget_song">Song Name</string>
     <string name="def_widget_artist">Artist Name</string>
 
@@ -187,6 +198,8 @@
 
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_bitrate">%d KB/s</string>
+    <string name="fmt_sample_rate">%d Hz</string>
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>
 

@@ -17,9 +17,16 @@
  
 package org.oxycblt.auxio.detail
 
+import android.content.Context
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.detail.recycler.DiscHeader
 import org.oxycblt.auxio.detail.recycler.SortHeader
@@ -27,11 +34,13 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
+import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -42,8 +51,14 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel(), MusicStore.Callback {
+    data class DetailSong(val song: Song, val bitrateKbps: Int?, val sampleRate: Int?)
+
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
+
+    private val _currentSong = MutableStateFlow<DetailSong?>(null)
+    val currentSong: StateFlow<DetailSong?>
+        get() = _currentSong
 
     private val _currentAlbum = MutableStateFlow<Album?>(null)
     val currentAlbum: StateFlow<Album?>
@@ -88,6 +103,13 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
             currentGenre.value?.let(::refreshGenreData)
         }
 
+    fun setSongId(context: Context, id: Long) {
+        if (_currentSong.value?.run { song.id } == id) return
+        val library = unlikelyToBeNull(musicStore.library)
+        val song = requireNotNull(library.songs.find { it.id == id }) { "Invalid song id provided" }
+        generateDetailSong(context, song)
+    }
+
     fun setAlbumId(id: Long) {
         if (_currentAlbum.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)
@@ -118,6 +140,41 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
 
     init {
         musicStore.addCallback(this)
+    }
+
+    private fun generateDetailSong(context: Context, song: Song) {
+        viewModelScope.launch {
+            _currentSong.value =
+                withContext(Dispatchers.IO) {
+                    val extractor = MediaExtractor()
+
+                    try {
+                        extractor.setDataSource(context, song.uri, emptyMap())
+                    } catch (e: Exception) {
+                        logW("Unable to extract song attributes.")
+                        logW(e.stackTraceToString())
+                        return@withContext DetailSong(song, null, null)
+                    }
+
+                    val format = extractor.getTrackFormat(0)
+
+                    val bitrate =
+                        try {
+                            format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000 // bps -> kbps
+                        } catch (e: Exception) {
+                            null
+                        }
+
+                    val sampleRate =
+                        try {
+                            format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                        } catch (e: Exception) {
+                            null
+                        }
+
+                    DetailSong(song, bitrate, sampleRate)
+                }
+        }
     }
 
     private fun refreshAlbumData(album: Album) {
@@ -166,6 +223,15 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
+            // TODO: Add when we have a context
+            //            val song = currentSong.value
+            //            if (song != null) {
+            //                val newSong = library.sanitize(song.song)
+            //                if (newSong != null) {
+            //                    generateDetailSong(newSong)
+            //                }
+            //            }
+
             val album = currentAlbum.value
             if (album != null) {
                 val newAlbum = library.sanitize(album).also { _currentAlbum.value = it }

@@ -226,7 +226,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         val buffer = replaceOutputBuffer(size)
 
         if (volume == 1f) {
-            // No need to apply ReplayGain, do a memmove using put instead of
+            // No need to apply ReplayGain, do a mem move using put instead of
             // a for loop (the latter is not efficient)
             buffer.put(inputBuffer.slice())
         } else {

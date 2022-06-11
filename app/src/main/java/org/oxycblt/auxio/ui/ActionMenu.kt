@@ -26,6 +26,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.detail.SongDetailDialog
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -59,7 +60,7 @@ fun Fragment.newMenu(anchor: View, data: Item, flag: Int = ActionMenu.FLAG_NONE)
  * TODO: Add multi-select
  */
 class ActionMenu(
-    activity: AppCompatActivity,
+    private val activity: AppCompatActivity,
     anchor: View,
     private val data: Item,
     private val flag: Int
@@ -178,6 +179,12 @@ class ActionMenu(
                     navModel.exploreNavigateTo(data.album.artist)
                 } else if (data is Album) {
                     navModel.exploreNavigateTo(data.artist)
+                }
+            }
+            R.id.action_song_detail -> {
+                if (data is Song) {
+                    SongDetailDialog.from(data)
+                        .show(activity.supportFragmentManager, SongDetailDialog.TAG)
                 }
             }
         }
