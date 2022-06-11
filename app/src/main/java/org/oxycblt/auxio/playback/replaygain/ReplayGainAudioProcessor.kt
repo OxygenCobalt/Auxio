@@ -226,10 +226,9 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         val buffer = replaceOutputBuffer(size)
 
         if (volume == 1f) {
-            // Nothing to do, just copy the bytes into the output buffer.
-            for (i in position until limit) {
-                buffer.put(inputBuffer[i])
-            }
+            // No need to apply ReplayGain, do a memmove using put instead of
+            // a for loop (the latter is not efficient)
+            buffer.put(inputBuffer.slice())
         } else {
             for (i in position until limit step 2) {
                 // Ensure we clamp the values to the minimum and maximum values possible
