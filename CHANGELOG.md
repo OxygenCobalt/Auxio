@@ -3,6 +3,7 @@
 ## dev [v2.3.2, v2.4.0, or v3.0.0]
 
 #### What's New
+- Added a new view for song properties (Such as Bitrate)
 - Folders on external drives can now be excluded on Android Q+ [#134]
 - Playback bar now has a skip action
 - When playing, the cover now shows an animated indicator
@@ -14,6 +15,8 @@
 
 #### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
+- Fixed unusable excluded directory UI
+- Songs with no data (i.e size of 0) are now filtered out
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech]

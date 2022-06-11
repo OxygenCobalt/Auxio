@@ -342,7 +342,9 @@ abstract class MediaStoreBackend : Indexer.Backend {
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
-        @JvmStatic protected val BASE_SELECTOR = "${MediaStore.Audio.Media.IS_MUSIC}=1"
+        @JvmStatic
+        protected val BASE_SELECTOR =
+            "${MediaStore.Audio.Media.IS_MUSIC}=1 AND NOT ${MediaStore.Audio.Media.SIZE}=0"
     }
 }
 
