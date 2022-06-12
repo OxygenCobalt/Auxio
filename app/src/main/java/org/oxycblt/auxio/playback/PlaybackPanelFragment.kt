@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
+import org.oxycblt.auxio.detail.SongDetailDialog
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -129,6 +130,20 @@ class PlaybackPanelFragment :
         return when (item.itemId) {
             R.id.action_queue -> {
                 navModel.mainNavigateTo(MainNavigationAction.QUEUE)
+                true
+            }
+            R.id.action_go_artist -> {
+                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album.artist) }
+                true
+            }
+            R.id.action_go_album -> {
+                playbackModel.song.value?.let { navModel.exploreNavigateTo(it.album) }
+                true
+            }
+            R.id.action_song_detail -> {
+                playbackModel.song.value?.let {
+                    SongDetailDialog.from(it).show(childFragmentManager, SongDetailDialog.TAG)
+                }
                 true
             }
             else -> false

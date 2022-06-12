@@ -6,4 +6,16 @@
         android:icon="@drawable/ic_queue"
         android:title="@string/lbl_queue"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_go_artist"
+        android:title="@string/lbl_go_artist"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_go_album"
+        android:title="@string/lbl_go_album"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_song_detail"
+        android:title="@string/lbl_song_detail"
+        app:showAsAction="never" />
 </menu>

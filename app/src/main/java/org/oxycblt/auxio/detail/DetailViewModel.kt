@@ -198,7 +198,7 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
                             // "audio/raw" mime type
                             MimeType(song.mimeType.fromExtension, formatMimeType)
                         }
-                    
+
                     DetailSong(song, bitrate, sampleRate, resolvedMimeType)
                 }
         }

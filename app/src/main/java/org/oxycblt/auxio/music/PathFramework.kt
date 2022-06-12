@@ -107,7 +107,6 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
                 "audio/wave",
                 "audio/vnd.wave" -> R.string.cdc_wav
                 "audio/x-ms-wma" -> R.string.cdc_wma
-
                 else -> -1
             }
 
