@@ -114,18 +114,15 @@ abstract class BaseFetcher : Fetcher {
     }
 
     private fun fetchAospMetadataCovers(context: Context, album: Album): InputStream? {
-        // FIXME: Do not use use here, as Lollipop devices apparently do not have
-        // MediaMetadataRetriever implemented as AutoClosable.
-
-        MediaMetadataRetriever().use { ext ->
+        MediaMetadataRetriever().apply {
             // This call is time-consuming but it also doesn't seem to hold up the main thread,
             // so it's probably fine not to wrap it.
-            ext.setDataSource(context, album.songs[0].uri)
+            setDataSource(context, album.songs[0].uri)
 
             // Get the embedded picture from MediaMetadataRetriever, which will return a full
             // ByteArray of the cover without any compression artifacts.
             // If its null [i.e there is no embedded cover], than just ignore it and move on
-            return ext.embeddedPicture?.let { coverBytes -> ByteArrayInputStream(coverBytes) }
+            return embeddedPicture?.let { ByteArrayInputStream(it) }.also { release() }
         }
     }
 

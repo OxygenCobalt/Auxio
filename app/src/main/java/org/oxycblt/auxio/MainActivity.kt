@@ -39,8 +39,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * The single [AppCompatActivity] for Auxio.
  *
- * TODO: Add crash reporting and error screens. This likely has to be an external activity, so it is
- * blocked by eliminating exitProcess from the app.
+ * TODO: Add error screens. This likely has to be an external activity, so it is blocked by
+ * eliminating exitProcess from the app.
  *
  * TODO: Custom language support
  *

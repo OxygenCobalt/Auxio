@@ -40,7 +40,6 @@ import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.contentResolverSafe
-import org.oxycblt.auxio.util.logW
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music

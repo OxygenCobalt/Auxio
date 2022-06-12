@@ -42,8 +42,6 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  * Loading music is actually somewhat time-consuming, to the point where it's likely better suited
  * to a service that is less likely to be
  *
- * TODO: Rename all instances of loading in-app with indexing
- *
  * @author OxygenCobalt
  */
 class IndexerService : Service(), Indexer.Callback {
