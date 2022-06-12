@@ -235,6 +235,7 @@
 
     <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
+        <item name="strokeColor">?attr/colorOutline</item>
     </style>
 
     <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">

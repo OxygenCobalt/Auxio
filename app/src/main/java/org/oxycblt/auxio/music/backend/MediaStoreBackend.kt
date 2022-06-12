@@ -33,6 +33,7 @@ import org.oxycblt.auxio.music.Path
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
@@ -122,7 +123,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
     override fun query(context: Context): Cursor {
         val settingsManager = SettingsManager.getInstance()
-        val selector = buildExcludedSelector(settingsManager.excludedDirs)
+        val selector = buildMusicDirsSelector(settingsManager.musicDirs)
 
         return requireNotNull(
             context.contentResolverSafe.queryCursor(
@@ -187,7 +188,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
     open val projection: Array<String>
         get() = BASE_PROJECTION
 
-    abstract fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector
+    abstract fun buildMusicDirsSelector(dirs: MusicDirs): Selector
 
     /**
      * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
@@ -367,19 +368,25 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
             super.projection +
                 arrayOf(MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATA)
 
-    override fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector {
+    override fun buildMusicDirsSelector(dirs: MusicDirs): Selector {
         val base = Environment.getExternalStorageDirectory().absolutePath
         var selector = BASE_SELECTOR
         val args = mutableListOf<String>()
 
-        // Apply the excluded directories by filtering out specific DATA values.
-        for (dir in dirs) {
+        // Apply directories by filtering out specific DATA values.
+        for (dir in dirs.dirs) {
             if (dir.volume is Dir.Volume.Secondary) {
-                logW("Cannot exclude directories on secondary drives")
-                continue
+                // Should never happen.
+                throw IllegalStateException()
             }
 
-            selector += " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
+            selector +=
+                if (dirs.shouldInclude) {
+                    " AND ${MediaStore.Audio.Media.DATA} LIKE ?"
+                } else {
+                    " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
+                }
+
             args += "${base}/${dir.relativePath}%"
         }
 
@@ -442,17 +449,22 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
                     MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
-    override fun buildExcludedSelector(dirs: List<Dir.Relative>): Selector {
+    override fun buildMusicDirsSelector(dirs: MusicDirs): Selector {
         var selector = BASE_SELECTOR
         val args = mutableListOf<String>()
 
         // Starting in Android Q, we finally have access to the volume name. This allows
         // use to properly exclude folders on secondary devices such as SD cards.
 
-        for (dir in dirs) {
+        for (dir in dirs.dirs) {
             selector +=
-                " AND NOT (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                    "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+                if (dirs.shouldInclude) {
+                    " AND (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                        "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+                } else {
+                    " AND NOT (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                        "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
+                }
 
             // Assume that volume names are always lowercase counterparts to the volume
             // name stored in-app. I have no idea how well this holds up on other devices.

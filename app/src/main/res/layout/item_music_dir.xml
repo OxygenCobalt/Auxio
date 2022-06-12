@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/excluded_path"
+        android:id="@+id/dir_path"
         style="@style/Widget.Auxio.TextView.Item.Primary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -19,18 +19,18 @@
         android:paddingBottom="@dimen/spacing_small"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/excluded_clear"
+        app:layout_constraintEnd_toStartOf="@+id/dir_delete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="/storage/emulated/0/directory" />
 
     <Button
-        android:id="@+id/excluded_clear"
+        android:id="@+id/dir_delete"
         style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_button_dialog"
-        android:contentDescription="@string/desc_blacklist_delete"
+        android:contentDescription="@string/desc_music_dir_delete"
         app:icon="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

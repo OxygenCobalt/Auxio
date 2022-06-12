@@ -115,8 +115,6 @@
     <string name="set_save_desc">현재 재생 상태를 지금 저장</string>
     <string name="set_reindex">음악 다시 불러오기</string>
     <string name="set_reindex_desc">앱이 다시 시작됩니다.</string>
-    <string name="set_excluded">폴더 제외</string>
-    <string name="set_excluded_desc">제외한 폴더는 라이브러리에서 숨겨집니다.</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">음악 없음</string>
@@ -144,7 +142,7 @@
     <string name="desc_queue_handle">이 대기열의 음악 이동</string>
     <string name="desc_tab_handle">이 탭 이동</string>
     <string name="desc_clear_search">검색 기록 삭제</string>
-    <string name="desc_blacklist_delete">제외한 디렉터리 제거</string>
+    <string name="desc_music_dir_delete">제외한 디렉터리 제거</string>
 
     <string name="desc_auxio_icon">Auxio 아이콘</string>
     <string name="desc_no_cover">앨범 커버</string>

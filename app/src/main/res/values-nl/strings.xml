@@ -81,8 +81,6 @@
     <string name="set_content">Inhoud</string>
     <string name="set_save">Afspeelstatus opslaan</string>
     <string name="set_save_desc">Sla de huidige afspeelstatus nu op </string>
-    <string name="set_excluded">Uitgesloten mappen </string>
-    <string name="set_excluded_desc">De inhoud van uitgesloten mappen wordt verborgen voor uw bibliotheek</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Geen muziek aangetroffen</string>
@@ -103,7 +101,7 @@
     <string name="desc_change_repeat">Herhaalfunctie wijzigen</string>
 
     <string name="desc_clear_search">Zoekopdracht wissen</string>
-    <string name="desc_blacklist_delete">Verwijder uitgesloten map</string>
+    <string name="desc_music_dir_delete">Verwijder uitgesloten map</string>
 
     <string name="desc_auxio_icon">Auxio pictogram</string>
     <string name="desc_album_cover">Artist Image voor  %s</string>

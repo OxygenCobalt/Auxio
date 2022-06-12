@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.excluded
+package org.oxycblt.auxio.music.dirs
 
 import android.net.Uri
 import android.os.Bundle
@@ -25,42 +25,41 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import kotlinx.coroutines.delay
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.databinding.DialogExcludedBinding
+import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.hardRestart
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
 /**
- * Dialog that manages the currently excluded directories.
+ * Dialog that manages the music dirs setting.
  * @author OxygenCobalt
  */
-class ExcludedDialog :
-    ViewBindingDialogFragment<DialogExcludedBinding>(), ExcludedAdapter.Listener {
+class MusicDirsDialog :
+    ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {
     private val settingsManager = SettingsManager.getInstance()
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val excludedAdapter = ExcludedAdapter(this)
+    private val dirAdapter = MusicDirAdapter(this)
 
-    override fun onCreateBinding(inflater: LayoutInflater) = DialogExcludedBinding.inflate(inflater)
+    override fun onCreateBinding(inflater: LayoutInflater) =
+        DialogMusicDirsBinding.inflate(inflater)
 
     override fun onConfigDialog(builder: AlertDialog.Builder) {
         // Don't set the click listener here, we do some custom magic in onCreateView instead.
         builder
-            .setTitle(R.string.set_excluded)
+            .setTitle(R.string.set_dirs)
             .setNeutralButton(R.string.lbl_add, null)
             .setPositiveButton(R.string.lbl_save, null)
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
-    override fun onBindingCreated(binding: DialogExcludedBinding, savedInstanceState: Bundle?) {
+    override fun onBindingCreated(binding: DialogMusicDirsBinding, savedInstanceState: Bundle?) {
         val launcher =
             registerForActivityResult(ActivityResultContracts.OpenDocumentTree(), ::addDocTreePath)
 
@@ -77,7 +76,10 @@ class ExcludedDialog :
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                if (settingsManager.excludedDirs != excludedAdapter.data.currentList) {
+                val dirs = settingsManager.musicDirs
+
+                if (dirs.dirs != dirAdapter.data.currentList ||
+                    dirs.shouldInclude != isInclude(requireBinding())) {
                     logD("Committing changes")
                     saveAndRestart()
                 } else {
@@ -87,34 +89,55 @@ class ExcludedDialog :
             }
         }
 
-        binding.excludedRecycler.apply {
-            adapter = excludedAdapter
+        binding.dirsRecycler.apply {
+            adapter = dirAdapter
             itemAnimator = null
         }
 
-        val dirs =
-            savedInstanceState
-                ?.getStringArrayList(KEY_PENDING_DIRS)
-                ?.mapNotNull(ExcludedDirectories::fromString)
-                ?: settingsManager.excludedDirs
+        var dirs = settingsManager.musicDirs
 
-        excludedAdapter.data.addAll(dirs)
-        requireBinding().excludedEmpty.isVisible = dirs.isEmpty()
+        if (savedInstanceState != null) {
+            val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
+
+            if (pendingDirs != null) {
+                dirs =
+                    MusicDirs(
+                        pendingDirs.mapNotNull(MusicDirs::parseDir),
+                        savedInstanceState.getBoolean(KEY_PENDING_MODE))
+            }
+        }
+
+        dirAdapter.data.addAll(dirs.dirs)
+        requireBinding().dirsEmpty.isVisible = dirs.dirs.isEmpty()
+
+        binding.folderModeGroup.apply {
+            check(
+                if (dirs.shouldInclude) {
+                    R.id.dirs_mode_include
+                } else {
+                    R.id.dirs_mode_exclude
+                })
+
+            updateMode()
+            addOnButtonCheckedListener { _, _, _ -> updateMode() }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(
-            KEY_PENDING_DIRS, ArrayList(excludedAdapter.data.currentList.map { it.toString() }))
+            KEY_PENDING_DIRS, ArrayList(dirAdapter.data.currentList.map { it.toString() }))
+        outState.putBoolean(KEY_PENDING_MODE, isInclude(requireBinding()))
     }
 
-    override fun onDestroyBinding(binding: DialogExcludedBinding) {
+    override fun onDestroyBinding(binding: DialogMusicDirsBinding) {
         super.onDestroyBinding(binding)
-        binding.excludedRecycler.adapter = null
+        binding.dirsRecycler.adapter = null
     }
 
     override fun onRemoveDirectory(dir: Dir.Relative) {
-        excludedAdapter.data.remove(dir)
+        dirAdapter.data.remove(dir)
+        requireBinding().dirsEmpty.isVisible = dirAdapter.data.currentList.isEmpty()
     }
 
     private fun addDocTreePath(uri: Uri?) {
@@ -126,8 +149,8 @@ class ExcludedDialog :
 
         val dir = parseExcludedUri(uri)
         if (dir != null) {
-            excludedAdapter.data.add(dir)
-            requireBinding().excludedEmpty.isVisible = false
+            dirAdapter.data.add(dir)
+            requireBinding().dirsEmpty.isVisible = false
         } else {
             requireContext().showToast(R.string.err_bad_dir)
         }
@@ -143,22 +166,31 @@ class ExcludedDialog :
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
         // Parsing handles the rest
-        return ExcludedDirectories.fromString(treeUri)
+        return MusicDirs.parseDir(treeUri)
     }
 
-    private fun saveAndRestart() {
-        settingsManager.excludedDirs = excludedAdapter.data.currentList
-
-        // TODO: Dumb stopgap measure until automatic rescanning, REMOVE THIS BEFORE
-        //  MAKING ANY RELEASE!!!!!!
-        launch {
-            delay(1000)
-            playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
+    private fun updateMode() {
+        val binding = requireBinding()
+        if (isInclude(binding)) {
+            binding.dirsModeDesc.setText(R.string.set_dirs_mode_include_desc)
+        } else {
+            binding.dirsModeDesc.setText(R.string.set_dirs_mode_exclude_desc)
         }
+    }
+
+    private fun isInclude(binding: DialogMusicDirsBinding) =
+        binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
+
+    private fun saveAndRestart() {
+        settingsManager.musicDirs =
+            MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding()))
+
+        playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
     }
 
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.EXCLUDED"
         const val KEY_PENDING_DIRS = BuildConfig.APPLICATION_ID + ".key.PENDING_DIRS"
+        const val KEY_PENDING_MODE = BuildConfig.APPLICATION_ID + ".key.SHOULD_INCLUDE"
     }
 }

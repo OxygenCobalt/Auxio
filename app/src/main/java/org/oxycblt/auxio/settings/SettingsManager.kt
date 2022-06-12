@@ -23,8 +23,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.home.tabs.Tab
-import org.oxycblt.auxio.music.Dir
-import org.oxycblt.auxio.music.excluded.ExcludedDirectories
+import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
 import org.oxycblt.auxio.playback.state.PlaybackMode
@@ -138,15 +137,22 @@ class SettingsManager private constructor(context: Context) :
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(KEY_PAUSE_ON_REPEAT, false)
 
-    /** The list of directories excluded from indexing. */
-    var excludedDirs: List<Dir.Relative>
-        get() =
-            (inner.getStringSet(KEY_EXCLUDED, null) ?: emptySet()).mapNotNull(
-                ExcludedDirectories::fromString)
+    /** The list of directories that music should be hidden/loaded from. */
+    var musicDirs: MusicDirs
+        get() {
+            val dirs =
+                (inner.getStringSet(KEY_MUSIC_DIRS, null) ?: emptySet()).mapNotNull(
+                    MusicDirs::parseDir)
+
+            return MusicDirs(dirs, inner.getBoolean(KEY_SHOULD_INCLUDE, false))
+        }
         set(value) {
             inner.edit {
-                putStringSet(KEY_EXCLUDED, value.map(ExcludedDirectories::toString).toSet())
-                apply()
+                putStringSet(KEY_MUSIC_DIRS, value.dirs.map(MusicDirs::toDir).toSet())
+                putBoolean(KEY_SHOULD_INCLUDE, value.shouldInclude)
+
+                // TODO: This is a stopgap measure before automatic rescanning, remove
+                commit()
             }
         }
 
@@ -252,12 +258,12 @@ class SettingsManager private constructor(context: Context) :
     init {
         inner.registerOnSharedPreferenceChangeListener(this)
 
-        if (!inner.contains(KEY_EXCLUDED)) {
+        if (!inner.contains(KEY_MUSIC_DIRS)) {
             logD("Attempting to migrate excluded directories")
             // We need to migrate this setting now while we have a context. Note that while
             // this does do IO work, the old excluded directory database is so small as to make
             // it negligible.
-            excludedDirs = handleExcludedCompat(context)
+            musicDirs = MusicDirs(handleExcludedCompat(context), false)
         }
     }
 
@@ -325,7 +331,8 @@ class SettingsManager private constructor(context: Context) :
 
         const val KEY_SAVE_STATE = "auxio_save_state"
         const val KEY_REINDEX = "auxio_reindex"
-        const val KEY_EXCLUDED = "auxio_excluded_dirs"
+        const val KEY_MUSIC_DIRS = "auxio_music_dirs"
+        const val KEY_SHOULD_INCLUDE = "auxio_include_dirs"
 
         const val KEY_SEARCH_FILTER_MODE = "KEY_SEARCH_FILTER"
 

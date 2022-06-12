@@ -70,6 +70,7 @@ sealed class Dir {
 /**
  * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
  * should always exist, while [fromFormat] is based on the file itself and may not be available.
+ * @author OxygenCobalt
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     fun resolveName(context: Context): String {
@@ -86,18 +87,26 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         // We have special names for the most common formats.
         val readableStringRes =
             when (readableMime) {
-                // Classic formats
+                // MPEG formats
+                // While MP4 is AAC, it's considered separate given how common it is.
                 "audio/mpeg",
                 "audio/mp3" -> R.string.cdc_mp3
+                "audio/mp4",
+                "audio/mp4a-latm",
+                "audio/mpeg4-generic" -> R.string.cdc_mp4
+
+                // Free formats
+                // Generic Ogg is included here as it's actually formatted as "Ogg", not "OGG"
+                "audio/ogg",
+                "application/ogg" -> R.string.cdc_ogg
                 "audio/vorbis" -> R.string.cdc_ogg_vorbis
                 "audio/opus" -> R.string.cdc_ogg_opus
                 "audio/flac" -> R.string.cdc_flac
 
-                // MP4, 3GPP, M4A, etc. are all based on AAC
-                "audio/mp4",
-                "audio/mp4a-latm",
-                "audio/mpeg4-generic",
+                // The other AAC containers have a generic name
                 "audio/aac",
+                "audio/aacp",
+                "audio/aac-adts",
                 "audio/3gpp",
                 "audio/3gpp2", -> R.string.cdc_aac
 
@@ -107,6 +116,8 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
                 "audio/wave",
                 "audio/vnd.wave" -> R.string.cdc_wav
                 "audio/x-ms-wma" -> R.string.cdc_wma
+
+                // Don't know
                 else -> -1
             }
 

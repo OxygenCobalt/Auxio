@@ -103,8 +103,6 @@
     <string name="set_save_desc">Запоминать позицию в треке</string>
     <string name="set_reindex">Перезагрузить музыку</string>
     <string name="set_reindex_desc">Это перезапустит приложение</string>
-    <string name="set_excluded">Исключённые папки</string>
-    <string name="set_excluded_desc">Содержимое исключённых папок будет скрыто из библиотеки</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Треков нет</string>
@@ -131,7 +129,7 @@
     <string name="desc_queue_handle">Переместить трек в очереди</string>
     <string name="desc_tab_handle">Переместить вкладку</string>
     <string name="desc_clear_search">Очистить поисковый запрос</string>
-    <string name="desc_blacklist_delete">Удалить исключенную папку</string>
+    <string name="desc_music_dir_delete">Удалить исключенную папку</string>
 
     <string name="desc_auxio_icon">Иконка Auxio</string>
     <string name="desc_no_cover">Обложка альбома</string>

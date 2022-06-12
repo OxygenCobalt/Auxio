@@ -99,8 +99,6 @@
     <string name="set_content">محتوى</string>
     <string name="set_save">حفظ حالة التشغيل</string>
     <string name="set_save_desc">حفظ حالة التشغيل الحالية الآن</string>
-    <string name="set_excluded">استبعاد مجلدات</string>
-    <string name="set_excluded_desc">محتوى المجلدات المستبعدة يتم اخفائها من مكتبتك</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">لم يتم ايجاد موسيقى</string>
@@ -126,7 +124,7 @@
     <string name="desc_queue_handle">نقل اغنية من الطابور</string>
     <string name="desc_tab_handle">تحريك التبويت</string>
     <string name="desc_clear_search">إزالة كلمة البحث</string>
-    <string name="desc_blacklist_delete">إزالة المجلد المستبعد</string>
+    <string name="desc_music_dir_delete">إزالة المجلد المستبعد</string>
 
     <string name="desc_auxio_icon">ايقونة اوكسيو</string>
     <string name="desc_no_cover">غلاف الالبوم</string>

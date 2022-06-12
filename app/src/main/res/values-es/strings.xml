@@ -101,8 +101,6 @@
     <string name="set_save_desc">Guardar el estado de reproduccion ahora</string>
     <string name="set_reindex">Recargar música</string>
     <string name="set_reindex_desc">Se reiniciará la aplicación</string>
-    <string name="set_excluded">Directorios excluidos</string>
-    <string name="set_excluded_desc">El contenido de los directorios excluidos no se mostrará</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Sin música</string>
@@ -129,7 +127,7 @@
     <string name="desc_queue_handle">Mover canción en la cola</string>
     <string name="desc_tab_handle">Mover pestaña</string>
     <string name="desc_clear_search">Borrar historial de búsqueda</string>
-    <string name="desc_blacklist_delete">Quitar directorio excluido</string>
+    <string name="desc_music_dir_delete">Quitar directorio excluido</string>
 
     <string name="desc_auxio_icon">Icono de Auxio</string>
     <string name="desc_no_cover">Carátula de álbum</string>

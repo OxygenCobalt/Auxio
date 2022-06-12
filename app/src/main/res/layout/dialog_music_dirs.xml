@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    style="@style/Widget.Auxio.Dialog.NestedScrollView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dirs_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_music_dir" />
+
+        <TextView
+            android:id="@+id/dirs_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_mid_large"
+            android:paddingTop="@dimen/spacing_medium"
+            android:paddingEnd="@dimen/spacing_mid_large"
+            android:paddingBottom="@dimen/spacing_medium"
+            android:text="@string/err_no_dirs"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_mid_large"
+            android:paddingEnd="@dimen/spacing_mid_large"
+            style="@style/Widget.Auxio.TextView.Header"
+            android:text="@string/set_dirs_mode" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/folder_mode_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:gravity="center"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@+id/dirs_mode_exclude">
+
+            <Button
+                android:id="@+id/dirs_mode_exclude"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/set_dirs_mode_exclude"
+                style="@style/Widget.Auxio.Button.Secondary" />
+
+            <Button
+                android:id="@+id/dirs_mode_include"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/set_dirs_mode_include"
+                style="@style/Widget.Auxio.Button.Secondary" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/dirs_mode_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_mid_large"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:layout_marginTop="@dimen/spacing_small"
+            tools:text="Mode description" />
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

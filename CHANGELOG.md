@@ -3,10 +3,12 @@
 ## dev [v2.3.2, v2.4.0, or v3.0.0]
 
 #### What's New
+- Excluded directories has been revampled into "Music folders"
+    - Folders on external drives can now be excluded on Android Q+ [#134]
+    - Added new "Include" option to restrict indexing to a particular folder [#154]
 - Added a new view for song properties (Such as Bitrate)
-- Folders on external drives can now be excluded on Android Q+ [#134]
-- The playback bar now has a new design, with an improved progress
-indicator and a skip action
+- The playback bar now has a new design, with an improved progress indicator and a
+ skip action
 - When playing, covers now shows an animated indicator
 
 #### What's Improved
@@ -14,6 +16,7 @@ indicator and a skip action
 - The toolbar layout is now consistent with Material Design 3
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
 - "Rounded album covers" option is no longer dependent on "Show album covers" option
+- Added song actions to the playback panel
 
 #### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
@@ -25,6 +28,7 @@ indicator and a skip action
 - Moved music loading to a foreground service
 - Phased out `ImageButton` for `MaterialButton`
 - Unified icon sizing
+- Added original date support to ExoPlayer parser (Not exposed in app)
 
 ## v2.3.1
 

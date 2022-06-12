@@ -36,6 +36,12 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
+ * The component managing the [MediaSessionCompat] instance.
+ *
+ * I really don't like how I have to do this, but until I can feasibly work with the ExoPlayer queue
+ * system using something like MediaSessionConnector is more or less impossible.
+ *
+ * @author OxygenCobalt
  */
 class MediaSessionComponent(private val context: Context, private val player: Player) :
     Player.Listener,

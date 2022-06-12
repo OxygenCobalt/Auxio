@@ -101,8 +101,6 @@
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
     <string name="set_reindex_desc">将会重启应用</string>
-    <string name="set_excluded">排除文件夹</string>
-    <string name="set_excluded_desc">被排除文件夹的内容将从媒体库中隐藏</string>
 
     <string name="lbl_off">关闭</string>
 
@@ -131,7 +129,7 @@
     <string name="desc_queue_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
-    <string name="desc_blacklist_delete">移除排除路径</string>
+    <string name="desc_music_dir_delete">移除排除路径</string>
 
     <string name="desc_auxio_icon">Auxio 图标</string>
     <string name="desc_no_cover">专辑封面</string>

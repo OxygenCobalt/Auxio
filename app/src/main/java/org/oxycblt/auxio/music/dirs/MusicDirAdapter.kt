@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.music.excluded
+package org.oxycblt.auxio.music.dirs
 
 import android.content.Context
-import org.oxycblt.auxio.databinding.ItemExcludedDirBinding
+import org.oxycblt.auxio.databinding.ItemMusicDirBinding
 import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.ui.BackingData
 import org.oxycblt.auxio.ui.BindingViewHolder
@@ -31,16 +31,16 @@ import org.oxycblt.auxio.util.textSafe
  * Adapter that shows the excluded directories and their "Clear" button.
  * @author OxygenCobalt
  */
-class ExcludedAdapter(listener: Listener) :
-    MonoAdapter<Dir.Relative, ExcludedAdapter.Listener, ExcludedViewHolder>(listener) {
+class MusicDirAdapter(listener: Listener) :
+    MonoAdapter<Dir.Relative, MusicDirAdapter.Listener, MusicDirViewHolder>(listener) {
     override val data = ExcludedBackingData(this)
-    override val creator = ExcludedViewHolder.CREATOR
+    override val creator = MusicDirViewHolder.CREATOR
 
     interface Listener {
         fun onRemoveDirectory(dir: Dir.Relative)
     }
 
-    class ExcludedBackingData(private val adapter: ExcludedAdapter) : BackingData<Dir.Relative>() {
+    class ExcludedBackingData(private val adapter: MusicDirAdapter) : BackingData<Dir.Relative>() {
         private val _currentList = mutableListOf<Dir.Relative>()
         val currentList: List<Dir.Relative> = _currentList
 
@@ -70,22 +70,22 @@ class ExcludedAdapter(listener: Listener) :
     }
 }
 
-/** The viewholder for [ExcludedAdapter]. Not intended for use in other adapters. */
-class ExcludedViewHolder private constructor(private val binding: ItemExcludedDirBinding) :
-    BindingViewHolder<Dir.Relative, ExcludedAdapter.Listener>(binding.root) {
-    override fun bind(item: Dir.Relative, listener: ExcludedAdapter.Listener) {
-        binding.excludedPath.textSafe = item.resolveName(binding.context)
-        binding.excludedClear.setOnClickListener { listener.onRemoveDirectory(item) }
+/** The viewholder for [MusicDirAdapter]. Not intended for use in other adapters. */
+class MusicDirViewHolder private constructor(private val binding: ItemMusicDirBinding) :
+    BindingViewHolder<Dir.Relative, MusicDirAdapter.Listener>(binding.root) {
+    override fun bind(item: Dir.Relative, listener: MusicDirAdapter.Listener) {
+        binding.dirPath.textSafe = item.resolveName(binding.context)
+        binding.dirDelete.setOnClickListener { listener.onRemoveDirectory(item) }
     }
 
     companion object {
         val CREATOR =
-            object : Creator<ExcludedViewHolder> {
+            object : Creator<MusicDirViewHolder> {
                 override val viewType: Int
                     get() = throw UnsupportedOperationException()
 
                 override fun create(context: Context) =
-                    ExcludedViewHolder(ItemExcludedDirBinding.inflate(context.inflater))
+                    MusicDirViewHolder(ItemMusicDirBinding.inflate(context.inflater))
             }
     }
 }

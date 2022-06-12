@@ -203,6 +203,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         }
     }
 
+    // TODO: Release types
+
     private fun populateId3v2(tags: Map<String, String>) {
         // Title
         tags["TIT2"]?.let { audio.title = it }

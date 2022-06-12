@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.audio.BaseAudioProcessor
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame
 import com.google.android.exoplayer2.metadata.vorbis.VorbisComment
-import java.lang.UnsupportedOperationException
 import java.nio.ByteBuffer
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
@@ -79,7 +78,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
                     when (settingsManager.replayGainMode) {
-                        ReplayGainMode.OFF -> throw UnsupportedOperationException()
+                        ReplayGainMode.OFF -> throw IllegalStateException()
 
                         // User wants track gain to be preferred. Default to album gain only if
                         // there is no track gain.
@@ -226,8 +225,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
         val buffer = replaceOutputBuffer(size)
 
         if (volume == 1f) {
-            // No need to apply ReplayGain, do a mem move using put instead of
-            // a for loop (the latter is not efficient)
+            // No need to apply ReplayGain.
             buffer.put(inputBuffer.slice())
         } else {
             for (i in position until limit step 2) {

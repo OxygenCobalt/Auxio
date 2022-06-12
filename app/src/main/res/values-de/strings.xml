@@ -95,8 +95,6 @@
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
     <string name="set_reindex_desc">Startet die App neu</string>
-    <string name="set_excluded">Ausgeschlossene Ordner</string>
-    <string name="set_excluded_desc">Die Inhalte der ausgeschlossenen Ordner werden nicht deiner Musikbibliothek angezeigt</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
@@ -168,7 +166,7 @@
     <string name="set_repeat_pause_desc">Pausieren, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
     <string name="desc_queue_handle">Lied in der Warteschlange verschieben</string>
-    <string name="desc_blacklist_delete">Ausgeschlossenes Verzechnis entfernen</string>
+    <string name="desc_music_dir_delete">Ausgeschlossenes Verzechnis entfernen</string>
     <string name="desc_no_cover">Albumcover</string>
     <string name="def_playback">Keine Musik wird gespielt</string>
     <string name="def_widget_song">Liedname</string>

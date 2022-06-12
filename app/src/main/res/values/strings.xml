@@ -126,8 +126,13 @@
     <string name="set_save_desc">Save the current playback state now</string>
     <string name="set_reindex">Reload music</string>
     <string name="set_reindex_desc">Will restart app</string>
-    <string name="set_excluded">Excluded folders</string>
-    <string name="set_excluded_desc">The content of excluded folders is hidden from your library</string>
+    <string name="set_dirs">Music folders</string>
+    <string name="set_dirs_desc">Manage where music should be loaded from</string>
+    <string name="set_dirs_mode">Mode</string>
+    <string name="set_dirs_mode_exclude">Exclude</string>
+    <string name="set_dirs_mode_exclude_desc">Music will <b>not</b> be loaded from the folders you add.</string>
+    <string name="set_dirs_mode_include">Include</string>
+    <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
@@ -155,7 +160,7 @@
     <string name="desc_queue_handle">Move this queue song</string>
     <string name="desc_tab_handle">Move this tab</string>
     <string name="desc_clear_search">Clear search query</string>
-    <string name="desc_blacklist_delete">Remove excluded directory</string>
+    <string name="desc_music_dir_delete">Remove directory</string>
 
     <string name="desc_auxio_icon">Auxio icon</string>
     <string name="desc_no_cover">Album cover</string>
@@ -176,13 +181,14 @@
     <string name="def_widget_artist">Artist Name</string>
 
     <!-- Codec Namespace | Format names -->
-    <string name="cdc_mp3">MPEG-1 Layer 3 (MP3)</string>
-    <string name="cdc_ogg">OGG</string>
-    <string name="cdc_ogg_vorbis">OGG Vorbis</string>
-    <string name="cdc_ogg_opus">OGG Opus</string>
+    <string name="cdc_mp3">MPEG-1 Layer 3 </string>
+    <string name="cdc_mp4">MPEG-4 Audio (AAC)</string>
+    <string name="cdc_ogg">Ogg</string>
+    <string name="cdc_ogg_vorbis">Ogg Vorbis</string>
+    <string name="cdc_ogg_opus">Ogg Opus</string>
     <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
     <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="cdc_wav">Microsoft WAV</string>
+    <string name="cdc_wav">Microsoft WAVE</string>
     <string name="cdc_wma">Windows Media Audio (WMA)</string>
 
     <!-- Color Label namespace | Accent names -->

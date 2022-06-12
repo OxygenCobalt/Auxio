@@ -102,8 +102,6 @@
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
     <string name="set_reindex_desc">L\'applicazione sarà riavviata</string>
-    <string name="set_excluded">Cartelle escluse</string>
-    <string name="set_excluded_desc">Il contenuto delle cartelle escluse sarà nascosto dalla tua libreria</string>
 
     <string name="lbl_off">Spento</string>
 
@@ -132,7 +130,7 @@
     <string name="desc_queue_handle">Muove questa canzone della coda</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
-    <string name="desc_blacklist_delete">Rimuove cartella esclusa</string>
+    <string name="desc_music_dir_delete">Rimuove cartella esclusa</string>
 
     <string name="desc_auxio_icon">Icona Auxio</string>
     <string name="desc_no_cover">Copertina disco</string>

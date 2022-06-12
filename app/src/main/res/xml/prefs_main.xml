@@ -158,9 +158,9 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_excluded_dirs"
-            app:summary="@string/set_excluded_desc"
-            app:title="@string/set_excluded" />
+            app:key="auxio_music_dirs"
+            app:summary="@string/set_dirs_desc"
+            app:title="@string/set_dirs" />
 
     </PreferenceCategory>
 </PreferenceScreen>

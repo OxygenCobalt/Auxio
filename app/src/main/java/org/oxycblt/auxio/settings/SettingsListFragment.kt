@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
-import org.oxycblt.auxio.music.excluded.ExcludedDialog
+import org.oxycblt.auxio.music.dirs.MusicDirsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
@@ -193,10 +193,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_EXCLUDED -> {
+                SettingsManager.KEY_MUSIC_DIRS -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
-                            ExcludedDialog().show(childFragmentManager, ExcludedDialog.TAG)
+                            MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
                             true
                         }
                 }
