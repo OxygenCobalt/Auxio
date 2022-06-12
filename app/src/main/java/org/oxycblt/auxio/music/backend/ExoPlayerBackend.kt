@@ -140,15 +140,22 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
             return null
         }
 
-        val metadata =
+        val format =
             try {
-                future.get()[0].getFormat(0).metadata
+                future.get()[0].getFormat(0)
             } catch (e: Exception) {
                 logW("Unable to extract metadata for ${audio.title}")
                 logW(e.stackTraceToString())
                 null
             }
 
+        if (format == null) {
+            logD("Nothing could be extracted for ${audio.title}")
+            return audio.toSong()
+        }
+
+        format.sampleMimeType?.let { audio.formatMimeType = it }
+        val metadata = format.metadata
         if (metadata != null) {
             completeAudio(metadata)
         } else {

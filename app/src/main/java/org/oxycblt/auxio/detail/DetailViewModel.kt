@@ -33,6 +33,7 @@ import org.oxycblt.auxio.detail.recycler.SortHeader
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
+import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
@@ -51,7 +52,12 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class DetailViewModel : ViewModel(), MusicStore.Callback {
-    data class DetailSong(val song: Song, val bitrateKbps: Int?, val sampleRate: Int?)
+    data class DetailSong(
+        val song: Song,
+        val bitrateKbps: Int?,
+        val sampleRate: Int?,
+        val resolvedMimeType: MimeType
+    )
 
     private val musicStore = MusicStore.getInstance()
     private val settingsManager = SettingsManager.getInstance()
@@ -157,7 +163,7 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
                     } catch (e: Exception) {
                         logW("Unable to extract song attributes.")
                         logW(e.stackTraceToString())
-                        return@withContext DetailSong(song, null, null)
+                        return@withContext DetailSong(song, null, null, song.mimeType)
                     }
 
                     val format = extractor.getTrackFormat(0)
@@ -176,7 +182,24 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
                             null
                         }
 
-                    DetailSong(song, bitrate, sampleRate)
+                    val resolvedMimeType =
+                        if (song.mimeType.fromFormat != null) {
+                            // ExoPlayer was already able to populate the format.
+                            song.mimeType
+                        } else {
+                            val formatMimeType =
+                                try {
+                                    format.getString(MediaFormat.KEY_MIME)
+                                } catch (e: Exception) {
+                                    null
+                                }
+
+                            // Ensure that we don't include the functionally useless
+                            // "audio/raw" mime type
+                            MimeType(song.mimeType.fromExtension, formatMimeType)
+                        }
+                    
+                    DetailSong(song, bitrate, sampleRate, resolvedMimeType)
                 }
         }
     }
@@ -188,7 +211,7 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
 
         // To create a good user experience regarding disc numbers, we intersperse
         // items that show the disc number throughout the album's songs. In the case
-        // that the  album does not have distinct disc numbers, we omit the header.
+        // that the album does not have distinct disc numbers, we omit the header.
         val songs = albumSort.songs(album.songs)
         val byDisc = songs.groupBy { it.disc ?: 1 }
         if (byDisc.size > 1) {

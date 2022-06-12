@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.music
 
 import android.content.Context
+import android.webkit.MimeTypeMap
 import org.oxycblt.auxio.R
 
 /**
@@ -64,4 +65,58 @@ sealed class Dir {
                         context.getString(R.string.fmt_secondary_path, relativePath)
                 }
         }
+}
+
+/**
+ * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
+ * should always exist, while [fromFormat] is based on the file itself and may not be available.
+ */
+data class MimeType(val fromExtension: String, val fromFormat: String?) {
+    fun resolveName(context: Context): String {
+        // Prefer the format mime type first, as it actually is derived from the file
+        // and not the extension. Just make sure to ignore audio/raw, as that could feasibly
+        // correspond to multiple formats.
+        val readableMime =
+            if (fromFormat != null && fromFormat != "audio/raw") {
+                fromFormat
+            } else {
+                fromExtension
+            }
+
+        // We have special names for the most common formats.
+        val readableStringRes =
+            when (readableMime) {
+                // Classic formats
+                "audio/mpeg",
+                "audio/mp3" -> R.string.cdc_mp3
+                "audio/vorbis" -> R.string.cdc_ogg_vorbis
+                "audio/opus" -> R.string.cdc_ogg_opus
+                "audio/flac" -> R.string.cdc_flac
+
+                // MP4, 3GPP, M4A, etc. are all based on AAC
+                "audio/mp4",
+                "audio/mp4a-latm",
+                "audio/mpeg4-generic",
+                "audio/aac",
+                "audio/3gpp",
+                "audio/3gpp2", -> R.string.cdc_aac
+
+                // Windows formats
+                "audio/wav",
+                "audio/x-wav",
+                "audio/wave",
+                "audio/vnd.wave" -> R.string.cdc_wav
+                "audio/x-ms-wma" -> R.string.cdc_wma
+
+                else -> -1
+            }
+
+        return if (readableStringRes > -1) {
+            context.getString(readableStringRes)
+        } else {
+            // Fall back to the extension if we can't find a special name for this format.
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()
+                ?: context.getString(R.string.def_codec)
+        }
+    }
 }

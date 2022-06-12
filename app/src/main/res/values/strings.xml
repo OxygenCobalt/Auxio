@@ -49,7 +49,7 @@
     <string name="lbl_go_album">Go to album</string>
     <string name="lbl_song_detail">View properties</string>
 
-    <string name="lbl_props">File properties</string>
+    <string name="lbl_props">Song properties</string>
     <string name="lbl_file_name">File name</string>
     <string name="lbl_relative_path">Relative path</string>
     <string name="lbl_format">Format</string>
@@ -169,11 +169,21 @@
     <string name="def_date">No Date</string>
     <string name="def_track">No Track Number</string>
     <string name="def_playback">No music playing</string>
-    <string name="def_format">Unknown Format</string>
+    <string name="def_codec">Unknown Format</string>
     <string name="def_bitrate">No Bitrate</string>
     <string name="def_sample_rate">No Sample Rate</string>
     <string name="def_widget_song">Song Name</string>
     <string name="def_widget_artist">Artist Name</string>
+
+    <!-- Codec Namespace | Format names -->
+    <string name="cdc_mp3">MPEG-1 Layer 3 (MP3)</string>
+    <string name="cdc_ogg">OGG</string>
+    <string name="cdc_ogg_vorbis">OGG Vorbis</string>
+    <string name="cdc_ogg_opus">OGG Opus</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="cdc_wav">Microsoft WAV</string>
+    <string name="cdc_wma">Windows Media Audio (WMA)</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Red</string>

@@ -28,6 +28,7 @@ import androidx.core.database.getStringOrNull
 import java.io.File
 import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.music.Indexer
+import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.Path
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
@@ -216,7 +217,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.id = cursor.getLong(idIndex)
         audio.title = cursor.getString(titleIndex)
 
-        audio.mimeType = cursor.getString(mimeTypeIndex)
+        audio.extensionMimeType = cursor.getString(mimeTypeIndex)
         audio.size = cursor.getLong(sizeIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
@@ -266,7 +267,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var title: String? = null,
         var displayName: String? = null,
         var dir: Dir? = null,
-        var mimeType: String? = null,
+        var extensionMimeType: String? = null,
+        var formatMimeType: String? = null,
         var size: Long? = null,
         var duration: Long? = null,
         var track: Int? = null,
@@ -288,7 +290,11 @@ abstract class MediaStoreBackend : Indexer.Backend {
                         name = requireNotNull(displayName) { "Malformed audio: No display name" },
                         parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
                 uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
-                mimeType = requireNotNull(mimeType) { "Malformed audio: No mime type" },
+                mimeType =
+                    MimeType(
+                        fromExtension =
+                            requireNotNull(extensionMimeType) { "Malformed audio: No mime type" },
+                        fromFormat = formatMimeType),
                 size = requireNotNull(size) { "Malformed audio: No size" },
                 durationMs = requireNotNull(duration) { "Malformed audio: No duration" },
                 track = track,

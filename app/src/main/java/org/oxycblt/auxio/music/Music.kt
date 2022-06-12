@@ -64,7 +64,7 @@ data class Song(
     /** The URI linking to this song's file. */
     val uri: Uri,
     /** The mime type of this song. */
-    val mimeType: String,
+    val mimeType: MimeType,
     /** The size of this song (in bytes) */
     val size: Long,
     /** The total duration of this song, in millis. */
