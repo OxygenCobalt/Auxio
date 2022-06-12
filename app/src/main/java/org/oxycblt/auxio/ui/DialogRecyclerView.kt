@@ -28,11 +28,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDivider
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDimenSizeSafe
-import org.oxycblt.auxio.util.logD
 
 /**
- * A RecyclerView that enables something resembling the android:scrollIndicators attribute.
- * Only used in dialogs.
+ * A RecyclerView that enables something resembling the android:scrollIndicators attribute. Only
+ * used in dialogs.
  * @author OxygenCobalt
  */
 class DialogRecyclerView
@@ -59,11 +58,6 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                     super.onScrolled(recyclerView, dx, dy)
 
                     val manager = recyclerView.layoutManager as LinearLayoutManager
-                    logD("top invisible: ${manager.findFirstCompletelyVisibleItemPosition() < 1}")
-                    //                    logD(
-                    //                        "bottom invisible:
-                    // ${manager.findLastCompletelyVisibleItemPosition() < (manager.itemCount -
-                    // 1)}")
                     topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
                     bottomDivider.isInvisible =
                         manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)

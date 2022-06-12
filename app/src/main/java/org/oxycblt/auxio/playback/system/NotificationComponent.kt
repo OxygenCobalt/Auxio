@@ -64,7 +64,7 @@ class NotificationComponent(
             notificationManager.createNotificationChannel(channel)
         }
 
-        setSmallIcon(R.drawable.ic_song)
+        setSmallIcon(R.drawable.ic_auxio)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
