@@ -119,7 +119,6 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
                 logD("Navigating to another album")
                 findNavController().navigate(GenreDetailFragmentDirections.actionShowAlbum(item.id))
             }
-            // All items will launch new detail fragments.
             is Artist -> {
                 logD("Navigating to another artist")
                 findNavController()

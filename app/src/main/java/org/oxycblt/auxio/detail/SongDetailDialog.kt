@@ -50,6 +50,11 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         launch { detailModel.currentSong.collect(::updateSong) }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        detailModel.clearSong()
+    }
+
     private fun updateSong(song: DetailViewModel.DetailSong?) {
         val binding = requireBinding()
 

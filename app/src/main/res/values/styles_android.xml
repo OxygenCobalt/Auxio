@@ -33,6 +33,12 @@
         <item name="android:layout_marginStart">0dp</item>
     </style>
 
+    <!-- Dialog style that properly impelments dividers in a NestedScrollView -->
+    <style name="Widget.Auxio.Dialog.NestedScrollView" parent="">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:paddingTop">@dimen/spacing_medium</item>
+    </style>
+
     <!-- Widget TextView that mimics the main Auxio Primary/Secondary TextViews. -->
     <style name="Widget.Auxio.TextView.AppWidget" parent="Widget.Auxio.TextView.Base">
         <item name="android:singleLine">true</item>

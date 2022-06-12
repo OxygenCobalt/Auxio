@@ -37,6 +37,7 @@ class IntListPreferenceDialog : PreferenceDialogFragmentCompat() {
         builder.setTitle(listPreference.title)
         builder.setPositiveButton(null, null)
         builder.setNegativeButton(R.string.lbl_cancel, null)
+        // TODO: Replace this with an in-house view
         builder.setSingleChoiceItems(listPreference.entries, listPreference.getValueIndex()) {
             _,
             index ->

@@ -5,8 +5,9 @@
 #### What's New
 - Added a new view for song properties (Such as Bitrate)
 - Folders on external drives can now be excluded on Android Q+ [#134]
-- Playback bar now has a skip action
-- When playing, the cover now shows an animated indicator
+- The playback bar now has a new design, with an improved progress
+indicator and a skip action
+- When playing, covers now shows an animated indicator
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling
@@ -20,7 +21,7 @@
 - Songs with no data (i.e size of 0) are now filtered out
 
 #### Dev/Meta
-- New translations [Fjuro -> Czech]
+- New translations [Fjuro -> Czech, Konstantin Tutsch -> German]
 - Moved music loading to a foreground service
 - Phased out `ImageButton` for `MaterialButton`
 - Unified icon sizing

@@ -44,6 +44,7 @@ class ReadOnlyTextInput : TextInputEditText {
     ) : super(context, attrs, defStyleAttr)
 
     init {
+        setTextIsSelectable(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusable = View.FOCUSABLE_AUTO
         }

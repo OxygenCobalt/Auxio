@@ -110,6 +110,10 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
         generateDetailSong(context, song)
     }
 
+    fun clearSong() {
+        _currentSong.value = null
+    }
+
     fun setAlbumId(id: Long) {
         if (_currentAlbum.value?.id == id) return
         val library = unlikelyToBeNull(musicStore.library)

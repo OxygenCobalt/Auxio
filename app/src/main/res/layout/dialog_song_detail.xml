@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="@dimen/spacing_medium">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        style="@style/Widget.Auxio.Dialog.NestedScrollView">
 
         <LinearLayout
             android:id="@+id/detail_container"
@@ -18,7 +18,8 @@
             android:paddingStart="@dimen/spacing_mid_large"
             android:paddingEnd="@dimen/spacing_mid_large"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="visible"
+            android:showDividers="middle">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

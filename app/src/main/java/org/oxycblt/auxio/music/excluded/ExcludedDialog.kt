@@ -115,7 +115,6 @@ class ExcludedDialog :
 
     override fun onRemoveDirectory(dir: Dir.Relative) {
         excludedAdapter.data.remove(dir)
-        requireBinding().excludedEmpty.isVisible = excludedAdapter.data.currentList.isEmpty()
     }
 
     private fun addDocTreePath(uri: Uri?) {
