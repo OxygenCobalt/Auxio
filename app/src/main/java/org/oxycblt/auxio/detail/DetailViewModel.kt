@@ -17,10 +17,10 @@
  
 package org.oxycblt.auxio.detail
 
-import android.content.Context
+import android.app.Application
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +40,7 @@ import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -51,7 +52,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * - Menu triggers for each fragment
  * @author OxygenCobalt
  */
-class DetailViewModel : ViewModel(), MusicStore.Callback {
+class DetailViewModel(application: Application) :
+    AndroidViewModel(application), MusicStore.Callback {
     data class DetailSong(
         val song: Song,
         val bitrateKbps: Int?,
@@ -109,11 +111,11 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
             currentGenre.value?.let(::refreshGenreData)
         }
 
-    fun setSongId(context: Context, id: Long) {
+    fun setSongId(id: Long) {
         if (_currentSong.value?.run { song.id } == id) return
         val library = unlikelyToBeNull(musicStore.library)
         val song = requireNotNull(library.songs.find { it.id == id }) { "Invalid song id provided" }
-        generateDetailSong(context, song)
+        generateDetailSong(song)
     }
 
     fun clearSong() {
@@ -152,14 +154,15 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
         musicStore.addCallback(this)
     }
 
-    private fun generateDetailSong(context: Context, song: Song) {
+    private fun generateDetailSong(song: Song) {
         viewModelScope.launch {
             _currentSong.value =
                 withContext(Dispatchers.IO) {
                     val extractor = MediaExtractor()
 
                     try {
-                        extractor.setDataSource(context, song.uri, emptyMap())
+                        @Suppress("BlockingMethodInNonBlockingContext")
+                        extractor.setDataSource(application, song.uri, emptyMap())
                     } catch (e: Exception) {
                         logW("Unable to extract song attributes.")
                         logW(e.stackTraceToString())
@@ -250,14 +253,13 @@ class DetailViewModel : ViewModel(), MusicStore.Callback {
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
-            // TODO: Add when we have a context
-            //            val song = currentSong.value
-            //            if (song != null) {
-            //                val newSong = library.sanitize(song.song)
-            //                if (newSong != null) {
-            //                    generateDetailSong(newSong)
-            //                }
-            //            }
+            val song = currentSong.value
+            if (song != null) {
+                val newSong = library.sanitize(song.song)
+                if (newSong != null) {
+                    generateDetailSong(newSong)
+                }
+            }
 
             val album = currentAlbum.value
             if (album != null) {

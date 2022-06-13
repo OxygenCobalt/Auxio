@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.util
 
+import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
 import android.database.Cursor
@@ -31,7 +32,11 @@ import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -167,6 +172,20 @@ fun Fragment.launch(
 ) {
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }
+
+fun Fragment.androidViewModelFactory() =
+    ViewModelProvider.AndroidViewModelFactory(requireContext().applicationContext as Application)
+
+inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
+    viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
+
+inline fun <reified T : AndroidViewModel> Fragment.activityAndroidViewModels() =
+    activityViewModels<T> {
+        ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
+    }
+
+val AndroidViewModel.application: Application
+    get() = getApplication()
 
 /**
  * Combines the called flow with the given flow and then collects them both into [block]. This is a

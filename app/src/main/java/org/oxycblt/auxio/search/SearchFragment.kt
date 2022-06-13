@@ -28,15 +28,12 @@ import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
-import org.oxycblt.auxio.music.Indexer
-import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -47,6 +44,7 @@ import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.launch
@@ -61,10 +59,9 @@ class SearchFragment :
     MenuItemListener,
     Toolbar.OnMenuItemClickListener {
     // SearchViewModel is only scoped to this Fragment
-    private val searchModel: SearchViewModel by viewModels()
+    private val searchModel: SearchViewModel by androidViewModels()
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val indexerModel: IndexerViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -87,7 +84,7 @@ class SearchFragment :
         binding.searchEditText.apply {
             addTextChangedListener { text ->
                 // Run the search with the updated text as the query
-                searchModel.search(context, text?.toString())
+                searchModel.search(text?.toString())
             }
 
             if (!launchedKeyboard) {
@@ -109,7 +106,6 @@ class SearchFragment :
         // --- VIEWMODEL SETUP ---
 
         launch { searchModel.searchResults.collect(::updateResults) }
-        launch { indexerModel.state.collect(::handleIndexerState) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
     }
 
@@ -124,7 +120,7 @@ class SearchFragment :
             R.id.submenu_filtering -> {}
             else -> {
                 if (item.itemId != R.id.submenu_filtering) {
-                    searchModel.updateFilterModeWithId(requireContext(), item.itemId)
+                    searchModel.updateFilterModeWithId(item.itemId)
                     item.isChecked = true
                 }
             }
@@ -169,12 +165,6 @@ class SearchFragment :
                 })
 
         requireImm().hide()
-    }
-
-    private fun handleIndexerState(state: Indexer.State?) {
-        if (state is Indexer.State.Complete && state.response is Indexer.Response.Ok) {
-            searchModel.refresh(requireContext())
-        }
     }
 
     private fun requireImm(): InputMethodManager {

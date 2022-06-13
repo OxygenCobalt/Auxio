@@ -14,6 +14,6 @@
     <string name="cdc_wav">Microsoft WAVE</string>
 
     <!-- Note: These are stopgap measures until we make the path code rely on components! -->
-    <string name="fmt_primary_path">Internal:%s</string>
-    <string name="fmt_secondary_path">SDCARD:%s</string>
+    <string name="fmt_primary_path">Internal/%s</string>
+    <string name="fmt_secondary_path">SDCARD/%s</string>
 </resources>

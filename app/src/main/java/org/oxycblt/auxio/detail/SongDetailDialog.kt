@@ -44,7 +44,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-        detailModel.setSongId(requireContext(), requireNotNull(arguments).getLong(ARG_ID))
+        detailModel.setSongId(requireNotNull(arguments).getLong(ARG_ID))
         launch { detailModel.currentSong.collect(::updateSong) }
     }
 
