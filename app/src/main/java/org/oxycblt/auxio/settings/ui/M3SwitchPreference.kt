@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.settings.pref
+package org.oxycblt.auxio.settings.ui
 
 import android.content.Context
 import android.os.Build

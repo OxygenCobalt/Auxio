@@ -173,13 +173,10 @@ fun Fragment.launch(
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }
 
-fun Fragment.androidViewModelFactory() =
-    ViewModelProvider.AndroidViewModelFactory(requireContext().applicationContext as Application)
-
 inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
 
-inline fun <reified T : AndroidViewModel> Fragment.activityAndroidViewModels() =
+inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
     activityViewModels<T> {
         ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
     }

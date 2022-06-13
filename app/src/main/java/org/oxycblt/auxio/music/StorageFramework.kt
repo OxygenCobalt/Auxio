@@ -17,7 +17,13 @@
  
 package org.oxycblt.auxio.music
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.os.Environment
+import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
+import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.google.android.exoplayer2.util.MimeTypes
 import org.oxycblt.auxio.R
@@ -28,19 +34,18 @@ import org.oxycblt.auxio.R
  */
 data class Path(val name: String, val parent: Dir)
 
+data class NeoPath(val name: String, val parent: NeoDir)
+
+data class NeoDir(val volume: StorageVolume, val relativePath: String) {
+    fun resolveName(context: Context) =
+        context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
+}
+
 /**
  * Represents a directory from the android file-system. Intentionally designed to be
  * version-agnostic and follow modern storage recommendations.
  */
 sealed class Dir {
-    /**
-     * An absolute path.
-     *
-     * This is only used with [Song] instances on pre-Q android versions. This should be avoided in
-     * most cases for [Relative].
-     */
-    data class Absolute(val path: String) : Dir()
-
     /**
      * A directory with a volume.
      *
@@ -58,7 +63,6 @@ sealed class Dir {
 
     fun resolveName(context: Context) =
         when (this) {
-            is Absolute -> path
             is Relative ->
                 when (volume) {
                     is Volume.Primary -> context.getString(R.string.fmt_primary_path, relativePath)
@@ -137,3 +141,52 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         }
     }
 }
+
+val StorageManager.storageVolumesCompat: List<StorageVolume>
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            storageVolumes.toList()
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            (StorageManager::class.java.getDeclaredMethod("getVolumeList").invoke(this)
+                    as Array<StorageVolume>)
+                .toList()
+        }
+
+val StorageVolume.directoryCompat: String?
+    @SuppressLint("NewApi")
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            directory?.absolutePath
+        } else {
+            when (stateCompat) {
+                Environment.MEDIA_MOUNTED,
+                Environment.MEDIA_MOUNTED_READ_ONLY ->
+                    StorageVolume::class.java.getDeclaredMethod("getPath").invoke(this) as String
+                else -> null
+            }
+        }
+
+@SuppressLint("NewApi")
+fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
+
+val StorageVolume.isPrimaryCompat: Boolean
+    @SuppressLint("NewApi") get() = isPrimary
+
+val StorageVolume.uuidCompat: String?
+    @SuppressLint("NewApi") get() = uuid
+
+val StorageVolume.stateCompat: String
+    @SuppressLint("NewApi") get() = state
+
+val StorageVolume.mediaStoreVolumeNameCompat: String?
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mediaStoreVolumeName
+        } else {
+            if (isPrimaryCompat) {
+                MediaStore.VOLUME_EXTERNAL_PRIMARY
+            } else {
+                uuid?.lowercase()
+            }
+        }

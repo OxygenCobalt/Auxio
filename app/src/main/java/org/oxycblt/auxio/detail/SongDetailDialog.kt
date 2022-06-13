@@ -22,17 +22,17 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
-import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
-    private val detailModel: DetailViewModel by activityViewModels()
+    private val detailModel: DetailViewModel by androidActivityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSongDetailBinding.inflate(inflater)

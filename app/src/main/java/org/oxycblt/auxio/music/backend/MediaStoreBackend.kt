@@ -21,6 +21,8 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Build
 import android.os.Environment
+import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
@@ -29,17 +31,22 @@ import java.io.File
 import org.oxycblt.auxio.music.Dir
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.MimeType
-import org.oxycblt.auxio.music.Path
+import org.oxycblt.auxio.music.NeoDir
+import org.oxycblt.auxio.music.NeoPath
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
+import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.music.id3GenreName
+import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
+import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.contentResolverSafe
+import org.oxycblt.auxio.util.getSystemServiceSafe
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -120,8 +127,13 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var albumArtistIndex = -1
     private var dataIndex = -1
 
+    private val _volumes = mutableListOf<StorageVolume>()
+    protected val volumes = _volumes
+
     override fun query(context: Context): Cursor {
         val settingsManager = SettingsManager.getInstance()
+        val storageManager = context.getSystemServiceSafe(StorageManager::class)
+        _volumes.addAll(storageManager.storageVolumesCompat)
         val selector = buildMusicDirsSelector(settingsManager.musicDirs)
 
         return requireNotNull(
@@ -266,7 +278,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var id: Long? = null,
         var title: String? = null,
         var displayName: String? = null,
-        var dir: Dir? = null,
+        var dir: NeoDir? = null,
         var extensionMimeType: String? = null,
         var formatMimeType: String? = null,
         var size: Long? = null,
@@ -286,7 +298,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 // every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
                 path =
-                    Path(
+                    NeoPath(
                         name = requireNotNull(displayName) { "Malformed audio: No display name" },
                         parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
                 uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
@@ -421,10 +433,16 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
                 audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
             }
 
-            audio.dir =
-                data.substringBeforeLast(File.separatorChar, "").let { dir ->
-                    if (dir.isNotEmpty()) Dir.Absolute(dir) else null
+            val rawPath = data.substringBeforeLast(File.separatorChar)
+
+            for (volume in volumes) {
+                val volumePath = volume.directoryCompat ?: continue
+                val strippedPath = rawPath.removePrefix(volumePath + File.separatorChar)
+                if (strippedPath != rawPath) {
+                    audio.dir = NeoDir(volume, strippedPath + File.separatorChar)
+                    break
                 }
+            }
         }
 
         return audio
@@ -488,18 +506,15 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
         }
 
-        val volume = cursor.getStringOrNull(volumeIndex)
+        val volumeName = cursor.getStringOrNull(volumeIndex)
         val relativePath = cursor.getStringOrNull(relativePathIndex)
 
-        if (volume != null && relativePath != null) {
-            audio.dir =
-                Dir.Relative(
-                    volume =
-                        when (volume) {
-                            MediaStore.VOLUME_EXTERNAL_PRIMARY -> Dir.Volume.Primary
-                            else -> Dir.Volume.Secondary(volume)
-                        },
-                    relativePath = relativePath)
+        if (volumeName != null && relativePath != null) {
+            val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
+
+            if (volume != null) {
+                audio.dir = NeoDir(volume, relativePath)
+            }
         }
 
         return audio

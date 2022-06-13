@@ -33,6 +33,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -42,7 +43,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  */
 abstract class DetailFragment :
     ViewBindingFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener {
-    protected val detailModel: DetailViewModel by activityViewModels()
+    protected val detailModel: DetailViewModel by androidActivityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
     protected val playbackModel: PlaybackViewModel by activityViewModels()
 

@@ -35,8 +35,8 @@ import org.oxycblt.auxio.music.dirs.MusicDirsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
-import org.oxycblt.auxio.settings.pref.IntListPreference
-import org.oxycblt.auxio.settings.pref.IntListPreferenceDialog
+import org.oxycblt.auxio.settings.ui.IntListPreference
+import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.ui.accent.AccentDialog
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.hardRestart
