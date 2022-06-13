@@ -51,7 +51,7 @@
 
     <string name="lbl_props">Song properties</string>
     <string name="lbl_file_name">File name</string>
-    <string name="lbl_relative_path">Relative path</string>
+    <string name="lbl_relative_path">Parent path</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Size</string>
     <string name="lbl_bitrate">Bitrate</string>
@@ -181,15 +181,10 @@
     <string name="def_widget_artist">Artist Name</string>
 
     <!-- Codec Namespace | Format names -->
-    <string name="cdc_mp3">MPEG-1 Layer 3 </string>
-    <string name="cdc_mp4">MPEG-4 Audio (AAC)</string>
-    <string name="cdc_ogg">Ogg</string>
-    <string name="cdc_ogg_vorbis">Ogg Vorbis</string>
-    <string name="cdc_ogg_opus">Ogg Opus</string>
-    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
-    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
-    <string name="cdc_wav">Microsoft WAVE</string>
-    <string name="cdc_wma">Windows Media Audio (WMA)</string>
+    <string name="cdc_mp3">MPEG-1 Audio</string>
+    <string name="cdc_mp4">MPEG-4 Audio</string>
+    <string name="cdc_ogg">Ogg Audio</string>
+    <string name="cdc_mka">Matroska Audio</string>
 
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Red</string>

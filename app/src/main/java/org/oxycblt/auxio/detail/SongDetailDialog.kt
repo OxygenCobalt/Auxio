@@ -20,7 +20,6 @@ package org.oxycblt.auxio.detail
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.LayoutInflater
-import android.webkit.MimeTypeMap
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
 import androidx.fragment.app.activityViewModels
@@ -34,7 +33,6 @@ import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by activityViewModels()
-    private val mimeTypes = MimeTypeMap.getSingleton()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSongDetailBinding.inflate(inflater)
@@ -80,41 +78,6 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
             }
         } else {
             binding.detailContainer.isGone = true
-        }
-    }
-
-    private fun getMimeName(mime: String): String? {
-        return when (mime) {
-            // Since Auxio only feasibly loads music, we can match for general mime types
-            // and assume that they are audio-based.
-
-            // Classic formats
-            "audio/mpeg",
-            "audio/mp3" -> "MPEG-1 Layer 3"
-            "audio/ogg",
-            "application/ogg" -> "OGG"
-            "audio/vorbis" -> "OGG Vorbis"
-            "audio/opus" -> "OGG Opus"
-            "audio/flac" -> "(OGG) FLAC"
-
-            // Modern formats
-            "audio/mp4",
-            "audio/mp4a-latm",
-            "audio/mpeg4-generic",
-            "audio/aac",
-            "audio/3gpp",
-            "audio/3gpp2", -> "Advanced Audio Coding (AAC)"
-            "audio/x-matroska" -> "Matroska Audio (MKA)"
-
-            // Windows formats
-            "audio/wav",
-            "audio/x-wav",
-            "audio/wave",
-            "audio/vnd.wave" -> "Microsoft WAV"
-            "audio/x-ms-wma" -> "Windows Media Audio (WMA)"
-
-            // Don't know, fall back to an extension
-            else -> mimeTypes.getExtensionFromMimeType(mime)?.uppercase()
         }
     }
 

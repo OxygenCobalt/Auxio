@@ -89,15 +89,15 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
 
         binding.homeAppbar.apply {
-            addOnOffsetChangedListener(
-                AppBarLayout.OnOffsetChangedListener { _, offset ->
-                    val range = binding.homeAppbar.totalScrollRange
+            addOnOffsetChangedListener { _, offset ->
+                val range = binding.homeAppbar.totalScrollRange
 
-                    binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
+                binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
-                    binding.homeContent.updatePadding(
-                        bottom = binding.homeAppbar.totalScrollRange + offset)
-                })
+                binding.homeContent.updatePadding(
+                    bottom = binding.homeAppbar.totalScrollRange + offset
+                )
+            }
         }
 
         binding.homeToolbar.apply {

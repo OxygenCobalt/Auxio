@@ -38,10 +38,7 @@ import org.oxycblt.auxio.util.logD
  * hot garbage. This shouldn't have *too many* UI bugs. I hope.
  * @author OxygenCobalt
  */
-class QueueDragCallback(
-    private val playbackModel: PlaybackViewModel,
-    private val queueAdapter: QueueAdapter
-) : ItemTouchHelper.Callback() {
+class QueueDragCallback(private val playbackModel: PlaybackViewModel) : ItemTouchHelper.Callback() {
     private var shouldLift = true
 
     override fun getMovementFlags(

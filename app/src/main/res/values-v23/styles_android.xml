@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dialog style that properly impelments dividers in a NestedScrollView -->
+    <!-- Dialog style that properly implements dividers in a NestedScrollView -->
     <style name="Widget.Auxio.Dialog.NestedScrollView" parent="">
         <item name="android:overScrollMode">never</item>
         <item name="android:scrollIndicators">top|bottom</item>

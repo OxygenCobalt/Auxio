@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
 import org.oxycblt.auxio.detail.SongDetailDialog
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getDrawableSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
+import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.textSafe
@@ -67,8 +69,13 @@ class PlaybackPanelFragment :
         // --- UI SETUP ---
 
         binding.root.setOnApplyWindowInsetsListener { view, insets ->
+            // The playback controls should be inset upwards at least a little bit more than usual,
+            // just for quality of life. While the old 3-button navigation does this for us, when
+            // bar navigation is used, we use the gesture padding to add that extra portion of
+            // space.
             val bars = insets.getSystemBarInsetsCompat(view)
-            view.updatePadding(top = bars.top, bottom = bars.bottom)
+            val gestures = insets.getSystemGestureInsetsCompat(view)
+            view.updatePadding(top = bars.top, bottom = max(gestures.bottom, bars.bottom))
             insets
         }
 

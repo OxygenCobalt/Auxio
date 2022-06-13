@@ -82,7 +82,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         if (instance != null) {
             return instance
         }
-        val newCallback = QueueDragCallback(playbackModel, queueAdapter)
+        val newCallback = QueueDragCallback(playbackModel)
         val newInstance = ItemTouchHelper(newCallback)
         callback = newCallback
         touchHelper = newInstance

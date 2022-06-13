@@ -132,28 +132,6 @@ fun Context.getAttrColorSafe(@AttrRes attr: Int): Int {
 }
 
 /**
- * Convenience method for getting a color attribute safely.
- * @param attr The color attribute
- * @return The attribute requested, or black if an error occurred.
- */
-@ColorInt
-fun Context.getAttrStateListSafe(@AttrRes attr: Int): ColorStateList {
-    // First resolve the attribute into its ID
-    val resolvedAttr = TypedValue()
-    theme.resolveAttribute(attr, resolvedAttr, true)
-
-    // Then convert it to a proper color
-    val color =
-        if (resolvedAttr.resourceId != 0) {
-            resolvedAttr.resourceId
-        } else {
-            resolvedAttr.data
-        }
-
-    return getColorStateListSafe(color)
-}
-
-/**
  * Convenience method for getting a [Drawable] safely.
  * @param drawable The drawable resource
  * @return The drawable requested, or black if an error occurred.

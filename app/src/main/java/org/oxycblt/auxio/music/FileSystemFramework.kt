@@ -19,6 +19,7 @@ package org.oxycblt.auxio.music
 
 import android.content.Context
 import android.webkit.MimeTypeMap
+import com.google.android.exoplayer2.util.MimeTypes
 import org.oxycblt.auxio.R
 
 /**
@@ -74,51 +75,33 @@ sealed class Dir {
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     fun resolveName(context: Context): String {
-        // Prefer the format mime type first, as it actually is derived from the file
-        // and not the extension. Just make sure to ignore audio/raw, as that could feasibly
-        // correspond to multiple formats.
-        val readableMime =
-            if (fromFormat != null && fromFormat != "audio/raw") {
-                fromFormat
-            } else {
-                fromExtension
-            }
-
-        // We have special names for the most common formats.
+        // While it would be nice to have more refined mime type names (Layer I/II/III, containers,
+        // etc.), it's not exactly practical with ExoPlayer. So, we go for the next best thing
+        // and try to find a good enough readable name to use.
         val readableStringRes =
-            when (readableMime) {
-                // MPEG formats
-                // While MP4 is AAC, it's considered separate given how common it is.
-                "audio/mpeg",
-                "audio/mp3" -> R.string.cdc_mp3
-                "audio/mp4",
-                "audio/mp4a-latm",
-                "audio/mpeg4-generic" -> R.string.cdc_mp4
-
-                // Free formats
-                // Generic Ogg is included here as it's actually formatted as "Ogg", not "OGG"
-                "audio/ogg",
-                "application/ogg" -> R.string.cdc_ogg
-                "audio/vorbis" -> R.string.cdc_ogg_vorbis
-                "audio/opus" -> R.string.cdc_ogg_opus
-                "audio/flac" -> R.string.cdc_flac
-
-                // The other AAC containers have a generic name
-                "audio/aac",
-                "audio/aacp",
-                "audio/aac-adts",
-                "audio/3gpp",
-                "audio/3gpp2", -> R.string.cdc_aac
-
-                // Windows formats
-                "audio/wav",
-                "audio/x-wav",
-                "audio/wave",
-                "audio/vnd.wave" -> R.string.cdc_wav
-                "audio/x-ms-wma" -> R.string.cdc_wma
-
-                // Don't know
-                else -> -1
+            if (fromFormat != null && fromFormat != MimeTypes.AUDIO_RAW) {
+                // Prefer the extracted mime type, as it properly handles container formats and
+                // is agnostic to the file extension
+                when (fromFormat) {
+                    MimeTypes.AUDIO_MPEG,
+                    MimeTypes.AUDIO_MPEG_L1,
+                    MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
+                    MimeTypes.AUDIO_AAC -> R.string.cdc_mp4
+                    MimeTypes.AUDIO_VORBIS -> R.string.cdc_ogg_vorbis
+                    MimeTypes.AUDIO_OPUS -> R.string.cdc_ogg_opus
+                    MimeTypes.AUDIO_WAV -> R.string.cdc_wav
+                    else -> -1
+                }
+            } else {
+                // Fall back to the file extension in the case that we have a useless
+                when (fromExtension) {
+                    "audio/mpeg" -> R.string.cdc_mp3
+                    "audio/mp4" -> R.string.cdc_mp4
+                    "audio/ogg" -> R.string.cdc_ogg
+                    "audio/x-wav" -> R.string.cdc_wav
+                    "audio/x-matroska" -> R.string.cdc_mka
+                    else -> -1
+                }
             }
 
         return if (readableStringRes > -1) {
