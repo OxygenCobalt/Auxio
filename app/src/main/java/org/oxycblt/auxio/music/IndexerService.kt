@@ -40,7 +40,10 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  * A [Service] that handles the music loading process.
  *
  * Loading music is actually somewhat time-consuming, to the point where it's likely better suited
- * to a service that is less likely to be
+ * to a service that is less likely to be killed by the OS.
+ *
+ * You could probably do the same using WorkManager and the GooberQueue library or whatever, but the
+ * boilerplate you skip is not worth the insanity of androidx.
  *
  * @author OxygenCobalt
  */

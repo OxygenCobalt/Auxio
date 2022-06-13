@@ -9,8 +9,8 @@
     <string name="fmt_number" translatable="false">%d</string>
 
     <!-- Codec Namespace | Format names -->
-    <string name="cdc_ogg_vorbis">Ogg Vorbis</string>
-    <string name="cdc_ogg_opus">Ogg Opus</string>
+    <string name="cdc_vorbis">Vorbis</string>
+    <string name="cdc_opus">Opus</string>
     <string name="cdc_wav">Microsoft WAVE</string>
 
     <!-- Note: These are stopgap measures until we make the path code rely on components! -->

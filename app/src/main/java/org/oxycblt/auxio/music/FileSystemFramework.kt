@@ -75,37 +75,61 @@ sealed class Dir {
  */
 data class MimeType(val fromExtension: String, val fromFormat: String?) {
     fun resolveName(context: Context): String {
-        // While it would be nice to have more refined mime type names (Layer I/II/III, containers,
-        // etc.), it's not exactly practical with ExoPlayer. So, we go for the next best thing
-        // and try to find a good enough readable name to use.
-        val readableStringRes =
-            if (fromFormat != null && fromFormat != MimeTypes.AUDIO_RAW) {
-                // Prefer the extracted mime type, as it properly handles container formats and
-                // is agnostic to the file extension
-                when (fromFormat) {
-                    MimeTypes.AUDIO_MPEG,
-                    MimeTypes.AUDIO_MPEG_L1,
-                    MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
-                    MimeTypes.AUDIO_AAC -> R.string.cdc_mp4
-                    MimeTypes.AUDIO_VORBIS -> R.string.cdc_ogg_vorbis
-                    MimeTypes.AUDIO_OPUS -> R.string.cdc_ogg_opus
-                    MimeTypes.AUDIO_WAV -> R.string.cdc_wav
-                    else -> -1
-                }
-            } else {
-                // Fall back to the file extension in the case that we have a useless
-                when (fromExtension) {
-                    "audio/mpeg" -> R.string.cdc_mp3
-                    "audio/mp4" -> R.string.cdc_mp4
-                    "audio/ogg" -> R.string.cdc_ogg
-                    "audio/x-wav" -> R.string.cdc_wav
-                    "audio/x-matroska" -> R.string.cdc_mka
-                    else -> -1
-                }
+        // We try our best to produce a more readable name for the common audio formats.
+        val formatName =
+            when (fromFormat) {
+                // We start with the extracted mime types, as they are more consistent. Note that
+                // we do not include container formats at all with these names. It is only the
+                // inner codec that we show.
+                MimeTypes.AUDIO_MPEG,
+                MimeTypes.AUDIO_MPEG_L1,
+                MimeTypes.AUDIO_MPEG_L2 -> R.string.cdc_mp3
+                MimeTypes.AUDIO_AAC -> R.string.cdc_aac
+                MimeTypes.AUDIO_VORBIS -> R.string.cdc_vorbis
+                MimeTypes.AUDIO_OPUS -> R.string.cdc_opus
+                MimeTypes.AUDIO_FLAC -> R.string.cdc_flac
+                MimeTypes.AUDIO_WAV -> R.string.cdc_wav
+
+                // We don't give a name to more unpopular formats.
+
+                else -> -1
             }
 
-        return if (readableStringRes > -1) {
-            context.getString(readableStringRes)
+        if (formatName > -1) {
+            return context.getString(formatName)
+        }
+
+        // Fall back to the file extension in the case that we have no mime type or
+        // a useless "audio/raw" mime type. Here:
+        // - We return names for container formats instead of the inner format, as we
+        // cannot parse the file.
+        // - We are at the mercy of the Android OS, hence we check for every possible mime
+        // type for a particular format.
+        val extensionName =
+            when (fromExtension) {
+                "audio/mpeg",
+                "audio/mp3" -> R.string.cdc_mp3
+                "audio/mp4",
+                "audio/mp4a-latm",
+                "audio/mpeg4-generic" -> R.string.cdc_mp4
+                "audio/aac",
+                "audio/aacp",
+                "audio/3gpp",
+                "audio/3gpp2" -> R.string.cdc_aac
+                "audio/ogg",
+                "application/ogg",
+                "application/x-ogg" -> R.string.cdc_ogg
+                "audio/flac" -> R.string.cdc_flac
+                "audio/wav",
+                "audio/x-wav",
+                "audio/wave",
+                "audio/vnd.wave" -> R.string.cdc_wav
+                "audio/x-matroska" -> R.string.cdc_mka
+                else -> -1
+            }
+
+        return if (extensionName > -1) {
+            context.getString(extensionName)
         } else {
             // Fall back to the extension if we can't find a special name for this format.
             MimeTypeMap.getSingleton().getExtensionFromMimeType(fromExtension)?.uppercase()

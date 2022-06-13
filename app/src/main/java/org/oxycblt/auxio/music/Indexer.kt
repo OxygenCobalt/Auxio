@@ -179,7 +179,11 @@ class Indexer {
     private fun indexImpl(context: Context, generation: Long): MusicStore.Library? {
         emitIndexing(Indexing.Indeterminate, generation)
 
-        // Establish the backend to use when initially loading songs.
+        // Since we have different needs for each version, we determine a "Backend" to use
+        // when loading music and then leverage that to create the initial song list.
+        // This is technically dependency injection. Except it doesn't increase your compile
+        // times by 3x. Isn't that nice.
+
         val mediaStoreBackend =
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Api30MediaStoreBackend()

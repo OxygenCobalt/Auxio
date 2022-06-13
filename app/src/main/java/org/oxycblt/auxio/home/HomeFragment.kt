@@ -34,7 +34,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.abs
 import org.oxycblt.auxio.R
@@ -95,8 +94,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
                 binding.homeContent.updatePadding(
-                    bottom = binding.homeAppbar.totalScrollRange + offset
-                )
+                    bottom = binding.homeAppbar.totalScrollRange + offset)
             }
         }
 
