@@ -123,13 +123,12 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var albumArtistIndex = -1
     private var dataIndex = -1
 
-    private val _volumes = mutableListOf<StorageVolume>()
-    protected val volumes = _volumes
+    protected val volumes = mutableListOf<StorageVolume>()
 
     override fun query(context: Context): Cursor {
         val settingsManager = SettingsManager.getInstance()
         val storageManager = context.getSystemServiceSafe(StorageManager::class)
-        _volumes.addAll(storageManager.storageVolumesCompat)
+        volumes.addAll(storageManager.storageVolumesCompat)
         val dirs = settingsManager.getMusicDirs(context, storageManager)
 
         val args = mutableListOf<String>()
@@ -137,13 +136,14 @@ abstract class MediaStoreBackend : Indexer.Backend {
 
         if (dirs.dirs.isNotEmpty()) {
             // We have directories we need to exclude, extend the selector with new arguments
-            selector += if (dirs.shouldInclude) {
-                logD("Need to select folders (Include)")
-                " AND ("
-            } else {
-                logD("Need to select folders (Exclude)")
-                " AND NOT ("
-            }
+            selector +=
+                if (dirs.shouldInclude) {
+                    logD("Need to select folders (Include)")
+                    " AND ("
+                } else {
+                    logD("Need to select folders (Exclude)")
+                    " AND NOT ("
+                }
 
             // Since selector arguments are contained within a single parentheses, we need to
             // do a bunch of stuff.
@@ -264,7 +264,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // from the android system. Once again though, OEM issues get in our way and
         // this field isn't available on some platforms. In that case, we have to rely
         // on DATA to get a reasonable file name.
-        audio.displayName = cursor.getStringOrNull(displayNameIndex)
+        // audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)
         audio.year = cursor.getIntOrNull(yearIndex)
@@ -386,9 +386,54 @@ abstract class MediaStoreBackend : Indexer.Backend {
          * The base selector that works across all versions of android. Does not exclude
          * directories.
          */
-        @JvmStatic
-        protected val BASE_SELECTOR =
-            "${MediaStore.Audio.Media.IS_MUSIC}=1 AND NOT ${MediaStore.Audio.Media.SIZE}=0"
+        private const val BASE_SELECTOR =
+            "${MediaStore.Audio.Media.IS_MUSIC}=1 " + "AND NOT ${MediaStore.Audio.Media.SIZE}=0"
+    }
+}
+
+/**
+ * Implements shared aspects of both [Api21MediaStoreBackend] and [Api29MediaStoreBackend]. Done so
+ * that each impl can avoid redundant jobs regarding path parsing.
+ * @author OxygenCobalt
+ */
+abstract class BaseApi21MediaStoreBackend : MediaStoreBackend() {
+    private var trackIndex = -1
+    private var dataIndex = -1
+
+    override val projection: Array<String>
+        get() =
+            super.projection +
+                arrayOf(MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATA)
+
+    override fun buildAudio(context: Context, cursor: Cursor): Audio {
+        val audio = super.buildAudio(context, cursor)
+
+        // Initialize our indices if we have not already.
+        if (trackIndex == -1) {
+            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
+        }
+
+        // TRACK is formatted as DTTT where D is the disc number and T is the track number.
+        // Except on Android 10. For some reason it's bugged on that version.
+        val rawTrack = cursor.getIntOrNull(trackIndex)
+        if (rawTrack != null) {
+            audio.track = rawTrack % 1000
+
+            // A disc number of 0 means that there is no disc.
+            val disc = rawTrack / 1000
+            if (disc > 0) {
+                audio.disc = disc
+            }
+        }
+
+        // Fill in DISPLAY_NAME with data if not present
+        val data = cursor.getStringOrNull(dataIndex)
+        if (data != null && audio.displayName == null) {
+            audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        }
+
+        return audio
     }
 }
 
@@ -396,8 +441,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
  * A [MediaStoreBackend] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-open class Api21MediaStoreBackend : MediaStoreBackend() {
-    private var trackIndex = -1
+class Api21MediaStoreBackend : BaseApi21MediaStoreBackend() {
     private var dataIndex = -1
 
     override val projection: Array<String>
@@ -417,35 +461,15 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
         val audio = super.buildAudio(context, cursor)
 
         // Initialize our indices if we have not already.
-        if (trackIndex == -1) {
-            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        if (dataIndex == -1) {
             dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        }
-
-        // TRACK is formatted as DTTT where D is the disc number and T is the track number.
-        // Except on Android 10. For some reason it's bugged on that version.
-
-        val rawTrack = cursor.getIntOrNull(trackIndex)
-        if (rawTrack != null) {
-            audio.track = rawTrack % 1000
-
-            // A disc number of 0 means that there is no disc.
-            val disc = rawTrack / 1000
-            if (disc > 0) {
-                audio.disc = disc
-            }
         }
 
         val data = cursor.getStringOrNull(dataIndex)
         if (data != null) {
-            if (audio.displayName == null) {
-                audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
-            }
-
-            val rawPath = data.substringBeforeLast(File.separatorChar)
-
             // Find the volume that transforms the DATA field into a relative path. This is
             // the volume and relative path we will use.
+            val rawPath = data.substringBeforeLast(File.separatorChar)
             for (volume in volumes) {
                 val volumePath = volume.directoryCompat ?: continue
                 val strippedPath = rawPath.removePrefix(volumePath)
@@ -466,7 +490,7 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
+open class Api29MediaStoreBackend : BaseApi21MediaStoreBackend() {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
@@ -483,7 +507,8 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
                 "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
 
     override fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean {
-        // Leverage the volume field when selecting our directories.
+        // Leverage the volume field when selecting our directories. It's a little too
+        // expensive to include this alongside the data checks, so we assume that
         args.add(dir.volume.mediaStoreVolumeNameCompat ?: return false)
         args.add("${dir.relativePath}%")
         return true
@@ -505,7 +530,8 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
         // I have no idea how well this works in practice, so we still leverage
         // the API 21 path grokking in the case that these fields are not sane.
         if (volumeName != null && relativePath != null) {
-            // Iterating through the volume list is easier t
+            // Iterating through the volume list is cheaper than creating a map,
+            // interestingly enough.
             val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
             if (volume != null) {
                 audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))

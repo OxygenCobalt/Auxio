@@ -4,7 +4,7 @@
 
 #### What's New
 - Excluded directories has been revampled into "Music folders"
-    - Folders on external drives can now be excluded on Android Q+ [#134]
+    - Folders on external drives can now be excluded [#134]
     - Added new "Include" option to restrict indexing to a particular folder [#154]
 - Added a new view for song properties (Such as Bitrate)
 - The playback bar now has a new design, with an improved progress indicator and a
@@ -29,6 +29,7 @@
 - Moved music loading to a foreground service
 - Phased out `ImageButton` for `MaterialButton`
 - Unified icon sizing
+- Properly handle volumes throughout the entire music loading process
 - Added original date support to ExoPlayer parser (Not exposed in app)
 
 ## v2.3.1
