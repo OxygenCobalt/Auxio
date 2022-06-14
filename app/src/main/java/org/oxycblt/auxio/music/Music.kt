@@ -60,7 +60,7 @@ sealed class MusicParent : Music() {
 data class Song(
     override val rawName: String,
     /** The path of this song. */
-    val path: NeoPath,
+    val path: Path,
     /** The URI linking to this song's file. */
     val uri: Uri,
     /** The mime type of this song. */

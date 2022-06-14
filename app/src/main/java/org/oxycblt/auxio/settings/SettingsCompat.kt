@@ -22,10 +22,13 @@ import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
-import android.os.Environment
+import android.os.storage.StorageManager
 import androidx.core.content.edit
-import java.io.File
-import org.oxycblt.auxio.music.Dir
+import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.directoryCompat
+import org.oxycblt.auxio.music.isEmulatedCompat
+import org.oxycblt.auxio.music.isPrimaryCompat
+import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
@@ -79,8 +82,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
 }
 
 /**
- * Converts paths from the old excluded directory database to a list of modern [Dir.Relative]
- * instances.
+ * Converts paths from the old excluded directory database to a list of modern [Dir] instances.
  *
  * Historically, Auxio used an excluded directory database shamelessly ripped from Phonograph. This
  * was a dumb idea, as the choice of a full-blown database for a few paths was overkill, version
@@ -90,12 +92,16 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
  * path-based excluded system to a volume-based excluded system at the same time. These are both
  * rolled into this conversion.
  */
-fun handleExcludedCompat(context: Context): List<Dir.Relative> {
+fun handleExcludedCompat(context: Context, storageManager: StorageManager): List<Directory> {
     val db = LegacyExcludedDatabase(context)
-    val primaryPrefix = Environment.getExternalStorageDirectory().absolutePath + File.separatorChar
+    // /storage/emulated/0 (the old path prefix) should correspond to primary *emulated* storage.
+    val primaryVolume =
+        storageManager.storageVolumesCompat.find { it.isPrimaryCompat && it.isEmulatedCompat }
+            ?: return emptyList()
+    val primaryDirectory = primaryVolume.directoryCompat ?: return emptyList()
     return db.readPaths().map { path ->
-        val relativePath = path.removePrefix(primaryPrefix)
-        Dir.Relative(Dir.Volume.Primary, relativePath)
+        val relativePath = path.removePrefix(primaryDirectory)
+        Directory(primaryVolume, relativePath)
     }
 }
 

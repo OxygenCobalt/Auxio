@@ -19,6 +19,7 @@ package org.oxycblt.auxio.music.dirs
 
 import android.net.Uri
 import android.os.Bundle
+import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,10 +29,11 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
-import org.oxycblt.auxio.music.Dir
+import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
@@ -46,6 +48,8 @@ class MusicDirsDialog :
 
     private val playbackModel: PlaybackViewModel by activityViewModels()
     private val dirAdapter = MusicDirAdapter(this)
+
+    private var storageManager: StorageManager? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicDirsBinding.inflate(inflater)
@@ -76,7 +80,7 @@ class MusicDirsDialog :
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                val dirs = settingsManager.musicDirs
+                val dirs = settingsManager.getMusicDirs(requireContext(), requireStorageManager())
 
                 if (dirs.dirs != dirAdapter.data.currentList ||
                     dirs.shouldInclude != isInclude(requireBinding())) {
@@ -94,7 +98,8 @@ class MusicDirsDialog :
             itemAnimator = null
         }
 
-        var dirs = settingsManager.musicDirs
+        val storageManager = requireStorageManager()
+        var dirs = settingsManager.getMusicDirs(requireContext(), storageManager)
 
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
@@ -102,7 +107,7 @@ class MusicDirsDialog :
             if (pendingDirs != null) {
                 dirs =
                     MusicDirs(
-                        pendingDirs.mapNotNull(MusicDirs::parseDir),
+                        pendingDirs.mapNotNull { Directory.fromDocumentUri(storageManager, it) },
                         savedInstanceState.getBoolean(KEY_PENDING_MODE))
             }
         }
@@ -135,7 +140,7 @@ class MusicDirsDialog :
         binding.dirsRecycler.adapter = null
     }
 
-    override fun onRemoveDirectory(dir: Dir.Relative) {
+    override fun onRemoveDirectory(dir: Directory) {
         dirAdapter.data.remove(dir)
         requireBinding().dirsEmpty.isVisible = dirAdapter.data.currentList.isEmpty()
     }
@@ -156,17 +161,19 @@ class MusicDirsDialog :
         }
     }
 
-    private fun parseExcludedUri(uri: Uri): Dir.Relative? {
+    private fun parseExcludedUri(uri: Uri): Directory? {
         // Turn the raw URI into a document tree URI
         val docUri =
             DocumentsContract.buildDocumentUriUsingTree(
                 uri, DocumentsContract.getTreeDocumentId(uri))
 
+        logD(uri)
+
         // Turn it into a semi-usable path
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
         // Parsing handles the rest
-        return MusicDirs.parseDir(treeUri)
+        return Directory.fromDocumentUri(requireStorageManager(), treeUri)
     }
 
     private fun updateMode() {
@@ -182,10 +189,20 @@ class MusicDirsDialog :
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 
     private fun saveAndRestart() {
-        settingsManager.musicDirs =
-            MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding()))
+        settingsManager.setMusicDirs(
+            MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding())))
 
         playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
+    }
+
+    private fun requireStorageManager(): StorageManager {
+        val mgr = storageManager
+        if (mgr != null) {
+            return mgr
+        }
+        val newMgr = requireContext().getSystemServiceSafe(StorageManager::class)
+        storageManager = newMgr
+        return newMgr
     }
 
     companion object {

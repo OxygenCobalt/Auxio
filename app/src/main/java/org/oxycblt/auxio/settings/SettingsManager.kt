@@ -19,10 +19,12 @@ package org.oxycblt.auxio.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.storage.StorageManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.oxycblt.auxio.home.tabs.Tab
+import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.playback.replaygain.ReplayGainPreAmp
@@ -137,24 +139,34 @@ class SettingsManager private constructor(context: Context) :
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(KEY_PAUSE_ON_REPEAT, false)
 
-    /** The list of directories that music should be hidden/loaded from. */
-    var musicDirs: MusicDirs
-        get() {
-            val dirs =
-                (inner.getStringSet(KEY_MUSIC_DIRS, null) ?: emptySet()).mapNotNull(
-                    MusicDirs::parseDir)
-
-            return MusicDirs(dirs, inner.getBoolean(KEY_SHOULD_INCLUDE, false))
+    /** Get the list of directories that music should be hidden/loaded from. */
+    fun getMusicDirs(context: Context, storageManager: StorageManager): MusicDirs {
+        if (!inner.contains(KEY_MUSIC_DIRS)) {
+            logD("Attempting to migrate excluded directories")
+            // We need to migrate this setting now while we have a context. Note that while
+            // this does do IO work, the old excluded directory database is so small as to make
+            // it negligible.
+            setMusicDirs(MusicDirs(handleExcludedCompat(context, storageManager), false))
         }
-        set(value) {
-            inner.edit {
-                putStringSet(KEY_MUSIC_DIRS, value.dirs.map(MusicDirs::toDir).toSet())
-                putBoolean(KEY_SHOULD_INCLUDE, value.shouldInclude)
 
-                // TODO: This is a stopgap measure before automatic rescanning, remove
-                commit()
+        val dirs =
+            (inner.getStringSet(KEY_MUSIC_DIRS, null) ?: emptySet()).mapNotNull {
+                Directory.fromDocumentUri(storageManager, it)
             }
+
+        return MusicDirs(dirs, inner.getBoolean(KEY_SHOULD_INCLUDE, false))
+    }
+
+    /** Set the list of directories that music should be hidden/loaded from. */
+    fun setMusicDirs(musicDirs: MusicDirs) {
+        inner.edit {
+            putStringSet(KEY_MUSIC_DIRS, musicDirs.dirs.map(Directory::toDocumentUri).toSet())
+            putBoolean(KEY_SHOULD_INCLUDE, musicDirs.shouldInclude)
+
+            // TODO: This is a stopgap measure before automatic rescanning, remove
+            commit()
         }
+    }
 
     /** The current filter mode of the search tab */
     var searchFilterMode: DisplayMode?
@@ -257,14 +269,6 @@ class SettingsManager private constructor(context: Context) :
 
     init {
         inner.registerOnSharedPreferenceChangeListener(this)
-
-        if (!inner.contains(KEY_MUSIC_DIRS)) {
-            logD("Attempting to migrate excluded directories")
-            // We need to migrate this setting now while we have a context. Note that while
-            // this does do IO work, the old excluded directory database is so small as to make
-            // it negligible.
-            musicDirs = MusicDirs(handleExcludedCompat(context), false)
-        }
     }
 
     // --- CALLBACKS ---

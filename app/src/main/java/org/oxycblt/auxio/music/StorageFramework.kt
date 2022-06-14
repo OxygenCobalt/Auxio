@@ -26,51 +26,117 @@ import android.os.storage.StorageVolume
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.google.android.exoplayer2.util.MimeTypes
+import java.io.File
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.logEOrThrow
 
-/**
- * Represents a path to a file from the android file-system. Intentionally designed to be
- * version-agnostic and follow modern storage recommendations.
- */
-data class Path(val name: String, val parent: Dir)
+data class Path(val name: String, val parent: Directory)
 
-data class NeoPath(val name: String, val parent: NeoDir)
-
-data class NeoDir(val volume: StorageVolume, val relativePath: String) {
-    fun resolveName(context: Context) =
-        context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
-}
-
-/**
- * Represents a directory from the android file-system. Intentionally designed to be
- * version-agnostic and follow modern storage recommendations.
- */
-sealed class Dir {
-    /**
-     * A directory with a volume.
-     *
-     * This data structure is not version-specific:
-     * - With excluded directories, it is the only path that is used. On versions that do not
-     * support path, [Volume.Primary] is used.
-     * - On songs, this is version-specific. It will only appear on versions that support it.
-     */
-    data class Relative(val volume: Volume, val relativePath: String) : Dir()
-
-    sealed class Volume {
-        object Primary : Volume()
-        data class Secondary(val name: String) : Volume()
+data class Directory(val volume: StorageVolume, val relativePath: String) {
+    init {
+        if (relativePath.startsWith(File.separatorChar) ||
+            relativePath.endsWith(File.separatorChar)) {
+            logEOrThrow("Path was formatted with trailing separators")
+        }
     }
 
     fun resolveName(context: Context) =
-        when (this) {
-            is Relative ->
-                when (volume) {
-                    is Volume.Primary -> context.getString(R.string.fmt_primary_path, relativePath)
-                    is Volume.Secondary ->
-                        context.getString(R.string.fmt_secondary_path, relativePath)
-                }
+        context.getString(R.string.fmt_path, volume.getDescriptionCompat(context), relativePath)
+
+    /** Converts this dir into an opaque document URI in the form of VOLUME:PATH. */
+    fun toDocumentUri(): String? {
+        // "primary" actually corresponds to the primary *emulated* storage. External storage
+        // can also be the primary storage, but is represented as a document ID using the UUID.
+        return if (volume.isPrimaryCompat && volume.isEmulatedCompat) {
+            "${DOCUMENT_URI_PRIMARY_NAME}:${relativePath}"
+        } else {
+            "${(volume.uuidCompat ?: return null).uppercase()}:${relativePath}"
         }
+    }
+
+    companion object {
+        private const val DOCUMENT_URI_PRIMARY_NAME = "primary"
+
+        /**
+         * Converts an opaque document uri in the form of VOLUME:PATH into a [Directory]. This is a
+         * flagrant violation of the API convention, but since we never really write to the URI I
+         * really doubt it matters.
+         */
+        fun fromDocumentUri(storageManager: StorageManager, uri: String): Directory? {
+            val split = uri.split(File.pathSeparator, limit = 2)
+
+            val volume =
+                when (split[0]) {
+                    DOCUMENT_URI_PRIMARY_NAME -> storageManager.primaryStorageVolume
+                    else -> storageManager.storageVolumesCompat.find { it.uuidCompat == split[0] }
+                }
+
+            val relativePath = split.getOrNull(1)
+
+            return Directory(volume ?: return null, relativePath ?: return null)
+        }
+    }
 }
+
+/**
+ * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
+ * mounted or unmounted.
+ */
+val StorageManager.storageVolumesCompat: List<StorageVolume>
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            storageVolumes.toList()
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            (StorageManager::class.java.getDeclaredMethod("getVolumeList").invoke(this)
+                    as Array<StorageVolume>)
+                .toList()
+        }
+
+/** Returns the absolute path to a particular volume in a compatible manner. */
+val StorageVolume.directoryCompat: String?
+    @SuppressLint("NewApi")
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            directory?.absolutePath
+        } else {
+            // Replicate getDirectory: getPath if mounted, null if not
+            when (stateCompat) {
+                Environment.MEDIA_MOUNTED,
+                Environment.MEDIA_MOUNTED_READ_ONLY ->
+                    StorageVolume::class.java.getDeclaredMethod("getPath").invoke(this) as String
+                else -> null
+            }
+        }
+
+/** Get the readable description of the volume in a compatible manner. */
+@SuppressLint("NewApi")
+fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
+
+val StorageVolume.isPrimaryCompat: Boolean
+    @SuppressLint("NewApi") get() = isPrimary
+
+val StorageVolume.isEmulatedCompat: Boolean
+    @SuppressLint("NewApi") get() = isEmulated
+
+val StorageVolume.uuidCompat: String?
+    @SuppressLint("NewApi") get() = uuid
+
+val StorageVolume.stateCompat: String
+    @SuppressLint("NewApi") get() = state
+
+val StorageVolume.mediaStoreVolumeNameCompat: String?
+    get() =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mediaStoreVolumeName
+        } else {
+            // Replicate API: primary_external if primary storage, lowercase uuid otherwise
+            if (isPrimaryCompat) {
+                MediaStore.VOLUME_EXTERNAL_PRIMARY
+            } else {
+                uuidCompat?.lowercase()
+            }
+        }
 
 /**
  * Represents a mime type as it is loaded by Auxio. [fromExtension] is based on the file extension
@@ -141,52 +207,3 @@ data class MimeType(val fromExtension: String, val fromFormat: String?) {
         }
     }
 }
-
-val StorageManager.storageVolumesCompat: List<StorageVolume>
-    get() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            storageVolumes.toList()
-        } else {
-            @Suppress("UNCHECKED_CAST")
-            (StorageManager::class.java.getDeclaredMethod("getVolumeList").invoke(this)
-                    as Array<StorageVolume>)
-                .toList()
-        }
-
-val StorageVolume.directoryCompat: String?
-    @SuppressLint("NewApi")
-    get() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            directory?.absolutePath
-        } else {
-            when (stateCompat) {
-                Environment.MEDIA_MOUNTED,
-                Environment.MEDIA_MOUNTED_READ_ONLY ->
-                    StorageVolume::class.java.getDeclaredMethod("getPath").invoke(this) as String
-                else -> null
-            }
-        }
-
-@SuppressLint("NewApi")
-fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
-
-val StorageVolume.isPrimaryCompat: Boolean
-    @SuppressLint("NewApi") get() = isPrimary
-
-val StorageVolume.uuidCompat: String?
-    @SuppressLint("NewApi") get() = uuid
-
-val StorageVolume.stateCompat: String
-    @SuppressLint("NewApi") get() = state
-
-val StorageVolume.mediaStoreVolumeNameCompat: String?
-    get() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            mediaStoreVolumeName
-        } else {
-            if (isPrimaryCompat) {
-                MediaStore.VOLUME_EXTERNAL_PRIMARY
-            } else {
-                uuid?.lowercase()
-            }
-        }

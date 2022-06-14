@@ -20,7 +20,6 @@ package org.oxycblt.auxio.music.backend
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
-import android.os.Environment
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.provider.MediaStore
@@ -28,16 +27,14 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import java.io.File
-import org.oxycblt.auxio.music.Dir
+import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.Indexer
 import org.oxycblt.auxio.music.MimeType
-import org.oxycblt.auxio.music.NeoDir
-import org.oxycblt.auxio.music.NeoPath
+import org.oxycblt.auxio.music.Path
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.albumCoverUri
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.directoryCompat
-import org.oxycblt.auxio.music.dirs.MusicDirs
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
 import org.oxycblt.auxio.music.no
@@ -47,6 +44,7 @@ import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.logD
 
 /*
  * This file acts as the base for most the black magic required to get a remotely sensible music
@@ -106,8 +104,6 @@ import org.oxycblt.auxio.util.getSystemServiceSafe
  * I wish I was born in the neolithic.
  */
 
-// TODO: Leverage StorageVolume to extend volume support to earlier versions
-
 /**
  * Represents a [Indexer.Backend] that loads music from the media database ([MediaStore]). This is
  * not a fully-featured class by itself, and it's API-specific derivatives should be used instead.
@@ -134,14 +130,45 @@ abstract class MediaStoreBackend : Indexer.Backend {
         val settingsManager = SettingsManager.getInstance()
         val storageManager = context.getSystemServiceSafe(StorageManager::class)
         _volumes.addAll(storageManager.storageVolumesCompat)
-        val selector = buildMusicDirsSelector(settingsManager.musicDirs)
+        val dirs = settingsManager.getMusicDirs(context, storageManager)
+
+        val args = mutableListOf<String>()
+        var selector = BASE_SELECTOR
+
+        if (dirs.dirs.isNotEmpty()) {
+            // We have directories we need to exclude, extend the selector with new arguments
+            selector += if (dirs.shouldInclude) {
+                logD("Need to select folders (Include)")
+                " AND ("
+            } else {
+                logD("Need to select folders (Exclude)")
+                " AND NOT ("
+            }
+
+            // Since selector arguments are contained within a single parentheses, we need to
+            // do a bunch of stuff.
+            for (i in dirs.dirs.indices) {
+                if (addDirToSelectorArgs(dirs.dirs[i], args)) {
+                    selector +=
+                        if (i < dirs.dirs.lastIndex) {
+                            "$dirSelector OR "
+                        } else {
+                            dirSelector
+                        }
+                }
+            }
+
+            selector += ')'
+        }
+
+        logD("Starting query [selector: $selector, args: $args]")
 
         return requireNotNull(
             context.contentResolverSafe.queryCursor(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projection,
-                selector.selector,
-                selector.args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
+                selector,
+                args.toTypedArray())) { "Content resolver failure: No Cursor returned" }
     }
 
     override fun buildSongs(
@@ -199,7 +226,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
     open val projection: Array<String>
         get() = BASE_PROJECTION
 
-    abstract fun buildMusicDirsSelector(dirs: MusicDirs): Selector
+    abstract val dirSelector: String
+    abstract fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean
 
     /**
      * Build an [Audio] based on the current cursor values. Each implementation should try to obtain
@@ -267,18 +295,16 @@ abstract class MediaStoreBackend : Indexer.Backend {
         return audio
     }
 
-    data class Selector(val selector: String, val args: List<String>)
-
     /**
      * Represents a song as it is represented by MediaStore. This is progressively mutated over
      * several steps of the music loading process until it is complete enough to be transformed into
-     * a song.
+     * an immutable song.
      */
     data class Audio(
         var id: Long? = null,
         var title: String? = null,
         var displayName: String? = null,
-        var dir: NeoDir? = null,
+        var dir: Directory? = null,
         var extensionMimeType: String? = null,
         var formatMimeType: String? = null,
         var size: Long? = null,
@@ -294,11 +320,11 @@ abstract class MediaStoreBackend : Indexer.Backend {
     ) {
         fun toSong(): Song {
             return Song(
-                // Assert that the fields that should exist are present. I can't confirm that
+                // Assert that the fields that should always exist are present. I can't confirm that
                 // every device provides these fields, but it seems likely that they do.
                 rawName = requireNotNull(title) { "Malformed audio: No title" },
                 path =
-                    NeoPath(
+                    Path(
                         name = requireNotNull(displayName) { "Malformed audio: No display name" },
                         parent = requireNotNull(dir) { "Malformed audio: No parent directory" }),
                 uri = requireNotNull(id) { "Malformed audio: No id" }.audioUri,
@@ -379,29 +405,12 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
             super.projection +
                 arrayOf(MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATA)
 
-    override fun buildMusicDirsSelector(dirs: MusicDirs): Selector {
-        val base = Environment.getExternalStorageDirectory().absolutePath
-        var selector = BASE_SELECTOR
-        val args = mutableListOf<String>()
+    override val dirSelector: String
+        get() = "${MediaStore.Audio.Media.DATA} LIKE ?"
 
-        // Apply directories by filtering out specific DATA values.
-        for (dir in dirs.dirs) {
-            if (dir.volume is Dir.Volume.Secondary) {
-                // Should never happen.
-                throw IllegalStateException()
-            }
-
-            selector +=
-                if (dirs.shouldInclude) {
-                    " AND ${MediaStore.Audio.Media.DATA} LIKE ?"
-                } else {
-                    " AND ${MediaStore.Audio.Media.DATA} NOT LIKE ?"
-                }
-
-            args += "${base}/${dir.relativePath}%"
-        }
-
-        return Selector(selector, args)
+    override fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean {
+        args.add("${dir.volume.directoryCompat ?: return false}/${dir.relativePath}%")
+        return true
     }
 
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
@@ -435,11 +444,13 @@ open class Api21MediaStoreBackend : MediaStoreBackend() {
 
             val rawPath = data.substringBeforeLast(File.separatorChar)
 
+            // Find the volume that transforms the DATA field into a relative path. This is
+            // the volume and relative path we will use.
             for (volume in volumes) {
                 val volumePath = volume.directoryCompat ?: continue
-                val strippedPath = rawPath.removePrefix(volumePath + File.separatorChar)
+                val strippedPath = rawPath.removePrefix(volumePath)
                 if (strippedPath != rawPath) {
-                    audio.dir = NeoDir(volume, strippedPath + File.separatorChar)
+                    audio.dir = Directory(volume, strippedPath.removePrefix(File.separator))
                     break
                 }
             }
@@ -466,35 +477,16 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
                     MediaStore.Audio.AudioColumns.VOLUME_NAME,
                     MediaStore.Audio.AudioColumns.RELATIVE_PATH)
 
-    override fun buildMusicDirsSelector(dirs: MusicDirs): Selector {
-        var selector = BASE_SELECTOR
-        val args = mutableListOf<String>()
+    override val dirSelector: String
+        get() =
+            "(${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
+                "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
 
-        // Starting in Android Q, we finally have access to the volume name. This allows
-        // use to properly exclude folders on secondary devices such as SD cards.
-
-        for (dir in dirs.dirs) {
-            selector +=
-                if (dirs.shouldInclude) {
-                    " AND (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                        "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
-                } else {
-                    " AND NOT (${MediaStore.Audio.AudioColumns.VOLUME_NAME} LIKE ? " +
-                        "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
-                }
-
-            // Assume that volume names are always lowercase counterparts to the volume
-            // name stored in-app. I have no idea how well this holds up on other devices.
-            args +=
-                when (dir.volume) {
-                    is Dir.Volume.Primary -> MediaStore.VOLUME_EXTERNAL_PRIMARY
-                    is Dir.Volume.Secondary -> dir.volume.name.lowercase()
-                }
-
-            args += "${dir.relativePath}%"
-        }
-
-        return Selector(selector, args)
+    override fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean {
+        // Leverage the volume field when selecting our directories.
+        args.add(dir.volume.mediaStoreVolumeNameCompat ?: return false)
+        args.add("${dir.relativePath}%")
+        return true
     }
 
     override fun buildAudio(context: Context, cursor: Cursor): Audio {
@@ -509,11 +501,14 @@ open class Api29MediaStoreBackend : Api21MediaStoreBackend() {
         val volumeName = cursor.getStringOrNull(volumeIndex)
         val relativePath = cursor.getStringOrNull(relativePathIndex)
 
+        // We now have access to the volume name, so we try to leverage it instead.
+        // I have no idea how well this works in practice, so we still leverage
+        // the API 21 path grokking in the case that these fields are not sane.
         if (volumeName != null && relativePath != null) {
+            // Iterating through the volume list is easier t
             val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
-
             if (volume != null) {
-                audio.dir = NeoDir(volume, relativePath)
+                audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
             }
         }
 

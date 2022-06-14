@@ -47,6 +47,18 @@ fun Any.logW(msg: String) = Log.w(autoTag, msg)
 fun Any.logE(msg: String) = Log.e(autoTag, msg)
 
 /**
+ * Logs an error on release, but throws an exception in debug. This is useful for non-showstopper
+ * bugs that I would still prefer to be caught in debug mode.
+ */
+fun Any.logEOrThrow(msg: String) {
+    if (BuildConfig.DEBUG) {
+        error("${autoTag}: $msg")
+    } else {
+        logE(msg)
+    }
+}
+
+/**
  * Logs an error in production while still throwing it in debug mode. This is useful for
  * non-showstopper bugs that I would still prefer to be caught in debug mode.
  */
