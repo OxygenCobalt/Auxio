@@ -51,7 +51,7 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         savedInstanceState: Bundle?
     ) {
         binding.root.apply {
-            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.EXPAND) }
+            setOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Expand) }
 
             setOnLongClickListener {
                 playbackModel.song.value?.let(navModel::exploreNavigateTo)

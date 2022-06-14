@@ -88,14 +88,17 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         val binding = requireBinding()
         when (action) {
-            MainNavigationAction.EXPAND -> binding.bottomSheetLayout.expand()
-            MainNavigationAction.COLLAPSE -> binding.bottomSheetLayout.collapse()
-            MainNavigationAction.SETTINGS ->
+            is MainNavigationAction.Expand -> binding.bottomSheetLayout.expand()
+            is MainNavigationAction.Collapse -> binding.bottomSheetLayout.collapse()
+            is MainNavigationAction.Settings ->
                 findNavController().navigate(MainFragmentDirections.actionShowSettings())
-            MainNavigationAction.ABOUT ->
+            is MainNavigationAction.About ->
                 findNavController().navigate(MainFragmentDirections.actionShowAbout())
-            MainNavigationAction.QUEUE ->
+            is MainNavigationAction.Queue ->
                 findNavController().navigate(MainFragmentDirections.actionShowQueue())
+            is MainNavigationAction.SongDetails ->
+                findNavController()
+                    .navigate(MainFragmentDirections.actionShowDetails(action.song.id))
         }
 
         navModel.finishMainNavigation()

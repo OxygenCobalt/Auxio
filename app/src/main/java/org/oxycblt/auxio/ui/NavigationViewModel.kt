@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Music
+import org.oxycblt.auxio.music.Song
 
 /**
  * A ViewModel that handles complicated navigation situations.
@@ -68,15 +69,17 @@ class NavigationViewModel : ViewModel() {
  * normal fragments. This can be passed to [NavigationViewModel.mainNavigateTo] in order to
  * facilitate navigation without stupid fragment hacks.
  */
-enum class MainNavigationAction {
+sealed class MainNavigationAction {
     /** Expand the playback panel. */
-    EXPAND,
+    object Expand : MainNavigationAction()
     /** Collapse the playback panel. */
-    COLLAPSE,
+    object Collapse : MainNavigationAction()
     /** Go to settings. */
-    SETTINGS,
+    object Settings : MainNavigationAction()
     /** Go to the about page. */
-    ABOUT,
+    object About : MainNavigationAction()
     /** Go to the queue. */
-    QUEUE
+    object Queue : MainNavigationAction()
+    /** Show song details. */
+    data class SongDetails(val song: Song) : MainNavigationAction()
 }

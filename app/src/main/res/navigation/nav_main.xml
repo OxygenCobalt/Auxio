@@ -29,6 +29,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_show_details"
+            app:destination="@id/song_detail_dialog" />
     </fragment>
 
     <fragment
@@ -46,4 +49,13 @@
         android:name="org.oxycblt.auxio.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <dialog
+        android:id="@+id/song_detail_dialog"
+        android:name="org.oxycblt.auxio.detail.SongDetailDialog"
+        android:label="song_detail_dialog"
+        tools:layout="@layout/dialog_song_detail">
+        <argument
+            android:name="songId"
+            app:argType="long" />
+    </dialog>
 </navigation>

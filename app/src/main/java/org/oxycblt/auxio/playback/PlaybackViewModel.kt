@@ -223,6 +223,16 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
         playbackManager.playNext(settingsManager.detailAlbumSort.songs(album.songs))
     }
 
+    /** Add an [Artist] to the top of the queue. */
+    fun playNext(artist: Artist) {
+        playbackManager.playNext(settingsManager.detailArtistSort.songs(artist.songs))
+    }
+
+    /** Add a [Genre] to the top of the queue. */
+    fun playNext(genre: Genre) {
+        playbackManager.playNext(settingsManager.detailGenreSort.songs(genre.songs))
+    }
+
     /** Add a [Song] to the end of the queue. */
     fun addToQueue(song: Song) {
         playbackManager.addToQueue(song)
@@ -231,6 +241,16 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     /** Add an [Album] to the end of the queue. */
     fun addToQueue(album: Album) {
         playbackManager.addToQueue(settingsManager.detailAlbumSort.songs(album.songs))
+    }
+
+    /** Add an [Artist] to the end of the queue. */
+    fun addToQueue(artist: Artist) {
+        playbackManager.addToQueue(settingsManager.detailArtistSort.songs(artist.songs))
+    }
+
+    /** Add a [Genre] to the end of the queue. */
+    fun addToQueue(genre: Genre) {
+        playbackManager.addToQueue(settingsManager.detailGenreSort.songs(genre.songs))
     }
 
     // --- STATUS FUNCTIONS ---

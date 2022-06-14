@@ -22,10 +22,9 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isGone
-import org.oxycblt.auxio.BuildConfig
+import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
-import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.formatDuration
@@ -33,6 +32,7 @@ import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
+    private val args: SongDetailDialogArgs by navArgs()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogSongDetailBinding.inflate(inflater)
@@ -44,7 +44,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
 
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
-        detailModel.setSongId(requireNotNull(arguments).getLong(ARG_ID))
+        detailModel.setSongId(args.songId)
         launch { detailModel.currentSong.collect(::updateSong) }
     }
 
@@ -79,16 +79,5 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
         } else {
             binding.detailContainer.isGone = true
         }
-    }
-
-    companion object {
-        fun from(song: Song): SongDetailDialog {
-            val instance = SongDetailDialog()
-            instance.arguments = Bundle().apply { putLong(ARG_ID, song.id) }
-            return instance
-        }
-
-        const val TAG = BuildConfig.APPLICATION_ID + ".tag.SONG_DETAILS"
-        private const val ARG_ID = BuildConfig.APPLICATION_ID + ".arg.SONG_ID"
     }
 }

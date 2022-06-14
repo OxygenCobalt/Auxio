@@ -87,6 +87,10 @@ class AlbumDetailFragment : DetailFragment(), AlbumDetailAdapter.Listener {
                 requireContext().showToast(R.string.lbl_queue_added)
                 true
             }
+            R.id.action_go_artist -> {
+                navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value))
+                true
+            }
             else -> false
         }
     }

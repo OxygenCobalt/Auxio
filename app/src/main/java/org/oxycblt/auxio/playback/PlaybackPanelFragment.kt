@@ -27,7 +27,6 @@ import androidx.fragment.app.activityViewModels
 import kotlin.math.max
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentPlaybackPanelBinding
-import org.oxycblt.auxio.detail.SongDetailDialog
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
@@ -80,7 +79,7 @@ class PlaybackPanelFragment :
         }
 
         binding.playbackToolbar.apply {
-            setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.COLLAPSE) }
+            setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
             queueItem = menu.findItem(R.id.action_queue)
         }
@@ -136,7 +135,7 @@ class PlaybackPanelFragment :
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_queue -> {
-                navModel.mainNavigateTo(MainNavigationAction.QUEUE)
+                navModel.mainNavigateTo(MainNavigationAction.Queue)
                 true
             }
             R.id.action_go_artist -> {
@@ -149,7 +148,7 @@ class PlaybackPanelFragment :
             }
             R.id.action_song_detail -> {
                 playbackModel.song.value?.let {
-                    SongDetailDialog.from(it).show(childFragmentManager, SongDetailDialog.TAG)
+                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(it))
                 }
                 true
             }

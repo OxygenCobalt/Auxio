@@ -161,11 +161,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
             R.id.action_settings -> {
                 logD("Navigating to settings")
-                navModel.mainNavigateTo(MainNavigationAction.SETTINGS)
+                navModel.mainNavigateTo(MainNavigationAction.Settings)
             }
             R.id.action_about -> {
                 logD("Navigating to about")
-                navModel.mainNavigateTo(MainNavigationAction.ABOUT)
+                navModel.mainNavigateTo(MainNavigationAction.About)
             }
             R.id.submenu_sorting -> {
                 // Junk click event when opening the menu

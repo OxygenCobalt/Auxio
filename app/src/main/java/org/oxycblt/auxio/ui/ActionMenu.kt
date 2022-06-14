@@ -26,7 +26,6 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.detail.SongDetailDialog
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -55,7 +54,7 @@ fun Fragment.newMenu(anchor: View, data: Item, flag: Int = ActionMenu.FLAG_NONE)
  * @throws IllegalStateException When there is no menu for this specific datatype/flag
  * @author OxygenCobalt
  *
- * TODO: Prevent duplicate menus from showing up
+ * TODO: Prevent duplicate menus from showing up (merge into ViewBindingFragment)
  *
  * TODO: Add multi-select
  */
@@ -118,8 +117,8 @@ class ActionMenu(
                     else -> -1
                 }
             }
-            is Artist -> R.menu.menu_artist_actions
-            is Genre -> R.menu.menu_genre_actions
+            is Artist,
+            is Genre -> R.menu.menu_genre_artist_actions
             else -> -1
         }
     }
@@ -153,6 +152,14 @@ class ActionMenu(
                         playbackModel.playNext(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
+                    is Artist -> {
+                        playbackModel.playNext(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
+                    is Genre -> {
+                        playbackModel.playNext(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
                     else -> {}
                 }
             }
@@ -163,6 +170,14 @@ class ActionMenu(
                         context.showToast(R.string.lbl_queue_added)
                     }
                     is Album -> {
+                        playbackModel.addToQueue(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
+                    is Artist -> {
+                        playbackModel.addToQueue(data)
+                        context.showToast(R.string.lbl_queue_added)
+                    }
+                    is Genre -> {
                         playbackModel.addToQueue(data)
                         context.showToast(R.string.lbl_queue_added)
                     }
@@ -183,8 +198,7 @@ class ActionMenu(
             }
             R.id.action_song_detail -> {
                 if (data is Song) {
-                    SongDetailDialog.from(data)
-                        .show(activity.supportFragmentManager, SongDetailDialog.TAG)
+                    navModel.mainNavigateTo(MainNavigationAction.SongDetails(data))
                 }
             }
         }

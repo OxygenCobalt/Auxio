@@ -61,14 +61,10 @@ abstract class DetailFragment :
      * @param data Parent data to use as the toolbar title
      * @param menuId Menu resource to use
      */
-    protected fun setupToolbar(data: MusicParent, @MenuRes menuId: Int = -1) {
+    protected fun setupToolbar(data: MusicParent, @MenuRes menuId: Int) {
         requireBinding().detailToolbar.apply {
             title = data.resolveName(context)
-
-            if (menuId != -1) {
-                inflateMenu(menuId)
-            }
-
+            inflateMenu(menuId)
             setNavigationOnClickListener { findNavController().navigateUp() }
             setOnMenuItemClickListener(this@DetailFragment)
         }

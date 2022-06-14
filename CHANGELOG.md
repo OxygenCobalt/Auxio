@@ -18,6 +18,7 @@
 - "Rounded album covers" option is no longer dependent on "Show album covers" option
 - Added song actions to the playback panel
 - Playback controls are now easier to reach when gesture navigation is enabled
+- Added Play Next/Add to Queue options to artists and genres
 
 #### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]

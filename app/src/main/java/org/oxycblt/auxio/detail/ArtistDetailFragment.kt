@@ -41,6 +41,7 @@ import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -54,7 +55,8 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setArtistId(args.artistId)
 
-        setupToolbar(unlikelyToBeNull(detailModel.currentArtist.value))
+        setupToolbar(
+            unlikelyToBeNull(detailModel.currentArtist.value), R.menu.menu_genre_artist_detail)
         requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -72,7 +74,21 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
     }
 
-    override fun onMenuItemClick(item: MenuItem): Boolean = false
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_play_next -> {
+                playbackModel.playNext(unlikelyToBeNull(detailModel.currentArtist.value))
+                requireContext().showToast(R.string.lbl_queue_added)
+                true
+            }
+            R.id.action_queue_add -> {
+                playbackModel.addToQueue(unlikelyToBeNull(detailModel.currentArtist.value))
+                requireContext().showToast(R.string.lbl_queue_added)
+                true
+            }
+            else -> false
+        }
+    }
 
     override fun onItemClick(item: Item) {
         when (item) {
