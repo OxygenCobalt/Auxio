@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/option_sort_disc"
+            android:title="@string/lbl_sort_disc" />
+        <item
+            android:id="@+id/option_sort_track"
+            android:title="@string/lbl_sort_track" />
+    </group>
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/option_sort_asc"
+            android:title="@string/lbl_sort_asc" />
+    </group>
+</menu>

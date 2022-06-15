@@ -18,8 +18,11 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
@@ -35,7 +38,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
@@ -45,18 +48,27 @@ import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * The [DetailFragment] for an artist.
+ * A fragment that shows information for a particular [Artist].
  * @author OxygenCobalt
  */
-class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
+class ArtistDetailFragment :
+    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    private val detailModel: DetailViewModel by activityViewModels()
+
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailAdapter = ArtistDetailAdapter(this)
+
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setArtistId(args.artistId)
 
-        setupToolbar(
-            unlikelyToBeNull(detailModel.currentArtist.value), R.menu.menu_genre_artist_detail)
+        binding.detailToolbar.apply {
+            inflateMenu(R.menu.menu_genre_artist_detail)
+            setNavigationOnClickListener { findNavController().navigateUp() }
+            setOnMenuItemClickListener(this@ArtistDetailFragment)
+        }
+
         requireBinding().detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -72,6 +84,12 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
         launch { detailModel.artistData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
+    }
+
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
+        super.onDestroyBinding(binding)
+        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailRecycler.adapter = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -98,7 +116,11 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        newMenu(anchor, item)
+        when (item) {
+            is Song -> musicMenu(anchor, R.menu.menu_artist_song_actions, item)
+            is Album -> musicMenu(anchor, R.menu.menu_artist_album_actions, item)
+            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+        }
     }
 
     override fun onPlayParent() {
@@ -110,21 +132,25 @@ class ArtistDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onShowSortMenu(anchor: View) {
-        showSortMenu(
-            anchor,
-            detailModel.artistSort,
-            onConfirm = { detailModel.artistSort = it },
-            showItem = { id ->
-                id != R.id.option_sort_artist &&
-                    id != R.id.option_sort_disc &&
-                    id != R.id.option_sort_track
-            })
+        menu(anchor, R.menu.menu_artist_sort) {
+            val sort = detailModel.artistSort
+            requireNotNull(menu.findItem(sort.itemId)).isChecked = true
+            requireNotNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
+            setOnMenuItemClickListener { item ->
+                item.isChecked = !item.isChecked
+                detailModel.artistSort = requireNotNull(sort.assignId(item.itemId))
+                true
+            }
+        }
     }
 
     private fun handleItemChange(artist: Artist?) {
         if (artist == null) {
             findNavController().navigateUp()
+            return
         }
+
+        requireBinding().detailToolbar.title = artist.resolveName(requireContext())
     }
 
     private fun handleNavigation(item: Music?) {

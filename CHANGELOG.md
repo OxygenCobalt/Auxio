@@ -24,6 +24,8 @@
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
 - Fixed unusable excluded directory UI
 - Songs with no data (i.e size of 0) are now filtered out
+- Fixed non-sensical menu items from appearing on songs
+- Fixed issue where multiple menus would open if long-clicks occured simultaniously
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech, Konstantin Tutsch -> German]

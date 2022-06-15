@@ -318,6 +318,7 @@ sealed class Sort(open val isAscending: Boolean) {
      */
     fun assignId(@IdRes id: Int): Sort? {
         return when (id) {
+            R.id.option_sort_asc -> ascending(!isAscending)
             R.id.option_sort_name -> ByName(isAscending)
             R.id.option_sort_artist -> ByArtist(isAscending)
             R.id.option_sort_album -> ByAlbum(isAscending)

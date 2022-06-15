@@ -18,8 +18,11 @@
 package org.oxycblt.auxio.detail
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
@@ -36,27 +39,37 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.newMenu
+import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * The [DetailFragment] for a genre.
+ * A fragment that shows information for a particular [Genre].
  * @author OxygenCobalt
  */
-class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
+class GenreDetailFragment :
+    MenuFragment<FragmentDetailBinding>(), Toolbar.OnMenuItemClickListener, DetailAdapter.Listener {
+    private val detailModel: DetailViewModel by activityViewModels()
+
     private val args: GenreDetailFragmentArgs by navArgs()
     private val detailAdapter = GenreDetailAdapter(this)
+
+    override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentDetailBinding, savedInstanceState: Bundle?) {
         detailModel.setGenreId(args.genreId)
 
-        setupToolbar(
-            unlikelyToBeNull(detailModel.currentArtist.value), R.menu.menu_genre_artist_detail)
+        binding.detailToolbar.apply {
+            inflateMenu(R.menu.menu_genre_artist_detail)
+            setNavigationOnClickListener { findNavController().navigateUp() }
+            setOnMenuItemClickListener(this@GenreDetailFragment)
+        }
+
         binding.detailRecycler.apply {
             adapter = detailAdapter
             applySpans { pos ->
@@ -71,6 +84,12 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
         launch { detailModel.genreData.collect(detailAdapter.data::submitList) }
         launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
         launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
+    }
+
+    override fun onDestroyBinding(binding: FragmentDetailBinding) {
+        super.onDestroyBinding(binding)
+        binding.detailToolbar.setOnMenuItemClickListener(null)
+        binding.detailRecycler.adapter = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -99,7 +118,10 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        newMenu(anchor, item)
+        when (item) {
+            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
+            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+        }
     }
 
     override fun onPlayParent() {
@@ -111,17 +133,25 @@ class GenreDetailFragment : DetailFragment(), DetailAdapter.Listener {
     }
 
     override fun onShowSortMenu(anchor: View) {
-        showSortMenu(
-            anchor,
-            detailModel.genreSort,
-            onConfirm = { detailModel.genreSort = it },
-            showItem = { it != R.id.option_sort_disc && it != R.id.option_sort_track })
+        menu(anchor, R.menu.menu_genre_sort) {
+            val sort = detailModel.genreSort
+            requireNotNull(menu.findItem(sort.itemId)).isChecked = true
+            requireNotNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
+            setOnMenuItemClickListener { item ->
+                item.isChecked = !item.isChecked
+                detailModel.genreSort = requireNotNull(sort.assignId(item.itemId))
+                true
+            }
+        }
     }
 
     private fun handleItemChange(genre: Genre?) {
         if (genre == null) {
             findNavController().navigateUp()
+            return
         }
+
+        requireBinding().detailToolbar.title = genre.resolveName(requireContext())
     }
 
     private fun handleNavigation(item: Music?) {

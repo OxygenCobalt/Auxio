@@ -46,10 +46,10 @@ import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
- * ViewModel that stores data for the [DetailFragment]s. This includes:
+ * ViewModel that stores data for the detail fragments. This includes:
  * - What item the fragment should be showing
  * - The RecyclerView data for each fragment
- * - Menu triggers for each fragment
+ * - The sorts for each type of data
  * @author OxygenCobalt
  */
 class DetailViewModel(application: Application) :

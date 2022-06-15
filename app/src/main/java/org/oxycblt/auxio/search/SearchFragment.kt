@@ -27,7 +27,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.postDelayed
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentSearchBinding
@@ -37,17 +36,15 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.ViewBindingFragment
-import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.launch
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.requireAttached
 
 /**
@@ -55,13 +52,9 @@ import org.oxycblt.auxio.util.requireAttached
  * @author OxygenCobalt
  */
 class SearchFragment :
-    ViewBindingFragment<FragmentSearchBinding>(),
-    MenuItemListener,
-    Toolbar.OnMenuItemClickListener {
+    MenuFragment<FragmentSearchBinding>(), MenuItemListener, Toolbar.OnMenuItemClickListener {
     // SearchViewModel is only scoped to this Fragment
     private val searchModel: SearchViewModel by androidViewModels()
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    private val navModel: NavigationViewModel by activityViewModels()
 
     private val searchAdapter = SearchAdapter(this)
     private var imm: InputMethodManager? = null
@@ -137,7 +130,13 @@ class SearchFragment :
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        newMenu(anchor, item)
+        when (item) {
+            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
+            is Album -> musicMenu(anchor, R.menu.menu_album_actions, item)
+            is Artist -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
+            is Genre -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
+            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+        }
     }
 
     private fun updateResults(results: List<Item>) {

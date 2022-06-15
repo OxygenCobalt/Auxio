@@ -24,11 +24,9 @@ import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.applySpans
 
 /**
@@ -36,12 +34,10 @@ import org.oxycblt.auxio.util.applySpans
  * @author OxygenCobalt
  */
 abstract class HomeListFragment<T : Item> :
-    ViewBindingFragment<FragmentHomeListBinding>(),
+    MenuFragment<FragmentHomeListBinding>(),
     MenuItemListener,
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.OnFastScrollListener {
-    protected val playbackModel: PlaybackViewModel by activityViewModels()
-    protected val navModel: NavigationViewModel by activityViewModels()
     protected val homeModel: HomeViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =

@@ -25,6 +25,17 @@ This is probably caused by one of two reasons:
 2. If the aforementioned players don't work, but players like Vanilla Music and VLC do, then it's a problem with the Media APIs that Auxio relies on. There is nothing I can do about it.
 	- I hope to mitigate these issues in the future by extracting metadata myself or adding Subsonic/SoundPod support, however this is extremely far off.
 
+Some common issues are listed below.
+
+#### My FLAC/OGG/OPUS files don't have dates!
+Android does not read the `DATE` tag from vorbis files. It reads the `YEAR` tag. This is because android's metadata parser is
+stuck in 2008.
+
+#### Some files with accented/symbolic characters have corrupted tags!
+When Android extracts metadata, at some point it tries to convert the bytes it extracted to a java string, which apparently involves detecting the encoding of the data dynamically and
+then converting it to Java's Unicode dialect. Of course, trying to detect codings on the fly like that is a [terrible idea](https://en.wikipedia.org/wiki/Bush_hid_the_facts), and more
+often than not it results in UTF-8 tags (Seen on FLAC/OGG/OPUS files most often) being corrupted. 
+
 #### I have a large library and Auxio takes really long to load it!
 This is expected since reading from the audio database takes awhile, especially with libraries containing 10k songs or more.
 
@@ -39,12 +50,28 @@ such a field, it will result in fragmented artists. The reason why Auxio does no
 for separators and then extract artists that way is that it risks mangling artists that don't
 actually have collaborators, such as "Black Country, New Road" becoming "Black Country".
 
+#### Why does Auxio not detect disc numbers on my device?
+If your device runs Android 10, then Auxio cannot parse a disc from the media database due to
+a regression introduced by Google in that version. If your device is running another version,
+please file an issue.
+
 #### ReplayGain isn't working on my music!
 This is for a couple reason:
 - Auxio doesn't extract ReplayGain tags for your format. This is a problem on ExoPlayer's end and should be
 investigated there.
 - Auxio doesn't recognize your ReplayGain tags. This is usually because of a non-standard tag like ID3v2's `RVAD` or
 an unrecognized name.
+
+#### My lossless audio sounds lower-quality in Auxio!
+This is a current limitation with the ExoPlayer. Basically, all audio tend is downsampled to 16-bit PCM audio, even
+if the source audio is higher quality. I can enable something that might be able to remedy such, but implementing it
+fully may take some time.
+
+#### Why is playback distorted when I play my FLAC/WAV files?
+ExoPlayer, while powerful, does add some overhead when playing exceptionally high-quality files (2000+ KB/s bitrate,
+90000+ Hz sample rate). This is worsened by the ReplayGain system, as it has to copy the audio buffer no matter what.
+This results in choppy, distorted playback in some case as audio data cannot be delivered in time. Sadly, there is
+not much I can do about this right now.
 
 #### What is dynamic ReplayGain?
 Dynamic ReplayGain is a quirk setting based off the FooBar2000 plugin that dynamically switches from track gain to album

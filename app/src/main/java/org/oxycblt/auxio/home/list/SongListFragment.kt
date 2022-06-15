@@ -29,9 +29,9 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SyncBackingData
-import org.oxycblt.auxio.ui.newMenu
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
+import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -85,7 +85,10 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {
-        newMenu(anchor, item)
+        when (item) {
+            is Song -> musicMenu(anchor, R.menu.menu_song_actions, item)
+            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+        }
     }
 
     inner class SongsAdapter(listener: MenuItemListener) :

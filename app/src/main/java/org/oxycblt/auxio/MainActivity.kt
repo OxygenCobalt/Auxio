@@ -46,6 +46,8 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Rework padding ethos
  *
+ * TODO: Add multi-select
+ *
  * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {
