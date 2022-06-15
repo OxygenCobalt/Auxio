@@ -23,7 +23,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.text.isDigitsOnly
-import org.oxycblt.auxio.util.logD
 
 /** Shortcut for making a [ContentResolver] query with less superfluous arguments. */
 fun ContentResolver.queryCursor(

@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import java.lang.reflect.Field
 import kotlin.math.abs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeBinding
@@ -57,6 +58,7 @@ import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.launch
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
@@ -423,5 +425,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 DisplayMode.SHOW_GENRES -> GenreListFragment()
             }
         }
+    }
+
+    companion object {
+        private val VIEW_PAGER_RECYCLER_FIELD: Field by
+            lazyReflectedField<ViewPager2>("mRecyclerView")
+        private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
+            lazyReflectedField<ViewPager2>("mTouchSlop")
     }
 }

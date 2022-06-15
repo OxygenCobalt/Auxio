@@ -22,7 +22,9 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.DialogPreference
 import androidx.preference.Preference
+import java.lang.reflect.Field
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.lazyReflectedField
 
 class IntListPreference
 @JvmOverloads
@@ -38,7 +40,7 @@ constructor(
 
     // Reflect into Preference to get the (normally inaccessible) default value.
     private val defValue: Int
-        get() = defValueField.get(this) as Int
+        get() = PREFERENCE_DEFAULT_VALUE_FIELD.get(this) as Int
 
     init {
         val prefAttrs =
@@ -108,7 +110,7 @@ constructor(
     }
 
     companion object {
-        private val defValueField =
-            Preference::class.java.getDeclaredField("mDefaultValue").apply { isAccessible = true }
+        private val PREFERENCE_DEFAULT_VALUE_FIELD: Field by
+            lazyReflectedField<Preference>("mDefaultValue")
     }
 }

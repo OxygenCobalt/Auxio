@@ -27,7 +27,9 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.google.android.exoplayer2.util.MimeTypes
 import java.io.File
+import java.lang.reflect.Method
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logEOrThrow
 
 data class Path(val name: String, val parent: Directory)
@@ -45,9 +47,9 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
 
     /** Converts this dir into an opaque document URI in the form of VOLUME:PATH. */
     fun toDocumentUri(): String? {
-        // "primary" actually corresponds to the primary *emulated* storage. External storage
-        // can also be the primary storage, but is represented as a document ID using the UUID.
-        return if (volume.isPrimaryCompat && volume.isEmulatedCompat) {
+        // "primary" actually corresponds to the internal storage, not the primary volume.
+        // Removable storage is represented with the UUID.
+        return if (volume.isInternalCompat) {
             "${DOCUMENT_URI_PRIMARY_NAME}:${relativePath}"
         } else {
             "${(volume.uuidCompat ?: return null).uppercase()}:${relativePath}"
@@ -78,6 +80,10 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
     }
 }
 
+private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
+    lazyReflectedMethod<StorageManager>("getVolumeList")
+private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod<StorageVolume>("getPath")
+
 /**
  * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
  * mounted or unmounted.
@@ -88,9 +94,7 @@ val StorageManager.storageVolumesCompat: List<StorageVolume>
             storageVolumes.toList()
         } else {
             @Suppress("UNCHECKED_CAST")
-            (StorageManager::class.java.getDeclaredMethod("getVolumeList").invoke(this)
-                    as Array<StorageVolume>)
-                .toList()
+            (SM_API21_GET_VOLUME_LIST_METHOD.invoke(this) as Array<StorageVolume>).toList()
         }
 
 /** Returns the absolute path to a particular volume in a compatible manner. */
@@ -104,7 +108,7 @@ val StorageVolume.directoryCompat: String?
             when (stateCompat) {
                 Environment.MEDIA_MOUNTED,
                 Environment.MEDIA_MOUNTED_READ_ONLY ->
-                    StorageVolume::class.java.getDeclaredMethod("getPath").invoke(this) as String
+                    SV_API21_GET_PATH_METHOD.invoke(this) as String
                 else -> null
             }
         }
@@ -120,6 +124,13 @@ val StorageVolume.isPrimaryCompat: Boolean
 /** If this volume is emulated. */
 val StorageVolume.isEmulatedCompat: Boolean
     @SuppressLint("NewApi") get() = isEmulated
+
+/**
+ * If this volume corresponds to "Internal shared storage", represented in document URIs as
+ * "primary". These volumes are primary volumes, but are also non-removable and emulated.
+ */
+val StorageVolume.isInternalCompat: Boolean
+    get() = isPrimaryCompat && isEmulatedCompat
 
 val StorageVolume.uuidCompat: String?
     @SuppressLint("NewApi") get() = uuid

@@ -30,8 +30,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import java.lang.Exception
+import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.ui.EdgeAppBarLayout
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
 
@@ -68,10 +70,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         // Reflect to get the actual title view to do transformations on
         val newTitleView =
             try {
-                Toolbar::class.java.getDeclaredField("mTitleTextView").run {
-                    isAccessible = true
-                    get(toolbar) as AppCompatTextView
-                }
+                TOOLBAR_TITLE_TEXT_FIELD.get(toolbar) as AppCompatTextView
             } catch (e: Exception) {
                 logE("Could not get toolbar title view (likely an internal code change)")
                 e.logTraceOrThrow()
@@ -151,5 +150,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
             appBar.setTitleVisibility(showTitle)
         }
+    }
+
+    companion object {
+        private val TOOLBAR_TITLE_TEXT_FIELD: Field by lazyReflectedField<Toolbar>("mTitleTextView")
     }
 }

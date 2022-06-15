@@ -27,8 +27,7 @@ import android.util.Log
 import androidx.core.content.edit
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.directoryCompat
-import org.oxycblt.auxio.music.isEmulatedCompat
-import org.oxycblt.auxio.music.isPrimaryCompat
+import org.oxycblt.auxio.music.isInternalCompat
 import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
@@ -103,8 +102,7 @@ fun handleExcludedCompat(context: Context, storageManager: StorageManager): List
     val db = LegacyExcludedDatabase(context)
     // /storage/emulated/0 (the old path prefix) should correspond to primary *emulated* storage.
     val primaryVolume =
-        storageManager.storageVolumesCompat.find { it.isPrimaryCompat && it.isEmulatedCompat }
-            ?: return emptyList()
+        storageManager.storageVolumesCompat.find { it.isInternalCompat } ?: return emptyList()
     val primaryDirectory = primaryVolume.directoryCompat ?: return emptyList()
     return db.readPaths().map { path ->
         val relativePath = path.removePrefix(primaryDirectory)

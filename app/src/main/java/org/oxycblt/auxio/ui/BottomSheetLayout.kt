@@ -34,6 +34,7 @@ import android.widget.FrameLayout
 import androidx.core.view.isInvisible
 import androidx.customview.widget.ViewDragHelper
 import com.google.android.material.shape.MaterialShapeDrawable
+import java.lang.reflect.Field
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -45,6 +46,7 @@ import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDrawableSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isUnder
+import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
@@ -488,7 +490,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // want to vendor ViewDragHelper so I just do reflection instead.
             val state =
                 try {
-                    DRAG_STATE_FIELD.get(this)
+                    VIEW_DRAG_HELPER_STATE_FIELD.get(this)
                 } catch (e: Exception) {
                     ViewDragHelper.STATE_IDLE
                 }
@@ -669,8 +671,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     companion object {
         private val INIT_PANEL_STATE = PanelState.HIDDEN
-        private val DRAG_STATE_FIELD =
-            ViewDragHelper::class.java.getDeclaredField("mDragState").apply { isAccessible = true }
+        private val VIEW_DRAG_HELPER_STATE_FIELD: Field by
+            lazyReflectedField<ViewDragHelper>("mDragState")
 
         private const val MIN_FLING_VEL = 400
         private const val KEY_PANEL_STATE = BuildConfig.APPLICATION_ID + ".key.PANEL_STATE"
