@@ -121,7 +121,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
     private var albumIdIndex = -1
     private var artistIndex = -1
     private var albumArtistIndex = -1
-    private var dataIndex = -1
 
     protected val volumes = mutableListOf<StorageVolume>()
 
@@ -249,7 +248,6 @@ abstract class MediaStoreBackend : Indexer.Backend {
             albumIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)
             artistIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)
             albumArtistIndex = cursor.getColumnIndexOrThrow(AUDIO_COLUMN_ALBUM_ARTIST)
-            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
         }
 
         val audio = Audio()
@@ -261,10 +259,8 @@ abstract class MediaStoreBackend : Indexer.Backend {
         audio.size = cursor.getLong(sizeIndex)
 
         // Try to use the DISPLAY_NAME field to obtain a (probably sane) file name
-        // from the android system. Once again though, OEM issues get in our way and
-        // this field isn't available on some platforms. In that case, we have to rely
-        // on DATA to get a reasonable file name.
-        // audio.displayName = cursor.getStringOrNull(displayNameIndex)
+        // from the android system.
+        audio.displayName = cursor.getStringOrNull(displayNameIndex)
 
         audio.duration = cursor.getLong(durationIndex)
         audio.year = cursor.getIntOrNull(yearIndex)
@@ -379,8 +375,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.AudioColumns.ALBUM_ID,
                 MediaStore.Audio.AudioColumns.ARTIST,
-                AUDIO_COLUMN_ALBUM_ARTIST,
-                MediaStore.Audio.AudioColumns.DATA)
+                AUDIO_COLUMN_ALBUM_ARTIST)
 
         /**
          * The base selector that works across all versions of android. Does not exclude
@@ -391,57 +386,15 @@ abstract class MediaStoreBackend : Indexer.Backend {
     }
 }
 
-/**
- * Implements shared aspects of both [Api21MediaStoreBackend] and [Api29MediaStoreBackend]. Done so
- * that each impl can avoid redundant jobs regarding path parsing.
- * @author OxygenCobalt
- */
-abstract class BaseApi21MediaStoreBackend : MediaStoreBackend() {
-    private var trackIndex = -1
-    private var dataIndex = -1
-
-    override val projection: Array<String>
-        get() =
-            super.projection +
-                arrayOf(MediaStore.Audio.AudioColumns.TRACK, MediaStore.Audio.AudioColumns.DATA)
-
-    override fun buildAudio(context: Context, cursor: Cursor): Audio {
-        val audio = super.buildAudio(context, cursor)
-
-        // Initialize our indices if we have not already.
-        if (trackIndex == -1) {
-            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
-            dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
-        }
-
-        // TRACK is formatted as DTTT where D is the disc number and T is the track number.
-        // Except on Android 10. For some reason it's bugged on that version.
-        val rawTrack = cursor.getIntOrNull(trackIndex)
-        if (rawTrack != null) {
-            audio.track = rawTrack % 1000
-
-            // A disc number of 0 means that there is no disc.
-            val disc = rawTrack / 1000
-            if (disc > 0) {
-                audio.disc = disc
-            }
-        }
-
-        // Fill in DISPLAY_NAME with data if not present
-        val data = cursor.getStringOrNull(dataIndex)
-        if (data != null && audio.displayName == null) {
-            audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
-        }
-
-        return audio
-    }
-}
+// Note: The separation between version-specific backends may not be the cleanest. To preserve
+// speed, we only want to add redundancy on known issues, not with possible issues.
 
 /**
  * A [MediaStoreBackend] that completes the music loading process in a way compatible from
  * @author OxygenCobalt
  */
-class Api21MediaStoreBackend : BaseApi21MediaStoreBackend() {
+class Api21MediaStoreBackend : MediaStoreBackend() {
+    private var trackIndex = -1
     private var dataIndex = -1
 
     override val projection: Array<String>
@@ -461,36 +414,66 @@ class Api21MediaStoreBackend : BaseApi21MediaStoreBackend() {
         val audio = super.buildAudio(context, cursor)
 
         // Initialize our indices if we have not already.
-        if (dataIndex == -1) {
+        if (trackIndex == -1) {
+            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
             dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)
         }
 
-        val data = cursor.getStringOrNull(dataIndex)
-        if (data != null) {
-            // Find the volume that transforms the DATA field into a relative path. This is
-            // the volume and relative path we will use.
-            val rawPath = data.substringBeforeLast(File.separatorChar)
-            for (volume in volumes) {
-                val volumePath = volume.directoryCompat ?: continue
-                val strippedPath = rawPath.removePrefix(volumePath)
-                if (strippedPath != rawPath) {
-                    audio.dir = Directory(volume, strippedPath.removePrefix(File.separator))
-                    break
-                }
+        val data = cursor.getString(dataIndex)
+
+        // On some OEM devices below API 29, DISPLAY_NAME may not be present. I assume
+        // that this only applies to below API 29, as that would completely break the
+        // scoped storage system. Fill it in with DATA if it's not available.
+        if (audio.displayName == null) {
+            audio.displayName = data.substringAfterLast(File.separatorChar, "").ifEmpty { null }
+        }
+
+        // Find the volume that transforms the DATA field into a relative path. This is
+        // the volume and relative path we will use.
+        val rawPath = data.substringBeforeLast(File.separatorChar)
+        for (volume in volumes) {
+            val volumePath = volume.directoryCompat ?: continue
+            val strippedPath = rawPath.removePrefix(volumePath)
+            if (strippedPath != rawPath) {
+                audio.dir = Directory(volume, strippedPath.removePrefix(File.separator))
+                break
             }
+        }
+
+        val rawTrack = cursor.getIntOrNull(trackIndex)
+        if (rawTrack != null) {
+            parseTrack(rawTrack, audio)
         }
 
         return audio
     }
+
+    companion object {
+        /**
+         * Parse the TRACK field into the given [audio]. Since this is relied upon by both
+         * [Api29MediaStoreBackend] and [Api21MediaStoreBackend], this is a static method.
+         */
+        fun parseTrack(rawTrack: Int, audio: Audio) {
+            // TRACK is formatted as DTTT where D is the disc number and T is the track number.
+            // Except on Android 10. For some reason it's bugged on that version.
+            audio.track = rawTrack % 1000
+
+            // A disc number of 0 means that there is no disc.
+            val disc = rawTrack / 1000
+            if (disc > 0) {
+                audio.disc = disc
+            }
+        }
+    }
 }
 
 /**
- * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
- * API 29.
+ * A [MediaStoreBackend] that selects directories and builds paths using the modern volume
+ * primitives available from API 29 onwards.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.Q)
-open class Api29MediaStoreBackend : BaseApi21MediaStoreBackend() {
+open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
     private var volumeIndex = -1
     private var relativePathIndex = -1
 
@@ -544,11 +527,41 @@ open class Api29MediaStoreBackend : BaseApi21MediaStoreBackend() {
 
 /**
  * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
+ * API 29.
+ * @author OxygenCobalt
+ */
+@RequiresApi(Build.VERSION_CODES.Q)
+open class Api29MediaStoreBackend : VolumeAwareMediaStoreBackend() {
+    private var trackIndex = -1
+
+    override val projection: Array<String>
+        get() = super.projection + arrayOf(MediaStore.Audio.AudioColumns.TRACK)
+
+    override fun buildAudio(context: Context, cursor: Cursor): Audio {
+        val audio = super.buildAudio(context, cursor)
+
+        if (trackIndex == -1) {
+            trackIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TRACK)
+        }
+
+        // This backend is volume-aware, but does not support the modern track primitives.
+        // Borrow API 21's implementation.
+        val rawTrack = cursor.getIntOrNull(trackIndex)
+        if (rawTrack != null) {
+            Api21MediaStoreBackend.parseTrack(rawTrack, audio)
+        }
+
+        return audio
+    }
+}
+
+/**
+ * A [MediaStoreBackend] that completes the music loading process in a way compatible with at least
  * API 30.
  * @author OxygenCobalt
  */
 @RequiresApi(Build.VERSION_CODES.R)
-class Api30MediaStoreBackend : Api29MediaStoreBackend() {
+class Api30MediaStoreBackend : VolumeAwareMediaStoreBackend() {
     private var trackIndex: Int = -1
     private var discIndex: Int = -1
 
