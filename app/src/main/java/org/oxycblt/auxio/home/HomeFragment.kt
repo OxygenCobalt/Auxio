@@ -388,18 +388,9 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
      */
     private fun ViewPager2.reduceSensitivity(by: Int) {
         try {
-            val recycler =
-                ViewPager2::class.java.getDeclaredField("mRecyclerView").run {
-                    isAccessible = true
-                    get(this@reduceSensitivity)
-                }
-
-            RecyclerView::class.java.getDeclaredField("mTouchSlop").apply {
-                isAccessible = true
-
-                val slop = get(recycler) as Int
-                set(recycler, slop * by)
-            }
+            val recycler = VIEW_PAGER_RECYCLER_FIELD.get(this@reduceSensitivity)
+            val slop = VIEW_PAGER_TOUCH_SLOP_FIELD.get(recycler) as Int
+            VIEW_PAGER_TOUCH_SLOP_FIELD.set(recycler, slop * by)
         } catch (e: Exception) {
             logE("Unable to reduce ViewPager sensitivity (likely an internal code change)")
             e.logTraceOrThrow()
@@ -429,8 +420,8 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     companion object {
         private val VIEW_PAGER_RECYCLER_FIELD: Field by
-            lazyReflectedField<ViewPager2>("mRecyclerView")
+            lazyReflectedField(ViewPager2::class, "mRecyclerView")
         private val VIEW_PAGER_TOUCH_SLOP_FIELD: Field by
-            lazyReflectedField<ViewPager2>("mTouchSlop")
+            lazyReflectedField(RecyclerView::class, "mTouchSlop")
     }
 }

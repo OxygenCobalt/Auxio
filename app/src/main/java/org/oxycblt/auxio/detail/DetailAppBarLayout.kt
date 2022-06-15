@@ -153,6 +153,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     }
 
     companion object {
-        private val TOOLBAR_TITLE_TEXT_FIELD: Field by lazyReflectedField<Toolbar>("mTitleTextView")
+        private val TOOLBAR_TITLE_TEXT_FIELD: Field by
+            lazyReflectedField(Toolbar::class, "mTitleTextView")
     }
 }

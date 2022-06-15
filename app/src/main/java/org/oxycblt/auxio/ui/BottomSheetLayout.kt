@@ -387,7 +387,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // not apply any window insets at all, which results in scroll desynchronization on
         // certain views. This is considered tolerable as the other options are to convert
         // the playback fragments to views, which is not nice.
-        logD("Readjusting window insets")
         val bars = insets.getSystemBarInsetsCompat(this)
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
@@ -500,7 +499,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     private fun setPanelStateInternal(state: PanelState) {
         if (panelState == state) {
-            logD("State is already $state, not applying")
             return
         }
 
@@ -672,7 +670,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     companion object {
         private val INIT_PANEL_STATE = PanelState.HIDDEN
         private val VIEW_DRAG_HELPER_STATE_FIELD: Field by
-            lazyReflectedField<ViewDragHelper>("mDragState")
+            lazyReflectedField(ViewDragHelper::class, "mDragState")
 
         private const val MIN_FLING_VEL = 400
         private const val KEY_PANEL_STATE = BuildConfig.APPLICATION_ID + ".key.PANEL_STATE"

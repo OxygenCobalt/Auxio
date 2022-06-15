@@ -95,7 +95,6 @@ abstract class DetailAdapter<L : DetailAdapter.Listener>(
             }
         }
 
-        // TODO: Pause indicator animation when not playing
         viewHolder.itemView.isActivated = shouldHighlightViewHolder(item)
     }
 

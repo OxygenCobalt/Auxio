@@ -22,6 +22,7 @@ import android.text.format.DateUtils
 import androidx.core.math.MathUtils
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import kotlin.reflect.KClass
 import org.oxycblt.auxio.BuildConfig
 
 /** Assert that we are on a background thread. */
@@ -68,17 +69,11 @@ fun Long.formatDuration(isElapsed: Boolean): String {
 }
 
 /** Lazily reflect to retrieve a [Field]. */
-inline fun <reified T : Any> lazyReflectedField(field: String): Lazy<Field> = lazy {
-    T::class.java.getDeclaredField(field).also { it.isAccessible = true }
+fun lazyReflectedField(clazz: KClass<*>, field: String) = lazy {
+    clazz.java.getDeclaredField(field).also { it.isAccessible = true }
 }
 
 /** Lazily reflect to retrieve a [Method]. */
-inline fun <reified T : Any> lazyReflectedMethod(
-    methodName: String,
-    vararg parameterTypes: Any
-): Lazy<Method> = lazy {
-    T::class
-        .java
-        .getDeclaredMethod(methodName, *parameterTypes.map { it::class.java }.toTypedArray())
-        .also { it.isAccessible = true }
+fun lazyReflectedMethod(clazz: KClass<*>, method: String) = lazy {
+    clazz.java.getDeclaredMethod(method).also { it.isAccessible = true }
 }

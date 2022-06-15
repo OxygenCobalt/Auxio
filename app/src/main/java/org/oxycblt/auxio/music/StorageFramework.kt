@@ -81,8 +81,8 @@ data class Directory(val volume: StorageVolume, val relativePath: String) {
 }
 
 private val SM_API21_GET_VOLUME_LIST_METHOD: Method by
-    lazyReflectedMethod<StorageManager>("getVolumeList")
-private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod<StorageVolume>("getPath")
+    lazyReflectedMethod(StorageManager::class, "getVolumeList")
+private val SV_API21_GET_PATH_METHOD: Method by lazyReflectedMethod(StorageVolume::class, "getPath")
 
 /**
  * A list of recognized volumes, retrieved in a compatible manner. Note that these volumes may be
@@ -132,12 +132,21 @@ val StorageVolume.isEmulatedCompat: Boolean
 val StorageVolume.isInternalCompat: Boolean
     get() = isPrimaryCompat && isEmulatedCompat
 
+/** Returns the UUID of the volume in a compatible manner. */
 val StorageVolume.uuidCompat: String?
     @SuppressLint("NewApi") get() = uuid
 
+/*
+ * Returns the state of the volume in a compatible manner.
+ */
 val StorageVolume.stateCompat: String
     @SuppressLint("NewApi") get() = state
 
+/**
+ * Returns the name of this volume as it is used in [MediaStore]. This will be
+ * [MediaStore.VOLUME_EXTERNAL_PRIMARY] if it is the primary volume, and the lowercase UUID of the
+ * volume otherwise.
+ */
 val StorageVolume.mediaStoreVolumeNameCompat: String?
     get() =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

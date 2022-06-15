@@ -160,7 +160,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
             selector += ')'
         }
 
-        logD("Starting query [selector: $selector, args: $args]")
+        logD("Starting query [proj: ${projection.map { it }}, selector: $selector, args: $args]")
 
         return requireNotNull(
             context.contentResolverSafe.queryCursor(

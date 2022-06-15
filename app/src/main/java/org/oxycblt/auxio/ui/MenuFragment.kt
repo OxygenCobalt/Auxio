@@ -33,12 +33,21 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 
+/**
+ * A fragment capable of creating menus. Automatically keeps track of and disposes of menus,
+ * preventing UI issues and memory leaks.
+ * @author OxygenCobalt
+ */
 abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     private var currentMenu: PopupMenu? = null
 
     protected val playbackModel: PlaybackViewModel by activityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
 
+    /**
+     * Opens the given menu in context of [song]. Assumes that the menu is only composed of common
+     * [Song] options.
+     */
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
         logD("Launching new song menu: ${song.rawName}")
 
@@ -71,6 +80,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         }
     }
 
+    /**
+     * Opens the given menu in context of [album]. Assumes that the menu is only composed of common
+     * [Album] options.
+     */
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
         logD("Launching new album menu: ${album.rawName}")
 
@@ -103,6 +116,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         }
     }
 
+    /**
+     * Opens the given menu in context of [artist]. Assumes that the menu is only composed of common
+     * [Artist] options.
+     */
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
         logD("Launching new artist menu: ${artist.rawName}")
 
@@ -132,6 +149,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         }
     }
 
+    /**
+     * Opens the given menu in context of [genre]. Assumes that the menu is only composed of common
+     * [Genre] options.
+     */
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
         logD("Launching new genre menu: ${genre.rawName}")
 
@@ -173,6 +194,10 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
         }
     }
 
+    /**
+     * Open a generic menu with configuration in [block]. If a menu is already opened, then this
+     * function is a no-op.
+     */
     protected fun menu(anchor: View, @MenuRes menuRes: Int, block: PopupMenu.() -> Unit) {
         if (currentMenu != null) {
             logD("Menu already present, not launching")

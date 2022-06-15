@@ -31,12 +31,13 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.getDrawableSafe
 
 /**
  * Effectively a super-charged [StyledImageView].
  *
  * This class enables the following features alongside the base features pf [StyledImageView]:
- * - Activation indicator with an animated icon
+ * - Activation indicator
  * - (Eventually) selection indicator
  * - Support for ONE custom view
  *
@@ -53,7 +54,11 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     private val inner = BaseStyledImageView(context, attrs)
     private var customView: View? = null
-    private val indicator = ImageGroupIndicator(context)
+    private val indicator =
+        BaseStyledImageView(context).apply {
+            setImageDrawable(
+                StyledDrawable(context, context.getDrawableSafe(R.drawable.ic_equalizer)))
+        }
 
     init {
         // Android wants you to make separate attributes for each view type, but will

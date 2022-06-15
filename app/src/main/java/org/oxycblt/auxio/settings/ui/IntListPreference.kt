@@ -111,6 +111,6 @@ constructor(
 
     companion object {
         private val PREFERENCE_DEFAULT_VALUE_FIELD: Field by
-            lazyReflectedField<Preference>("mDefaultValue")
+            lazyReflectedField(Preference::class, "mDefaultValue")
     }
 }

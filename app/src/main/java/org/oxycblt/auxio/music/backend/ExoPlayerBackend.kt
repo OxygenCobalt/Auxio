@@ -122,7 +122,6 @@ class ExoPlayerBackend(private val inner: MediaStoreBackend) : Indexer.Backend {
 
 /**
  * Wraps an ExoPlayer metadata retrieval task in a safe abstraction. Access is done with [get].
- *
  * @author OxygenCobalt
  */
 class Task(context: Context, private val audio: MediaStoreBackend.Audio) {

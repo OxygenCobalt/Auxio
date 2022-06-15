@@ -9,7 +9,7 @@
 - Added a new view for song properties (Such as Bitrate)
 - The playback bar now has a new design, with an improved progress indicator and a
  skip action
-- When playing, covers now shows an animated indicator
+- When playing, covers now show an indicator
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling
