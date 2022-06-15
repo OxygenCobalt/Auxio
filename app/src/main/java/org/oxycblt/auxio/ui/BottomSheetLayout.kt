@@ -291,6 +291,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         panelRange = measuredHeight - barView.measuredHeight
 
         if (!isLaidOut) {
+            logD("Doing initial panel layout")
+
             // This is our first layout, so make sure we know what offset we should work with
             // before we measure our content
             panelOffset =
@@ -383,6 +385,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // not apply any window insets at all, which results in scroll desynchronization on
         // certain views. This is considered tolerable as the other options are to convert
         // the playback fragments to views, which is not nice.
+        logD("Readjusting window insets")
         val bars = insets.getSystemBarInsetsCompat(this)
         val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
         val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
@@ -495,9 +498,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     private fun setPanelStateInternal(state: PanelState) {
         if (panelState == state) {
+            logD("State is already $state, not applying")
             return
         }
 
+        logD("new state: $state")
         panelState = state
 
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)

@@ -15,7 +15,6 @@
             app:liftOnScroll="true"
             app:liftOnScrollTargetViewId="@id/detail_recycler">
 
-            <!-- FIXME: Not every detail view has actions -->
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/detail_toolbar"

@@ -113,9 +113,11 @@ val StorageVolume.directoryCompat: String?
 @SuppressLint("NewApi")
 fun StorageVolume.getDescriptionCompat(context: Context): String = getDescription(context)
 
+/** If this volume is the primary volume. May still be removable storage. */
 val StorageVolume.isPrimaryCompat: Boolean
     @SuppressLint("NewApi") get() = isPrimary
 
+/** If this volume is emulated. */
 val StorageVolume.isEmulatedCompat: Boolean
     @SuppressLint("NewApi") get() = isEmulated
 

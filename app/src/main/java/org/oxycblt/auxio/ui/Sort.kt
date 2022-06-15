@@ -25,7 +25,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logEOrThrow
 
 /**
  * A data class representing the sort modes used in Auxio.
@@ -74,19 +74,19 @@ sealed class Sort(open val isAscending: Boolean) {
     }
 
     open fun songsInPlace(songs: MutableList<Song>) {
-        logW("This sort is not supported for songs")
+        logEOrThrow("This sort is not supported for songs")
     }
 
     open fun albumsInPlace(albums: MutableList<Album>) {
-        logW("This sort is not supported for albums")
+        logEOrThrow("This sort is not supported for albums")
     }
 
     open fun artistsInPlace(artists: MutableList<Artist>) {
-        logW("This sort is not supported for artists")
+        logEOrThrow("This sort is not supported for artists")
     }
 
     open fun genresInPlace(genres: MutableList<Genre>) {
-        logW("This sort is not supported for genres")
+        logEOrThrow("This sort is not supported for genres")
     }
 
     /**

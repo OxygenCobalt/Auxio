@@ -90,6 +90,7 @@ class IndexerService : Service(), Indexer.Callback {
             is Indexer.State.Complete -> {
                 if (state.response is Indexer.Response.Ok &&
                     state.response.library != musicStore.library) {
+                    logD("Applying new library")
                     // Load was completed successfully, so apply the new library if we
                     // have not already.
                     musicStore.library = state.response.library
@@ -174,6 +175,7 @@ private class IndexerNotification(private val context: Context) :
     fun updateIndexingState(indexing: Indexer.Indexing): Boolean {
         when (indexing) {
             is Indexer.Indexing.Indeterminate -> {
+                logD("Updating state to $indexing")
                 setContentText(context.getString(R.string.lbl_indexing))
                 setProgress(0, 0, true)
                 return true
@@ -181,6 +183,7 @@ private class IndexerNotification(private val context: Context) :
             is Indexer.Indexing.Songs -> {
                 // Only update the notification every 50 songs to prevent excessive updates.
                 if (indexing.current % 50 == 0) {
+                    logD("Updating state to $indexing")
                     setContentText(
                         context.getString(R.string.fmt_indexing, indexing.current, indexing.total))
                     setProgress(indexing.total, indexing.current, false)

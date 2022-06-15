@@ -32,7 +32,7 @@ import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -80,7 +80,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
     override fun onOpenMenu(item: Item, anchor: View) {
         when (item) {
             is Artist -> musicMenu(anchor, R.menu.menu_genre_artist_actions, item)
-            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+            else -> logEOrThrow("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 

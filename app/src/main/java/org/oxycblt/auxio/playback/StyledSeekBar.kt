@@ -25,6 +25,7 @@ import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.inflater
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -97,6 +98,7 @@ constructor(
             // Sanity check 2: If the current value exceeds the new duration value, clamp it
             // down so that we don't crash and instead have an annoying visual flicker.
             if (positionSecs > to) {
+                logD("Clamping invalid position [current: $positionSecs new max: $to]")
                 binding.seekBarSlider.value = to.toFloat()
             }
 
@@ -105,12 +107,14 @@ constructor(
         }
 
     override fun onStartTrackingTouch(slider: Slider) {
+        logD("Starting seek mode")
         // User has begun seeking, place the SeekBar into a "Suspended" mode in which no
         // position updates are sent and is indicated by the position value turning accented.
         isActivated = true
     }
 
     override fun onStopTrackingTouch(slider: Slider) {
+        logD("Confirming seek")
         // End of seek event, send off new value to callback.
         isActivated = false
         callback?.seekTo(slider.value.toLong())

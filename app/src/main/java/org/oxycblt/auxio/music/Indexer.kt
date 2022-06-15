@@ -118,6 +118,7 @@ class Indexer {
      * the indexing process to re-index music.
      */
     fun requestReindex() {
+        logD("Requesting reindex")
         for (callback in callbacks) {
             callback.onRequestReindex()
         }
@@ -130,6 +131,7 @@ class Indexer {
      * corrupt the current state.
      */
     fun cancelLast() {
+        logD("Cancelling last job")
         synchronized(this) {
             currentGeneration++
             emitIndexing(null, currentGeneration)

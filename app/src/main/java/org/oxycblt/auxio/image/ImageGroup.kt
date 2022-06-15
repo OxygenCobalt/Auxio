@@ -31,6 +31,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
+import org.oxycblt.auxio.util.logD
 
 /**
  * Effectively a super-charged [StyledImageView].

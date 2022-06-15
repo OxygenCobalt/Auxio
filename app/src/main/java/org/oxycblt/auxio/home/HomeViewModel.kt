@@ -128,6 +128,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
      * begins to fast scroll.
      */
     fun updateFastScrolling(scrolling: Boolean) {
+        logD("Updating fast scrolling state: $scrolling")
         _isFastScrolling.value = scrolling
     }
 

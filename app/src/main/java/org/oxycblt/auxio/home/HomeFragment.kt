@@ -60,7 +60,6 @@ import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.textSafe
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -282,7 +281,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             is Indexer.State.Complete -> handleIndexerResponse(binding, state.response)
             is Indexer.State.Indexing -> handleIndexingState(binding, state.indexing)
             null -> {
-                logW("Indexer is in indeterminate state, doing nothing")
+                logD("Indexer is in indeterminate state, doing nothing")
             }
         }
     }

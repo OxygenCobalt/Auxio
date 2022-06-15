@@ -29,7 +29,8 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 
 abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
@@ -39,6 +40,8 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     protected val navModel: NavigationViewModel by activityViewModels()
 
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, song: Song) {
+        logD("Launching new song menu: ${song.rawName}")
+
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play_next -> {
@@ -59,7 +62,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     navModel.mainNavigateTo(MainNavigationAction.SongDetails(song))
                 }
                 else -> {
-                    logW("Unknown menu item selected")
+                    logEOrThrow("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -69,6 +72,8 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     }
 
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, album: Album) {
+        logD("Launching new album menu: ${album.rawName}")
+
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
@@ -89,7 +94,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     navModel.exploreNavigateTo(album.artist)
                 }
                 else -> {
-                    logW("Unknown menu item selected")
+                    logEOrThrow("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -99,6 +104,8 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     }
 
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, artist: Artist) {
+        logD("Launching new artist menu: ${artist.rawName}")
+
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
@@ -116,7 +123,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lbl_queue_added)
                 }
                 else -> {
-                    logW("Unknown menu item selected")
+                    logEOrThrow("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -126,6 +133,8 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     }
 
     protected fun musicMenu(anchor: View, @MenuRes menuRes: Int, genre: Genre) {
+        logD("Launching new genre menu: ${genre.rawName}")
+
         musicMenuImpl(anchor, menuRes) { id ->
             when (id) {
                 R.id.action_play -> {
@@ -143,7 +152,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
                     requireContext().showToast(R.string.lbl_queue_added)
                 }
                 else -> {
-                    logW("Unknown menu item selected")
+                    logEOrThrow("Unexpected menu item selected")
                     return@musicMenuImpl false
                 }
             }
@@ -166,6 +175,7 @@ abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
 
     protected fun menu(anchor: View, @MenuRes menuRes: Int, block: PopupMenu.() -> Unit) {
         if (currentMenu != null) {
+            logD("Menu already present, not launching")
             return
         }
 

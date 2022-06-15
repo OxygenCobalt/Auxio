@@ -30,7 +30,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
@@ -65,7 +64,7 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
      */
     fun applyReplayGain(metadata: Metadata?) {
         if (settingsManager.replayGainMode == ReplayGainMode.OFF) {
-            logW("ReplayGain not enabled")
+            logD("ReplayGain not enabled")
             volume = 1f
             return
         }

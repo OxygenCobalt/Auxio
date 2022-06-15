@@ -167,8 +167,6 @@ class MusicDirsDialog :
             DocumentsContract.buildDocumentUriUsingTree(
                 uri, DocumentsContract.getTreeDocumentId(uri))
 
-        logD(uri)
-
         // Turn it into a semi-usable path
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 

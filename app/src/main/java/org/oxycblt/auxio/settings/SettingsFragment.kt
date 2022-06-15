@@ -33,7 +33,7 @@ class SettingsFragment : ViewBindingFragment<FragmentSettingsBinding>() {
         FragmentSettingsBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentSettingsBinding, savedInstanceState: Bundle?) {
-        binding.settingsToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         binding.settingsAppbar.liftOnScrollTargetViewId = androidx.preference.R.id.recycler_view
+        binding.settingsToolbar.setNavigationOnClickListener { findNavController().navigateUp() }
     }
 }

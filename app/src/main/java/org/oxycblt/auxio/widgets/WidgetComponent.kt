@@ -31,6 +31,7 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getDimenSizeSafe
+import org.oxycblt.auxio.util.logD
 
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
@@ -67,6 +68,7 @@ class WidgetComponent(private val context: Context) :
         // possible.
         val song = playbackManager.song
         if (song == null) {
+            logD("No song, resetting widget")
             widget.update(context, null)
             return
         }
@@ -87,6 +89,8 @@ class WidgetComponent(private val context: Context) :
                     // - After Android 12, the widget has round edges, so we need to round out
                     // the album art. I dislike this, but it's mainly for stylistic cohesion.
                     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        this@WidgetComponent.logD("Doing API 31 cover load")
+
                         val metrics = context.resources.displayMetrics
 
                         // Use RoundedCornersTransformation. This is because our hack to get a 1:1
@@ -106,6 +110,7 @@ class WidgetComponent(private val context: Context) :
                             // bitmap on very large screens.
                             .size(minOf(metrics.widthPixels, metrics.heightPixels, 1024))
                     } else {
+                        this@WidgetComponent.logD("Doing API 21 cover load")
                         // Note: Explicitly use the "original" size as without it the scaling logic
                         // in coil breaks down and results in an error.
                         builder.size(Size.ORIGINAL)

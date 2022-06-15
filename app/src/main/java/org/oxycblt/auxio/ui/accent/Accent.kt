@@ -131,7 +131,7 @@ class Accent private constructor(val index: Int) {
     companion object {
         fun from(index: Int): Accent {
             if (index > (MAX - 1)) {
-                logW("Account outside of bounds [idx: $index, max: $MAX")
+                logW("Account outside of bounds [idx: $index, max: $MAX]")
                 return Accent(5)
             }
 

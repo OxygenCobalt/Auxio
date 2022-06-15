@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.util.logD
 
 /**
  * A ViewModel that handles complicated navigation situations.
@@ -43,23 +44,35 @@ class NavigationViewModel : ViewModel() {
 
     /** Notify MainFragment to navigate to the location outlined in [MainNavigationAction]. */
     fun mainNavigateTo(action: MainNavigationAction) {
-        if (_mainNavigationAction.value != null) return
+        if (_mainNavigationAction.value != null) {
+            logD("Already navigating, not doing main action")
+            return
+        }
+
+        logD("Navigating with action $action")
         _mainNavigationAction.value = action
     }
 
     /** Mark that the main navigation process is done. */
     fun finishMainNavigation() {
+        logD("Finishing main navigation process")
         _mainNavigationAction.value = null
     }
 
     /** Navigate to an item's detail menu, whether a song/album/artist */
     fun exploreNavigateTo(item: Music) {
-        if (_exploreNavigationItem.value != null) return
+        if (_exploreNavigationItem.value != null) {
+            logD("Already navigation, not doing explore action")
+            return
+        }
+
+        logD("Navigating to ${item.rawName}")
         _exploreNavigationItem.value = item
     }
 
     /** Mark that the item navigation process is done. */
     fun finishExploreNavigation() {
+        logD("Finishing explore navigation process")
         _exploreNavigationItem.value = null
     }
 }

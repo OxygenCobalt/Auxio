@@ -51,18 +51,15 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             add(topDivider)
             add(bottomDivider)
         }
+    }
 
-        addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
+    override fun onScrolled(dx: Int, dy: Int) {
+        super.onScrolled(dx, dy)
 
-                    val manager = recyclerView.layoutManager as LinearLayoutManager
-                    topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
-                    bottomDivider.isInvisible =
-                        manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
-                }
-            })
+        val manager = layoutManager as LinearLayoutManager
+        topDivider.isInvisible = manager.findFirstCompletelyVisibleItemPosition() < 1
+        bottomDivider.isInvisible =
+            manager.findLastCompletelyVisibleItemPosition() == (manager.itemCount - 1)
     }
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {

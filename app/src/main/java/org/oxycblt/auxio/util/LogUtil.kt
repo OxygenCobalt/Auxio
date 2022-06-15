@@ -52,7 +52,7 @@ fun Any.logE(msg: String) = Log.e(autoTag, msg)
  */
 fun Any.logEOrThrow(msg: String) {
     if (BuildConfig.DEBUG) {
-        error("${autoTag}: $msg")
+        error(msg)
     } else {
         logE(msg)
     }

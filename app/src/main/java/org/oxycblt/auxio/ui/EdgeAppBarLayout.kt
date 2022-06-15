@@ -29,7 +29,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
-import org.oxycblt.auxio.util.logW
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
@@ -90,7 +89,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             if (liftOnScrollTargetViewId != ResourcesCompat.ID_NULL) {
                 scrollingChild = (parent as ViewGroup).findViewById(liftOnScrollTargetViewId)
             } else {
-                logW("liftOnScrollTargetViewId was not specified, ignoring scroll events")
+                error("liftOnScrollTargetViewId was not specified")
             }
         }
 

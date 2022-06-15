@@ -43,7 +43,7 @@ import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collectWith
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -119,7 +119,7 @@ class ArtistDetailFragment :
         when (item) {
             is Song -> musicMenu(anchor, R.menu.menu_artist_song_actions, item)
             is Album -> musicMenu(anchor, R.menu.menu_artist_album_actions, item)
-            else -> logW("Unexpected datatype when opening menu: ${item::class.java}")
+            else -> logEOrThrow("Unexpected datatype when opening menu: ${item::class.java}")
         }
     }
 
@@ -179,7 +179,7 @@ class ArtistDetailFragment :
                 }
             }
             null -> {}
-            else -> logW("Unsupported navigation item ${item::class.java}")
+            else -> logEOrThrow("Unexpected navigation item ${item::class.java}")
         }
     }
 

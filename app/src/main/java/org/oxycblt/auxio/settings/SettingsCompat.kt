@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.storage.StorageManager
+import android.util.Log
 import androidx.core.content.edit
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.directoryCompat
@@ -37,6 +38,8 @@ import org.oxycblt.auxio.util.queryAll
 
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {
+        Log.d("SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT2}")
+
         var accent = prefs.getInt(OldKeys.KEY_ACCENT2, 5)
 
         // Blue grey was merged with Light Blue in 2.0.0
@@ -62,6 +65,8 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     }
 
     if (prefs.contains(OldKeys.KEY_ACCENT3)) {
+        Log.d("SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
+
         var accent = prefs.getInt(OldKeys.KEY_ACCENT3, 5)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // Accents were previously frozen as soon as the OS was updated to android twelve,
@@ -82,7 +87,8 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
 }
 
 /**
- * Converts paths from the old excluded directory database to a list of modern [Dir] instances.
+ * Converts paths from the old excluded directory database to a list of modern [Directory]
+ * instances.
  *
  * Historically, Auxio used an excluded directory database shamelessly ripped from Phonograph. This
  * was a dumb idea, as the choice of a full-blown database for a few paths was overkill, version
@@ -93,6 +99,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
  * rolled into this conversion.
  */
 fun handleExcludedCompat(context: Context, storageManager: StorageManager): List<Directory> {
+    Log.d("SettingsCompat", "Migrating old excluded database")
     val db = LegacyExcludedDatabase(context)
     // /storage/emulated/0 (the old path prefix) should correspond to primary *emulated* storage.
     val primaryVolume =

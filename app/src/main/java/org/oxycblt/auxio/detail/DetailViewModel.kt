@@ -156,55 +156,55 @@ class DetailViewModel(application: Application) :
 
     private fun generateDetailSong(song: Song) {
         viewModelScope.launch {
-            _currentSong.value =
-                withContext(Dispatchers.IO) {
-                    val extractor = MediaExtractor()
+            _currentSong.value = withContext(Dispatchers.IO) { generateDetailSongImpl(song) }
+        }
+    }
 
+    private fun generateDetailSongImpl(song: Song): DetailSong {
+        val extractor = MediaExtractor()
+
+        try {
+            extractor.setDataSource(application, song.uri, emptyMap())
+        } catch (e: Exception) {
+            logW("Unable to extract song attributes.")
+            logW(e.stackTraceToString())
+            return DetailSong(song, null, null, song.mimeType)
+        }
+
+        val format = extractor.getTrackFormat(0)
+
+        val bitrate =
+            try {
+                format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000 // bps -> kbps
+            } catch (e: Exception) {
+                null
+            }
+
+        val sampleRate =
+            try {
+                format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+            } catch (e: Exception) {
+                null
+            }
+
+        val resolvedMimeType =
+            if (song.mimeType.fromFormat != null) {
+                // ExoPlayer was already able to populate the format.
+                song.mimeType
+            } else {
+                val formatMimeType =
                     try {
-                        @Suppress("BlockingMethodInNonBlockingContext")
-                        extractor.setDataSource(application, song.uri, emptyMap())
+                        format.getString(MediaFormat.KEY_MIME)
                     } catch (e: Exception) {
-                        logW("Unable to extract song attributes.")
-                        logW(e.stackTraceToString())
-                        return@withContext DetailSong(song, null, null, song.mimeType)
+                        null
                     }
 
-                    val format = extractor.getTrackFormat(0)
+                // Ensure that we don't include the functionally useless
+                // "audio/raw" mime type
+                MimeType(song.mimeType.fromExtension, formatMimeType)
+            }
 
-                    val bitrate =
-                        try {
-                            format.getInteger(MediaFormat.KEY_BIT_RATE) / 1000 // bps -> kbps
-                        } catch (e: Exception) {
-                            null
-                        }
-
-                    val sampleRate =
-                        try {
-                            format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-                        } catch (e: Exception) {
-                            null
-                        }
-
-                    val resolvedMimeType =
-                        if (song.mimeType.fromFormat != null) {
-                            // ExoPlayer was already able to populate the format.
-                            song.mimeType
-                        } else {
-                            val formatMimeType =
-                                try {
-                                    format.getString(MediaFormat.KEY_MIME)
-                                } catch (e: Exception) {
-                                    null
-                                }
-
-                            // Ensure that we don't include the functionally useless
-                            // "audio/raw" mime type
-                            MimeType(song.mimeType.fromExtension, formatMimeType)
-                        }
-
-                    DetailSong(song, bitrate, sampleRate, resolvedMimeType)
-                }
-        }
+        return DetailSong(song, bitrate, sampleRate, resolvedMimeType)
     }
 
     private fun refreshAlbumData(album: Album) {
@@ -255,6 +255,7 @@ class DetailViewModel(application: Application) :
         if (library != null) {
             val song = currentSong.value
             if (song != null) {
+                logD("Song changed, refreshing data")
                 val newSong = library.sanitize(song.song)
                 if (newSong != null) {
                     generateDetailSong(newSong)
@@ -263,6 +264,7 @@ class DetailViewModel(application: Application) :
 
             val album = currentAlbum.value
             if (album != null) {
+                logD("Album changed, refreshing data")
                 val newAlbum = library.sanitize(album).also { _currentAlbum.value = it }
                 if (newAlbum != null) {
                     refreshAlbumData(newAlbum)
@@ -271,6 +273,7 @@ class DetailViewModel(application: Application) :
 
             val artist = currentArtist.value
             if (artist != null) {
+                logD("Artist changed, refreshing data")
                 val newArtist = library.sanitize(artist).also { _currentArtist.value = it }
                 if (newArtist != null) {
                     refreshArtistData(newArtist)
