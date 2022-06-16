@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.storage.StorageManager
 import android.util.Log
 import androidx.core.content.edit
+import java.io.File
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.isInternalCompat
@@ -37,7 +38,7 @@ import org.oxycblt.auxio.util.queryAll
 
 fun handleAccentCompat(prefs: SharedPreferences): Accent {
     if (prefs.contains(OldKeys.KEY_ACCENT2)) {
-        Log.d("SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT2}")
+        Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT2}")
 
         var accent = prefs.getInt(OldKeys.KEY_ACCENT2, 5)
 
@@ -64,7 +65,7 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
     }
 
     if (prefs.contains(OldKeys.KEY_ACCENT3)) {
-        Log.d("SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
+        Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
 
         var accent = prefs.getInt(OldKeys.KEY_ACCENT3, 5)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -97,14 +98,16 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
  * rolled into this conversion.
  */
 fun handleExcludedCompat(context: Context, storageManager: StorageManager): List<Directory> {
-    Log.d("SettingsCompat", "Migrating old excluded database")
+    Log.d("Auxio.SettingsCompat", "Migrating old excluded database")
     val db = LegacyExcludedDatabase(context)
     // /storage/emulated/0 (the old path prefix) should correspond to primary *emulated* storage.
     val primaryVolume =
         storageManager.storageVolumesCompat.find { it.isInternalCompat } ?: return emptyList()
-    val primaryDirectory = primaryVolume.directoryCompat ?: return emptyList()
+    val primaryDirectory =
+        (primaryVolume.directoryCompat ?: return emptyList()) + File.separatorChar
     return db.readPaths().map { path ->
         val relativePath = path.removePrefix(primaryDirectory)
+        Log.d("Auxio.SettingsCompat", "Migrate $path -> $relativePath")
         Directory(primaryVolume, relativePath)
     }
 }
