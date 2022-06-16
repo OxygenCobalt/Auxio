@@ -1,6 +1,6 @@
 # Changelog
 
-## dev [v2.3.2, v2.4.0, or v3.0.0]
+## v2.4.0
 
 #### What's New
 - Excluded directories has been revampled into "Music folders"

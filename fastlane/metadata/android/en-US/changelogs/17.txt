@@ -1,0 +1,1 @@
+Auxio 2.4.0 overhauls the music loader, adding full support for external volumes, better folder management, and song properties. For more information, see https://github.com/OxygenCobalt/Auxio/releases/tag/v2.4.0.
