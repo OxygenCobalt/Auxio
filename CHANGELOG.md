@@ -3,18 +3,17 @@
 ## v2.4.0
 
 #### What's New
-- Excluded directories has been revampled into "Music folders"
+- Excluded directories has been revamped into "Music folders"
     - Folders on external drives can now be excluded [#134]
     - Added new "Include" option to restrict indexing to a particular folder [#154]
-- Added a new view for song properties (Such as Bitrate)
-- The playback bar now has a new design, with an improved progress indicator and a
- skip action
+- Added a new view for song properties (Such as Bitrate) [#144]
+- The playback bar now has a new design, with an improved progress indicator and a skip action
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling
 - The toolbar layout is now consistent with Material Design 3
 - Genre parsing now handles multiple integer values and cover/remix indicators (May wipe playback state)
-- "Rounded album covers" option is no longer dependent on "Show album covers" option
+- "Rounded album covers" option is no longer dependent on "Show album covers" option [#152]
 - Added song actions to the playback panel
 - Playback controls are now easier to reach when gesture navigation is enabled
 - Added Play Next/Add to Queue options to artists and genres
@@ -25,12 +24,12 @@
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
 - Fixed unusable excluded directory UI
 - Songs with no data (i.e size of 0) are now filtered out
-- Fixed non-sensical menu items from appearing on songs
-- Fixed issue where multiple menus would open if long-clicks occured simultaniously
+- Fixed nonsensical menu items from appearing on songs
+- Fixed issue where multiple menus would open if long-clicks occured simultaneously
 
 #### Dev/Meta
 - New translations [Fjuro -> Czech, Konstantin Tutsch -> German]
-- Moved music loading to a foreground service
+- Moved music loading to a foreground service [#72]
 - Phased out `ImageButton` for `MaterialButton`
 - Unified icon sizing
 - Properly handle volumes throughout the entire music loading process

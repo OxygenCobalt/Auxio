@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
+import androidx.core.app.ServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -159,7 +160,7 @@ class PlaybackService :
     override fun onDestroy() {
         super.onDestroy()
 
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         isForeground = false
 
         // Pause just in case this destruction was unexpected.
@@ -356,7 +357,7 @@ class PlaybackService :
 
     /** Stop the foreground state and hide the notification */
     private fun stopAndSave() {
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         isForeground = false
         saveScope.launch { playbackManager.saveState(this@PlaybackService) }
     }

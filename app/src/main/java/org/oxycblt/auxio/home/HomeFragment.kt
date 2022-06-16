@@ -245,11 +245,12 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun updateSortMenu(displayMode: DisplayMode, isVisible: (Int) -> Boolean) {
-        val sortItem = requireNotNull(sortItem) { "Cannot update sort menu while detached" }
+        val sortMenu =
+            requireNotNull(sortItem?.subMenu) { "Cannot update sort menu while detached" }
 
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 
-        for (option in sortItem.subMenu) {
+        for (option in sortMenu) {
             if (option.itemId == toHighlight.itemId) {
                 option.isChecked = true
             }

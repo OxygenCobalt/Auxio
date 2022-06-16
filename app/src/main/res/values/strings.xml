@@ -54,7 +54,7 @@
     <string name="lbl_relative_path">Parent path</string>
     <string name="lbl_format">Format</string>
     <string name="lbl_size">Size</string>
-    <string name="lbl_bitrate">Bitrate</string>
+    <string name="lbl_bitrate">Bit rate</string>
     <string name="lbl_sample_rate">Sample rate</string>
 
     <string name="lbl_state_saved">State saved</string>
