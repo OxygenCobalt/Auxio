@@ -19,7 +19,7 @@ package org.oxycblt.auxio.ui.accent
 
 import android.os.Build
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.logW
+import org.oxycblt.auxio.util.logEOrThrow
 
 private val ACCENT_NAMES =
     intArrayOf(
@@ -131,12 +131,19 @@ class Accent private constructor(val index: Int) {
     companion object {
         fun from(index: Int): Accent {
             if (index > (MAX - 1)) {
-                logW("Account outside of bounds [idx: $index, max: $MAX]")
+                logEOrThrow("Account outside of bounds [idx: $index, max: $MAX]")
                 return Accent(5)
             }
 
             return Accent(index)
         }
+
+        val DEFAULT =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ACCENT_THEMES.lastIndex
+            } else {
+                5
+            }
 
         /**
          * The maximum amount of accents that are valid. This excludes the dynamic accent on

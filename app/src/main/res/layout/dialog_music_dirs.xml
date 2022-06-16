@@ -2,10 +2,10 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Auxio.Dialog.NestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    style="@style/Widget.Auxio.Dialog.NestedScrollView">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,11 +37,11 @@
             android:textColor="?android:attr/textColorSecondary" />
 
         <TextView
+            style="@style/Widget.Auxio.TextView.Header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/spacing_mid_large"
             android:paddingEnd="@dimen/spacing_mid_large"
-            style="@style/Widget.Auxio.TextView.Header"
             android:text="@string/set_dirs_mode" />
 
         <com.google.android.material.divider.MaterialDivider
@@ -53,28 +53,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_mid_large"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
             android:gravity="center"
-            app:singleSelection="true"
+            app:checkedButton="@+id/dirs_mode_exclude"
             app:selectionRequired="true"
-            app:checkedButton="@+id/dirs_mode_exclude">
+            app:singleSelection="true">
 
             <Button
                 android:id="@+id/dirs_mode_exclude"
+                style="@style/Widget.Auxio.Button.Secondary"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/set_dirs_mode_exclude"
-                style="@style/Widget.Auxio.Button.Secondary" />
+                android:layout_weight="1"
+                android:text="@string/set_dirs_mode_exclude" />
 
             <Button
                 android:id="@+id/dirs_mode_include"
+                style="@style/Widget.Auxio.Button.Secondary"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@string/set_dirs_mode_include"
-                style="@style/Widget.Auxio.Button.Secondary" />
+                android:layout_weight="1"
+                android:text="@string/set_dirs_mode_include" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -83,8 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_mid_large"
-            android:layout_marginEnd="@dimen/spacing_mid_large"
             android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_mid_large"
             tools:text="Mode description" />
 
     </LinearLayout>

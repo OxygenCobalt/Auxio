@@ -9,7 +9,6 @@
 - Added a new view for song properties (Such as Bitrate)
 - The playback bar now has a new design, with an improved progress indicator and a
  skip action
-- When playing, covers now show an indicator
 
 #### What's Improved
 - The toolbar in the home UI now collapses when scrolling
@@ -19,6 +18,7 @@
 - Added song actions to the playback panel
 - Playback controls are now easier to reach when gesture navigation is enabled
 - Added Play Next/Add to Queue options to artists and genres
+- Covers in the detail views now show an indicator when playing
 
 #### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]

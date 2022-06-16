@@ -34,7 +34,7 @@
                     android:imeOptions="actionSearch|flagNoExtractUi"
                     android:inputType="textFilter"
                     android:paddingStart="@dimen/spacing_tiny"
-                    android:paddingEnd="0dp"/>
+                    android:paddingEnd="0dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

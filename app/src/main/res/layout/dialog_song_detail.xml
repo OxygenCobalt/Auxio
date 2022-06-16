@@ -6,9 +6,9 @@
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
+        style="@style/Widget.Auxio.Dialog.NestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/Widget.Auxio.Dialog.NestedScrollView">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/detail_container"
@@ -17,9 +17,9 @@
             android:orientation="vertical"
             android:paddingStart="@dimen/spacing_mid_large"
             android:paddingEnd="@dimen/spacing_mid_large"
+            android:showDividers="middle"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:showDividers="middle">
+            tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -69,8 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium"
-                app:expandedHintEnabled="false"
-                android:hint="@string/lbl_size">
+                android:hint="@string/lbl_size"
+                app:expandedHintEnabled="false">
 
                 <org.oxycblt.auxio.detail.ReadOnlyTextInput
                     android:id="@+id/detail_size"

@@ -10,10 +10,10 @@
         android:id="@+id/disc_item"
         style="@style/Widget.Auxio.Image.Small"
         android:scaleType="matrix"
-        app:staticIcon="@drawable/ic_album"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:staticIcon="@drawable/ic_album"
         tools:ignore="ContentDescription" />
 
     <TextView

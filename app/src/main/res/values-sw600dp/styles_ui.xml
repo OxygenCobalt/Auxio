@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Widget.Auxio.Toolbar.Actions" parent="Widget.Auxio.Toolbar.Base">
         <item name="android:layout_marginEnd">@dimen/spacing_tiny_inv</item>
     </style>
