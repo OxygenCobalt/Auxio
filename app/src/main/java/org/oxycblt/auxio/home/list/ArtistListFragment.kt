@@ -33,7 +33,6 @@ import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logEOrThrow
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [HomeListFragment] for showing a list of [Artist]s.
@@ -54,7 +53,7 @@ class ArtistListFragment : HomeListFragment<Artist>() {
     }
 
     override fun getPopup(pos: Int): String? {
-        val artist = unlikelyToBeNull(homeModel.artists.value)[pos]
+        val artist = homeModel.artists.value[pos]
 
         // Change how we display the popup depending on the mode.
         return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS)) {

@@ -44,6 +44,8 @@ import org.oxycblt.auxio.util.logEOrThrow
  * @author OxygenCobalt
  *
  * TODO: Make comparators static instances
+ *
+ * TODO: Separate sort mode and ascending state
  */
 sealed class Sort(open val isAscending: Boolean) {
     protected abstract val sortIntCode: Int

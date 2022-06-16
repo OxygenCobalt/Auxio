@@ -5,11 +5,15 @@ This document is designed to provide an overview of Auxio's architecture and des
 Auxio has a couple of core systems or concepts that should be understood when working with the codebase.
 
 #### Package Structure
-Auxio's package structure is strictly feature-oriented. For example, playback code is exclusively in the `playback` package,
-and detail code is exclusively in the `detail` package. Sub-packages can be related to the code it contains, such as `detail.recycler`
-for the detail UI adapters, or they can be related to a sub-feature, like `playback.queue` for the queue UI.
+Auxio is deliberately structured in a way that I call "Anti-CLEAN Architecture". There is one gradle project, with sub-packages that
+are strictly feature-oriented. For example, playback code is exclusively in the `playback` package, and detail code is exclusively in 
+the `detail` package. Sub-packages can be related to the code it contains, such as `detail.recycler` for the detail UI adapters, or 
+hey can be related to a sub-feature, like `playback.queue` for the queue UI.
 
 The outliers here are `.ui` and `.util`, which are generic utility or component packages.
+
+Sticking to a single project reduces compile times, makes it easier to add new features, and simply makes Auxio's code easier to
+reason about.
 
 A full run-down of Auxio's current package structure as of the latest version is shown below.
 
@@ -23,7 +27,8 @@ org.oxycblt.auxio  # Main UIs
 │  └──.tabs        # Home tab customization
 ├──.image          # Image loading components
 ├──.music          # Music data and loading
-│  └──.excluded    # Excluded Directories UI + Systems
+│  ├──.backend     # System-side music loading
+│  └──.dirs        # Music Folders UI + Systems
 ├──.playback       # Playback UI + Systems
 │  ├──.queue       # Queue UI
 │  ├──.replaygain  # ReplayGain System + UIs
@@ -31,7 +36,7 @@ org.oxycblt.auxio  # Main UIs
 │  └──.system      # System-side playback [Services, ExoPlayer]
 ├──.search         # Search UI
 ├──.settings       # Settings UI + Systems
-│  └──.pref        # Int preference add-on
+│  └──.ui          # Preference extensions
 ├──.ui             # Shared views and models
 │  └──.accent      # Color Scheme UI + Systems
 ├──.util           # Shared utilities
@@ -50,9 +55,12 @@ should be added as a new `Fragment` implementation and added to one of the two n
 Fragments themselves are based off a super class called `ViewBindingFragment` that takes a view-binding and then
 leverages it within the fragment lifecycle. 
 
-- Create variables [Bindings, Adapters, etc]
-- Set up the UI
-- Set up ViewModel instances and LiveData observers
+Generally:
+- Most variables are kept as member variables, and cleared out when the view is destroyed.
+- Observing data is done through the `Fragment.launch` extension, and always points to another function
+in order to reduce possible memory leaks.
+- When possible (and readable), `Fragment` implementations inherit any listener interfaces they need,
+and simply clear them out when done.
 
 `findViewById` is to **only** be used when interfacing with non-Auxio views. Otherwise, view-binding should be
 used in all cases. Code that involves retrieving the binding should be isolated into its own function, with
@@ -72,7 +80,7 @@ Auxio's codebase is mostly centered around 4 different types of code that commun
 - UIs: Fragments, RecyclerView items, and Activities are part of this class. All of them should have little data logic
 in them and should primarily focus on displaying information in their UIs.
 - ViewModels: These usually contain data and values that a UI can display, along with doing data processing. The data
-often takes the form of `MutableLiveData` or `LiveData`, which can be observed.
+often takes the form of `MutableStateFlow` or `StateFlow`, which can be observed.
 - Shared Objects: These are the fundamental building blocks of Auxio, and exist at the process level. These are usually
 retrieved using `getInstance` or a similar function. Shared Objects should be avoided in UIs, as their volatility can
 cause problems. Its better to use a ViewModel and their exposed data instead.
@@ -172,9 +180,6 @@ with a data list similar to this:
 
 Each adapter instance also handles the highlighting of the currently playing item in the detail menu.
 
-`DetailViewModel` acts as the holder for the currently displaying items, along with having the `navToItem` LiveData that coordinates menu/playback
-navigation [Such as when a user presses "Go to artist"]
-
 #### `.home`
 This package contains the components for the "home" UI in Auxio, or the UI that the user first sees when they open the app.
 
@@ -192,17 +197,42 @@ This should not be used for UIs.
 - `BaseFetcher`, which is effectively Auxio's image loading routine. Most changes to image loading should be done there, and not it's 
 sub-classes like `AlbumArtFetcher`.
 
-#### `.music`
-This package contains all `Music` implementations, the music loading implementation, and the excluded directory system. 
+This package also contains the two UI components used for all covers in Auxio:
+- `StyledImageView`, which adds extensions for dynamically loading covers, handles rounded corners, and a stable icon style.
+- `ImageGroup`, an extension of `StyledImageView` that all of the previous features, alongside a playing indicator and one custom view.
 
-Key classes in this package include:
-- `MusicStore`, which is the primary access point for music data.
-- `Indexer`, which implements all of the `MediaStore` hacks to create a good metadata indexer for Auxio.
+#### `.music`
+This package contains all `Music` implementations, the music loading implementation, and the music folder system. This is the second
+most complicated package in the app, as loading music in a sane way is horribly difficult.
+
+The major classes are:
+- `MusicStore`, which is the container for a `Library` instance. Any code wanting to access the library should use this
+- `Indexer`, which manages how music is loaded. This is only used by code that must reflect the music loading state.
+
+Internally, there are several other major systems:
+- `IndexerService`, which does the indexer work in the background.
+- `Indexer.Backend` implementations, which actually talk to the media database and load music. As it stands, there
+are two classes of backend:
+    - Version-specific `MediaStoreBackend` implementations, which transform the (often insane) music data from Android
+    into a usable `Song`.
+    - `ExoPlayerBackend`, which mutates audio with extracted ID3v2 and Vorbis tags. This enables some extra features
+    and side-steps unfixable issues with `MediaStore`
+- `StorageFramework`, which is a group of utilities that allows Auxio to be volume-aware and to work with both
+extension-based and format-based mime types.
+
+The music loading process is roughly as follows:
+1. Something triggers `IndexerService` to start indexing, either by the UI or by the service itself starting.
+2. `Indexer` picks an appropriate `Backend`, and begins loading music. `Indexer` may periodically update it's state
+during this time with the current progress.
+3. In the case that `IndexerService` is killed, `Indexer` falls back to a previous state (or null if there isn't one)
+4. If the music loading process completes, `Indexer` will push a `Response`. `IndexerService` will read this, and in
+the case that the new `Library` differs, it will push it to `MusicStore`
+5. `MusicStore` updates any `Callback` instances with the new `Library`.
 
 #### `.playback`
 This module not only contains the playback system described above, but also multiple other components:
 
-- `queue` contains the Queue UI and it's fancy item UIs.
+- `queue` contains the Queue UI and it's fancy item system.
 - `replaygain` contains the ReplayGain implementation and the UIs related to it. Auxio's ReplayGain implementation is
 somewhat different compared to other apps, as it leverages ExoPlayer's metadata and audio processing systems to not only
 parse ReplayGain tags, but also allow volume amplification above 100%.
@@ -228,14 +258,13 @@ a normal choice preference to be backed by the integer representations that Auxi
 #### `.ui`
 Shared views and view configuration models. This contains:
 
-- Customized views such as `EdgeAppBarLayout`, `StyledImageView`, and others, which provide extra styling and behavior
-not provided by default.
+- Important `Fragment` superclasses like `ViewBindingFragment` and `MenuFragment`
+- Customized views such as `EdgeAppBarLayout`, and others, which just fix existing shortcomings with the views.
 - Configuration models like `DisplayMode` and `Sort`, which are used in many places but aren't tied to a specific feature.
-- `newMenu` and `ActionMenu`, which automates menu creation for most data types.
 - The `RecyclerView` adapter framework described previously.
-- The view-binding super classes described previously.
 - `BottomSheetLayout`, a highly important layout that underpins Auxio's UI flow.
 - Standard `ViewHolder` implementations that can be used for common datatypes.
+- `NavigationViewModel`, which acts as an interface to control navigation to a particular item and navigation within `MainFragment`
 
 #### `.util`
 Shared utilities. This is primarily for QoL when developing Auxio. Documentation is provided on each method.

@@ -43,6 +43,7 @@ I primarily built Auxio for myself, but you can use it too, I guess.
 - Opinionated UX that prioritizes ease of use over edge cases
 - Customizable behavior
 - Advanced media indexer that prioritizes correct metadata
+- SD Card-aware folder management
 - Reliable playback state persistence
 - Full ReplayGain support (On MP3, MP4, FLAC, OGG, and OPUS)
 - Edge-to-edge

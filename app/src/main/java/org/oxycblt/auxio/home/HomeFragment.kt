@@ -176,7 +176,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 homeModel.updateCurrentSort(
                     unlikelyToBeNull(
                         homeModel
-                            .getSortForDisplay(unlikelyToBeNull(homeModel.currentTab.value))
+                            .getSortForDisplay(homeModel.currentTab.value)
                             .ascending(item.isChecked)))
             }
             else -> {
@@ -185,7 +185,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                 homeModel.updateCurrentSort(
                     unlikelyToBeNull(
                         homeModel
-                            .getSortForDisplay(unlikelyToBeNull(homeModel.currentTab.value))
+                            .getSortForDisplay(homeModel.currentTab.value)
                             .assignId(item.itemId)))
             }
         }

@@ -33,7 +33,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The component managing the [MediaSessionCompat] instance.
@@ -122,8 +121,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         }
 
         if (song.album.year != null) {
-            metadata.putString(
-                MediaMetadataCompat.METADATA_KEY_DATE, unlikelyToBeNull(song.album.year).toString())
+            metadata.putString(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year.toString())
         }
 
         // Normally, android expects one to provide a URI to the metadata instance instead of

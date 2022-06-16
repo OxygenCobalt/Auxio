@@ -35,7 +35,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logE
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The ViewModel that provides a UI frontend for [PlaybackStateManager].
@@ -194,15 +193,14 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     /** Remove a queue item using it's recyclerview adapter index. */
     fun removeQueueDataItem(adapterIndex: Int) {
-        val index =
-            adapterIndex + (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
+        val index = adapterIndex + (playbackManager.queue.size - _nextUp.value.size)
         if (index in playbackManager.queue.indices) {
             playbackManager.removeQueueItem(index)
         }
     }
     /** Move queue items using their recyclerview adapter indices. */
     fun moveQueueDataItems(adapterFrom: Int, adapterTo: Int): Boolean {
-        val delta = (playbackManager.queue.size - unlikelyToBeNull(_nextUp.value).size)
+        val delta = (playbackManager.queue.size - _nextUp.value.size)
         val from = adapterFrom + delta
         val to = adapterTo + delta
         if (from in playbackManager.queue.indices && to in playbackManager.queue.indices) {

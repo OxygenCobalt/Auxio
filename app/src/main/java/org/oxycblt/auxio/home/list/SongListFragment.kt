@@ -32,7 +32,6 @@ import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logEOrThrow
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * A [HomeListFragment] for showing a list of [Song]s.
@@ -53,7 +52,7 @@ class SongListFragment : HomeListFragment<Song>() {
     }
 
     override fun getPopup(pos: Int): String? {
-        val song = unlikelyToBeNull(homeModel.songs.value)[pos]
+        val song = homeModel.songs.value[pos]
 
         // Change how we display the popup depending on the mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
