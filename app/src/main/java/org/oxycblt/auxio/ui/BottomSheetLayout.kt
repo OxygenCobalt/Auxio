@@ -276,7 +276,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
 
-        check(widthMode == MeasureSpec.EXACTLY || heightMode == MeasureSpec.EXACTLY) {
+        check(widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
             "This view must be MATCH_PARENT"
         }
 

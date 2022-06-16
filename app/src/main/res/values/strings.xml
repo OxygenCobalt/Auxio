@@ -212,7 +212,7 @@
 
     <string name="fmt_db_pos">+%.1f dB</string>
     <string name="fmt_db_neg">-%.1f dB</string>
-    <string name="fmt_bitrate">%d KB/s</string>
+    <string name="fmt_bitrate">%d kbps</string>
     <string name="fmt_sample_rate">%d Hz</string>
 
     <string name="fmt_indexing">Loading your music library… (%1$d/%2$d)</string>

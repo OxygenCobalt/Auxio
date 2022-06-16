@@ -31,6 +31,7 @@
                     android:id="@+id/detail_file_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="file.mp3" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -46,6 +47,7 @@
                     android:id="@+id/detail_relative_dir"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="/path/to" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -61,6 +63,7 @@
                     android:id="@+id/detail_format"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="MP3" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -76,6 +79,7 @@
                     android:id="@+id/detail_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="16 MB" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -91,6 +95,7 @@
                     android:id="@+id/detail_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="3:20" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -106,6 +111,7 @@
                     android:id="@+id/detail_bitrate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="320 kb/s" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -121,6 +127,7 @@
                     android:id="@+id/detail_sample_rate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAlignment="viewStart"
                     tools:text="44100 Hz" />
 
             </com.google.android.material.textfield.TextInputLayout>

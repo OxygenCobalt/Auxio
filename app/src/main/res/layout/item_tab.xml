@@ -22,6 +22,7 @@
         android:paddingStart="@dimen/spacing_medium"
         android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
         app:buttonCompat="@null"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tab_drag_handle"
         app:layout_constraintStart_toStartOf="parent"

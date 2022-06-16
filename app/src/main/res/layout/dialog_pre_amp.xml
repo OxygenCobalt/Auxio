@@ -92,6 +92,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginEnd="@dimen/spacing_mid_large"
             android:text="@string/set_pre_amp_warning"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.Auxio.BodySmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

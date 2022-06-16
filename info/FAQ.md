@@ -63,7 +63,7 @@ investigated there.
 an unrecognized name.
 
 #### My lossless audio sounds lower-quality in Auxio!
-This is a current limitation with the ExoPlayer. Basically, all audio tend is downsampled to 16-bit PCM audio, even
+This is a current limitation with the ExoPlayer. Basically, all audio is downsampled to 16-bit PCM audio, even
 if the source audio is higher quality. I can enable something that might be able to remedy such, but implementing it
 fully may take some time.
 

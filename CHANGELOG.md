@@ -19,6 +19,7 @@
 - Playback controls are now easier to reach when gesture navigation is enabled
 - Added Play Next/Add to Queue options to artists and genres
 - Covers in the detail views now show an indicator when playing
+- Made dynamic colors the default color scheme on Android 12
 
 #### What's Fixed
 - Playback bar now picks the larger inset in case that gesture inset is missing [#149]
