@@ -90,4 +90,4 @@ please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accep
 
 #### Can I translate Auxio to my native language?
 See the [Translations Megathread](https://github.com/OxygenCobalt/Auxio/issues/3) for guidance on how to create translations and submit them to the project.
-Any contributions are appreciated and tend to always be accepted.
+Any contributions are appreciated and tend to always be accepted. Weblate is also being set up.
