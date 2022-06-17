@@ -76,14 +76,6 @@
         <item name="android:paddingBottom">@dimen/spacing_small</item>
     </style>
 
-    <style name="Widget.Auxio.Button.Icon.Medium" parent="Widget.Auxio.Button.Icon.Small">
-        <item name="iconSize">@dimen/size_icon_medium</item>
-        <item name="android:paddingStart">@dimen/spacing_medium_icon</item>
-        <item name="android:paddingEnd">@dimen/spacing_medium_icon</item>
-        <item name="android:paddingTop">@dimen/spacing_medium_icon</item>
-        <item name="android:paddingBottom">@dimen/spacing_medium_icon</item>
-    </style>
-
     <style name="Widget.Auxio.Button.Icon.Large" parent="Widget.Auxio.Button.Icon.Base">
         <item name="iconSize">@dimen/size_icon_large</item>
         <item name="android:insetTop">0dp</item>

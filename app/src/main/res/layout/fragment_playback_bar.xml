@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_album" />
+        tools:staticIcon="@drawable/ic_album" />
 
     <TextView
         android:id="@+id/playback_song"
@@ -45,7 +45,7 @@
 
     <Button
         android:id="@+id/playback_play_pause"
-        style="@style/Widget.Auxio.Button.Icon.Medium"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/desc_play_pause"
@@ -56,7 +56,7 @@
 
     <Button
         android:id="@+id/playback_skip_next"
-        style="@style/Widget.Auxio.Button.Icon.Medium"
+        style="@style/Widget.Auxio.Button.Icon.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_tiny"
