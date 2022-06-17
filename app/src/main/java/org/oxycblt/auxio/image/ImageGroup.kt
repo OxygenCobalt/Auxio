@@ -29,7 +29,6 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getDrawableSafe
 
@@ -52,13 +51,9 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
     FrameLayout(context, attrs, defStyleAttr) {
     private val cornerRadius: Float
 
-    private val inner = BaseStyledImageView(context, attrs)
+    private val inner: StyledImageView
     private var customView: View? = null
-    private val indicator =
-        BaseStyledImageView(context).apply {
-            setImageDrawable(
-                StyledDrawable(context, context.getDrawableSafe(R.drawable.ic_equalizer)))
-        }
+    private val indicator: StyledImageView
 
     init {
         // Android wants you to make separate attributes for each view type, but will
@@ -68,23 +63,14 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         cornerRadius = styledAttrs.getDimension(R.styleable.StyledImageView_cornerRadius, 0f)
         styledAttrs.recycle()
 
-        addView(inner)
-
-        // Use clipToOutline and a background drawable to crop images. While Coil's transformation
-        // could theoretically be used to round corners, the corner radius is dependent on the
-        // dimensions of the image, which will result in inconsistent corners across different
-        // album covers unless we resize all covers to be the same size. clipToOutline is both
-        // cheaper and more elegant. As a side-note, this also allows us to re-use the same
-        // background for both the tonal background color and the corner rounding.
-        background = MaterialShapeDrawable()
-        clipToOutline = true
-
-        if (!isInEditMode) {
-            val settingsManager = SettingsManager.getInstance()
-            if (settingsManager.roundCovers) {
-                (background as MaterialShapeDrawable).setCornerSize(cornerRadius)
+        inner = StyledImageView(context, attrs)
+        indicator =
+            StyledImageView(context).apply {
+                cornerRadius = this@ImageGroup.cornerRadius
+                staticIcon = context.getDrawableSafe(R.drawable.ic_equalizer)
             }
-        }
+
+        addView(inner)
     }
 
     override fun onFinishInflate() {
@@ -99,6 +85,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
                 background =
                     MaterialShapeDrawable().apply {
                         fillColor = context.getColorStateListSafe(R.color.sel_cover_bg)
+                        setCornerSize(cornerRadius)
                     }
             }
 

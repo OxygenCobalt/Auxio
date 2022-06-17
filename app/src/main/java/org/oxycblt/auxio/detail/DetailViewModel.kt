@@ -199,8 +199,6 @@ class DetailViewModel(application: Application) :
                         null
                     }
 
-                // Ensure that we don't include the functionally useless
-                // "audio/raw" mime type
                 MimeType(song.mimeType.fromExtension, formatMimeType)
             }
 
