@@ -41,7 +41,7 @@ class AdaptiveTabStrategy(context: Context, private val homeModel: HomeViewModel
                 logD("Using icon-only configuration")
                 tab.setIcon(tabMode.icon).setContentDescription(tabMode.string)
             }
-            width < 640 -> {
+            width < 600 -> {
                 logD("Using text-only configuration")
                 tab.setText(tabMode.string)
             }

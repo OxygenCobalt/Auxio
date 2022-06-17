@@ -71,7 +71,7 @@
 
     <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
     <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
-        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:padding">@dimen/spacing_small</item>
     </style>
@@ -89,7 +89,7 @@
     56dp to 48dp.
     -->
     <style name="Widget.Auxio.Toolbar.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
-        <item name="android:minWidth">@dimen/size_btn_small</item>
+        <item name="android:minWidth">@dimen/size_btn</item>
     </style>
 
     <!--
@@ -97,8 +97,8 @@
     (presumably for compat with older devices)
     -->
     <style name="Widget.Auxio.Button.Overflow" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:minWidth">@dimen/size_btn_small</item>
-        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
     </style>

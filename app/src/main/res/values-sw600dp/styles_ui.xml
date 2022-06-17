@@ -24,4 +24,8 @@
         <item name="navigationIcon">@drawable/ic_down</item>
         <item name="android:layout_marginStart">@dimen/spacing_small_inv</item>
     </style>
+
+    <style name="Widget.Auxio.RecyclerView.WithAdaptiveFab" parent="">
+        <item name="android:paddingBottom">@dimen/recycler_fab_space_large</item>
+    </style>
 </resources>

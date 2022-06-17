@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-        tools:placeholderIcon="@drawable/ic_song" />
+        tools:staticIcon="@drawable/ic_album" />
 
     <TextView
         android:id="@+id/playback_song"

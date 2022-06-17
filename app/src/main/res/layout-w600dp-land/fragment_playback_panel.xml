@@ -22,7 +22,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
-        tools:src="@drawable/ic_album" />
+        tools:staticIcon="@drawable/ic_album" />
 
     <!-- TextView is wrapped in a container so that marquee doesn't break -->
 

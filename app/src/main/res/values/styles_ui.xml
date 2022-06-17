@@ -18,7 +18,7 @@
         Material guidelines state that there should be 16dp end padding with actions,
         but Toolbar only has 12dp. Fix that by adding a 4dp margin.
          -->
-        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_tiny</item>
     </style>
     \
 
@@ -58,10 +58,8 @@
         <item name="iconPadding">0dp</item>
         <item name="iconTint">?attr/colorControlNormal</item>
         <item name="rippleColor">?attr/colorControlHighlight</item>
-        <item name="android:minWidth">@dimen/size_btn_small</item>
-        <item name="android:minHeight">@dimen/size_btn_small</item>
-        <item name="android:maxWidth">@dimen/size_btn_small</item>
-        <item name="android:maxHeight">@dimen/size_btn_small</item>
+        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:minHeight">@dimen/size_btn</item>
     </style>
 
     <style name="Widget.Auxio.Button.Icon.Small" parent="Widget.Auxio.Button.Icon.Base">
@@ -197,7 +195,7 @@
         <item name="android:paddingTop">@dimen/spacing_small</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
-        <item name="android:minHeight">@dimen/size_btn_small</item>
+        <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAppearance">@style/TextAppearance.Auxio.LabelLarger</item>
     </style>
@@ -238,9 +236,9 @@
         compensate.
         2. For some reason elevation behaves strangely in the playback panel, so we disable it.
         -->
-        <item name="fabSize">normal</item>
-        <item name="fabCustomSize">@dimen/size_btn_large</item>
         <item name="maxImageSize">@dimen/size_icon_large</item>
+        <item name="fabCustomSize">@dimen/size_play_pause_button</item>
+        <item name="fabSize">normal</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
     </style>
