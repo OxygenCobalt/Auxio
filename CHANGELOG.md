@@ -1,5 +1,12 @@
 # Changelog
 
+## dev
+
+#### What's Fixed
+- Fixed broken tablet layouts
+- Fixed seam that would appear on some album covers
+- Fixed visual issue with the queue opening animation
+
 ## v2.4.0
 
 #### What's New

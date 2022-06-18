@@ -70,7 +70,7 @@ fully may take some time.
 #### Why is playback distorted when I play my FLAC/WAV files?
 ExoPlayer, while powerful, does add some overhead when playing exceptionally high-quality files (2000+ KB/s bitrate,
 90000+ Hz sample rate). This is worsened by the ReplayGain system, as it has to copy the audio buffer no matter what.
-This results in choppy, distorted playback in some case as audio data cannot be delivered in time. Sadly, there is
+This results in choppy, distorted playback in some cases as audio data cannot be delivered in time. Sadly, there is
 not much I can do about this right now.
 
 #### What is dynamic ReplayGain?

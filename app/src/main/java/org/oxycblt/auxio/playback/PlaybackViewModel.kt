@@ -144,7 +144,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
      * usually alongside a context too. Examples include:
      * - Opening files
      * - Restoring the playback state
-     * - Future app shortcuts
+     * - (Future) app shortcuts
      *
      * We would normally want to put this kind of functionality into PlaybackService, but it's
      * lifecycle makes that more or less impossible.
