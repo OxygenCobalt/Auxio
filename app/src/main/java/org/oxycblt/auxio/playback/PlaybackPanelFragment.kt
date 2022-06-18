@@ -189,7 +189,7 @@ class PlaybackPanelFragment :
     }
 
     private fun updatePlaying(isPlaying: Boolean) {
-        requireBinding().playbackPlayPause.isActivated = isPlaying
+        requireBinding().playbackPlayPause.apply { isActivated = isPlaying }
     }
 
     private fun updateShuffled(isShuffled: Boolean) {

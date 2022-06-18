@@ -53,7 +53,7 @@ class IndexerService : Service(), Indexer.Callback {
     private val musicStore = MusicStore.getInstance()
 
     private val serviceJob = Job()
-    private val indexScope = CoroutineScope(serviceJob + Dispatchers.Default)
+    private val indexScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     private var isForeground = false
     private lateinit var notification: IndexerNotification

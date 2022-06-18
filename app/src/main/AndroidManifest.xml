@@ -14,8 +14,6 @@
 
     <queries />
 
-    <!-- TODO: A "shuffle" shortcut -->
-
     <!--
     Note: We have to simultaneously define the fullBackupContent and dataExtractionRules
     fields, as there is no way to make version-specific manifests. This should be okay,

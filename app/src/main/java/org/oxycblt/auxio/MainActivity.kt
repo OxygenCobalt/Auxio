@@ -71,21 +71,31 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, IndexerService::class.java))
         startService(Intent(this, PlaybackService::class.java))
 
-        // If we have a file URI already, open it. Otherwise, restore the playback state.
-        val action =
-            retrieveViewUri(intent)?.let { PlaybackViewModel.DelayedAction.Open(it) }
-                ?: PlaybackViewModel.DelayedAction.RestoreState
+        // If we have a valid intent, use that. Otherwise, restore the playback state.
+        val action = intentToDelayedAction(intent) ?: PlaybackViewModel.DelayedAction.RestoreState
 
-        playbackModel.performAction(this, action)
+        playbackModel.startDelayedAction(this, action)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        // See if the new intent is a file intent. If so, open it.
-        val uri = retrieveViewUri(intent)
-        if (uri != null) {
-            playbackModel.performAction(this, PlaybackViewModel.DelayedAction.Open(uri))
+        intentToDelayedAction(intent)?.let { action ->
+            playbackModel.startDelayedAction(this, action)
+        }
+    }
+
+    private fun intentToDelayedAction(intent: Intent?): PlaybackViewModel.DelayedAction? {
+        if (intent == null || intent.getBooleanExtra(KEY_INTENT_USED, false)) {
+            return null
+        }
+
+        intent.putExtra(KEY_INTENT_USED, true)
+
+        return when (intent.action) {
+            Intent.ACTION_VIEW -> intent.data?.let { PlaybackViewModel.DelayedAction.Open(it) }
+            AuxioApp.INTENT_KEY_SHORTCUT_SHUFFLE -> PlaybackViewModel.DelayedAction.ShuffleAll
+            else -> null
         }
     }
 

@@ -59,6 +59,11 @@
 
     <string name="lbl_state_saved">State saved</string>
 
+    <!-- Limit to 10 characters -->
+    <string name="lbl_shuffle_shortcut_short">Shuffle</string>
+    <!-- Limit to 25 characters -->
+    <string name="lbl_shuffle_shortcut_long">Shuffle All</string>
+
     <!-- Actual string: Ok -->
     <string name="lbl_ok">@android:string/ok</string>
     <!-- Actual string: Cancel -->

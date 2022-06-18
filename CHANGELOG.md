@@ -2,6 +2,9 @@
 
 ## dev
 
+#### What's New
+- Added a shuffle shortcut
+
 #### What's Fixed
 - Fixed broken tablet layouts
 - Fixed seam that would appear on some album covers

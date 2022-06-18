@@ -18,6 +18,10 @@
 package org.oxycblt.auxio
 
 import android.app.Application
+import android.content.Intent
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
@@ -27,11 +31,29 @@ import org.oxycblt.auxio.image.CrossfadeTransitionFactory
 import org.oxycblt.auxio.image.GenreImageFetcher
 import org.oxycblt.auxio.image.MusicKeyer
 import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.util.logD
 
-@Suppress("UNUSED")
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
+
+        logD(BuildConfig.APPLICATION_ID + ".MainActivity")
+
+        // Adding static shortcuts in a dynamic manner is better than declaring them
+        // manually, as it will properly handle the difference between debug and release
+        // Auxio instances.
+        ShortcutManagerCompat.addDynamicShortcuts(
+            this,
+            listOf(
+                ShortcutInfoCompat.Builder(this, SHORTCUT_SHUFFLE_ID)
+                    .setShortLabel(getString(R.string.lbl_shuffle_shortcut_short))
+                    .setLongLabel(getString(R.string.lbl_shuffle_shortcut_long))
+                    .setIcon(IconCompat.createWithResource(this, R.drawable.ic_shuffle_shortcut))
+                    .setIntent(
+                        Intent(this, MainActivity::class.java).apply {
+                            action = INTENT_KEY_SHORTCUT_SHUFFLE
+                        })
+                    .build()))
 
         // Init SettingsManager here so that there aren't any race conditions
         // [e.g PlaybackService gets SettingsManager before activity can init SettingsManager]
@@ -50,5 +72,10 @@ class AuxioApp : Application(), ImageLoaderFactory {
             .transitionFactory(CrossfadeTransitionFactory())
             .diskCachePolicy(CachePolicy.DISABLED) // Not downloading anything, so no disk-caching
             .build()
+    }
+
+    companion object {
+        const val SHORTCUT_SHUFFLE_ID = "shortcut_shuffle"
+        const val INTENT_KEY_SHORTCUT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE_ALL"
     }
 }

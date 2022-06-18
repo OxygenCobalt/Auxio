@@ -144,12 +144,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
      * usually alongside a context too. Examples include:
      * - Opening files
      * - Restoring the playback state
-     * - (Future) app shortcuts
+     * - App shortcuts
      *
      * We would normally want to put this kind of functionality into PlaybackService, but it's
      * lifecycle makes that more or less impossible.
      */
-    fun performAction(context: Context, action: DelayedAction) {
+    fun startDelayedAction(context: Context, action: DelayedAction) {
         val library = musicStore.library
         val actionImpl = DelayedActionImpl(context.applicationContext, action)
         if (library != null) {
@@ -166,6 +166,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
                     viewModelScope.launch { playbackManager.restoreState(action.context) }
                 }
             }
+            is DelayedAction.ShuffleAll -> shuffleAll()
             is DelayedAction.Open -> {
                 library.findSongForUri(action.context, action.inner.uri)?.let(::play)
             }
@@ -284,6 +285,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
     /** An action delayed until the complete load of the music library. */
     sealed class DelayedAction {
         object RestoreState : DelayedAction()
+        object ShuffleAll : DelayedAction()
         data class Open(val uri: Uri) : DelayedAction()
     }
 
