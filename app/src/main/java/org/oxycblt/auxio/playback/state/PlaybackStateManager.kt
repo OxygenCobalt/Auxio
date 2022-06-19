@@ -47,8 +47,6 @@ import org.oxycblt.auxio.util.logW
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
  *
- * TODO: Leverage synchronized here to prevent state issues.
- *
  * TODO: Bug test app behavior when playback stops
  */
 class PlaybackStateManager private constructor() {
@@ -98,15 +96,17 @@ class PlaybackStateManager private constructor() {
 
     /** Add a callback to this instance. Make sure to remove it when done. */
     fun addCallback(callback: Callback) {
-        if (isInitialized) {
-            callback.onNewPlayback(index, queue, parent)
-            callback.onPositionChanged(positionMs)
-            callback.onPlayingChanged(isPlaying)
-            callback.onRepeatChanged(repeatMode)
-            callback.onShuffledChanged(isShuffled)
-        }
+        synchronized(this) {
+            if (isInitialized) {
+                callback.onNewPlayback(index, queue, parent)
+                callback.onPositionChanged(positionMs)
+                callback.onPlayingChanged(isPlaying)
+                callback.onRepeatChanged(repeatMode)
+                callback.onShuffledChanged(isShuffled)
+            }
 
-        callbacks.add(callback)
+            callbacks.add(callback)
+        }
     }
 
     /** Remove a [PlaybackStateManager.Callback] bound to this instance. */
@@ -121,15 +121,17 @@ class PlaybackStateManager private constructor() {
             return
         }
 
-        if (isInitialized) {
-            controller.loadSong(song)
-            controller.seekTo(positionMs)
-            controller.onPlayingChanged(isPlaying)
-            controller.onRepeatChanged(repeatMode)
-            controller.onPlayingChanged(isPlaying)
-        }
+        synchronized(this) {
+            if (isInitialized) {
+                controller.loadSong(song)
+                controller.seekTo(positionMs)
+                controller.onPlayingChanged(isPlaying)
+                controller.onRepeatChanged(repeatMode)
+                controller.onPlayingChanged(isPlaying)
+            }
 
-        this.controller = controller
+            this.controller = controller
+        }
     }
 
     /** Unregister a [PlaybackStateManager.Controller] with this instance. */
@@ -151,20 +153,22 @@ class PlaybackStateManager private constructor() {
     fun play(song: Song, playbackMode: PlaybackMode) {
         val library = musicStore.library ?: return
 
-        parent =
-            when (playbackMode) {
-                PlaybackMode.ALL_SONGS -> null
-                PlaybackMode.IN_ALBUM -> song.album
-                PlaybackMode.IN_ARTIST -> song.album.artist
-                PlaybackMode.IN_GENRE -> song.genre
-            }
+        synchronized(this) {
+            parent =
+                when (playbackMode) {
+                    PlaybackMode.ALL_SONGS -> null
+                    PlaybackMode.IN_ALBUM -> song.album
+                    PlaybackMode.IN_ARTIST -> song.album.artist
+                    PlaybackMode.IN_GENRE -> song.genre
+                }
 
-        applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
-        seekTo(0)
-        notifyNewPlayback()
-        notifyShuffledChanged()
-        isPlaying = true
-        isInitialized = true
+            applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
+            seekTo(0)
+            notifyNewPlayback()
+            notifyShuffledChanged()
+            isPlaying = true
+            isInitialized = true
+        }
     }
 
     /**
@@ -173,48 +177,57 @@ class PlaybackStateManager private constructor() {
      */
     fun play(parent: MusicParent, shuffled: Boolean) {
         val library = musicStore.library ?: return
-        this.parent = parent
-        applyNewQueue(library, shuffled, null)
-        seekTo(0)
-        notifyNewPlayback()
-        notifyShuffledChanged()
-        isPlaying = true
-        isInitialized = true
+
+        synchronized(this) {
+            this.parent = parent
+            applyNewQueue(library, shuffled, null)
+            seekTo(0)
+            notifyNewPlayback()
+            notifyShuffledChanged()
+            isPlaying = true
+            isInitialized = true
+        }
     }
 
     /** Shuffle all songs. */
     fun shuffleAll() {
         val library = musicStore.library ?: return
-        parent = null
-        applyNewQueue(library, true, null)
-        seekTo(0)
-        notifyNewPlayback()
-        notifyShuffledChanged()
-        isPlaying = true
-        isInitialized = true
+        synchronized(this) {
+            parent = null
+            applyNewQueue(library, true, null)
+            seekTo(0)
+            notifyNewPlayback()
+            notifyShuffledChanged()
+            isPlaying = true
+            isInitialized = true
+        }
     }
 
     // --- QUEUE FUNCTIONS ---
 
     /** Go to the next song, along with doing all the checks that entails. */
     fun next() {
-        // Increment the index, if it cannot be incremented any further, then
-        // repeat and pause/resume playback depending on the setting
-        if (index < _queue.lastIndex) {
-            goto(index + 1, true)
-        } else {
-            goto(0, repeatMode == RepeatMode.ALL)
+        synchronized(this) {
+            // Increment the index, if it cannot be incremented any further, then
+            // repeat and pause/resume playback depending on the setting
+            if (index < _queue.lastIndex) {
+                goto(index + 1, true)
+            } else {
+                goto(0, repeatMode == RepeatMode.ALL)
+            }
         }
     }
 
     /** Go to the previous song, doing any checks that are needed. */
     fun prev() {
-        // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (controller?.shouldPrevRewind() == true) {
-            rewind()
-            isPlaying = true
-        } else {
-            goto(max(index - 1, 0), true)
+        synchronized(this) {
+            // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
+            if (controller?.shouldPrevRewind() == true) {
+                rewind()
+                isPlaying = true
+            } else {
+                goto(max(index - 1, 0), true)
+            }
         }
     }
 
@@ -227,49 +240,65 @@ class PlaybackStateManager private constructor() {
 
     /** Add a [song] to the top of the queue. */
     fun playNext(song: Song) {
-        _queue.add(index + 1, song)
-        notifyQueueChanged()
+        synchronized(this) {
+            _queue.add(index + 1, song)
+            notifyQueueChanged()
+        }
     }
 
     /** Add a list of [songs] to the top of the queue. */
     fun playNext(songs: List<Song>) {
-        _queue.addAll(index + 1, songs)
-        notifyQueueChanged()
+        synchronized(this) {
+            _queue.addAll(index + 1, songs)
+            notifyQueueChanged()
+        }
     }
 
     /** Add a [song] to the end of the queue. */
     fun addToQueue(song: Song) {
-        _queue.add(song)
-        notifyQueueChanged()
+        synchronized(this) {
+            _queue.add(song)
+            notifyQueueChanged()
+        }
     }
 
     /** Add a list of [songs] to the end of the queue. */
     fun addToQueue(songs: List<Song>) {
-        _queue.addAll(songs)
-        notifyQueueChanged()
+        synchronized(this) {
+            _queue.addAll(songs)
+            notifyQueueChanged()
+        }
     }
 
     /** Move a queue item at [from] to a position at [to]. Will ignore invalid indexes. */
     fun moveQueueItem(from: Int, to: Int) {
         logD("Moving item $from to position $to")
-        _queue.add(to, _queue.removeAt(from))
-        notifyQueueChanged()
+
+        synchronized(this) {
+            _queue.add(to, _queue.removeAt(from))
+            notifyQueueChanged()
+        }
     }
 
     /** Remove a queue item at [index]. Will ignore invalid indexes. */
     fun removeQueueItem(index: Int) {
         logD("Removing item ${_queue[index].rawName}")
-        _queue.removeAt(index)
-        notifyQueueChanged()
+
+        synchronized(this) {
+            _queue.removeAt(index)
+            notifyQueueChanged()
+        }
     }
 
     /** Set whether this instance is [shuffled]. Updates the queue accordingly. */
     fun reshuffle(shuffled: Boolean) {
         val library = musicStore.library ?: return
-        val song = song ?: return
-        applyNewQueue(library, shuffled, song)
-        notifyQueueChanged()
-        notifyShuffledChanged()
+        synchronized(this) {
+            val song = song ?: return
+            applyNewQueue(library, shuffled, song)
+            notifyQueueChanged()
+            notifyShuffledChanged()
+        }
     }
 
     private fun applyNewQueue(library: MusicStore.Library, shuffled: Boolean, keep: Song?) {
@@ -318,11 +347,13 @@ class PlaybackStateManager private constructor() {
             return
         }
 
-        // Don't accept any bugged positions that are over the duration of the song.
-        val maxDuration = song?.durationMs ?: -1
-        if (positionMs <= maxDuration) {
-            this.positionMs = positionMs
-            notifyPositionChanged()
+        synchronized(this) {
+            // Don't accept any bugged positions that are over the duration of the song.
+            val maxDuration = song?.durationMs ?: -1
+            if (positionMs <= maxDuration) {
+                this.positionMs = positionMs
+                notifyPositionChanged()
+            }
         }
     }
 
@@ -331,9 +362,11 @@ class PlaybackStateManager private constructor() {
      * @param positionMs The position to seek to in millis.
      */
     fun seekTo(positionMs: Long) {
-        this.positionMs = positionMs
-        controller?.seekTo(positionMs)
-        notifyPositionChanged()
+        synchronized(this) {
+            this.positionMs = positionMs
+            controller?.seekTo(positionMs)
+            notifyPositionChanged()
+        }
     }
 
     /** Rewind to the beginning of a song. */
@@ -343,7 +376,9 @@ class PlaybackStateManager private constructor() {
     fun repeat() {
         rewind()
         if (settingsManager.pauseOnRepeat) {
-            isPlaying = false
+            synchronized(this) {
+                isPlaying = false
+            }
         }
     }
 
@@ -368,20 +403,22 @@ class PlaybackStateManager private constructor() {
 
         logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
 
-        if (state != null) {
-            index = state.index
-            parent = state.parent
-            _queue = state.queue.toMutableList()
-            repeatMode = state.repeatMode
-            isShuffled = state.isShuffled
+        synchronized(this) {
+            if (state != null) {
+                index = state.index
+                parent = state.parent
+                _queue = state.queue.toMutableList()
+                repeatMode = state.repeatMode
+                isShuffled = state.isShuffled
 
-            notifyNewPlayback()
-            seekTo(state.positionMs)
-            notifyRepeatModeChanged()
-            notifyShuffledChanged()
+                notifyNewPlayback()
+                seekTo(state.positionMs)
+                notifyRepeatModeChanged()
+                notifyShuffledChanged()
+            }
+
+            isInitialized = true
         }
-
-        isInitialized = true
     }
 
     /**
@@ -397,19 +434,19 @@ class PlaybackStateManager private constructor() {
             val database = PlaybackStateDatabase.getInstance(context)
 
             database.write(
-                PlaybackStateDatabase.SavedState(
-                    index = index,
-                    parent = parent,
-                    queue = _queue,
-                    positionMs = positionMs,
-                    isShuffled = isShuffled,
-                    repeatMode = repeatMode))
+                synchronized(this) {
+                    PlaybackStateDatabase.SavedState(
+                        index = index,
+                        parent = parent,
+                        queue = _queue,
+                        positionMs = positionMs,
+                        isShuffled = isShuffled,
+                        repeatMode = repeatMode)
+                })
 
             this@PlaybackStateManager.logD(
                 "State save completed successfully in ${System.currentTimeMillis() - start}ms")
         }
-
-        isInitialized = true
     }
 
     // --- CALLBACKS ---
