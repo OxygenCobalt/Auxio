@@ -46,7 +46,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
@@ -74,7 +73,7 @@ class PlaybackService :
     Service(),
     Player.Listener,
     NotificationComponent.Callback,
-    PlaybackStateManager.Callback,
+    PlaybackStateManager.Controller,
     SettingsManager.Callback {
     // Player components
     private lateinit var player: ExoPlayer
@@ -111,7 +110,7 @@ class PlaybackService :
 
         positionScope.launch {
             while (true) {
-                playbackManager.synchronizePosition(player.currentPosition)
+                playbackManager.synchronizePosition(this@PlaybackService, player.currentPosition)
                 delay(POS_POLL_INTERVAL)
             }
         }
@@ -139,7 +138,7 @@ class PlaybackService :
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
-        playbackManager.addCallback(this)
+        playbackManager.registerController(this)
         settingsManager.addCallback(this)
 
         logD("Service created")
@@ -166,7 +165,7 @@ class PlaybackService :
         // Pause just in case this destruction was unexpected.
         playbackManager.isPlaying = false
 
-        playbackManager.removeCallback(this)
+        playbackManager.unregisterController(this)
         settingsManager.removeCallback(this)
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
@@ -218,7 +217,7 @@ class PlaybackService :
         reason: Int
     ) {
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            playbackManager.synchronizePosition(player.currentPosition)
+            playbackManager.synchronizePosition(this, player.currentPosition)
         }
     }
 
@@ -239,17 +238,9 @@ class PlaybackService :
         }
     }
 
-    // --- PLAYBACK STATE CALLBACK OVERRIDES ---
+    // --- CONTROLLER OVERRIDES ---
 
-    override fun onIndexMoved(index: Int) {
-        loadSong(playbackManager.song)
-    }
-
-    override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        loadSong(playbackManager.song)
-    }
-
-    private fun loadSong(song: Song?) {
+    override fun loadSong(song: Song?) {
         if (song == null) {
             // Clear if there's nothing to play.
             logD("Nothing playing, stopping playback")
@@ -263,6 +254,14 @@ class PlaybackService :
         player.prepare()
         notificationComponent.updateMetadata(song, playbackManager.parent)
     }
+
+    override fun seekTo(positionMs: Long) {
+        logD("Seeking to ${positionMs}ms")
+        player.seekTo(positionMs)
+    }
+
+    override fun shouldPrevRewind() =
+        settingsManager.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
@@ -279,11 +278,6 @@ class PlaybackService :
         if (settingsManager.useAltNotifAction) {
             notificationComponent.updateShuffled(isShuffled)
         }
-    }
-
-    override fun onSeek(positionMs: Long) {
-        logD("Seeking to ${positionMs}ms")
-        player.seekTo(positionMs)
     }
 
     // --- SETTINGSMANAGER OVERRIDES ---
@@ -432,6 +426,7 @@ class PlaybackService :
 
     companion object {
         private const val POS_POLL_INTERVAL = 1000L
+        private const val REWIND_THRESHOLD = 3000L
 
         const val ACTION_INC_REPEAT_MODE = BuildConfig.APPLICATION_ID + ".action.LOOP"
         const val ACTION_INVERT_SHUFFLE = BuildConfig.APPLICATION_ID + ".action.SHUFFLE"

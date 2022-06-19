@@ -21,6 +21,7 @@ import android.content.Context
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
@@ -29,6 +30,7 @@ import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.SettingsManager
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logW
 
 /**
  * Master class (and possible god object) for the playback state.
@@ -39,10 +41,13 @@ import org.oxycblt.auxio.util.logD
  * - If you want to use the playback state with the ExoPlayer instance or system-side things, use
  * [org.oxycblt.auxio.playback.system.PlaybackService].
  *
+ * Internal consumers should usually use [Callback], however the component that manages the player
+ * itself should instead operate as a [Controller].
+ *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
  *
- * TODO: Add a controller role and move song loading/seeking to that
+ * TODO: Leverage synchronized here to prevent state issues.
  *
  * TODO: Bug test app behavior when playback stops
  */
@@ -89,16 +94,16 @@ class PlaybackStateManager private constructor() {
     // --- CALLBACKS ---
 
     private val callbacks = mutableListOf<Callback>()
+    private var controller: Controller? = null
 
     /** Add a callback to this instance. Make sure to remove it when done. */
     fun addCallback(callback: Callback) {
         if (isInitialized) {
             callback.onNewPlayback(index, queue, parent)
-            callback.onSeek(positionMs)
             callback.onPositionChanged(positionMs)
+            callback.onPlayingChanged(isPlaying)
             callback.onRepeatChanged(repeatMode)
             callback.onShuffledChanged(isShuffled)
-            callback.onPlayingChanged(isPlaying)
         }
 
         callbacks.add(callback)
@@ -107,6 +112,34 @@ class PlaybackStateManager private constructor() {
     /** Remove a [PlaybackStateManager.Callback] bound to this instance. */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
+    }
+
+    /** Register a [PlaybackStateManager.Controller] with this instance. */
+    fun registerController(controller: Controller) {
+        if (BuildConfig.DEBUG && this.controller != null) {
+            logW("Controller is already registered")
+            return
+        }
+
+        if (isInitialized) {
+            controller.loadSong(song)
+            controller.seekTo(positionMs)
+            controller.onPlayingChanged(isPlaying)
+            controller.onRepeatChanged(repeatMode)
+            controller.onPlayingChanged(isPlaying)
+        }
+
+        this.controller = controller
+    }
+
+    /** Unregister a [PlaybackStateManager.Controller] with this instance. */
+    fun unregisterController(controller: Controller) {
+        if (BuildConfig.DEBUG && this.controller !== controller) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        this.controller = null
     }
 
     // --- PLAYING FUNCTIONS ---
@@ -177,7 +210,7 @@ class PlaybackStateManager private constructor() {
     /** Go to the previous song, doing any checks that are needed. */
     fun prev() {
         // If enabled, rewind before skipping back if the position is past 3 seconds [3000ms]
-        if (settingsManager.rewindWithPrev && positionMs >= REWIND_THRESHOLD) {
+        if (controller?.shouldPrevRewind() == true) {
             rewind()
             isPlaying = true
         } else {
@@ -279,7 +312,12 @@ class PlaybackStateManager private constructor() {
      * @param positionMs The new position in millis.
      * @see seekTo
      */
-    fun synchronizePosition(positionMs: Long) {
+    fun synchronizePosition(controller: Controller, positionMs: Long) {
+        if (BuildConfig.DEBUG && this.controller !== controller) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
         // Don't accept any bugged positions that are over the duration of the song.
         val maxDuration = song?.durationMs ?: -1
         if (positionMs <= maxDuration) {
@@ -289,13 +327,12 @@ class PlaybackStateManager private constructor() {
     }
 
     /**
-     * **Seek** to a [positionMs], this calls [PlaybackStateManager.Callback.onSeek] to notify
-     * elements that rely on that.
+     * **Seek** to a [positionMs].
      * @param positionMs The position to seek to in millis.
      */
     fun seekTo(positionMs: Long) {
         this.positionMs = positionMs
-        notifySeekEvent()
+        controller?.seekTo(positionMs)
         notifyPositionChanged()
     }
 
@@ -378,6 +415,7 @@ class PlaybackStateManager private constructor() {
     // --- CALLBACKS ---
 
     private fun notifyIndexMoved() {
+        controller?.loadSong(song)
         for (callback in callbacks) {
             callback.onIndexMoved(index)
         }
@@ -390,12 +428,14 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun notifyNewPlayback() {
+        controller?.loadSong(song)
         for (callback in callbacks) {
             callback.onNewPlayback(index, queue, parent)
         }
     }
 
     private fun notifyPlayingChanged() {
+        controller?.onPlayingChanged(isPlaying)
         for (callback in callbacks) {
             callback.onPlayingChanged(isPlaying)
         }
@@ -408,21 +448,38 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun notifyRepeatModeChanged() {
+        controller?.onRepeatChanged(repeatMode)
         for (callback in callbacks) {
             callback.onRepeatChanged(repeatMode)
         }
     }
 
     private fun notifyShuffledChanged() {
+        controller?.onShuffledChanged(isShuffled)
         for (callback in callbacks) {
             callback.onShuffledChanged(isShuffled)
         }
     }
 
-    private fun notifySeekEvent() {
-        for (callback in callbacks) {
-            callback.onSeek(positionMs)
-        }
+    /** Represents a class capable of managing the internal player. */
+    interface Controller {
+        /** Called when a new song should be loaded into the player. */
+        fun loadSong(song: Song?)
+
+        /** Seek to [positionMs] in the player. */
+        fun seekTo(positionMs: Long)
+
+        /** Called when the class wants to determine whether it should rewind or skip back. */
+        fun shouldPrevRewind(): Boolean
+
+        /** Called when the playing state is changed. */
+        fun onPlayingChanged(isPlaying: Boolean)
+
+        /** Called when the repeat mode is changed. */
+        fun onRepeatChanged(repeatMode: RepeatMode)
+
+        /** Called when the shuffled state is changed. */
+        fun onShuffledChanged(isShuffled: Boolean)
     }
 
     /**
@@ -430,21 +487,29 @@ class PlaybackStateManager private constructor() {
      * [PlaybackStateManager] using [addCallback], remove them on destruction with [removeCallback].
      */
     interface Callback {
+        /** Called when the index is moved, but the queue does not change. This changes the song. */
         fun onIndexMoved(index: Int) {}
+
+        /** Called when the queue and/or index changed, but the song has not. */
         fun onQueueChanged(index: Int, queue: List<Song>) {}
+
+        /** Called when playback is changed completely, with a new index, queue, and parent. */
         fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {}
 
+        /** Called when the playing state is changed. */
         fun onPlayingChanged(isPlaying: Boolean) {}
-        fun onPositionChanged(positionMs: Long) {}
-        fun onRepeatChanged(repeatMode: RepeatMode) {}
-        fun onShuffledChanged(isShuffled: Boolean) {}
 
-        fun onSeek(positionMs: Long) {}
+        /** Called when the position is re-synchronized by the controller. */
+        fun onPositionChanged(positionMs: Long) {}
+
+        /** Called when the repeat mode is changed. */
+        fun onRepeatChanged(repeatMode: RepeatMode) {}
+
+        /** Called when the shuffled state is changed. */
+        fun onShuffledChanged(isShuffled: Boolean) {}
     }
 
     companion object {
-        private const val REWIND_THRESHOLD = 3000L
-
         @Volatile private var INSTANCE: PlaybackStateManager? = null
 
         /** Get/Instantiate the single instance of [PlaybackStateManager]. */
