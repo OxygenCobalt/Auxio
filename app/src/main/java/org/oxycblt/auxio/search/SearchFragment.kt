@@ -37,17 +37,16 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.applySpans
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logW
-import org.oxycblt.auxio.util.requireAttached
 
 /**
  * A [Fragment] that allows for the searching of the entire music library.
@@ -59,8 +58,11 @@ class SearchFragment :
     private val searchModel: SearchViewModel by androidViewModels()
 
     private val searchAdapter = SearchAdapter(this)
-    private val settings: Settings by settings()
-    private var imm: InputMethodManager? = null
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+    private val imm: InputMethodManager by lifecycleObject { binding ->
+        binding.context.getSystemServiceSafe(InputMethodManager::class)
+    }
+
     private var launchedKeyboard = false
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentSearchBinding.inflate(inflater)
@@ -70,7 +72,7 @@ class SearchFragment :
             menu.findItem(searchModel.filterMode?.itemId ?: R.id.option_filter_all).isChecked = true
 
             setNavigationOnClickListener {
-                requireImm().hide()
+                imm.hide()
                 findNavController().navigateUp()
             }
 
@@ -86,9 +88,7 @@ class SearchFragment :
             if (!launchedKeyboard) {
                 // Auto-open the keyboard when this view is shown
                 requestFocus()
-                postDelayed(200) {
-                    requireImm().showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-                }
+                postDelayed(200) { imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT) }
 
                 launchedKeyboard = true
             }
@@ -108,7 +108,6 @@ class SearchFragment :
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
         binding.searchToolbar.setOnMenuItemClickListener(null)
         binding.searchRecycler.adapter = null
-        imm = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -166,18 +165,7 @@ class SearchFragment :
                     else -> return
                 })
 
-        requireImm().hide()
-    }
-
-    private fun requireImm(): InputMethodManager {
-        requireAttached()
-        val instance = imm
-        if (instance != null) {
-            return instance
-        }
-        val newInstance = requireContext().getSystemServiceSafe(InputMethodManager::class)
-        imm = newInstance
-        return newInstance
+        imm.hide()
     }
 
     private fun InputMethodManager.hide() {

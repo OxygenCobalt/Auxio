@@ -77,18 +77,20 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     private val homeModel: HomeViewModel by androidActivityViewModels()
     private val indexerModel: IndexerViewModel by activityViewModels()
 
-    private var storagePermissionLauncher: ActivityResultLauncher<String>? = null
-    private var sortItem: MenuItem? = null
+    // lifecycleObject builds this in the creation step, so doing this is okay.
+    private val storagePermissionLauncher: ActivityResultLauncher<String> by lifecycleObject {
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            indexerModel.reindex()
+        }
+    }
+
+    private val sortItem: MenuItem by lifecycleObject { binding ->
+        binding.homeToolbar.menu.findItem(R.id.submenu_sorting)
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentHomeBinding.inflate(inflater)
 
     override fun onBindingCreated(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
-        // Build the permission launcher here as you can only do it in onCreateView/onCreate
-        storagePermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                indexerModel.reindex()
-            }
-
         binding.homeAppbar.apply {
             addOnOffsetChangedListener { _, offset ->
                 val range = binding.homeAppbar.totalScrollRange
@@ -100,10 +102,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             }
         }
 
-        binding.homeToolbar.apply {
-            sortItem = menu.findItem(R.id.submenu_sorting)
-            setOnMenuItemClickListener(this@HomeFragment)
-        }
+        binding.homeToolbar.setOnMenuItemClickListener(this@HomeFragment)
 
         updateTabConfiguration()
 
@@ -151,8 +150,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
         super.onDestroyBinding(binding)
         binding.homeToolbar.setOnMenuItemClickListener(null)
-        storagePermissionLauncher = null
-        sortItem = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -246,9 +243,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun updateSortMenu(displayMode: DisplayMode, isVisible: (Int) -> Boolean) {
-        val sortMenu =
-            requireNotNull(sortItem?.subMenu) { "Cannot update sort menu while detached" }
-
+        val sortMenu = requireNotNull(sortItem.subMenu)
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 
         for (option in sortMenu) {
@@ -323,18 +318,14 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     }
                 }
                 is Indexer.Response.NoPerms -> {
-                    val launcher =
-                        requireNotNull(storagePermissionLauncher) {
-                            "Cannot access permission launcher while detached"
-                        }
-
                     binding.homeIndexingProgress.visibility = View.INVISIBLE
                     binding.homeIndexingStatus.textSafe = getString(R.string.err_no_perms)
                     binding.homeIndexingAction.apply {
                         visibility = View.VISIBLE
                         text = getString(R.string.lbl_grant)
                         setOnClickListener {
-                            launcher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            storagePermissionLauncher.launch(
+                                Manifest.permission.READ_EXTERNAL_STORAGE)
                         }
                     }
                 }

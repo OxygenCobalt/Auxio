@@ -36,7 +36,6 @@ import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logE
 

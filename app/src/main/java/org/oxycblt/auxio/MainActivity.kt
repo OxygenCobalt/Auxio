@@ -30,7 +30,6 @@ import org.oxycblt.auxio.music.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isNight

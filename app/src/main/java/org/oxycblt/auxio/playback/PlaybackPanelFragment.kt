@@ -57,7 +57,9 @@ class PlaybackPanelFragment :
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
-    private var queueItem: MenuItem? = null
+    private val queueItem: MenuItem by lifecycleObject { binding ->
+        binding.playbackToolbar.menu.findItem(R.id.action_queue)
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentPlaybackPanelBinding.inflate(inflater)
@@ -82,7 +84,6 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.apply {
             setNavigationOnClickListener { navModel.mainNavigateTo(MainNavigationAction.Collapse) }
             setOnMenuItemClickListener(this@PlaybackPanelFragment)
-            queueItem = menu.findItem(R.id.action_queue)
         }
 
         binding.playbackSong.apply {
@@ -130,7 +131,6 @@ class PlaybackPanelFragment :
         binding.playbackToolbar.setOnMenuItemClickListener(null)
         binding.playbackSong.isSelected = false
         binding.playbackSeekBar.callback = null
-        queueItem = null
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -198,7 +198,6 @@ class PlaybackPanelFragment :
     }
 
     private fun updateNextUp(nextUp: List<Song>) {
-        requireNotNull(queueItem) { "Cannot update next up in non-view state" }.isEnabled =
-            nextUp.isNotEmpty()
+        queueItem.isEnabled = nextUp.isNotEmpty()
     }
 }

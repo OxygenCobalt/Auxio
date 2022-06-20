@@ -31,9 +31,9 @@ import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
@@ -48,7 +48,7 @@ class MusicDirsDialog :
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
 
     private val dirAdapter = MusicDirAdapter(this)
-    private val settings: Settings by settings()
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
     private var storageManager: StorageManager? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =

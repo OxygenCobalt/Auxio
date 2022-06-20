@@ -23,7 +23,6 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
@@ -31,6 +30,7 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SyncBackingData
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logEOrThrow
@@ -41,7 +41,7 @@ import org.oxycblt.auxio.util.logEOrThrow
  */
 class SongListFragment : HomeListFragment<Song>() {
     private val homeAdapter = SongsAdapter(this)
-    private val settings: Settings by settings()
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)

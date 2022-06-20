@@ -22,12 +22,7 @@ import android.content.SharedPreferences
 import android.os.storage.StorageManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Directory
@@ -39,55 +34,14 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.requireAttached
 import org.oxycblt.auxio.util.unlikelyToBeNull
-
-/**
- * Shortcut delegate in order to receive a [Settings] that will be created/destroyed
- * in each lifecycle.
- *
- * TODO: Replace with generalized method
- */
-fun Fragment.settings(): ReadOnlyProperty<Fragment, Settings> =
-    object : ReadOnlyProperty<Fragment, Settings>, DefaultLifecycleObserver {
-        private var settings: Settings? = null
-
-        init {
-            lifecycle.addObserver(
-                object : DefaultLifecycleObserver {
-                    override fun onCreate(owner: LifecycleOwner) {
-                        viewLifecycleOwnerLiveData.observe(this@settings) { viewLifecycleOwner ->
-                            viewLifecycleOwner.lifecycle.addObserver(this)
-                        }
-                    }
-                })
-        }
-
-        override fun getValue(thisRef: Fragment, property: KProperty<*>): Settings {
-            requireAttached()
-
-            val currentSettings = settings
-            if (currentSettings != null) {
-                return currentSettings
-            }
-
-            val newSettings = Settings(requireContext())
-            settings = newSettings
-            return newSettings
-        }
-
-        override fun onDestroy(owner: LifecycleOwner) {
-            settings?.release()
-            settings = null
-        }
-    }
 
 /**
  * Auxio's settings.
  *
- * This object wraps [SharedPreferences] in a type-safe manner, allowing access to all of the
- * major settings that Auxio uses. Mutability is determined by use, as some values are written
- * by PreferenceManager and others are written by Auxio's code.
+ * This object wraps [SharedPreferences] in a type-safe manner, allowing access to all of the major
+ * settings that Auxio uses. Mutability is determined by use, as some values are written by
+ * PreferenceManager and others are written by Auxio's code.
  *
  * @author OxygenCobalt
  */

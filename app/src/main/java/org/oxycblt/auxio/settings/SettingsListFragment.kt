@@ -56,7 +56,6 @@ import org.oxycblt.auxio.util.showToast
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val settings: Settings by settings()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -134,6 +133,8 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     /** Recursively handle a preference, doing any specific actions on it. */
     private fun recursivelyHandlePreference(preference: Preference) {
+        val settings = Settings(requireContext())
+
         if (!preference.isVisible) return
 
         if (preference is PreferenceCategory) {

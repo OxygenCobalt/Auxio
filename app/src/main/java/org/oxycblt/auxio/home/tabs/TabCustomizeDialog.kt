@@ -26,11 +26,10 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.requireAttached
 
 /**
  * The dialog for customizing library tabs.
@@ -38,9 +37,10 @@ import org.oxycblt.auxio.util.requireAttached
  */
 class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
     private val tabAdapter = TabAdapter(this)
-    private val settings: Settings by settings()
-    private var touchHelper: ItemTouchHelper? = null
-    private var callback: TabDragCallback? = null
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
+    private val touchHelper: ItemTouchHelper by lifecycleObject {
+        ItemTouchHelper(TabDragCallback(tabAdapter))
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogTabsBinding.inflate(inflater)
 
@@ -65,7 +65,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
 
         binding.tabRecycler.apply {
             adapter = tabAdapter
-            requireTouchHelper().attachToRecyclerView(this)
+            touchHelper.attachToRecyclerView(this)
         }
     }
 
@@ -99,7 +99,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
     }
 
     override fun onPickUpTab(viewHolder: RecyclerView.ViewHolder) {
-        requireTouchHelper().startDrag(viewHolder)
+        touchHelper.startDrag(viewHolder)
     }
 
     private fun findSavedTabState(savedInstanceState: Bundle?): Array<Tab>? {
@@ -109,19 +109,6 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
         }
 
         return null
-    }
-
-    private fun requireTouchHelper(): ItemTouchHelper {
-        requireAttached()
-        val instance = touchHelper
-        if (instance != null) {
-            return instance
-        }
-        val newCallback = TabDragCallback(tabAdapter)
-        val newInstance = ItemTouchHelper(newCallback)
-        callback = newCallback
-        touchHelper = newInstance
-        return newInstance
     }
 
     companion object {

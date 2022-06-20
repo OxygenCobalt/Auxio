@@ -24,8 +24,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
 class AccentCustomizeDialog :
     ViewBindingDialogFragment<DialogAccentBinding>(), AccentAdapter.Listener {
     private var accentAdapter = AccentAdapter(this)
-    private val settings: Settings by settings()
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 

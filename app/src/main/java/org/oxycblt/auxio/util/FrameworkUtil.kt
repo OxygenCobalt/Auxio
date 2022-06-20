@@ -157,11 +157,6 @@ val RecyclerView.canScroll: Boolean
 val @receiver:ColorRes Int.stateList
     get() = ColorStateList.valueOf(this)
 
-/** Require the fragment is attached to an activity. */
-fun Fragment.requireAttached() {
-    check(!isDetached) { "Fragment is detached from activity" }
-}
-
 /**
  * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a
  * shortcut intended to correctly launch a co-routine on a fragment in a way that won't cause

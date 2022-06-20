@@ -26,8 +26,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogPreAmpBinding
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -35,7 +35,7 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  */
 class PreAmpCustomizeDialog : ViewBindingDialogFragment<DialogPreAmpBinding>() {
-    private val settings: Settings by settings()
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogPreAmpBinding.inflate(inflater)
 

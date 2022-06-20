@@ -29,7 +29,6 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.launch
-import org.oxycblt.auxio.util.requireAttached
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
@@ -37,9 +36,10 @@ import org.oxycblt.auxio.util.requireAttached
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private var queueAdapter = QueueAdapter(this)
-    private var touchHelper: ItemTouchHelper? = null
-    private var callback: QueueDragCallback? = null
+    private val queueAdapter = QueueAdapter(this)
+    private val touchHelper: ItemTouchHelper by lifecycleObject {
+        ItemTouchHelper(QueueDragCallback(playbackModel))
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentQueueBinding.inflate(inflater)
 
@@ -48,7 +48,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         binding.queueRecycler.apply {
             adapter = queueAdapter
-            requireTouchHelper().attachToRecyclerView(this)
+            touchHelper.attachToRecyclerView(this)
         }
 
         // --- VIEWMODEL SETUP ----
@@ -59,12 +59,10 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
     override fun onDestroyBinding(binding: FragmentQueueBinding) {
         super.onDestroyBinding(binding)
         binding.queueRecycler.adapter = null
-        touchHelper = null
-        callback = null
     }
 
     override fun onPickUp(viewHolder: RecyclerView.ViewHolder) {
-        requireTouchHelper().startDrag(viewHolder)
+        touchHelper.startDrag(viewHolder)
     }
 
     private fun updateQueue(queue: List<Song>) {
@@ -74,18 +72,5 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
         }
 
         queueAdapter.data.submitList(queue.toMutableList())
-    }
-
-    private fun requireTouchHelper(): ItemTouchHelper {
-        requireAttached()
-        val instance = touchHelper
-        if (instance != null) {
-            return instance
-        }
-        val newCallback = QueueDragCallback(playbackModel)
-        val newInstance = ItemTouchHelper(newCallback)
-        callback = newCallback
-        touchHelper = newInstance
-        return newInstance
     }
 }
