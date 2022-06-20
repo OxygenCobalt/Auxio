@@ -17,9 +17,10 @@
  
 package org.oxycblt.auxio.playback
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,9 +32,12 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
+import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logE
 
 /**
@@ -44,12 +48,13 @@ import org.oxycblt.auxio.util.logE
  *
  * @author OxygenCobalt
  */
-class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore.Callback {
+class PlaybackViewModel(application: Application) :
+    AndroidViewModel(application), PlaybackStateManager.Callback, MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(application)
     private val playbackManager = PlaybackStateManager.getInstance()
 
-    private var pendingDelayedAction: DelayedActionImpl? = null
+    private var pendingDelayedAction: DelayedAction? = null
 
     private val _song = MutableStateFlow<Song?>(null)
     /** The current song. */
@@ -85,12 +90,10 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     // --- PLAYING FUNCTIONS ---
 
-    /**
-     * Play a [song] with the [mode] specified. [mode] will default to the preferred song playback
-     * mode of the user if not specified.
-     */
-    fun play(song: Song, mode: PlaybackMode = settingsManager.songPlaybackMode) {
-        playbackManager.play(song, mode)
+    /** Play a [song] with the [mode] specified, */
+    fun play(song: Song, mode: PlaybackMode) {
+        playbackManager.play(
+            song, settings.keepShuffle && playbackManager.isPlaying, mode, settings)
     }
 
     /**
@@ -103,7 +106,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
             return
         }
 
-        playbackManager.play(album, shuffled)
+        playbackManager.play(album, shuffled, settings)
     }
 
     /**
@@ -116,7 +119,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
             return
         }
 
-        playbackManager.play(artist, shuffled)
+        playbackManager.play(artist, shuffled, settings)
     }
 
     /**
@@ -129,12 +132,12 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
             return
         }
 
-        playbackManager.play(genre, shuffled)
+        playbackManager.play(genre, shuffled, settings)
     }
 
     /** Shuffle all songs */
     fun shuffleAll() {
-        playbackManager.shuffleAll()
+        playbackManager.shuffleAll(settings)
     }
 
     /**
@@ -149,26 +152,29 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
      * We would normally want to put this kind of functionality into PlaybackService, but it's
      * lifecycle makes that more or less impossible.
      */
-    fun startDelayedAction(context: Context, action: DelayedAction) {
+    fun startDelayedAction(action: DelayedAction) {
         val library = musicStore.library
-        val actionImpl = DelayedActionImpl(context.applicationContext, action)
         if (library != null) {
-            performActionImpl(actionImpl, library)
+            performActionImpl(action, library)
         } else {
-            pendingDelayedAction = actionImpl
+            pendingDelayedAction = action
         }
     }
 
-    private fun performActionImpl(action: DelayedActionImpl, library: MusicStore.Library) {
-        when (action.inner) {
+    private fun performActionImpl(action: DelayedAction, library: MusicStore.Library) {
+        when (action) {
             is DelayedAction.RestoreState -> {
                 if (!playbackManager.isInitialized) {
-                    viewModelScope.launch { playbackManager.restoreState(action.context) }
+                    viewModelScope.launch {
+                        playbackManager.restoreState(PlaybackStateDatabase.getInstance(application))
+                    }
                 }
             }
             is DelayedAction.ShuffleAll -> shuffleAll()
             is DelayedAction.Open -> {
-                library.findSongForUri(action.context, action.inner.uri)?.let(::play)
+                library.findSongForUri(application, action.uri)?.let { song ->
+                    play(song, settings.songPlaybackMode)
+                }
             }
         }
     }
@@ -219,17 +225,17 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     /** Add an [Album] to the top of the queue. */
     fun playNext(album: Album) {
-        playbackManager.playNext(settingsManager.detailAlbumSort.songs(album.songs))
+        playbackManager.playNext(settings.detailAlbumSort.songs(album.songs))
     }
 
     /** Add an [Artist] to the top of the queue. */
     fun playNext(artist: Artist) {
-        playbackManager.playNext(settingsManager.detailArtistSort.songs(artist.songs))
+        playbackManager.playNext(settings.detailArtistSort.songs(artist.songs))
     }
 
     /** Add a [Genre] to the top of the queue. */
     fun playNext(genre: Genre) {
-        playbackManager.playNext(settingsManager.detailGenreSort.songs(genre.songs))
+        playbackManager.playNext(settings.detailGenreSort.songs(genre.songs))
     }
 
     /** Add a [Song] to the end of the queue. */
@@ -239,17 +245,17 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     /** Add an [Album] to the end of the queue. */
     fun addToQueue(album: Album) {
-        playbackManager.addToQueue(settingsManager.detailAlbumSort.songs(album.songs))
+        playbackManager.addToQueue(settings.detailAlbumSort.songs(album.songs))
     }
 
     /** Add an [Artist] to the end of the queue. */
     fun addToQueue(artist: Artist) {
-        playbackManager.addToQueue(settingsManager.detailArtistSort.songs(artist.songs))
+        playbackManager.addToQueue(settings.detailArtistSort.songs(artist.songs))
     }
 
     /** Add a [Genre] to the end of the queue. */
     fun addToQueue(genre: Genre) {
-        playbackManager.addToQueue(settingsManager.detailGenreSort.songs(genre.songs))
+        playbackManager.addToQueue(settings.detailGenreSort.songs(genre.songs))
     }
 
     // --- STATUS FUNCTIONS ---
@@ -261,7 +267,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
 
     /** Flip the shuffle status, e.g from on to off. Will keep song by default. */
     fun invertShuffled() {
-        playbackManager.reshuffle(!playbackManager.isShuffled)
+        playbackManager.reshuffle(!playbackManager.isShuffled, settings)
     }
 
     /** Increment the repeat mode, e.g from [RepeatMode.NONE] to [RepeatMode.ALL] */
@@ -277,7 +283,7 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
      */
     fun savePlaybackState(context: Context, onDone: () -> Unit) {
         viewModelScope.launch {
-            playbackManager.saveState(context)
+            playbackManager.saveState(PlaybackStateDatabase.getInstance(context))
             onDone()
         }
     }
@@ -288,8 +294,6 @@ class PlaybackViewModel : ViewModel(), PlaybackStateManager.Callback, MusicStore
         object ShuffleAll : DelayedAction()
         data class Open(val uri: Uri) : DelayedAction()
     }
-
-    private data class DelayedActionImpl(val context: Context, val inner: DelayedAction)
 
     // --- OVERRIDES ---
 

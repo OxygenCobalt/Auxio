@@ -25,14 +25,15 @@ import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.playback.PlaybackViewModel
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
@@ -44,11 +45,10 @@ import org.oxycblt.auxio.util.showToast
  */
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {
-    private val settingsManager = SettingsManager.getInstance()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
 
-    private val playbackModel: PlaybackViewModel by activityViewModels()
     private val dirAdapter = MusicDirAdapter(this)
-
+    private val settings: Settings by settings()
     private var storageManager: StorageManager? = null
 
     override fun onCreateBinding(inflater: LayoutInflater) =
@@ -80,7 +80,7 @@ class MusicDirsDialog :
             }
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                val dirs = settingsManager.getMusicDirs(requireContext(), requireStorageManager())
+                val dirs = settings.getMusicDirs(requireStorageManager())
 
                 if (dirs.dirs != dirAdapter.data.currentList ||
                     dirs.shouldInclude != isInclude(requireBinding())) {
@@ -99,7 +99,7 @@ class MusicDirsDialog :
         }
 
         val storageManager = requireStorageManager()
-        var dirs = settingsManager.getMusicDirs(requireContext(), storageManager)
+        var dirs = settings.getMusicDirs(storageManager)
 
         if (savedInstanceState != null) {
             val pendingDirs = savedInstanceState.getStringArrayList(KEY_PENDING_DIRS)
@@ -187,8 +187,7 @@ class MusicDirsDialog :
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 
     private fun saveAndRestart() {
-        settingsManager.setMusicDirs(
-            MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding())))
+        settings.setMusicDirs(MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding())))
 
         playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
     }

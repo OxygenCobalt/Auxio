@@ -32,6 +32,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.launch
 
 /**
@@ -40,7 +41,7 @@ import org.oxycblt.auxio.util.launch
  * @author OxygenCobalt
  */
 class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
     private var callback: DynamicBackPressedCallback? = null
 

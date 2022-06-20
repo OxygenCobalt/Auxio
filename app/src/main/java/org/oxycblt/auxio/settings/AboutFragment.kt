@@ -25,7 +25,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.core.net.toUri
 import androidx.core.view.updatePadding
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.oxycblt.auxio.BuildConfig
@@ -37,6 +36,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.launch
@@ -49,7 +49,7 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  */
 class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
-    private val homeModel: HomeViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by androidActivityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentAboutBinding.inflate(inflater)
 

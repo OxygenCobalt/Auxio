@@ -36,6 +36,8 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
@@ -57,6 +59,7 @@ class SearchFragment :
     private val searchModel: SearchViewModel by androidViewModels()
 
     private val searchAdapter = SearchAdapter(this)
+    private val settings: Settings by settings()
     private var imm: InputMethodManager? = null
     private var launchedKeyboard = false
 
@@ -124,7 +127,7 @@ class SearchFragment :
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> playbackModel.play(item)
+            is Song -> playbackModel.play(item, settings.songPlaybackMode)
             is MusicParent -> navModel.exploreNavigateTo(item)
         }
     }

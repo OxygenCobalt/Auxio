@@ -31,7 +31,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -46,9 +46,9 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     Player.Listener,
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Callback,
-    SettingsManager.Callback {
+    Settings.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(context, this)
     private val mediaSession =
         MediaSessionCompat(context, context.packageName).apply { isActive = true }
     private val provider = BitmapProvider(context)
@@ -59,7 +59,6 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     init {
         player.addListener(this)
         playbackManager.addCallback(this)
-        settingsManager.addCallback(this)
         mediaSession.setCallback(this)
     }
 
@@ -69,9 +68,9 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
     fun release() {
         provider.release()
+        settings.release()
         player.removeListener(this)
         playbackManager.removeCallback(this)
-        settingsManager.removeCallback(this)
 
         mediaSession.apply {
             isActive = false
@@ -218,7 +217,8 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
     override fun onSetShuffleMode(shuffleMode: Int) {
         playbackManager.reshuffle(
             shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ||
-                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP)
+                shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_GROUP,
+            settings)
     }
 
     override fun onStop() {

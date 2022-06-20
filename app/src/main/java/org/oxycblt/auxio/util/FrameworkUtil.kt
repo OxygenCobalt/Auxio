@@ -27,7 +27,9 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.annotation.ColorRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.WindowInsetsCompat
@@ -174,6 +176,9 @@ fun Fragment.launch(
 
 inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
+
+inline fun <reified T : AndroidViewModel> AppCompatActivity.androidViewModels() =
+    viewModels<T> { ViewModelProvider.AndroidViewModelFactory(application) }
 
 inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
     activityViewModels<T> {

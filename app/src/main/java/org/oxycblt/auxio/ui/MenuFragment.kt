@@ -29,6 +29,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
@@ -41,7 +42,7 @@ import org.oxycblt.auxio.util.showToast
 abstract class MenuFragment<T : ViewBinding> : ViewBindingFragment<T>() {
     private var currentMenu: PopupMenu? = null
 
-    protected val playbackModel: PlaybackViewModel by activityViewModels()
+    protected val playbackModel: PlaybackViewModel by androidActivityViewModels()
     protected val navModel: NavigationViewModel by activityViewModels()
 
     /**

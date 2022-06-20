@@ -34,9 +34,11 @@ class MusicStore private constructor() {
 
     var library: Library? = null
         set(value) {
-            field = value
-            for (callback in callbacks) {
-                callback.onLibraryChanged(library)
+            synchronized(this) {
+                field = value
+                for (callback in callbacks) {
+                    callback.onLibraryChanged(library)
+                }
             }
         }
 

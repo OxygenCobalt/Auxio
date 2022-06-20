@@ -55,6 +55,7 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.launch
@@ -71,9 +72,9 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuItemClickListener {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
-    private val homeModel: HomeViewModel by activityViewModels()
+    private val homeModel: HomeViewModel by androidActivityViewModels()
     private val indexerModel: IndexerViewModel by activityViewModels()
 
     private var storagePermissionLauncher: ActivityResultLauncher<String>? = null

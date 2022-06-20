@@ -17,7 +17,8 @@
  
 package org.oxycblt.auxio.home
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.oxycblt.auxio.home.tabs.Tab
@@ -26,18 +27,20 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 
 /**
  * The ViewModel for managing [HomeFragment]'s data, sorting modes, and tab state.
  * @author OxygenCobalt
  */
-class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback {
+class HomeViewModel(application: Application) :
+    AndroidViewModel(application), Settings.Callback, MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(application, this)
 
     private val _songs = MutableStateFlow(listOf<Song>())
     val songs: StateFlow<List<Song>>
@@ -60,7 +63,7 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     /** Internal getter for getting the visible library tabs */
     private val visibleTabs: List<DisplayMode>
-        get() = settingsManager.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
+        get() = settings.libTabs.filterIsInstance<Tab.Visible>().map { it.mode }
 
     private val _currentTab = MutableStateFlow(tabs[0])
     val currentTab: StateFlow<DisplayMode> = _currentTab
@@ -77,7 +80,6 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     init {
         musicStore.addCallback(this)
-        settingsManager.addCallback(this)
     }
 
     /** Update the current tab based off of the new ViewPager position. */
@@ -93,10 +95,10 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     /** Get the specific sort for the given [DisplayMode]. */
     fun getSortForDisplay(displayMode: DisplayMode): Sort {
         return when (displayMode) {
-            DisplayMode.SHOW_SONGS -> settingsManager.libSongSort
-            DisplayMode.SHOW_ALBUMS -> settingsManager.libAlbumSort
-            DisplayMode.SHOW_ARTISTS -> settingsManager.libArtistSort
-            DisplayMode.SHOW_GENRES -> settingsManager.libGenreSort
+            DisplayMode.SHOW_SONGS -> settings.libSongSort
+            DisplayMode.SHOW_ALBUMS -> settings.libAlbumSort
+            DisplayMode.SHOW_ARTISTS -> settings.libArtistSort
+            DisplayMode.SHOW_GENRES -> settings.libGenreSort
         }
     }
 
@@ -105,19 +107,19 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
         logD("Updating ${_currentTab.value} sort to $sort")
         when (_currentTab.value) {
             DisplayMode.SHOW_SONGS -> {
-                settingsManager.libSongSort = sort
+                settings.libSongSort = sort
                 _songs.value = sort.songs(_songs.value)
             }
             DisplayMode.SHOW_ALBUMS -> {
-                settingsManager.libAlbumSort = sort
+                settings.libAlbumSort = sort
                 _albums.value = sort.albums(_albums.value)
             }
             DisplayMode.SHOW_ARTISTS -> {
-                settingsManager.libArtistSort = sort
+                settings.libArtistSort = sort
                 _artists.value = sort.artists(_artists.value)
             }
             DisplayMode.SHOW_GENRES -> {
-                settingsManager.libGenreSort = sort
+                settings.libGenreSort = sort
                 _genres.value = sort.genres(_genres.value)
             }
         }
@@ -136,10 +138,10 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
 
     override fun onLibraryChanged(library: MusicStore.Library?) {
         if (library != null) {
-            _songs.value = settingsManager.libSongSort.songs(library.songs)
-            _albums.value = settingsManager.libAlbumSort.albums(library.albums)
-            _artists.value = settingsManager.libArtistSort.artists(library.artists)
-            _genres.value = settingsManager.libGenreSort.genres(library.genres)
+            _songs.value = settings.libSongSort.songs(library.songs)
+            _albums.value = settings.libAlbumSort.albums(library.albums)
+            _artists.value = settings.libArtistSort.artists(library.artists)
+            _genres.value = settings.libGenreSort.genres(library.genres)
         }
     }
 
@@ -151,6 +153,6 @@ class HomeViewModel : ViewModel(), SettingsManager.Callback, MusicStore.Callback
     override fun onCleared() {
         super.onCleared()
         musicStore.removeCallback(this)
-        settingsManager.removeCallback(this)
+        settings.release()
     }
 }

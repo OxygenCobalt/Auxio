@@ -20,13 +20,13 @@ package org.oxycblt.auxio.home.list
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.home.HomeViewModel
 import org.oxycblt.auxio.home.fastscroll.FastScrollRecyclerView
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.MenuItemListener
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.applySpans
 
 /**
@@ -38,7 +38,7 @@ abstract class HomeListFragment<T : Item> :
     MenuItemListener,
     FastScrollRecyclerView.PopupProvider,
     FastScrollRecyclerView.OnFastScrollListener {
-    protected val homeModel: HomeViewModel by activityViewModels()
+    protected val homeModel: HomeViewModel by androidActivityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         FragmentHomeListBinding.inflate(inflater)

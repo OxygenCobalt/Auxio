@@ -48,9 +48,10 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
+import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.widgets.WidgetComponent
 import org.oxycblt.auxio.widgets.WidgetProvider
@@ -74,10 +75,10 @@ class PlaybackService :
     Player.Listener,
     NotificationComponent.Callback,
     PlaybackStateManager.Controller,
-    SettingsManager.Callback {
+    Settings.Callback {
     // Player components
     private lateinit var player: ExoPlayer
-    private val replayGainProcessor = ReplayGainAudioProcessor()
+    private lateinit var replayGainProcessor: ReplayGainAudioProcessor
 
     // System backend components
     private lateinit var notificationComponent: NotificationComponent
@@ -87,7 +88,7 @@ class PlaybackService :
 
     // Managers
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private lateinit var settings: Settings
 
     // State
     private var isForeground = false
@@ -104,6 +105,8 @@ class PlaybackService :
         super.onCreate()
 
         // --- PLAYER SETUP ---
+
+        replayGainProcessor = ReplayGainAudioProcessor(this)
 
         player = newPlayer()
         player.addListener(this)
@@ -138,8 +141,9 @@ class PlaybackService :
 
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
+        settings = Settings(this, this)
+
         playbackManager.registerController(this)
-        settingsManager.addCallback(this)
 
         logD("Service created")
     }
@@ -166,7 +170,7 @@ class PlaybackService :
         playbackManager.isPlaying = false
 
         playbackManager.unregisterController(this)
-        settingsManager.removeCallback(this)
+        settings.release()
         unregisterReceiver(systemReceiver)
         serviceJob.cancel()
 
@@ -196,7 +200,10 @@ class PlaybackService :
         when (state) {
             Player.STATE_ENDED -> {
                 if (playbackManager.repeatMode == RepeatMode.TRACK) {
-                    playbackManager.repeat()
+                    playbackManager.rewind()
+                    if (settings.pauseOnRepeat) {
+                        playbackManager.isPlaying = false
+                    }
                 } else {
                     playbackManager.next()
                 }
@@ -261,7 +268,7 @@ class PlaybackService :
     }
 
     override fun shouldPrevRewind() =
-        settingsManager.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
+        settings.rewindWithPrev && player.currentPosition > REWIND_THRESHOLD
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         player.playWhenReady = isPlaying
@@ -269,13 +276,13 @@ class PlaybackService :
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
-        if (!settingsManager.useAltNotifAction) {
+        if (!settings.useAltNotifAction) {
             notificationComponent.updateRepeatMode(repeatMode)
         }
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
-        if (settingsManager.useAltNotifAction) {
+        if (settings.useAltNotifAction) {
             notificationComponent.updateShuffled(isShuffled)
         }
     }
@@ -293,7 +300,7 @@ class PlaybackService :
     }
 
     override fun onNotifSettingsChanged() {
-        if (settingsManager.useAltNotifAction) {
+        if (settings.useAltNotifAction) {
             onShuffledChanged(playbackManager.isShuffled)
         } else {
             onRepeatChanged(playbackManager.repeatMode)
@@ -353,7 +360,9 @@ class PlaybackService :
     private fun stopAndSave() {
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         isForeground = false
-        saveScope.launch { playbackManager.saveState(this@PlaybackService) }
+        saveScope.launch {
+            playbackManager.saveState(PlaybackStateDatabase.getInstance(this@PlaybackService))
+        }
     }
 
     /** A [BroadcastReceiver] for receiving general playback events from the system. */
@@ -386,7 +395,8 @@ class PlaybackService :
                 ACTION_PLAY_PAUSE -> playbackManager.isPlaying = !playbackManager.isPlaying
                 ACTION_INC_REPEAT_MODE ->
                     playbackManager.repeatMode = playbackManager.repeatMode.increment()
-                ACTION_INVERT_SHUFFLE -> playbackManager.reshuffle(!playbackManager.isShuffled)
+                ACTION_INVERT_SHUFFLE ->
+                    playbackManager.reshuffle(!playbackManager.isShuffled, settings)
                 ACTION_SKIP_PREV -> playbackManager.prev()
                 ACTION_SKIP_NEXT -> playbackManager.next()
                 ACTION_EXIT -> {
@@ -408,7 +418,7 @@ class PlaybackService :
          */
         private fun maybeResumeFromPlug() {
             if (playbackManager.song != null &&
-                settingsManager.headsetAutoplay &&
+                settings.headsetAutoplay &&
                 initialHeadsetPlugEventHandled) {
                 logD("Device connected, resuming")
                 playbackManager.isPlaying = true

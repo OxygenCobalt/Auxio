@@ -41,7 +41,7 @@ import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.music.useQuery
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
@@ -125,10 +125,10 @@ abstract class MediaStoreBackend : Indexer.Backend {
     protected val volumes = mutableListOf<StorageVolume>()
 
     override fun query(context: Context): Cursor {
-        val settingsManager = SettingsManager.getInstance()
+        val settings = Settings(context)
         val storageManager = context.getSystemServiceSafe(StorageManager::class)
         volumes.addAll(storageManager.storageVolumesCompat)
-        val dirs = settingsManager.getMusicDirs(context, storageManager)
+        val dirs = settings.getMusicDirs(storageManager)
 
         val args = mutableListOf<String>()
         var selector = BASE_SELECTOR
@@ -144,8 +144,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
                     " AND NOT ("
                 }
 
-            // Since selector arguments are contained within a single parentheses, we need to
-            // do a bunch of stuff.
+            // Each impl adds the directories that they want selected.
             for (i in dirs.dirs.indices) {
                 if (addDirToSelectorArgs(dirs.dirs[i], args)) {
                     selector +=
@@ -510,8 +509,9 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
         val relativePath = cursor.getStringOrNull(relativePathIndex)
 
         // We now have access to the volume name, so we try to leverage it instead.
-        // I have no idea how well this works in practice, so we still leverage
-        // the API 21 path grokking in the case that these fields are not sane.
+        // I have no idea how well this works in practice, but I assume that the fields
+        // probably exist.
+        // TODO: Remove redundant null checks for fields you are pretty sure are not null.
         if (volumeName != null && relativePath != null) {
             // Iterating through the volume list is cheaper than creating a map,
             // interestingly enough.

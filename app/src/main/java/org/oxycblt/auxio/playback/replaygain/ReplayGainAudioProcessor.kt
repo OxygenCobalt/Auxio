@@ -17,6 +17,7 @@
  
 package org.oxycblt.auxio.playback.replaygain
 
+import android.content.Context
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.audio.AudioProcessor
 import com.google.android.exoplayer2.audio.BaseAudioProcessor
@@ -27,7 +28,7 @@ import java.nio.ByteBuffer
 import kotlin.math.pow
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -42,12 +43,12 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  *
  * @author OxygenCobalt
  */
-class ReplayGainAudioProcessor : BaseAudioProcessor() {
+class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
     private data class Gain(val track: Float, val album: Float)
     private data class GainTag(val key: String, val value: Float)
 
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(context)
 
     private var volume = 1f
         set(value) {
@@ -63,20 +64,20 @@ class ReplayGainAudioProcessor : BaseAudioProcessor() {
      * based off Vanilla Music's implementation, but has diverged to a significant extent.
      */
     fun applyReplayGain(metadata: Metadata?) {
-        if (settingsManager.replayGainMode == ReplayGainMode.OFF) {
+        if (settings.replayGainMode == ReplayGainMode.OFF) {
             logD("ReplayGain not enabled")
             volume = 1f
             return
         }
 
         val gain = metadata?.let(::parseReplayGain)
-        val preAmp = settingsManager.replayGainPreAmp
+        val preAmp = settings.replayGainPreAmp
 
         val adjust =
             if (gain != null) {
                 // ReplayGain is configurable, so determine what to do based off of the mode.
                 val useAlbumGain =
-                    when (settingsManager.replayGainMode) {
+                    when (settings.replayGainMode) {
                         ReplayGainMode.OFF -> throw IllegalStateException()
 
                         // User wants track gain to be preferred. Default to album gain only if

@@ -36,7 +36,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MimeType
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
@@ -62,7 +62,7 @@ class DetailViewModel(application: Application) :
     )
 
     private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(application)
 
     private val _currentSong = MutableStateFlow<DetailSong?>(null)
     val currentSong: StateFlow<DetailSong?>
@@ -77,9 +77,9 @@ class DetailViewModel(application: Application) :
         get() = _albumData
 
     var albumSort: Sort
-        get() = settingsManager.detailAlbumSort
+        get() = settings.detailAlbumSort
         set(value) {
-            settingsManager.detailAlbumSort = value
+            settings.detailAlbumSort = value
             currentAlbum.value?.let(::refreshAlbumData)
         }
 
@@ -91,9 +91,9 @@ class DetailViewModel(application: Application) :
     val artistData: StateFlow<List<Item>> = _artistData
 
     var artistSort: Sort
-        get() = settingsManager.detailArtistSort
+        get() = settings.detailArtistSort
         set(value) {
-            settingsManager.detailArtistSort = value
+            settings.detailArtistSort = value
             currentArtist.value?.let(::refreshArtistData)
         }
 
@@ -105,9 +105,9 @@ class DetailViewModel(application: Application) :
     val genreData: StateFlow<List<Item>> = _genreData
 
     var genreSort: Sort
-        get() = settingsManager.detailGenreSort
+        get() = settings.detailGenreSort
         set(value) {
-            settingsManager.detailGenreSort = value
+            settings.detailGenreSort = value
             currentGenre.value?.let(::refreshGenreData)
         }
 

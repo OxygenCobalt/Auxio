@@ -29,7 +29,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.playback.state.RepeatMode
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.logD
 
@@ -41,15 +41,14 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 class WidgetComponent(private val context: Context) :
-    PlaybackStateManager.Callback, SettingsManager.Callback {
+    PlaybackStateManager.Callback, Settings.Callback {
     private val playbackManager = PlaybackStateManager.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(context, this)
     private val widget = WidgetProvider()
     private val provider = BitmapProvider(context)
 
     init {
         playbackManager.addCallback(this)
-        settingsManager.addCallback(this)
 
         if (playbackManager.isInitialized) {
             update()
@@ -129,9 +128,9 @@ class WidgetComponent(private val context: Context) :
      */
     fun release() {
         provider.release()
+        settings.release()
         widget.reset(context)
         playbackManager.removeCallback(this)
-        settingsManager.removeCallback(this)
     }
 
     // --- CALLBACKS ---

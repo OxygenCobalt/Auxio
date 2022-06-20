@@ -10,6 +10,10 @@
 - Fixed seam that would appear on some album covers
 - Fixed visual issue with the queue opening animation
 
+#### Dev/Meta
+- Migrated preferences from shared object to utility
+- Removed 2.0.0 compat code
+
 ## v2.4.0
 
 #### What's New

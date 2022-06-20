@@ -45,7 +45,7 @@ import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.source
 import org.oxycblt.auxio.music.Album
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -56,19 +56,19 @@ import org.oxycblt.auxio.util.logW
  * TODO: Artist images
  */
 abstract class BaseFetcher : Fetcher {
-    private val settingsManager = SettingsManager.getInstance()
-
     /**
      * Fetch the artwork of an [album]. This call respects user configuration and has proper
      * redundancy in the case that metadata fails to load.
      */
     protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
-        if (!settingsManager.showCovers) {
+        val settings = Settings(context)
+
+        if (!settings.showCovers) {
             return null
         }
 
         return try {
-            if (settingsManager.useQualityCovers) {
+            if (settings.useQualityCovers) {
                 fetchQualityCovers(context, album)
             } else {
                 fetchMediaStoreCovers(context, album)

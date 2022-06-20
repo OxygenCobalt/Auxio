@@ -20,7 +20,6 @@ package org.oxycblt.auxio.playback.queue
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +27,7 @@ import org.oxycblt.auxio.databinding.FragmentQueueBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.requireAttached
 
@@ -36,7 +36,7 @@ import org.oxycblt.auxio.util.requireAttached
  * @author OxygenCobalt
  */
 class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemListener {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private var queueAdapter = QueueAdapter(this)
     private var touchHelper: ItemTouchHelper? = null
     private var callback: QueueDragCallback? = null

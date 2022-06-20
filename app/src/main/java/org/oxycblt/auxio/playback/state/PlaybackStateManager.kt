@@ -17,7 +17,6 @@
  
 package org.oxycblt.auxio.playback.state
 
-import android.content.Context
 import kotlin.math.max
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +27,7 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
 
@@ -51,7 +50,6 @@ import org.oxycblt.auxio.util.logW
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
 
     /** The currently playing song. Null if there isn't one */
     val song
@@ -150,7 +148,7 @@ class PlaybackStateManager private constructor() {
      * Play a [song].
      * @param playbackMode The [PlaybackMode] to construct the queue off of.
      */
-    fun play(song: Song, playbackMode: PlaybackMode) {
+    fun play(song: Song, shuffle: Boolean, playbackMode: PlaybackMode, settings: Settings) {
         val library = musicStore.library ?: return
 
         synchronized(this) {
@@ -162,7 +160,7 @@ class PlaybackStateManager private constructor() {
                     PlaybackMode.IN_GENRE -> song.genre
                 }
 
-            applyNewQueue(library, settingsManager.keepShuffle && isShuffled, song)
+            applyNewQueue(library, settings, shuffle, song)
             seekTo(0)
             notifyNewPlayback()
             notifyShuffledChanged()
@@ -175,12 +173,12 @@ class PlaybackStateManager private constructor() {
      * Play a [parent], such as an artist or album.
      * @param shuffled Whether the queue is shuffled or not
      */
-    fun play(parent: MusicParent, shuffled: Boolean) {
+    fun play(parent: MusicParent, shuffled: Boolean, settings: Settings) {
         val library = musicStore.library ?: return
 
         synchronized(this) {
             this.parent = parent
-            applyNewQueue(library, shuffled, null)
+            applyNewQueue(library, settings, shuffled, null)
             seekTo(0)
             notifyNewPlayback()
             notifyShuffledChanged()
@@ -190,11 +188,11 @@ class PlaybackStateManager private constructor() {
     }
 
     /** Shuffle all songs. */
-    fun shuffleAll() {
+    fun shuffleAll(settings: Settings) {
         val library = musicStore.library ?: return
         synchronized(this) {
             parent = null
-            applyNewQueue(library, true, null)
+            applyNewQueue(library, settings, true, null)
             seekTo(0)
             notifyNewPlayback()
             notifyShuffledChanged()
@@ -291,17 +289,22 @@ class PlaybackStateManager private constructor() {
     }
 
     /** Set whether this instance is [shuffled]. Updates the queue accordingly. */
-    fun reshuffle(shuffled: Boolean) {
+    fun reshuffle(shuffled: Boolean, settings: Settings) {
         val library = musicStore.library ?: return
         synchronized(this) {
             val song = song ?: return
-            applyNewQueue(library, shuffled, song)
+            applyNewQueue(library, settings, shuffled, song)
             notifyQueueChanged()
             notifyShuffledChanged()
         }
     }
 
-    private fun applyNewQueue(library: MusicStore.Library, shuffled: Boolean, keep: Song?) {
+    private fun applyNewQueue(
+        library: MusicStore.Library,
+        settings: Settings,
+        shuffled: Boolean,
+        keep: Song?
+    ) {
         val newQueue = (parent?.songs ?: library.songs).toMutableList()
         val newIndex: Int
 
@@ -317,10 +320,10 @@ class PlaybackStateManager private constructor() {
             val sort =
                 parent.let { parent ->
                     when (parent) {
-                        null -> settingsManager.libSongSort
-                        is Album -> settingsManager.detailAlbumSort
-                        is Artist -> settingsManager.detailArtistSort
-                        is Genre -> settingsManager.detailGenreSort
+                        null -> settings.libSongSort
+                        is Album -> settings.detailAlbumSort
+                        is Artist -> settings.detailArtistSort
+                        is Genre -> settings.detailGenreSort
                     }
                 }
 
@@ -372,26 +375,12 @@ class PlaybackStateManager private constructor() {
     /** Rewind to the beginning of a song. */
     fun rewind() = seekTo(0)
 
-    /** Repeat the current song (in line with the user configuration). */
-    fun repeat() {
-        rewind()
-        if (settingsManager.pauseOnRepeat) {
-            synchronized(this) {
-                isPlaying = false
-            }
-        }
-    }
-
     // --- PERSISTENCE FUNCTIONS ---
 
-    /**
-     * Restore the state from the database
-     * @param context [Context] required.
-     */
-    suspend fun restoreState(context: Context) {
+    /** Restore the state from the [database] */
+    suspend fun restoreState(database: PlaybackStateDatabase) {
         val library = musicStore.library ?: return
         val start: Long
-        val database = PlaybackStateDatabase.getInstance(context)
         val state: PlaybackStateDatabase.SavedState?
 
         logD("Getting state from DB")
@@ -421,17 +410,13 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    /**
-     * Save the current state to the database.
-     * @param context [Context] required
-     */
-    suspend fun saveState(context: Context) {
+    /** Save the current state to the [database]. */
+    suspend fun saveState(database: PlaybackStateDatabase) {
         logD("Saving state to DB")
 
         // Pack the entire state and save it to the database.
         withContext(Dispatchers.IO) {
             val start = System.currentTimeMillis()
-            val database = PlaybackStateDatabase.getInstance(context)
 
             database.write(
                 synchronized(this) {

@@ -30,14 +30,10 @@ import org.oxycblt.auxio.image.ArtistImageFetcher
 import org.oxycblt.auxio.image.CrossfadeTransitionFactory
 import org.oxycblt.auxio.image.GenreImageFetcher
 import org.oxycblt.auxio.image.MusicKeyer
-import org.oxycblt.auxio.settings.SettingsManager
-import org.oxycblt.auxio.util.logD
 
 class AuxioApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
-
-        logD(BuildConfig.APPLICATION_ID + ".MainActivity")
 
         // Adding static shortcuts in a dynamic manner is better than declaring them
         // manually, as it will properly handle the difference between debug and release
@@ -54,10 +50,6 @@ class AuxioApp : Application(), ImageLoaderFactory {
                             action = INTENT_KEY_SHORTCUT_SHUFFLE
                         })
                     .build()))
-
-        // Init SettingsManager here so that there aren't any race conditions
-        // [e.g PlaybackService gets SettingsManager before activity can init SettingsManager]
-        SettingsManager.init(applicationContext)
     }
 
     override fun newImageLoader(): ImageLoader {

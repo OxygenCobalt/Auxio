@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
@@ -45,22 +45,17 @@ import org.oxycblt.auxio.util.logD
 class SearchViewModel(application: Application) :
     AndroidViewModel(application), MusicStore.Callback {
     private val musicStore = MusicStore.getInstance()
-    private val settingsManager = SettingsManager.getInstance()
+    private val settings = Settings(application)
 
     private val _searchResults = MutableStateFlow(listOf<Item>())
     /** Current search results from the last [search] call. */
     val searchResults: StateFlow<List<Item>>
         get() = _searchResults
 
-    private var _filterMode: DisplayMode? = null
     val filterMode: DisplayMode?
-        get() = _filterMode
+        get() = settings.searchFilterMode
 
     private var lastQuery: String? = null
-
-    init {
-        _filterMode = settingsManager.searchFilterMode
-    }
 
     /**
      * Use [query] to perform a search of the music library. Will push results to [searchResults].
@@ -84,28 +79,28 @@ class SearchViewModel(application: Application) :
 
             // Note: a filter mode of null means to not filter at all.
 
-            if (_filterMode == null || _filterMode == DisplayMode.SHOW_ARTISTS) {
+            if (filterMode == null || filterMode == DisplayMode.SHOW_ARTISTS) {
                 library.artists.filterByOrNull(query)?.let { artists ->
                     results.add(Header(-1, R.string.lbl_artists))
                     results.addAll(sort.artists(artists))
                 }
             }
 
-            if (_filterMode == null || _filterMode == DisplayMode.SHOW_ALBUMS) {
+            if (filterMode == null || filterMode == DisplayMode.SHOW_ALBUMS) {
                 library.albums.filterByOrNull(query)?.let { albums ->
                     results.add(Header(-2, R.string.lbl_albums))
                     results.addAll(sort.albums(albums))
                 }
             }
 
-            if (_filterMode == null || _filterMode == DisplayMode.SHOW_GENRES) {
+            if (filterMode == null || filterMode == DisplayMode.SHOW_GENRES) {
                 library.genres.filterByOrNull(query)?.let { genres ->
                     results.add(Header(-3, R.string.lbl_genres))
                     results.addAll(sort.genres(genres))
                 }
             }
 
-            if (_filterMode == null || _filterMode == DisplayMode.SHOW_SONGS) {
+            if (filterMode == null || filterMode == DisplayMode.SHOW_SONGS) {
                 library.songs.filterByOrNull(query)?.let { songs ->
                     results.add(Header(-4, R.string.lbl_songs))
                     results.addAll(sort.songs(songs))
@@ -120,7 +115,7 @@ class SearchViewModel(application: Application) :
      * Update the current filter mode with a menu [id]. New value will be pushed to [filterMode].
      */
     fun updateFilterModeWithId(@IdRes id: Int) {
-        _filterMode =
+        val newFilterMode =
             when (id) {
                 R.id.option_filter_songs -> DisplayMode.SHOW_SONGS
                 R.id.option_filter_albums -> DisplayMode.SHOW_ALBUMS
@@ -129,9 +124,9 @@ class SearchViewModel(application: Application) :
                 else -> null
             }
 
-        logD("Updating filter mode to $_filterMode")
+        logD("Updating filter mode to $newFilterMode")
 
-        settingsManager.searchFilterMode = _filterMode
+        settings.searchFilterMode = filterMode
 
         search(lastQuery)
     }

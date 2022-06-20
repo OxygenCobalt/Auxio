@@ -22,7 +22,6 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
-import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
@@ -38,6 +37,7 @@ import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.ui.accent.AccentDialog
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
@@ -54,8 +54,8 @@ import org.oxycblt.auxio.util.showToast
  */
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
-    val settingsManager = SettingsManager.getInstance()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val settings: Settings by settings()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -112,7 +112,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
         preference.apply {
             when (key) {
-                SettingsManager.KEY_THEME -> {
+                getString(R.string.set_key_theme) -> {
                     setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
 
                     onPreferenceChangeListener =
@@ -122,16 +122,17 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_ACCENT -> {
+                getString(R.string.set_key_accent) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             AccentDialog().show(childFragmentManager, AccentDialog.TAG)
                             true
                         }
 
-                    summary = context.getString(settingsManager.accent.name)
+                    // TODO: Replace with preference impl
+                    summary = context.getString(settings.accent.name)
                 }
-                SettingsManager.KEY_BLACK_THEME -> {
+                getString(R.string.set_key_black_theme) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             if (requireContext().isNight) {
@@ -141,23 +142,23 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_LIB_TABS -> {
+                getString(R.string.set_key_lib_tabs) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
                             true
                         }
                 }
-                SettingsManager.KEY_SHOW_COVERS,
-                SettingsManager.KEY_QUALITY_COVERS -> {
+                getString(R.string.set_key_show_covers),
+                getString(R.string.set_key_quality_covers) -> {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, _ ->
                             Coil.imageLoader(requireContext()).apply { this.memoryCache?.clear() }
                             true
                         }
                 }
-                SettingsManager.KEY_REPLAY_GAIN -> {
-                    notifyDependencyChange(settingsManager.replayGainMode == ReplayGainMode.OFF)
+                getString(R.string.set_key_replay_gain) -> {
+                    notifyDependencyChange(settings.replayGainMode == ReplayGainMode.OFF)
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, value ->
                             notifyDependencyChange(
@@ -165,7 +166,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_PRE_AMP -> {
+                getString(R.string.set_key_pre_amp) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             PreAmpCustomizeDialog()
@@ -173,9 +174,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_SAVE_STATE -> {
+                getString(R.string.set_key_save_state) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
+                            // FIXME: Callback can still occur on non-attached fragment
                             playbackModel.savePlaybackState(requireContext()) {
                                 requireContext().showToast(R.string.lbl_state_saved)
                             }
@@ -183,7 +185,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_REINDEX -> {
+                getString(R.string.set_key_reindex) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             playbackModel.savePlaybackState(requireContext()) {
@@ -193,7 +195,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                             true
                         }
                 }
-                SettingsManager.KEY_MUSIC_DIRS -> {
+                getString(R.string.set_key_music_dirs) -> {
                     onPreferenceClickListener =
                         Preference.OnPreferenceClickListener {
                             MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)

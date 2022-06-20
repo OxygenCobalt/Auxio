@@ -22,6 +22,8 @@ import android.view.View
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Song
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
@@ -39,6 +41,7 @@ import org.oxycblt.auxio.util.logEOrThrow
  */
 class SongListFragment : HomeListFragment<Song>() {
     private val homeAdapter = SongsAdapter(this)
+    private val settings: Settings by settings()
 
     override fun onBindingCreated(binding: FragmentHomeListBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
@@ -80,7 +83,7 @@ class SongListFragment : HomeListFragment<Song>() {
 
     override fun onItemClick(item: Item) {
         check(item is Song)
-        playbackModel.play(item)
+        playbackModel.play(item, settings.songPlaybackMode)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Note: The old way of naming keys was to prefix them with KEY_. Now it's to prefix them with auxio_. -->
+    <string name="set_key_theme" translatable="false">KEY_THEME2</string>
+    <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>
+    <string name="set_key_accent" translatable="false">auxio_accent2</string>
+    
+    <string name="set_key_lib_tabs" translatable="false">auxio_lib_tabs</string>
+    <string name="set_key_show_covers" translatable="false">KEY_SHOW_COVERS</string>
+    <string name="set_key_quality_covers" translatable="false">KEY_QUALITY_COVERS</string>
+    <string name="set_key_round_covers" translatable="false">auxio_round_covers</string>
+    <string name="set_key_alt_notif_action" translatable="false">KEY_ALT_NOTIF_ACTION</string>
+
+    <string name="set_key_headset_autoplay" translatable="false">auxio_headset_autoplay</string>
+    <string name="set_key_replay_gain" translatable="false">auxio_replay_gain</string>
+    <string name="set_key_pre_amp" translatable="false">auxio_pre_amp</string>
+    <string name="set_key_pre_amp_with" translatable="false">auxio_pre_amp_with</string>
+    <string name="set_key_pre_amp_without" translatable="false">auxio_pre_amp_without</string>
+
+    <string name="set_key_song_play_mode" translatable="false">KEY_SONG_PLAY_MODE2</string>
+    <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
+    <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
+    <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
+
+    <string name="set_key_save_state" translatable="false">auxio_save_state</string>
+    <string name="set_key_reindex" translatable="false">auxio_reindex</string>
+    <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
+    <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
+
+    <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
+
+    <string name="set_key_lib_songs_sort" translatable="false">auxio_songs_sort</string>
+    <string name="set_key_lib_albums_sort" translatable="false">auxio_albums_sort</string>
+    <string name="set_key_lib_artists_sort" translatable="false">auxio_artists_sort</string>
+    <string name="set_key_lib_genres_sort" translatable="false">auxio_genres_sort</string>
+
+    <string name="set_key_lib_album_sort" translatable="false">auxio_album_sort</string>
+    <string name="set_key_lib_artist_sort" translatable="false">auxio_artist_sort</string>
+    <string name="set_key_lib_genre_sort" translatable="false">auxio_genre_sort</string>
+
+    <string-array name="entries_theme">
+        <item>@string/set_theme_auto</item>
+        <item>@string/set_theme_day</item>
+        <item>@string/set_theme_night</item>
+    </string-array>
+
+    <integer-array name="values_theme">
+        <item>@integer/theme_auto</item>
+        <item>@integer/theme_light</item>
+        <item>@integer/theme_dark</item>
+    </integer-array>
+
+    <array name="entries_song_playback_mode">
+        <item>@string/lbl_play_all</item>
+        <item>@string/lbl_play_artist</item>
+        <item>@string/lbl_play_album</item>
+        <item>@string/lbl_play_genre</item>
+    </array>
+
+    <string-array name="values_song_playback_mode">
+        <item>@integer/play_mode_songs</item>
+        <item>@integer/play_mode_artist</item>
+        <item>@integer/play_mode_album</item>
+        <item>@integer/play_mode_genre</item>
+    </string-array>
+
+    <array name="entries_replay_gain">
+        <item>@string/lbl_off</item>
+        <item>@string/set_replay_gain_track</item>
+        <item>@string/set_replay_gain_album</item>
+        <item>@string/set_replay_gain_dynamic</item>
+    </array>
+
+    <string-array name="values_replay_gain">
+        <item>@integer/replay_gain_off</item>
+        <item>@integer/replay_gain_track</item>
+        <item>@integer/replay_gain_album</item>
+        <item>@integer/replay_gain_dynamic</item>
+    </string-array>
+
+    <integer name="theme_auto">-1</integer>
+    <integer name="theme_light">1</integer>
+    <integer name="theme_dark">2</integer>
+
+    <integer name="play_mode_genre">0xA103</integer>
+    <integer name="play_mode_artist">0xA104</integer>
+    <integer name="play_mode_album">0xA105</integer>
+    <integer name="play_mode_songs">0xA106</integer>
+
+    <integer name="replay_gain_off">0xA110</integer>
+    <integer name="replay_gain_track">0xA111</integer>
+    <integer name="replay_gain_album">0xA112</integer>
+    <integer name="replay_gain_dynamic">0xA113</integer>
+</resources>

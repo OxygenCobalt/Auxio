@@ -18,11 +18,9 @@
 package org.oxycblt.auxio
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
@@ -31,7 +29,9 @@ import org.oxycblt.auxio.databinding.ActivityMainBinding
 import org.oxycblt.auxio.music.IndexerService
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.system.PlaybackService
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
+import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
@@ -51,7 +51,7 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  */
 class MainActivity : AppCompatActivity() {
-    private val playbackModel: PlaybackViewModel by viewModels()
+    private val playbackModel: PlaybackViewModel by androidViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,17 +72,13 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, PlaybackService::class.java))
 
         // If we have a valid intent, use that. Otherwise, restore the playback state.
-        val action = intentToDelayedAction(intent) ?: PlaybackViewModel.DelayedAction.RestoreState
-
-        playbackModel.startDelayedAction(this, action)
+        playbackModel.startDelayedAction(
+            intentToDelayedAction(intent) ?: PlaybackViewModel.DelayedAction.RestoreState)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
-        intentToDelayedAction(intent)?.let { action ->
-            playbackModel.startDelayedAction(this, action)
-        }
+        intentToDelayedAction(intent)?.let(playbackModel::startDelayedAction)
     }
 
     private fun intentToDelayedAction(intent: Intent?): PlaybackViewModel.DelayedAction? {
@@ -99,45 +95,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Extracts a [Uri] from an intent as long as:
-     * - The intent is ACTION_VIEW
-     * - The intent has not already been used.
-     */
-    private fun retrieveViewUri(intent: Intent?): Uri? {
-        if (intent != null) {
-            val action = intent.action
-            val isConsumed = intent.getBooleanExtra(KEY_INTENT_USED, false)
-
-            if (action == Intent.ACTION_VIEW && !isConsumed) {
-                // Mark the intent as used so this does not fire again
-                intent.putExtra(KEY_INTENT_USED, true)
-                return intent.data
-            }
-        }
-
-        return null
-    }
-
     private fun setupTheme() {
-        val settingsManager = SettingsManager.getInstance()
+        val settings = Settings(this)
 
         // Disable theme customization above Android 12, as it's far enough in as a version to
         // the point where most phones should have an automatic option for light/dark theming.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            AppCompatDelegate.setDefaultNightMode(settingsManager.theme)
+            AppCompatDelegate.setDefaultNightMode(settings.theme)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
 
         // The black theme has a completely separate set of styles since style attributes cannot
         // be modified at runtime.
-        if (isNight && settingsManager.useBlackTheme) {
-            logD("Applying black theme [accent ${settingsManager.accent}]")
-            setTheme(settingsManager.accent.blackTheme)
+        if (isNight && settings.useBlackTheme) {
+            logD("Applying black theme [accent ${settings.accent}]")
+            setTheme(settings.accent.blackTheme)
         } else {
-            logD("Applying normal theme [accent ${settingsManager.accent}]")
-            setTheme(settingsManager.accent.theme)
+            logD("Applying normal theme [accent ${settings.accent}]")
+            setTheme(settings.accent.theme)
         }
     }
 

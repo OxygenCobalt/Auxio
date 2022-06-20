@@ -11,19 +11,19 @@
             app:icon="@drawable/ic_light"
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="@bool/enable_theme_settings"
-            app:key="KEY_THEME2"
+            app:key="@string/set_key_theme"
             app:title="@string/set_theme" />
 
         <Preference
             app:icon="@drawable/ic_accent"
-            app:key="auxio_accent2"
+            app:key="@string/set_key_accent"
             app:title="@string/set_accent" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="KEY_BLACK_THEME"
+            app:key="@string/set_key_black_theme"
             app:summary="@string/set_black_mode_desc"
             app:title="@string/set_black_mode" />
 
@@ -35,29 +35,29 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_lib_tabs"
+            app:key="@string/set_key_lib_tabs"
             app:summary="@string/set_lib_tabs_desc"
             app:title="@string/set_lib_tabs" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:key="KEY_SHOW_COVERS"
+            app:key="@string/set_key_show_covers"
             app:summary="@string/set_show_covers_desc"
             app:title="@string/set_show_covers" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="false"
-            app:dependency="KEY_SHOW_COVERS"
+            app:dependency="@string/set_key_show_covers"
             app:iconSpaceReserved="false"
-            app:key="KEY_QUALITY_COVERS"
+            app:key="@string/set_key_quality_covers"
             app:summary="@string/set_quality_covers_desc"
             app:title="@string/set_quality_covers" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="auxio_round_covers"
+            app:key="@string/set_key_round_covers"
             app:summary="@string/set_round_covers_desc"
             app:title="@string/set_round_covers" />
 
@@ -65,7 +65,7 @@
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="KEY_ALT_NOTIF_ACTION"
+            app:key="@string/set_key_alt_notif_action"
             app:summaryOff="@string/set_alt_repeat"
             app:summaryOn="@string/set_alt_shuffle"
             app:title="@string/set_alt_action" />
@@ -79,7 +79,7 @@
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="auxio_headset_autoplay"
+            app:key="@string/set_key_headset_autoplay"
             app:summary="@string/set_headset_autoplay_desc"
             app:title="@string/set_headset_autoplay" />
 
@@ -89,14 +89,14 @@
             app:entries="@array/entries_replay_gain"
             app:entryValues="@array/values_replay_gain"
             app:iconSpaceReserved="false"
-            app:key="auxio_replay_gain"
+            app:key="@string/set_key_replay_gain"
             app:title="@string/set_replay_gain" />
 
         <Preference
             app:allowDividerBelow="false"
-            app:dependency="auxio_replay_gain"
+            app:dependency="@string/set_key_replay_gain"
             app:iconSpaceReserved="false"
-            app:key="auxio_pre_amp"
+            app:key="@string/set_key_pre_amp"
             app:summary="@string/set_pre_amp_desc"
             app:title="@string/set_pre_amp" />
 
@@ -111,14 +111,14 @@
             app:entries="@array/entries_song_playback_mode"
             app:entryValues="@array/values_song_playback_mode"
             app:iconSpaceReserved="false"
-            app:key="KEY_SONG_PLAY_MODE2"
+            app:key="@string/set_key_song_play_mode"
             app:title="@string/set_song_mode"
             app:useSimpleSummaryProvider="true" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:key="KEY_KEEP_SHUFFLE"
+            app:key="@string/set_key_keep_shuffle"
             app:summary="@string/set_keep_shuffle_desc"
             app:title="@string/set_keep_shuffle" />
 
@@ -126,7 +126,7 @@
             app:allowDividerBelow="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
-            app:key="KEY_PREV_REWIND"
+            app:key="@string/set_key_rewind_prev"
             app:summary="@string/set_rewind_prev_desc"
             app:title="@string/set_rewind_prev" />
 
@@ -134,7 +134,7 @@
             app:allowDividerBelow="false"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="KEY_LOOP_PAUSE"
+            app:key="@string/set_key_repeat_pause"
             app:summary="@string/set_repeat_pause_desc"
             app:title="@string/set_repeat_pause" />
 
@@ -146,19 +146,19 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_save_state"
+            app:key="@string/set_key_save_state"
             app:summary="@string/set_save_desc"
             app:title="@string/set_save" />
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_reindex"
+            app:key="@string/set_key_reindex"
             app:summary="@string/set_reindex_desc"
             app:title="@string/set_reindex" />
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="auxio_music_dirs"
+            app:key="@string/set_key_music_dirs"
             app:summary="@string/set_dirs_desc"
             app:title="@string/set_dirs" />
 

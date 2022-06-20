@@ -25,7 +25,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogTabsBinding
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
@@ -36,8 +37,8 @@ import org.oxycblt.auxio.util.requireAttached
  * @author OxygenCobalt
  */
 class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAdapter.Listener {
-    private val settingsManager = SettingsManager.getInstance()
     private val tabAdapter = TabAdapter(this)
+    private val settings: Settings by settings()
     private var touchHelper: ItemTouchHelper? = null
     private var callback: TabDragCallback? = null
 
@@ -48,7 +49,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             .setTitle(R.string.set_lib_tabs)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
                 logD("Committing tab changes")
-                settingsManager.libTabs = tabAdapter.data.tabs
+                settings.libTabs = tabAdapter.data.tabs
             }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
@@ -59,7 +60,7 @@ class TabCustomizeDialog : ViewBindingDialogFragment<DialogTabsBinding>(), TabAd
             logD("Found saved tab state")
             tabAdapter.data.submitTabs(savedTabs)
         } else {
-            tabAdapter.data.submitTabs(settingsManager.libTabs)
+            tabAdapter.data.submitTabs(settings.libTabs)
         }
 
         binding.tabRecycler.apply {

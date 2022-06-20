@@ -26,6 +26,7 @@ import android.os.storage.StorageManager
 import android.util.Log
 import androidx.core.content.edit
 import java.io.File
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.isInternalCompat
@@ -34,35 +35,11 @@ import org.oxycblt.auxio.ui.accent.Accent
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.queryAll
 
-// A couple of utils for migrating from old settings values to the new formats
+// A couple of utils for migrating from old settings values to the new formats.
+// Usually, these will last for 6 months before being removed.
 
-fun handleAccentCompat(prefs: SharedPreferences): Accent {
-    if (prefs.contains(OldKeys.KEY_ACCENT2)) {
-        Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT2}")
-
-        var accent = prefs.getInt(OldKeys.KEY_ACCENT2, 5)
-
-        // Blue grey was merged with Light Blue in 2.0.0
-        if (accent >= 17) {
-            accent = 6
-        }
-
-        // Deep Orange was merged with red in 2.0.0
-        if (accent == 14) {
-            accent = 0
-        }
-
-        // Correct accents beyond deep orange (Brown/Grey)
-        if (accent > 14) {
-            accent--
-        }
-
-        prefs.edit {
-            putInt(OldKeys.KEY_ACCENT3, accent)
-            remove(OldKeys.KEY_ACCENT2)
-            apply()
-        }
-    }
+fun handleAccentCompat(context: Context, prefs: SharedPreferences): Accent {
+    val currentKey = context.getString(R.string.set_key_accent)
 
     if (prefs.contains(OldKeys.KEY_ACCENT3)) {
         Log.d("Auxio.SettingsCompat", "Migrating ${OldKeys.KEY_ACCENT3}")
@@ -76,13 +53,13 @@ fun handleAccentCompat(prefs: SharedPreferences): Accent {
         }
 
         prefs.edit {
-            putInt(SettingsManager.KEY_ACCENT, accent)
+            putInt(currentKey, accent)
             remove(OldKeys.KEY_ACCENT3)
             apply()
         }
     }
 
-    return Accent.from(prefs.getInt(SettingsManager.KEY_ACCENT, Accent.DEFAULT))
+    return Accent.from(prefs.getInt(currentKey, Accent.DEFAULT))
 }
 
 /**
@@ -154,6 +131,5 @@ class LegacyExcludedDatabase(context: Context) :
 
 /** Cache of the old keys used in Auxio. */
 private object OldKeys {
-    const val KEY_ACCENT2 = "KEY_ACCENT2"
     const val KEY_ACCENT3 = "auxio_accent"
 }

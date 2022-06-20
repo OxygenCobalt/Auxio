@@ -28,6 +28,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
@@ -40,7 +41,7 @@ import org.oxycblt.auxio.util.textSafe
  * @author OxygenCobalt
  */
 class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
-    private val playbackModel: PlaybackViewModel by activityViewModels()
+    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
     private val navModel: NavigationViewModel by activityViewModels()
 
     override fun onCreateBinding(inflater: LayoutInflater) =

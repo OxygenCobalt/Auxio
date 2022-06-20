@@ -34,7 +34,7 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getDrawableSafe
 
@@ -51,11 +51,13 @@ class StyledImageView
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :
     AppCompatImageView(context, attrs, defStyleAttr) {
+    private val settings = Settings(context)
+
     var cornerRadius = 0f
         set(value) {
             field = value
             (background as? MaterialShapeDrawable)?.let { bg ->
-                if (!isInEditMode && SettingsManager.getInstance().roundCovers) {
+                if (settings.roundCovers) {
                     bg.setCornerSize(value)
                 } else {
                     bg.setCornerSize(0f)

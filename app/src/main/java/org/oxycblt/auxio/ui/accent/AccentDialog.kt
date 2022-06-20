@@ -23,7 +23,8 @@ import androidx.appcompat.app.AlertDialog
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogAccentBinding
-import org.oxycblt.auxio.settings.SettingsManager
+import org.oxycblt.auxio.settings.Settings
+import org.oxycblt.auxio.settings.settings
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.unlikelyToBeNull
@@ -33,8 +34,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * @author OxygenCobalt
  */
 class AccentDialog : ViewBindingDialogFragment<DialogAccentBinding>(), AccentAdapter.Listener {
-    private val settingsManager = SettingsManager.getInstance()
     private var accentAdapter = AccentAdapter(this)
+    private val settings: Settings by settings()
 
     override fun onCreateBinding(inflater: LayoutInflater) = DialogAccentBinding.inflate(inflater)
 
@@ -42,9 +43,9 @@ class AccentDialog : ViewBindingDialogFragment<DialogAccentBinding>(), AccentAda
         builder
             .setTitle(R.string.set_accent)
             .setPositiveButton(R.string.lbl_ok) { _, _ ->
-                if (accentAdapter.selectedAccent != settingsManager.accent) {
+                if (accentAdapter.selectedAccent != settings.accent) {
                     logD("Applying new accent")
-                    settingsManager.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
+                    settings.accent = unlikelyToBeNull(accentAdapter.selectedAccent)
                     requireActivity().recreate()
                 }
 
@@ -59,7 +60,7 @@ class AccentDialog : ViewBindingDialogFragment<DialogAccentBinding>(), AccentAda
             if (savedInstanceState != null) {
                 Accent.from(savedInstanceState.getInt(KEY_PENDING_ACCENT))
             } else {
-                settingsManager.accent
+                settings.accent
             })
     }
 
