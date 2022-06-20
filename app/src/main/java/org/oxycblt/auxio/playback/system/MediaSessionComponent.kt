@@ -26,6 +26,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.Player
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
@@ -163,8 +164,11 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
     // --- SETTINGSMANAGER CALLBACKS ---
 
-    override fun onCoverSettingsChanged() {
-        updateMediaMetadata(playbackManager.song)
+    override fun onSettingChanged(key: String) {
+        if (key == context.getString(R.string.set_key_show_covers) ||
+            key == context.getString(R.string.set_key_show_covers)) {
+            updateMediaMetadata(playbackManager.song)
+        }
     }
 
     // --- EXOPLAYER CALLBACKS ---

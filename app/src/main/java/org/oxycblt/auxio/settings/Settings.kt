@@ -42,6 +42,12 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.requireAttached
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
+/**
+ * Shortcut delegate in order to receive a [Settings] that will be created/destroyed
+ * in each lifecycle.
+ *
+ * TODO: Replace with generalized method
+ */
 fun Fragment.settings(): ReadOnlyProperty<Fragment, Settings> =
     object : ReadOnlyProperty<Fragment, Settings>, DefaultLifecycleObserver {
         private var settings: Settings? = null
@@ -71,10 +77,20 @@ fun Fragment.settings(): ReadOnlyProperty<Fragment, Settings> =
         }
 
         override fun onDestroy(owner: LifecycleOwner) {
+            settings?.release()
             settings = null
         }
     }
 
+/**
+ * Auxio's settings.
+ *
+ * This object wraps [SharedPreferences] in a type-safe manner, allowing access to all of the
+ * major settings that Auxio uses. Mutability is determined by use, as some values are written
+ * by PreferenceManager and others are written by Auxio's code.
+ *
+ * @author OxygenCobalt
+ */
 class Settings(private val context: Context, private val callback: Callback? = null) :
     SharedPreferences.OnSharedPreferenceChangeListener {
     private val inner = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
@@ -90,18 +106,16 @@ class Settings(private val context: Context, private val callback: Callback? = n
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        val callback = unlikelyToBeNull(callback)
-        when (key) {
-            context.getString(R.string.set_key_alt_notif_action) ->
-                callback.onNotifSettingsChanged()
-            context.getString(R.string.set_key_show_covers),
-            context.getString(R.string.set_key_quality_covers) -> callback.onCoverSettingsChanged()
-            context.getString(R.string.set_key_lib_tabs) -> callback.onLibrarySettingsChanged()
-            context.getString(R.string.set_key_replay_gain),
-            context.getString(R.string.set_key_pre_amp_with),
-            context.getString(R.string.set_key_pre_amp_without) ->
-                callback.onReplayGainSettingsChanged()
-        }
+        unlikelyToBeNull(callback).onSettingChanged(key)
+    }
+
+    /**
+     * An interface for receiving some preference updates. Use/Extend this instead of
+     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
+     * context.
+     */
+    interface Callback {
+        fun onSettingChanged(key: String)
     }
 
     // --- VALUES ---
@@ -354,16 +368,4 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 apply()
             }
         }
-
-    /**
-     * An interface for receiving some preference updates. Use/Extend this instead of
-     * [SharedPreferences.OnSharedPreferenceChangeListener] if possible, as it doesn't require a
-     * context.
-     */
-    interface Callback {
-        fun onLibrarySettingsChanged() {}
-        fun onNotifSettingsChanged() {}
-        fun onCoverSettingsChanged() {}
-        fun onReplayGainSettingsChanged() {}
-    }
 }

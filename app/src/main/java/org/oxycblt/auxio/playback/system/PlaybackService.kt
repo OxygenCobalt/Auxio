@@ -46,6 +46,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.replaygain.ReplayGainAudioProcessor
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
@@ -289,21 +290,22 @@ class PlaybackService :
 
     // --- SETTINGSMANAGER OVERRIDES ---
 
-    override fun onReplayGainSettingsChanged() {
-        onTracksInfoChanged(player.currentTracksInfo)
-    }
-
-    override fun onCoverSettingsChanged() {
-        playbackManager.song?.let { song ->
-            notificationComponent.updateMetadata(song, playbackManager.parent)
-        }
-    }
-
-    override fun onNotifSettingsChanged() {
-        if (settings.useAltNotifAction) {
-            onShuffledChanged(playbackManager.isShuffled)
-        } else {
-            onRepeatChanged(playbackManager.repeatMode)
+    override fun onSettingChanged(key: String) {
+        when (key) {
+            getString(R.string.set_replay_gain),
+            getString(R.string.set_pre_amp_with),
+            getString(R.string.set_pre_amp_without) -> onTracksInfoChanged(player.currentTracksInfo)
+            getString(R.string.set_show_covers),
+            getString(R.string.set_quality_covers) ->
+                playbackManager.song?.let { song ->
+                    notificationComponent.updateMetadata(song, playbackManager.parent)
+                }
+            getString(R.string.set_key_alt_notif_action) ->
+                if (settings.useAltNotifAction) {
+                    onShuffledChanged(playbackManager.isShuffled)
+                } else {
+                    onRepeatChanged(playbackManager.repeatMode)
+                }
         }
     }
 

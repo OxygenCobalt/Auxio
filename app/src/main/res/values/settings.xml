@@ -44,6 +44,12 @@
         <item>@string/set_theme_night</item>
     </string-array>
 
+    <array name="icons_theme">
+        <item>@drawable/ic_auto</item>
+        <item>@drawable/ic_light</item>
+        <item>@drawable/ic_dark</item>
+    </array>
+
     <integer-array name="values_theme">
         <item>@integer/theme_auto</item>
         <item>@integer/theme_light</item>

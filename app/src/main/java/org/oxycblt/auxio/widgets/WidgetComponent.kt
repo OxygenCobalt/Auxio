@@ -23,6 +23,7 @@ import android.os.Build
 import coil.request.ImageRequest
 import coil.size.Size
 import coil.transform.RoundedCornersTransformation
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.MusicParent
@@ -140,7 +141,12 @@ class WidgetComponent(private val context: Context) :
     override fun onPlayingChanged(isPlaying: Boolean) = update()
     override fun onShuffledChanged(isShuffled: Boolean) = update()
     override fun onRepeatChanged(repeatMode: RepeatMode) = update()
-    override fun onCoverSettingsChanged() = update()
+    override fun onSettingChanged(key: String) {
+        if (key == context.getString(R.string.set_key_show_covers) ||
+            key == context.getString(R.string.set_key_quality_covers)) {
+            update()
+        }
+    }
 
     /*
      * An immutable condensed variant of the current playback state, used so that PlaybackStateManager

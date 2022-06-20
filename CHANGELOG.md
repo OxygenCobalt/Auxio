@@ -9,6 +9,8 @@
 - Fixed broken tablet layouts
 - Fixed seam that would appear on some album covers
 - Fixed visual issue with the queue opening animation
+- Fixed crash if settings was navigated away before playback state
+finished saving
 
 #### Dev/Meta
 - Migrated preferences from shared object to utility

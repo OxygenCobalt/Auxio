@@ -33,7 +33,8 @@ import org.oxycblt.auxio.util.unlikelyToBeNull
  * Dialog responsible for showing the list of accents to select.
  * @author OxygenCobalt
  */
-class AccentDialog : ViewBindingDialogFragment<DialogAccentBinding>(), AccentAdapter.Listener {
+class AccentCustomizeDialog :
+    ViewBindingDialogFragment<DialogAccentBinding>(), AccentAdapter.Listener {
     private var accentAdapter = AccentAdapter(this)
     private val settings: Settings by settings()
 

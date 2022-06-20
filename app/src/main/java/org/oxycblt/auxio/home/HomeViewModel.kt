@@ -21,6 +21,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.Tab
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
@@ -145,9 +146,11 @@ class HomeViewModel(application: Application) :
         }
     }
 
-    override fun onLibrarySettingsChanged() {
-        tabs = visibleTabs
-        _shouldRecreateTabs.value = true
+    override fun onSettingChanged(key: String) {
+        if (key == application.getString(R.string.set_lib_tabs)) {
+            tabs = visibleTabs
+            _shouldRecreateTabs.value = true
+        }
     }
 
     override fun onCleared() {

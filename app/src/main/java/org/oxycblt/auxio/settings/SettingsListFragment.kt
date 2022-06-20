@@ -33,15 +33,16 @@ import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
 import org.oxycblt.auxio.music.dirs.MusicDirsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
-import org.oxycblt.auxio.playback.replaygain.ReplayGainMode
 import org.oxycblt.auxio.settings.ui.IntListPreference
 import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
-import org.oxycblt.auxio.ui.accent.AccentDialog
+import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
+import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
 
 /**
@@ -82,22 +83,53 @@ class SettingsListFragment : PreferenceFragmentCompat() {
 
     @Suppress("Deprecation")
     override fun onDisplayPreferenceDialog(preference: Preference) {
-        if (preference is IntListPreference) {
-            // Creating our own preference dialog is hilariously difficult. For one, we need
-            // to override this random method within the class in order to launch the dialog in
-            // the first (because apparently you can't just implement some interface that
-            // automatically provides this behavior), then we also need to use a deprecated method
-            // to adequately supply a "target fragment" (otherwise we will crash since the dialog
-            // requires one), and then we need to actually show the dialog, making sure we use
-            // the parent FragmentManager as again, it will crash if we don't.
-            //
-            // Fragments were a mistake.
-            val dialog = IntListPreferenceDialog.from(preference)
-            dialog.setTargetFragment(this, 0)
-            dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
-        } else {
-            super.onDisplayPreferenceDialog(preference)
+        when (preference) {
+            is IntListPreference -> {
+                // Creating our own preference dialog is hilariously difficult. For one, we need
+                // to override this random method within the class in order to launch the dialog in
+                // the first (because apparently you can't just implement some interface that
+                // automatically provides this behavior), then we also need to use a deprecated
+                // method to adequately supply a "target fragment" (otherwise we will crash since
+                // the dialog requires one), and then we need to actually show the dialog, making
+                // sure we use  the parent FragmentManager as again, it will crash if we don't.
+                //
+                // Fragments were a mistake.
+                val dialog = IntListPreferenceDialog.from(preference)
+                dialog.setTargetFragment(this, 0)
+                dialog.show(parentFragmentManager, IntListPreferenceDialog.TAG)
+            }
+            is WrappedDialogPreference ->
+                when (preference.key) {
+                    getString(R.string.set_key_accent) ->
+                        AccentCustomizeDialog()
+                            .show(childFragmentManager, AccentCustomizeDialog.TAG)
+                    getString(R.string.set_key_lib_tabs) ->
+                        TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
+                    getString(R.string.set_key_pre_amp) ->
+                        PreAmpCustomizeDialog()
+                            .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
+                    getString(R.string.set_key_music_dirs) ->
+                        MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
+                    else -> logEOrThrow("Unexpected dialog key ${preference.key}")
+                }
+            else -> super.onDisplayPreferenceDialog(preference)
         }
+    }
+
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        when (preference.key) {
+            getString(R.string.set_key_save_state) -> {
+                playbackModel.savePlaybackState(requireContext()) {
+                    context?.showToast(R.string.lbl_state_saved)
+                }
+            }
+            getString(R.string.set_key_reindex) -> {
+                playbackModel.savePlaybackState(requireContext()) { context?.hardRestart() }
+            }
+            else -> return super.onPreferenceTreeClick(preference)
+        }
+
+        return true
     }
 
     /** Recursively handle a preference, doing any specific actions on it. */
@@ -113,39 +145,22 @@ class SettingsListFragment : PreferenceFragmentCompat() {
         preference.apply {
             when (key) {
                 getString(R.string.set_key_theme) -> {
-                    setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
-
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, value ->
                             AppCompatDelegate.setDefaultNightMode(value as Int)
-                            setIcon(AppCompatDelegate.getDefaultNightMode().toThemeIcon())
                             true
                         }
                 }
                 getString(R.string.set_key_accent) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            AccentDialog().show(childFragmentManager, AccentDialog.TAG)
-                            true
-                        }
-
-                    // TODO: Replace with preference impl
                     summary = context.getString(settings.accent.name)
                 }
                 getString(R.string.set_key_black_theme) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
+                    onPreferenceChangeListener =
+                        Preference.OnPreferenceChangeListener { _, _ ->
                             if (requireContext().isNight) {
                                 requireActivity().recreate()
                             }
 
-                            true
-                        }
-                }
-                getString(R.string.set_key_lib_tabs) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            TabCustomizeDialog().show(childFragmentManager, TabCustomizeDialog.TAG)
                             true
                         }
                 }
@@ -154,51 +169,6 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                     onPreferenceChangeListener =
                         Preference.OnPreferenceChangeListener { _, _ ->
                             Coil.imageLoader(requireContext()).apply { this.memoryCache?.clear() }
-                            true
-                        }
-                }
-                getString(R.string.set_key_replay_gain) -> {
-                    notifyDependencyChange(settings.replayGainMode == ReplayGainMode.OFF)
-                    onPreferenceChangeListener =
-                        Preference.OnPreferenceChangeListener { _, value ->
-                            notifyDependencyChange(
-                                ReplayGainMode.fromIntCode(value as Int) == ReplayGainMode.OFF)
-                            true
-                        }
-                }
-                getString(R.string.set_key_pre_amp) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            PreAmpCustomizeDialog()
-                                .show(childFragmentManager, PreAmpCustomizeDialog.TAG)
-                            true
-                        }
-                }
-                getString(R.string.set_key_save_state) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            // FIXME: Callback can still occur on non-attached fragment
-                            playbackModel.savePlaybackState(requireContext()) {
-                                requireContext().showToast(R.string.lbl_state_saved)
-                            }
-
-                            true
-                        }
-                }
-                getString(R.string.set_key_reindex) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            playbackModel.savePlaybackState(requireContext()) {
-                                requireContext().hardRestart()
-                            }
-
-                            true
-                        }
-                }
-                getString(R.string.set_key_music_dirs) -> {
-                    onPreferenceClickListener =
-                        Preference.OnPreferenceClickListener {
-                            MusicDirsDialog().show(childFragmentManager, MusicDirsDialog.TAG)
                             true
                         }
                 }

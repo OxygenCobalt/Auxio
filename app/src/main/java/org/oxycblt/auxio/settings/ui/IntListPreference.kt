@@ -20,11 +20,16 @@ package org.oxycblt.auxio.settings.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.widget.ImageView
+import androidx.core.content.res.getResourceIdOrThrow
+import androidx.core.content.res.getTextArrayOrThrow
 import androidx.preference.DialogPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedField
+import org.oxycblt.auxio.util.logD
 
 class IntListPreference
 @JvmOverloads
@@ -36,22 +41,39 @@ constructor(
 ) : DialogPreference(context, attrs, defStyleAttr, defStyleRes) {
     val entries: Array<CharSequence>
     val values: IntArray
+    private var offValue: Int? = -1
+    private var icons: TypedArray? = null
     private var currentValue: Int? = null
 
     // Reflect into Preference to get the (normally inaccessible) default value.
     private val defValue: Int
         get() = PREFERENCE_DEFAULT_VALUE_FIELD.get(this) as Int
 
+    override fun onDependencyChanged(dependency: Preference, disableDependent: Boolean) {
+        super.onDependencyChanged(dependency, disableDependent)
+        logD("dependency changed: $dependency")
+    }
+
     init {
         val prefAttrs =
             context.obtainStyledAttributes(
                 attrs, R.styleable.IntListPreference, defStyleAttr, defStyleRes)
 
-        entries = prefAttrs.getTextArray(R.styleable.IntListPreference_entries)
+        entries = prefAttrs.getTextArrayOrThrow(R.styleable.IntListPreference_entries)
 
         values =
             context.resources.getIntArray(
-                prefAttrs.getResourceId(R.styleable.IntListPreference_entryValues, -1))
+                prefAttrs.getResourceIdOrThrow(R.styleable.IntListPreference_entryValues))
+
+        val offValueId = prefAttrs.getResourceId(R.styleable.IntListPreference_offValue, -1)
+        if (offValueId > -1) {
+            offValue = context.resources.getInteger(offValueId)
+        }
+
+        val iconsId = prefAttrs.getResourceId(R.styleable.IntListPreference_entryIcons, -1)
+        if (iconsId > -1) {
+            icons = context.resources.obtainTypedArray(iconsId)
+        }
 
         prefAttrs.recycle()
 
@@ -68,6 +90,19 @@ constructor(
             setValue(defaultValue as Int)
         } else {
             currentValue = getPersistedInt(defValue)
+        }
+    }
+
+    override fun shouldDisableDependents(): Boolean = currentValue == offValue
+
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        super.onBindViewHolder(holder)
+        val index = getValueIndex()
+        if (index > -1) {
+            val resourceId = icons?.getResourceId(index, -1) ?: -1
+            if (resourceId > -1) {
+                (holder.findViewById(android.R.id.icon) as ImageView).setImageResource(resourceId)
+            }
         }
     }
 
@@ -91,6 +126,7 @@ constructor(
             currentValue = value
 
             callChangeListener(value)
+            notifyDependencyChange(shouldDisableDependents())
             persistInt(value)
             notifyChanged()
         }
