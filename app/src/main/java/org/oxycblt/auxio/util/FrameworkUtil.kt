@@ -169,17 +169,27 @@ fun Fragment.launch(
     viewLifecycleOwner.lifecycleScope.launch { viewLifecycleOwner.repeatOnLifecycle(state, block) }
 }
 
+/**
+ * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ */
 inline fun <reified T : AndroidViewModel> Fragment.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(requireActivity().application) }
 
+/**
+ * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ */
 inline fun <reified T : AndroidViewModel> AppCompatActivity.androidViewModels() =
     viewModels<T> { ViewModelProvider.AndroidViewModelFactory(application) }
 
+/**
+ * Shortcut to generate a AndroidViewModel [T] without having to specify the bloated factory syntax.
+ */
 inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
     activityViewModels<T> {
         ViewModelProvider.AndroidViewModelFactory(requireActivity().application)
     }
 
+/** Shortcut to get the [Application] from an [AndroidViewModel] */
 val AndroidViewModel.application: Application
     get() = getApplication()
 

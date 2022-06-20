@@ -148,7 +148,7 @@ class PlaybackStateManager private constructor() {
      * Play a [song].
      * @param playbackMode The [PlaybackMode] to construct the queue off of.
      */
-    fun play(song: Song, shuffle: Boolean, playbackMode: PlaybackMode, settings: Settings) {
+    fun play(song: Song, playbackMode: PlaybackMode, settings: Settings) {
         val library = musicStore.library ?: return
 
         synchronized(this) {
@@ -160,7 +160,7 @@ class PlaybackStateManager private constructor() {
                     PlaybackMode.IN_GENRE -> song.genre
                 }
 
-            applyNewQueue(library, settings, shuffle, song)
+            applyNewQueue(library, settings, settings.keepShuffle && isShuffled, song)
             seekTo(0)
             notifyNewPlayback()
             notifyShuffledChanged()

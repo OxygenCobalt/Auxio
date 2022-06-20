@@ -91,8 +91,7 @@ class PlaybackViewModel(application: Application) :
 
     /** Play a [song] with the [mode] specified, */
     fun play(song: Song, mode: PlaybackMode) {
-        playbackManager.play(
-            song, settings.keepShuffle && playbackManager.isPlaying, mode, settings)
+        playbackManager.play(song, mode, settings)
     }
 
     /**
