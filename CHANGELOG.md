@@ -14,6 +14,10 @@
 - Fixed crash if settings was navigated away before playback state
 finished saving
 
+#### What's Changed
+- Reworked typography and iconography to be more aligned with material
+design guidelines
+
 #### Dev/Meta
 - Migrated preferences from shared object to utility
 - Removed 2.0.0 compat code

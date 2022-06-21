@@ -33,7 +33,7 @@
             android:paddingBottom="@dimen/spacing_medium"
             android:text="@string/err_no_dirs"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMidLarge"
+            android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
             android:textColor="?android:attr/textColorSecondary" />
 
         <TextView

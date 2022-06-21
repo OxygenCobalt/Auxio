@@ -27,8 +27,7 @@
             android:background="@android:color/transparent"
             app:tabContentStart="@dimen/spacing_medium"
             app:tabGravity="start"
-            app:tabMode="scrollable"
-            app:tabTextAppearance="@style/TextAppearance.Auxio.LabelLarger" />
+            app:tabMode="scrollable" />
 
     </org.oxycblt.auxio.ui.EdgeAppBarLayout>
 
