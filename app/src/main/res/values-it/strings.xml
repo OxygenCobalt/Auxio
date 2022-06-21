@@ -29,10 +29,10 @@
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Mescola</string>
-    <string name="lbl_play_all">Riproduci da tutte le canzoni</string>
-    <string name="lbl_play_album">Riproduci dal disco</string>
-    <string name="lbl_play_artist">Riproduci dall\'artista</string>
-    <string name="lbl_play_genre">Riproduci dal genere</string>
+    <string name="set_playback_mode_all">Riproduci da tutte le canzoni</string>
+    <string name="set_playback_mode_album">Riproduci dal disco</string>
+    <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
+    <string name="set_playback_mode_genre">Riproduci dal genere</string>
 
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
@@ -89,7 +89,7 @@
     <string name="set_replay_gain_dynamic">Dinamico</string>
 
     <string name="set_behavior">Comportamento</string>
-    <string name="set_song_mode">Quando una canzone è selezionata</string>
+    <string name="set_library_song_playback_mode">Quando una canzone è selezionata</string>
     <string name="set_keep_shuffle">Mantieni mescolamento</string>
     <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se una nuova canzone è selezionata</string>
     <string name="set_rewind_prev">Riavvolgi prima di saltare indietro</string>

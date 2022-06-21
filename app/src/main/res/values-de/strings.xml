@@ -22,10 +22,10 @@
 
     <string name="lbl_play">Abspielen</string>
     <string name="lbl_shuffle">Zufällig</string>
-    <string name="lbl_play_all">Von allen Lieder abspielen</string>
-    <string name="lbl_play_album">Von Album abspielen</string>
-    <string name="lbl_play_artist">Von Künstler abspielen</string>
-    <string name="lbl_play_genre">Von Genre abspielen</string>
+    <string name="set_playback_mode_all">Von allen Lieder abspielen</string>
+    <string name="set_playback_mode_album">Von Album abspielen</string>
+    <string name="set_playback_mode_artist">Von Künstler abspielen</string>
+    <string name="set_playback_mode_genre">Von Genre abspielen</string>
     <string name="lbl_playback">Aktuelle Wiedergabe</string>
 
     <string name="lbl_queue">Warteschlange</string>
@@ -84,7 +84,7 @@
     <string name="set_replay_gain_album">Album bevorzugen</string>
 
     <string name="set_behavior">Verhalten</string>
-    <string name="set_song_mode">Wenn ein Lied ausgewählt wird</string>
+    <string name="set_library_song_playback_mode">Wenn ein Lied ausgewählt wird</string>
     <string name="set_keep_shuffle">Zufällig-Einstellung merken</string>
     <string name="set_keep_shuffle_desc">Zufällig anlassen, wenn ein neues Lied abgespielt wird</string>
     <string name="set_rewind_prev" tools:ignore="Typos">Zurückspulen, bevor das Lied zurück geändert wird</string>

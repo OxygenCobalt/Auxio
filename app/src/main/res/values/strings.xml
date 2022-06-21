@@ -35,10 +35,6 @@
     <string name="lbl_playback">Now Playing</string>
     <string name="lbl_play">Play</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="lbl_play_all">Play from all songs</string>
-    <string name="lbl_play_album">Play from album</string>
-    <string name="lbl_play_artist">Play from artist</string>
-    <string name="lbl_play_genre">Play from genre</string>
 
     <string name="lbl_queue">Queue</string>
     <string name="lbl_play_next">Play next</string>
@@ -118,7 +114,13 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_behavior">Behavior</string>
-    <string name="set_song_mode">When a song is selected</string>
+    <string name="set_library_song_playback_mode">Library playback mode</string>
+    <string name="set_detail_song_playback_mode">Detail playback mode</string>
+    <string name="set_playback_mode_none">Play from shown item</string>
+    <string name="set_playback_mode_all">Play from all songs</string>
+    <string name="set_playback_mode_album">Play from album</string>
+    <string name="set_playback_mode_artist">Play from artist</string>
+    <string name="set_playback_mode_genre">Play from genre</string>
     <string name="set_keep_shuffle">Remember shuffle</string>
     <string name="set_keep_shuffle_desc">Keep shuffle on when playing a new song</string>
     <string name="set_rewind_prev">Rewind before skipping back</string>

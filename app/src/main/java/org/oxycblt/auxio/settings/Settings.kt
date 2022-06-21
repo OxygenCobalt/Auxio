@@ -152,12 +152,23 @@ class Settings(private val context: Context, private val callback: Callback? = n
             }
         }
 
-    /** What queue to create when a song is selected (ex. From All Songs or Search) */
-    val songPlaybackMode: PlaybackMode
+    /** What queue to create when a song is selected from the library or search */
+    val libPlaybackMode: PlaybackMode
         get() =
             PlaybackMode.fromInt(
-                inner.getInt(context.getString(R.string.set_key_song_play_mode), Int.MIN_VALUE))
+                inner.getInt(
+                    context.getString(R.string.set_key_library_song_playback_mode), Int.MIN_VALUE))
                 ?: PlaybackMode.ALL_SONGS
+
+    /**
+     * What queue t create when a song is selected from an album/artist/genre. Null means to default
+     * to the currently shown item.
+     */
+    val detailPlaybackMode: PlaybackMode?
+        get() =
+            PlaybackMode.fromInt(
+                inner.getInt(
+                    context.getString(R.string.set_key_detail_song_playback_mode), Int.MIN_VALUE))
 
     /** Whether shuffle should stay on when a new song is selected. */
     val keepShuffle: Boolean

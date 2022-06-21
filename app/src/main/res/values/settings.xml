@@ -17,7 +17,8 @@
     <string name="set_key_pre_amp_with" translatable="false">auxio_pre_amp_with</string>
     <string name="set_key_pre_amp_without" translatable="false">auxio_pre_amp_without</string>
 
-    <string name="set_key_song_play_mode" translatable="false">KEY_SONG_PLAY_MODE2</string>
+    <string name="set_key_library_song_playback_mode" translatable="false">KEY_SONG_PLAY_MODE2</string>
+    <string name="set_key_detail_song_playback_mode" translatable="false">auxio_detail_song_play_mode</string>
     <string name="set_key_keep_shuffle" translatable="false">KEY_KEEP_SHUFFLE</string>
     <string name="set_key_rewind_prev" translatable="false">KEY_PREV_REWIND</string>
     <string name="set_key_repeat_pause" translatable="false">KEY_LOOP_PAUSE</string>
@@ -56,14 +57,30 @@
         <item>@integer/theme_dark</item>
     </integer-array>
 
-    <array name="entries_song_playback_mode">
-        <item>@string/lbl_play_all</item>
-        <item>@string/lbl_play_artist</item>
-        <item>@string/lbl_play_album</item>
-        <item>@string/lbl_play_genre</item>
+    <array name="entries_library_song_playback_mode">
+        <item>@string/set_playback_mode_all</item>
+        <item>@string/set_playback_mode_artist</item>
+        <item>@string/set_playback_mode_album</item>
+        <item>@string/set_playback_mode_genre</item>
     </array>
 
-    <string-array name="values_song_playback_mode">
+    <string-array name="values_library_song_playback_mode">
+        <item>@integer/play_mode_songs</item>
+        <item>@integer/play_mode_artist</item>
+        <item>@integer/play_mode_album</item>
+        <item>@integer/play_mode_genre</item>
+    </string-array>
+
+    <array name="entries_detail_song_playback_mode">
+        <item>@string/set_playback_mode_none</item>
+        <item>@string/set_playback_mode_all</item>
+        <item>@string/set_playback_mode_artist</item>
+        <item>@string/set_playback_mode_album</item>
+        <item>@string/set_playback_mode_genre</item>
+    </array>
+
+    <string-array name="values_detail_song_playback_mode">
+        <item>@integer/play_mode_none</item>
         <item>@integer/play_mode_songs</item>
         <item>@integer/play_mode_artist</item>
         <item>@integer/play_mode_album</item>
@@ -88,6 +105,7 @@
     <integer name="theme_light">1</integer>
     <integer name="theme_dark">2</integer>
 
+    <integer name="play_mode_none">-2147483648</integer>
     <integer name="play_mode_genre">0xA103</integer>
     <integer name="play_mode_artist">0xA104</integer>
     <integer name="play_mode_album">0xA105</integer>

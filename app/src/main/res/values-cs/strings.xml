@@ -35,10 +35,10 @@
     <string name="lbl_playback">Právě hraje</string>
     <string name="lbl_play">Přehrát</string>
     <string name="lbl_shuffle">Náhodně</string>
-    <string name="lbl_play_all">Přehrát ze všech skladeb</string>
-    <string name="lbl_play_album">Přehrát z alba</string>
-    <string name="lbl_play_artist">Přehrát z umělce</string>
-    <string name="lbl_play_genre">Přehrát ze žánru</string>
+    <string name="set_playback_mode_all">Přehrát ze všech skladeb</string>
+    <string name="set_playback_mode_album">Přehrát z alba</string>
+    <string name="set_playback_mode_artist">Přehrát z umělce</string>
+    <string name="set_playback_mode_genre">Přehrát ze žánru</string>
 
     <string name="lbl_queue">Fronta</string>
     <string name="lbl_play_next">Přehrát další</string>
@@ -104,7 +104,7 @@
     <string name="set_pre_amp_warning">Varování: Změna předzesilovače na vysokou kladnou hodnotu může u některých zvukových stop vést k příliš vysokým hlasitostem.</string>
 
     <string name="set_behavior">Chování</string>
-    <string name="set_song_mode">Když je vybrána skladba</string>
+    <string name="set_library_song_playback_mode">Když je vybrána skladba</string>
     <string name="set_keep_shuffle">Zapamatovat si náhodné přehrávání</string>
     <string name="set_keep_shuffle_desc">Ponechat náhodné přehrávání při přehrávání nové skladby</string>
     <string name="set_rewind_prev">Přetočit před přeskočením zpět</string>

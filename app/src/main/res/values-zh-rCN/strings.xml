@@ -29,10 +29,10 @@
     <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">随机</string>
-    <string name="lbl_play_all">从全部歌曲开始播放</string>
-    <string name="lbl_play_album">从专辑开始播放</string>
-    <string name="lbl_play_artist">从艺术家开始播放</string>
-    <string name="lbl_play_genre">从流派开始播放</string>
+    <string name="set_playback_mode_all">从全部歌曲开始播放</string>
+    <string name="set_playback_mode_album">从专辑开始播放</string>
+    <string name="set_playback_mode_artist">从艺术家开始播放</string>
+    <string name="set_playback_mode_genre">从流派开始播放</string>
 
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
@@ -88,7 +88,7 @@
     <string name="set_replay_gain_dynamic">动态</string>
 
     <string name="set_behavior">行为</string>
-    <string name="set_song_mode">选中歌曲时</string>
+    <string name="set_library_song_playback_mode">选中歌曲时</string>
     <string name="set_keep_shuffle">记住随机模式</string>
     <string name="set_keep_shuffle_desc">播放新曲目时保留随机播放模式</string>
     <string name="set_rewind_prev">切换上一曲前先倒带</string>

@@ -23,10 +23,10 @@
 
     <string name="lbl_play">Afspelen</string>
     <string name="lbl_shuffle">Shuffle</string>
-    <string name="lbl_play_all">Speel van alle nummers </string>
-    <string name="lbl_play_album">Speel af van album </string>
-    <string name="lbl_play_artist">Speel van artiest </string>
-    <string name="lbl_play_genre">Speel vanuit genre </string>
+    <string name="set_playback_mode_all">Speel van alle nummers </string>
+    <string name="set_playback_mode_album">Speel af van album </string>
+    <string name="set_playback_mode_artist">Speel van artiest </string>
+    <string name="set_playback_mode_genre">Speel vanuit genre </string>
     <string name="lbl_playback">Afspeelscherm</string>
 
     <string name="lbl_queue">Wachtrij</string>
@@ -72,7 +72,7 @@
     <string name="set_audio">Audio</string>
 
     <string name="set_behavior">Gedrag</string>
-    <string name="set_song_mode">Wanneer een liedje is geselecteerd</string>
+    <string name="set_library_song_playback_mode">Wanneer een liedje is geselecteerd</string>
     <string name="set_keep_shuffle">Onthoud shuffle</string>
     <string name="set_keep_shuffle_desc">Houd shuffle aan bij het afspelen van een nieuw nummer</string>
     <string name="set_rewind_prev">Terugspoelen voordat je terugspoelt</string>

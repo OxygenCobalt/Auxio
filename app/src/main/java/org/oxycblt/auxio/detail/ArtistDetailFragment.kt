@@ -36,11 +36,13 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collectWith
+import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
@@ -57,6 +59,7 @@ class ArtistDetailFragment :
 
     private val args: ArtistDetailFragmentArgs by navArgs()
     private val detailAdapter = ArtistDetailAdapter(this)
+    private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
 
     override fun onCreateBinding(inflater: LayoutInflater) = FragmentDetailBinding.inflate(inflater)
 
@@ -110,7 +113,8 @@ class ArtistDetailFragment :
 
     override fun onItemClick(item: Item) {
         when (item) {
-            is Song -> playbackModel.play(item, PlaybackMode.IN_ARTIST)
+            is Song ->
+                playbackModel.play(item, settings.detailPlaybackMode ?: PlaybackMode.IN_ARTIST)
             is Album -> navModel.exploreNavigateTo(item)
         }
     }

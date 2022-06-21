@@ -147,7 +147,7 @@ class HomeViewModel(application: Application) :
     }
 
     override fun onSettingChanged(key: String) {
-        if (key == application.getString(R.string.set_lib_tabs)) {
+        if (key == application.getString(R.string.set_key_lib_tabs)) {
             tabs = visibleTabs
             _shouldRecreateTabs.value = true
         }

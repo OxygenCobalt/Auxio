@@ -83,7 +83,7 @@ class SongListFragment : HomeListFragment<Song>() {
 
     override fun onItemClick(item: Item) {
         check(item is Song)
-        playbackModel.play(item, settings.songPlaybackMode)
+        playbackModel.play(item, settings.libPlaybackMode)
     }
 
     override fun onOpenMenu(item: Item, anchor: View) {

@@ -30,10 +30,10 @@
     <string name="lbl_playback">Сейчас играет</string>
     <string name="lbl_play">Играть</string>
     <string name="lbl_shuffle">Перемешать</string>
-    <string name="lbl_play_all">Играть все треки</string>
-    <string name="lbl_play_album">Играть альбом</string>
-    <string name="lbl_play_artist">Играть исполнителя</string>
-    <string name="lbl_play_genre">Играть жанр</string>
+    <string name="set_playback_mode_all">Играть все треки</string>
+    <string name="set_playback_mode_album">Играть альбом</string>
+    <string name="set_playback_mode_artist">Играть исполнителя</string>
+    <string name="set_playback_mode_genre">Играть жанр</string>
 
     <string name="lbl_queue">Очередь</string>
     <string name="lbl_play_next">Играть далее</string>
@@ -90,7 +90,7 @@
     <string name="set_replay_gain_dynamic">Динамический</string>
 
     <string name="set_behavior">Поведение</string>
-    <string name="set_song_mode">При выборе трека</string>
+    <string name="set_library_song_playback_mode">При выборе трека</string>
     <string name="set_keep_shuffle">Запоминать перемешивание</string>
     <string name="set_keep_shuffle_desc">Запоминать режим перемешивания для новых треков</string>
     <string name="set_rewind_prev">Сначала перемотать трек</string>

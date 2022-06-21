@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
@@ -156,6 +157,21 @@ val RecyclerView.canScroll: Boolean
 /** Converts this color to a single-color [ColorStateList]. */
 val @receiver:ColorRes Int.stateList
     get() = ColorStateList.valueOf(this)
+
+/**
+ * Collect a [stateFlow] into [block] a UI-safe way.
+ *
+ * This method automatically calls [block] when initially starting to ensure UI state consistency.
+ * This does nominally mean that there are two initializing collections, but this is considered
+ * okay. [block] should be a function pointer in order to ensure lifecycle consistency.
+ *
+ * Only use this if your code absolutely needs to have a good state for ~100ms of draw-time.
+ * Otherwise, it's somewhat in-efficient.
+ */
+fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit) {
+    block(stateFlow.value)
+    launch { stateFlow.collect(block) }
+}
 
 /**
  * Launches [block] in a lifecycle-aware coroutine once [state] is reached. This is primarily a

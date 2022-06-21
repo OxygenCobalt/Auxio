@@ -29,10 +29,10 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -76,15 +76,17 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
         binding.playbackProgressBar.trackColor =
             requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
 
+        binding.playbackProgressBar.progress = 0
+
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 
         binding.playbackSkipNext.setOnClickListener { playbackModel.next() }
 
         // -- VIEWMODEL SETUP ---
 
-        launch { playbackModel.song.collect(::updateSong) }
-        launch { playbackModel.isPlaying.collect(::updateIsPlaying) }
-        launch { playbackModel.positionSecs.collect(::updatePosition) }
+        collectImmediately(playbackModel.song, ::updateSong)
+        collectImmediately(playbackModel.isPlaying, ::updateIsPlaying)
+        collectImmediately(playbackModel.positionSecs, ::updatePosition)
     }
 
     private fun updateSong(song: Song?) {

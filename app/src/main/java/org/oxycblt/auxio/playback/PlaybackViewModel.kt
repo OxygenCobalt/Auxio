@@ -171,7 +171,7 @@ class PlaybackViewModel(application: Application) :
             is DelayedAction.ShuffleAll -> shuffleAll()
             is DelayedAction.Open -> {
                 library.findSongForUri(application, action.uri)?.let { song ->
-                    play(song, settings.songPlaybackMode)
+                    play(song, settings.libPlaybackMode)
                 }
             }
         }
