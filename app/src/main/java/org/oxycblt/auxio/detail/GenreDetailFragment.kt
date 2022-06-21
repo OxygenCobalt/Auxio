@@ -42,9 +42,9 @@ import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.util.applySpans
-import org.oxycblt.auxio.util.collectWith
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
@@ -83,10 +83,10 @@ class GenreDetailFragment :
 
         // --- VIEWMODEL SETUP ---
 
-        launch { detailModel.currentGenre.collect(::handleItemChange) }
-        launch { detailModel.genreData.collect(detailAdapter.data::submitList) }
-        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
-        launch { playbackModel.song.collectWith(playbackModel.parent, ::updatePlayback) }
+        collectImmediately(detailModel.currentGenre, ::handleItemChange)
+        collectImmediately(detailModel.genreData, detailAdapter.data::submitList)
+        collectImmediately(playbackModel.song, playbackModel.parent, ::updatePlayback)
+        collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
     override fun onDestroyBinding(binding: FragmentDetailBinding) {

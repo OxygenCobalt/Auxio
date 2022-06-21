@@ -30,9 +30,9 @@ import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SyncBackingData
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logEOrThrow
 
 /**
@@ -51,7 +51,7 @@ class SongListFragment : HomeListFragment<Song>() {
             adapter = homeAdapter
         }
 
-        launch { homeModel.songs.collect(homeAdapter.data::replaceList) }
+        collectImmediately(homeModel.songs, homeAdapter.data::replaceList)
     }
 
     override fun getPopup(pos: Int): String? {

@@ -27,8 +27,8 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
 import org.oxycblt.auxio.ui.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.launch
 
 class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     private val detailModel: DetailViewModel by androidActivityViewModels()
@@ -45,7 +45,7 @@ class SongDetailDialog : ViewBindingDialogFragment<DialogSongDetailBinding>() {
     override fun onBindingCreated(binding: DialogSongDetailBinding, savedInstanceState: Bundle?) {
         super.onBindingCreated(binding, savedInstanceState)
         detailModel.setSongId(args.songId)
-        launch { detailModel.currentSong.collect(::updateSong) }
+        collectImmediately(detailModel.currentSong, ::updateSong)
     }
 
     override fun onDestroy() {

@@ -33,7 +33,8 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.launch
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A wrapper around the home fragment that shows the playback fragment and controls the more
@@ -60,7 +61,6 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
             // the screen is too small because of course we have to.
             if (requireActivity().isInMultiWindowMode) {
                 val config = resources.configuration
-
                 if (config.screenHeightDp < 250 || config.screenWidthDp < 250) {
                     binding.layoutTooSmall.visibility = View.VISIBLE
                 }
@@ -69,9 +69,9 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
 
         // --- VIEWMODEL SETUP ---
 
-        launch { navModel.mainNavigationAction.collect(::handleMainNavigation) }
-        launch { navModel.exploreNavigationItem.collect(::handleExploreNavigation) }
-        launch { playbackModel.song.collect(::updateSong) }
+        collect(navModel.mainNavigationAction, ::handleMainNavigation)
+        collect(navModel.exploreNavigationItem, ::handleExploreNavigation)
+        collectImmediately(playbackModel.song, ::updateSong)
     }
 
     override fun onResume() {

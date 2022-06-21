@@ -34,10 +34,10 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getDrawableSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.textSafe
 
@@ -116,13 +116,13 @@ class PlaybackPanelFragment :
 
         // --- VIEWMODEL SETUP --
 
-        launch { playbackModel.song.collect(::updateSong) }
-        launch { playbackModel.parent.collect(::updateParent) }
-        launch { playbackModel.positionSecs.collect(::updatePosition) }
-        launch { playbackModel.repeatMode.collect(::updateRepeat) }
-        launch { playbackModel.isPlaying.collect(::updatePlaying) }
-        launch { playbackModel.isShuffled.collect(::updateShuffled) }
-        launch { playbackModel.nextUp.collect(::updateNextUp) }
+        collectImmediately(playbackModel.song, ::updateSong)
+        collectImmediately(playbackModel.parent, ::updateParent)
+        collectImmediately(playbackModel.positionSecs, ::updatePosition)
+        collectImmediately(playbackModel.repeatMode, ::updateRepeat)
+        collectImmediately(playbackModel.isPlaying, ::updatePlaying)
+        collectImmediately(playbackModel.isShuffled, ::updateShuffled)
+        collectImmediately(playbackModel.nextUp, ::updateNextUp)
 
         logD("Fragment Created")
     }

@@ -45,8 +45,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.oxycblt.auxio.R
@@ -159,18 +159,39 @@ val @receiver:ColorRes Int.stateList
     get() = ColorStateList.valueOf(this)
 
 /**
- * Collect a [stateFlow] into [block] a UI-safe way.
+ * Collect a [stateFlow] into [block] eventually.
+ *
+ * This does have an initializing call, but it usually occurs ~100ms into draw-time, which might not
+ * be ideal for some views. This should be used in cases where the state only needs to be updated
+ * during runtime.
+ */
+fun <T> Fragment.collect(stateFlow: StateFlow<T>, block: (T) -> Unit) {
+    launch { stateFlow.collect(block) }
+}
+
+/**
+ * Collect a [stateFlow] into [block] immediately.
  *
  * This method automatically calls [block] when initially starting to ensure UI state consistency.
  * This does nominally mean that there are two initializing collections, but this is considered
  * okay. [block] should be a function pointer in order to ensure lifecycle consistency.
  *
- * Only use this if your code absolutely needs to have a good state for ~100ms of draw-time.
- * Otherwise, it's somewhat in-efficient.
+ * This should be used for state the absolutely needs to be shown at draw-time.
  */
 fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit) {
     block(stateFlow.value)
     launch { stateFlow.collect(block) }
+}
+
+/** Like [collectImmediately], but with two [StateFlow] values. */
+fun <T1, T2> Fragment.collectImmediately(
+    a: StateFlow<T1>,
+    b: StateFlow<T2>,
+    block: (T1, T2) -> Unit
+) {
+    block(a.value, b.value)
+    val combine = a.combine(b) { first, second -> Pair(first, second) }
+    launch { combine.collect { block(it.first, it.second) } }
 }
 
 /**
@@ -178,7 +199,7 @@ fun <T> Fragment.collectImmediately(stateFlow: StateFlow<T>, block: (T) -> Unit)
  * shortcut intended to correctly launch a co-routine on a fragment in a way that won't cause
  * miscellaneous coroutine insanity.
  */
-fun Fragment.launch(
+private fun Fragment.launch(
     state: Lifecycle.State = Lifecycle.State.STARTED,
     block: suspend CoroutineScope.() -> Unit
 ) {
@@ -208,18 +229,6 @@ inline fun <reified T : AndroidViewModel> Fragment.androidActivityViewModels() =
 /** Shortcut to get the [Application] from an [AndroidViewModel] */
 val AndroidViewModel.application: Application
     get() = getApplication()
-
-/**
- * Combines the called flow with the given flow and then collects them both into [block]. This is a
- * bit of a dumb hack with [combine], as when we have to combine flows, we often just want to call
- * the same block with both functions, and not do any transformations.
- */
-suspend inline fun <T1, T2> Flow<T1>.collectWith(
-    other: Flow<T2>,
-    crossinline block: (T1, T2) -> Unit
-) {
-    combine(this, other) { a, b -> a to b }.collect { block(it.first, it.second) }
-}
 
 /**
  * Shortcut for querying all items in a database and running [block] with the cursor returned. Will

@@ -56,9 +56,10 @@ import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -140,11 +141,11 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // --- VIEWMODEL SETUP ---
 
-        launch { homeModel.isFastScrolling.collect(::updateFastScrolling) }
-        launch { homeModel.currentTab.collect(::updateCurrentTab) }
-        launch { homeModel.recreateTabs.collect(::handleRecreateTabs) }
-        launch { indexerModel.state.collect(::handleIndexerState) }
-        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
+        collect(homeModel.isFastScrolling, ::updateFastScrolling)
+        collectImmediately(homeModel.recreateTabs, ::handleRecreateTabs)
+        collectImmediately(homeModel.currentTab, ::updateCurrentTab)
+        collectImmediately(indexerModel.state, ::handleIndexerState)
+        collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
     override fun onDestroyBinding(binding: FragmentHomeBinding) {
@@ -280,7 +281,10 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             is Indexer.State.Complete -> handleIndexerResponse(binding, state.response)
             is Indexer.State.Indexing -> handleIndexingState(binding, state.indexing)
             null -> {
-                logD("Indexer is in indeterminate state, doing nothing")
+                logD("Indexer is in indeterminate state")
+                binding.homeFab.hide()
+                binding.homeIndexingContainer.visibility = View.INVISIBLE
+                binding.homePager.visibility = View.INVISIBLE
             }
         }
     }

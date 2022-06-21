@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.launch
+import org.oxycblt.auxio.util.collectImmediately
 
 /**
  * A [Fragment] that shows the queue and enables editing as well.
@@ -53,7 +53,7 @@ class QueueFragment : ViewBindingFragment<FragmentQueueBinding>(), QueueItemList
 
         // --- VIEWMODEL SETUP ----
 
-        launch { playbackModel.nextUp.collect(::updateQueue) }
+        collectImmediately(playbackModel.nextUp, ::updateQueue)
     }
 
     override fun onDestroyBinding(binding: FragmentQueueBinding) {

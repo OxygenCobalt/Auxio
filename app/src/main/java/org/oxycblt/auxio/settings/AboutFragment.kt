@@ -37,9 +37,9 @@ import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 import org.oxycblt.auxio.util.textSafe
@@ -66,10 +66,10 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
         binding.aboutFaq.setOnClickListener { openLinkInBrowser(LINK_FAQ) }
         binding.aboutLicenses.setOnClickListener { openLinkInBrowser(LINK_LICENSES) }
 
-        launch { homeModel.songs.collect(::updateSongCount) }
-        launch { homeModel.albums.collect(::updateAlbumCount) }
-        launch { homeModel.artists.collect(::updateArtistCount) }
-        launch { homeModel.genres.collect(::updateGenreCount) }
+        collectImmediately(homeModel.songs, ::updateSongCount)
+        collectImmediately(homeModel.albums, ::updateAlbumCount)
+        collectImmediately(homeModel.artists, ::updateArtistCount)
+        collectImmediately(homeModel.genres, ::updateGenreCount)
     }
 
     private fun updateSongCount(songs: List<Song>) {

@@ -43,9 +43,10 @@ import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.util.androidViewModels
 import org.oxycblt.auxio.util.applySpans
+import org.oxycblt.auxio.util.collect
+import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.launch
 import org.oxycblt.auxio.util.logW
 
 /**
@@ -101,8 +102,8 @@ class SearchFragment :
 
         // --- VIEWMODEL SETUP ---
 
-        launch { searchModel.searchResults.collect(::updateResults) }
-        launch { navModel.exploreNavigationItem.collect(::handleNavigation) }
+        collectImmediately(searchModel.searchResults, ::updateResults)
+        collect(navModel.exploreNavigationItem, ::handleNavigation)
     }
 
     override fun onDestroyBinding(binding: FragmentSearchBinding) {
