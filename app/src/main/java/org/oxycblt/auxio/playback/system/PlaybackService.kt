@@ -31,7 +31,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
-import com.google.android.exoplayer2.TracksInfo
+import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.audio.AudioCapabilities
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer
@@ -229,14 +229,14 @@ class PlaybackService :
         }
     }
 
-    override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
-        super.onTracksInfoChanged(tracksInfo)
+    override fun onTracksChanged(tracks: Tracks) {
+        super.onTracksChanged(tracks)
 
-        for (info in tracksInfo.trackGroupInfos) {
-            if (info.isSelected) {
-                for (i in 0 until info.trackGroup.length) {
-                    if (info.isTrackSelected(i)) {
-                        replayGainProcessor.applyReplayGain(info.trackGroup.getFormat(i).metadata)
+        for (group in tracks.groups) {
+            if (group.isSelected) {
+                for (i in 0 until group.length) {
+                    if (group.isTrackSelected(i)) {
+                        replayGainProcessor.applyReplayGain(group.getTrackFormat(i).metadata)
                         break
                     }
                 }
@@ -292,11 +292,11 @@ class PlaybackService :
 
     override fun onSettingChanged(key: String) {
         when (key) {
-            getString(R.string.set_replay_gain),
-            getString(R.string.set_pre_amp_with),
-            getString(R.string.set_pre_amp_without) -> onTracksInfoChanged(player.currentTracksInfo)
-            getString(R.string.set_show_covers),
-            getString(R.string.set_quality_covers) ->
+            getString(R.string.set_key_replay_gain),
+            getString(R.string.set_key_pre_amp_with),
+            getString(R.string.set_key_pre_amp_without) -> onTracksChanged(player.currentTracks)
+            getString(R.string.set_key_show_covers),
+            getString(R.string.set_key_quality_covers) ->
                 playbackManager.song?.let { song ->
                     notificationComponent.updateMetadata(song, playbackManager.parent)
                 }
@@ -352,7 +352,7 @@ class PlaybackService :
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.CONTENT_TYPE_MUSIC)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                     .build(),
                 true)
             .build()

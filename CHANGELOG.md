@@ -10,12 +10,14 @@
 - Fixed broken tablet layouts
 - Fixed seam that would appear on some album covers
 - Fixed visual issue with the queue opening animation
+- Fixed miscellanious startup issues
 - Fixed crash if settings was navigated away before playback state
 finished saving
 
 #### Dev/Meta
 - Migrated preferences from shared object to utility
 - Removed 2.0.0 compat code
+- Updated ExoPlayer to 2.18.0
 
 ## v2.4.0
 

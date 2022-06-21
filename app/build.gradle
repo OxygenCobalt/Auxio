@@ -93,7 +93,7 @@ dependencies {
     // Exoplayer
     // WARNING: THE EXOPLAYER VERSION MUST BE KEPT IN LOCK-STEP WITH THE PRE-BUILD SCRIPT.
     // IF NOT, VERY UNFRIENDLY BUILD FAILURES AND CRASHES MAY ENSUE.
-    implementation "com.google.android.exoplayer:exoplayer-core:2.17.1"
+    implementation "com.google.android.exoplayer:exoplayer-core:2.18.0"
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
 
     // Image loading

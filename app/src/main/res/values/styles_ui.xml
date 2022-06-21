@@ -20,22 +20,18 @@
          -->
         <item name="android:layout_marginEnd">@dimen/spacing_tiny</item>
     </style>
-    \
 
     <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
-    \
 
     <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
         <item name="navigationIcon">@drawable/ic_back</item>
     </style>
-    \
 
     <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_down</item>
     </style>
-    \
 
     <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
         <item name="navigationIcon">@drawable/ic_down</item>

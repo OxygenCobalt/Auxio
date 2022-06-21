@@ -166,7 +166,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
     override fun onSettingChanged(key: String) {
         if (key == context.getString(R.string.set_key_show_covers) ||
-            key == context.getString(R.string.set_key_show_covers)) {
+            key == context.getString(R.string.set_key_quality_covers)) {
             updateMediaMetadata(playbackManager.song)
         }
     }
