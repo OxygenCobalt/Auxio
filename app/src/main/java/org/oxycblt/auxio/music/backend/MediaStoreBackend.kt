@@ -276,7 +276,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
         // to null if they are not present. If this field is <unknown>, null it so that
         // it's easier to handle later.
         audio.artist =
-            cursor.getStringOrNull(artistIndex)?.run {
+            cursor.getString(artistIndex).run {
                 if (this != MediaStore.UNKNOWN_STRING) {
                     this
                 } else {
@@ -505,20 +505,15 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.RELATIVE_PATH)
         }
 
-        val volumeName = cursor.getStringOrNull(volumeIndex)
-        val relativePath = cursor.getStringOrNull(relativePathIndex)
+        val volumeName = cursor.getString(volumeIndex)
+        val relativePath = cursor.getString(relativePathIndex)
 
         // We now have access to the volume name, so we try to leverage it instead.
         // I have no idea how well this works in practice, but I assume that the fields
         // probably exist.
-        // TODO: Remove redundant null checks for fields you are pretty sure are not null.
-        if (volumeName != null && relativePath != null) {
-            // Iterating through the volume list is cheaper than creating a map,
-            // interestingly enough.
-            val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
-            if (volume != null) {
-                audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
-            }
+        val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
+        if (volume != null) {
+            audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
         }
 
         return audio
