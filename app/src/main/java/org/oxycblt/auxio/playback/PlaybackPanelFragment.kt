@@ -46,8 +46,6 @@ import org.oxycblt.auxio.util.textSafe
  * Instantiation is done by the navigation component, **do not instantiate this fragment manually.**
  * @author OxygenCobalt
  *
- * TODO: Handle RTL correctly in the playback buttons
- *
  * TODO: Make seek thumb grow when selected
  */
 class PlaybackPanelFragment :

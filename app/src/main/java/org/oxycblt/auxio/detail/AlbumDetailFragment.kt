@@ -144,15 +144,15 @@ class AlbumDetailFragment :
     override fun onShowSortMenu(anchor: View) {
         menu(anchor, R.menu.menu_album_sort) {
             val sort = detailModel.albumSort
-            requireNotNull(menu.findItem(sort.mode.itemId)).isChecked = true
-            requireNotNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
+            unlikelyToBeNull(menu.findItem(sort.mode.itemId)).isChecked = true
+            unlikelyToBeNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
                 detailModel.albumSort =
                     if (item.itemId == R.id.option_sort_asc) {
                         sort.withAscending(item.isChecked)
                     } else {
-                        sort.withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId)))
+                        sort.withMode(unlikelyToBeNull(Sort.Mode.fromItemId(item.itemId)))
                     }
                 true
             }

@@ -19,7 +19,6 @@ package org.oxycblt.auxio.playback
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.FrameLayout
 import com.google.android.material.slider.Slider
 import kotlin.math.max
 import org.oxycblt.auxio.databinding.ViewSeekBarBinding
@@ -52,12 +51,14 @@ constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) :
-    FrameLayout(context, attrs, defStyleAttr),
+    NoRtlFrameLayout(context, attrs, defStyleAttr),
     Slider.OnSliderTouchListener,
     Slider.OnChangeListener {
-    private val binding = ViewSeekBarBinding.inflate(context.inflater, this)
+    private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
 
     init {
+        // As per the Material Design guidelines, timeline elements like SeekBars and Controls
+        // should always be LTR.
         binding.seekBarSlider.addOnSliderTouchListener(this)
         binding.seekBarSlider.addOnChangeListener(this)
     }

@@ -10,7 +10,7 @@
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Medium"
         android:layout_margin="@dimen/spacing_small"
-        app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
+        app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:staticIcon="@drawable/ic_album" />
@@ -22,9 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_small"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:textAppearance="@style/TextAppearance.Auxio.LabelLarge"
         app:layout_constraintBottom_toTopOf="@+id/playback_info"
-        app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
+        app:layout_constraintEnd_toStartOf="@+id/playback_controls_wrapper"
         app:layout_constraintStart_toEndOf="@+id/playback_cover"
         app:layout_constraintTop_toTopOf="@+id/playback_cover"
         app:layout_constraintVertical_chainStyle="packed"
@@ -38,45 +37,61 @@
         android:layout_marginStart="@dimen/spacing_small"
         android:layout_marginEnd="@dimen/spacing_small"
         android:ellipsize="end"
-        android:textAppearance="@style/TextAppearance.Auxio.LabelMedium"
         app:layout_constraintBottom_toBottomOf="@+id/playback_cover"
-        app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
+        app:layout_constraintEnd_toStartOf="@+id/playback_controls_wrapper"
         app:layout_constraintStart_toEndOf="@+id/playback_cover"
         app:layout_constraintTop_toBottomOf="@+id/playback_song"
         tools:text="Artist Name / Album Name" />
 
-    <Button
-        android:id="@+id/playback_play_pause"
-        style="@style/Widget.Auxio.Button.Icon.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/desc_play_pause"
-        app:icon="@drawable/sel_playing_state"
-        app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
-        app:layout_constraintEnd_toStartOf="@+id/playback_skip_next"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/playback_skip_next"
-        style="@style/Widget.Auxio.Button.Icon.Small"
+    <org.oxycblt.auxio.playback.NoRtlFrameLayout
+        android:id="@+id/playback_controls_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_tiny"
-        android:contentDescription="@string/desc_play_pause"
-        app:icon="@drawable/ic_skip_next"
-        app:layout_constraintBottom_toTopOf="@+id/playback_progress_bar"
+        app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/playback_progress_bar"
+        <LinearLayout
+            android:id="@+id/playback_controls_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/playback_play_pause"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_play_pause"
+                app:icon="@drawable/sel_playing_state" />
+
+            <Button
+                android:id="@+id/playback_skip_next"
+                style="@style/Widget.Auxio.Button.Icon.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_play_pause"
+                app:icon="@drawable/ic_skip_next" />
+        </LinearLayout>
+
+    </org.oxycblt.auxio.playback.NoRtlFrameLayout>
+
+    <org.oxycblt.auxio.playback.NoRtlFrameLayout
+        android:id="@+id/playback_progress_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:progress="70" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/playback_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
+            tools:progress="70" />
+
+    </org.oxycblt.auxio.playback.NoRtlFrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

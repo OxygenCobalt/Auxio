@@ -63,6 +63,7 @@
             android:text="@string/def_widget_artist" />
 
         <android.widget.LinearLayout
+            android:id="@+id/widget_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small">

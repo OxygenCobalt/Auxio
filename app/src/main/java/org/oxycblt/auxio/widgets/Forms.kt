@@ -18,6 +18,7 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
+import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
@@ -113,6 +114,9 @@ private fun RemoteViews.applyPlayPauseControls(
     setOnClickPendingIntent(
         R.id.widget_play_pause,
         context.newBroadcastPendingIntent(PlaybackService.ACTION_PLAY_PAUSE))
+
+    // Controls are timeline elements, override the layout direction to RTL
+    setInt(R.id.widget_controls, "setLayoutDirection", View.LAYOUT_DIRECTION_LTR)
 
     setImageViewResource(
         R.id.widget_play_pause,

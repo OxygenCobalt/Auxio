@@ -99,7 +99,6 @@
             android:minHeight="@dimen/size_btn"
             android:src="@drawable/ic_play" />
 
-
     </android.widget.LinearLayout>
 </LinearLayout>
 

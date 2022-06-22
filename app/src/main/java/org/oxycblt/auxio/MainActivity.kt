@@ -43,8 +43,6 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Custom language support
  *
- * TODO: Rework padding ethos
- *
  * TODO: Add multi-select
  *
  * @author OxygenCobalt

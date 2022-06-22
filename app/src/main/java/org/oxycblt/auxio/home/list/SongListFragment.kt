@@ -27,8 +27,8 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
-import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context

@@ -6,6 +6,9 @@
 - Added a shuffle shortcut
 - You can now customize what occurs when a song is played from an album/artist/genre [#164]
 
+#### What's Improved
+- Made "timeline" elements (like playback controls) always left-to-right
+
 #### What's Fixed
 - Fixed broken tablet layouts
 - Fixed seam that would appear on some album covers

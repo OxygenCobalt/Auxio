@@ -73,10 +73,9 @@ class PlaybackBarFragment : ViewBindingFragment<FragmentPlaybackBarBinding>() {
 
         // Load the track color in manually as it's unclear whether the track actually supports
         // using a ColorStateList in the resources
-        binding.playbackProgressBar.trackColor =
-            requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
-
-        binding.playbackProgressBar.progress = 0
+        binding.playbackProgressBar.apply {
+            trackColor = requireContext().getColorStateListSafe(R.color.sel_track).defaultColor
+        }
 
         binding.playbackPlayPause.setOnClickListener { playbackModel.invertPlaying() }
 

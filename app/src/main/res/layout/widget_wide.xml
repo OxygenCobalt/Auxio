@@ -15,7 +15,6 @@
         android:id="@+id/widget_aspect_ratio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/widget_panel"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -42,7 +41,7 @@
         tools:ignore="ContentDescription" />
 
     <android.widget.LinearLayout
-        android:id="@+id/widget_panel"
+        android:id="@+id/widget_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
