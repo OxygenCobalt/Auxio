@@ -257,7 +257,7 @@ class Indexer {
                 .toMutableList()
 
         // Ensure that sorting order is consistent so that grouping is also consistent.
-        Sort.ByName(true).songsInPlace(songs)
+        Sort(Sort.Mode.ByName, true).songsInPlace(songs)
 
         logD("Successfully built ${songs.size} songs in ${System.currentTimeMillis() - start}ms")
 
@@ -287,16 +287,8 @@ class Indexer {
             // Use the song with the latest year as our metadata song.
             // This allows us to replicate the LAST_YEAR field, which is useful as it means that
             // weird years like "0" wont show up if there are alternatives.
-            // Note: Normally we could want to use something like maxByWith, but apparently
-            // that does not exist in the kotlin stdlib yet.
-            val comparator = Sort.NullableComparator<Int>()
-            var templateSong = albumSongs[0]
-            for (i in 1..albumSongs.lastIndex) {
-                val candidate = albumSongs[i]
-                if (comparator.compare(templateSong.track, candidate.track) < 0) {
-                    templateSong = candidate
-                }
-            }
+            val templateSong =
+                albumSongs.maxWith(compareBy(Sort.Mode.NULLABLE_INT_COMPARATOR) { it._year })
 
             albums.add(
                 Album(

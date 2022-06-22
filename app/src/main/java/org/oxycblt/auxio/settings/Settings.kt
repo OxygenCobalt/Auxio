@@ -239,7 +239,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             Sort.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_lib_songs_sort), Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+                ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_lib_songs_sort), value.intCode)
@@ -252,7 +252,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             Sort.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_lib_albums_sort), Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+                ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_lib_albums_sort), value.intCode)
@@ -265,7 +265,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             Sort.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_lib_artists_sort), Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+                ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_lib_artists_sort), value.intCode)
@@ -278,7 +278,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() =
             Sort.fromIntCode(
                 inner.getInt(context.getString(R.string.set_key_lib_genres_sort), Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+                ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
                 putInt(context.getString(R.string.set_key_lib_genres_sort), value.intCode)
@@ -291,19 +291,20 @@ class Settings(private val context: Context, private val callback: Callback? = n
         get() {
             var sort =
                 Sort.fromIntCode(
-                    inner.getInt(context.getString(R.string.set_key_lib_album_sort), Int.MIN_VALUE))
-                    ?: Sort.ByDisc(true)
+                    inner.getInt(
+                        context.getString(R.string.set_key_detail_album_sort), Int.MIN_VALUE))
+                    ?: Sort(Sort.Mode.ByDisc, true)
 
             // Correct legacy album sort modes to Disc
-            if (sort is Sort.ByName) {
-                sort = Sort.ByDisc(sort.isAscending)
+            if (sort.mode is Sort.Mode.ByName) {
+                sort = sort.withMode(Sort.Mode.ByDisc)
             }
 
             return sort
         }
         set(value) {
             inner.edit {
-                putInt(context.getString(R.string.set_key_lib_album_sort), value.intCode)
+                putInt(context.getString(R.string.set_key_detail_album_sort), value.intCode)
                 apply()
             }
         }
@@ -312,11 +313,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailArtistSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_artist_sort), Int.MIN_VALUE))
-                ?: Sort.ByYear(false)
+                inner.getInt(context.getString(R.string.set_key_detail_artist_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByYear, false)
         set(value) {
             inner.edit {
-                putInt(context.getString(R.string.set_key_lib_artists_sort), value.intCode)
+                putInt(context.getString(R.string.set_key_detail_artist_sort), value.intCode)
                 apply()
             }
         }
@@ -325,11 +326,11 @@ class Settings(private val context: Context, private val callback: Callback? = n
     var detailGenreSort: Sort
         get() =
             Sort.fromIntCode(
-                inner.getInt(context.getString(R.string.set_key_lib_genre_sort), Int.MIN_VALUE))
-                ?: Sort.ByName(true)
+                inner.getInt(context.getString(R.string.set_key_detail_genre_sort), Int.MIN_VALUE))
+                ?: Sort(Sort.Mode.ByName, true)
         set(value) {
             inner.edit {
-                putInt(context.getString(R.string.set_key_lib_genre_sort), value.intCode)
+                putInt(context.getString(R.string.set_key_detail_genre_sort), value.intCode)
                 apply()
             }
         }

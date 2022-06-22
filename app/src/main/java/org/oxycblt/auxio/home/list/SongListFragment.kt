@@ -27,8 +27,8 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuItemListener
 import org.oxycblt.auxio.ui.MonoAdapter
-import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.SongViewHolder
 import org.oxycblt.auxio.ui.SyncBackingData
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.context
@@ -60,21 +60,21 @@ class SongListFragment : HomeListFragment<Song>() {
         // Change how we display the popup depending on the mode.
         // Note: We don't use the more correct individual artist name here, as sorts are largely
         // based off the names of the parent objects and not the child objects.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS)) {
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_SONGS).mode) {
             // Name -> Use name
-            is Sort.ByName -> song.sortName.first().uppercase()
+            is Sort.Mode.ByName -> song.sortName.first().uppercase()
 
             // Artist -> Use Artist Name
-            is Sort.ByArtist -> song.album.artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByArtist -> song.album.artist.sortName?.run { first().uppercase() }
 
             // Album -> Use Album Name
-            is Sort.ByAlbum -> song.album.sortName.first().uppercase()
+            is Sort.Mode.ByAlbum -> song.album.sortName.first().uppercase()
 
             // Year -> Use Full Year
-            is Sort.ByYear -> song.album.year?.toString()
+            is Sort.Mode.ByYear -> song.album.year?.toString()
 
             // Duration -> Use formatted duration
-            is Sort.ByDuration -> song.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> song.durationSecs.formatDuration(false)
 
             // Unsupported sort, error gracefully
             else -> null

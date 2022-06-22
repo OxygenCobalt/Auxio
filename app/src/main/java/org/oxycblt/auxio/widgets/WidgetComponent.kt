@@ -37,8 +37,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * A wrapper around each [WidgetProvider] that plugs into the main Auxio process and updates the
  * widget state based off of that. This cannot be rolled into [WidgetProvider] directly, as it may
- * result in memory leaks if [PlaybackStateManager]/[SettingsManager] gets created and bound to
- * without being released.
+ * result in memory leaks if [PlaybackStateManager]/[Settings] gets created and bound to without
+ * being released.
  * @author OxygenCobalt
  */
 class WidgetComponent(private val context: Context) :

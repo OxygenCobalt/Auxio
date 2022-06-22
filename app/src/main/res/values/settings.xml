@@ -35,9 +35,9 @@
     <string name="set_key_lib_artists_sort" translatable="false">auxio_artists_sort</string>
     <string name="set_key_lib_genres_sort" translatable="false">auxio_genres_sort</string>
 
-    <string name="set_key_lib_album_sort" translatable="false">auxio_album_sort</string>
-    <string name="set_key_lib_artist_sort" translatable="false">auxio_artist_sort</string>
-    <string name="set_key_lib_genre_sort" translatable="false">auxio_genre_sort</string>
+    <string name="set_key_detail_album_sort" translatable="false">auxio_album_sort</string>
+    <string name="set_key_detail_artist_sort" translatable="false">auxio_artist_sort</string>
+    <string name="set_key_detail_genre_sort" translatable="false">auxio_genre_sort</string>
 
     <string-array name="entries_theme">
         <item>@string/set_theme_auto</item>

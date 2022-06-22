@@ -74,7 +74,7 @@ class SearchViewModel(application: Application) :
 
         // Searching can be quite expensive, so get on a co-routine
         viewModelScope.launch {
-            val sort = Sort.ByName(true)
+            val sort = Sort(Sort.Mode.ByName, true)
             val results = mutableListOf<Item>()
 
             // Note: a filter mode of null means to not filter at all.

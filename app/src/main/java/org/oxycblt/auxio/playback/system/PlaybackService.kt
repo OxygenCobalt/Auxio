@@ -64,8 +64,8 @@ import org.oxycblt.auxio.widgets.WidgetProvider
  * - Headset management
  * - Widgets
  *
- * This service relies on [PlaybackStateManager.Callback] and [SettingsManager.Callback], so
- * therefore there's no need to bind to it to deliver commands.
+ * This service relies on [PlaybackStateManager.Callback] and [Settings.Callback], so therefore
+ * there's no need to bind to it to deliver commands.
  *
  * TODO: Android Auto
  *

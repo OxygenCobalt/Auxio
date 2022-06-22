@@ -54,6 +54,7 @@ import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.ui.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
@@ -65,7 +66,6 @@ import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
 import org.oxycblt.auxio.util.textSafe
-import org.oxycblt.auxio.util.unlikelyToBeNull
 
 /**
  * The main "Launching Point" fragment of Auxio, allowing navigation to the detail views for each
@@ -173,19 +173,17 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
             R.id.option_sort_asc -> {
                 item.isChecked = !item.isChecked
                 homeModel.updateCurrentSort(
-                    unlikelyToBeNull(
-                        homeModel
-                            .getSortForDisplay(homeModel.currentTab.value)
-                            .ascending(item.isChecked)))
+                    homeModel
+                        .getSortForDisplay(homeModel.currentTab.value)
+                        .withAscending(item.isChecked))
             }
             else -> {
                 // Sorting option was selected, mark it as selected and update the mode
                 item.isChecked = true
                 homeModel.updateCurrentSort(
-                    unlikelyToBeNull(
-                        homeModel
-                            .getSortForDisplay(homeModel.currentTab.value)
-                            .assignId(item.itemId)))
+                    homeModel
+                        .getSortForDisplay(homeModel.currentTab.value)
+                        .withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId))))
             }
         }
 
@@ -248,7 +246,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         val toHighlight = homeModel.getSortForDisplay(displayMode)
 
         for (option in sortMenu) {
-            if (option.itemId == toHighlight.itemId) {
+            if (option.itemId == toHighlight.mode.itemId) {
                 option.isChecked = true
             }
 

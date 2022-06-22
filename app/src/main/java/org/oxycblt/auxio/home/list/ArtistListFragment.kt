@@ -56,15 +56,15 @@ class ArtistListFragment : HomeListFragment<Artist>() {
         val artist = homeModel.artists.value[pos]
 
         // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS)) {
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ARTISTS).mode) {
             // By Name -> Use Name
-            is Sort.ByName -> artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> artist.sortName?.run { first().uppercase() }
 
             // Duration -> Use formatted duration
-            is Sort.ByDuration -> artist.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> artist.durationSecs.formatDuration(false)
 
             // Count -> Use song count
-            is Sort.ByCount -> artist.songs.size.toString()
+            is Sort.Mode.ByCount -> artist.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null

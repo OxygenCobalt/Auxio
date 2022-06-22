@@ -56,21 +56,21 @@ class AlbumListFragment : HomeListFragment<Album>() {
         val album = homeModel.albums.value[pos]
 
         // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS)) {
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_ALBUMS).mode) {
             // By Name -> Use Name
-            is Sort.ByName -> album.sortName.first().uppercase()
+            is Sort.Mode.ByName -> album.sortName.first().uppercase()
 
             // By Artist -> Use Artist Name
-            is Sort.ByArtist -> album.artist.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByArtist -> album.artist.sortName?.run { first().uppercase() }
 
             // Year -> Use Full Year
-            is Sort.ByYear -> album.year?.toString()
+            is Sort.Mode.ByYear -> album.year?.toString()
 
             // Duration -> Use formatted duration
-            is Sort.ByDuration -> album.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> album.durationSecs.formatDuration(false)
 
             // Count -> Use song count
-            is Sort.ByCount -> album.songs.size.toString()
+            is Sort.Mode.ByCount -> album.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null

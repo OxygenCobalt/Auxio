@@ -38,8 +38,8 @@ import org.oxycblt.auxio.util.logD
 /**
  * The component managing the [MediaSessionCompat] instance.
  *
- * I really don't like how I have to do this, but until I can feasibly work with the ExoPlayer queue
- * system using something like MediaSessionConnector is more or less impossible.
+ * I really don't like how I have to do this, but until I can work with the ExoPlayer queue system
+ * using something like MediaSessionConnector is more or less impossible.
  *
  * @author OxygenCobalt
  */
@@ -242,6 +242,12 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
+                .addCustomAction(
+                    PlaybackStateCompat.CustomAction.Builder(
+                            PlaybackService.ACTION_INC_REPEAT_MODE,
+                            context.getString(R.string.desc_change_repeat),
+                            R.drawable.ic_remote_repeat_off)
+                        .build())
                 .setBufferedPosition(player.bufferedPosition)
 
         state.setState(PlaybackStateCompat.STATE_NONE, player.bufferedPosition, 1.0f)

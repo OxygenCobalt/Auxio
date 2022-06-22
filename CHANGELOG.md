@@ -22,6 +22,7 @@ design guidelines
 - Migrated preferences from shared object to utility
 - Removed 2.0.0 compat code
 - Updated ExoPlayer to 2.18.0
+- Reworked sorting to be even more efficient
 
 ## v2.4.0
 

@@ -40,6 +40,7 @@ import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Header
 import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.MenuFragment
+import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
@@ -138,11 +139,18 @@ class ArtistDetailFragment :
     override fun onShowSortMenu(anchor: View) {
         menu(anchor, R.menu.menu_artist_sort) {
             val sort = detailModel.artistSort
-            requireNotNull(menu.findItem(sort.itemId)).isChecked = true
+            requireNotNull(menu.findItem(sort.mode.itemId)).isChecked = true
             requireNotNull(menu.findItem(R.id.option_sort_asc)).isChecked = sort.isAscending
             setOnMenuItemClickListener { item ->
                 item.isChecked = !item.isChecked
-                detailModel.artistSort = requireNotNull(sort.assignId(item.itemId))
+
+                detailModel.artistSort =
+                    if (item.itemId == R.id.option_sort_asc) {
+                        sort.withAscending(item.isChecked)
+                    } else {
+                        sort.withMode(requireNotNull(Sort.Mode.fromItemId(item.itemId)))
+                    }
+
                 true
             }
         }

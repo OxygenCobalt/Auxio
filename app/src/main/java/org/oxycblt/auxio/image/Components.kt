@@ -87,7 +87,7 @@ private constructor(
     private val artist: Artist,
 ) : BaseFetcher() {
     override suspend fun fetch(): FetchResult? {
-        val albums = Sort.ByName(true).albums(artist.albums)
+        val albums = Sort(Sort.Mode.ByName, true).albums(artist.albums)
         val results = albums.mapAtMost(4) { album -> fetchArt(context, album) }
         return createMosaic(context, results, size)
     }
@@ -116,7 +116,7 @@ private constructor(
         // albums normally.
         val artists = genre.songs.groupBy { it.album.artist.id }.keys
         val albums =
-            Sort.ByName(true).albums(genre.songs.groupBy { it.album }.keys).run {
+            Sort(Sort.Mode.ByName, true).albums(genre.songs.groupBy { it.album }.keys).run {
                 if (artists.size > 4) {
                     distinctBy { it.artist.rawName }
                 } else {

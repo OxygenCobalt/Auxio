@@ -93,6 +93,7 @@ class DetailViewModel(application: Application) :
     var artistSort: Sort
         get() = settings.detailArtistSort
         set(value) {
+            logD(value)
             settings.detailArtistSort = value
             currentArtist.value?.let(::refreshArtistData)
         }
@@ -233,7 +234,7 @@ class DetailViewModel(application: Application) :
         logD("Refreshing artist data")
         val data = mutableListOf<Item>(artist)
         data.add(Header(-2, R.string.lbl_albums))
-        data.addAll(Sort.ByYear(false).albums(artist.albums))
+        data.addAll(Sort(Sort.Mode.ByYear, false).albums(artist.albums))
         data.add(SortHeader(-3, R.string.lbl_songs))
         data.addAll(artistSort.songs(artist.songs))
         _artistData.value = data.toList()

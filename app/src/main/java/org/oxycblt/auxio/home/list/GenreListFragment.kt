@@ -56,15 +56,15 @@ class GenreListFragment : HomeListFragment<Genre>() {
         val genre = homeModel.genres.value[pos]
 
         // Change how we display the popup depending on the mode.
-        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_GENRES)) {
+        return when (homeModel.getSortForDisplay(DisplayMode.SHOW_GENRES).mode) {
             // By Name -> Use Name
-            is Sort.ByName -> genre.sortName?.run { first().uppercase() }
+            is Sort.Mode.ByName -> genre.sortName?.run { first().uppercase() }
 
             // Duration -> Use formatted duration
-            is Sort.ByDuration -> genre.durationSecs.formatDuration(false)
+            is Sort.Mode.ByDuration -> genre.durationSecs.formatDuration(false)
 
             // Count -> Use song count
-            is Sort.ByCount -> genre.songs.size.toString()
+            is Sort.Mode.ByCount -> genre.songs.size.toString()
 
             // Unsupported sort, error gracefully
             else -> null

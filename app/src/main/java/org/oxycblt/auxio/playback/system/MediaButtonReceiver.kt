@@ -37,8 +37,10 @@ class MediaButtonReceiver : BroadcastReceiver() {
         val playbackManager = PlaybackStateManager.getInstance()
         if (playbackManager.song != null) {
             // We have a song, so we can assume that the service will start a foreground state.
-            // At least, I hope. Again, *this is why we don't do this, I cannot describe how
-            // stupid this is with the state of foreground services on modern android*
+            // At least, I hope. Again, *this is why we don't do this*. I cannot describe how
+            // stupid this is with the state of foreground services on modern android. One
+            // wrong action at the wrong time will result in the app crashing, and there is
+            // nothing I can do about it.
             intent.component = ComponentName(context, PlaybackService::class.java)
             ContextCompat.startForegroundService(context, intent)
         }
