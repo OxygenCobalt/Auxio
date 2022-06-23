@@ -39,16 +39,13 @@
 
     <!-- Widget TextView that mimics the main Auxio Primary TextView -->
     <style name="Widget.Auxio.TextView.Primary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
-        <item name="android:letterSpacing">0</item>
         <item name="android:textAppearance">@style/TextAppearance.Material3.TitleMedium</item>
     </style>
 
     <!-- Widget TextView that mimics the main Auxio Secondary TextView -->
     <style name="Widget.Auxio.TextView.Secondary.AppWidget" parent="Widget.Auxio.TextView.AppWidget">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
     <!-- Hack to make sure that ripples work the best that they can on all Android Versions -->

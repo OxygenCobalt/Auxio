@@ -162,7 +162,7 @@
         <item name="android:ellipsize">marquee</item>
         <item name="android:singleLine">true</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMidLarge</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleLarge</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Secondary" parent="Widget.Auxio.TextView.Base">

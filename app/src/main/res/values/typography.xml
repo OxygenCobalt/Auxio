@@ -64,11 +64,22 @@
         <item name="android:letterSpacing">-0.01518181818</item>
     </style>
 
+    <!--
+    List items are better off with a non-bold TitleMedium, while header items would prefer a
+    bold TitleMedium. Have options for both.
+    -->
     <style name="TextAppearance.Auxio.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:fontFamily">@font/inter_regular</item>
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">-0.01125</item>
+    </style>
+
+    <style name="TextAppearance.Auxio.TitleMediumEmphasis" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.00825</item>
     </style>
 
     <style name="TextAppearance.Auxio.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
@@ -124,24 +135,4 @@
         <item name="android:letterSpacing">0.0008333333</item>
     </style>
 
-    <!--
-    Non-standard styles to work around typography system limitations.
-    A major issue with the typography system is how much it limits you into either
-    unusably tiny text or unusably large text, so these styles fill in the gap where
-    other elements fall short.
-    -->
-    <style name="TextAppearance.Auxio.TitleMediumEmphasis" parent="TextAppearance.Material3.TitleMedium">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">-0.00825</item>
-    </style>
-
-    <style name="TextAppearance.Auxio.TitleMidLarge" parent="TextAppearance.Material3.TitleMedium">
-        <item name="fontFamily">@font/inter_semibold</item>
-        <item name="android:fontFamily">@font/inter_semibold</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/text_size_ext_title_mid_large</item>
-        <item name="android:letterSpacing">-0.0114444444</item>
-    </style>
 </resources>
