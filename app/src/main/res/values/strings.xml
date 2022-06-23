@@ -106,7 +106,7 @@
     <string name="set_replay_gain">ReplayGain</string>
     <string name="set_replay_gain_track">Prefer track</string>
     <string name="set_replay_gain_album">Prefer album</string>
-    <string name="set_replay_gain_dynamic">Dynamic</string>
+    <string name="set_replay_gain_dynamic">Prefer album if one is playing</string>
     <string name="set_pre_amp">ReplayGain pre-amp</string>
     <string name="set_pre_amp_desc">The pre-amp is applied to the existing adjustment during playback</string>
     <string name="set_pre_amp_with">Adjustment with tags</string>
@@ -114,8 +114,8 @@
     <string name="set_pre_amp_warning">Warning: Changing the pre-amp to a high positive value may result in peaking on some audio tracks.</string>
 
     <string name="set_behavior">Behavior</string>
-    <string name="set_library_song_playback_mode">Library playback mode</string>
-    <string name="set_detail_song_playback_mode">Detail playback mode</string>
+    <string name="set_library_song_playback_mode">When playing from the library</string>
+    <string name="set_detail_song_playback_mode">When playing from item details</string>
     <string name="set_playback_mode_none">Play from shown item</string>
     <string name="set_playback_mode_all">Play from all songs</string>
     <string name="set_playback_mode_album">Play from album</string>

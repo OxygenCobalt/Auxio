@@ -32,8 +32,13 @@ import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.lazyReflectedMethod
 import org.oxycblt.auxio.util.logEOrThrow
 
+/** A path to a file. [name] is the stripped file name, [parent] is the parent path. */
 data class Path(val name: String, val parent: Directory)
 
+/**
+ * A path to a directory. [volume] is the volume the directory resides in, and [relativePath] is the
+ * path from the volume's root to the directory itself.
+ */
 data class Directory(val volume: StorageVolume, val relativePath: String) {
     init {
         if (relativePath.startsWith(File.separatorChar) ||

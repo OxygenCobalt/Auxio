@@ -73,10 +73,6 @@ ExoPlayer, while powerful, does add some overhead when playing exceptionally hig
 This results in choppy, distorted playback in some cases as audio data cannot be delivered in time. Sadly, there is
 not much I can do about this right now.
 
-#### What is dynamic ReplayGain?
-Dynamic ReplayGain is a quirk setting based off the FooBar2000 plugin that dynamically switches from track gain to album
-gain depending on if the current playback is from an album or not.
-
 #### Why are accents lighter/less saturated in dark mode?
 As per the [Material Design Guidelines](https://material.io/design/color/dark-theme.html), accents should be less
 saturated on dark mode to reduce eye strain and to increase visual cohesion.

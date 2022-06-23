@@ -56,10 +56,18 @@ val Long.albumCoverUri: Uri
     get() = ContentUris.withAppendedId(EXTERNAL_ALBUM_ART_URI, this)
 
 /**
+ * Parse out the number field from a field assumed to be NN, where NN is a track number. This is
+ * most commonly found on vorbis comments. Values of zero will be ignored under the assumption that
+ * they are invalid.
+ */
+val String.trackNo: Int?
+    get() = toIntOrNull()?.let { if (it > 0) it else null }
+
+/**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and
  * CD_TRACK_NUMBER. Values of zero will be ignored under the assumption that they are invalid.
  */
-val String.no: Int?
+val String.trackDiscNo: Int?
     get() = split('/', limit = 2)[0].toIntOrNull()?.let { if (it > 0) it else null }
 
 /**

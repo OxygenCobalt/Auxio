@@ -29,7 +29,7 @@
     <dimen name="size_icon_small">24dp</dimen>
     <dimen name="size_icon_large">32dp</dimen>
 
-    <dimen name="size_pre_amp_ticker">64dp</dimen>
+    <dimen name="size_pre_amp_ticker">56dp</dimen>
 
     <dimen name="text_size_ext_label_larger">16sp</dimen>
     <dimen name="text_size_ext_title_mid_large">18sp</dimen>

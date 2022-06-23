@@ -29,7 +29,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
-import org.oxycblt.auxio.music.no
+import org.oxycblt.auxio.music.trackDiscNo
+import org.oxycblt.auxio.music.trackNo
 import org.oxycblt.auxio.music.year
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -153,7 +154,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
             return audio.toSong()
         }
 
+        // Populate the format mime type if we have one.
         format.sampleMimeType?.let { audio.formatMimeType = it }
+
         val metadata = format.metadata
         if (metadata != null) {
             completeAudio(metadata)
@@ -209,13 +212,13 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TIT2"]?.let { audio.title = it }
 
         // Track, as NN/TT
-        tags["TRCK"]?.no?.let { audio.track = it }
+        tags["TRCK"]?.trackDiscNo?.let { audio.track = it }
 
         // Disc, as NN/TT
-        tags["TPOS"]?.no?.let { audio.disc = it }
+        tags["TPOS"]?.trackDiscNo?.let { audio.disc = it }
 
         // Dates are somewhat complicated, as not only did their semantics change from a flat year
-        // value  in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
+        // value in ID3v2.3 to a full ISO-8601 date in ID3v2.4, but there are also a variety of
         // date types.
         // Our hierarchy for dates is as such:
         // 1. ID3v2.4 Original Date, as it resolves the "Released in X, Remastered in Y" issue
@@ -223,11 +226,9 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 3. ID3v2.4 Release Date, as it is the second most common date type
         // 4. ID3v2.3 Original Date, as it is like #1
         // 5. ID3v2.3 Release Year, as it is the most common date type
-        tags["TYER"]?.year?.let { audio.year = it }
-        tags["TORY"]?.year?.let { audio.year = it }
-        tags["TDRL"]?.iso8601year?.let { audio.year = it }
-        tags["TDRC"]?.iso8601year?.let { audio.year = it }
-        tags["TDOR"]?.iso8601year?.let { audio.year = it }
+        audio.year
+            ?: tags["TDOR"]?.iso8601year ?: tags["TDRC"]?.iso8601year ?: tags["TDRL"]?.iso8601year
+                ?: tags["TORY"]?.year ?: tags["TYER"]?.year
 
         // Album
         tags["TALB"]?.let { audio.album = it }
@@ -246,11 +247,11 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // Title
         tags["TITLE"]?.let { audio.title = it }
 
-        // Track, might be NN/TT, most often though TOTALTRACKS handles T.
-        tags["TRACKNUMBER"]?.no?.let { audio.track = it }
+        // Track. Probably not NN/TT, as TOTALTRACKS handles totals.
+        tags["TRACKNUMBER"]?.trackNo?.let { audio.track = it }
 
-        // Disc, might be NN/TT, most often though TOTALDISCS handles T.
-        tags["DISCNUMBER"]?.no?.let { audio.disc = it }
+        // Disc. Probably not NN/TT, as TOTALDISCS handles totals.
+        tags["DISCNUMBER"]?.trackNo?.let { audio.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:
@@ -258,9 +259,8 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // 2. Date, as it is the most common date type
         // 3. Year, as old vorbis tags tended to use this (I know this because it's the only
         // tag that android supports, so it must be 15 years old or more!)
-        tags["YEAR"]?.year?.let { audio.year = it }
-        tags["DATE"]?.iso8601year?.let { audio.year = it }
-        tags["ORIGINALDATE"]?.iso8601year?.let { audio.year = it }
+        audio.year =
+            tags["ORIGINALDATE"]?.iso8601year ?: tags["DATE"]?.iso8601year ?: tags["YEAR"]?.year
 
         // Album
         tags["ALBUM"]?.let { audio.album = it }
@@ -271,8 +271,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         // Album artist. This actually comes into two flavors:
         // 1. ALBUMARTIST, which is the most common
         // 2. ALBUM ARTIST, which is present on older vorbis tags
-        tags["ALBUM ARTIST"]?.let { audio.albumArtist = it }
-        tags["ALBUMARTIST"]?.let { audio.albumArtist = it }
+        audio.albumArtist = tags["ALBUMARTIST"] ?: tags["ALBUM ARTIST"]
 
         // Genre, no ID3 rules here
         tags["GENRE"]?.let { audio.genre = it }

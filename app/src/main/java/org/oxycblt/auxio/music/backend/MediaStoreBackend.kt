@@ -37,9 +37,9 @@ import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
-import org.oxycblt.auxio.music.no
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.storageVolumesCompat
+import org.oxycblt.auxio.music.trackDiscNo
 import org.oxycblt.auxio.music.useQuery
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.contentResolverSafe
@@ -72,8 +72,8 @@ import org.oxycblt.auxio.util.logD
  * the metadata parser has a brain aneurysm the moment it stumbles upon a dreaded TRDC or DATE tag.
  * Once again, this is because internally android uses an ancient in-house metadata parser to get
  * everything indexed, and so far they have not bothered to modernize this parser or even switch it
- * to something more powerful like Taglib, not even in Android 12. ID3v2.4 has been around for *21
- * years.* *It can drink now.* All of my what.
+ * to something that actually works, not even in Android 12. ID3v2.4 has been around for *21
+ * years.* *It can drink now.*
  *
  * Not to mention all the other infuriating quirks. Album artists can't be accessed from the albums
  * table, so we have to go for the less efficient "make a big query on all the songs lol" method so
@@ -489,8 +489,7 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
                 "AND ${MediaStore.Audio.AudioColumns.RELATIVE_PATH} LIKE ?)"
 
     override fun addDirToSelectorArgs(dir: Directory, args: MutableList<String>): Boolean {
-        // Leverage the volume field when selecting our directories. It's a little too
-        // expensive to include this alongside the data checks, so we assume that
+        // Leverage new the volume field when selecting our directories.
         args.add(dir.volume.mediaStoreVolumeNameCompat ?: return false)
         args.add("${dir.relativePath}%")
         return true
@@ -508,9 +507,8 @@ open class VolumeAwareMediaStoreBackend : MediaStoreBackend() {
         val volumeName = cursor.getString(volumeIndex)
         val relativePath = cursor.getString(relativePathIndex)
 
-        // We now have access to the volume name, so we try to leverage it instead.
-        // I have no idea how well this works in practice, but I assume that the fields
-        // probably exist.
+        // Find the StorageVolume whose MediaStore name corresponds to this song.
+        // This is what we use for the Directory.
         val volume = volumes.find { it.mediaStoreVolumeNameCompat == volumeName }
         if (volume != null) {
             audio.dir = Directory(volume, relativePath.removeSuffix(File.separator))
@@ -581,8 +579,8 @@ class Api30MediaStoreBackend : VolumeAwareMediaStoreBackend() {
         // N is the number and T is the total. Parse the number while leaving out the
         // total, as we have no use for it.
 
-        cursor.getStringOrNull(trackIndex)?.no?.let { audio.track = it }
-        cursor.getStringOrNull(discIndex)?.no?.let { audio.disc = it }
+        cursor.getStringOrNull(trackIndex)?.trackDiscNo?.let { audio.track = it }
+        cursor.getStringOrNull(discIndex)?.trackDiscNo?.let { audio.disc = it }
 
         return audio
     }

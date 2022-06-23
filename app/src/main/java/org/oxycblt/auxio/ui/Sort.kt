@@ -79,15 +79,15 @@ data class Sort(val mode: Mode, val isAscending: Boolean) {
         songs.sortWith(mode.getSongComparator(isAscending))
     }
 
-    fun albumsInPlace(albums: MutableList<Album>) {
+    private fun albumsInPlace(albums: MutableList<Album>) {
         albums.sortWith(mode.getAlbumComparator(isAscending))
     }
 
-    fun artistsInPlace(artists: MutableList<Artist>) {
+    private fun artistsInPlace(artists: MutableList<Artist>) {
         artists.sortWith(mode.getArtistComparator(isAscending))
     }
 
-    fun genresInPlace(genres: MutableList<Genre>) {
+    private fun genresInPlace(genres: MutableList<Genre>) {
         genres.sortWith(mode.getGenreComparator(isAscending))
     }
 

@@ -30,6 +30,8 @@ import android.widget.FrameLayout
  * always be LTR. In Auxio, this applies to most of the playback components. This layout in
  * particular overrides the layout direction in a way that will not disrupt how other views are laid
  * out.
+ *
+ * @author OxygenCobalt
  */
 open class NoRtlFrameLayout
 @JvmOverloads
