@@ -3,66 +3,49 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Réessayer</string>
     <string name="lbl_grant">Accorder</string>
-
     <string name="lbl_genres">Genres</string>
     <string name="lbl_artists">Artistes</string>
     <string name="lbl_albums">Albums</string>
     <string name="lbl_songs">Titres</string>
     <string name="lbl_all_songs">Titres Tous</string>
-
     <string name="lbl_search">Rechercher</string>
     <string name="lbl_filter">Filtre</string>
     <string name="lbl_filter_all">Tout</string>
-
     <string name="lbl_sort">Tri</string>
     <string name="lbl_sort_asc">Ascendant</string>
-
     <string name="lbl_play">Lecture</string>
     <string name="lbl_shuffle">Aléatoire</string>
     <string name="lbl_playback">Lecture en cours</string>
-
     <string name="lbl_queue">File d\'attente</string>
     <string name="lbl_play_next">Jouer ensuite</string>
     <string name="lbl_queue_add">Ajouter à la file d\'attente</string>
     <string name="lbl_queue_added">Ajouté à la file d\'attente</string>
-
     <string name="lbl_go_album">Aller à l\'album</string>
     <string name="lbl_go_artist">Aller à l\'artiste</string>
-
     <string name="lbl_about">À propos</string>
     <string name="lbl_version">Version</string>
     <string name="lbl_code">Voir sur GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licences</string>
     <string name="lbl_author">Développé par OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Paramètres</string>
-
     <string name="set_ui">Apparence</string>
     <string name="set_theme">Thème</string>
     <string name="set_theme_auto">Automatique</string>
     <string name="set_theme_day">Clair</string>
     <string name="set_theme_night">Sombre</string>
     <string name="set_accent">Couleur d\'accentuation</string>
-
     <string name="set_quality_covers">Ignorer le stockage des pochettes</string>
-
     <string name="set_audio">Audio</string>
-
     <string name="set_behavior">Comportement</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Pas de musique trouvée</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Morceau %d</string>
-
     <string name="desc_play_pause">Lecture/Pause</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Recherche dans votre bibliothèque…</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rouge</string>
     <string name="clr_pink">Rose</string>
@@ -78,19 +61,58 @@
     <string name="clr_orange">Orange</string>
     <string name="clr_brown">Brun</string>
     <string name="clr_grey">Gris</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Titres chargés: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%s Titre</item>
         <item quantity="many">%s Titres</item>
         <item quantity="other">%s Titres</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%s Album</item>
         <item quantity="many">%s Albums</item>
         <item quantity="other">%s Albums</item>
     </plurals>
+    <string name="lbl_format">Format</string>
+    <string name="lbl_state_saved">État sauvegardé</string>
+    <string name="lbl_shuffle_shortcut_short">Mélanger</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_library_counts">Statistiques de la bibliothèque</string>
+    <string name="set_black_mode">Thème noir</string>
+    <string name="set_black_mode_desc">Utiliser un thème noir pur</string>
+    <string name="set_lib_tabs_desc">Modifier la visibilité et l\'ordre des onglets de la bibliothèque</string>
+    <string name="lbl_bitrate">Débit binaire</string>
+    <string name="set_alt_action">Utiliser une autre action de notification</string>
+    <string name="lbl_sample_rate">Taux d\'échantillonnage</string>
+    <string name="lbl_relative_path">Chemin parent</string>
+    <string name="lbl_file_name">Nom du fichier</string>
+    <string name="set_round_covers_desc">Utiliser les couvertures d\'album aux coins arrondis</string>
+    <string name="lbl_shuffle_shortcut_long">Tout mélanger</string>
+    <string name="lbl_cancel">Annuler</string>
+    <string name="lbl_save">Enregistrer</string>
+    <string name="lbl_size">Taille</string>
+    <string name="lbl_add">Ajouter</string>
+    <string name="lbl_off">Désactivé</string>
+    <string name="set_display">Affichage</string>
+    <string name="set_show_covers">Afficher les pochettes d\'album</string>
+    <string name="set_lib_tabs">Onglets de la bibliothèque</string>
+    <string name="set_quality_covers_desc">Augmente la qualité de la pochette de l\'album mais entraîne des temps de chargement plus longs et une utilisation accrue de la mémoire</string>
+    <string name="set_round_covers">Pochettes d\'album arrondies</string>
+    <string name="set_alt_repeat">Préférer l\'action en mode répétition</string>
+    <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
+    <string name="info_playback_channel_name">Lecture de musique</string>
+    <string name="info_indexer_channel_name">Chargement de musique</string>
+    <string name="info_widget_desc">Afficher et contrôler la lecture de la musique</string>
+    <string name="lbl_indexing">Chargement de votre bibliothèque musicale…</string>
+    <string name="lbl_sort_name">Nom</string>
+    <string name="lbl_sort_artist">Artiste</string>
+    <string name="lbl_sort_album">Album</string>
+    <string name="lbl_sort_year">Année</string>
+    <string name="lbl_sort_duration">Durée</string>
+    <string name="lbl_sort_count">Nombre de chansons</string>
+    <string name="lbl_sort_disc">Disque</string>
+    <string name="lbl_sort_track">Piste</string>
+    <string name="lbl_song_detail">Voir les propriétés</string>
+    <string name="lbl_props">Propriétés de la chanson</string>
+    <string name="set_show_covers_desc">Désactiver pour économiser la mémoire</string>
 </resources>
