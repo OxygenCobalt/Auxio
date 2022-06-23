@@ -42,7 +42,7 @@
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Einstellungen</string>
     <string name="set_ui">Aussehen</string>
-    <string name="set_theme">Thema</string>
+    <string name="set_theme">Farbschema</string>
     <string name="set_theme_auto">Automatisch</string>
     <string name="set_theme_day">Hell</string>
     <string name="set_theme_night">Dunkel</string>
@@ -132,8 +132,8 @@
     <string name="lbl_sort_artist">Künstler</string>
     <string name="lbl_sort_album">Album</string>
     <string name="lbl_sort_year">Jahr</string>
-    <string name="set_black_mode">Schwarzes Thema</string>
-    <string name="set_black_mode_desc">Ein schwarzes Thema für das dunkle Design verwenden</string>
+    <string name="set_black_mode">Schwarzes Farbschema</string>
+    <string name="set_black_mode_desc">Ein rein schwarzes dunkles Farbschema verwenden</string>
     <string name="set_repeat_pause">Pause bei Wiederholung</string>
     <string name="set_repeat_pause_desc">Pausieren, wenn ein Song wiederholt wird</string>
     <string name="desc_shuffle">Zufällig an- oder ausschalten</string>
@@ -143,8 +143,8 @@
     <string name="def_playback">Keine Musik wird gespielt</string>
     <string name="def_widget_song">Liedname</string>
     <string name="def_widget_artist">Künstlername</string>
-    <string name="set_lib_tabs">Bibliothektabs</string>
-    <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliothektabs ändern</string>
+    <string name="set_lib_tabs">Bibliotheks-Registerkarten</string>
+    <string name="set_lib_tabs_desc">Sichtbarkeit und Ordnung der Bibliotheksregisterkarten ändern</string>
     <string name="lbl_sort_name">Name</string>
     <string name="desc_shuffle_all">Alle Lieder zufällig</string>
     <string name="desc_clear_queue_item">Lied in der Warteschlange löschen</string>
