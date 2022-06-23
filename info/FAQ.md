@@ -85,5 +85,4 @@ Open an [Issue](https://github.com/OxygenCobalt/Auxio/issues) or a [Pull Request
 please note the [Contribution Guidelines](../.github/CONTRIBUTING.md) and [Accepted Additions](ADDITIONS.md) however.
 
 #### Can I translate Auxio to my native language?
-See the [Translations Megathread](https://github.com/OxygenCobalt/Auxio/issues/3) for guidance on how to create translations and submit them to the project.
-Any contributions are appreciated and tend to always be accepted. Weblate is also being set up.
+Please go to Auxio's [Weblate Project](https://hosted.weblate.org/engage/auxio/) to create new translations for the project.

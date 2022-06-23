@@ -62,7 +62,7 @@ abstract class BaseFetcher : Fetcher {
      */
     protected suspend fun fetchArt(context: Context, album: Album): InputStream? {
         val settings = Settings(context)
-
+        
         if (!settings.showCovers) {
             return null
         }
