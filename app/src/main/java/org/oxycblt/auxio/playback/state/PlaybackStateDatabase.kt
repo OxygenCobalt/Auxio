@@ -188,33 +188,35 @@ class PlaybackStateDatabase(context: Context) :
     fun write(state: SavedState) {
         requireBackgroundThread()
 
-        val song = state.queue.getOrNull(state.index)
+        synchronized(this) {
+            val song = state.queue.getOrNull(state.index)
 
-        if (song != null) {
-            val rawState =
-                RawState(
-                    index = state.index,
-                    positionMs = state.positionMs,
-                    repeatMode = state.repeatMode,
-                    isShuffled = state.isShuffled,
-                    songId = song.id,
-                    parentId = state.parent?.id,
-                    playbackMode =
-                        when (state.parent) {
-                            null -> PlaybackMode.ALL_SONGS
-                            is Album -> PlaybackMode.IN_ALBUM
-                            is Artist -> PlaybackMode.IN_ARTIST
-                            is Genre -> PlaybackMode.IN_GENRE
-                        })
+            if (song != null) {
+                val rawState =
+                    RawState(
+                        index = state.index,
+                        positionMs = state.positionMs,
+                        repeatMode = state.repeatMode,
+                        isShuffled = state.isShuffled,
+                        songId = song.id,
+                        parentId = state.parent?.id,
+                        playbackMode =
+                            when (state.parent) {
+                                null -> PlaybackMode.ALL_SONGS
+                                is Album -> PlaybackMode.IN_ALBUM
+                                is Artist -> PlaybackMode.IN_ARTIST
+                                is Genre -> PlaybackMode.IN_GENRE
+                            })
 
-            writeRawState(rawState)
-            writeQueue(state.queue)
-        } else {
-            writeRawState(null)
-            writeQueue(null)
+                writeRawState(rawState)
+                writeQueue(state.queue)
+            } else {
+                writeRawState(null)
+                writeQueue(null)
+            }
+
+            logD("Wrote state to database")
         }
-
-        logD("Wrote state to database")
     }
 
     private fun writeRawState(rawState: RawState?) {
