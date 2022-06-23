@@ -4,28 +4,23 @@
     <string name="info_app_desc">Un semplice, razionale lettore musicale per android.</string>
     <string name="info_playback_channel_name">Riproduzione musicale</string>
     <string name="info_widget_desc">Vedi e gestisci la riproduzione musicale</string>
-
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Riprova</string>
     <string name="lbl_grant">Permetti</string>
-
     <string name="lbl_genres">Generi</string>
     <string name="lbl_artists">Artisti</string>
     <string name="lbl_albums">Dischi</string>
     <string name="lbl_songs">Canzoni</string>
     <string name="lbl_all_songs">Tutte le canzoni</string>
-
     <string name="lbl_search">Cerca</string>
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tutto</string>
-
     <string name="lbl_sort">Ordine</string>
     <string name="lbl_sort_name">Nome</string>
     <string name="lbl_sort_artist">Artista</string>
     <string name="lbl_sort_album">Disco</string>
     <string name="lbl_sort_year">Anno</string>
     <string name="lbl_sort_asc">Ascendente</string>
-
     <string name="lbl_playback">Ora in riproduzione</string>
     <string name="lbl_play">Riproduci</string>
     <string name="lbl_shuffle">Mescola</string>
@@ -33,21 +28,16 @@
     <string name="set_playback_mode_album">Riproduci dal disco</string>
     <string name="set_playback_mode_artist">Riproduci dall\'artista</string>
     <string name="set_playback_mode_genre">Riproduci dal genere</string>
-
     <string name="lbl_queue">Coda</string>
     <string name="lbl_play_next">Riproduci successivo</string>
     <string name="lbl_queue_add">Accoda</string>
     <string name="lbl_queue_added">Accodato</string>
-
     <string name="lbl_go_artist">Vai all\'artista</string>
     <string name="lbl_go_album">Vai al disco</string>
-
     <string name="lbl_state_saved">Stato salvato</string>
-
     <string name="lbl_add">Aggiungi</string>
     <string name="lbl_save">Salva</string>
     <string name="err_no_dirs">Nessuna cartella</string>
-
     <string name="lbl_about">Informazioni</string>
     <string name="lbl_version">Versione</string>
     <string name="lbl_code">Vedi su Github</string>
@@ -55,7 +45,6 @@
     <string name="lbl_licenses">Licenze</string>
     <string name="lbl_author">Sviluppato da OxygenCobalt</string>
     <string name="lbl_library_counts">Statistiche libreria</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Opzioni</string>
     <string name="set_ui">Aspetto</string>
@@ -66,7 +55,6 @@
     <string name="set_accent">Accento</string>
     <string name="set_black_mode">Tema nero</string>
     <string name="set_black_mode_desc">Usa tema nero puro</string>
-
     <string name="set_display">Visualizzazione</string>
     <string name="set_lib_tabs">Schede libreria</string>
     <string name="set_lib_tabs_desc">Cambia la visibilità e l\'ordine delle schede della libreria</string>
@@ -79,32 +67,27 @@
     <string name="set_alt_action">Usa azioni notifica alternative</string>
     <string name="set_alt_repeat">Preferisci azione modalità ripetizione</string>
     <string name="set_alt_shuffle">Preferisci azione mescola</string>
-
     <string name="set_audio">Audio</string>
     <string name="set_headset_autoplay">Autoplay cuffie</string>
     <string name="set_headset_autoplay_desc">Comincia la riproduzione ogni volta che le cuffie sono inserite (potrebbe non funzionare su tutti i dispositivi)</string>
     <string name="set_replay_gain">Replay Gain</string>
     <string name="set_replay_gain_track">Preferisci traccia</string>
     <string name="set_replay_gain_album">Preferisci disco</string>
-    <string name="set_replay_gain_dynamic">Dinamico</string>
-
+    <string name="set_replay_gain_dynamic">Preferisci l\'album se in riproduzione</string>
     <string name="set_behavior">Comportamento</string>
-    <string name="set_library_song_playback_mode">Quando una canzone è selezionata</string>
+    <string name="set_library_song_playback_mode">Quando in riproduzione dalla libreria</string>
     <string name="set_keep_shuffle">Mantieni mescolamento</string>
     <string name="set_keep_shuffle_desc">Mantiene il mescolamento anche se una nuova canzone è selezionata</string>
     <string name="set_rewind_prev">Riavvolgi prima di saltare indietro</string>
     <string name="set_rewind_prev_desc">Riavvolge prima di saltare alla traccia precedente</string>
     <string name="set_repeat_pause">Pausa alla ripetizione</string>
     <string name="set_repeat_pause_desc">Pausa quando una canzone si ripete</string>
-
     <string name="set_content">Contenuti</string>
     <string name="set_save">Salva stato riproduzione</string>
     <string name="set_save_desc">Salva lo stato di riproduzione corrente</string>
     <string name="set_reindex">Ricarica musica</string>
     <string name="set_reindex_desc">L\'applicazione sarà riavviata</string>
-
     <string name="lbl_off">Spento</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Musica non trovata</string>
     <string name="err_index_failed">Caricamento musica fallito</string>
@@ -112,32 +95,26 @@
     <string name="err_no_app">Nessuna app può aprire il link</string>
     <string name="err_bad_dir">Questa cartella non è supportata</string>
     <string name="err_too_small">Auxio non supporta questa dimensione di finestra</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">Cerca nella tua libreria…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Canzone %d</string>
-
     <string name="desc_play_pause">Riproduci o pausa</string>
     <string name="desc_skip_next">Salta alla canzone successiva</string>
     <string name="desc_skip_prev">Salta alla canzone precedente</string>
     <string name="desc_change_repeat">Cambia modalità ripetizione</string>
     <string name="desc_shuffle">Attiva o disattiva mescolamento</string>
     <string name="desc_shuffle_all">Mescola tutte le canzoni</string>
-
     <string name="desc_clear_queue_item">Rimuove questa canzone della coda</string>
     <string name="desc_queue_handle">Muove questa canzone della coda</string>
     <string name="desc_tab_handle">Muove questa scheda</string>
     <string name="desc_clear_search">Cancella la query di ricerca</string>
     <string name="desc_music_dir_delete">Rimuove cartella esclusa</string>
-
     <string name="desc_auxio_icon">Icona Auxio</string>
     <string name="desc_no_cover">Copertina disco</string>
     <string name="desc_album_cover">Copertina disco per %s</string>
     <string name="desc_artist_image">Immagine artista per %s</string>
     <string name="desc_genre_image">Immagine genere per %s</string>
-
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">Artista sconosciuto</string>
     <string name="def_genre">Genere sconosciuto</string>
@@ -146,7 +123,6 @@
     <string name="def_playback">Nessuna canzone riproduzione</string>
     <string name="def_widget_song">Nome canzone</string>
     <string name="def_widget_artist">Nome artista</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Rosso</string>
     <string name="clr_pink">Rosa</string>
@@ -164,21 +140,66 @@
     <string name="clr_orange">Arancio</string>
     <string name="clr_brown">Marrone</string>
     <string name="clr_grey">Grigio</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Canzoni trovate: %d</string>
     <string name="fmt_lib_album_count">Dischi trovati: %d</string>
     <string name="fmt_lib_artist_count">Artisti trovati: %d</string>
     <string name="fmt_lib_genre_count">Generi trovati: %d</string>
     <string name="fmt_lib_total_duration">Durata totale: %s</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d canzone</item>
         <item quantity="other">%d canzoni</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d disco</item>
         <item quantity="other">%d dischi</item>
     </plurals>
+    <string name="set_dirs_mode">Modo</string>
+    <string name="set_dirs_mode_exclude_desc">La musica <b>non</b> sarà caricata dalle cartelle che aggiungi.</string>
+    <string name="set_dirs_mode_include">Includi</string>
+    <string name="set_dirs_mode_include_desc">La musica sarà caricata <b>solo</b> dalle cartelle che aggiungi.</string>
+    <string name="def_codec">Formato sconosciuto</string>
+    <string name="cdc_mp3">MPEG-1 Audio</string>
+    <string name="cdc_mp4">MPEG-4 Audio</string>
+    <string name="cdc_ogg">Ogg Audio</string>
+    <string name="clr_dynamic">Dinamico</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="fmt_indexing">Caricamento libreria musicale… (%1$d/%2$d)</string>
+    <string name="set_detail_song_playback_mode">Quando in riproduzione dai dettagli dell\'elemento</string>
+    <string name="set_pre_amp_warning">Attenzione: impostare valore positivi alti può provocare distorsioni su alcune tracce.</string>
+    <string name="set_pre_amp_without">Regolazione senza tags</string>
+    <string name="lbl_shuffle_shortcut_short">Mescola</string>
+    <string name="lbl_shuffle_shortcut_long">Mescola tutto</string>
+    <string name="set_pre_amp_with">Regolazione con tags</string>
+    <string name="set_pre_amp_desc">Il pre-amp è applicato alla regolazione esistente durante la riproduzione</string>
+    <string name="set_playback_mode_none">Riproduci dall\'elemento mostrato</string>
+    <string name="set_dirs_desc">Gestisci le cartelle da dove caricare la musica</string>
+    <string name="set_dirs">Cartelle musica</string>
+    <string name="set_dirs_mode_exclude">Escludi</string>
+    <string name="cdc_mka">Matroska Audio</string>
+    <string name="cdc_flac">Free Lossless Audio Codec (FLAC)</string>
+    <string name="cdc_aac">Advanced Audio Coding (AAC)</string>
+    <string name="fmt_disc_no">Disco %d</string>
+    <string name="fmt_bitrate">%d kbps</string>
+    <string name="def_sample_rate">Nessuna frequenza di campionamento</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="info_indexer_channel_name">Caricamento musica</string>
+    <string name="lbl_indexing">Caricamento libreria musicale…</string>
+    <string name="lbl_sort_duration">Durata</string>
+    <string name="lbl_sort_count">Conteggio canzoni</string>
+    <string name="lbl_sort_disc">Disco</string>
+    <string name="lbl_sort_track">Traccia</string>
+    <string name="lbl_ok">OK</string>
+    <string name="lbl_sample_rate">Frequenza di campionamento</string>
+    <string name="lbl_song_detail">Vedi proprietà</string>
+    <string name="lbl_props">Proprietà canzone</string>
+    <string name="lbl_file_name">Nome file</string>
+    <string name="lbl_relative_path">Directory superiore</string>
+    <string name="lbl_format">Formato</string>
+    <string name="lbl_size">Dimensione</string>
+    <string name="lbl_bitrate">Velocità di trasmissione</string>
+    <string name="def_bitrate">Nessuna velocità di trasmissione</string>
+    <string name="lbl_cancel">Cancella</string>
+    <string name="set_pre_amp">Pre-amp ReplayGain</string>
 </resources>
