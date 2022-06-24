@@ -113,7 +113,7 @@ class AlbumDetailFragment :
                 true
             }
             R.id.action_go_artist -> {
-                navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value))
+                navModel.exploreNavigateTo(unlikelyToBeNull(detailModel.currentAlbum.value).artist)
                 true
             }
             else -> false

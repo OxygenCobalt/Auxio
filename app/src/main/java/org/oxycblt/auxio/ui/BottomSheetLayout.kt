@@ -77,6 +77,8 @@ import org.oxycblt.auxio.util.stateList
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
  *
  * TODO: Implement rounded corners on the bar (when rounded covers is enabled)
+ *
+ * TODO: Fix several issues with a full-collapse event (blocks automatic rescanning)
  */
 class BottomSheetLayout
 @JvmOverloads

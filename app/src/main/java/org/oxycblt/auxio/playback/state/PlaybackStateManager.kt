@@ -45,8 +45,6 @@ import org.oxycblt.auxio.util.logW
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
- *
- * TODO: Bug test app behavior when playback stops
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
