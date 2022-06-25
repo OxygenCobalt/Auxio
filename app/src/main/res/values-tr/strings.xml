@@ -82,4 +82,6 @@
     <string name="lbl_sort_album">Albüm</string>
     <string name="lbl_sort_year">Yıl</string>
     <string name="lbl_sort_duration">Süre</string>
+    <string name="lbl_off">Kapalı</string>
+    <string name="lbl_state_saved">Durum kaydedildi</string>
 </resources>
