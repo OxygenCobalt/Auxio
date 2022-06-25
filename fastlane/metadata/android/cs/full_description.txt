@@ -3,14 +3,17 @@ Auxio je lokální hudební přehrávač s rychlým a spolehlivým UI/UX bez spo
 <b>Funkce</b>
 
 - Přehrávač založený na systému ExoPlayer
-- Přizpůsobitelné rozhraní a chování
+- Responzivní UI podle nejnovějších pokynů Material Design
+- Příjemné UX, které upřednostňuje snadné používání před okrajovými případy
+- Přizpůsobitelné chování
 - Pokročilé indexování médií, které upřednostňuje správná metadata
+- Správa složek podporující SD karty
 - Spolehlivé uchovávání stavu přehrávání
-- Podpora ReplayGain (na MP3, MP4, FLAC, OGG, a OPUS)
-- Material You (pouze Android 12+)
+- Plná podpora ReplayGain (na MP3, MP4, FLAC, OGG, a OPUS)
 - Edge-to-edge
 - Podpora vložených obalů
 - Funkce hledání
-- Zaměření zvuku/headsetu
+- Automatické přehrávání při připojení sluchátek
+- Stylové widgety, které se automaticky adaptují své velikosti
 - Plně soukromý a offline
 - Žádné zakulacené obaly alb (Pokud je tedy nechcete. Jinak jsou k dispozici.)
