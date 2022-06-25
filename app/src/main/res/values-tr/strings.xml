@@ -72,4 +72,14 @@
     <string name="lbl_size">Boyut</string>
     <string name="lbl_bitrate">Bit hızı</string>
     <string name="lbl_sample_rate">Örnek hızı</string>
+    <string name="info_playback_channel_name">Müzik Çalma</string>
+    <string name="info_widget_desc">Müzik çalmayı görüntüle ve kontrol et</string>
+    <string name="info_app_desc">Android için basit, rasyonel bir müzik çalar.</string>
+    <string name="info_indexer_channel_name">Müzik Yükleniyor</string>
+    <string name="lbl_indexing">Müzik kitaplığınız yükleniyor…</string>
+    <string name="lbl_sort_name">İsim</string>
+    <string name="lbl_sort_artist">Sanatçı</string>
+    <string name="lbl_sort_album">Albüm</string>
+    <string name="lbl_sort_year">Yıl</string>
+    <string name="lbl_sort_duration">Süre</string>
 </resources>
