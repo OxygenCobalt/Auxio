@@ -114,8 +114,10 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>() {
     private fun updateSong(song: Song?) {
         val binding = requireBinding()
         if (song != null) {
+            binding.bottomSheetLayout.isDraggable = true
             binding.bottomSheetLayout.show()
         } else {
+            binding.bottomSheetLayout.isDraggable = false
             binding.bottomSheetLayout.hide()
         }
     }

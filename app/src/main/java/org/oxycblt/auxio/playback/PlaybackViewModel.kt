@@ -22,6 +22,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -276,8 +277,7 @@ class PlaybackViewModel(application: Application) :
     // --- SAVE/RESTORE FUNCTIONS ---
 
     /**
-     * Force save the current [PlaybackStateManager] state to the database. Called by
-     * SettingsListFragment.
+     * Force save the current [PlaybackStateManager] state to the database.
      */
     fun savePlaybackState(context: Context, onDone: () -> Unit) {
         viewModelScope.launch {

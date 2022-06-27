@@ -58,6 +58,7 @@ import org.oxycblt.auxio.util.stateList
  * BottomSheetBehavior has a multitude of shortcomings based that make it a non-starter for Auxio,
  * such as:
  * - No edge-to-edge support
+ * - Does not resize other content
  * - Extreme jank
  * - Terrible APIs that you have to use just to make the UX tolerable
  * - Reliance on CoordinatorLayout, which is just a terrible component in general and everyone
@@ -76,9 +77,8 @@ import org.oxycblt.auxio.util.stateList
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
  *
- * TODO: Implement rounded corners on the bar (when rounded covers is enabled)
- *
- * TODO: Fix several issues with a full-collapse event (blocks automatic rescanning)
+ * TODO: Phase out this for BottomSheetBehavior once I can abuse that into functioning correctly. It
+ * is generally superior to this and would allow me to implement extra things like a rounded bar.
  */
 class BottomSheetLayout
 @JvmOverloads
@@ -157,6 +157,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     private var initMotionY = 0f
     private val tRect = Rect()
 
+    var isDraggable = false
+
     init {
         setWillNotDraw(false)
     }
@@ -220,12 +222,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
         // Dragging events are really complex and we don't want to mess up the state
         // while we are in one.
-        if (state == panelState || panelState == PanelState.DRAGGING) {
-            return
-        }
-
-        // Disallow events that aren't showing the bar when disabled
-        if (state != PanelState.HIDDEN && state != PanelState.COLLAPSED && !isEnabled) {
+        if (state == panelState) {
             return
         }
 
@@ -425,7 +422,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         performClick()
 
-        return if (!canSlide) {
+        return if (!isDraggable) {
             super.onTouchEvent(ev)
         } else
             try {
@@ -438,7 +435,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (!canSlide) {
+        if (!isDraggable) {
             return super.onInterceptTouchEvent(ev)
         }
 
@@ -588,26 +585,37 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         }
     }
 
-    private val canSlide: Boolean
-        get() = panelState != PanelState.HIDDEN && isEnabled
-
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
         // Only capture on a fully expanded panel view
         override fun tryCaptureView(child: View, pointerId: Int) =
             child === containerView && panelOffset >= 0
 
         override fun onViewDragStateChanged(state: Int) {
-            if (state == ViewDragHelper.STATE_IDLE) {
-                panelOffset = computePanelOffset(containerView.top)
-
-                when {
-                    panelOffset == 1f -> setPanelStateInternal(PanelState.EXPANDED)
-                    panelOffset == 0f -> setPanelStateInternal(PanelState.COLLAPSED)
-                    panelOffset < 0f -> {
-                        setPanelStateInternal(PanelState.HIDDEN)
-                        containerView.visibility = INVISIBLE
+            when (state) {
+                ViewDragHelper.STATE_DRAGGING -> {
+                    if (!isDraggable) {
+                        return
                     }
-                    else -> setPanelStateInternal(PanelState.EXPANDED)
+
+                    // We're dragging, so we need to update our state accordingly
+                    if (panelState != PanelState.DRAGGING) {
+                        lastIdlePanelState = panelState
+                    }
+
+                    setPanelStateInternal(PanelState.DRAGGING)
+                }
+                ViewDragHelper.STATE_IDLE -> {
+                    panelOffset = computePanelOffset(containerView.top)
+
+                    val newState =
+                        when {
+                            panelOffset == 1f -> PanelState.EXPANDED
+                            panelOffset == 0f -> PanelState.COLLAPSED
+                            panelOffset < 0f -> PanelState.HIDDEN
+                            else -> PanelState.EXPANDED
+                        }
+
+                    setPanelStateInternal(newState)
                 }
             }
         }
@@ -621,12 +629,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             dx: Int,
             dy: Int
         ) {
-            // We're dragging, so we need to update our state accordingly
-            if (panelState != PanelState.DRAGGING) {
-                lastIdlePanelState = panelState
-            }
-
-            setPanelStateInternal(PanelState.DRAGGING)
 
             // Update our panel offset using the new top value
             panelOffset = computePanelOffset(top)
