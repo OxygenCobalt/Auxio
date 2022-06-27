@@ -142,7 +142,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         // --- VIEWMODEL SETUP ---
 
         collect(homeModel.isFastScrolling, ::updateFastScrolling)
-        collectImmediately(homeModel.recreateTabs, ::handleRecreateTabs)
+        collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
         collectImmediately(indexerModel.state, ::handleIndexerState)
         collect(navModel.exploreNavigationItem, ::handleNavigation)
