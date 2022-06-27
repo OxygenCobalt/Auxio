@@ -8,6 +8,7 @@
 
 #### What's Improved
 - Made "timeline" elements (like playback controls) always left-to-right
+- Improved performance when ReplayGain is not enabled
 
 #### What's Fixed
 - Fixed broken tablet layouts
@@ -16,6 +17,7 @@
 - Fixed miscellanious startup issues
 - Fixed crash if settings was navigated away before playback state
 finished saving
+- Fixed broken album menu
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material

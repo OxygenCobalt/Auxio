@@ -218,29 +218,26 @@ class ReplayGainAudioProcessor(context: Context) : BaseAudioProcessor() {
         throw AudioProcessor.UnhandledAudioFormatException(inputAudioFormat)
     }
 
+    override fun isActive() = super.isActive() && volume != 1f
+
     override fun queueInput(inputBuffer: ByteBuffer) {
         val position = inputBuffer.position()
         val limit = inputBuffer.limit()
         val size = limit - position
         val buffer = replaceOutputBuffer(size)
 
-        if (volume == 1f) {
-            // No need to apply ReplayGain.
-            buffer.put(inputBuffer.slice())
-        } else {
-            for (i in position until limit step 2) {
-                // Ensure we clamp the values to the minimum and maximum values possible
-                // for the encoding. This prevents issues where samples amplified beyond
-                // 1 << 16 will end up becoming truncated during the conversion to a short,
-                // resulting in popping.
-                var sample = inputBuffer.getLeShort(i)
-                sample =
-                    (sample * volume)
-                        .toInt()
-                        .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
-                        .toShort()
-                buffer.putLeShort(sample)
-            }
+        for (i in position until limit step 2) {
+            // Ensure we clamp the values to the minimum and maximum values possible
+            // for the encoding. This prevents issues where samples amplified beyond
+            // 1 << 16 will end up becoming truncated during the conversion to a short,
+            // resulting in popping.
+            var sample = inputBuffer.getLeShort(i)
+            sample =
+                (sample * volume)
+                    .toInt()
+                    .clamp(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
+                    .toShort()
+            buffer.putLeShort(sample)
         }
 
         inputBuffer.position(limit)
