@@ -22,17 +22,17 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.AlbumViewHolder
-import org.oxycblt.auxio.ui.ArtistViewHolder
-import org.oxycblt.auxio.ui.AsyncBackingData
-import org.oxycblt.auxio.ui.GenreViewHolder
-import org.oxycblt.auxio.ui.Header
-import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.MultiAdapter
-import org.oxycblt.auxio.ui.NewHeaderViewHolder
-import org.oxycblt.auxio.ui.SimpleItemCallback
-import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.ui.recycler.AlbumViewHolder
+import org.oxycblt.auxio.ui.recycler.ArtistViewHolder
+import org.oxycblt.auxio.ui.recycler.AsyncBackingData
+import org.oxycblt.auxio.ui.recycler.GenreViewHolder
+import org.oxycblt.auxio.ui.recycler.Header
+import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.MultiAdapter
+import org.oxycblt.auxio.ui.recycler.NewHeaderViewHolder
+import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
+import org.oxycblt.auxio.ui.recycler.SongViewHolder
 
 class SearchAdapter(listener: MenuItemListener) : MultiAdapter<MenuItemListener>(listener) {
     override val data = AsyncBackingData(this, DIFFER)

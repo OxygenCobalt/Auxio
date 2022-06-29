@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.oxycblt.auxio.ui.EdgeAppBarLayout
+    <org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
         android:id="@+id/home_appbar"
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
@@ -27,7 +27,7 @@
             app:tabGravity="start"
             app:tabMode="scrollable" />
 
-    </org.oxycblt.auxio.ui.EdgeAppBarLayout>
+    </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>
 
     <FrameLayout
         android:id="@+id/home_content"
@@ -103,4 +103,4 @@
 
     </org.oxycblt.auxio.home.EdgeFabContainer>
 
-</org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+</org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>

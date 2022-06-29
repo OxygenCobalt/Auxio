@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Auxio.ItemLayout">
 
-    <org.oxycblt.auxio.image.ImageGroup
+    <org.oxycblt.auxio.image.ui.ImageGroup
         android:id="@+id/parent_image"
         style="@style/Widget.Auxio.Image.Medium"
         app:layout_constraintBottom_toBottomOf="parent"

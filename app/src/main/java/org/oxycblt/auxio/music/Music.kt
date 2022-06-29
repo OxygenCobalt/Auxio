@@ -23,7 +23,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.Item
+import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.unlikelyToBeNull
 
 // --- MUSIC MODELS ---

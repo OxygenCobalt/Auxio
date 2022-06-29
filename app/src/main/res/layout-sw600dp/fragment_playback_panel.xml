@@ -15,7 +15,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.StyledImageView
+    <org.oxycblt.auxio.image.ui.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_margin="@dimen/spacing_mid_large"

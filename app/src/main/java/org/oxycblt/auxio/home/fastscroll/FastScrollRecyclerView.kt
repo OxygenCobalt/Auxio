@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.EdgeRecyclerView
+import org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
 import org.oxycblt.auxio.util.canScroll
 import org.oxycblt.auxio.util.clamp
 import org.oxycblt.auxio.util.getDimenOffsetSafe

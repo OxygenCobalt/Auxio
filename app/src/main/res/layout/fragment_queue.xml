@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.oxycblt.auxio.ui.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:background="?attr/colorSurface"
     android:orientation="vertical">
 
-    <org.oxycblt.auxio.ui.EdgeAppBarLayout
+    <org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true"
         app:liftOnScrollTargetViewId="@id/queue_recycler">
@@ -19,9 +19,9 @@
             app:navigationIcon="@drawable/ic_down"
             app:title="@string/lbl_queue" />
 
-    </org.oxycblt.auxio.ui.EdgeAppBarLayout>
+    </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>
 
-    <org.oxycblt.auxio.ui.EdgeRecyclerView
+    <org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
         android:id="@+id/queue_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,4 +30,4 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/item_queue_song" />
 
-</org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+</org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>

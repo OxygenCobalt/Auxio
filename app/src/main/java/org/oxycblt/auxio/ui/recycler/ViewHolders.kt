@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.ui.recycler
 
 import android.content.Context
 import org.oxycblt.auxio.IntegerTable

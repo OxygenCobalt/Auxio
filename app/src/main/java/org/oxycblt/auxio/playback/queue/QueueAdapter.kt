@@ -28,10 +28,10 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.databinding.ItemQueueSongBinding
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.BindingViewHolder
-import org.oxycblt.auxio.ui.MonoAdapter
-import org.oxycblt.auxio.ui.SongViewHolder
-import org.oxycblt.auxio.ui.SyncBackingData
+import org.oxycblt.auxio.ui.recycler.BindingViewHolder
+import org.oxycblt.auxio.ui.recycler.MonoAdapter
+import org.oxycblt.auxio.ui.recycler.SongViewHolder
+import org.oxycblt.auxio.ui.recycler.SyncBackingData
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.inflater

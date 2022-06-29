@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.oxycblt.auxio.ui.EdgeCoordinatorLayout
+    <org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -21,7 +21,7 @@
 
         </org.oxycblt.auxio.detail.DetailAppBarLayout>
 
-        <org.oxycblt.auxio.ui.EdgeRecyclerView
+        <org.oxycblt.auxio.ui.recycler.EdgeRecyclerView
             android:id="@+id/detail_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,5 +29,5 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             tools:listitem="@layout/item_detail" />
 
-    </org.oxycblt.auxio.ui.EdgeCoordinatorLayout>
+    </org.oxycblt.auxio.ui.coordinator.EdgeCoordinatorLayout>
 </FrameLayout>

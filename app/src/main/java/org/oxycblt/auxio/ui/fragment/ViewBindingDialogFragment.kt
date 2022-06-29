@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

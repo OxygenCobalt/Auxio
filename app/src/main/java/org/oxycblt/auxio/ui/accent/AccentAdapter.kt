@@ -21,9 +21,9 @@ import android.content.Context
 import androidx.appcompat.widget.TooltipCompat
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.ItemAccentBinding
-import org.oxycblt.auxio.ui.BackingData
-import org.oxycblt.auxio.ui.BindingViewHolder
-import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.recycler.BackingData
+import org.oxycblt.auxio.ui.recycler.BindingViewHolder
+import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getColorSafe
 import org.oxycblt.auxio.util.inflater

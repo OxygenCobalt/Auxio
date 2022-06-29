@@ -35,7 +35,7 @@ import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration

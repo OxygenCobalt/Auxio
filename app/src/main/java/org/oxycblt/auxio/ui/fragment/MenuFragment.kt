@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.ui
+package org.oxycblt.auxio.ui.fragment
 
 import android.view.View
 import androidx.annotation.MenuRes
@@ -29,6 +29,8 @@ import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.PlaybackViewModel
+import org.oxycblt.auxio.ui.MainNavigationAction
+import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow

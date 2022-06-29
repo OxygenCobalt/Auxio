@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image
+package org.oxycblt.auxio.image.ui
 
 import android.content.Context
 import android.graphics.Canvas

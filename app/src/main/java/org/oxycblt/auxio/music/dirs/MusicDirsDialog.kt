@@ -31,7 +31,7 @@ import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Directory
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe

@@ -32,9 +32,9 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.MusicStore
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.Header
-import org.oxycblt.auxio.ui.Item
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.recycler.Header
+import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.application
 import org.oxycblt.auxio.util.logD
 

@@ -55,7 +55,7 @@ import org.oxycblt.auxio.ui.DisplayMode
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately

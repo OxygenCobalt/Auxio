@@ -22,10 +22,10 @@ import android.content.Context
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
 import org.oxycblt.auxio.databinding.ItemTabBinding
-import org.oxycblt.auxio.ui.BackingData
-import org.oxycblt.auxio.ui.BindingViewHolder
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.MonoAdapter
+import org.oxycblt.auxio.ui.recycler.BackingData
+import org.oxycblt.auxio.ui.recycler.BindingViewHolder
+import org.oxycblt.auxio.ui.recycler.MonoAdapter
 import org.oxycblt.auxio.util.inflater
 
 class TabAdapter(listener: Listener) :

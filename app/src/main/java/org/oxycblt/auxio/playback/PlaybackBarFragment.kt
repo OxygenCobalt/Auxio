@@ -27,7 +27,7 @@ import org.oxycblt.auxio.databinding.FragmentPlaybackBarBinding
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.ui.MainNavigationAction
 import org.oxycblt.auxio.ui.NavigationViewModel
-import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe

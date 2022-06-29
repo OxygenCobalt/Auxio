@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium">
 
-    <org.oxycblt.auxio.image.StyledImageView
+    <org.oxycblt.auxio.image.ui.StyledImageView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.MidHuge"
         app:layout_constraintEnd_toEndOf="parent"

@@ -22,7 +22,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.oxycblt.auxio.databinding.FragmentSettingsBinding
-import org.oxycblt.auxio.ui.ViewBindingFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 
 /**
  * A container [Fragment] for the settings menu.

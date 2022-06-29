@@ -25,7 +25,7 @@ import androidx.core.view.isGone
 import androidx.navigation.fragment.navArgs
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogSongDetailBinding
-import org.oxycblt.auxio.ui.ViewBindingDialogFragment
+import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration

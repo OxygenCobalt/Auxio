@@ -38,10 +38,10 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.PlaybackMode
 import org.oxycblt.auxio.settings.Settings
-import org.oxycblt.auxio.ui.Header
-import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.MenuFragment
 import org.oxycblt.auxio.ui.Sort
+import org.oxycblt.auxio.ui.fragment.MenuFragment
+import org.oxycblt.auxio.ui.recycler.Header
+import org.oxycblt.auxio.ui.recycler.Item
 import org.oxycblt.auxio.util.applySpans
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately

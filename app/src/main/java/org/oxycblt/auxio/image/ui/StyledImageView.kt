@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
-package org.oxycblt.auxio.image
+package org.oxycblt.auxio.image.ui
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -29,6 +29,7 @@ import coil.dispose
 import coil.load
 import com.google.android.material.shape.MaterialShapeDrawable
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.image.SquareFrameTransform
 import org.oxycblt.auxio.music.Album
 import org.oxycblt.auxio.music.Artist
 import org.oxycblt.auxio.music.Genre

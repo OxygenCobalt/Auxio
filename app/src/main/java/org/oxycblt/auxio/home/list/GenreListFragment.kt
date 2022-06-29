@@ -24,12 +24,12 @@ import org.oxycblt.auxio.databinding.FragmentHomeListBinding
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.ui.DisplayMode
-import org.oxycblt.auxio.ui.GenreViewHolder
-import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.MonoAdapter
 import org.oxycblt.auxio.ui.Sort
-import org.oxycblt.auxio.ui.SyncBackingData
+import org.oxycblt.auxio.ui.recycler.GenreViewHolder
+import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.MonoAdapter
+import org.oxycblt.auxio.ui.recycler.SyncBackingData
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.logEOrThrow

@@ -25,11 +25,11 @@ import org.oxycblt.auxio.databinding.ItemDetailBinding
 import org.oxycblt.auxio.databinding.ItemSongBinding
 import org.oxycblt.auxio.music.Genre
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.ui.BindingViewHolder
-import org.oxycblt.auxio.ui.Item
-import org.oxycblt.auxio.ui.MenuItemListener
-import org.oxycblt.auxio.ui.SimpleItemCallback
-import org.oxycblt.auxio.ui.SongViewHolder
+import org.oxycblt.auxio.ui.recycler.BindingViewHolder
+import org.oxycblt.auxio.ui.recycler.Item
+import org.oxycblt.auxio.ui.recycler.MenuItemListener
+import org.oxycblt.auxio.ui.recycler.SimpleItemCallback
+import org.oxycblt.auxio.ui.recycler.SongViewHolder
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.formatDuration
 import org.oxycblt.auxio.util.getPluralSafe

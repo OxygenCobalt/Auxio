@@ -32,7 +32,7 @@ import com.google.android.material.appbar.AppBarLayout
 import java.lang.Exception
 import java.lang.reflect.Field
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.ui.EdgeAppBarLayout
+import org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
