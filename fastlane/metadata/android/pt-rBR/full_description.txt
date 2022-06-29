@@ -1,0 +1,19 @@
+O Auxio é um reprodutor de música local com UI/UX rápido e confiável, sem os muitos recursos inúteis presentes em outros reprodutores de música. Construído a partir do <a href="https://exoplayer.dev/">Exoplayer</a>, o Auxio tem uma experiência de audição muito melhor em comparação com outros aplicativos que usam a API MediaPlayer nativa. Resumindo, <b>Toca música.</b>
+
+<b>Recursos</b>
+
+- Reprodução baseada em ExoPlayer
+- Snappy UI derivada das diretrizes mais recentes do Material Design
+- UX opinativo que prioriza a facilidade de uso em relação aos casos extremos
+- Comportamento personalizável
+- Indexador de mídia avançado que prioriza metadados corretos
+- Gerenciamento de pastas com reconhecimento de cartão SD
+- Persistência confiável do estado de reprodução
+- Suporte completo ao ReplayGain (em MP3, MP4, FLAC, OGG e OPUS)
+- De ponta a ponta
+- Suporte para capas embutidas
+- Funcionalidade de pesquisa
+- Reprodução automática do fone de ouvido
+- Widgets elegantes que se adaptam automaticamente ao seu tamanho
+- Completamente privado e offline
+- Sem capas de álbuns arredondadas (a menos que você as queira. Então você pode.)
