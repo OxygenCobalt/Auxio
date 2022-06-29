@@ -29,8 +29,8 @@ import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.iso8601year
+import org.oxycblt.auxio.music.plainTrackNo
 import org.oxycblt.auxio.music.trackDiscNo
-import org.oxycblt.auxio.music.trackNo
 import org.oxycblt.auxio.music.year
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logW
@@ -248,10 +248,10 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["TITLE"]?.let { audio.title = it }
 
         // Track. Probably not NN/TT, as TOTALTRACKS handles totals.
-        tags["TRACKNUMBER"]?.trackNo?.let { audio.track = it }
+        tags["TRACKNUMBER"]?.plainTrackNo?.let { audio.track = it }
 
         // Disc. Probably not NN/TT, as TOTALDISCS handles totals.
-        tags["DISCNUMBER"]?.trackNo?.let { audio.disc = it }
+        tags["DISCNUMBER"]?.plainTrackNo?.let { audio.disc = it }
 
         // Vorbis dates are less complicated, but there are still several types
         // Our hierarchy for dates is as such:

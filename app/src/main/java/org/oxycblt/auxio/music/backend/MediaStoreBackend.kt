@@ -37,6 +37,8 @@ import org.oxycblt.auxio.music.audioUri
 import org.oxycblt.auxio.music.directoryCompat
 import org.oxycblt.auxio.music.id3GenreName
 import org.oxycblt.auxio.music.mediaStoreVolumeNameCompat
+import org.oxycblt.auxio.music.packedDiscNo
+import org.oxycblt.auxio.music.packedTrackNo
 import org.oxycblt.auxio.music.queryCursor
 import org.oxycblt.auxio.music.storageVolumesCompat
 import org.oxycblt.auxio.music.trackDiscNo
@@ -134,13 +136,14 @@ abstract class MediaStoreBackend : Indexer.Backend {
         var selector = BASE_SELECTOR
 
         if (dirs.dirs.isNotEmpty()) {
-            // We have directories we need to exclude, extend the selector with new arguments
+            // Need to select for directories. The path query is the same, only difference is
+            // the presence of a NOT.
             selector +=
                 if (dirs.shouldInclude) {
-                    logD("Need to select folders (Include)")
+                    logD("Need to select dirs (Include)")
                     " AND ("
                 } else {
-                    logD("Need to select folders (Exclude)")
+                    logD("Need to select dirs (Exclude)")
                     " AND NOT ("
                 }
 
@@ -159,7 +162,7 @@ abstract class MediaStoreBackend : Indexer.Backend {
             selector += ')'
         }
 
-        logD("Starting query [proj: ${projection.map { it }}, selector: $selector, args: $args]")
+        logD("Starting query [proj: ${projection.toList()}, selector: $selector, args: $args]")
 
         return requireNotNull(
             context.contentResolverSafe.queryCursor(
@@ -441,28 +444,11 @@ class Api21MediaStoreBackend : MediaStoreBackend() {
 
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            parseTrack(rawTrack, audio)
+            rawTrack.packedTrackNo?.let { audio.track = it }
+            rawTrack.packedDiscNo?.let { audio.disc = it }
         }
 
         return audio
-    }
-
-    companion object {
-        /**
-         * Parse the TRACK field into the given [audio]. Since this is relied upon by both
-         * [Api29MediaStoreBackend] and [Api21MediaStoreBackend], this is a static method.
-         */
-        fun parseTrack(rawTrack: Int, audio: Audio) {
-            // TRACK is formatted as DTTT where D is the disc number and T is the track number.
-            // Except on Android 10. For some reason it's bugged on that version.
-            audio.track = rawTrack % 1000
-
-            // A disc number of 0 means that there is no disc.
-            val disc = rawTrack / 1000
-            if (disc > 0) {
-                audio.disc = disc
-            }
-        }
     }
 }
 
@@ -538,10 +524,11 @@ open class Api29MediaStoreBackend : VolumeAwareMediaStoreBackend() {
         }
 
         // This backend is volume-aware, but does not support the modern track primitives.
-        // Borrow API 21's implementation.
+        // Use the packed utilities instead.
         val rawTrack = cursor.getIntOrNull(trackIndex)
         if (rawTrack != null) {
-            Api21MediaStoreBackend.parseTrack(rawTrack, audio)
+            rawTrack.packedTrackNo?.let { audio.track = it }
+            rawTrack.packedDiscNo?.let { audio.disc = it }
         }
 
         return audio

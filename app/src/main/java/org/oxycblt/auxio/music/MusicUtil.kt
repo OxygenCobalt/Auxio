@@ -60,8 +60,23 @@ val Long.albumCoverUri: Uri
  * most commonly found on vorbis comments. Values of zero will be ignored under the assumption that
  * they are invalid.
  */
-val String.trackNo: Int?
+val String.plainTrackNo: Int?
     get() = toIntOrNull()?.let { if (it > 0) it else null }
+
+/**
+ * Parse out the track number field as if the given Int is formatted as DTTT, where D Is the disc
+ * and T is the track number. Values of zero will be ignored under the assumption that they are
+ * invalid.
+ */
+val Int.packedTrackNo: Int?
+    get() = div(1000).let { if (it > 0) it else null }
+
+/**
+ * Parse out the disc number field as if the given Int is formatted as DTTT, where D Is the disc and
+ * T is the track number. Values of zero will be ignored under the assumption that they are invalid.
+ */
+val Int.packedDiscNo: Int?
+    get() = mod(1000).let { if (it > 0) it else null }
 
 /**
  * Parse out the number field from an NN/TT string that is typically found in DISC_NUMBER and

@@ -59,7 +59,7 @@ import org.oxycblt.auxio.util.stateList
  * BottomSheetBehavior has a multitude of shortcomings based that make it a non-starter for Auxio,
  * such as:
  * - God-awful edge-to-edge support
- * - Does not resize other content
+ * - Does not allow other content to adapt
  * - Extreme jank
  * - Terrible APIs that you have to use just to make the UX tolerable
  * - Inexplicable layout and measuring inconsistencies
@@ -72,6 +72,11 @@ import org.oxycblt.auxio.util.stateList
  * Umano's SlidingUpPanelLayout, albeit heavily minified to remove extraneous use cases and updated
  * to support the latest SDK level and androidx tools.
  *
+ * What is hilarious is that Google now hates CoordinatorLayout and it's behavior implementations as
+ * much as I do. Just look at all the new boring layout implementations they are introducing like
+ * SlidingPaneLayout. It's almost like re-inventing the layout process but buggier and without
+ * access to other children in the ViewGroup was a bad idea. Whoa.
+ *
  * **Note:** If you want to adapt this layout into your own app. Good luck. This layout has been
  * reduced to Auxio's use case in particular and is really hard to understand since it has a ton of
  * state and view magic. I tried my best to document it, but it's probably not the most friendly or
@@ -83,7 +88,7 @@ class BottomSheetLayout
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     ViewGroup(context, attrs, defStyle) {
-    private enum class PanelState {
+    private enum class State {
         EXPANDED,
         COLLAPSED,
         HIDDEN,
@@ -104,17 +109,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             0
         }
 
-    // We have to define the background before the container declaration as otherwise it wont work
-    private val containerBackgroundDrawable =
+    // We have to define the background before the bottom sheet declaration as otherwise it wont
+    // work
+    private val sheetBackground =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
             elevation = context.pxOfDp(elevationNormal).toFloat()
             setCornerSize(cornersLarge.toFloat())
         }
 
-    private val containerView =
+    private val sheetView =
         FrameLayout(context).apply {
-            id = R.id.bottom_sheet_layout_container
+            id = R.id.bottom_sheet_view
 
             isClickable = true
             isFocusable = false
@@ -125,18 +131,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // we apply this background drawable to a layer list with another colorSurface
             // shape drawable, just in case weird things happen if background drawable is
             // completely transparent.
-            val surfaceDrawable =
+            val fallbackBackground =
                 MaterialShapeDrawable().apply {
                     fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
                     setCornerSize(cornersLarge.toFloat())
                 }
 
-            background = LayerDrawable(arrayOf(surfaceDrawable, containerBackgroundDrawable))
+            background = LayerDrawable(arrayOf(fallbackBackground, sheetBackground))
 
             disableDropShadowCompat()
         }
 
-    /** The drag helper that animates and dispatches drag events to the panels. */
+    /** The drag helper that animates and dispatches drag events to the bottom sheet. */
     private val dragHelper =
         ViewDragHelper.create(this, DragHelperCallback()).apply {
             minVelocity = MIN_FLING_VEL * resources.displayMetrics.density
@@ -148,20 +154,21 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
      */
     private var lastInsets: WindowInsets? = null
 
-    /** The current panel state. Can be [PanelState.DRAGGING] */
-    private var panelState = INIT_PANEL_STATE
+    /** The current bottom sheet state. Can be [State.DRAGGING] */
+    private var state = INIT_SHEET_STATE
 
-    /** The last panel state before a drag event began. */
-    private var lastIdlePanelState = INIT_PANEL_STATE
+    /** The last bottom sheet state before a drag event began. */
+    private var lastIdleState = INIT_SHEET_STATE
 
-    /** The range of pixels that the panel can drag through */
-    private var panelRange = 0
+    /** The range of pixels that the bottom sheet can drag through */
+    private var sheetRange = 0
 
     /**
-     * The relative offset of this panel as a percentage of [panelRange]. A value of 1 means a fully
-     * expanded panel. A value of 0 means a collapsed panel. A value below 0 means a hidden panel.
+     * The relative offset of this bottom sheet as a percentage of [sheetRange]. A value of 1 means
+     * a fully expanded sheet. A value of 0 means a collapsed sheet. A value below 0 means a hidden
+     * sheet.
      */
-    private var panelOffset = 0f
+    private var sheetOffset = 0f
 
     // Miscellaneous touch things
     private var initMotionX = 0f
@@ -177,12 +184,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     // / --- CONTROL METHODS ---
 
     /**
-     * Show the panel, only if it's hidden.
-     * @return if the panel was shown
+     * Show the bottom sheet, only if it's hidden.
+     * @return if the sheet was shown
      */
     fun show(): Boolean {
-        if (panelState == PanelState.HIDDEN) {
-            applyState(PanelState.COLLAPSED)
+        if (state == State.HIDDEN) {
+            applyState(State.COLLAPSED)
             return true
         }
 
@@ -190,12 +197,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
-     * Expand the panel if it is currently collapsed.
-     * @return If the panel was expanded
+     * Expand the bottom sheet if it is currently collapsed.
+     * @return If the sheet was expanded
      */
     fun expand(): Boolean {
-        if (panelState == PanelState.COLLAPSED) {
-            applyState(PanelState.EXPANDED)
+        if (state == State.COLLAPSED) {
+            applyState(State.EXPANDED)
             return true
         }
 
@@ -203,12 +210,12 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
-     * Collapse the panel if it is currently expanded.
-     * @return If the panel was collapsed
+     * Collapse the sheet if it is currently expanded.
+     * @return If the sheet was collapsed
      */
     fun collapse(): Boolean {
-        if (panelState == PanelState.EXPANDED) {
-            applyState(PanelState.COLLAPSED)
+        if (state == State.EXPANDED) {
+            applyState(State.COLLAPSED)
             return true
         }
 
@@ -216,37 +223,37 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
-     * Hide the panel if it is not hidden.
-     * @return If the panel was hidden
+     * Hide the sheet if it is not hidden.
+     * @return If the sheet was hidden
      */
     fun hide(): Boolean {
-        if (panelState != PanelState.HIDDEN) {
-            applyState(PanelState.HIDDEN)
+        if (state != State.HIDDEN) {
+            applyState(State.HIDDEN)
             return true
         }
 
         return false
     }
 
-    private fun applyState(state: PanelState) {
-        logD("Applying panel state $state")
+    private fun applyState(newState: State) {
+        logD("Applying bottom sheet state $newState")
 
         // Dragging events are really complex and we don't want to mess up the state
         // while we are in one.
-        if (state == panelState) {
+        if (newState == this.state) {
             return
         }
 
         if (!isLaidOut) {
             // Not laid out, just apply the state and let the measure + layout steps apply it for
             // us.
-            setPanelStateInternal(state)
+            setSheetStateInternal(newState)
         } else {
             // We are laid out. In this case we actually animate to our desired target.
-            when (state) {
-                PanelState.COLLAPSED -> smoothSlideTo(0f)
-                PanelState.EXPANDED -> smoothSlideTo(1.0f)
-                PanelState.HIDDEN -> smoothSlideTo(computePanelOffset(measuredHeight))
+            when (newState) {
+                State.COLLAPSED -> smoothSlideTo(0f)
+                State.EXPANDED -> smoothSlideTo(1.0f)
+                State.HIDDEN -> smoothSlideTo(calculateSheetOffset(measuredHeight))
                 else -> {}
             }
         }
@@ -264,7 +271,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         removeView(barView)
         removeView(panelView)
 
-        containerView.apply {
+        sheetView.apply {
             addView(
                 barView,
                 FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -276,7 +283,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                     .apply { gravity = Gravity.CENTER })
         }
 
-        addView(containerView)
+        addView(sheetView)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -294,73 +301,56 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
         setMeasuredDimension(widthSize, heightSize)
 
-        // First measure our actual container. We need to do this first to determine our
+        // First measure our actual bottom sheet. We need to do this first to determine our
         // range and offset values.
-        val panelWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
-        val panelHeightSpec = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
-        containerView.measure(panelWidthSpec, panelHeightSpec)
+        val sheetWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
+        val sheetHeightSpec = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
+        sheetView.measure(sheetWidthSpec, sheetHeightSpec)
 
-        panelRange = measuredHeight - barView.measuredHeight
+        sheetRange = measuredHeight - barView.measuredHeight
 
         if (!isLaidOut) {
-            logD("Doing initial panel layout")
+            logD("Doing initial bottom sheet layout")
 
             // This is our first layout, so make sure we know what offset we should work with
             // before we measure our content
-            panelOffset =
-                when (panelState) {
-                    PanelState.EXPANDED -> 1f
-                    PanelState.HIDDEN -> computePanelOffset(measuredHeight)
+            sheetOffset =
+                when (state) {
+                    State.EXPANDED -> 1f
+                    State.HIDDEN -> calculateSheetOffset(measuredHeight)
                     else -> 0f
                 }
 
-            updatePanelTransition()
+            updateBottomSheetTransition()
         }
 
         applyContentWindowInsets()
-        measureContent()
-    }
 
-    private fun measureContent() {
-        // TODO: Make measure match parent and then just adjust insets.
-        // We need to find out how much the panel should affect the view.
-        // When the panel is in it's bar form, we shorten the content view. If it's being expanded,
-        // we keep the same height and just overlay the panel.
-        val barHeightAdjusted = measuredHeight - computePanelTopPosition(min(panelOffset, 0f))
-
-        // Note that these views will always be a fixed MATCH_PARENT. This is intentional,
-        // as it reduces the logic we have to deal with regarding WRAP_CONTENT views.
+        // The content is always MATCH_PARENT, which nominally means that it will overlap
+        // with the sheet. This is actually to ensure that when a rounded sheet is used,
+        // the content will show in the gaps on each corner. To resolve the overlapping views,
+        // we modify window insets later.
         val contentWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
-        val contentHeightSpec =
-            MeasureSpec.makeMeasureSpec(measuredHeight - barHeightAdjusted, MeasureSpec.EXACTLY)
-
+        val contentHeightSpec = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
         contentView.measure(contentWidthSpec, contentHeightSpec)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        // Figure out where our panel should be and lay it out there.
-        val panelTop = computePanelTopPosition(panelOffset)
-
-        containerView.layout(
-            0, panelTop, containerView.measuredWidth, containerView.measuredHeight + panelTop)
-
-        layoutContent()
-    }
-
-    private fun layoutContent() {
-        // We already did our magic while measuring. No need to do anything here.
+        // Figure out where our bottom sheet should be and lay it out there.
+        val sheetTop = calculateSheetTopPosition(sheetOffset)
+        sheetView.layout(0, sheetTop, sheetView.measuredWidth, sheetView.measuredHeight + sheetTop)
         contentView.layout(0, 0, contentView.measuredWidth, contentView.measuredHeight)
     }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
         val save = canvas.save()
 
-        // Drawing views that are under the panel is inefficient, clip the canvas
+        // Drawing views that are under the bottom sheet is inefficient, clip the canvas
         // so that doesn't occur. Make sure we account for the corner radius when
         // doing this so that drawing still occurs in the gaps created by such.
         if (child == contentView) {
             canvas.getClipBounds(tRect)
-            tRect.bottom = tRect.bottom.coerceAtMost(containerView.top + cornersLarge)
+            tRect.bottom = tRect.bottom.coerceAtMost(sheetView.top + cornersLarge)
             canvas.clipRect(tRect)
         }
 
@@ -371,8 +361,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // One issue with handling a bottom bar with edge-to-edge is that if you want to
         // apply window insets to a view, those insets will cause incorrect spacing if the
         // bottom navigation is consumed by a bar. To fix this, we modify the bottom insets
-        // to reflect the presence of the panel [at least in it's collapsed state]
-        containerView.dispatchApplyWindowInsets(insets)
+        // to reflect the presence of the bottom sheet [at least in it's collapsed state]
+        sheetView.dispatchApplyWindowInsets(insets)
         lastInsets = insets
         applyContentWindowInsets()
         return insets
@@ -389,19 +379,18 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         }
     }
 
-    /** Adjust window insets to line up with the panel */
+    /** Adjust window insets to line up with the bottom sheet */
     private fun adjustInsets(insets: WindowInsets): WindowInsets {
-        // We kind of do a reverse-measure to figure out how we should inset this view.
-        // Find how much space is lost by the panel and then combine that with the
-        // bottom inset to find how much space we should apply.
-        // There is a slight shortcoming to this. If the playback bar has a height of
-        // zero (usually due to delays with fragment inflation), then it is assumed to
-        // not apply any window insets at all, which results in scroll desynchronization on
-        // certain views. This is considered tolerable as the other options are to convert
-        // the playback fragments to views, which is not nice.
+        // While the content view spans the whole of the layout, we still want it to adapt to
+        // the presence of the bottom sheet. WindowInsets is a great API for us to abuse in order
+        // to achieve this. Basically, we do a kind of reverse-measure to figure out how much
+        // space the sheet has consumed, and then combine that with the existing bottom inset to
+        // see which one should be applied. Note that we do not include the expanded sheet into
+        // this calculation, as it should be covered up by the bottom sheet.
         val bars = insets.getSystemBarInsetsCompat(this)
-        val consumedByPanel = computePanelTopPosition(panelOffset) - measuredHeight
-        val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
+        val consumedByNonExpandedSheet =
+            measuredHeight - calculateSheetTopPosition(min(sheetOffset, 0f))
+        val adjustedBottomInset = max(consumedByNonExpandedSheet, bars.bottom)
         return insets.replaceSystemBarInsetsCompat(
             bars.left, bars.top, bars.right, adjustedBottomInset)
     }
@@ -410,20 +399,20 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         Bundle().apply {
             putParcelable("superState", super.onSaveInstanceState())
             putSerializable(
-                KEY_PANEL_STATE,
-                if (panelState != PanelState.DRAGGING) {
-                    panelState
+                KEY_SHEET_STATE,
+                if (state != State.DRAGGING) {
+                    state
                 } else {
-                    lastIdlePanelState
+                    lastIdleState
                 })
         }
 
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state is Bundle) {
-            panelState = state.getSerializable(KEY_PANEL_STATE) as? PanelState ?: INIT_PANEL_STATE
-            super.onRestoreInstanceState(state.getParcelable("superState"))
+    override fun onRestoreInstanceState(savedState: Parcelable) {
+        if (savedState is Bundle) {
+            this.state = savedState.getSerializable(KEY_SHEET_STATE) as? State ?: INIT_SHEET_STATE
+            super.onRestoreInstanceState(savedState.getParcelable("superState"))
         } else {
-            super.onRestoreInstanceState(state)
+            super.onRestoreInstanceState(savedState)
         }
     }
 
@@ -457,7 +446,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                 initMotionX = ev.x
                 initMotionY = ev.y
 
-                if (!containerView.isUnder(ev.x, ev.y)) {
+                if (!sheetView.isUnder(ev.x, ev.y)) {
                     // Pointer is not on our view, do not intercept this event
                     dragHelper.cancel()
                     return false
@@ -467,8 +456,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                 val adx = abs(ev.x - initMotionX)
                 val ady = abs(ev.y - initMotionY)
 
-                val pointerUnder = containerView.isUnder(ev.x, ev.y)
-                val motionUnder = containerView.isUnder(initMotionX, initMotionY)
+                val pointerUnder = sheetView.isUnder(ev.x, ev.y)
+                val motionUnder = sheetView.isUnder(initMotionX, initMotionY)
 
                 if (!(pointerUnder || motionUnder) || ady > dragHelper.touchSlop && adx > ady) {
                     // Pointer has moved beyond our control, do not intercept this event
@@ -509,14 +498,15 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             return state == ViewDragHelper.STATE_DRAGGING
         }
 
-    private fun setPanelStateInternal(state: PanelState) {
-        if (panelState == state) {
+    private fun setSheetStateInternal(newState: State) {
+        if (this.state == newState) {
             return
         }
 
-        logD("New state: $state")
-        panelState = state
+        logD("New state: $newState")
+        this.state = newState
 
+        // TODO: Make accessibility better
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
     }
 
@@ -525,8 +515,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
      * transition is largely inspired by Android 12's notification panel, with the compact view
      * fading out completely before the panel view fades in.
      */
-    private fun updatePanelTransition() {
-        val ratio = max(panelOffset, 0f)
+    private fun updateBottomSheetTransition() {
+        val ratio = max(sheetOffset, 0f)
 
         val outRatio = 1 - ratio
         val halfOutRatio = min(ratio / 0.5f, 1f)
@@ -537,24 +527,19 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             isInvisible = alpha == 0f
         }
 
-        // Slowly reduce the elevation of the container as we slide up, eventually resulting in a
+        // Slowly reduce the elevation of the bottom sheet as we slide up, eventually resulting in a
         // neutral color instead of an elevated one when fully expanded.
-        containerBackgroundDrawable.alpha = (outRatio * 255).toInt()
-        containerView.translationZ = elevationNormal * outRatio
+        sheetBackground.alpha = (outRatio * 255).toInt()
+        sheetView.translationZ = elevationNormal * outRatio
 
         // Fade out our bar view as we slide up
         barView.apply {
             alpha = min(1 - halfOutRatio, 1f)
             isInvisible = alpha == 0f
 
-            // When edge-to-edge is enabled, the bar will not fade out into the
-            // top of the panel properly as PlaybackFragment will apply it's window insets.
-            // Therefore, we slowly increase the bar view's margins so that it fully disappears
-            // near the toolbar instead of in the system bars, which just looks nicer.
-            // The reason why we can't pad the bar is that it might result in the padding
-            // desynchronizing [reminder that this view also applies the bottom window inset]
-            // and we can't apply padding to the whole container layout since that would adjust
-            // the size of the panel view. This seems to be the least obtrusive way to do this.
+            // When edge-to-edge is enabled, we want to make the bar move along with the top
+            // window insets as it goes upwards. Do this by progressively modifying the y
+            // translation with a fraction of the said inset.
             lastInsets?.let { insets ->
                 val bars = insets.getSystemBarInsetsCompat(this)
                 translationY = (bars.top * halfOutRatio)
@@ -568,55 +553,52 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         }
     }
 
-    private fun computePanelTopPosition(panelOffset: Float): Int =
-        measuredHeight - barView.measuredHeight - (panelOffset * panelRange).toInt()
+    private fun calculateSheetTopPosition(sheetOffset: Float): Int =
+        measuredHeight - barView.measuredHeight - (sheetOffset * sheetRange).toInt()
 
-    private fun computePanelOffset(topPosition: Int): Float =
-        (computePanelTopPosition(0f) - topPosition).toFloat() / panelRange
+    private fun calculateSheetOffset(top: Int): Float =
+        (calculateSheetTopPosition(0f) - top).toFloat() / sheetRange
 
     private fun smoothSlideTo(offset: Float) {
         logD("Smooth sliding to $offset")
 
-        val okay =
-            dragHelper.smoothSlideViewTo(
-                containerView, containerView.left, computePanelTopPosition(offset))
-
-        if (okay) {
+        if (dragHelper.smoothSlideViewTo(
+            sheetView, sheetView.left, calculateSheetTopPosition(offset))) {
             postInvalidateOnAnimation()
         }
     }
 
     private inner class DragHelperCallback : ViewDragHelper.Callback() {
-        // Only capture on a fully expanded panel view
+        // Only capture on a fully shown panel view
         override fun tryCaptureView(child: View, pointerId: Int) =
-            child === containerView && panelOffset >= 0
+            child === sheetView && sheetOffset >= 0
 
-        override fun onViewDragStateChanged(state: Int) {
-            when (state) {
+        override fun onViewDragStateChanged(dragState: Int) {
+            when (dragState) {
                 ViewDragHelper.STATE_DRAGGING -> {
                     if (!isDraggable) {
                         return
                     }
 
                     // We're dragging, so we need to update our state accordingly
-                    if (panelState != PanelState.DRAGGING) {
-                        lastIdlePanelState = panelState
+                    if (this@BottomSheetLayout.state != State.DRAGGING) {
+                        lastIdleState = this@BottomSheetLayout.state
                     }
 
-                    setPanelStateInternal(PanelState.DRAGGING)
+                    setSheetStateInternal(State.DRAGGING)
                 }
                 ViewDragHelper.STATE_IDLE -> {
-                    panelOffset = computePanelOffset(containerView.top)
+                    sheetOffset = calculateSheetOffset(sheetView.top)
 
                     val newState =
                         when {
-                            panelOffset == 1f -> PanelState.EXPANDED
-                            panelOffset == 0f -> PanelState.COLLAPSED
-                            panelOffset < 0f -> PanelState.HIDDEN
-                            else -> PanelState.EXPANDED
+                            sheetOffset == 1f -> State.EXPANDED
+                            sheetOffset == 0f -> State.COLLAPSED
+                            sheetOffset < 0f -> State.HIDDEN
+                            else -> State.EXPANDED
                         }
 
-                    setPanelStateInternal(newState)
+                    setSheetStateInternal(newState)
                 }
             }
         }
@@ -630,18 +612,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             dx: Int,
             dy: Int
         ) {
-
-            // Update our panel offset using the new top value
-            panelOffset = computePanelOffset(top)
-
-            if (panelOffset < 0) {
-                // If we are hiding the panel, make sure we relayout our content too.
+            // Update our sheet offset using the new top value
+            sheetOffset = calculateSheetOffset(top)
+            if (sheetOffset < 0) {
+                // If we are hiding/showing the sheet, see if we need to update the insets
                 applyContentWindowInsets()
-                measureContent()
-                layoutContent()
             }
 
-            updatePanelTransition()
+            updateBottomSheetTransition()
             invalidate()
         }
 
@@ -653,31 +631,32 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
                     // Swipe down -> Collapse to bottom
                     yvel > 0 -> 0f
                     // No velocity, far enough from middle to expand to top
-                    panelOffset >= 0.5f -> 1f
+                    sheetOffset >= 0.5f -> 1f
                     // Collapse to bottom
                     else -> 0f
                 }
 
-            dragHelper.settleCapturedViewAt(releasedChild.left, computePanelTopPosition(newOffset))
+            dragHelper.settleCapturedViewAt(
+                releasedChild.left, calculateSheetTopPosition(newOffset))
 
             invalidate()
         }
 
-        override fun getViewVerticalDragRange(child: View) = panelRange
+        override fun getViewVerticalDragRange(child: View) = sheetRange
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
-            val collapsedTop = computePanelTopPosition(0f)
-            val expandedTop = computePanelTopPosition(1.0f)
+            val collapsedTop = calculateSheetTopPosition(0f)
+            val expandedTop = calculateSheetTopPosition(1.0f)
             return top.coerceAtLeast(expandedTop).coerceAtMost(collapsedTop)
         }
     }
 
     companion object {
-        private val INIT_PANEL_STATE = PanelState.HIDDEN
+        private val INIT_SHEET_STATE = State.HIDDEN
         private val VIEW_DRAG_HELPER_STATE_FIELD: Field by
             lazyReflectedField(ViewDragHelper::class, "mDragState")
 
         private const val MIN_FLING_VEL = 400
-        private const val KEY_PANEL_STATE = BuildConfig.APPLICATION_ID + ".key.PANEL_STATE"
+        private const val KEY_SHEET_STATE = BuildConfig.APPLICATION_ID + ".key.BOTTOM_SHEET_STATE"
     }
 }
