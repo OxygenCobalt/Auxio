@@ -3,66 +3,49 @@
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">Tentar novamente</string>
     <string name="lbl_grant">Confirmar</string>
-
     <string name="lbl_genres">Gêneros</string>
     <string name="lbl_artists">Artistas</string>
     <string name="lbl_albums">Álbuns</string>
     <string name="lbl_songs">Músicas</string>
     <string name="lbl_all_songs">Músicas Todo</string>
-
     <string name="lbl_search">Pesquisar</string>
     <string name="lbl_filter">Filtro</string>
     <string name="lbl_filter_all">Tudo</string>
-
     <string name="lbl_sort">Classificação</string>
-
     <string name="lbl_play">Reproduzir</string>
     <string name="lbl_shuffle">Embaralhar</string>
     <string name="lbl_playback">Tocando agora</string>
-
     <string name="lbl_queue">Fila</string>
     <string name="lbl_play_next">Reproduzir próxima</string>
     <string name="lbl_queue_add">Adicionar à fila</string>
     <string name="lbl_queue_added">Adicionada à fila</string>
-
     <string name="lbl_go_artist">Ir para o artista</string>
     <string name="lbl_go_album">Ir para o álbum</string>
-
     <string name="lbl_about">Sobre</string>
     <string name="lbl_version">Versão</string>
     <string name="lbl_code">Ver no GitHub</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">Licenças</string>
     <string name="lbl_author">Desenvolvido por OxygenCobalt</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">Configurações</string>
-
     <string name="set_ui">Aparência</string>
     <string name="set_theme">Tema</string>
     <string name="set_theme_auto">Automático</string>
     <string name="set_theme_day">Claro</string>
     <string name="set_theme_night">Escuro</string>
     <string name="set_accent">Cor de destaque</string>
-
     <string name="set_quality_covers">Ignorar capas Media Store</string>
-
     <string name="set_audio">Áudio</string>
-
     <string name="set_behavior">Comportamento</string>
     <string name="set_keep_shuffle">Memorizar aleatorização</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Nenhuma música encontrada</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">Música %d</string>
-
     <string name="desc_play_pause">Reproduzir/Pausar</string>
-
     <!-- Hint Namespace | EditText Hints -->
-    <string name="hint_search_library">Procurar na biblioteca…</string>
-
+    <string name="hint_search_library">Pesquise na sua biblioteca…</string>
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">Vermelho</string>
     <string name="clr_pink">Rosa</string>
@@ -77,18 +60,71 @@
     <string name="clr_orange">Laranja</string>
     <string name="clr_brown">Moreno</string>
     <string name="clr_grey">Grisalho</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">Músicas carregado: %d</string>
-
     <plurals name="fmt_song_count">
         <item quantity="one">%d Música</item>
         <item quantity="other">%d Músicas</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="one">%d Álbum</item>
         <item quantity="other">%d Álbuns</item>
     </plurals>
     <string name="lbl_sort_asc">Ascendente</string>
+    <string name="lbl_song_detail">Ver propriedades</string>
+    <string name="lbl_shuffle_shortcut_short">Embaralhar</string>
+    <string name="lbl_shuffle_shortcut_long">Embaralhar tudo</string>
+    <string name="lbl_add">Adicionar</string>
+    <string name="lbl_save">Salvar</string>
+    <string name="lbl_library_counts">Estatísticas da biblioteca</string>
+    <string name="set_show_covers_desc">Desligue para economizar o uso de memória</string>
+    <string name="set_quality_covers_desc">Aumenta a qualidade da capa do álbum, mas resulta em tempos de carregamento mais longos e maior uso de memória</string>
+    <string name="set_round_covers">Capas de álbuns arredondadas</string>
+    <string name="set_alt_action">Usar ação de notificação alternativa</string>
+    <string name="set_alt_repeat">Prefira a ação do modo de repetição</string>
+    <string name="set_pre_amp_desc">O pré-amplificador é aplicado ao ajuste existente durante a reprodução</string>
+    <string name="set_pre_amp_warning">Aviso: Alterar o pré-amplificador para um valor positivo alto pode resultar em picos em algumas faixas de áudio.</string>
+    <string name="set_dirs">Pastas de música</string>
+    <string name="set_dirs_desc">Gerencie de onde a música deve ser carregada</string>
+    <string name="set_dirs_mode_include">Incluir</string>
+    <string name="err_index_failed">Falha no carregamento da música</string>
+    <string name="err_no_app">Nenhum aplicativo pode abrir este link</string>
+    <string name="err_no_dirs">Sem Pastas</string>
+    <string name="err_bad_dir">Esta pasta não é compatível</string>
+    <string name="err_too_small">O Auxio não suporta este tamanho de janela</string>
+    <string name="set_show_covers">Mostrar capas de álbuns</string>
+    <string name="set_round_covers_desc">Use capas de álbuns com cantos arredondados</string>
+    <string name="set_reindex_desc">Vai reiniciar o aplicativo</string>
+    <string name="set_rewind_prev">Retroceder antes de pular para trás</string>
+    <string name="set_reindex">Recarregar música</string>
+    <string name="set_rewind_prev_desc">Retroceder antes de pular para a música anterior</string>
+    <string name="set_dirs_mode_include_desc">A música <b>somente</b> será carregada das pastas que você adicionar.</string>
+    <string name="set_dirs_mode_exclude">Excluir</string>
+    <string name="set_dirs_mode_exclude_desc">A música <b>não</b> será carregada das pastas que você adicionar.</string>
+    <string name="set_dirs_mode">Modo</string>
+    <string name="err_no_perms">O Auxio precisa de permissão para ler sua biblioteca de músicas</string>
+    <string name="info_app_desc">Um leitor de música simples e racional para android.</string>
+    <string name="lbl_indexing">Carregando sua biblioteca de músicas…</string>
+    <string name="lbl_sort_year">Ano</string>
+    <string name="lbl_sort_duration">Duração</string>
+    <string name="lbl_sort_count">Contagem de Músicas</string>
+    <string name="lbl_sort_disc">Disco</string>
+    <string name="lbl_sort_name">Nome</string>
+    <string name="lbl_sort_artist">Artista</string>
+    <string name="lbl_sort_album">Álbum</string>
+    <string name="lbl_props">Propriedades da música</string>
+    <string name="lbl_file_name">Nome do arquivo</string>
+    <string name="lbl_format">Formato</string>
+    <string name="lbl_size">Tamanho</string>
+    <string name="lbl_bitrate">Taxa de bits</string>
+    <string name="lbl_sample_rate">Taxa de amostragem</string>
+    <string name="lbl_state_saved">Estado salvo</string>
+    <string name="set_lib_tabs_desc">Altere a visibilidade e a ordem das guias da biblioteca</string>
+    <string name="set_black_mode">Tema preto</string>
+    <string name="set_black_mode_desc">Use um tema escuro puro preto</string>
+    <string name="set_headset_autoplay_desc">Sempre comece a tocar quando um fone de ouvido estiver conectado (pode não funcionar em todos os dispositivos)</string>
+    <string name="set_keep_shuffle_desc">Mantenha a reprodução aleatória ao reproduzir uma nova música</string>
+    <string name="set_repeat_pause">Pausar na repetição</string>
+    <string name="set_repeat_pause_desc">Pausa quando uma música se repete</string>
+    <string name="set_save_desc">Salve o estado de reprodução atual agora</string>
 </resources>
