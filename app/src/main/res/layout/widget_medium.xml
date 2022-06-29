@@ -46,13 +46,16 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_medium">
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_medium">
 
         <android.widget.TextView
             android:id="@+id/widget_song"
             style="@style/Widget.Auxio.TextView.Primary.AppWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@string/def_widget_song" />
 
         <android.widget.TextView
@@ -60,6 +63,8 @@
             style="@style/Widget.Auxio.TextView.Secondary.AppWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:text="@string/def_widget_artist" />
 
         <android.widget.LinearLayout
@@ -67,6 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginEnd="@dimen/spacing_small"
             android:orientation="horizontal">
 
             <android.widget.ImageButton
