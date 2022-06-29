@@ -14,8 +14,6 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/home_toolbar"
             style="@style/Widget.Auxio.Toolbar.Actions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"
             app:menu="@menu/menu_home"
             app:title="@string/info_app_name" />

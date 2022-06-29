@@ -40,10 +40,11 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
-import org.oxycblt.auxio.util.getDrawableSafe
+import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
@@ -57,10 +58,11 @@ import org.oxycblt.auxio.util.stateList
  *
  * BottomSheetBehavior has a multitude of shortcomings based that make it a non-starter for Auxio,
  * such as:
- * - No edge-to-edge support
+ * - God-awful edge-to-edge support
  * - Does not resize other content
  * - Extreme jank
  * - Terrible APIs that you have to use just to make the UX tolerable
+ * - Inexplicable layout and measuring inconsistencies
  * - Reliance on CoordinatorLayout, which is just a terrible component in general and everyone
  * responsible for creating it should be publicly shamed
  *
@@ -76,9 +78,6 @@ import org.oxycblt.auxio.util.stateList
  * extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
- *
- * TODO: Phase out this for BottomSheetBehavior once I can abuse that into functioning correctly. It
- * is generally superior to this and would allow me to implement extra things like a rounded bar.
  */
 class BottomSheetLayout
 @JvmOverloads
@@ -96,12 +95,21 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     private lateinit var barView: View
     private lateinit var panelView: View
 
-    // We have to define the background before the container declaration as otherwise it wont work
     private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
+    private val cornersLarge =
+        if (Settings(context).roundCovers) {
+            // Since album covers are rounded, we can also round the bar too.
+            context.getDimenSizeSafe(R.dimen.size_corners_large)
+        } else {
+            0
+        }
+
+    // We have to define the background before the container declaration as otherwise it wont work
     private val containerBackgroundDrawable =
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
             elevation = context.pxOfDp(elevationNormal).toFloat()
+            setCornerSize(cornersLarge.toFloat())
         }
 
     private val containerView =
@@ -117,10 +125,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // we apply this background drawable to a layer list with another colorSurface
             // shape drawable, just in case weird things happen if background drawable is
             // completely transparent.
-            background =
-                (context.getDrawableSafe(R.drawable.ui_panel_bg) as LayerDrawable).apply {
-                    setDrawableByLayerId(R.id.panel_overlay, containerBackgroundDrawable)
+            val surfaceDrawable =
+                MaterialShapeDrawable().apply {
+                    fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
+                    setCornerSize(cornersLarge.toFloat())
                 }
+
+            background = LayerDrawable(arrayOf(surfaceDrawable, containerBackgroundDrawable))
 
             disableDropShadowCompat()
         }
@@ -311,6 +322,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     private fun measureContent() {
+        // TODO: Make measure match parent and then just adjust insets.
         // We need to find out how much the panel should affect the view.
         // When the panel is in it's bar form, we shorten the content view. If it's being expanded,
         // we keep the same height and just overlay the panel.
@@ -344,10 +356,11 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         val save = canvas.save()
 
         // Drawing views that are under the panel is inefficient, clip the canvas
-        // so that doesn't occur.
+        // so that doesn't occur. Make sure we account for the corner radius when
+        // doing this so that drawing still occurs in the gaps created by such.
         if (child == contentView) {
             canvas.getClipBounds(tRect)
-            tRect.bottom = tRect.bottom.coerceAtMost(containerView.top)
+            tRect.bottom = tRect.bottom.coerceAtMost(containerView.top + cornersLarge)
             canvas.clipRect(tRect)
         }
 
@@ -501,7 +514,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             return
         }
 
-        logD("new state: $state")
+        logD("New state: $state")
         panelState = state
 
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
@@ -544,19 +557,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // the size of the panel view. This seems to be the least obtrusive way to do this.
             lastInsets?.let { insets ->
                 val bars = insets.getSystemBarInsetsCompat(this)
-                val params = layoutParams as MarginLayoutParams
-                val oldTopMargin = params.topMargin
-
-                params.setMargins(
-                    params.leftMargin,
-                    (bars.top * halfOutRatio).toInt(),
-                    params.rightMargin,
-                    params.bottomMargin)
-
-                // Poke the layout only when we changed something
-                if (params.topMargin != oldTopMargin) {
-                    containerView.requestLayout()
-                }
+                translationY = (bars.top * halfOutRatio)
             }
         }
 
