@@ -54,11 +54,9 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:background="@drawable/ui_widget_panel"
+        android:backgroundTint="?attr/colorSurface"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/spacing_small"
-        android:paddingTop="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_small"
-        android:paddingBottom="@dimen/spacing_small">
+        android:padding="@dimen/spacing_small">
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"
@@ -67,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/desc_skip_prev"
-            android:src="@drawable/ic_skip_prev" />
+            android:src="@drawable/ic_skip_prev_24" />
 
         <android.widget.ImageButton
             android:id="@+id/widget_play_pause"
@@ -76,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/desc_play_pause"
-            android:src="@drawable/ic_play" />
+            android:src="@drawable/ic_play_24" />
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_next"
@@ -85,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/desc_skip_next"
-            android:src="@drawable/ic_skip_next" />
+            android:src="@drawable/ic_skip_next_24" />
 
     </android.widget.LinearLayout>
 </android.widget.RelativeLayout>

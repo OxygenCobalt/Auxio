@@ -158,7 +158,7 @@ private class IndexerNotification(private val context: Context) :
             notificationManager.createNotificationChannel(channel)
         }
 
-        setSmallIcon(R.drawable.ic_indexer)
+        setSmallIcon(R.drawable.ic_indexer_32)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)

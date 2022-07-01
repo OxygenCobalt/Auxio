@@ -11,12 +11,12 @@
     view. The way we do this is odd, but it's designed this way.
     -->
 
-    <org.oxycblt.auxio.image.ui.ImageGroup
+    <org.oxycblt.auxio.image.ImageGroup
         android:id="@+id/song_track_bg"
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:staticIcon="@drawable/ic_song"
+        app:staticIcon="@drawable/ic_song_24"
         tools:visibility="invisible">
 
         <TextView
@@ -39,7 +39,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="16" />
 
-    </org.oxycblt.auxio.image.ui.ImageGroup>
+    </org.oxycblt.auxio.image.ImageGroup>
 
 
     <TextView

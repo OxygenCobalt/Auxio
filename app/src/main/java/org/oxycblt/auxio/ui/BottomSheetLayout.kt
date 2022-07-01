@@ -506,7 +506,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         logD("New state: $newState")
         this.state = newState
 
-        // TODO: Make accessibility better
+        // TODO: Improve accessibility by:
+        // 1. Adding a (non-visible) handle. Material components now technically does have
+        // this, but it relies on the busted BottomSheetBehavior.
+        // 2. Adding the controls that BottomSheetBehavior defines in-app.
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
     }
 
@@ -519,8 +522,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         val ratio = max(sheetOffset, 0f)
 
         val outRatio = 1 - ratio
-        val halfOutRatio = min(ratio / 0.5f, 1f)
-        val halfInRatio = max(ratio - 0.5f, 0f) / 0.5f
+        val halfOutRatio = min(ratio * 2, 1f)
+        val halfInRatio = max(ratio - 0.5f, 0f) * 2
 
         contentView.apply {
             alpha = outRatio
@@ -542,7 +545,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // translation with a fraction of the said inset.
             lastInsets?.let { insets ->
                 val bars = insets.getSystemBarInsetsCompat(this)
-                translationY = (bars.top * halfOutRatio)
+                translationY = bars.top * halfOutRatio
             }
         }
 

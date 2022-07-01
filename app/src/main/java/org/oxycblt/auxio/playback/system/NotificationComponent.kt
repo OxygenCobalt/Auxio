@@ -64,7 +64,7 @@ class NotificationComponent(
             notificationManager.createNotificationChannel(channel)
         }
 
-        setSmallIcon(R.drawable.ic_auxio)
+        setSmallIcon(R.drawable.ic_auxio_24)
         setCategory(NotificationCompat.CATEGORY_SERVICE)
         setShowWhen(false)
         setSilent(true)
@@ -72,10 +72,12 @@ class NotificationComponent(
         setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         addAction(buildRepeatAction(context, RepeatMode.NONE))
-        addAction(buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev))
+        addAction(
+            buildAction(context, PlaybackService.ACTION_SKIP_PREV, R.drawable.ic_skip_prev_24))
         addAction(buildPlayPauseAction(context, true))
-        addAction(buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next))
-        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_close))
+        addAction(
+            buildAction(context, PlaybackService.ACTION_SKIP_NEXT, R.drawable.ic_skip_next_24))
+        addAction(buildAction(context, PlaybackService.ACTION_EXIT, R.drawable.ic_close_24))
 
         setStyle(MediaStyle().setMediaSession(sessionToken).setShowActionsInCompactView(1, 2, 3))
     }
@@ -146,7 +148,7 @@ class NotificationComponent(
         context: Context,
         isPlaying: Boolean
     ): NotificationCompat.Action {
-        val drawableRes = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
+        val drawableRes = if (isPlaying) R.drawable.ic_pause_24 else R.drawable.ic_play_24
 
         return buildAction(context, PlaybackService.ACTION_PLAY_PAUSE, drawableRes)
     }
@@ -157,9 +159,9 @@ class NotificationComponent(
     ): NotificationCompat.Action {
         val drawableRes =
             when (repeatMode) {
-                RepeatMode.NONE -> R.drawable.ic_remote_repeat_off
-                RepeatMode.ALL -> R.drawable.ic_repeat
-                RepeatMode.TRACK -> R.drawable.ic_repeat_one
+                RepeatMode.NONE -> R.drawable.ic_remote_repeat_off_24
+                RepeatMode.ALL -> R.drawable.ic_remote_repeat_on_24
+                RepeatMode.TRACK -> R.drawable.ic_remote_repeat_one_24
             }
 
         return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, drawableRes)
@@ -170,7 +172,7 @@ class NotificationComponent(
         isShuffled: Boolean
     ): NotificationCompat.Action {
         val drawableRes =
-            if (isShuffled) R.drawable.ic_shuffle else R.drawable.ic_remote_shuffle_off
+            if (isShuffled) R.drawable.ic_shuffle_24 else R.drawable.ic_remote_shuffle_off_24
 
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }

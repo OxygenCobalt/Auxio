@@ -3,6 +3,7 @@
     <declare-styleable name="StyledImageView">
         <attr name="cornerRadius" format="dimension" />
         <attr name="staticIcon" format="reference" />
+        <attr name="useLargeIcon" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="IntListPreference">

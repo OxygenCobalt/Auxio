@@ -45,7 +45,7 @@
             android:alpha="0.275"
             android:contentDescription="@string/desc_auxio_icon"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_auxio" />
+            android:src="@drawable/ic_auxio_24" />
 
         <TextView
             android:layout_width="match_parent"

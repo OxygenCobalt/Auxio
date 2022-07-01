@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconContentDescription="@string/desc_clear_search"
-                app:endIconDrawable="@drawable/ic_close"
+                app:endIconDrawable="@drawable/ic_close_24"
                 app:endIconMode="clear_text"
                 app:endIconTint="?attr/colorControlNormal"
                 app:errorEnabled="false"

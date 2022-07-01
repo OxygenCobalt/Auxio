@@ -3,6 +3,7 @@
     <!-- Spacing Namespace | Dimens for padding/margin attributes -->
     <dimen name="spacing_tiny">4dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_mid_small">12dp</dimen>
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_mid_large">24dp</dimen>
     <dimen name="spacing_large">32dp</dimen>
@@ -11,7 +12,6 @@
     <dimen name="spacing_small_inv">-8dp</dimen>
 
     <dimen name="spacing_medium_icon">6dp</dimen>
-    <dimen name="spacing_button_dialog">12dp</dimen>
 
     <!-- Size Namespace | Width & Heights for UI elements -->
     <dimen name="size_cover_compact">48dp</dimen>

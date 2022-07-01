@@ -181,10 +181,10 @@ class SettingsListFragment : PreferenceFragmentCompat() {
     @DrawableRes
     private fun Int.toThemeIcon(): Int {
         return when (this) {
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto
-            AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_light
-            AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_dark
-            else -> R.drawable.ic_auto
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> R.drawable.ic_auto_24
+            AppCompatDelegate.MODE_NIGHT_NO -> R.drawable.ic_light_24
+            AppCompatDelegate.MODE_NIGHT_YES -> R.drawable.ic_dark_24
+            else -> R.drawable.ic_auto_24
         }
     }
 }

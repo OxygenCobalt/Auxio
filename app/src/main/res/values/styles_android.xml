@@ -61,8 +61,6 @@
     <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
     <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
         <item name="android:minHeight">@dimen/size_btn</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:padding">@dimen/spacing_small</item>
     </style>
 
     <!-- Widget panel -->

@@ -8,7 +8,7 @@
             app:defaultValue="@integer/theme_auto"
             app:entries="@array/entries_theme"
             app:entryValues="@array/values_theme"
-            app:icon="@drawable/ic_light"
+            app:icon="@drawable/ic_light_24"
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="@bool/enable_theme_settings"
             app:key="@string/set_key_theme"
@@ -16,7 +16,7 @@
             app:title="@string/set_theme" />
 
         <org.oxycblt.auxio.settings.ui.WrappedDialogPreference
-            app:icon="@drawable/ic_accent"
+            app:icon="@drawable/ic_accent_24"
             app:key="@string/set_key_accent"
             app:title="@string/set_accent" />
 

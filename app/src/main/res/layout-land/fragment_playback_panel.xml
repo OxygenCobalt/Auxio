@@ -14,7 +14,7 @@
         app:title="@string/lbl_playback"
         tools:subtitle="@string/lbl_all_songs" />
 
-    <org.oxycblt.auxio.image.ui.StyledImageView
+    <org.oxycblt.auxio.image.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Full"
         android:layout_marginStart="@dimen/spacing_medium"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playback_toolbar"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:staticIcon="@drawable/ic_album" />
+        tools:staticIcon="@drawable/ic_song_48" />
 
     <!-- TextView is wrapped in a container so that marquee doesn't break -->
 
@@ -107,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
-                app:icon="@drawable/ic_repeat"
+                app:icon="@drawable/ic_repeat_24"
                 app:iconTint="@color/sel_accented"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
                 app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_prev"
-                app:icon="@drawable/ic_skip_prev"
+                app:icon="@drawable/ic_skip_prev_24"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
                 app:layout_constraintEnd_toStartOf="@+id/playback_play_pause"
                 app:layout_constraintStart_toEndOf="@+id/playback_repeat"
@@ -131,12 +131,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/sel_playing_state"
+                android:src="@drawable/sel_playing_state_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_play" />
+                tools:src="@drawable/ic_play_24" />
 
             <Button
                 android:id="@+id/playback_skip_next"
@@ -144,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_skip_next"
-                app:icon="@drawable/ic_skip_next"
+                app:icon="@drawable/ic_skip_next_24"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_play_pause"
                 app:layout_constraintEnd_toStartOf="@+id/playback_shuffle"
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
@@ -156,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"
-                app:icon="@drawable/ic_shuffle"
+                app:icon="@drawable/ic_shuffle_24"
                 app:iconTint="@color/sel_accented"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
                 app:layout_constraintEnd_toEndOf="parent"

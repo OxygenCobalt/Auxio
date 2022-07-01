@@ -121,9 +121,9 @@ private fun RemoteViews.applyPlayPauseControls(
     setImageViewResource(
         R.id.widget_play_pause,
         if (state.isPlaying) {
-            R.drawable.ic_pause
+            R.drawable.ic_pause_24
         } else {
-            R.drawable.ic_play
+            R.drawable.ic_play_24
         })
 
     return this
@@ -162,15 +162,15 @@ private fun RemoteViews.applyFullControls(
     // indicators.
     val shuffleRes =
         when {
-            state.isShuffled -> R.drawable.ic_remote_shuffle_on
-            else -> R.drawable.ic_remote_shuffle_off
+            state.isShuffled -> R.drawable.ic_remote_shuffle_on_24
+            else -> R.drawable.ic_remote_shuffle_off_24
         }
 
     val repeatRes =
         when (state.repeatMode) {
-            RepeatMode.NONE -> R.drawable.ic_remote_repeat_off
-            RepeatMode.ALL -> R.drawable.ic_repeat_on
-            RepeatMode.TRACK -> R.drawable.ic_repeat_one
+            RepeatMode.NONE -> R.drawable.ic_remote_repeat_off_24
+            RepeatMode.ALL -> R.drawable.ic_remote_repeat_on_24
+            RepeatMode.TRACK -> R.drawable.ic_remote_repeat_one_24
         }
 
     setImageViewResource(R.id.widget_shuffle, shuffleRes)

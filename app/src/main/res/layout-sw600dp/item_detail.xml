@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_medium">
 
-    <org.oxycblt.auxio.image.ui.StyledImageView
+    <org.oxycblt.auxio.image.StyledImageView
         android:id="@+id/detail_cover"
         style="@style/Widget.Auxio.Image.MidHuge"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
-        tools:staticIcon="@drawable/ic_artist" />
+        tools:staticIcon="@drawable/ic_song_48" />
 
     <TextView
         android:id="@+id/detail_name"

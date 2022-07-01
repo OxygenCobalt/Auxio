@@ -5,22 +5,23 @@
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_back</item>
+        <!-- TODO: Margin clips ripples on lollipop, replace w/new impl -->
+        <item name="navigationIcon">@drawable/ic_back_24</item>
         <item name="android:layout_marginStart">@dimen/spacing_small_inv</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
-        <item name="navigationIcon">@drawable/ic_back</item>
+        <item name="navigationIcon">@drawable/ic_back_24</item>
         <item name="android:layout_marginStart">@dimen/spacing_small_inv</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_down</item>
+        <item name="navigationIcon">@drawable/ic_down_24</item>
         <item name="android:layout_marginStart">@dimen/spacing_small_inv</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
-        <item name="navigationIcon">@drawable/ic_down</item>
+        <item name="navigationIcon">@drawable/ic_down_24</item>
         <item name="android:layout_marginStart">@dimen/spacing_small_inv</item>
     </style>
 

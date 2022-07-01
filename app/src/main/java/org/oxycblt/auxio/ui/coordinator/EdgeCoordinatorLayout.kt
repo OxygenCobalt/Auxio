@@ -25,10 +25,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 
 /**
- * Class that fixes an issue where [CoordinatorLayout] will override [onApplyWindowInsets] and
- * delegate the job to ***LAYOUT BEHAVIOR INSTANCES*** instead of the actual views.
+ * Class that manually overrides the busted window inset functionality of CoordinatorLayout in favor
+ * of a simple "delegate to child views" implementation.
  *
- * I can't believe I have to do this.
+ * @author OxygenCobalt
  */
 class EdgeCoordinatorLayout
 @JvmOverloads

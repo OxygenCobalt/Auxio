@@ -22,19 +22,19 @@
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_back</item>
+        <item name="navigationIcon">@drawable/ic_back_24</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
-        <item name="navigationIcon">@drawable/ic_back</item>
+        <item name="navigationIcon">@drawable/ic_back_24</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_down</item>
+        <item name="navigationIcon">@drawable/ic_down_24</item>
     </style>
 
     <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
-        <item name="navigationIcon">@drawable/ic_down</item>
+        <item name="navigationIcon">@drawable/ic_down_24</item>
     </style>
 
     <style name="Widget.Auxio.Slider" parent="Widget.Material3.Slider">
@@ -98,18 +98,21 @@
         <item name="android:layout_width">@dimen/size_cover_large</item>
         <item name="android:layout_height">@dimen/size_cover_large</item>
         <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.Image.MidHuge" parent="">
         <item name="android:layout_width">@dimen/size_cover_mid_huge</item>
         <item name="android:layout_height">@dimen/size_cover_mid_huge</item>
         <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.Image.Huge" parent="">
         <item name="android:layout_width">@dimen/size_cover_huge</item>
         <item name="android:layout_height">@dimen/size_cover_huge</item>
         <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.Image.Full" parent="">
@@ -117,6 +120,7 @@
         <item name="android:layout_height">0dp</item>
         <item name="layout_constraintDimensionRatio">1</item>
         <item name="cornerRadius">@dimen/size_corners_large</item>
+        <item name="useLargeIcon">true</item>
     </style>
 
     <style name="Widget.Auxio.ItemLayout" parent="">
@@ -223,7 +227,7 @@
         <item name="strokeColor">?attr/colorOutline</item>
     </style>
 
-    <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Secondary">
+    <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Large.Secondary">
         <!--
         Abuse this floating action button to act more like an old-school auxio button.
         This is for two reasons:

@@ -6,14 +6,14 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <org.oxycblt.auxio.image.ui.StyledImageView
+    <org.oxycblt.auxio.image.StyledImageView
         android:id="@+id/playback_cover"
         style="@style/Widget.Auxio.Image.Medium"
         android:layout_margin="@dimen/spacing_small"
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:staticIcon="@drawable/ic_album" />
+        tools:staticIcon="@drawable/ic_song_24" />
 
     <TextView
         android:id="@+id/playback_song"
@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                app:icon="@drawable/sel_playing_state" />
+                app:icon="@drawable/sel_playing_state_24" />
 
             <Button
                 android:id="@+id/playback_skip_next"
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_play_pause"
-                app:icon="@drawable/ic_skip_next" />
+                app:icon="@drawable/ic_skip_next_24" />
         </LinearLayout>
 
     </org.oxycblt.auxio.playback.NoRtlFrameLayout>

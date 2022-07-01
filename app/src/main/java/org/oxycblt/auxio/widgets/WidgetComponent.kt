@@ -60,6 +60,10 @@ class WidgetComponent(private val context: Context) :
      * Force-update the widget.
      */
     fun update() {
+        // TODO: Rework margins/button layout to do the magic that other button bars do
+        // TODO: Try to change the error icon again
+        // TODO:
+
         // Updating Auxio's widget is unlike the rest of Auxio for a few reasons:
         // 1. We can't use the typical primitives like ViewModels
         // 2. The component range is far smaller, so we have to do some odd hacks to get

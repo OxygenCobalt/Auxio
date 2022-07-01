@@ -246,7 +246,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
                     PlaybackStateCompat.CustomAction.Builder(
                             PlaybackService.ACTION_INC_REPEAT_MODE,
                             context.getString(R.string.desc_change_repeat),
-                            R.drawable.ic_remote_repeat_off)
+                            R.drawable.ic_remote_repeat_off_24)
                         .build())
                 .setBufferedPosition(player.bufferedPosition)
 

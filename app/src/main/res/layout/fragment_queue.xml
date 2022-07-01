@@ -16,7 +16,7 @@
             android:id="@+id/queue_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon.Down"
             android:elevation="0dp"
-            app:navigationIcon="@drawable/ic_down"
+            app:navigationIcon="@drawable/ic_down_24"
             app:title="@string/lbl_queue" />
 
     </org.oxycblt.auxio.ui.coordinator.EdgeAppBarLayout>

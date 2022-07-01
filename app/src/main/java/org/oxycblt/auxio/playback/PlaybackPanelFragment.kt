@@ -183,7 +183,14 @@ class PlaybackPanelFragment :
     private fun updateRepeat(repeatMode: RepeatMode) {
         requireBinding().playbackRepeat.apply {
             isActivated = repeatMode != RepeatMode.NONE
-            icon = requireContext().getDrawableSafe(repeatMode.icon)
+            val iconRes =
+                when (repeatMode) {
+                    RepeatMode.NONE,
+                    RepeatMode.ALL -> R.drawable.ic_repeat_24
+                    RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
+                }
+
+            icon = requireContext().getDrawableSafe(iconRes)
         }
     }
 

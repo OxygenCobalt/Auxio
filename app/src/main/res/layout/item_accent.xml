@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ui_accent_circle"
-        app:icon="@drawable/ic_check"
+        app:icon="@drawable/ic_check_24"
         app:iconTint="?attr/colorSurface"
         tools:backgroundTint="?attr/colorPrimary"
         tools:ignore="ContentDescription, SpeakableTextPresentCheck" />

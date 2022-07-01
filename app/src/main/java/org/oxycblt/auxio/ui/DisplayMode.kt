@@ -44,19 +44,19 @@ enum class DisplayMode {
     val icon: Int
         get() =
             when (this) {
-                SHOW_SONGS -> R.drawable.ic_song
-                SHOW_ALBUMS -> R.drawable.ic_album
-                SHOW_ARTISTS -> R.drawable.ic_artist
-                SHOW_GENRES -> R.drawable.ic_genre
+                SHOW_SONGS -> R.drawable.ic_song_24
+                SHOW_ALBUMS -> R.drawable.ic_album_24
+                SHOW_ARTISTS -> R.drawable.ic_artist_24
+                SHOW_GENRES -> R.drawable.ic_genre_24
             }
 
     val itemId: Int
         get() =
             when (this) {
-                SHOW_SONGS -> R.drawable.ic_song
-                SHOW_ALBUMS -> R.drawable.ic_album
-                SHOW_ARTISTS -> R.drawable.ic_artist
-                SHOW_GENRES -> R.drawable.ic_genre
+                SHOW_SONGS -> R.drawable.ic_song_24
+                SHOW_ALBUMS -> R.drawable.ic_album_24
+                SHOW_ARTISTS -> R.drawable.ic_artist_24
+                SHOW_GENRES -> R.drawable.ic_genre_24
             }
 
     val intCode: Int

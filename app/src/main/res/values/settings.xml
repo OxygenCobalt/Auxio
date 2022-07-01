@@ -46,9 +46,9 @@
     </string-array>
 
     <array name="icons_theme">
-        <item>@drawable/ic_auto</item>
-        <item>@drawable/ic_light</item>
-        <item>@drawable/ic_dark</item>
+        <item>@drawable/ic_auto_24</item>
+        <item>@drawable/ic_light_24</item>
+        <item>@drawable/ic_dark_24</item>
     </array>
 
     <integer-array name="values_theme">

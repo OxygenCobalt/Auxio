@@ -47,7 +47,7 @@
         android:layout_gravity="center"
         android:orientation="vertical"
         android:paddingTop="@dimen/spacing_medium"
-        android:paddingBottom="@dimen/spacing_medium">
+        android:paddingBottom="@dimen/spacing_mid_small">
 
         <android.widget.TextView
             android:id="@+id/widget_song"
@@ -71,9 +71,9 @@
             android:id="@+id/widget_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_small"
-            android:layout_marginTop="@dimen/spacing_small">
+           android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/spacing_mid_small"
+            android:layout_marginEnd="@dimen/spacing_mid_small">
 
             <android.widget.ImageButton
                 android:id="@+id/widget_repeat"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/desc_change_repeat"
-                android:src="@drawable/ic_repeat" />
+                android:src="@drawable/ic_remote_repeat_off_24" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_prev"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/desc_skip_prev"
-                android:src="@drawable/ic_skip_prev" />
+                android:src="@drawable/ic_skip_prev_24" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
@@ -100,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/sel_playing_state" />
+                android:src="@drawable/sel_playing_state_24" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_skip_next"
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/desc_skip_next"
-                android:src="@drawable/ic_skip_next" />
+                android:src="@drawable/ic_skip_next_24" />
 
             <android.widget.ImageButton
                 android:id="@+id/widget_shuffle"
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/desc_shuffle"
-                android:src="@drawable/ic_shuffle" />
+                android:src="@drawable/ic_remote_shuffle_off_24" />
 
         </android.widget.LinearLayout>
 

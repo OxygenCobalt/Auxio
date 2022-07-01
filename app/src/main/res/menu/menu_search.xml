@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/submenu_filtering"
-        android:icon="@drawable/ic_filter"
+        android:icon="@drawable/ic_filter_24"
         android:title="@string/lbl_filter"
         app:showAsAction="ifRoom">
         <menu>
