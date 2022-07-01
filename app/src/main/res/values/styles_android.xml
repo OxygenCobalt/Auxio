@@ -48,19 +48,17 @@
         <item name="android:textAppearance">@style/TextAppearance.Material3.BodyMedium</item>
     </style>
 
-    <!-- Hack to make sure that ripples work the best that they can on all Android Versions -->
-    <style name="Widget.Auxio.Button.AppWidget.V31" parent="Widget.AppCompat.Button.Borderless">
-        <!--
-        Can't use a normal unbounded ripple here since it causes a weird bug
-        where the ripples will have a fixed starting size. Default to the
-        uglier system ripple instead.
-        -->
-        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
+    <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:minHeight">@dimen/size_btn</item>
+        <item name="android:background">@drawable/ui_remote_ripple</item>
     </style>
 
-    <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
-    <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.Auxio.Button.AppWidget.V31">
-        <item name="android:minHeight">@dimen/size_btn</item>
+    <!-- A variant of button that emulates a FAB-ish button that plays along with widget restrictions -->
+    <style name="Widget.Auxio.FloatingActionButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:minWidth">@dimen/size_btn</item>
+        <item name="android:background">@drawable/ui_remote_fab_bg</item>
+        <item name="android:tint">?attr/colorOnPrimary</item>
     </style>
 
     <!-- Widget panel -->

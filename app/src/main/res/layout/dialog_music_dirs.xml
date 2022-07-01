@@ -82,10 +82,10 @@
             android:id="@+id/dirs_mode_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="viewStart"
             android:layout_marginStart="@dimen/spacing_mid_large"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginEnd="@dimen/spacing_mid_large"
+            android:textAlignment="viewStart"
             tools:text="Mode description" />
 
     </LinearLayout>

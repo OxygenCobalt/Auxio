@@ -153,7 +153,8 @@
     </style>
 
     <style name="Widget.Auxio.TextView.Item.Primary" parent="Widget.Auxio.TextView.Item.Base">
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMediumLowEmphasis
+        </item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
@@ -197,7 +198,7 @@
         <item name="android:paddingEnd">@dimen/spacing_medium</item>
         <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMediumEmphasis</item>
+        <item name="android:textAppearance">@style/TextAppearance.Auxio.TitleMedium</item>
     </style>
 
     <style name="Widget.Auxio.TextView.Detail" parent="Widget.Auxio.TextView.Base">

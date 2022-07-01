@@ -16,17 +16,17 @@
         style="@style/Widget.Auxio.Image.Small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:staticIcon="@drawable/ic_song_24"
-        tools:visibility="invisible">
+        app:staticIcon="@drawable/ic_song_24">
 
         <TextView
             android:id="@+id/song_track"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.Auxio.BodyLarge"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleLargeLowEmphasis"
             android:textColor="@color/sel_on_cover_bg"
             app:autoSizeMaxTextSize="@dimen/text_size_track_number_max"
             app:autoSizeMinTextSize="@dimen/text_size_track_number_min"

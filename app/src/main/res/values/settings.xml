@@ -4,7 +4,7 @@
     <string name="set_key_theme" translatable="false">KEY_THEME2</string>
     <string name="set_key_black_theme" translatable="false">KEY_BLACK_THEME</string>
     <string name="set_key_accent" translatable="false">auxio_accent2</string>
-    
+
     <string name="set_key_lib_tabs" translatable="false">auxio_lib_tabs</string>
     <string name="set_key_show_covers" translatable="false">KEY_SHOW_COVERS</string>
     <string name="set_key_quality_covers" translatable="false">KEY_QUALITY_COVERS</string>

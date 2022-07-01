@@ -54,7 +54,7 @@
             android:gravity="center"
             android:padding="@dimen/spacing_medium"
             android:text="@string/err_too_small"
-            android:textAppearance="@style/TextAppearance.Auxio.TitleMedium"
+            android:textAppearance="@style/TextAppearance.Auxio.TitleMediumLowEmphasis"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold" />
 

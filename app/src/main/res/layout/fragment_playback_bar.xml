@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toTopOf="@+id/playback_progress_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-       tools:staticIcon="@drawable/ic_song_24"/>
+        tools:staticIcon="@drawable/ic_song_24" />
 
     <TextView
         android:id="@+id/playback_song"

@@ -31,7 +31,7 @@
 
     <dimen name="size_pre_amp_ticker">56dp</dimen>
 
-    <dimen name="text_size_track_number_min">12sp</dimen>
+    <dimen name="text_size_track_number_min">14sp</dimen>
     <dimen name="text_size_track_number_max">22sp</dimen>
     <dimen name="text_size_track_number_step">2sp</dimen>
 

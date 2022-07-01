@@ -20,10 +20,10 @@
 - Fixed crash if settings was navigated away before playback state
 finished saving
 - Fixed broken album menu
+- Fixed crash that would occur when opening a file on some devices #176
 
 #### What's Changed
-- Reworked typography and iconography to be more aligned with material
-design guidelines
+- Reworked typography and iconography to be more aligned with material design guidelines
 
 #### Dev/Meta
 - Migrated preferences from shared object to utility

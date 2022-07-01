@@ -65,7 +65,7 @@ class NotificationComponent(
         }
 
         setSmallIcon(R.drawable.ic_auxio_24)
-        setCategory(NotificationCompat.CATEGORY_SERVICE)
+        setCategory(NotificationCompat.CATEGORY_TRANSPORT)
         setShowWhen(false)
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
@@ -110,6 +110,7 @@ class NotificationComponent(
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
                     setLargeIcon(bitmap)
+                    build()
                     callback.onNotificationChanged(this@NotificationComponent)
                 }
             })
@@ -118,7 +119,6 @@ class NotificationComponent(
     /** Set the playing icon on the notification */
     fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
-
         if (!provider.isBusy) {
             callback.onNotificationChanged(this)
         }
@@ -127,7 +127,6 @@ class NotificationComponent(
     /** Update the first action to reflect the [repeatMode] given. */
     fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
-
         if (!provider.isBusy) {
             callback.onNotificationChanged(this)
         }
@@ -136,7 +135,6 @@ class NotificationComponent(
     /** Update the first action to reflect whether the queue is shuffled or not */
     fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
-
         if (!provider.isBusy) {
             callback.onNotificationChanged(this)
         }

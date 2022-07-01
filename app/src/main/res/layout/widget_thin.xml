@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_medium"
         android:layout_weight="2"
         android:orientation="horizontal">
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/spacing_tiny"
+            android:layout_marginEnd="@dimen/spacing_medium"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -89,25 +89,13 @@
 
         </android.widget.LinearLayout>
 
-        <android.widget.ImageButton
-            android:id="@+id/widget_play_pause"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/desc_play_pause"
-            android:minWidth="@dimen/size_btn"
-            android:minHeight="@dimen/size_btn"
-            android:src="@drawable/ic_play_24" />
-
-        <android.widget.ImageButton
-            android:id="@+id/widget_skip_next"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/desc_play_pause"
-            android:minWidth="@dimen/size_btn"
-            android:minHeight="@dimen/size_btn"
-            android:src="@drawable/ic_skip_next_24" />
+            <android.widget.ImageButton
+                android:id="@+id/widget_play_pause"
+                style="@style/Widget.Auxio.FloatingActionButton.AppWidget"
+                android:layout_width="@dimen/size_btn"
+                android:layout_height="@dimen/size_btn"
+                android:contentDescription="@string/desc_play_pause"
+                android:src="@drawable/sel_playing_state_24" />
 
     </android.widget.LinearLayout>
 </LinearLayout>

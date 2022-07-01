@@ -60,7 +60,6 @@ class WidgetComponent(private val context: Context) :
      * Force-update the widget.
      */
     fun update() {
-        // TODO: Rework margins/button layout to do the magic that other button bars do
         // TODO: Respond to rounded covers
 
         // Updating Auxio's widget is unlike the rest of Auxio for a few reasons:

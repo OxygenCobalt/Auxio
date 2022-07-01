@@ -161,7 +161,7 @@ private class IndexerNotification(private val context: Context) :
         }
 
         setSmallIcon(R.drawable.ic_indexer_32)
-        setCategory(NotificationCompat.CATEGORY_SERVICE)
+        setCategory(NotificationCompat.CATEGORY_PROGRESS)
         setShowWhen(false)
         setSilent(true)
         setContentIntent(context.newMainPendingIntent())
