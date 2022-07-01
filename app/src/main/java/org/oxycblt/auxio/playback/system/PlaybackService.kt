@@ -143,7 +143,6 @@ class PlaybackService :
         // --- PLAYBACKSTATEMANAGER SETUP ---
 
         settings = Settings(this, this)
-
         playbackManager.registerController(this)
 
         logD("Service created")

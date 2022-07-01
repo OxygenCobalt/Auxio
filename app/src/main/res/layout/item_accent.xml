@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_small"
+    android:padding="@dimen/spacing_tiny"
     android:theme="@style/ThemeOverlay.Accent">
 
     <com.google.android.material.button.MaterialButton
@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/ui_accent_circle"
         app:icon="@drawable/ic_check_24"
         app:iconTint="?attr/colorSurface"
         tools:backgroundTint="?attr/colorPrimary"

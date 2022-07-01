@@ -28,7 +28,7 @@ import org.oxycblt.auxio.music.Music
 import org.oxycblt.auxio.music.Song
 
 /**
- * A data class representing the sort modes used in Auxio.
+ * Represents the sort modes used in Auxio.
  *
  * Sorting can be done by Name, Artist, Album, and others. Sorting of names is always
  * case-insensitive and article-aware. Certain datatypes may only support a subset of sorts since

@@ -44,7 +44,7 @@
         android:layout_alignTop="@id/widget_aspect_ratio"
         android:layout_alignEnd="@id/widget_aspect_ratio"
         android:layout_alignBottom="@id/widget_aspect_ratio"
-        android:src="@drawable/ic_remote_default_cover"
+        android:src="@drawable/ic_remote_default_cover_24"
         tools:ignore="ContentDescription" />
 
     <android.widget.LinearLayout

@@ -54,6 +54,7 @@ class IndexerService : Service(), Indexer.Callback {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val updateScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     private var isForeground = false
     private lateinit var notification: IndexerNotification
@@ -92,20 +93,21 @@ class IndexerService : Service(), Indexer.Callback {
                 if (state.response is Indexer.Response.Ok &&
                     state.response.library != musicStore.library) {
                     logD("Applying new library")
+
                     // Load was completed successfully, so apply the new library if we
-                    // have not already.
-                    musicStore.library = state.response.library
+                    // have not already. Only when we are done updating the library will
+                    // the service stop it's foreground state.
+                    updateScope.launch {
+                        musicStore.updateLibrary(state.response.library)
+                        stopForegroundSession()
+                    }
+                } else {
+                    // On errors, while we would want to show a notification that displays the
+                    // error, in practice that comes into conflict with the upcoming Android 13
+                    // notification permission, and there is no point implementing permission
+                    // on-boarding for such when it will only be used for this.
+                    stopForegroundSession()
                 }
-
-                // On errors, while we would want to show a notification that displays the
-                // error, in practice that comes into conflict with the upcoming Android 13
-                // notification permission, and there is no point implementing permission
-                // on-boarding for such when it will only be used for this.
-
-                // Note that we don't stop the service here, as (in the future)
-                // this service will be used to reload music and observe the music
-                // database.
-                stopForegroundSession()
             }
             is Indexer.State.Indexing -> {
                 // When loading, we want to enter the foreground state so that android does

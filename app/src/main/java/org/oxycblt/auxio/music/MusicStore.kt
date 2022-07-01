@@ -20,6 +20,8 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
@@ -33,14 +35,7 @@ class MusicStore private constructor() {
     private val callbacks = mutableListOf<Callback>()
 
     var library: Library? = null
-        set(value) {
-            synchronized(this) {
-                field = value
-                for (callback in callbacks) {
-                    callback.onLibraryChanged(library)
-                }
-            }
-        }
+        private set
 
     /** Add a callback to this instance. Make sure to remove it when done. */
     fun addCallback(callback: Callback) {
@@ -51,6 +46,19 @@ class MusicStore private constructor() {
     /** Remove a callback from this instance. */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
+    }
+
+    suspend fun updateLibrary(newLibrary: Library?) {
+        // Ensure we are on the main thread when updating the library, as callbacks expect to
+        // run in an stable app thread.
+        withContext(Dispatchers.Main) {
+            synchronized(this) {
+                library = newLibrary
+                for (callback in callbacks) {
+                    callback.onLibraryChanged(library)
+                }
+            }
+        }
     }
 
     /** Represents a library of music owned by [MusicStore]. */
@@ -80,7 +88,6 @@ class MusicStore private constructor() {
                 songs.find { it.path.name == displayName }
             }
 
-        /** "Sanitize" a music object from a previous library iteration. */
         fun sanitize(song: Song) = songs.find { it.id == song.id }
         fun sanitize(album: Album) = albums.find { it.id == album.id }
         fun sanitize(artist: Artist) = artists.find { it.id == artist.id }

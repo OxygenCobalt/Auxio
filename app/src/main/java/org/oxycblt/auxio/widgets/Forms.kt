@@ -100,7 +100,7 @@ private fun RemoteViews.applyCover(
             R.id.widget_cover,
             context.getString(R.string.desc_album_cover, state.song.album.resolveName(context)))
     } else {
-        setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover)
+        setImageViewResource(R.id.widget_cover, R.drawable.ic_remote_default_cover_24)
         setContentDescription(R.id.widget_cover, context.getString(R.string.desc_no_cover))
     }
 

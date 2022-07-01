@@ -361,6 +361,12 @@ class Indexer {
         object NoPerms : Response()
     }
 
+    /**
+     * A callback to use when the indexing state changes.
+     *
+     * This callback is low-level and not guaranteed to be single-thread. For that,
+     * [MusicStore.Callback] is recommended instead.
+     */
     interface Callback {
         /**
          * Called when the current state of the Indexer changed.
