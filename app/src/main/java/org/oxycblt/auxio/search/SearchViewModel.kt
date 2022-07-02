@@ -126,7 +126,7 @@ class SearchViewModel(application: Application) :
 
         logD("Updating filter mode to $newFilterMode")
 
-        settings.searchFilterMode = filterMode
+        settings.searchFilterMode = newFilterMode
 
         search(lastQuery)
     }

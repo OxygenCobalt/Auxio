@@ -226,6 +226,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
             DisplayMode.fromInt(
                 inner.getInt(context.getString(R.string.set_key_search_filter), Int.MIN_VALUE))
         set(value) {
+            logD(value)
             inner.edit {
                 putInt(
                     context.getString(R.string.set_key_search_filter),

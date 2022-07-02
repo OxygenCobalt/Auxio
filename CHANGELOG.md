@@ -24,6 +24,7 @@ finished saving
 - Fixed broken album menu
 - Fixed crash that would occur when opening a file on some devices [#176]
 - Fixed issue where the search filter menu would not display the correct mode
+- Fixed crash when search filter mode was changed
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material design guidelines
