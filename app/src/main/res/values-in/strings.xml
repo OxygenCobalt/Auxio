@@ -90,7 +90,6 @@
     <string name="lbl_library_counts">Statistik perpustakaan</string>
     <string name="set_show_covers_desc">Matikan untuk menghemat penggunaan memori</string>
     <string name="set_quality_covers_desc">Meningkatkan kualitas sampul album, tetapi menghasilkan waktu pemuatan yang lebih lama dan penggunaan memori yang lebih tinggi</string>
-    <string name="set_round_covers_desc">Gunakan sampul album dengan sudut membulat</string>
     <string name="set_alt_action">Gunakan tindakan pemberitahuan alternatif</string>
     <string name="set_alt_repeat">Lebih suka tindakan mode pengulangan</string>
     <string name="set_alt_shuffle">Lebih suka tindakan mengacak</string>
