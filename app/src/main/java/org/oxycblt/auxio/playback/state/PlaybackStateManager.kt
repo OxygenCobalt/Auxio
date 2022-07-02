@@ -105,12 +105,12 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    /** Remove a [PlaybackStateManager.Callback] bound to this instance. */
+    /** Remove a [Callback] bound to this instance. */
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
 
-    /** Register a [PlaybackStateManager.Controller] with this instance. */
+    /** Register a [Controller] with this instance. */
     fun registerController(controller: Controller) {
         if (BuildConfig.DEBUG && this.controller != null) {
             logW("Controller is already registered")
@@ -129,7 +129,7 @@ class PlaybackStateManager private constructor() {
         }
     }
 
-    /** Unregister a [PlaybackStateManager.Controller] with this instance. */
+    /** Unregister a [Controller] with this instance. */
     fun unregisterController(controller: Controller) {
         if (BuildConfig.DEBUG && this.controller !== controller) {
             logW("Given controller did not match current controller")

@@ -20,8 +20,6 @@ package org.oxycblt.auxio.music
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.util.contentResolverSafe
 
 /**
@@ -48,15 +46,11 @@ class MusicStore private constructor() {
         callbacks.remove(callback)
     }
 
-    suspend fun updateLibrary(newLibrary: Library?) {
-        // Ensure we are on the main thread when updating the library, as callbacks expect to
-        // run in an stable app thread.
-        withContext(Dispatchers.Main) {
-            synchronized(this) {
-                library = newLibrary
-                for (callback in callbacks) {
-                    callback.onLibraryChanged(library)
-                }
+    fun updateLibrary(newLibrary: Library?) {
+        synchronized(this) {
+            library = newLibrary
+            for (callback in callbacks) {
+                callback.onLibraryChanged(library)
             }
         }
     }

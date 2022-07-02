@@ -49,7 +49,7 @@
     </style>
 
     <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
-    <style name="Widget.Auxio.PlaybackButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
+    <style name="Widget.Auxio.MaterialButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:minHeight">@dimen/size_btn</item>
         <item name="android:background">@drawable/ui_remote_ripple</item>
     </style>

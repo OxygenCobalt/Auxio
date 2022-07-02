@@ -23,14 +23,14 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
+import org.oxycblt.auxio.util.logW
 
 /**
  * Auxio's media indexer.
@@ -58,7 +58,8 @@ class Indexer {
     private var indexingState: Indexing? = null
 
     private var currentGeneration = 0L
-    private val callbacks = mutableListOf<Callback>()
+    private var controller: Controller? = null
+    private var callback: Callback? = null
 
     /**
      * Whether this instance is in an indeterminate state or not, where nothing has been previously
@@ -67,19 +68,50 @@ class Indexer {
     val isIndeterminate: Boolean
         get() = lastResponse == null && indexingState == null
 
-    fun addCallback(callback: Callback) {
+    /** Register a [Controller] with this instance. */
+    fun registerController(controller: Controller) {
+        if (BuildConfig.DEBUG && this.controller != null) {
+            logW("Controller is already registered")
+            return
+        }
+
+        synchronized(this) { this.controller = controller }
+    }
+
+    /** Unregister a [Controller] with this instance. */
+    fun unregisterController(controller: Controller) {
+        if (BuildConfig.DEBUG && this.controller !== controller) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        synchronized(this) { this.controller = null }
+    }
+
+    fun registerCallback(callback: Callback) {
+        if (BuildConfig.DEBUG && this.callback != null) {
+            logW("Callback is already registered")
+            return
+        }
+
         val currentState =
             indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
 
         callback.onIndexerStateChanged(currentState)
-        callbacks.add(callback)
+
+        this.callback = callback
     }
 
-    fun removeCallback(callback: Callback) {
-        callbacks.remove(callback)
+    fun unregisterCallback(callback: Callback) {
+        if (BuildConfig.DEBUG && this.callback !== callback) {
+            logW("Given controller did not match current controller")
+            return
+        }
+
+        this.callback = null
     }
 
-    suspend fun index(context: Context) {
+    fun index(context: Context) {
         val generation = synchronized(this) { ++currentGeneration }
 
         val notGranted =
@@ -94,7 +126,7 @@ class Indexer {
         val response =
             try {
                 val start = System.currentTimeMillis()
-                val library = withContext(Dispatchers.IO) { indexImpl(context, generation) }
+                val library = indexImpl(context, generation)
                 if (library != null) {
                     logD(
                         "Music indexing completed successfully in " +
@@ -119,9 +151,7 @@ class Indexer {
      */
     fun requestReindex() {
         logD("Requesting reindex")
-        for (callback in callbacks) {
-            callback.onRequestReindex()
-        }
+        controller?.onStartIndexing()
     }
 
     /**
@@ -152,9 +182,8 @@ class Indexer {
                 indexingState?.let { State.Indexing(it) }
                     ?: lastResponse?.let { State.Complete(it) }
 
-            for (callback in callbacks) {
-                callback.onIndexerStateChanged(state)
-            }
+            controller?.onIndexerStateChanged(state)
+            callback?.onIndexerStateChanged(state)
         }
     }
 
@@ -168,9 +197,8 @@ class Indexer {
             indexingState = null
 
             val state = State.Complete(response)
-            for (callback in callbacks) {
-                callback.onIndexerStateChanged(state)
-            }
+            controller?.onIndexerStateChanged(state)
+            callback?.onIndexerStateChanged(state)
         }
     }
 
@@ -377,12 +405,10 @@ class Indexer {
          * canceled for one reason or another.
          */
         fun onIndexerStateChanged(state: State?)
+    }
 
-        /**
-         * Called when some piece of code that cannot index music requests a reindex. Callbacks that
-         * can index music should begin reindexing at this call.
-         */
-        fun onRequestReindex() {}
+    interface Controller : Callback {
+        fun onStartIndexing()
     }
 
     /** Represents a backend that metadata can be extracted from. */

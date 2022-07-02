@@ -55,7 +55,7 @@
 
         <android.widget.ImageButton
             android:id="@+id/widget_repeat"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            style="@style/Widget.Auxio.MaterialButton.AppWidget"
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_change_repeat"
@@ -68,7 +68,7 @@
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_prev"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            style="@style/Widget.Auxio.MaterialButton.AppWidget"
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_skip_prev"
@@ -95,7 +95,7 @@
 
         <android.widget.ImageButton
             android:id="@+id/widget_skip_next"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            style="@style/Widget.Auxio.MaterialButton.AppWidget"
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_skip_next"
@@ -108,7 +108,7 @@
 
         <android.widget.ImageButton
             android:id="@+id/widget_shuffle"
-            style="@style/Widget.Auxio.PlaybackButton.AppWidget"
+            style="@style/Widget.Auxio.MaterialButton.AppWidget"
             android:layout_width="@dimen/size_btn"
             android:layout_height="@dimen/size_btn"
             android:contentDescription="@string/desc_shuffle"

@@ -32,7 +32,7 @@ class IndexerViewModel : ViewModel(), Indexer.Callback {
     val state: StateFlow<Indexer.State?> = _state
 
     init {
-        indexer.addCallback(this)
+        indexer.registerCallback(this)
     }
 
     fun reindex() {
@@ -44,6 +44,6 @@ class IndexerViewModel : ViewModel(), Indexer.Callback {
     }
 
     override fun onCleared() {
-        indexer.removeCallback(this)
+        indexer.unregisterCallback(this)
     }
 }

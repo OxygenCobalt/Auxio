@@ -17,25 +17,17 @@
  
 package org.oxycblt.auxio.music
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.oxycblt.auxio.BuildConfig
+import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.IntegerTable
-import org.oxycblt.auxio.R
-import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
-import org.oxycblt.auxio.util.newMainPendingIntent
 
 /**
  * A [Service] that handles the music loading process.
@@ -48,13 +40,13 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  *
  * @author OxygenCobalt
  */
-class IndexerService : Service(), Indexer.Callback {
+class IndexerService : Service(), Indexer.Controller {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
 
     private val serviceJob = Job()
-    private val indexScope = CoroutineScope(serviceJob + Dispatchers.Main)
-    private val updateScope = CoroutineScope(serviceJob + Dispatchers.Main)
+    private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private val updateScope = CoroutineScope(serviceJob + Dispatchers.IO)
 
     private var isForeground = false
     private lateinit var notification: IndexerNotification
@@ -64,10 +56,10 @@ class IndexerService : Service(), Indexer.Callback {
 
         notification = IndexerNotification(this)
 
-        indexer.addCallback(this)
+        indexer.registerController(this)
         if (musicStore.library == null && indexer.isIndeterminate) {
             logD("No library present and no previous response, indexing music now")
-            onRequestReindex()
+            onStartIndexing()
         }
 
         logD("Service created.")
@@ -83,8 +75,12 @@ class IndexerService : Service(), Indexer.Callback {
         // cancelLast actually stops foreground for us as it updates the loading state to
         // null or completed.
         indexer.cancelLast()
-        indexer.removeCallback(this)
+        indexer.unregisterController(this)
         serviceJob.cancel()
+    }
+
+    override fun onStartIndexing() {
+        indexScope.launch { indexer.index(this@IndexerService) }
     }
 
     override fun onIndexerStateChanged(state: Indexer.State?) {
@@ -98,7 +94,12 @@ class IndexerService : Service(), Indexer.Callback {
                     // have not already. Only when we are done updating the library will
                     // the service stop it's foreground state.
                     updateScope.launch {
-                        musicStore.updateLibrary(state.response.library)
+                        // TODO: Update PlaybackStateManager here 
+
+                        withContext(Dispatchers.Main) {
+                            musicStore.updateLibrary(state.response.library)
+                        }
+
                         stopForegroundSession()
                     }
                 } else {
@@ -133,72 +134,10 @@ class IndexerService : Service(), Indexer.Callback {
         }
     }
 
-    override fun onRequestReindex() {
-        indexScope.launch { indexer.index(this@IndexerService) }
-    }
-
     private fun stopForegroundSession() {
         if (isForeground) {
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
             isForeground = false
         }
-    }
-}
-
-private class IndexerNotification(private val context: Context) :
-    NotificationCompat.Builder(context, CHANNEL_ID) {
-    private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
-
-    init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel =
-                NotificationChannel(
-                    CHANNEL_ID,
-                    context.getString(R.string.info_indexer_channel_name),
-                    NotificationManager.IMPORTANCE_LOW)
-
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        setSmallIcon(R.drawable.ic_indexer_24)
-        setCategory(NotificationCompat.CATEGORY_PROGRESS)
-        setShowWhen(false)
-        setSilent(true)
-        setContentIntent(context.newMainPendingIntent())
-        setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        setContentTitle(context.getString(R.string.info_indexer_channel_name))
-        setContentText(context.getString(R.string.lbl_indexing))
-        setProgress(0, 0, true)
-    }
-
-    fun renotify() {
-        notificationManager.notify(IntegerTable.INDEXER_NOTIFICATION_CODE, build())
-    }
-
-    fun updateIndexingState(indexing: Indexer.Indexing): Boolean {
-        when (indexing) {
-            is Indexer.Indexing.Indeterminate -> {
-                logD("Updating state to $indexing")
-                setContentText(context.getString(R.string.lbl_indexing))
-                setProgress(0, 0, true)
-                return true
-            }
-            is Indexer.Indexing.Songs -> {
-                // Only update the notification every 50 songs to prevent excessive updates.
-                if (indexing.current % 50 == 0) {
-                    logD("Updating state to $indexing")
-                    setContentText(
-                        context.getString(R.string.fmt_indexing, indexing.current, indexing.total))
-                    setProgress(indexing.total, indexing.current, false)
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
-    companion object {
-        const val CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel.INDEXER"
     }
 }

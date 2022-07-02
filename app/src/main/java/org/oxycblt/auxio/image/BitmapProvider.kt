@@ -25,7 +25,6 @@ import coil.request.Disposable
 import coil.request.ImageRequest
 import coil.size.Size
 import org.oxycblt.auxio.music.Song
-import org.oxycblt.auxio.util.logD
 
 /**
  * A utility to provide bitmaps in a manner less prone to race conditions.
@@ -54,7 +53,6 @@ class BitmapProvider(private val context: Context) {
         // Increment the generation value so that previous requests are invalidated.
         // This is a second safeguard to mitigate instruction-by-instruction race conditions.
         val generation = synchronized(this) { ++currentGeneration }
-        logD("new generation for ${song.rawName}: $generation $currentGeneration")
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null
