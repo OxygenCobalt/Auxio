@@ -86,7 +86,6 @@
     <string name="lbl_sample_rate">Taux d\'échantillonnage</string>
     <string name="lbl_relative_path">Chemin parent</string>
     <string name="lbl_file_name">Nom du fichier</string>
-    <string name="set_round_covers_desc">Utiliser les couvertures d\'album aux coins arrondis</string>
     <string name="lbl_shuffle_shortcut_long">Tout mélanger</string>
     <string name="lbl_cancel">Annuler</string>
     <string name="lbl_save">Enregistrer</string>
@@ -97,7 +96,6 @@
     <string name="set_show_covers">Afficher les pochettes d\'album</string>
     <string name="set_lib_tabs">Onglets de la bibliothèque</string>
     <string name="set_quality_covers_desc">Augmente la qualité de la pochette de l\'album mais entraîne des temps de chargement plus longs et une utilisation accrue de la mémoire</string>
-    <string name="set_round_covers">Pochettes d\'album arrondies</string>
     <string name="set_alt_repeat">Préférer l\'action en mode répétition</string>
     <string name="info_app_desc">Un lecteur de musique simple et rationnel pour Android.</string>
     <string name="info_playback_channel_name">Lecture de musique</string>

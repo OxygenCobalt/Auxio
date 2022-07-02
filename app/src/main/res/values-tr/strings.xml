@@ -92,7 +92,6 @@
     <string name="set_lib_tabs">Kitaplık sekmeleri</string>
     <string name="set_show_covers">Albüm kapaklarını göster</string>
     <string name="set_lib_tabs_desc">Kitaplık sekmelerinin görünürlüğünü ve sırasını değiştirin</string>
-    <string name="set_round_covers_desc">Köşeleri yuvarlatılmış albüm kapakları kullanın</string>
     <string name="set_pre_amp_desc">Ön amfi, oynatma sırasında mevcut ayara uygulanır</string>
     <string name="set_pre_amp">ReplayGain ön amfi</string>
     <string name="set_pre_amp_without">Etiketsiz ayarla</string>
@@ -121,7 +120,6 @@
     <string name="clr_lime">Kireç</string>
     <string name="clr_yellow">Sarı</string>
     <string name="clr_orange">Turuncu</string>
-    <string name="set_round_covers">Yuvarlatılmış albüm kapakları</string>
     <string name="set_show_covers_desc">Bellek kullanımından tasarruf etmek için kapatın</string>
     <string name="set_quality_covers_desc">Albüm kapağı kalitesini artırır, ancak daha uzun yükleme sürelerine ve daha yüksek bellek kullanımına neden olur</string>
     <string name="set_library_song_playback_mode">Kitaplıktan çalarken</string>
