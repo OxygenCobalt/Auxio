@@ -25,17 +25,18 @@ import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Directory
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
 
@@ -46,6 +47,7 @@ import org.oxycblt.auxio.util.showToast
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val indexerModel: IndexerViewModel by activityViewModels()
 
     private val dirAdapter = MusicDirAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
@@ -85,7 +87,7 @@ class MusicDirsDialog :
                 if (dirs.dirs != dirAdapter.data.currentList ||
                     dirs.shouldInclude != isInclude(requireBinding())) {
                     logD("Committing changes")
-                    saveAndRestart()
+                    saveAndDismiss()
                 } else {
                     logD("Dropping changes")
                     dismiss()
@@ -186,10 +188,10 @@ class MusicDirsDialog :
     private fun isInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
 
-    private fun saveAndRestart() {
+    private fun saveAndDismiss() {
         settings.setMusicDirs(MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding())))
-
-        playbackModel.savePlaybackState(requireContext()) { requireContext().hardRestart() }
+        indexerModel.reindex()
+        dismiss()
     }
 
     private fun requireStorageManager(): StorageManager {

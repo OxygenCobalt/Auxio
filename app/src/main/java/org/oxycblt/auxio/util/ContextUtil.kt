@@ -237,14 +237,3 @@ fun Context.newBroadcastPendingIntent(what: String): PendingIntent =
         Intent(what).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
 
-/** Hard-restarts the app. Useful for forcing the app to reload music. */
-fun Context.hardRestart() {
-    // Instead of having to do a ton of cleanup and horrible code changes
-    // to restart this application non-destructively, I just restart the UI task [There is only
-    // one, after all] and then kill the application using exitProcess. Works well enough.
-    val intent =
-        Intent(applicationContext, MainActivity::class.java)
-            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    startActivity(intent)
-    exitProcess(0)
-}

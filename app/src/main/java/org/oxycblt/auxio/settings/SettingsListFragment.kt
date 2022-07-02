@@ -22,6 +22,7 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.updatePadding
+import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.home.tabs.TabCustomizeDialog
+import org.oxycblt.auxio.music.IndexerViewModel
 import org.oxycblt.auxio.music.dirs.MusicDirsDialog
 import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.playback.replaygain.PreAmpCustomizeDialog
@@ -38,7 +40,6 @@ import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
@@ -56,6 +57,7 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
 @Suppress("UNUSED")
 class SettingsListFragment : PreferenceFragmentCompat() {
     private val playbackModel: PlaybackViewModel by androidActivityViewModels()
+    private val indexerModel: IndexerViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -123,7 +125,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
                 }
             }
             getString(R.string.set_key_reindex) -> {
-                playbackModel.savePlaybackState(requireContext()) { context?.hardRestart() }
+                indexerModel.reindex()
             }
             else -> return super.onPreferenceTreeClick(preference)
         }

@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
-import android.support.v4.media.MediaMetadataCompat
 import androidx.core.app.ServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -273,10 +272,6 @@ class PlaybackService :
 
     override fun onPostNotification(notification: NotificationComponent) {
         if (hasPlayed && playbackManager.song != null) {
-            logD(
-                mediaSessionComponent.mediaSession.controller.metadata.getText(
-                    MediaMetadataCompat.METADATA_KEY_TITLE))
-
             if (!isForeground) {
                 startForeground(IntegerTable.PLAYBACK_NOTIFICATION_CODE, notification.build())
                 isForeground = true

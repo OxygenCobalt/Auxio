@@ -68,6 +68,10 @@ class Indexer {
     val isIndeterminate: Boolean
         get() = lastResponse == null && indexingState == null
 
+    /** Whether this instance is actively indexing or not. */
+    val isIndexing: Boolean
+        get() = indexingState != null
+
     /** Register a [Controller] with this instance. */
     fun registerController(controller: Controller) {
         if (BuildConfig.DEBUG && this.controller != null) {

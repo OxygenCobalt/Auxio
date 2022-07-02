@@ -21,12 +21,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.ServiceCompat
+import coil.imageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
+import org.oxycblt.auxio.playback.state.PlaybackStateManager
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -46,7 +50,9 @@ class IndexerService : Service(), Indexer.Controller {
 
     private val serviceJob = Job()
     private val indexScope = CoroutineScope(serviceJob + Dispatchers.IO)
-    private val updateScope = CoroutineScope(serviceJob + Dispatchers.IO)
+    private val updateScope = CoroutineScope(serviceJob + Dispatchers.Main)
+
+    private val playbackManager = PlaybackStateManager.getInstance()
 
     private var isForeground = false
     private lateinit var notification: IndexerNotification
@@ -80,6 +86,11 @@ class IndexerService : Service(), Indexer.Controller {
     }
 
     override fun onStartIndexing() {
+        if (indexer.isIndexing) {
+            indexer.cancelLast()
+            indexScope.cancel()
+        }
+
         indexScope.launch { indexer.index(this@IndexerService) }
     }
 
@@ -90,15 +101,22 @@ class IndexerService : Service(), Indexer.Controller {
                     state.response.library != musicStore.library) {
                     logD("Applying new library")
 
+                    val newLibrary = state.response.library
+
                     // Load was completed successfully, so apply the new library if we
                     // have not already. Only when we are done updating the library will
                     // the service stop it's foreground state.
                     updateScope.launch {
-                        // TODO: Update PlaybackStateManager here 
+                        imageLoader.memoryCache?.clear()
 
-                        withContext(Dispatchers.Main) {
-                            musicStore.updateLibrary(state.response.library)
+                        if (musicStore.library != null) {
+                            // This is a new library, so we need to make sure the playback state
+                            // is coherent.
+                            playbackManager.sanitize(
+                                PlaybackStateDatabase.getInstance(this@IndexerService), newLibrary)
                         }
+
+                        withContext(Dispatchers.Main) { musicStore.updateLibrary(newLibrary) }
 
                         stopForegroundSession()
                     }

@@ -45,6 +45,8 @@ import org.oxycblt.auxio.util.logW
  *
  * All access should be done with [PlaybackStateManager.getInstance].
  * @author OxygenCobalt
+ *
+ * TODO: Replace synchronized calls with annotation
  */
 class PlaybackStateManager private constructor() {
     private val musicStore = MusicStore.getInstance()
@@ -361,12 +363,11 @@ class PlaybackStateManager private constructor() {
      * **Seek** to a [positionMs].
      * @param positionMs The position to seek to in millis.
      */
+    @Synchronized
     fun seekTo(positionMs: Long) {
-        synchronized(this) {
-            this.positionMs = positionMs
-            controller?.seekTo(positionMs)
-            notifyPositionChanged()
-        }
+        this.positionMs = positionMs
+        controller?.seekTo(positionMs)
+        notifyPositionChanged()
     }
 
     /** Rewind to the beginning of a song. */
@@ -377,34 +378,8 @@ class PlaybackStateManager private constructor() {
     /** Restore the state from the [database] */
     suspend fun restoreState(database: PlaybackStateDatabase) {
         val library = musicStore.library ?: return
-        val start: Long
-        val state: PlaybackStateDatabase.SavedState?
-
-        logD("Getting state from DB")
-
-        withContext(Dispatchers.IO) {
-            start = System.currentTimeMillis()
-            state = database.read(library)
-        }
-
-        logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
-
-        synchronized(this) {
-            if (state != null) {
-                index = state.index
-                parent = state.parent
-                _queue = state.queue.toMutableList()
-                repeatMode = state.repeatMode
-                isShuffled = state.isShuffled
-
-                notifyNewPlayback()
-                seekTo(state.positionMs)
-                notifyRepeatModeChanged()
-                notifyShuffledChanged()
-            }
-
-            isInitialized = true
-        }
+        withContext(Dispatchers.IO) { readImpl(database, library) }?.let(::restoreImpl)
+        isInitialized = true
     }
 
     /** Save the current state to the [database]. */
@@ -412,23 +387,66 @@ class PlaybackStateManager private constructor() {
         logD("Saving state to DB")
 
         // Pack the entire state and save it to the database.
-        withContext(Dispatchers.IO) {
-            val start = System.currentTimeMillis()
+        withContext(Dispatchers.IO) { saveImpl(database) }
+    }
 
-            database.write(
-                synchronized(this) {
-                    PlaybackStateDatabase.SavedState(
-                        index = index,
-                        parent = parent,
-                        queue = _queue,
-                        positionMs = positionMs,
-                        isShuffled = isShuffled,
-                        repeatMode = repeatMode)
-                })
+    suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
+        // Since we need to sanitize the state and re-save it for consistency, take the
+        // easy way out and just write a new state and restore from it. Don't really care.
+        logD("Sanitizing state")
+        isPlaying = false
+        val state =
+            withContext(Dispatchers.IO) {
+                saveImpl(database)
+                readImpl(database, newLibrary)
+            }
 
-            this@PlaybackStateManager.logD(
-                "State save completed successfully in ${System.currentTimeMillis() - start}ms")
-        }
+        state?.let(::restoreImpl)
+    }
+
+    private fun readImpl(
+        database: PlaybackStateDatabase,
+        library: MusicStore.Library
+    ): PlaybackStateDatabase.SavedState? {
+        logD("Getting state from DB")
+
+        val start: Long = System.currentTimeMillis()
+        val state: PlaybackStateDatabase.SavedState? = database.read(library)
+
+        logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
+
+        return state
+    }
+
+    @Synchronized
+    private fun restoreImpl(state: PlaybackStateDatabase.SavedState) {
+        index = state.index
+        parent = state.parent
+        _queue = state.queue.toMutableList()
+        repeatMode = state.repeatMode
+        isShuffled = state.isShuffled
+
+        notifyNewPlayback()
+        seekTo(state.positionMs)
+        notifyRepeatModeChanged()
+        notifyShuffledChanged()
+    }
+
+    @Synchronized
+    private fun saveImpl(database: PlaybackStateDatabase) {
+        val start = System.currentTimeMillis()
+
+        database.write(
+            PlaybackStateDatabase.SavedState(
+                index = index,
+                parent = parent,
+                queue = _queue,
+                positionMs = positionMs,
+                isShuffled = isShuffled,
+                repeatMode = repeatMode))
+
+        this@PlaybackStateManager.logD(
+            "State save completed successfully in ${System.currentTimeMillis() - start}ms")
     }
 
     // --- CALLBACKS ---
