@@ -60,8 +60,6 @@ class WidgetComponent(private val context: Context) :
      * Force-update the widget.
      */
     fun update() {
-        // TODO: Respond to rounded covers
-
         // Updating Auxio's widget is unlike the rest of Auxio for a few reasons:
         // 1. We can't use the typical primitives like ViewModels
         // 2. The component range is far smaller, so we have to do some odd hacks to get
@@ -86,19 +84,16 @@ class WidgetComponent(private val context: Context) :
                 override fun onConfigRequest(builder: ImageRequest.Builder): ImageRequest.Builder {
                     val cornerRadius =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            // Android 12, always round the cover with the app widget's inner radius
                             context.getDimenSizeSafe(android.R.dimen.system_app_widget_inner_radius)
                         } else if (settings.roundMode) {
+                            // < Android 12, but the user still enabled round mode.
                             context.getDimenSizeSafe(R.dimen.size_corners_large)
                         } else {
+                            // User did not enable round mode.
                             0
                         }
 
-                    // The widget has two distinct styles that we must transform the album art to
-                    // accommodate:
-                    // - Before Android 12, the widget has hard edges, so we don't need to round
-                    // out the album art.
-                    // - After Android 12, the widget has round edges, so we need to round out
-                    // the album art. I dislike this, but it's mainly for stylistic cohesion.
                     return if (cornerRadius > 0) {
                         this@WidgetComponent.logD("Loading round covers: $cornerRadius")
 

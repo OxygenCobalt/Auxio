@@ -4,13 +4,14 @@
 
 #### What's New
 - Added a shuffle shortcut
-- Reworked the button appearance on widgets
+- Widgets now have a more sleek and consistent button layout
+- "Rounded album covers" is now "Round mode"
 - You can now customize what occurs when a song is played from an album/artist/genre [#164]
 
 #### What's Improved
 - Made "timeline" elements (like playback controls) always left-to-right
 - Improved performance when ReplayGain is not enabled
-- Playback bar now has rounded corners (when rounded covers is enabled)
+- Playback bar now has rounded corners (when round mode is enabled)
 - Massively improved main layout performance
 
 #### What's Fixed
@@ -21,7 +22,8 @@
 - Fixed crash if settings was navigated away before playback state
 finished saving
 - Fixed broken album menu
-- Fixed crash that would occur when opening a file on some devices #176
+- Fixed crash that would occur when opening a file on some devices [#176]
+- Fixed issue where the search filter menu would not display the correct mode
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material design guidelines

@@ -25,6 +25,13 @@ import com.google.android.material.button.MaterialButton
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.util.getDrawableSafe
 
+/**
+ * Extends [MaterialButton] to add a dot indicator to the bottom of the view.
+ *
+ * TODO: Experiment with the "grade" attribute on Material Icons so that I can replace this
+ *
+ * @author OxygenCobalt
+ */
 class IndicatorMaterialButton
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr: Int = 0) :

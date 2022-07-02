@@ -53,10 +53,10 @@ enum class DisplayMode {
     val itemId: Int
         get() =
             when (this) {
-                SHOW_SONGS -> R.drawable.ic_song_24
-                SHOW_ALBUMS -> R.drawable.ic_album_24
-                SHOW_ARTISTS -> R.drawable.ic_artist_24
-                SHOW_GENRES -> R.drawable.ic_genre_24
+                SHOW_SONGS -> R.id.option_filter_songs
+                SHOW_ALBUMS -> R.id.option_filter_albums
+                SHOW_ARTISTS -> R.id.option_filter_artists
+                SHOW_GENRES -> R.id.option_filter_genres
             }
 
     val intCode: Int

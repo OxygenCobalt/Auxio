@@ -57,8 +57,6 @@ constructor(
     private val binding = ViewSeekBarBinding.inflate(context.inflater, this, true)
 
     init {
-        // As per the Material Design guidelines, timeline elements like SeekBars and Controls
-        // should always be LTR.
         binding.seekBarSlider.addOnSliderTouchListener(this)
         binding.seekBarSlider.addOnChangeListener(this)
     }
