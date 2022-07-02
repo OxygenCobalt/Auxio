@@ -61,7 +61,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
         set(value) {
             field = value
             (background as? MaterialShapeDrawable)?.let { bg ->
-                if (settings.roundCovers) {
+                if (settings.roundMode) {
                     bg.setCornerSize(value)
                 } else {
                     bg.setCornerSize(0f)

@@ -27,6 +27,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import okhttp3.internal.notify
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -35,6 +36,7 @@ import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceSafe
+import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -94,24 +96,26 @@ class NotificationComponent(
 
     /** Set the metadata of the notification using [song]. */
     fun updateMetadata(song: Song, parent: MusicParent?) {
-        setContentTitle(song.resolveName(context))
-        setContentText(song.resolveIndividualArtistName(context))
-
-        // Starting in API 24, the subtext field changed semantics from being below the content
-        // text to being above the title.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setSubText(parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
-        } else {
-            setSubText(song.album.resolveName(context))
-        }
-
         provider.load(
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
+                    logD("writing ${song.rawName} to notif")
                     setLargeIcon(bitmap)
-                    build()
-                    callback.onNotificationChanged(this@NotificationComponent)
+                    setContentTitle(song.resolveName(context))
+                    setContentText(song.resolveIndividualArtistName(context))
+
+                    // Starting in API 24, the subtext field changed semantics from being below the
+                    // content text to being above the title.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        setSubText(
+                            parent?.resolveName(context)
+                                ?: context.getString(R.string.lbl_all_songs))
+                    } else {
+                        setSubText(song.album.resolveName(context))
+                    }
+
+                    callback.onNotificationChanged(song, this@NotificationComponent)
                 }
             })
     }
@@ -120,7 +124,7 @@ class NotificationComponent(
     fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
         if (!provider.isBusy) {
-            callback.onNotificationChanged(this)
+            callback.onNotificationChanged(null, this)
         }
     }
 
@@ -128,7 +132,7 @@ class NotificationComponent(
     fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
         if (!provider.isBusy) {
-            callback.onNotificationChanged(this)
+            callback.onNotificationChanged(null, this)
         }
     }
 
@@ -136,7 +140,7 @@ class NotificationComponent(
     fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
         if (!provider.isBusy) {
-            callback.onNotificationChanged(this)
+            callback.onNotificationChanged(null, this)
         }
     }
 
@@ -188,7 +192,7 @@ class NotificationComponent(
     }
 
     interface Callback {
-        fun onNotificationChanged(component: NotificationComponent)
+        fun onNotificationChanged(song: Song?, component: NotificationComponent)
     }
 
     companion object {

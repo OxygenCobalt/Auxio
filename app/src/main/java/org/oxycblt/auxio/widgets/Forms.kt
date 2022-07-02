@@ -18,12 +18,14 @@
 package org.oxycblt.auxio.widgets
 
 import android.content.Context
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.playback.system.PlaybackService
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -39,6 +41,7 @@ fun createDefaultWidget(context: Context) = createViews(context, R.layout.widget
  */
 fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_thin)
+        .applyRoundingToBackground(context)
         .applyMeta(context, state)
         .applyBasicControls(context, state)
 /**
@@ -48,6 +51,7 @@ fun createThinWidget(context: Context, state: WidgetComponent.WidgetState) =
  */
 fun createSmallWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_small)
+        .applyRoundingToBar(context)
         .applyCover(context, state)
         .applyBasicControls(context, state)
 
@@ -57,18 +61,21 @@ fun createSmallWidget(context: Context, state: WidgetComponent.WidgetState) =
  */
 fun createMediumWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_medium)
+        .applyRoundingToBackground(context)
         .applyMeta(context, state)
         .applyBasicControls(context, state)
 
 /** The wide widget is for Nx2 widgets and is like the small widget but with more controls. */
 fun createWideWidget(context: Context, state: WidgetComponent.WidgetState) =
     createViews(context, R.layout.widget_wide)
+        .applyRoundingToBar(context)
         .applyCover(context, state)
         .applyFullControls(context, state)
 
 /** The large widget is for 3x4 widgets and shows all metadata and controls. */
 fun createLargeWidget(context: Context, state: WidgetComponent.WidgetState): RemoteViews =
     createViews(context, R.layout.widget_large)
+        .applyRoundingToBackground(context)
         .applyMeta(context, state)
         .applyFullControls(context, state)
 
@@ -76,6 +83,26 @@ private fun createViews(context: Context, @LayoutRes layout: Int): RemoteViews {
     val views = RemoteViews(context.packageName, layout)
     views.setOnClickPendingIntent(android.R.id.background, context.newMainPendingIntent())
     return views
+}
+
+private fun RemoteViews.applyRoundingToBackground(context: Context): RemoteViews {
+    if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        setInt(android.R.id.background, "setBackgroundResource", R.drawable.ui_widget_bg_round)
+    } else {
+        setInt(android.R.id.background, "setBackgroundResource", R.drawable.ui_widget_bg)
+    }
+
+    return this
+}
+
+private fun RemoteViews.applyRoundingToBar(context: Context): RemoteViews {
+    if (Settings(context).roundMode && Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+        setInt(R.id.widget_controls, "setBackgroundResource", R.drawable.ui_widget_bg_round)
+    } else {
+        setInt(R.id.widget_controls, "setBackgroundResource", R.drawable.ui_widget_bar)
+    }
+
+    return this
 }
 
 private fun RemoteViews.applyMeta(

@@ -74,8 +74,8 @@
     <string name="set_show_covers_desc">Desactive para ahorrar memoria</string>
     <string name="set_quality_covers">Ignorar carátulas de MediaStore</string>
     <string name="set_quality_covers_desc">Incrementa la calidad de las carátulas, pero deriva en mayores tiempos de carga y uso de memoria</string>
-    <string name="set_round_covers">Carátulas redondeadas</string>
-    <string name="set_round_covers_desc">Usar carátulas redondeadas para los álbumes</string>
+    <string name="set_round_mode">Carátulas redondeadas</string>
+    <string name="set_round_mode_desc">Usar carátulas redondeadas para los álbumes</string>
     <string name="set_alt_action">Usar acciones de notificación alternativas</string>
     <string name="set_alt_repeat">Preferir acción de bucle</string>
     <string name="set_alt_shuffle">Preferir acción de mezcla</string>

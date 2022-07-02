@@ -74,8 +74,8 @@
     <string name="set_show_covers_desc">Disattiva per ridurre il consumo di memoria</string>
     <string name="set_quality_covers">Ignora copertine MediaStore</string>
     <string name="set_quality_covers_desc">Migliora la qualità delle copertine, ma comporta maggiori tempi di caricamento e consumo di memoria</string>
-    <string name="set_round_covers">Copertine dischi arrotondate</string>
-    <string name="set_round_covers_desc">Usa copertine dischi con angoli arrotondati</string>
+    <string name="set_round_mode">Copertine dischi arrotondate</string>
+    <string name="set_round_mode_desc">Usa copertine dischi con angoli arrotondati</string>
     <string name="set_alt_action">Usa azioni notifica alternative</string>
     <string name="set_alt_repeat">Preferisci azione modalità ripetizione</string>
     <string name="set_alt_shuffle">Preferisci azione mescola</string>

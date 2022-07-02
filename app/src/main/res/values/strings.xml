@@ -94,8 +94,8 @@
     <string name="set_show_covers_desc">Turn off to save memory usage</string>
     <string name="set_quality_covers">Ignore MediaStore covers</string>
     <string name="set_quality_covers_desc">Increases album cover quality, but results in longer loading times and higher memory usage</string>
-    <string name="set_round_covers">Rounded album covers</string>
-    <string name="set_round_covers_desc">Use album covers with rounded corners</string>
+    <string name="set_round_mode">Round mode</string>
+    <string name="set_round_mode_desc">Enable rounded corners on additional UI elements (Requires album covers to be rounded)</string>
     <string name="set_alt_action">Use alternate notification action</string>
     <string name="set_alt_repeat">Prefer repeat mode action</string>
     <string name="set_alt_shuffle">Prefer shuffle action</string>

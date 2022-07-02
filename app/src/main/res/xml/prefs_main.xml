@@ -58,9 +58,9 @@
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="@string/set_key_round_covers"
-            app:summary="@string/set_round_covers_desc"
-            app:title="@string/set_round_covers" />
+            app:key="@string/set_key_round_mode"
+            app:summary="@string/set_round_mode_desc"
+            app:title="@string/set_round_mode" />
 
         <org.oxycblt.auxio.settings.ui.M3SwitchPreference
             app:allowDividerBelow="false"

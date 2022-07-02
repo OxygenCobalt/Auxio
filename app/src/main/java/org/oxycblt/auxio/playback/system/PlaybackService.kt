@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -310,9 +311,10 @@ class PlaybackService :
 
     // --- NOTIFICATION CALLBACKS ---
 
-    override fun onNotificationChanged(component: NotificationComponent) {
+    override fun onNotificationChanged(song: Song?, component: NotificationComponent) {
         if (hasPlayed && playbackManager.song != null) {
-            logD("Starting foreground/notifying")
+            logD("Starting foreground/notifying: ${song?.rawName}")
+            logD(NotificationCompat.getContentTitle(component.build()))
 
             if (!isForeground) {
                 startForeground(IntegerTable.PLAYBACK_NOTIFICATION_CODE, component.build())

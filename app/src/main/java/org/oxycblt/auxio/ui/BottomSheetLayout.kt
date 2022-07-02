@@ -102,7 +102,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
     private val cornersLarge =
-        if (Settings(context).roundCovers) {
+        if (Settings(context).roundMode) {
             // Since album covers are rounded, we can also round the bar too.
             context.getDimenSizeSafe(R.dimen.size_corners_large)
         } else {

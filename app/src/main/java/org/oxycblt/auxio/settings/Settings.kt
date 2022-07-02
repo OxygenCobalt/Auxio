@@ -123,9 +123,9 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val useQualityCovers: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_quality_covers), false)
 
-    /** Whether to round album covers */
-    val roundCovers: Boolean
-        get() = inner.getBoolean(context.getString(R.string.set_key_round_covers), false)
+    /** Whether to round additional UI elements (including album covers) */
+    val roundMode: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_round_mode), false)
 
     /** Whether to resume playback when a headset is connected (may not work well in all cases) */
     val headsetAutoplay: Boolean

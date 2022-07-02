@@ -4,7 +4,8 @@
     android:id="@android:id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:backgroundTint="?attr/colorSurface"
+    android:background="@drawable/ui_widget_bg"
     android:theme="@style/Theme.Widget">
 
     <!--
@@ -72,11 +73,11 @@
             android:id="@+id/widget_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/spacing_mid_small"
+            android:paddingTop="@dimen/spacing_medium"
             android:paddingEnd="@dimen/spacing_mid_small"
-            android:paddingTop="@dimen/spacing_mid_small"
-            android:paddingBottom="@dimen/spacing_medium"
-            android:orientation="horizontal">
+            android:paddingBottom="@dimen/spacing_medium">
 
             <android.widget.ImageButton
                 android:id="@+id/widget_repeat"
@@ -104,13 +105,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
+
             <android.widget.ImageButton
                 android:id="@+id/widget_play_pause"
                 style="@style/Widget.Auxio.FloatingActionButton.AppWidget"
                 android:layout_width="@dimen/size_btn"
                 android:layout_height="@dimen/size_btn"
                 android:contentDescription="@string/desc_play_pause"
-                android:src="@drawable/sel_playing_state_24" />
+                android:src="@drawable/ic_pause_24" />
+
 
             <android.widget.ImageView
                 android:layout_width="0dp"
