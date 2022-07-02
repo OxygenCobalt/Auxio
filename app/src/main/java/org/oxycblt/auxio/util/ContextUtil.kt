@@ -40,7 +40,6 @@ import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import kotlin.reflect.KClass
-import kotlin.system.exitProcess
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.MainActivity
 
@@ -236,4 +235,3 @@ fun Context.newBroadcastPendingIntent(what: String): PendingIntent =
         IntegerTable.REQUEST_CODE,
         Intent(what).setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0)
-

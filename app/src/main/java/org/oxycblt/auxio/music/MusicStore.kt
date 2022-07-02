@@ -46,12 +46,12 @@ class MusicStore private constructor() {
         callbacks.remove(callback)
     }
 
+    /** Update the library in this instance. This is only meant for use by the internal indexer. */
+    @Synchronized
     fun updateLibrary(newLibrary: Library?) {
-        synchronized(this) {
-            library = newLibrary
-            for (callback in callbacks) {
-                callback.onLibraryChanged(library)
-            }
+        library = newLibrary
+        for (callback in callbacks) {
+            callback.onLibraryChanged(library)
         }
     }
 

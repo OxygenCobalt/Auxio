@@ -49,10 +49,11 @@ class BitmapProvider(private val context: Context) {
      * Load a bitmap from [song]. [target] should be a new object, not a reference to an existing
      * callback.
      */
+    @Synchronized
     fun load(song: Song, target: Target) {
         // Increment the generation value so that previous requests are invalidated.
         // This is a second safeguard to mitigate instruction-by-instruction race conditions.
-        val generation = synchronized(this) { ++currentGeneration }
+        val generation = ++currentGeneration
 
         currentRequest?.run { disposable.dispose() }
         currentRequest = null

@@ -73,6 +73,7 @@ class Indexer {
         get() = indexingState != null
 
     /** Register a [Controller] with this instance. */
+    @Synchronized
     fun registerController(controller: Controller) {
         if (BuildConfig.DEBUG && this.controller != null) {
             logW("Controller is already registered")
@@ -83,15 +84,17 @@ class Indexer {
     }
 
     /** Unregister a [Controller] with this instance. */
+    @Synchronized
     fun unregisterController(controller: Controller) {
         if (BuildConfig.DEBUG && this.controller !== controller) {
             logW("Given controller did not match current controller")
             return
         }
 
-        synchronized(this) { this.controller = null }
+        this.controller = null
     }
 
+    @Synchronized
     fun registerCallback(callback: Callback) {
         if (BuildConfig.DEBUG && this.callback != null) {
             logW("Callback is already registered")
@@ -106,6 +109,7 @@ class Indexer {
         this.callback = callback
     }
 
+    @Synchronized
     fun unregisterCallback(callback: Callback) {
         if (BuildConfig.DEBUG && this.callback !== callback) {
             logW("Given controller did not match current controller")
@@ -115,8 +119,9 @@ class Indexer {
         this.callback = null
     }
 
+    @Synchronized
     fun index(context: Context) {
-        val generation = synchronized(this) { ++currentGeneration }
+        val generation = ++currentGeneration
 
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -153,6 +158,7 @@ class Indexer {
      * Request that re-indexing should be done. This should be used by components that do not manage
      * the indexing process to re-index music.
      */
+    @Synchronized
     fun requestReindex() {
         logD("Requesting reindex")
         controller?.onStartIndexing()
@@ -164,46 +170,42 @@ class Indexer {
      * canceled, in which it would be useful for any ongoing loading process to not accidentally
      * corrupt the current state.
      */
+    @Synchronized
     fun cancelLast() {
         logD("Cancelling last job")
-        synchronized(this) {
-            currentGeneration++
-            emitIndexing(null, currentGeneration)
-        }
+        currentGeneration++
+        emitIndexing(null, currentGeneration)
     }
 
+    @Synchronized
     private fun emitIndexing(indexing: Indexing?, generation: Long) {
-        synchronized(this) {
-            if (currentGeneration != generation) {
-                return
-            }
-
-            indexingState = indexing
-
-            // If we have canceled the loading process, we want to revert to a previous completion
-            // whenever possible to prevent state inconsistency.
-            val state =
-                indexingState?.let { State.Indexing(it) }
-                    ?: lastResponse?.let { State.Complete(it) }
-
-            controller?.onIndexerStateChanged(state)
-            callback?.onIndexerStateChanged(state)
+        if (currentGeneration != generation) {
+            return
         }
+
+        indexingState = indexing
+
+        // If we have canceled the loading process, we want to revert to a previous completion
+        // whenever possible to prevent state inconsistency.
+        val state =
+            indexingState?.let { State.Indexing(it) } ?: lastResponse?.let { State.Complete(it) }
+
+        controller?.onIndexerStateChanged(state)
+        callback?.onIndexerStateChanged(state)
     }
 
+    @Synchronized
     private fun emitCompletion(response: Response, generation: Long) {
-        synchronized(this) {
-            if (currentGeneration != generation) {
-                return
-            }
-
-            lastResponse = response
-            indexingState = null
-
-            val state = State.Complete(response)
-            controller?.onIndexerStateChanged(state)
-            callback?.onIndexerStateChanged(state)
+        if (currentGeneration != generation) {
+            return
         }
+
+        lastResponse = response
+        indexingState = null
+
+        val state = State.Complete(response)
+        controller?.onIndexerStateChanged(state)
+        callback?.onIndexerStateChanged(state)
     }
 
     /**
