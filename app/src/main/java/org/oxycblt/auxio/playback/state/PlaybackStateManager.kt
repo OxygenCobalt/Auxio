@@ -122,7 +122,6 @@ class PlaybackStateManager private constructor() {
                 controller.loadSong(song)
                 controller.seekTo(positionMs)
                 controller.onPlayingChanged(isPlaying)
-                controller.onRepeatChanged(repeatMode)
                 controller.onPlayingChanged(isPlaying)
             }
 
@@ -468,14 +467,12 @@ class PlaybackStateManager private constructor() {
     }
 
     private fun notifyRepeatModeChanged() {
-        controller?.onRepeatChanged(repeatMode)
         for (callback in callbacks) {
             callback.onRepeatChanged(repeatMode)
         }
     }
 
     private fun notifyShuffledChanged() {
-        controller?.onShuffledChanged(isShuffled)
         for (callback in callbacks) {
             callback.onShuffledChanged(isShuffled)
         }
@@ -495,11 +492,11 @@ class PlaybackStateManager private constructor() {
         /** Called when the playing state is changed. */
         fun onPlayingChanged(isPlaying: Boolean)
 
-        /** Called when the repeat mode is changed. */
-        fun onRepeatChanged(repeatMode: RepeatMode)
-
-        /** Called when the shuffled state is changed. */
-        fun onShuffledChanged(isShuffled: Boolean)
+        //        /** Called when the repeat mode is changed. */
+        //        fun onRepeatChanged(repeatMode: RepeatMode)
+        //
+        //        /** Called when the shuffled state is changed. */
+        //        fun onShuffledChanged(isShuffled: Boolean)
     }
 
     /**

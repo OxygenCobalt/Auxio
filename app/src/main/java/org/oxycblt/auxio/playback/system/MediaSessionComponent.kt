@@ -26,6 +26,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.Player
+import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.image.BitmapProvider
 import org.oxycblt.auxio.music.MusicParent
@@ -43,19 +44,24 @@ import org.oxycblt.auxio.util.logD
  *
  * @author OxygenCobalt
  */
-class MediaSessionComponent(private val context: Context, private val player: Player) :
+class MediaSessionComponent(
+    private val context: Context,
+    private val player: Player,
+    private val callback: Callback
+) :
     Player.Listener,
     MediaSessionCompat.Callback(),
     PlaybackStateManager.Callback,
     Settings.Callback {
+    interface Callback {
+        fun onPostNotification(notification: NotificationComponent)
+    }
+
     private val playbackManager = PlaybackStateManager.getInstance()
     private val settings = Settings(context, this)
-    private val mediaSession =
-        MediaSessionCompat(context, context.packageName).apply { isActive = true }
+    val mediaSession = MediaSessionCompat(context, context.packageName).apply { isActive = true }
+    private val notification = NotificationComponent(context, mediaSession.sessionToken)
     private val provider = BitmapProvider(context)
-
-    val token: MediaSessionCompat.Token
-        get() = mediaSession.sessionToken
 
     init {
         player.addListener(this)
@@ -81,15 +87,15 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
     // --- PLAYBACKSTATEMANAGER CALLBACKS ---
 
-    override fun onIndexMoved(index: Int) {
-        updateMediaMetadata(playbackManager.song)
-    }
-
     override fun onNewPlayback(index: Int, queue: List<Song>, parent: MusicParent?) {
-        updateMediaMetadata(playbackManager.song)
+        updateMediaMetadata(playbackManager.song, parent)
     }
 
-    private fun updateMediaMetadata(song: Song?) {
+    override fun onIndexMoved(index: Int) {
+        updateMediaMetadata(playbackManager.song, playbackManager.parent)
+    }
+
+    private fun updateMediaMetadata(song: Song?, parent: MusicParent?) {
         if (song == null) {
             mediaSession.setMetadata(emptyMetadata)
             return
@@ -97,7 +103,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
 
         val title = song.resolveName(context)
         val artist = song.resolveIndividualArtistName(context)
-        val metadata =
+        val builder =
             MediaMetadataCompat.Builder()
                 .putText(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                 .putText(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
@@ -110,18 +116,21 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
                 .putText(MediaMetadataCompat.METADATA_KEY_COMPOSER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_WRITER, artist)
                 .putText(MediaMetadataCompat.METADATA_KEY_GENRE, song.genre.resolveName(context))
+                .putText(
+                    METADATA_KEY_PARENT,
+                    parent?.resolveName(context) ?: context.getString(R.string.lbl_all_songs))
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, song.durationMs)
 
         if (song.track != null) {
-            metadata.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track.toLong())
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, song.track.toLong())
         }
 
         if (song.disc != null) {
-            metadata.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, song.disc.toLong())
+            builder.putLong(MediaMetadataCompat.METADATA_KEY_DISC_NUMBER, song.disc.toLong())
         }
 
         if (song.album.year != null) {
-            metadata.putString(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year.toString())
+            builder.putString(MediaMetadataCompat.METADATA_KEY_DATE, song.album.year.toString())
         }
 
         // Normally, android expects one to provide a URI to the metadata instance instead of
@@ -132,25 +141,30 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
             song,
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
-                    metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
-                    metadata.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
-                    mediaSession.setMetadata(metadata.build())
+                    builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap)
+                    builder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
+                    val metadata = builder.build()
+                    mediaSession.setMetadata(metadata)
+                    notification.updateMetadata(metadata)
+                    callback.onPostNotification(notification)
                 }
             })
     }
 
     override fun onPlayingChanged(isPlaying: Boolean) {
         invalidateSessionState()
+        invalidateNotificationActions()
     }
 
     override fun onRepeatChanged(repeatMode: RepeatMode) {
-        // TODO: Add the custom actions for Android 13
         mediaSession.setRepeatMode(
             when (repeatMode) {
                 RepeatMode.NONE -> PlaybackStateCompat.REPEAT_MODE_NONE
                 RepeatMode.TRACK -> PlaybackStateCompat.REPEAT_MODE_ONE
                 RepeatMode.ALL -> PlaybackStateCompat.REPEAT_MODE_ALL
             })
+
+        invalidateNotificationActions()
     }
 
     override fun onShuffledChanged(isShuffled: Boolean) {
@@ -160,14 +174,18 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
             } else {
                 PlaybackStateCompat.SHUFFLE_MODE_NONE
             })
+
+        invalidateNotificationActions()
     }
 
     // --- SETTINGSMANAGER CALLBACKS ---
 
     override fun onSettingChanged(key: String) {
-        if (key == context.getString(R.string.set_key_show_covers) ||
-            key == context.getString(R.string.set_key_quality_covers)) {
-            updateMediaMetadata(playbackManager.song)
+        when (key) {
+            context.getString(R.string.set_key_show_covers),
+            context.getString(R.string.set_key_quality_covers) ->
+                updateMediaMetadata(playbackManager.song, playbackManager.parent)
+            context.getString(R.string.set_key_alt_notif_action) -> invalidateNotificationActions()
         }
     }
 
@@ -239,6 +257,7 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         // forces the system to re-poll the position.
         // FIXME: For some reason however, positions just DON'T UPDATE AT ALL when you
         //  change from FROM THE APP ONLY WHEN THE PLAYER IS PAUSED.
+        // TODO: Add the custom actions for Android 13
         val state =
             PlaybackStateCompat.Builder()
                 .setActions(ACTIONS)
@@ -266,8 +285,24 @@ class MediaSessionComponent(private val context: Context, private val player: Pl
         mediaSession.setPlaybackState(state.build())
     }
 
+    private fun invalidateNotificationActions() {
+        notification.updatePlaying(playbackManager.isPlaying)
+
+        if (settings.useAltNotifAction) {
+            notification.updateShuffled(playbackManager.isShuffled)
+        } else {
+            notification.updateRepeatMode(playbackManager.repeatMode)
+        }
+
+        if (!provider.isBusy) {
+            callback.onPostNotification(notification)
+        }
+    }
+
     companion object {
         private val emptyMetadata = MediaMetadataCompat.Builder().build()
+
+        const val METADATA_KEY_PARENT = BuildConfig.APPLICATION_ID + ".metadata.PARENT"
 
         private const val ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or

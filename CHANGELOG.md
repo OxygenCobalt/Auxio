@@ -26,6 +26,7 @@ finished saving
 - Fixed issue where the search filter menu would not display the correct mode
 - Fixed crash when search filter mode was changed
 - Fixed shuffle button appearing below playback bar on Android 10 and lower
+- Fixed incorrect song being shown in the notification in some cases [#179]
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material design guidelines

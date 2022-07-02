@@ -21,8 +21,8 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
@@ -31,12 +31,9 @@ import okhttp3.internal.notify
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.image.BitmapProvider
-import org.oxycblt.auxio.music.MusicParent
 import org.oxycblt.auxio.music.Song
 import org.oxycblt.auxio.playback.state.RepeatMode
 import org.oxycblt.auxio.util.getSystemServiceSafe
-import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.newBroadcastPendingIntent
 import org.oxycblt.auxio.util.newMainPendingIntent
 
@@ -47,13 +44,9 @@ import org.oxycblt.auxio.util.newMainPendingIntent
  * @author OxygenCobalt
  */
 @SuppressLint("RestrictedApi")
-class NotificationComponent(
-    private val context: Context,
-    private val callback: Callback,
-    sessionToken: MediaSessionCompat.Token
-) : NotificationCompat.Builder(context, CHANNEL_ID) {
+class NotificationComponent(private val context: Context, sessionToken: MediaSessionCompat.Token) :
+    NotificationCompat.Builder(context, CHANNEL_ID) {
     private val notificationManager = context.getSystemServiceSafe(NotificationManager::class)
-    private val provider = BitmapProvider(context)
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -88,61 +81,41 @@ class NotificationComponent(
         notificationManager.notify(IntegerTable.PLAYBACK_NOTIFICATION_CODE, build())
     }
 
-    fun release() {
-        provider.release()
-    }
-
     // --- STATE FUNCTIONS ---
 
-    /** Set the metadata of the notification using [song]. */
-    fun updateMetadata(song: Song, parent: MusicParent?) {
-        provider.load(
-            song,
-            object : BitmapProvider.Target {
-                override fun onCompleted(bitmap: Bitmap?) {
-                    logD("writing ${song.rawName} to notif")
-                    setContentTitle(song.resolveName(context))
-                    setContentText(song.resolveIndividualArtistName(context))
+    fun updateMetadata(metadata: MediaMetadataCompat) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Notification is automatically filled in by media session, ignore
+            return
+        }
 
-                    // Starting in API 24, the subtext field changed semantics from being below the
-                    // content text to being above the title.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        setSubText(
-                            parent?.resolveName(context)
-                                ?: context.getString(R.string.lbl_all_songs))
-                    } else {
-                        setSubText(song.album.resolveName(context))
-                    }
+        setContentTitle(metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
+        setContentText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ARTIST))
 
-                    setLargeIcon(bitmap)
+        // Starting in API 24, the subtext field changed semantics from being below the
+        // content text to being above the title.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setSubText(metadata.getText(MediaSessionComponent.METADATA_KEY_PARENT))
+        } else {
+            setSubText(metadata.getText(MediaMetadataCompat.METADATA_KEY_ALBUM))
+        }
 
-                    callback.onNotificationChanged(song, this@NotificationComponent)
-                }
-            })
+        setLargeIcon(metadata.getBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART))
     }
 
     /** Set the playing icon on the notification */
     fun updatePlaying(isPlaying: Boolean) {
         mActions[2] = buildPlayPauseAction(context, isPlaying)
-        if (!provider.isBusy) {
-            callback.onNotificationChanged(null, this)
-        }
     }
 
     /** Update the first action to reflect the [repeatMode] given. */
     fun updateRepeatMode(repeatMode: RepeatMode) {
         mActions[0] = buildRepeatAction(context, repeatMode)
-        if (!provider.isBusy) {
-            callback.onNotificationChanged(null, this)
-        }
     }
 
     /** Update the first action to reflect whether the queue is shuffled or not */
     fun updateShuffled(isShuffled: Boolean) {
         mActions[0] = buildShuffleAction(context, isShuffled)
-        if (!provider.isBusy) {
-            callback.onNotificationChanged(null, this)
-        }
     }
 
     // --- NOTIFICATION ACTION BUILDERS ---
