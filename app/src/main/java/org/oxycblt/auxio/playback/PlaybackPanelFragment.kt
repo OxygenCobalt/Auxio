@@ -36,9 +36,9 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getDrawableSafe
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
-import org.oxycblt.auxio.util.getSystemGestureInsetsCompat
 import org.oxycblt.auxio.util.logD
+import org.oxycblt.auxio.util.systemBarInsetsCompat
+import org.oxycblt.auxio.util.systemGestureInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -73,8 +73,8 @@ class PlaybackPanelFragment :
             // just for quality of life. While the old 3-button navigation does this for us, when
             // bar navigation is used, we use the gesture padding to add that extra portion of
             // space.
-            val bars = insets.getSystemBarInsetsCompat(view)
-            val gestures = insets.getSystemGestureInsetsCompat(view)
+            val bars = insets.systemBarInsetsCompat
+            val gestures = insets.systemGestureInsetsCompat
             view.updatePadding(top = bars.top, bottom = max(gestures.bottom, bars.bottom))
             insets
         }

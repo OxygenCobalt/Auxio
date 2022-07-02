@@ -45,13 +45,13 @@ import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
 import org.oxycblt.auxio.util.getDimenSizeSafe
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.pxOfDp
 import org.oxycblt.auxio.util.replaceSystemBarInsetsCompat
 import org.oxycblt.auxio.util.stateList
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * A layout that *properly* handles bottom sheet functionality.
@@ -387,7 +387,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         // space the sheet has consumed, and then combine that with the existing bottom inset to
         // see which one should be applied. Note that we do not include the expanded sheet into
         // this calculation, as it should be covered up by the bottom sheet.
-        val bars = insets.getSystemBarInsetsCompat(this)
+        val bars = insets.systemBarInsetsCompat
         val consumedByNonExpandedSheet =
             measuredHeight - calculateSheetTopPosition(min(sheetOffset, 0f))
         val adjustedBottomInset = max(consumedByNonExpandedSheet, bars.bottom)
@@ -544,7 +544,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // window insets as it goes upwards. Do this by progressively modifying the y
             // translation with a fraction of the said inset.
             lastInsets?.let { insets ->
-                val bars = insets.getSystemBarInsetsCompat(this)
+                val bars = insets.systemBarInsetsCompat
                 translationY = bars.top * halfOutRatio
             }
         }

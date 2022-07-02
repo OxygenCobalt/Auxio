@@ -60,11 +60,11 @@ import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collect
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.getColorStateListSafe
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
 import org.oxycblt.auxio.util.logTraceOrThrow
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -108,7 +108,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         updateTabConfiguration()
 
         binding.homeIndexingContainer.setOnApplyWindowInsetsListener { view, insets ->
-            view.updatePadding(bottom = insets.getSystemBarInsetsCompat(view).bottom)
+            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 

@@ -101,7 +101,6 @@ class NotificationComponent(
             object : BitmapProvider.Target {
                 override fun onCompleted(bitmap: Bitmap?) {
                     logD("writing ${song.rawName} to notif")
-                    setLargeIcon(bitmap)
                     setContentTitle(song.resolveName(context))
                     setContentText(song.resolveIndividualArtistName(context))
 
@@ -114,6 +113,8 @@ class NotificationComponent(
                     } else {
                         setSubText(song.album.resolveName(context))
                     }
+
+                    setLargeIcon(bitmap)
 
                     callback.onNotificationChanged(song, this@NotificationComponent)
                 }

@@ -24,7 +24,7 @@ import android.view.WindowInsets
 import androidx.annotation.AttrRes
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /** A [RecyclerView] that automatically applies insets to itself. */
 open class EdgeRecyclerView
@@ -48,7 +48,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
             initialPadding.left,
             initialPadding.top,
             initialPadding.right,
-            initialPadding.bottom + insets.getSystemBarInsetsCompat(this).bottom)
+            initialPadding.bottom + insets.systemBarInsetsCompat.bottom)
 
         return insets
     }

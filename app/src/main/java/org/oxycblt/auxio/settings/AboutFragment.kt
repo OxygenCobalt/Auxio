@@ -39,9 +39,9 @@ import org.oxycblt.auxio.ui.fragment.ViewBindingFragment
 import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.collectImmediately
 import org.oxycblt.auxio.util.formatDuration
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 import org.oxycblt.auxio.util.textSafe
 
 /**
@@ -55,7 +55,7 @@ class AboutFragment : ViewBindingFragment<FragmentAboutBinding>() {
 
     override fun onBindingCreated(binding: FragmentAboutBinding, savedInstanceState: Bundle?) {
         binding.aboutContents.setOnApplyWindowInsetsListener { view, insets ->
-            view.updatePadding(bottom = insets.getSystemBarInsetsCompat(view).bottom)
+            view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
 

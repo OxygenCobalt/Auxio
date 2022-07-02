@@ -28,7 +28,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
 import com.google.android.material.appbar.AppBarLayout
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * An [AppBarLayout] that fixes a bug with the default implementation where the lifted state will
@@ -63,7 +63,7 @@ constructor(context: Context, attrs: AttributeSet? = null, @AttrRes defStyleAttr
 
     override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
         super.onApplyWindowInsets(insets)
-        updatePadding(top = insets.getSystemBarInsetsCompat(this).top)
+        updatePadding(top = insets.systemBarInsetsCompat.top)
         return insets
     }
 

@@ -38,12 +38,12 @@ import org.oxycblt.auxio.settings.ui.IntListPreferenceDialog
 import org.oxycblt.auxio.settings.ui.WrappedDialogPreference
 import org.oxycblt.auxio.ui.accent.AccentCustomizeDialog
 import org.oxycblt.auxio.util.androidActivityViewModels
-import org.oxycblt.auxio.util.getSystemBarInsetsCompat
 import org.oxycblt.auxio.util.hardRestart
 import org.oxycblt.auxio.util.isNight
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logEOrThrow
 import org.oxycblt.auxio.util.showToast
+import org.oxycblt.auxio.util.systemBarInsetsCompat
 
 /**
  * The actual fragment containing the settings menu. Inherits [PreferenceFragmentCompat].
@@ -68,7 +68,7 @@ class SettingsListFragment : PreferenceFragmentCompat() {
             clipToPadding = false
 
             setOnApplyWindowInsetsListener { _, insets ->
-                updatePadding(bottom = insets.getSystemBarInsetsCompat(this).bottom)
+                updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
                 insets
             }
         }
