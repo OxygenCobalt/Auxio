@@ -12,7 +12,7 @@
         style="@style/Widget.Auxio.AppBarLayout"
         app:liftOnScroll="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <org.oxycblt.auxio.ui.M3Toolbar
             android:id="@+id/about_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon"
             app:title="@string/lbl_about" />

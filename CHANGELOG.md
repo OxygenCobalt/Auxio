@@ -27,6 +27,7 @@ finished saving
 - Fixed crash when search filter mode was changed
 - Fixed shuffle button appearing below playback bar on Android 10 and lower
 - Fixed incorrect song being shown in the notification in some cases [#179]
+- Fixed issue where toolbar will be clipped on Lollipop devices
 
 #### What's Changed
 - Reworked typography and iconography to be more aligned with material design guidelines

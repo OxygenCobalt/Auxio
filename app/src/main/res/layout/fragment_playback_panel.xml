@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <org.oxycblt.auxio.ui.M3Toolbar
         android:id="@+id/playback_toolbar"
-        style="@style/Widget.Auxio.Toolbar.Icon.Down.Actions"
+        style="@style/Widget.Auxio.Toolbar.Icon.Down"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_playback"

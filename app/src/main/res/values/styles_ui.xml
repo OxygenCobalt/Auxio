@@ -13,27 +13,11 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="Widget.Auxio.Toolbar.Actions" parent="Widget.Auxio.Toolbar.Base">
-        <!--
-        Material guidelines state that there should be 16dp end padding with actions,
-        but Toolbar only has 12dp. Fix that by adding a 4dp margin.
-         -->
-        <item name="android:layout_marginEnd">@dimen/spacing_tiny</item>
-    </style>
-
     <style name="Widget.Auxio.Toolbar.Icon" parent="Widget.Auxio.Toolbar.Base">
         <item name="navigationIcon">@drawable/ic_back_24</item>
     </style>
 
-    <style name="Widget.Auxio.Toolbar.Icon.Actions" parent="Widget.Auxio.Toolbar.Actions">
-        <item name="navigationIcon">@drawable/ic_back_24</item>
-    </style>
-
     <style name="Widget.Auxio.Toolbar.Icon.Down" parent="Widget.Auxio.Toolbar.Base">
-        <item name="navigationIcon">@drawable/ic_down_24</item>
-    </style>
-
-    <style name="Widget.Auxio.Toolbar.Icon.Down.Actions" parent="Widget.Auxio.Toolbar.Actions">
         <item name="navigationIcon">@drawable/ic_down_24</item>
     </style>
 
@@ -220,13 +204,9 @@
 
     <!-- BUTTON STYLES -->
 
-    <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button">
+    <style name="Widget.Auxio.Button.Primary" parent="Widget.Material3.Button" />
 
-    </style>
-
-    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="strokeColor">?attr/colorOutline</item>
-    </style>
+    <style name="Widget.Auxio.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton" />
 
     <style name="Widget.Auxio.FloatingActionButton.PlayPause" parent="Widget.Material3.FloatingActionButton.Large.Secondary">
         <!--

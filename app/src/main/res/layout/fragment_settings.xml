@@ -13,7 +13,7 @@
         android:focusable="true"
         app:liftOnScroll="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <org.oxycblt.auxio.ui.M3Toolbar
             android:id="@+id/settings_toolbar"
             style="@style/Widget.Auxio.Toolbar.Icon"
             app:title="@string/set_title" />
