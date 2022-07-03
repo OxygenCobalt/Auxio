@@ -13,8 +13,6 @@
 #### What's Improved
 - Made "timeline" elements (like playback controls) always left-to-right
 - Improved performance when ReplayGain is not enabled
-- Playback bar now has rounded corners (when round mode is enabled)
-- Massively improved main layout performance
 
 #### What's Fixed
 - Fixed broken tablet layouts

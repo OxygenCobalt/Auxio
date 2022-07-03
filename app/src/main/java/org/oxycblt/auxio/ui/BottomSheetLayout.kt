@@ -40,11 +40,9 @@ import kotlin.math.max
 import kotlin.math.min
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
-import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.disableDropShadowCompat
 import org.oxycblt.auxio.util.getAttrColorSafe
 import org.oxycblt.auxio.util.getDimenSafe
-import org.oxycblt.auxio.util.getDimenSizeSafe
 import org.oxycblt.auxio.util.isUnder
 import org.oxycblt.auxio.util.lazyReflectedField
 import org.oxycblt.auxio.util.logD
@@ -83,8 +81,6 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
- *
- * FIXME: Inconsistent padding across recreates
  */
 class BottomSheetLayout
 @JvmOverloads
@@ -103,13 +99,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     private lateinit var panelView: View
 
     private val elevationNormal = context.getDimenSafe(R.dimen.elevation_normal)
-    private val cornersLarge =
-        if (Settings(context).roundMode) {
-            // Since album covers are rounded, we can also round the bar too.
-            context.getDimenSizeSafe(R.dimen.size_corners_large)
-        } else {
-            0
-        }
 
     // We have to define the background before the bottom sheet declaration as otherwise it wont
     // work
@@ -117,7 +106,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         MaterialShapeDrawable.createWithElevationOverlay(context).apply {
             fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
             elevation = context.pxOfDp(elevationNormal).toFloat()
-            setCornerSize(cornersLarge.toFloat())
         }
 
     private val sheetView =
@@ -136,7 +124,6 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             val fallbackBackground =
                 MaterialShapeDrawable().apply {
                     fillColor = context.getAttrColorSafe(R.attr.colorSurface).stateList
-                    setCornerSize(cornersLarge.toFloat())
                 }
 
             background = LayerDrawable(arrayOf(fallbackBackground, sheetBackground))
@@ -327,20 +314,33 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         }
 
         applyContentWindowInsets()
+        measureContent()
+    }
 
-        // The content is always MATCH_PARENT, which nominally means that it will overlap
-        // with the sheet. This is actually to ensure that when a rounded sheet is used,
-        // the content will show in the gaps on each corner. To resolve the overlapping views,
-        // we modify window insets later.
+    private fun measureContent() {
+        // We need to find out how much the panel should affect the view.
+        // When the panel is in it's bar form, we shorten the content view. If it's being expanded,
+        // we keep the same height and just overlay the panel.
+        val barHeightAdjusted = measuredHeight - (calculateSheetTopPosition(min(sheetOffset, 0f)))
+
+        // Note that these views will always be a fixed MATCH_PARENT. This is intentional,
+        // as it reduces the logic we have to deal with regarding WRAP_CONTENT views.
         val contentWidthSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY)
-        val contentHeightSpec = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY)
+        val contentHeightSpec =
+            MeasureSpec.makeMeasureSpec(measuredHeight - barHeightAdjusted, MeasureSpec.EXACTLY)
+
         contentView.measure(contentWidthSpec, contentHeightSpec)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        // Figure out where our bottom sheet should be and lay it out there.
-        val sheetTop = calculateSheetTopPosition(sheetOffset)
-        sheetView.layout(0, sheetTop, sheetView.measuredWidth, sheetView.measuredHeight + sheetTop)
+        // Figure out where our panel should be and lay it out there.
+        val panelTop = calculateSheetTopPosition(sheetOffset)
+        sheetView.layout(0, panelTop, sheetView.measuredWidth, sheetView.measuredHeight + panelTop)
+        layoutContent()
+    }
+
+    private fun layoutContent() {
+        // We already did our magic while measuring. No need to do anything here.
         contentView.layout(0, 0, contentView.measuredWidth, contentView.measuredHeight)
     }
 
@@ -348,11 +348,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
         val save = canvas.save()
 
         // Drawing views that are under the bottom sheet is inefficient, clip the canvas
-        // so that doesn't occur. Make sure we account for the corner radius when
-        // doing this so that drawing still occurs in the gaps created by such.
+        // so that doesn't occur.
         if (child == contentView) {
             canvas.getClipBounds(tRect)
-            tRect.bottom = tRect.bottom.coerceAtMost(sheetView.top + cornersLarge)
+            tRect.bottom = tRect.bottom.coerceAtMost(sheetView.top)
             canvas.clipRect(tRect)
         }
 
@@ -383,16 +382,17 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
     /** Adjust window insets to line up with the bottom sheet */
     private fun adjustInsets(insets: WindowInsets): WindowInsets {
-        // While the content view spans the whole of the layout, we still want it to adapt to
-        // the presence of the bottom sheet. WindowInsets is a great API for us to abuse in order
-        // to achieve this. Basically, we do a kind of reverse-measure to figure out how much
-        // space the sheet has consumed, and then combine that with the existing bottom inset to
-        // see which one should be applied. Note that we do not include the expanded sheet into
-        // this calculation, as it should be covered up by the bottom sheet.
+        // We kind of do a reverse-measure to figure out how we should inset this view.
+        // Find how much space is lost by the panel and then combine that with the
+        // bottom inset to find how much space we should apply.
+        // There is a slight shortcoming to this. If the playback bar has a height of
+        // zero (usually due to delays with fragment inflation), then it is assumed to
+        // not apply any window insets at all, which results in scroll desynchronization on
+        // certain views. This is considered tolerable as the other options are to convert
+        // the playback fragments to views, which is not nice.
         val bars = insets.systemBarInsetsCompat
-        val consumedByNonExpandedSheet =
-            measuredHeight - calculateSheetTopPosition(min(sheetOffset, 0f))
-        val adjustedBottomInset = max(consumedByNonExpandedSheet, bars.bottom)
+        val consumedByPanel = calculateSheetTopPosition(sheetOffset) - measuredHeight
+        val adjustedBottomInset = (consumedByPanel + bars.bottom).coerceAtLeast(0)
         return insets.replaceSystemBarInsetsCompat(
             bars.left, bars.top, bars.right, adjustedBottomInset)
     }
@@ -480,7 +480,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     override fun computeScroll() {
-        // I have no idea what this does but it seems important so I keep it around
+        // Make sure that we continue settling as we scroll
         if (dragHelper.continueSettling(true)) {
             postInvalidateOnAnimation()
         }
@@ -620,8 +620,10 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
             // Update our sheet offset using the new top value
             sheetOffset = calculateSheetOffset(top)
             if (sheetOffset < 0) {
-                // If we are hiding/showing the sheet, see if we need to update the insets
+                // If we are hiding/showing the sheet, make sure we relayout our content too.
                 applyContentWindowInsets()
+                measureContent()
+                layoutContent()
             }
 
             updateBottomSheetTransition()
