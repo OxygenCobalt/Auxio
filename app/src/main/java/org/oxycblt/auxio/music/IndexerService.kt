@@ -46,8 +46,6 @@ import org.oxycblt.auxio.util.logD
  * @author OxygenCobalt
  *
  * TODO: Add file observing
- *
- * TODO: Rework UI flow once again
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()

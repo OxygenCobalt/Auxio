@@ -23,6 +23,7 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Build
 import androidx.core.content.ContextCompat
+import kotlin.coroutines.cancellation.CancellationException
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
@@ -121,7 +122,7 @@ class Indexer {
         this.callback = null
     }
 
-    fun index(context: Context) {
+    suspend fun index(context: Context) {
         val generation = synchronized(this) { ++currentGeneration }
 
         val notGranted =
@@ -181,7 +182,9 @@ class Indexer {
     @Synchronized
     private fun emitIndexing(indexing: Indexing?, generation: Long) {
         if (currentGeneration != generation) {
-            return
+            // Not the running task anymore, cancel this co-routine
+            // We do this instead of using yield since it is *far* cheaper.
+            throw CancellationException()
         }
 
         indexingState = indexing
@@ -198,7 +201,9 @@ class Indexer {
     @Synchronized
     private fun emitCompletion(response: Response, generation: Long) {
         if (currentGeneration != generation) {
-            return
+            // Not the running task anymore, cancel this co-routine
+            // We do this instead of using yield since it is *far* cheaper.
+            throw CancellationException()
         }
 
         lastResponse = response

@@ -98,7 +98,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
                 binding.homeToolbar.alpha = 1f - (abs(offset.toFloat()) / (range.toFloat() / 2))
 
-                binding.homeContent.updatePadding(
+                binding.homePager.updatePadding(
                     bottom = binding.homeAppbar.totalScrollRange + offset)
             }
         }
@@ -107,7 +107,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         updateTabConfiguration()
 
-        binding.homeIndexingContainer.setOnApplyWindowInsetsListener { view, insets ->
+        binding.homeIndexingWrapper.setOnApplyWindowInsetsListener { view, insets ->
             view.updatePadding(bottom = insets.systemBarInsetsCompat.bottom)
             insets
         }
@@ -141,7 +141,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
         // --- VIEWMODEL SETUP ---
 
-        collect(homeModel.isFastScrolling, ::updateFastScrolling)
+        collect(homeModel.isFastScrolling) { updateFab() }
         collect(homeModel.recreateTabs, ::handleRecreateTabs)
         collectImmediately(homeModel.currentTab, ::updateCurrentTab)
         collectImmediately(indexerModel.state, ::handleIndexerState)
@@ -188,23 +188,6 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
         }
 
         return true
-    }
-
-    private fun updateFastScrolling(isFastScrolling: Boolean) {
-        val binding = requireBinding()
-
-        // Make sure an update here doesn't mess up the FAB state when it comes to the
-        // loader response.
-        val state = indexerModel.state.value
-        if (!(state is Indexer.State.Complete && state.response is Indexer.Response.Ok)) {
-            return
-        }
-
-        if (isFastScrolling) {
-            binding.homeFab.hide()
-        } else {
-            binding.homeFab.show()
-        }
     }
 
     private fun updateCurrentTab(tab: DisplayMode) {
@@ -274,27 +257,23 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
 
     private fun handleIndexerState(state: Indexer.State?) {
         val binding = requireBinding()
-
         when (state) {
             is Indexer.State.Complete -> handleIndexerResponse(binding, state.response)
             is Indexer.State.Indexing -> handleIndexingState(binding, state.indexing)
             null -> {
                 logD("Indexer is in indeterminate state")
-                binding.homeFab.hide()
                 binding.homeIndexingContainer.visibility = View.INVISIBLE
-                binding.homePager.visibility = View.INVISIBLE
             }
         }
+
+        updateFab()
     }
 
     private fun handleIndexerResponse(binding: FragmentHomeBinding, response: Indexer.Response) {
         if (response is Indexer.Response.Ok) {
             binding.homeFab.show()
             binding.homeIndexingContainer.visibility = View.INVISIBLE
-            binding.homePager.visibility = View.VISIBLE
         } else {
-            binding.homeFab.hide()
-            binding.homePager.visibility = View.INVISIBLE
             binding.homeIndexingContainer.visibility = View.VISIBLE
 
             logD("Received non-ok response $response")
@@ -336,8 +315,7 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
     }
 
     private fun handleIndexingState(binding: FragmentHomeBinding, indexing: Indexer.Indexing) {
-        binding.homeFab.hide()
-        binding.homePager.visibility = View.INVISIBLE
+        updateFab()
         binding.homeIndexingContainer.visibility = View.VISIBLE
         binding.homeIndexingProgress.visibility = View.VISIBLE
         binding.homeIndexingAction.visibility = View.INVISIBLE
@@ -356,6 +334,18 @@ class HomeFragment : ViewBindingFragment<FragmentHomeBinding>(), Toolbar.OnMenuI
                     progress = indexing.current
                 }
             }
+        }
+    }
+
+    private fun updateFab() {
+        val binding = requireBinding()
+        val fastScrolling = homeModel.isFastScrolling.value
+        val state = indexerModel.state.value
+        if (fastScrolling ||
+            !(state is Indexer.State.Complete && state.response is Indexer.Response.Ok)) {
+            binding.homeFab.hide()
+        } else {
+            binding.homeFab.show()
         }
     }
 
