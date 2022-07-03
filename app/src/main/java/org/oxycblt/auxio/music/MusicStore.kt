@@ -26,7 +26,6 @@ import org.oxycblt.auxio.util.contentResolverSafe
  * The main storage for music items. The items themselves are located in a [Library], however this
  * might not be available at all times.
  *
- * TODO: Add automatic rescanning [major change]
  * @author OxygenCobalt
  */
 class MusicStore private constructor() {

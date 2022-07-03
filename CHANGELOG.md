@@ -3,6 +3,8 @@
 ## dev
 
 #### What's New
+- Added direct metadata parsing, allowing more correct metadata at the cost of longer loading times
+- Auxio can now reload music without requiring a restart
 - Added a shuffle shortcut
 - Widgets now have a more sleek and consistent button layout
 - "Rounded album covers" is now "Round mode"

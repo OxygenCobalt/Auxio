@@ -83,6 +83,8 @@ import org.oxycblt.auxio.util.systemBarInsetsCompat
  * extendable. You have been warned.
  *
  * @author OxygenCobalt (With help from Umano and Hai Zhang)
+ *
+ * FIXME: Inconsistent padding across recreates
  */
 class BottomSheetLayout
 @JvmOverloads

@@ -27,6 +27,7 @@
     <string name="set_key_reindex" translatable="false">auxio_reindex</string>
     <string name="set_key_music_dirs" translatable="false">auxio_music_dirs</string>
     <string name="set_key_music_dirs_include" translatable="false">auxio_include_dirs</string>
+    <string name="set_key_quality_tags">auxio_quality_tags</string>
 
     <string name="set_key_search_filter" translatable="false">KEY_SEARCH_FILTER</string>
 

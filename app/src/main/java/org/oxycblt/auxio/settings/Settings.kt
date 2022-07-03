@@ -185,6 +185,10 @@ class Settings(private val context: Context, private val callback: Callback? = n
     val pauseOnRepeat: Boolean
         get() = inner.getBoolean(context.getString(R.string.set_key_repeat_pause), false)
 
+    /** Whether to parse metadata directly with ExoPlayer. */
+    val useQualityTags: Boolean
+        get() = inner.getBoolean(context.getString(R.string.set_key_quality_tags), false)
+
     /** Get the list of directories that music should be hidden/loaded from. */
     fun getMusicDirs(storageManager: StorageManager): MusicDirs {
         val key = context.getString(R.string.set_key_music_dirs)
@@ -214,9 +218,7 @@ class Settings(private val context: Context, private val callback: Callback? = n
                 musicDirs.dirs.map(Directory::toDocumentUri).toSet())
             putBoolean(
                 context.getString(R.string.set_key_music_dirs_include), musicDirs.shouldInclude)
-
-            // TODO: This is a stopgap measure before automatic rescanning, remove
-            commit()
+            apply()
         }
     }
 

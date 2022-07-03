@@ -27,6 +27,8 @@ import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.music.backend.Api21MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api29MediaStoreBackend
 import org.oxycblt.auxio.music.backend.Api30MediaStoreBackend
+import org.oxycblt.auxio.music.backend.ExoPlayerBackend
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.Sort
 import org.oxycblt.auxio.util.logD
 import org.oxycblt.auxio.util.logE
@@ -80,7 +82,7 @@ class Indexer {
             return
         }
 
-        synchronized(this) { this.controller = controller }
+        this.controller = controller
     }
 
     /** Unregister a [Controller] with this instance. */
@@ -119,9 +121,8 @@ class Indexer {
         this.callback = null
     }
 
-    @Synchronized
     fun index(context: Context) {
-        val generation = ++currentGeneration
+        val generation = synchronized(this) { ++currentGeneration }
 
         val notGranted =
             ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -227,7 +228,15 @@ class Indexer {
                 else -> Api21MediaStoreBackend()
             }
 
-        val songs = buildSongs(context, mediaStoreBackend, generation)
+        val settings = Settings(context)
+        val backend =
+            if (settings.useQualityTags) {
+                ExoPlayerBackend(mediaStoreBackend)
+            } else {
+                mediaStoreBackend
+            }
+
+        val songs = buildSongs(context, backend, generation)
         if (songs.isEmpty()) {
             return null
         }

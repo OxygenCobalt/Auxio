@@ -27,10 +27,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.oxycblt.auxio.IntegerTable
+import org.oxycblt.auxio.R
 import org.oxycblt.auxio.playback.state.PlaybackStateDatabase
 import org.oxycblt.auxio.playback.state.PlaybackStateManager
+import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.util.logD
 
 /**
@@ -43,8 +44,14 @@ import org.oxycblt.auxio.util.logD
  * boilerplate you skip is not worth the insanity of androidx.
  *
  * @author OxygenCobalt
+ *
+ * TODO: Add file observing
+ *
+ * TODO: Audit usages of synchronized
+ *
+ * TODO: Rework UI flow once again
  */
-class IndexerService : Service(), Indexer.Controller {
+class IndexerService : Service(), Indexer.Controller, Settings.Callback {
     private val indexer = Indexer.getInstance()
     private val musicStore = MusicStore.getInstance()
 
@@ -53,6 +60,7 @@ class IndexerService : Service(), Indexer.Controller {
     private val updateScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     private val playbackManager = PlaybackStateManager.getInstance()
+    private lateinit var settings: Settings
 
     private var isForeground = false
     private lateinit var notification: IndexerNotification
@@ -61,6 +69,7 @@ class IndexerService : Service(), Indexer.Controller {
         super.onCreate()
 
         notification = IndexerNotification(this)
+        settings = Settings(this, this)
 
         indexer.registerController(this)
         if (musicStore.library == null && indexer.isIndeterminate) {
@@ -83,12 +92,14 @@ class IndexerService : Service(), Indexer.Controller {
         indexer.cancelLast()
         indexer.unregisterController(this)
         serviceJob.cancel()
+        settings.release()
     }
+
+    // --- CONTROLLER CALLBACKS ---
 
     override fun onStartIndexing() {
         if (indexer.isIndexing) {
             indexer.cancelLast()
-            indexScope.cancel()
         }
 
         indexScope.launch { indexer.index(this@IndexerService) }
@@ -103,9 +114,8 @@ class IndexerService : Service(), Indexer.Controller {
 
                     val newLibrary = state.response.library
 
-                    // Load was completed successfully, so apply the new library if we
-                    // have not already. Only when we are done updating the library will
-                    // the service stop it's foreground state.
+                    // Load was completed successfully. However, we still need to do some
+                    // extra work to update the app's state.
                     updateScope.launch {
                         imageLoader.memoryCache?.clear()
 
@@ -116,7 +126,7 @@ class IndexerService : Service(), Indexer.Controller {
                                 PlaybackStateDatabase.getInstance(this@IndexerService), newLibrary)
                         }
 
-                        withContext(Dispatchers.Main) { musicStore.updateLibrary(newLibrary) }
+                        musicStore.updateLibrary(newLibrary)
 
                         stopForegroundSession()
                     }
@@ -149,6 +159,16 @@ class IndexerService : Service(), Indexer.Controller {
                 // since (technically) nothing is loading.
                 stopForegroundSession()
             }
+        }
+    }
+
+    // --- SETTING CALLBACKS ---
+
+    override fun onSettingChanged(key: String) {
+        if (key == getString(R.string.set_key_music_dirs) ||
+            key == getString(R.string.set_key_music_dirs_include) ||
+            key == getString(R.string.set_key_quality_tags)) {
+            onStartIndexing()
         }
     }
 

@@ -25,16 +25,12 @@ import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.R
 import org.oxycblt.auxio.databinding.DialogMusicDirsBinding
 import org.oxycblt.auxio.music.Directory
-import org.oxycblt.auxio.music.IndexerViewModel
-import org.oxycblt.auxio.playback.PlaybackViewModel
 import org.oxycblt.auxio.settings.Settings
 import org.oxycblt.auxio.ui.fragment.ViewBindingDialogFragment
-import org.oxycblt.auxio.util.androidActivityViewModels
 import org.oxycblt.auxio.util.context
 import org.oxycblt.auxio.util.getSystemServiceSafe
 import org.oxycblt.auxio.util.logD
@@ -46,12 +42,11 @@ import org.oxycblt.auxio.util.showToast
  */
 class MusicDirsDialog :
     ViewBindingDialogFragment<DialogMusicDirsBinding>(), MusicDirAdapter.Listener {
-    private val playbackModel: PlaybackViewModel by androidActivityViewModels()
-    private val indexerModel: IndexerViewModel by activityViewModels()
-
     private val dirAdapter = MusicDirAdapter(this)
     private val settings: Settings by lifecycleObject { binding -> Settings(binding.context) }
-    private var storageManager: StorageManager? = null
+    private val storageManager: StorageManager by lifecycleObject { binding ->
+        binding.context.getSystemServiceSafe(StorageManager::class)
+    }
 
     override fun onCreateBinding(inflater: LayoutInflater) =
         DialogMusicDirsBinding.inflate(inflater)
@@ -61,7 +56,17 @@ class MusicDirsDialog :
         builder
             .setTitle(R.string.set_dirs)
             .setNeutralButton(R.string.lbl_add, null)
-            .setPositiveButton(R.string.lbl_save, null)
+            .setPositiveButton(R.string.lbl_save) { _, _ ->
+                val dirs = settings.getMusicDirs(storageManager)
+                val newDirs =
+                    MusicDirs(
+                        dirs = dirAdapter.data.currentList,
+                        shouldInclude = isInclude(requireBinding()))
+                if (dirs != newDirs) {
+                    logD("Committing changes")
+                    settings.setMusicDirs(newDirs)
+                }
+            }
             .setNegativeButton(R.string.lbl_cancel, null)
     }
 
@@ -80,19 +85,6 @@ class MusicDirsDialog :
                 logD("Opening launcher")
                 launcher.launch(null)
             }
-
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                val dirs = settings.getMusicDirs(requireStorageManager())
-
-                if (dirs.dirs != dirAdapter.data.currentList ||
-                    dirs.shouldInclude != isInclude(requireBinding())) {
-                    logD("Committing changes")
-                    saveAndDismiss()
-                } else {
-                    logD("Dropping changes")
-                    dismiss()
-                }
-            }
         }
 
         binding.dirsRecycler.apply {
@@ -100,7 +92,6 @@ class MusicDirsDialog :
             itemAnimator = null
         }
 
-        val storageManager = requireStorageManager()
         var dirs = settings.getMusicDirs(storageManager)
 
         if (savedInstanceState != null) {
@@ -173,7 +164,7 @@ class MusicDirsDialog :
         val treeUri = DocumentsContract.getTreeDocumentId(docUri)
 
         // Parsing handles the rest
-        return Directory.fromDocumentUri(requireStorageManager(), treeUri)
+        return Directory.fromDocumentUri(storageManager, treeUri)
     }
 
     private fun updateMode() {
@@ -187,22 +178,6 @@ class MusicDirsDialog :
 
     private fun isInclude(binding: DialogMusicDirsBinding) =
         binding.folderModeGroup.checkedButtonId == R.id.dirs_mode_include
-
-    private fun saveAndDismiss() {
-        settings.setMusicDirs(MusicDirs(dirAdapter.data.currentList, isInclude(requireBinding())))
-        indexerModel.reindex()
-        dismiss()
-    }
-
-    private fun requireStorageManager(): StorageManager {
-        val mgr = storageManager
-        if (mgr != null) {
-            return mgr
-        }
-        val newMgr = requireContext().getSystemServiceSafe(StorageManager::class)
-        storageManager = newMgr
-        return newMgr
-    }
 
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID + ".tag.EXCLUDED"

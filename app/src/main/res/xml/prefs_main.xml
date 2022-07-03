@@ -173,5 +173,13 @@
             app:summary="@string/set_dirs_desc"
             app:title="@string/set_dirs" />
 
+        <org.oxycblt.auxio.settings.ui.M3SwitchPreference
+            app:allowDividerBelow="false"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/set_key_quality_tags"
+            app:summary="@string/set_quality_tags_desc"
+            app:title="@string/set_quality_tags" />
+
     </PreferenceCategory>
 </PreferenceScreen>

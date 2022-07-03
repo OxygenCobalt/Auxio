@@ -184,7 +184,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
                     }
                 }
                 is VorbisComment -> {
-                    val id = tag.value.sanitize()
+                    val id = tag.key.sanitize()
                     val value = tag.value.sanitize()
                     if (value.isNotEmpty()) {
                         vorbisTags[id] = value
@@ -244,6 +244,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
     }
 
     private fun populateVorbis(tags: Map<String, String>) {
+        logD(tags)
         // Title
         tags["TITLE"]?.let { audio.title = it }
 
@@ -266,7 +267,7 @@ class Task(context: Context, private val audio: MediaStoreBackend.Audio) {
         tags["ALBUM"]?.let { audio.album = it }
 
         // Artist
-        tags["ARTIST"]?.let { audio.title }
+        tags["ARTIST"]?.let { audio.artist = it }
 
         // Album artist. This actually comes into two flavors:
         // 1. ALBUMARTIST, which is the most common

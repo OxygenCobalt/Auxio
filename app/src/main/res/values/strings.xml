@@ -132,7 +132,7 @@
     <string name="set_save">Save playback state</string>
     <string name="set_save_desc">Save the current playback state now</string>
     <string name="set_reindex">Reload music</string>
-    <string name="set_reindex_desc">Will restart app</string>
+    <string name="set_reindex_desc">May wipe playback state</string>
     <string name="set_dirs">Music folders</string>
     <string name="set_dirs_desc">Manage where music should be loaded from</string>
     <string name="set_dirs_mode">Mode</string>
@@ -140,6 +140,8 @@
     <string name="set_dirs_mode_exclude_desc">Music will <b>not</b> be loaded from the folders you add.</string>
     <string name="set_dirs_mode_include">Include</string>
     <string name="set_dirs_mode_include_desc">Music will <b>only</b> be loaded from the folders you add.</string>
+    <string name="set_quality_tags">Ignore MediaStore tags</string>
+    <string name="set_quality_tags_desc">Increases tag quality, but requires longer loading times</string>
 
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">No music found</string>
