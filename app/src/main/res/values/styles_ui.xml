@@ -126,7 +126,7 @@
     <style name="Widget.Auxio.ItemLayout" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/ui_ripple</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:padding">@dimen/spacing_medium</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
@@ -215,7 +215,7 @@
     <style name="Widget.Auxio.TextView.Icon.Clickable" parent="Widget.Auxio.TextView.Icon">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/ui_ripple</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
     <!-- BUTTON STYLES -->

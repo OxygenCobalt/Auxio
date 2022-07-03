@@ -51,7 +51,7 @@
     <!-- A variant of PlaybackButton that plays along with AppWidget restrictions. -->
     <style name="Widget.Auxio.MaterialButton.AppWidget" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:minHeight">@dimen/size_btn</item>
-        <item name="android:background">@drawable/ui_remote_ripple</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <!-- A variant of button that emulates a FAB-ish button that plays along with widget restrictions -->
