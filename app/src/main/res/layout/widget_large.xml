@@ -85,7 +85,7 @@
                 android:layout_width="@dimen/size_btn"
                 android:layout_height="@dimen/size_btn"
                 android:contentDescription="@string/desc_change_repeat"
-                android:src="@drawable/ic_remote_repeat_off_24" />
+                android:src="@drawable/ic_repeat_off_24" />
 
             <android.widget.ImageView
                 android:layout_width="0dp"
@@ -139,7 +139,7 @@
                 android:layout_width="@dimen/size_btn"
                 android:layout_height="@dimen/size_btn"
                 android:contentDescription="@string/desc_shuffle"
-                android:src="@drawable/ic_remote_shuffle_off_24" />
+                android:src="@drawable/ic_shuffle_off_24" />
 
         </android.widget.LinearLayout>
 

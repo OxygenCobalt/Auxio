@@ -31,6 +31,8 @@ import android.widget.FrameLayout
  * particular overrides the layout direction in a way that will not disrupt how other views are laid
  * out.
  *
+ * This layout can only contain one child.
+ *
  * @author OxygenCobalt
  */
 open class NoRtlFrameLayout

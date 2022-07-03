@@ -122,7 +122,7 @@ class Indexer {
         this.callback = null
     }
 
-    suspend fun index(context: Context) {
+    fun index(context: Context) {
         val generation = synchronized(this) { ++currentGeneration }
 
         val notGranted =

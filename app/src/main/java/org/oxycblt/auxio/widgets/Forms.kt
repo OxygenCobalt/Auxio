@@ -189,15 +189,15 @@ private fun RemoteViews.applyFullControls(
     // indicators.
     val shuffleRes =
         when {
-            state.isShuffled -> R.drawable.ic_remote_shuffle_on_24
-            else -> R.drawable.ic_remote_shuffle_off_24
+            state.isShuffled -> R.drawable.ic_shuffle_on_24
+            else -> R.drawable.ic_shuffle_off_24
         }
 
     val repeatRes =
         when (state.repeatMode) {
-            RepeatMode.NONE -> R.drawable.ic_remote_repeat_off_24
-            RepeatMode.ALL -> R.drawable.ic_remote_repeat_on_24
-            RepeatMode.TRACK -> R.drawable.ic_remote_repeat_one_24
+            RepeatMode.NONE -> R.drawable.ic_repeat_off_24
+            RepeatMode.ALL -> R.drawable.ic_repeat_on_24
+            RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
         }
 
     setImageViewResource(R.id.widget_shuffle, shuffleRes)

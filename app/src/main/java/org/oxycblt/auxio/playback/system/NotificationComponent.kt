@@ -27,7 +27,6 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
-import okhttp3.internal.notify
 import org.oxycblt.auxio.BuildConfig
 import org.oxycblt.auxio.IntegerTable
 import org.oxycblt.auxio.R
@@ -135,9 +134,9 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
     ): NotificationCompat.Action {
         val drawableRes =
             when (repeatMode) {
-                RepeatMode.NONE -> R.drawable.ic_remote_repeat_off_24
-                RepeatMode.ALL -> R.drawable.ic_remote_repeat_on_24
-                RepeatMode.TRACK -> R.drawable.ic_remote_repeat_one_24
+                RepeatMode.NONE -> R.drawable.ic_repeat_off_24
+                RepeatMode.ALL -> R.drawable.ic_repeat_on_24
+                RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
             }
 
         return buildAction(context, PlaybackService.ACTION_INC_REPEAT_MODE, drawableRes)
@@ -148,7 +147,7 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
         isShuffled: Boolean
     ): NotificationCompat.Action {
         val drawableRes =
-            if (isShuffled) R.drawable.ic_shuffle_24 else R.drawable.ic_remote_shuffle_off_24
+            if (isShuffled) R.drawable.ic_shuffle_on_24 else R.drawable.ic_shuffle_off_24
 
         return buildAction(context, PlaybackService.ACTION_INVERT_SHUFFLE, drawableRes)
     }
@@ -163,10 +162,6 @@ class NotificationComponent(private val context: Context, sessionToken: MediaSes
                 iconRes, actionName, context.newBroadcastPendingIntent(actionName))
 
         return action.build()
-    }
-
-    interface Callback {
-        fun onNotificationChanged(song: Song?, component: NotificationComponent)
     }
 
     companion object {

@@ -516,7 +516,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     }
 
     /**
-     * Do the nice view animations that occur whenever we slide up the bottom sheet. The way I
+     * Do the nice view animations that occur whenever we slide up the bottom sheet. The way we
      * transition is largely inspired by Android 12's notification panel, with the compact view
      * fading out completely before the panel view fades in.
      */
@@ -569,6 +569,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
 
         if (dragHelper.smoothSlideViewTo(
             sheetView, sheetView.left, calculateSheetTopPosition(offset))) {
+            // Slide has started, begin animating
             postInvalidateOnAnimation()
         }
     }

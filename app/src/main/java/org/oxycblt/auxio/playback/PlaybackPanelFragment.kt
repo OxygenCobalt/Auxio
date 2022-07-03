@@ -185,8 +185,8 @@ class PlaybackPanelFragment :
             isActivated = repeatMode != RepeatMode.NONE
             val iconRes =
                 when (repeatMode) {
-                    RepeatMode.NONE,
-                    RepeatMode.ALL -> R.drawable.ic_repeat_24
+                    RepeatMode.NONE -> R.drawable.ic_repeat_off_24
+                    RepeatMode.ALL -> R.drawable.ic_repeat_on_24
                     RepeatMode.TRACK -> R.drawable.ic_repeat_one_24
                 }
 

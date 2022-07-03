@@ -84,19 +84,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <org.oxycblt.auxio.playback.IndicatorMaterialButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_repeat"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_change_repeat"
-                app:icon="@drawable/ic_repeat_24"
+                app:icon="@drawable/ic_repeat_off_24"
                 app:iconTint="@color/sel_accented"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_prev"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/playback_skip_prev" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_skip_prev"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
@@ -121,7 +121,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_play_24" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_skip_next"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
@@ -133,13 +133,13 @@
                 app:layout_constraintStart_toEndOf="@+id/playback_play_pause"
                 app:layout_constraintTop_toTopOf="@+id/playback_play_pause" />
 
-            <org.oxycblt.auxio.playback.IndicatorMaterialButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playback_shuffle"
                 style="@style/Widget.Auxio.Button.Icon.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/desc_shuffle"
-                app:icon="@drawable/ic_shuffle_24"
+                app:icon="@drawable/sel_shuffle_state_24"
                 app:iconTint="@color/sel_accented"
                 app:layout_constraintBottom_toBottomOf="@+id/playback_skip_next"
                 app:layout_constraintEnd_toEndOf="parent"
