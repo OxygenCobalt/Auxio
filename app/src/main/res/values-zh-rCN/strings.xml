@@ -4,28 +4,23 @@
     <string name="info_app_desc">一款简洁、克制的 Android 音乐播放器。</string>
     <string name="info_playback_channel_name">音乐播放</string>
     <string name="info_widget_desc">查看并控制音乐播放</string>
-
     <!-- Label Namespace | Static Labels -->
     <string name="lbl_retry">重试</string>
     <string name="lbl_grant">授予</string>
-
     <string name="lbl_genres">流派</string>
     <string name="lbl_artists">艺术家</string>
     <string name="lbl_albums">专辑</string>
     <string name="lbl_songs">歌曲</string>
     <string name="lbl_all_songs">全部歌曲</string>
-
     <string name="lbl_search">搜索</string>
     <string name="lbl_filter">过滤器</string>
     <string name="lbl_filter_all">全部</string>
-
     <string name="lbl_sort">排序方式</string>
     <string name="lbl_sort_name">名称</string>
     <string name="lbl_sort_artist">艺术家</string>
     <string name="lbl_sort_album">专辑</string>
     <string name="lbl_sort_year">年份</string>
     <string name="lbl_sort_asc">首字符（正序）</string>
-
     <string name="lbl_playback">正在播放</string>
     <string name="lbl_play">播放</string>
     <string name="lbl_shuffle">随机</string>
@@ -33,28 +28,22 @@
     <string name="set_playback_mode_album">从专辑开始播放</string>
     <string name="set_playback_mode_artist">从艺术家开始播放</string>
     <string name="set_playback_mode_genre">从流派开始播放</string>
-
     <string name="lbl_queue">播放队列</string>
     <string name="lbl_play_next">作为下一首播放</string>
     <string name="lbl_queue_add">加入播放队列</string>
     <string name="lbl_queue_added">已加入播放队列</string>
-
     <string name="lbl_go_artist">查看艺术家</string>
     <string name="lbl_go_album">查看专辑</string>
-
     <string name="lbl_state_saved">已保存播放进度</string>
-
     <string name="lbl_add">添加</string>
     <string name="lbl_save">保存</string>
     <string name="err_no_dirs">没有任何文件夹</string>
-
     <string name="lbl_about">关于</string>
     <string name="lbl_version">版本</string>
     <string name="lbl_code">在 Github 上查看</string>
     <string name="lbl_faq">FAQ</string>
     <string name="lbl_licenses">许可证</string>
     <string name="lbl_author">由 OxygenCobalt 开发</string>
-
     <!-- Settings namespace | Settings-related labels -->
     <string name="set_title">设置</string>
     <string name="set_ui">外观</string>
@@ -65,7 +54,6 @@
     <string name="set_accent">色彩方案</string>
     <string name="set_black_mode">黑色主题</string>
     <string name="set_black_mode_desc">使用纯黑配色主题</string>
-
     <string name="set_display">显示</string>
     <string name="set_lib_tabs">媒体库标签</string>
     <string name="set_lib_tabs_desc">更改媒体库标签页面的可见性和顺序</string>
@@ -78,32 +66,27 @@
     <string name="set_alt_action">使用替代通知操作方案</string>
     <string name="set_alt_repeat">偏好重复播放操作</string>
     <string name="set_alt_shuffle">偏好随机播放操作</string>
-
     <string name="set_audio">音频</string>
     <string name="set_headset_autoplay">自动播放</string>
     <string name="set_headset_autoplay_desc">连接至耳机时总是自动播放（并非在所有设备上都有用）</string>
     <string name="set_replay_gain">回放增益</string>
     <string name="set_replay_gain_track">偏好曲目</string>
     <string name="set_replay_gain_album">偏好专辑</string>
-    <string name="set_replay_gain_dynamic">动态</string>
-
+    <string name="set_replay_gain_dynamic">如果已有专辑正在播放则优先增益专辑</string>
     <string name="set_behavior">行为</string>
-    <string name="set_library_song_playback_mode">选中歌曲时</string>
+    <string name="set_library_song_playback_mode">从音乐库中选择播放时</string>
     <string name="set_keep_shuffle">记住随机模式</string>
     <string name="set_keep_shuffle_desc">播放新曲目时保留随机播放模式</string>
     <string name="set_rewind_prev">切换上一曲前先倒带</string>
     <string name="set_rewind_prev_desc">切换至上一首歌曲前先进行倒带</string>
     <string name="set_repeat_pause">重复播放前暂停</string>
     <string name="set_repeat_pause_desc">曲目重复播放前暂停</string>
-
     <string name="set_content">内容</string>
     <string name="set_save">保存播放状态</string>
     <string name="set_save_desc">立即保存当前播放状态</string>
     <string name="set_reindex">重新加载音乐</string>
     <string name="set_reindex_desc">将会重启应用</string>
-
     <string name="lbl_off">关闭</string>
-
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">没有找到音乐</string>
     <string name="err_index_failed">加载音乐失败</string>
@@ -111,32 +94,26 @@
     <string name="err_no_app">没有可以打开该链接的应用</string>
     <string name="err_bad_dir">该目录不受支持</string>
     <string name="err_too_small">Auxio 不支持该窗口尺寸</string>
-
     <!-- Hint Namespace | EditText Hints -->
     <string name="hint_search_library">在曲库中搜索…</string>
-
     <!-- Description Namespace | Accessibility Strings -->
     <string name="desc_track_number">第 %d 首曲目</string>
-
     <string name="desc_play_pause">播放或暂停</string>
     <string name="desc_skip_next">切换到下一首歌</string>
     <string name="desc_skip_prev">切换到上一首歌</string>
     <string name="desc_change_repeat">更改重复播放模式</string>
     <string name="desc_shuffle">开启或关闭随机播放模式</string>
     <string name="desc_shuffle_all">随机播放所有曲目</string>
-
     <string name="desc_clear_queue_item">移除队列曲目</string>
     <string name="desc_queue_handle">移动队列曲目</string>
     <string name="desc_tab_handle">移动该标签</string>
     <string name="desc_clear_search">清除搜索队列</string>
     <string name="desc_music_dir_delete">移除排除路径</string>
-
     <string name="desc_auxio_icon">Auxio 图标</string>
     <string name="desc_no_cover">专辑封面</string>
     <string name="desc_album_cover">%s 的专辑封面</string>
     <string name="desc_artist_image">%s 的艺术家图像</string>
     <string name="desc_genre_image">%s 的流派图像</string>
-
     <!-- Default Namespace | Placeholder values -->
     <string name="def_artist">未知艺术家</string>
     <string name="def_genre">未知流派</string>
@@ -145,7 +122,6 @@
     <string name="def_playback">未播放音乐</string>
     <string name="def_widget_song">歌曲名称</string>
     <string name="def_widget_artist">艺术家姓名</string>
-
     <!-- Color Label namespace | Accent names -->
     <string name="clr_red">红色</string>
     <string name="clr_pink">粉色</string>
@@ -163,15 +139,65 @@
     <string name="clr_orange">橙色</string>
     <string name="clr_brown">棕色</string>
     <string name="clr_grey">灰色</string>
-
     <!-- Format Namespace | Value formatting/plurals -->
     <string name="fmt_lib_song_count">已加载 %d 首曲目</string>
-
     <plurals name="fmt_song_count">
         <item quantity="other">"%d 首歌曲"</item>
     </plurals>
-
     <plurals name="fmt_album_count">
         <item quantity="other">"%d 张专辑"</item>
     </plurals>
+    <string name="lbl_shuffle_shortcut_short">随机</string>
+    <string name="lbl_shuffle_shortcut_long">随机所有</string>
+    <string name="lbl_library_counts">音乐库数据</string>
+    <string name="set_pre_amp">前置回放增益</string>
+    <string name="set_pre_amp_desc">前置增益将在播放过程中应用至现有设置</string>
+    <string name="set_pre_amp_with">带有标签的调节项</string>
+    <string name="set_pre_amp_without">没有标签的调节项</string>
+    <string name="set_pre_amp_warning">警告：将前置增益更改为正向高数值或导致某些音轨峰值过高。</string>
+    <string name="set_dirs">音乐文件夹</string>
+    <string name="set_dirs_desc">管理音乐的加载位置</string>
+    <string name="set_dirs_mode">模式</string>
+    <string name="set_dirs_mode_exclude">排除</string>
+    <string name="set_dirs_mode_include">包含</string>
+    <string name="def_codec">未知格式</string>
+    <string name="def_bitrate">没有比特率信息</string>
+    <string name="cdc_mp3">MPEG-1 音频</string>
+    <string name="cdc_mp4">MPEG-4 音频</string>
+    <string name="cdc_ogg">Ogg 音频</string>
+    <string name="cdc_mka">Matroska 音频</string>
+    <string name="cdc_flac">免费无损音频编码 (FLAC)</string>
+    <string name="clr_dynamic">动态</string>
+    <string name="fmt_disc_no">碟片 %d</string>
+    <string name="fmt_db_pos">+%.1f dB</string>
+    <string name="fmt_db_neg">-%.1f dB</string>
+    <string name="fmt_bitrate">%d kbps</string>
+    <string name="fmt_sample_rate">%d Hz</string>
+    <string name="fmt_indexing">正在加载您的音乐库… (%1$d/%2$d)</string>
+    <string name="fmt_lib_artist_count">已加载艺术家数量：%d</string>
+    <string name="fmt_lib_genre_count">已加载流派数量：%d</string>
+    <string name="fmt_lib_total_duration">总计时长：%s</string>
+    <string name="set_playback_mode_none">从展示的项目播放</string>
+    <string name="set_dirs_mode_include_desc">将<b>仅从</b>您添加的目录中加载音乐。</string>
+    <string name="set_detail_song_playback_mode">从项目详情中选择播放时</string>
+    <string name="set_dirs_mode_exclude_desc">将 <b>不会</b>从您添加的目录中加载音乐。</string>
+    <string name="cdc_aac">高级音乐编码 (AAC)</string>
+    <string name="fmt_lib_album_count">已加载专辑数量：%d</string>
+    <string name="def_sample_rate">没有采样率信息</string>
+    <string name="info_indexer_channel_name">音乐加载中</string>
+    <string name="lbl_indexing">正在加载您的音乐库……</string>
+    <string name="lbl_sort_disc">碟片</string>
+    <string name="lbl_sort_duration">时长</string>
+    <string name="lbl_sort_count">歌曲计数</string>
+    <string name="lbl_sort_track">音轨</string>
+    <string name="lbl_song_detail">查看属性</string>
+    <string name="lbl_props">曲目属性</string>
+    <string name="lbl_file_name">文件名</string>
+    <string name="lbl_relative_path">上级目录</string>
+    <string name="lbl_format">格式</string>
+    <string name="lbl_size">大小</string>
+    <string name="lbl_bitrate">比特率</string>
+    <string name="lbl_sample_rate">采样率</string>
+    <string name="lbl_ok">好的</string>
+    <string name="lbl_cancel">取消</string>
 </resources>

@@ -1,0 +1,19 @@
+Auxio ist ein lokaler Musik-Player mit einer schnellen, verlässlichen UI/UX, aber ohne die vielen unnötigen Funktionen, die andere Player haben. Auxio basiert auf <a href="https://exoplayer.dev/">Exoplayer</a> und hat deshalb eine bessere Hörerfahrung als andere Player, die die native MediaPlayer-API verwenden. Kurz gesagt, <b>Auxio spielt Musik.</b>
+
+<b>Funktionen</b>
+
+- auf ExoPlayer basierend
+- einfache, an Material Design orientierte UI
+- UX bevorzugt Einfachheit über spezifische Fälle
+- Anpassbares Verhalten
+- Erweiterter Medien-Indexer, der korrekte Metadaten bevorzugt
+- untersützt SD-Karten
+- verlässliches Speichern des Wiedergabezustands
+- Vollständiger ReplayGain-Support (für MP3, MP4, FLAC, OGG und OPUS)
+- Edge-to-Edge
+- Unterstützung für eingebettete Cover
+- Suche
+- Autoplay bei Kopfhörern
+- Stylische Widgets, die ihre Größe anpassen
+- vollständig privat und offline
+- keine abgerundeten Album-Cover (Außer die willst. Dann geht das.)
