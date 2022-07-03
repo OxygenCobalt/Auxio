@@ -236,8 +236,8 @@ val AndroidViewModel.application: Application
 fun <R> SQLiteDatabase.queryAll(tableName: String, block: (Cursor) -> R) =
     query(tableName, null, null, null, null, null, null)?.use(block)
 
-// Note: ViewCompat.setOnApplyWindowInsets is a horrible buggy mess, so we use the native method
-// and convert the insets as needed to their compat forms.
+// Note: WindowInsetsCompat and it's related methods are a non-functional mess that does not
+// work for Auxio's use-case. Use our own methods instead.
 
 /**
  * Resolve system bar insets in a version-aware manner. This can be used to apply padding to a view

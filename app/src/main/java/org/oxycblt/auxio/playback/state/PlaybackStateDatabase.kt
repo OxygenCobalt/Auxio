@@ -101,7 +101,6 @@ class PlaybackStateDatabase(context: Context) :
 
     // --- INTERFACE FUNCTIONS ---
 
-    @Synchronized
     fun read(library: MusicStore.Library): SavedState? {
         requireBackgroundThread()
 
@@ -186,7 +185,6 @@ class PlaybackStateDatabase(context: Context) :
     }
 
     /** Clear the previously written [SavedState] and write a new one. */
-    @Synchronized
     fun write(state: SavedState) {
         requireBackgroundThread()
 

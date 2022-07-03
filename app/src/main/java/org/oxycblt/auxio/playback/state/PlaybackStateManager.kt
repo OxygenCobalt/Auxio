@@ -360,48 +360,59 @@ class PlaybackStateManager private constructor() {
     /** Restore the state from the [database] */
     suspend fun restoreState(database: PlaybackStateDatabase) {
         val library = musicStore.library ?: return
-        withContext(Dispatchers.IO) { readImpl(database, library) }?.let(::restoreImpl)
-        isInitialized = true
+        val state = withContext(Dispatchers.IO) { database.read(library) }
+
+        synchronized(this) {
+            if (state != null) {
+                applyStateImpl(state)
+            }
+
+            isInitialized = true
+        }
     }
 
     /** Save the current state to the [database]. */
     suspend fun saveState(database: PlaybackStateDatabase) {
         logD("Saving state to DB")
 
-        // Pack the entire state and save it to the database.
-        withContext(Dispatchers.IO) { saveImpl(database) }
+        val state = synchronized(this) { makeStateImpl() }
+
+        withContext(Dispatchers.IO) { database.write(state) }
     }
 
     suspend fun sanitize(database: PlaybackStateDatabase, newLibrary: MusicStore.Library) {
         // Since we need to sanitize the state and re-save it for consistency, take the
         // easy way out and just write a new state and restore from it. Don't really care.
         logD("Sanitizing state")
-        isPlaying = false
         val state =
-            withContext(Dispatchers.IO) {
-                saveImpl(database)
-                readImpl(database, newLibrary)
+            synchronized(this) {
+                isPlaying = false
+                makeStateImpl()
             }
 
-        state?.let(::restoreImpl)
+        val sanitizedState =
+            withContext(Dispatchers.IO) {
+                database.write(state)
+                database.read(newLibrary)
+            }
+
+        synchronized(this) {
+            if (sanitizedState != null) {
+                applyStateImpl(state)
+            }
+        }
     }
 
-    private fun readImpl(
-        database: PlaybackStateDatabase,
-        library: MusicStore.Library
-    ): PlaybackStateDatabase.SavedState? {
-        logD("Getting state from DB")
+    private fun makeStateImpl() =
+        PlaybackStateDatabase.SavedState(
+            index = index,
+            parent = parent,
+            queue = _queue,
+            positionMs = positionMs,
+            isShuffled = isShuffled,
+            repeatMode = repeatMode)
 
-        val start = System.currentTimeMillis()
-        val state = database.read(library)
-
-        logD("State read completed successfully in ${System.currentTimeMillis() - start}ms")
-
-        return state
-    }
-
-    @Synchronized
-    private fun restoreImpl(state: PlaybackStateDatabase.SavedState) {
+    private fun applyStateImpl(state: PlaybackStateDatabase.SavedState) {
         index = state.index
         parent = state.parent
         _queue = state.queue.toMutableList()
@@ -412,23 +423,6 @@ class PlaybackStateManager private constructor() {
         seekTo(state.positionMs)
         notifyRepeatModeChanged()
         notifyShuffledChanged()
-    }
-
-    @Synchronized
-    private fun saveImpl(database: PlaybackStateDatabase) {
-        val start = System.currentTimeMillis()
-
-        database.write(
-            PlaybackStateDatabase.SavedState(
-                index = index,
-                parent = parent,
-                queue = _queue,
-                positionMs = positionMs,
-                isShuffled = isShuffled,
-                repeatMode = repeatMode))
-
-        this@PlaybackStateManager.logD(
-            "State save completed successfully in ${System.currentTimeMillis() - start}ms")
     }
 
     // --- CALLBACKS ---

@@ -47,8 +47,6 @@ import org.oxycblt.auxio.util.logD
  *
  * TODO: Add file observing
  *
- * TODO: Audit usages of synchronized
- *
  * TODO: Rework UI flow once again
  */
 class IndexerService : Service(), Indexer.Controller, Settings.Callback {

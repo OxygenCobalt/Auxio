@@ -35,12 +35,14 @@ class MusicStore private constructor() {
         private set
 
     /** Add a callback to this instance. Make sure to remove it when done. */
+    @Synchronized
     fun addCallback(callback: Callback) {
         callback.onLibraryChanged(library)
         callbacks.add(callback)
     }
 
     /** Remove a callback from this instance. */
+    @Synchronized
     fun removeCallback(callback: Callback) {
         callbacks.remove(callback)
     }
@@ -82,7 +84,6 @@ class MusicStore private constructor() {
             }
 
         fun sanitize(song: Song) = songs.find { it.id == song.id }
-        fun sanitize(songs: List<Song>) = songs.mapNotNull { sanitize(it) }
         fun sanitize(album: Album) = albums.find { it.id == album.id }
         fun sanitize(artist: Artist) = artists.find { it.id == artist.id }
         fun sanitize(genre: Genre) = genres.find { it.id == genre.id }
