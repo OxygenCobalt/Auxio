@@ -50,7 +50,7 @@
     <string name="set_display">Anzeige</string>
     <string name="set_show_covers">Albumcover anzeigen</string>
     <string name="set_show_covers_desc">Ausschalten um Speicherplatz zu sparen</string>
-    <string name="set_quality_covers">MediaStore Cover ignorieren</string>
+    <string name="set_quality_covers">MediaStore-Cover ignorieren</string>
     <string name="set_quality_covers_desc">Verbesst die Albumcoverqualität, führt jedoch zu längeren Ladezeiten und höherem Speicherverbrauch</string>
     <string name="set_round_mode">Abgerundete Cover</string>
     <string name="set_round_mode_desc">Rundet Ecken der Cover ab</string>
@@ -77,7 +77,7 @@
     <string name="set_save">Wiedergabezustand speichern</string>
     <string name="set_save_desc">Den aktuellen Wiedergabezustand speichern</string>
     <string name="set_reindex">Musik neu laden</string>
-    <string name="set_reindex_desc">Startet die App neu</string>
+    <string name="set_reindex_desc">Könnte den Wiedergabezustand löschen</string>
     <!-- Error Namespace | Error Labels -->
     <string name="err_no_music">Keine Musik gefunden</string>
     <string name="err_index_failed">Laden der Musik fehlgeschlagen</string>
@@ -202,4 +202,6 @@
     <string name="lbl_size">Größe</string>
     <string name="lbl_bitrate">Bitrate</string>
     <string name="err_too_small">Auxio unterstützt diese Fenstergröße nicht</string>
+    <string name="set_quality_tags">MediaStore-Tags ignorieren</string>
+    <string name="set_quality_tags_desc">Erhöht Tag-Qualität, benötigt aber längere Ladezeiten</string>
 </resources>
